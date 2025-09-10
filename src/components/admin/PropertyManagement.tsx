@@ -1,8 +1,24 @@
-import { useState } from "react";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Building, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+// Import all property management components
+import IndonesianLocationManager from './property/IndonesianLocationManager';
+import PropertyCategoriesManagement from './property/PropertyCategoriesManagement';
+import PropertyApprovalWorkflow from './property/PropertyApprovalWorkflow';
+import PropertyAnalyticsDashboard from './property/PropertyAnalyticsDashboard';
+import SearchFiltersManagement from './SearchFiltersManagement';
+import PropertyWatermarkSettings from './PropertyWatermarkSettings';
+import PropertyBulkActions from './PropertyBulkActions';
+import PropertyEditModal from './PropertyEditModal';
+import PropertyViewModal from './PropertyViewModal';
+
+// Keep existing property management functionality
+import { useState as usePropertyState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,15 +27,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets } from "lucide-react";
+import { Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets, 
+         Settings, BarChart3, FileCheck, MapPin as Location, Building2, Workflow, 
+         Image, Heart, MessageSquare, Star, Shield, TrendingUp } from 'lucide-react';
 import { useAlert } from "@/contexts/AlertContext";
-import PropertyEditModal from "./PropertyEditModal";
-import PropertyViewModal from "./PropertyViewModal";
-import PropertyBulkActions from "./PropertyBulkActions";
 import { formatIDR } from "@/utils/currency";
-import SearchFiltersManagement from "./SearchFiltersManagement";
-import PropertyWatermarkSettings from "./PropertyWatermarkSettings";
 
 interface PropertyOwner {
   full_name: string;
@@ -49,13 +61,16 @@ interface PropertyWithRelations {
 }
 
 const PropertyManagement = () => {
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingProperty, setEditingProperty] = useState<PropertyWithRelations | null>(null);
-  const [viewingProperty, setViewingProperty] = useState<PropertyWithRelations | null>(null);
-  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
-  const [newProperty, setNewProperty] = useState({
+  const [activeMainTab, setActiveMainTab] = useState('properties');
+  
+  // Keep existing property management state
+  const [statusFilter, setStatusFilter] = usePropertyState("all");
+  const [categoryFilter, setCategoryFilter] = usePropertyState("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = usePropertyState(false);
+  const [editingProperty, setEditingProperty] = usePropertyState<PropertyWithRelations | null>(null);
+  const [viewingProperty, setViewingProperty] = usePropertyState<PropertyWithRelations | null>(null);
+  const [selectedProperties, setSelectedProperties] = usePropertyState<string[]>([]);
+  const [newProperty, setNewProperty] = usePropertyState({
     title: "",
     description: "",
     property_type: "house",
@@ -292,32 +307,53 @@ const PropertyManagement = () => {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Building className="h-5 w-5" />
-                Property Management Hub
+                Indonesian Property Management Hub
               </CardTitle>
               <CardDescription>
-                Manage properties, search filters, watermark settings, and all property-related configurations
+                Complete property management system for Indonesian real estate market
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="properties" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="properties" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
                 Properties
               </TabsTrigger>
+              <TabsTrigger value="locations" className="flex items-center gap-2">
+                <Location className="h-4 w-4" />
+                Locations
+              </TabsTrigger>
+              <TabsTrigger value="categories" className="flex items-center gap-2">
+                <Building2 className="h-4 w-4" />
+                Categories
+              </TabsTrigger>
+              <TabsTrigger value="approval" className="flex items-center gap-2">
+                <FileCheck className="h-4 w-4" />
+                Approval
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Analytics
+              </TabsTrigger>
               <TabsTrigger value="search-filters" className="flex items-center gap-2">
                 <Filter className="h-4 w-4" />
-                Search Filters
+                Filters
               </TabsTrigger>
-              <TabsTrigger value="watermark-settings" className="flex items-center gap-2">
+              <TabsTrigger value="watermark" className="flex items-center gap-2">
                 <Droplets className="h-4 w-4" />
-                Watermark Settings
+                Watermark
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Settings
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="properties" className="space-y-6">
+            {/* Properties Tab - Keep existing functionality */}
+            <TabsContent value="properties" className="space-y-6">{/* ... keep existing properties content ... */}
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold">Property Listings</h3>
@@ -683,12 +719,117 @@ const PropertyManagement = () => {
               </div>
             </TabsContent>
 
+            {/* Indonesian Locations Management */}
+            <TabsContent value="locations" className="space-y-6">
+              <IndonesianLocationManager />
+            </TabsContent>
+
+            {/* Property Categories Management */}
+            <TabsContent value="categories" className="space-y-6">
+              <PropertyCategoriesManagement />
+            </TabsContent>
+
+            {/* Property Approval Workflow */}
+            <TabsContent value="approval" className="space-y-6">
+              <PropertyApprovalWorkflow />
+            </TabsContent>
+
+            {/* Property Analytics Dashboard */}
+            <TabsContent value="analytics" className="space-y-6">
+              <PropertyAnalyticsDashboard />
+            </TabsContent>
+
+            {/* Search Filters Management */}
             <TabsContent value="search-filters">
               <SearchFiltersManagement />
             </TabsContent>
 
-            <TabsContent value="watermark-settings">
+            {/* Watermark Settings */}
+            <TabsContent value="watermark">
               <PropertyWatermarkSettings />
+            </TabsContent>
+
+            {/* Additional Settings */}
+            <TabsContent value="settings" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Image className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Image Management</h3>
+                      <p className="text-sm text-muted-foreground">Property image settings</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">Configure</Button>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <Heart className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Reviews & Ratings</h3>
+                      <p className="text-sm text-muted-foreground">Property review system</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">Configure</Button>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <MessageSquare className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Inquiry Management</h3>
+                      <p className="text-sm text-muted-foreground">Handle property inquiries</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">Configure</Button>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-orange-100 rounded-lg">
+                      <Star className="h-5 w-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Featured Properties</h3>
+                      <p className="text-sm text-muted-foreground">Manage featured listings</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">Configure</Button>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-red-100 rounded-lg">
+                      <Shield className="h-5 w-5 text-red-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Compliance Checker</h3>
+                      <p className="text-sm text-muted-foreground">Indonesian property laws</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">Configure</Button>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-teal-100 rounded-lg">
+                      <TrendingUp className="h-5 w-5 text-teal-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Market Valuation</h3>
+                      <p className="text-sm text-muted-foreground">Property valuation tools</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">Configure</Button>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
