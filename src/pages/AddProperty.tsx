@@ -50,7 +50,7 @@ const AddProperty = () => {
       <div className="fixed inset-0 bg-gradient-to-br from-blue-50/60 via-purple-50/60 to-pink-50/60 backdrop-blur-sm -z-10"></div>
 
       {/* Main Content */}
-      <div className="relative py-8 px-4 sm:px-6 lg:px-8">
+      <div className="relative py-8 px-4 sm:px-6 lg:px-8 pt-20">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
           <div className="text-center mb-8">

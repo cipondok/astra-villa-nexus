@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -44,7 +44,7 @@ import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
 
 const AppContent = () => {
   const location = useLocation();
-  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/add-property'].includes(location.pathname);
+  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -70,10 +70,11 @@ const AppContent = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/settings" element={<AdminDashboard />} />
-          <Route path="/agent" element={<AgentDashboard />} />
-          <Route path="/listings" element={<AgentDashboard />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
-          <Route path="/agent-listings" element={<AgentDashboard />} />
+          {/* Redirect other agent URLs to main dashboard */}
+          <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
+          <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
+          <Route path="/agent-listings" element={<Navigate to="/agent-dashboard" replace />} />
           <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
           <Route path="/dashboard/vendor" element={<VendorDashboard />} />
           <Route path="/vendor" element={<VendorDashboard />} />
