@@ -59,7 +59,6 @@ const EnhancedAdminDashboard = () => {
   };
 
   const alerts = [
-    { id: 1, type: 'critical', message: 'Database connection timeout detected', time: '2 min ago' },
     { id: 2, type: 'warning', message: 'High memory usage on server 2', time: '15 min ago' },
     { id: 3, type: 'info', message: 'System backup completed successfully', time: '1 hour ago' }
   ];
