@@ -13,6 +13,7 @@ import ErrorLogsTable from "./ErrorLogsTable";
 import DatabaseErrorMonitor from "./DatabaseErrorMonitor";
 import SystemHealthMonitor from "./SystemHealthMonitor";
 import SystemSettings from "./SystemSettings";
+import EnhancedErrorReporting from "./EnhancedErrorReporting";
 
 const SystemToolsDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -175,10 +176,14 @@ const SystemToolsDashboard = () => {
       {/* Main Content Tabs */}
       <div className="flex-1">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-5 mb-4">
+          <TabsList className="grid w-full grid-cols-6 mb-4">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Overview
+            </TabsTrigger>
+            <TabsTrigger value="enhanced-errors" className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              Error Analysis
             </TabsTrigger>
             <TabsTrigger value="error-logs" className="flex items-center gap-2">
               <FileX2 className="h-4 w-4" />
@@ -285,6 +290,10 @@ const SystemToolsDashboard = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="enhanced-errors" className="flex-1">
+            <EnhancedErrorReporting />
           </TabsContent>
 
           <TabsContent value="error-logs" className="flex-1">
