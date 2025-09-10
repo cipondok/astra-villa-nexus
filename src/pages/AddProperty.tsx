@@ -5,12 +5,9 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
-
 const AddProperty = () => {
   const { isAuthenticated, profile } = useAuth();
   const { language, setLanguage } = useLanguage();
-  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,16 +48,6 @@ const AddProperty = () => {
     <div className="min-h-screen relative">
       {/* Background with 60% transparency */}
       <div className="fixed inset-0 bg-gradient-to-br from-blue-50/60 via-purple-50/60 to-pink-50/60 backdrop-blur-sm -z-10"></div>
-      
-      {/* Header Section */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-        <AuthenticatedNavigation
-          language={language}
-          onLanguageToggle={() => setLanguage(language === "en" ? "id" : "en")}
-          theme={theme}
-          onThemeToggle={() => setTheme(theme === "light" ? "dark" : "light")}
-        />
-      </div>
 
       {/* Main Content */}
       <div className="relative py-8 px-4 sm:px-6 lg:px-8">

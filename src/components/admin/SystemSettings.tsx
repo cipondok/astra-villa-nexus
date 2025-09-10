@@ -16,6 +16,7 @@ import SystemMonitoring from './settings/SystemMonitoring';
 import BackupSettings from './settings/BackupSettings';
 import DiscountSettings from './settings/DiscountSettings';
 import PropertyFilterSettings from './settings/PropertyFilterSettings';
+import CentralizedFilterManager from './CentralizedFilterManager';
 import AstraTokenSettingsWrapper from './settings/AstraTokenSettingsWrapper';
 import LoadingPage from '../LoadingPage';
 
@@ -86,13 +87,14 @@ const SystemSettings = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-9 min-w-fit">
+          <TabsList className="grid w-full grid-cols-10 min-w-fit">
             <TabsTrigger value="general" className="whitespace-nowrap">General & SEO</TabsTrigger>
             <TabsTrigger value="security" className="whitespace-nowrap">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="whitespace-nowrap">Notifications</TabsTrigger>
             <TabsTrigger value="files" className="whitespace-nowrap">Files</TabsTrigger>
             <TabsTrigger value="discounts" className="whitespace-nowrap">Discounts</TabsTrigger>
             <TabsTrigger value="filters" className="whitespace-nowrap">Property Filters</TabsTrigger>
+            <TabsTrigger value="centralized-filters" className="whitespace-nowrap">Centralized Filters</TabsTrigger>
             <TabsTrigger value="astra-tokens" className="whitespace-nowrap">ASTRA Tokens</TabsTrigger>
             <TabsTrigger value="system" className="whitespace-nowrap">System Monitor</TabsTrigger>
             <TabsTrigger value="backup" className="whitespace-nowrap">Backup</TabsTrigger>
@@ -136,8 +138,12 @@ const SystemSettings = () => {
           />
         </TabsContent>
 
-        <TabsContent value="filters" className="space-y-4">
+        <TabsContent value="filters">
           <PropertyFilterSettings />
+        </TabsContent>
+        
+        <TabsContent value="centralized-filters">
+          <CentralizedFilterManager />
         </TabsContent>
 
         <TabsContent value="astra-tokens" className="space-y-4">
