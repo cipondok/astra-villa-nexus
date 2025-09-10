@@ -8105,6 +8105,10 @@ export type Database = {
         Args: { bpjs_number: string }
         Returns: string
       }
+      reset_admin_password: {
+        Args: { new_password: string }
+        Returns: string
+      }
       resolve_database_error: {
         Args: {
           p_error_signature: string
