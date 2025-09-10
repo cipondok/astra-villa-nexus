@@ -167,7 +167,7 @@ const ApiSettings = () => {
   };
 
   const maskApiKey = (apiKey: string) => {
-    if (apiKey.length <= 8) return apiKey;
+    if (!apiKey || apiKey.length <= 8) return apiKey || '';
     return apiKey.substring(0, 4) + '***' + apiKey.substring(apiKey.length - 4);
   };
 
