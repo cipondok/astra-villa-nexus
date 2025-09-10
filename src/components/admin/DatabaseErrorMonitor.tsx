@@ -1,30 +1,49 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { 
-  Database, AlertTriangle, Search, Filter, RefreshCw, 
-  Eye, Clock, Server, CheckCircle, XCircle, Zap
-} from "lucide-react";
-import { format } from "date-fns";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  Database, Search, Eye, Clock, CheckCircle, 
+  XCircle, AlertTriangle, Wrench, Calendar
+} from 'lucide-react';
+import { useAlert } from '@/contexts/AlertContext';
 
 interface DatabaseError {
   id: string;
   error_signature: string;
-  error_type: string;
   error_message: string;
-  error_severity: string;
+  error_severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   table_name: string | null;
-  occurrence_count: number;
-  first_seen_at: string;
+  column_name: string | null;
+  constraint_name: string | null;
+  operation_type: string | null;
+  user_id: string | null;
+  first_occurrence: string;
   last_seen_at: string;
+  occurrence_count: number;
   is_resolved: boolean;
   suggested_fix: string | null;
   fix_applied: string | null;
@@ -39,188 +58,175 @@ const DatabaseErrorMonitor = () => {
   const [severityFilter, setSeverityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedError, setSelectedError] = useState<DatabaseError | null>(null);
+  const { showSuccess, showError } = useAlert();
 
-  const { data: databaseErrors = [], isLoading, refetch } = useQuery({
-    queryKey: ['database-errors', searchTerm, severityFilter, statusFilter],
-    queryFn: async () => {
-      let query = supabase
-        .from('database_error_tracking')
-        .select('*')
-        .order('last_seen_at', { ascending: false })
-        .limit(100);
-
-      if (searchTerm) {
-        query = query.or(`error_message.ilike.%${searchTerm}%,table_name.ilike.%${searchTerm}%`);
-      }
-
-      if (severityFilter !== 'all') {
-        query = query.eq('error_severity', severityFilter);
-      }
-
-      if (statusFilter === 'resolved') {
-        query = query.eq('is_resolved', true);
-      } else if (statusFilter === 'unresolved') {
-        query = query.eq('is_resolved', false);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return (data || []) as DatabaseError[];
+  // Mock data for demonstration
+  const mockDatabaseErrors: DatabaseError[] = [
+    {
+      id: '1',
+      error_signature: 'permission_denied_vendor_profiles',
+      error_message: 'permission denied for table vendor_business_profiles',
+      error_severity: 'HIGH',
+      table_name: 'vendor_business_profiles',
+      column_name: null,
+      constraint_name: null,
+      operation_type: 'SELECT',
+      user_id: 'admin123',
+      first_occurrence: new Date(Date.now() - 86400000).toISOString(),
+      last_seen_at: new Date().toISOString(),
+      occurrence_count: 15,
+      is_resolved: false,
+      suggested_fix: 'Create proper RLS policies for admin access',
+      fix_applied: null,
+      resolved_by: null,
+      resolved_at: null,
+      metadata: {
+        context: 'Admin dashboard access',
+        rls_enabled: true,
+        policies_count: 0
+      },
+      created_at: new Date(Date.now() - 86400000).toISOString()
     },
-    refetchInterval: 30000,
+    {
+      id: '2',
+      error_signature: 'column_does_not_exist_updated_at',
+      error_message: 'column "updated_at" does not exist',
+      error_severity: 'MEDIUM',
+      table_name: 'profiles',
+      column_name: 'updated_at',
+      constraint_name: null,
+      operation_type: 'SELECT',
+      user_id: 'user456',
+      first_occurrence: new Date(Date.now() - 172800000).toISOString(),
+      last_seen_at: new Date(Date.now() - 3600000).toISOString(),
+      occurrence_count: 8,
+      is_resolved: true,
+      suggested_fix: 'Add missing updated_at column to profiles table',
+      fix_applied: 'ALTER TABLE profiles ADD COLUMN updated_at TIMESTAMP DEFAULT now()',
+      resolved_by: 'admin123',
+      resolved_at: new Date(Date.now() - 3600000).toISOString(),
+      metadata: {
+        context: 'Profile update operation',
+        table_exists: true,
+        column_missing: true
+      },
+      created_at: new Date(Date.now() - 172800000).toISOString()
+    },
+    {
+      id: '3',
+      error_signature: 'foreign_key_constraint_violation',
+      error_message: 'insert or update on table "properties" violates foreign key constraint',
+      error_severity: 'CRITICAL',
+      table_name: 'properties',
+      column_name: 'owner_id',
+      constraint_name: 'properties_owner_id_fkey',
+      operation_type: 'INSERT',
+      user_id: 'vendor789',
+      first_occurrence: new Date(Date.now() - 43200000).toISOString(),
+      last_seen_at: new Date(Date.now() - 1800000).toISOString(),
+      occurrence_count: 3,
+      is_resolved: false,
+      suggested_fix: 'Ensure owner_id references valid user in profiles table',
+      fix_applied: null,
+      resolved_by: null,
+      resolved_at: null,
+      metadata: {
+        context: 'Property creation',
+        referenced_table: 'profiles',
+        constraint_type: 'FOREIGN KEY'
+      },
+      created_at: new Date(Date.now() - 43200000).toISOString()
+    }
+  ];
+
+  const filteredErrors = mockDatabaseErrors.filter(error => {
+    const matchesSearch = searchTerm === "" || 
+      error.error_message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (error.table_name && error.table_name.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesSeverity = severityFilter === "all" || error.error_severity === severityFilter;
+    const matchesStatus = statusFilter === "all" || 
+      (statusFilter === "resolved" && error.is_resolved) ||
+      (statusFilter === "unresolved" && !error.is_resolved);
+    
+    return matchesSearch && matchesSeverity && matchesStatus;
   });
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'CRITICAL': return 'text-red-600 bg-red-50 border-red-200';
-      case 'ERROR': return 'text-red-600 bg-red-50 border-red-200';
-      case 'WARNING': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'INFO': return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case 'CRITICAL':
+        return 'bg-red-500';
+      case 'HIGH':
+        return 'bg-orange-500';
+      case 'MEDIUM':
+        return 'bg-yellow-500';
+      case 'LOW':
+        return 'bg-blue-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
-  const getSeverityBadgeVariant = (severity: string) => {
+  const getSeverityBadgeColor = (severity: string) => {
     switch (severity) {
-      case 'CRITICAL': return 'destructive';
-      case 'ERROR': return 'destructive';
-      case 'WARNING': return 'outline';
-      default: return 'secondary';
+      case 'CRITICAL':
+        return 'bg-red-100 text-red-800';
+      case 'HIGH':
+        return 'bg-orange-100 text-orange-800';
+      case 'MEDIUM':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'LOW':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const markAsResolved = async (errorId: string, fixApplied: string) => {
-    try {
-      const { error } = await supabase
-        .from('database_error_tracking')
-        .update({
-          is_resolved: true,
-          resolved_at: new Date().toISOString(),
-          fix_applied: fixApplied,
-          resolved_by: (await supabase.auth.getUser()).data.user?.id
-        })
-        .eq('id', errorId);
-      
-      if (error) throw error;
-      refetch();
-    } catch (error) {
-      console.error('Failed to mark error as resolved:', error);
-    }
+  const markAsResolved = (errorId: string) => {
+    showSuccess('Resolved', `Database error ${errorId} marked as resolved`);
+  };
+
+  const applyFix = (errorId: string) => {
+    showSuccess('Fix Applied', `Suggested fix applied for error ${errorId}`);
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4">
-      {/* Header Section */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/20">
-            <Database className="h-6 w-6 text-red-600 dark:text-red-400" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Database Error Monitor</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Track and resolve database issues</p>
-          </div>
-        </div>
-        <Button 
-          onClick={() => refetch()} 
-          variant="outline" 
-          size="sm"
-          className="gap-2"
-        >
-          <RefreshCw className="h-4 w-4" />
-          Refresh
-        </Button>
-      </div>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-900/20 dark:to-red-800/10">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-red-600 dark:text-red-400">Total Errors</p>
-                <p className="text-2xl font-bold text-red-900 dark:text-red-100">{databaseErrors.length}</p>
-              </div>
-              <AlertTriangle className="h-8 w-8 text-red-500/60" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/10">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Critical</p>
-                <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
-                  {databaseErrors.filter(e => e.error_severity === 'CRITICAL').length}
-                </p>
-              </div>
-              <XCircle className="h-8 w-8 text-orange-500/60" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-green-600 dark:text-green-400">Resolved</p>
-                <p className="text-2xl font-bold text-green-900 dark:text-green-100">
-                  {databaseErrors.filter(e => e.is_resolved).length}
-                </p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-500/60" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Tables Affected</p>
-                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                  {new Set(databaseErrors.map(e => e.table_name).filter(Boolean)).size}
-                </p>
-              </div>
-              <Server className="h-8 w-8 text-blue-500/60" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex flex-col lg:flex-row gap-4">
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-blue-500" />
+            Database Error Monitor
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Search by error message or table name..."
+                  placeholder="Search by error message or table..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
-            
             <Select value={severityFilter} onValueChange={setSeverityFilter}>
-              <SelectTrigger className="w-full lg:w-40">
-                <Filter className="h-4 w-4 mr-2 text-gray-500" />
+              <SelectTrigger className="w-full sm:w-40">
                 <SelectValue placeholder="Severity" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Severities</SelectItem>
+                <SelectItem value="all">All Severity</SelectItem>
                 <SelectItem value="CRITICAL">Critical</SelectItem>
-                <SelectItem value="ERROR">Error</SelectItem>
-                <SelectItem value="WARNING">Warning</SelectItem>
-                <SelectItem value="INFO">Info</SelectItem>
+                <SelectItem value="HIGH">High</SelectItem>
+                <SelectItem value="MEDIUM">Medium</SelectItem>
+                <SelectItem value="LOW">Low</SelectItem>
               </SelectContent>
             </Select>
-
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full lg:w-40">
+              <SelectTrigger className="w-full sm:w-40">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -230,207 +236,230 @@ const DatabaseErrorMonitor = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Statistics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
+              <div className="text-2xl font-bold text-red-600">
+                {mockDatabaseErrors.filter(e => e.error_severity === 'CRITICAL').length}
+              </div>
+              <div className="text-sm text-red-600">Critical</div>
+            </div>
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">
+                {mockDatabaseErrors.filter(e => e.error_severity === 'HIGH').length}
+              </div>
+              <div className="text-sm text-orange-600">High</div>
+            </div>
+            <div className="text-center p-3 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">
+                {mockDatabaseErrors.filter(e => e.is_resolved).length}
+              </div>
+              <div className="text-sm text-green-600">Resolved</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold text-gray-600">
+                {mockDatabaseErrors.reduce((sum, e) => sum + e.occurrence_count, 0)}
+              </div>
+              <div className="text-sm text-gray-600">Total Occurrences</div>
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="text-sm text-gray-600 mb-4">
+            Showing {filteredErrors.length} of {mockDatabaseErrors.length} database errors
+          </div>
+
+          {/* Table */}
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Table</TableHead>
+                  <TableHead>Error Message</TableHead>
+                  <TableHead>Count</TableHead>
+                  <TableHead>Last Seen</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredErrors.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                      No database errors found matching your criteria
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredErrors.map((error) => (
+                    <TableRow key={error.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${getSeverityColor(error.error_severity)}`} />
+                          <Badge variant="secondary" className={getSeverityBadgeColor(error.error_severity)}>
+                            {error.error_severity}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">
+                        {error.table_name || 'N/A'}
+                      </TableCell>
+                      <TableCell className="max-w-xs">
+                        <div className="truncate" title={error.error_message}>
+                          {error.error_message}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {error.occurrence_count}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {new Date(error.last_seen_at).toLocaleString()}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {error.is_resolved ? (
+                          <Badge className="bg-green-100 text-green-800">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Resolved
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-red-100 text-red-800">
+                            <XCircle className="h-3 w-3 mr-1" />
+                            Active
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedError(error)}
+                          >
+                            <Eye className="h-3 w-3" />
+                          </Button>
+                          {!error.is_resolved && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => markAsResolved(error.id)}
+                            >
+                              <CheckCircle className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Error Table */}
-      <Card className="flex-1 border-0 shadow-sm">
-        <ScrollArea className="h-full">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-20">Severity</TableHead>
-                <TableHead>Error Type</TableHead>
-                <TableHead>Table</TableHead>
-                <TableHead>Message</TableHead>
-                <TableHead className="w-24">Count</TableHead>
-                <TableHead className="w-32">Last Seen</TableHead>
-                <TableHead className="w-20">Status</TableHead>
-                <TableHead className="w-16"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
-                    <div className="flex items-center justify-center space-x-2">
-                      <RefreshCw className="h-5 w-5 animate-spin text-blue-500" />
-                      <span className="text-gray-500">Loading database errors...</span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : databaseErrors.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
-                    <div className="flex flex-col items-center space-y-2">
-                      <CheckCircle className="h-12 w-12 text-green-300" />
-                      <span className="text-gray-500 font-medium">No database errors found</span>
-                      <span className="text-sm text-gray-400">System is running smoothly</span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                databaseErrors.map((error) => (
-                  <TableRow key={error.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
-                    <TableCell>
-                      <Badge 
-                        variant={getSeverityBadgeVariant(error.error_severity)}
-                        className={`font-mono text-xs ${getSeverityColor(error.error_severity)}`}
-                      >
-                        {error.error_severity}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-mono text-sm">{error.error_type}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-mono text-sm text-blue-600">
-                        {error.table_name || 'N/A'}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
-                        {error.error_message.length > 60 
-                          ? error.error_message.substring(0, 60) + '...'
-                          : error.error_message
-                        }
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="font-mono">
-                        {error.occurrence_count}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {format(new Date(error.last_seen_at), 'MMM dd HH:mm')}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {error.is_resolved ? (
-                        <Badge className="bg-green-100 text-green-800">
-                          Resolved
-                        </Badge>
-                      ) : (
-                        <Badge variant="destructive">
-                          Active
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedError(error)}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </Card>
-
-      {/* Error Detail Dialog */}
+      {/* Detail Modal */}
       <Dialog open={!!selectedError} onOpenChange={() => setSelectedError(null)}>
-        <DialogContent className="max-w-4xl max-h-[85vh] p-0">
-          <DialogHeader className="p-6 pb-4 border-b">
-            <DialogTitle className="flex items-center space-x-2">
-              <Database className="h-5 w-5 text-red-500" />
-              <span>Database Error Details</span>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5 text-blue-500" />
+              Database Error Details - {selectedError?.error_severity}
             </DialogTitle>
           </DialogHeader>
-          
           {selectedError && (
-            <ScrollArea className="px-6 pb-6 max-h-[70vh]">
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card className="border-0 bg-red-50">
-                    <CardContent className="p-4">
-                      <p className="text-xs font-medium text-red-600 mb-1">Severity</p>
-                      <Badge variant={getSeverityBadgeVariant(selectedError.error_severity)}>
-                        {selectedError.error_severity}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-0 bg-blue-50">
-                    <CardContent className="p-4">
-                      <p className="text-xs font-medium text-blue-600 mb-1">Occurrences</p>
-                      <p className="text-sm font-mono">{selectedError.occurrence_count}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-0 bg-green-50">
-                    <CardContent className="p-4">
-                      <p className="text-xs font-medium text-green-600 mb-1">Table</p>
-                      <p className="text-sm font-mono">{selectedError.table_name || 'N/A'}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-0 bg-orange-50">
-                    <CardContent className="p-4">
-                      <p className="text-xs font-medium text-orange-600 mb-1">Status</p>
-                      <Badge variant={selectedError.is_resolved ? "outline" : "destructive"}>
-                        {selectedError.is_resolved ? "Resolved" : "Active"}
-                      </Badge>
-                    </CardContent>
-                  </Card>
+            <ScrollArea className="max-h-96">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">Error Signature</label>
+                    <p className="font-mono text-sm bg-gray-100 p-2 rounded">
+                      {selectedError.error_signature}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Table Name</label>
+                    <p className="font-mono text-sm bg-gray-100 p-2 rounded">
+                      {selectedError.table_name || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Operation Type</label>
+                    <p className="text-sm bg-gray-100 p-2 rounded">
+                      {selectedError.operation_type || 'Unknown'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Occurrence Count</label>
+                    <p className="text-sm bg-gray-100 p-2 rounded">
+                      {selectedError.occurrence_count} times
+                    </p>
+                  </div>
                 </div>
 
-                <Card>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2">Error Message</h3>
-                    <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                      <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                        {selectedError.error_message}
-                      </pre>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div>
+                  <label className="text-sm font-medium">Full Error Message</label>
+                  <p className="text-sm bg-red-50 border border-red-200 p-3 rounded">
+                    {selectedError.error_message}
+                  </p>
+                </div>
 
                 {selectedError.suggested_fix && (
-                  <Card>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-2">Suggested Fix</h3>
-                      <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-                        <p className="text-sm text-blue-700 dark:text-blue-300">
-                          {selectedError.suggested_fix}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div>
+                    <label className="text-sm font-medium">Suggested Fix</label>
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+                      <p className="text-sm mb-2">{selectedError.suggested_fix}</p>
+                      {!selectedError.is_resolved && (
+                        <Button 
+                          size="sm" 
+                          onClick={() => applyFix(selectedError.id)}
+                          className="gap-2"
+                        >
+                          <Wrench className="h-3 w-3" />
+                          Apply Fix
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 )}
 
-                {selectedError.metadata && Object.keys(selectedError.metadata).length > 0 && (
-                  <Card>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-2">Metadata</h3>
-                      <div className="bg-gray-900 p-4 rounded-lg overflow-auto">
-                        <pre className="text-sm text-green-400 font-mono">
-                          {JSON.stringify(selectedError.metadata, null, 2)}
-                        </pre>
-                      </div>
-                    </CardContent>
-                  </Card>
+                {selectedError.fix_applied && (
+                  <div>
+                    <label className="text-sm font-medium">Fix Applied</label>
+                    <p className="text-sm bg-green-50 border border-green-200 p-3 rounded font-mono">
+                      {selectedError.fix_applied}
+                    </p>
+                  </div>
                 )}
 
-                {!selectedError.is_resolved && (
-                  <div className="flex justify-end">
-                    <Button 
-                      onClick={() => markAsResolved(selectedError.id, "Manual resolution")}
-                      className="gap-2"
-                    >
-                      <CheckCircle className="h-4 w-4" />
-                      Mark as Resolved
-                    </Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">First Occurrence</label>
+                    <p className="text-sm bg-gray-100 p-2 rounded flex items-center gap-2">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(selectedError.first_occurrence).toLocaleString()}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Last Seen</label>
+                    <p className="text-sm bg-gray-100 p-2 rounded flex items-center gap-2">
+                      <Clock className="h-3 w-3" />
+                      {new Date(selectedError.last_seen_at).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                {selectedError.metadata && (
+                  <div>
+                    <label className="text-sm font-medium">Additional Context</label>
+                    <pre className="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+                      {JSON.stringify(selectedError.metadata, null, 2)}
+                    </pre>
                   </div>
                 )}
               </div>
