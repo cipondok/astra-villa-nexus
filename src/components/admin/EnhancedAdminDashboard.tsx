@@ -22,8 +22,16 @@ import {
   Clock,
   Zap,
   Brain,
-  RefreshCw
+  RefreshCw,
+  CreditCard,
+  Key,
+  Globe
 } from 'lucide-react';
+import SystemSettings from './SystemSettings';
+import UserManagement from './UserManagement';
+import ApiSettings from './ApiSettings';
+import PaymentSettings from './PaymentSettings';
+import ProjectSettings from './ProjectSettings';
 
 const EnhancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -161,30 +169,42 @@ const EnhancedAdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 lg:w-fit">
-            <TabsTrigger value="overview" className="gap-2">
+          <TabsList className="grid w-full grid-cols-9 lg:w-fit overflow-x-auto">
+            <TabsTrigger value="overview" className="gap-2 whitespace-nowrap">
               <BarChart3 className="h-4 w-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="errors" className="gap-2">
-              <AlertTriangle className="h-4 w-4" />
-              Error Reports
+            <TabsTrigger value="users" className="gap-2 whitespace-nowrap">
+              <Users className="h-4 w-4" />
+              Users
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-2">
+            <TabsTrigger value="project" className="gap-2 whitespace-nowrap">
+              <Globe className="h-4 w-4" />
+              Project
+            </TabsTrigger>
+            <TabsTrigger value="api" className="gap-2 whitespace-nowrap">
+              <Key className="h-4 w-4" />
+              API
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="gap-2 whitespace-nowrap">
+              <CreditCard className="h-4 w-4" />
+              Payments
+            </TabsTrigger>
+            <TabsTrigger value="system" className="gap-2 whitespace-nowrap">
+              <Server className="h-4 w-4" />
+              System
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2 whitespace-nowrap">
               <TrendingUp className="h-4 w-4" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="system" className="gap-2">
-              <Server className="h-4 w-4" />
-              System Health
-            </TabsTrigger>
-            <TabsTrigger value="security" className="gap-2">
+            <TabsTrigger value="security" className="gap-2 whitespace-nowrap">
               <Shield className="h-4 w-4" />
               Security
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Settings
+            <TabsTrigger value="errors" className="gap-2 whitespace-nowrap">
+              <AlertTriangle className="h-4 w-4" />
+              Errors
             </TabsTrigger>
           </TabsList>
 
@@ -281,6 +301,75 @@ const EnhancedAdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Users Tab */}
+          <TabsContent value="users" className="space-y-6">
+            <UserManagement />
+          </TabsContent>
+
+          {/* Project Settings Tab */}
+          <TabsContent value="project" className="space-y-6">
+            <ProjectSettings />
+          </TabsContent>
+
+          {/* API Settings Tab */}
+          <TabsContent value="api" className="space-y-6">
+            <ApiSettings />
+          </TabsContent>
+
+          {/* Payment Settings Tab */}
+          <TabsContent value="payments" className="space-y-6">
+            <PaymentSettings />
+          </TabsContent>
+
+          {/* System Settings Tab */}
+          <TabsContent value="system" className="space-y-6">
+            <SystemSettings />
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Advanced Analytics Dashboard
+                </CardTitle>
+                <CardDescription>Comprehensive system and user analytics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Analytics Dashboard</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Advanced analytics with user behavior tracking, performance metrics, and predictive insights
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Security Tab */}
+          <TabsContent value="security" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Security Dashboard
+                </CardTitle>
+                <CardDescription>Security monitoring and threat detection</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Security Center</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Advanced security monitoring with threat detection and vulnerability scanning
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Error Reports Tab */}
           <TabsContent value="errors" className="space-y-6">
             <Card>
@@ -315,94 +404,6 @@ const EnhancedAdminDashboard = () => {
                       <p className="text-sm text-gray-600 dark:text-gray-400">Automated fixes</p>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Advanced Analytics Dashboard
-                </CardTitle>
-                <CardDescription>Comprehensive system and user analytics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Advanced analytics with user behavior tracking, performance metrics, and predictive insights
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* System Health Tab */}
-          <TabsContent value="system" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Server className="h-5 w-5" />
-                  System Health Monitor
-                </CardTitle>
-                <CardDescription>Real-time system monitoring and diagnostics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Server className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">System Monitoring</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Comprehensive system health monitoring with real-time metrics and alerts
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Security Tab */}
-          <TabsContent value="security" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Security Dashboard
-                </CardTitle>
-                <CardDescription>Security monitoring and threat detection</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Security Center</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Advanced security monitoring with threat detection and vulnerability scanning
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  System Settings & Controls
-                </CardTitle>
-                <CardDescription>Configure system-wide settings and controls</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">System Configuration</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Comprehensive system settings with role-based access control
-                  </p>
                 </div>
               </CardContent>
             </Card>

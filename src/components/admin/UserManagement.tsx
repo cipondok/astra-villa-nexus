@@ -1,153 +1,224 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { 
+  Users, 
+  UserPlus, 
+  Search, 
+  Shield, 
+  Ban, 
+  Mail,
+  Edit
+} from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAlert } from '@/contexts/AlertContext';
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Shield, Database, UserPlus, Crown, Monitor, Store, Building, Home, Headphones } from "lucide-react";
-import SimpleUserManagement from "./SimpleUserManagement";
-import UserRolesManagement from "./UserRolesManagement";
-import DatabaseUserManagement from "./DatabaseUserManagement";
-import UserLevelManagement from "./UserLevelManagement";
-import EnhancedUserManagement from "./EnhancedUserManagement";
-import RealTimeSecurityMonitoring from "./RealTimeSecurityMonitoring";
-import VendorUserManagement from "./VendorUserManagement";
-import AgentUserManagement from "./AgentUserManagement";
-import PropertyOwnerUserManagement from "./PropertyOwnerUserManagement";
-import CustomerServiceUserManagement from "./CustomerServiceUserManagement";
-import DatabaseUserSettings from "./DatabaseUserSettings";
+interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  verification_status: string;
+  created_at: string;
+  is_suspended?: boolean;
+}
 
 const UserManagement = () => {
-  const [activeTab, setActiveTab] = useState("roles");
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const { showSuccess, showError } = useAlert();
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setUsers(data || []);
+    } catch (error) {
+      showError('Error', 'Failed to load users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    return matchesSearch && matchesRole;
+  });
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'admin': return 'bg-red-100 text-red-800';
+      case 'vendor': return 'bg-blue-100 text-blue-800';
+      case 'agent': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
-            <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            Advanced User Management System
-          </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400">
-            Comprehensive user management with roles, levels, security tracking, and role-specific management
-          </CardDescription>
-        </CardHeader>
-      </Card>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
-          <TabsTrigger 
-            value="roles" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Shield className="h-4 w-4" />
-            <span className="hidden sm:inline">User Roles</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="enhanced" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <UserPlus className="h-4 w-4" />
-            <span className="hidden sm:inline">Enhanced</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="vendors" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Store className="h-4 w-4" />
-            <span className="hidden sm:inline">Vendors</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="agents" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Building className="h-4 w-4" />
-            <span className="hidden sm:inline">Agents</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="owners" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Owners</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="support" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Headphones className="h-4 w-4" />
-            <span className="hidden sm:inline">Support</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="levels" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Crown className="h-4 w-4" />
-            <span className="hidden sm:inline">Levels</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="monitoring" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Monitor className="h-4 w-4" />
-            <span className="hidden sm:inline">Monitor</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="simple" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <UserPlus className="h-4 w-4" />
-            <span className="hidden sm:inline">Quick</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="database" 
-            className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Database className="h-4 w-4" />
-            <span className="hidden sm:inline">Database</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-          <TabsContent value="roles" className="space-y-6 mt-0">
-            <UserRolesManagement />
-          </TabsContent>
-
-          <TabsContent value="enhanced" className="space-y-6 mt-0">
-            <EnhancedUserManagement />
-          </TabsContent>
-
-          <TabsContent value="vendors" className="space-y-6 mt-0">
-            <VendorUserManagement />
-          </TabsContent>
-
-          <TabsContent value="agents" className="space-y-6 mt-0">
-            <AgentUserManagement />
-          </TabsContent>
-
-          <TabsContent value="owners" className="space-y-6 mt-0">
-            <PropertyOwnerUserManagement />
-          </TabsContent>
-
-          <TabsContent value="support" className="space-y-6 mt-0">
-            <CustomerServiceUserManagement />
-          </TabsContent>
-
-          <TabsContent value="levels" className="space-y-6 mt-0">
-            <UserLevelManagement />
-          </TabsContent>
-
-          <TabsContent value="monitoring" className="space-y-6 mt-0">
-            <RealTimeSecurityMonitoring />
-          </TabsContent>
-
-          <TabsContent value="simple" className="space-y-6 mt-0">
-            <SimpleUserManagement />
-          </TabsContent>
-
-          <TabsContent value="database" className="space-y-6 mt-0">
-            <DatabaseUserSettings />
-          </TabsContent>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Users className="h-6 w-6" />
+            User Management
+          </h2>
+          <p className="text-muted-foreground">Manage users, roles, and permissions</p>
         </div>
-      </Tabs>
+        <Button className="gap-2">
+          <UserPlus className="h-4 w-4" />
+          Add User
+        </Button>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-blue-500" />
+              <span className="text-sm font-medium">Total Users</span>
+            </div>
+            <div className="text-2xl font-bold mt-2">{users.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-green-500" />
+              <span className="text-sm font-medium">Active Users</span>
+            </div>
+            <div className="text-2xl font-bold mt-2">
+              {users.filter(u => !u.is_suspended).length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Ban className="h-4 w-4 text-red-500" />
+              <span className="text-sm font-medium">Suspended</span>
+            </div>
+            <div className="text-2xl font-bold mt-2">
+              {users.filter(u => u.is_suspended).length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4 text-yellow-500" />
+              <span className="text-sm font-medium">Pending</span>
+            </div>
+            <div className="text-2xl font-bold mt-2">
+              {users.filter(u => u.verification_status === 'pending').length}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* User Directory */}
+      <Card>
+        <CardHeader>
+          <CardTitle>User Directory</CardTitle>
+          <CardDescription>Search and manage users</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="vendor">Vendor</SelectItem>
+                <SelectItem value="agent">Agent</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>User</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8">
+                    Loading users...
+                  </TableCell>
+                </TableRow>
+              ) : filteredUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8">
+                    No users found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{user.full_name || 'No name'}</div>
+                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getRoleColor(user.role)}>
+                        {user.role}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.verification_status === 'approved' ? 'default' : 'secondary'}>
+                        {user.verification_status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm">
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 };
