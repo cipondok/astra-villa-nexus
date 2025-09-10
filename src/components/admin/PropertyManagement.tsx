@@ -749,7 +749,7 @@ const PropertyManagement = () => {
               <PropertyWatermarkSettings />
             </TabsContent>
 
-            {/* Additional Settings */}
+            {/* Property Settings */}
             <TabsContent value="settings" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card className="p-6">
@@ -759,23 +759,41 @@ const PropertyManagement = () => {
                     </div>
                     <div>
                       <h3 className="font-medium">Image Management</h3>
-                      <p className="text-sm text-muted-foreground">Property image settings</p>
+                      <p className="text-sm text-muted-foreground">Configure image upload and processing settings</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full">Configure</Button>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Max Size:</span>
+                      <span>10MB</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Formats:</span>
+                      <span>JPG, PNG, WebP</span>
+                    </div>
+                  </div>
                 </Card>
 
                 <Card className="p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-green-100 rounded-lg">
-                      <Heart className="h-5 w-5 text-green-600" />
+                      <Star className="h-5 w-5 text-green-600" />
                     </div>
                     <div>
                       <h3 className="font-medium">Reviews & Ratings</h3>
-                      <p className="text-sm text-muted-foreground">Property review system</p>
+                      <p className="text-sm text-muted-foreground">Property review system configuration</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full">Configure</Button>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Reviews:</span>
+                      <span>Enabled</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Ratings:</span>
+                      <span>1-5 Stars</span>
+                    </div>
+                  </div>
                 </Card>
 
                 <Card className="p-6">
@@ -785,49 +803,19 @@ const PropertyManagement = () => {
                     </div>
                     <div>
                       <h3 className="font-medium">Inquiry Management</h3>
-                      <p className="text-sm text-muted-foreground">Handle property inquiries</p>
+                      <p className="text-sm text-muted-foreground">Handle property inquiries and notifications</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full">Configure</Button>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-orange-100 rounded-lg">
-                      <Star className="h-5 w-5 text-orange-600" />
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Auto-Reply:</span>
+                      <span>Enabled</span>
                     </div>
-                    <div>
-                      <h3 className="font-medium">Featured Properties</h3>
-                      <p className="text-sm text-muted-foreground">Manage featured listings</p>
+                    <div className="flex justify-between text-sm">
+                      <span>CAPTCHA:</span>
+                      <span>Active</span>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full">Configure</Button>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                      <Shield className="h-5 w-5 text-red-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Compliance Checker</h3>
-                      <p className="text-sm text-muted-foreground">Indonesian property laws</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" className="w-full">Configure</Button>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-teal-100 rounded-lg">
-                      <TrendingUp className="h-5 w-5 text-teal-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Market Valuation</h3>
-                      <p className="text-sm text-muted-foreground">Property valuation tools</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" className="w-full">Configure</Button>
                 </Card>
               </div>
             </TabsContent>
