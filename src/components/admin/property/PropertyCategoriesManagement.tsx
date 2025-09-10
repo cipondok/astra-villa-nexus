@@ -62,7 +62,7 @@ const PropertyCategoriesManagement = () => {
     slug: '',
     description: '',
     icon: '',
-    parent_id: '',
+    parent_id: 'none',
     display_order: 0,
     is_active: true,
     meta_data: {
@@ -173,7 +173,7 @@ const PropertyCategoriesManagement = () => {
       slug: '',
       description: '',
       icon: '',
-      parent_id: '',
+      parent_id: 'none',
       display_order: 0,
       is_active: true,
       meta_data: {
@@ -187,26 +187,29 @@ const PropertyCategoriesManagement = () => {
   };
 
   const handleSubmit = () => {
+    const processedCategory = {
+      ...newCategory,
+      parent_id: newCategory.parent_id === 'none' ? null : newCategory.parent_id,
+      meta_data: {
+        ...newCategory.meta_data,
+        min_price: newCategory.meta_data.min_price ? parseFloat(newCategory.meta_data.min_price) : null,
+        max_price: newCategory.meta_data.max_price ? parseFloat(newCategory.meta_data.max_price) : null,
+        typical_features: newCategory.meta_data.typical_features 
+          ? newCategory.meta_data.typical_features.split(',').map(f => f.trim())
+          : [],
+        legal_requirements: newCategory.meta_data.legal_requirements
+          ? newCategory.meta_data.legal_requirements.split(',').map(r => r.trim())
+          : []
+      }
+    };
+
     if (editingCategory) {
       updateCategoryMutation.mutate({ 
         id: editingCategory.id, 
-        updates: {
-          ...newCategory,
-          meta_data: {
-            ...newCategory.meta_data,
-            min_price: newCategory.meta_data.min_price ? parseFloat(newCategory.meta_data.min_price) : null,
-            max_price: newCategory.meta_data.max_price ? parseFloat(newCategory.meta_data.max_price) : null,
-            typical_features: newCategory.meta_data.typical_features 
-              ? newCategory.meta_data.typical_features.split(',').map(f => f.trim())
-              : [],
-            legal_requirements: newCategory.meta_data.legal_requirements
-              ? newCategory.meta_data.legal_requirements.split(',').map(r => r.trim())
-              : []
-          }
-        }
+        updates: processedCategory
       });
     } else {
-      createCategoryMutation.mutate(newCategory);
+      createCategoryMutation.mutate(processedCategory);
     }
   };
 
@@ -217,7 +220,7 @@ const PropertyCategoriesManagement = () => {
       slug: category.slug,
       description: category.description || '',
       icon: category.icon || '',
-      parent_id: category.parent_id || '',
+      parent_id: category.parent_id || 'none',
       display_order: category.display_order,
       is_active: category.is_active,
       meta_data: {
@@ -349,7 +352,7 @@ const PropertyCategoriesManagement = () => {
                           <SelectValue placeholder="Select parent (optional)" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">No Parent</SelectItem>
+                          <SelectItem value="none">No Parent</SelectItem>
                           {parentCategories.map((category) => (
                             <SelectItem key={category.id} value={category.id}>
                               {category.name}

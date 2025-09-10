@@ -38,8 +38,8 @@ const IndonesianLocationManager = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedProvince, setSelectedProvince] = useState('all');
+  const [selectedCity, setSelectedCity] = useState('all');
   const [newLocation, setNewLocation] = useState({
     province_code: '',
     province_name: '',
@@ -75,11 +75,11 @@ const IndonesianLocationManager = () => {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
       }
 
-      if (selectedProvince) {
+      if (selectedProvince && selectedProvince !== 'all') {
         query = query.eq('province_code', selectedProvince);
       }
 
-      if (selectedCity) {
+      if (selectedCity && selectedCity !== 'all') {
         query = query.eq('city_code', selectedCity);
       }
 
@@ -91,7 +91,7 @@ const IndonesianLocationManager = () => {
 
   // Get unique provinces and cities for filters
   const provinces = [...new Set(locations?.map(l => ({ code: l.province_code, name: l.province_name })) || [])];
-  const cities = selectedProvince 
+  const cities = selectedProvince && selectedProvince !== 'all'
     ? [...new Set(locations?.filter(l => l.province_code === selectedProvince).map(l => ({ code: l.city_code, name: l.city_name })) || [])]
     : [];
 
@@ -268,26 +268,26 @@ const IndonesianLocationManager = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-64"
                 />
-                <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by Province" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Provinces</SelectItem>
-                    {provinces.map((province) => (
-                      <SelectItem key={province.code} value={province.code}>
-                        {province.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedProvince && (
+                  <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Filter by Province" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Provinces</SelectItem>
+                      {provinces.map((province) => (
+                        <SelectItem key={province.code} value={province.code}>
+                          {province.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                {selectedProvince && selectedProvince !== 'all' && (
                   <Select value={selectedCity} onValueChange={setSelectedCity}>
                     <SelectTrigger className="w-48">
                       <SelectValue placeholder="Filter by City" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Cities</SelectItem>
+                      <SelectItem value="all">All Cities</SelectItem>
                       {cities.map((city) => (
                         <SelectItem key={city.code} value={city.code}>
                           {city.name}
