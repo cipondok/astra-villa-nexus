@@ -32,6 +32,7 @@ import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
+import NewProjects from '@/pages/NewProjects';
 import AstraTokensPage from '@/pages/AstraTokensPage';
 import Properties from '@/pages/Properties';
 import Notifications from '@/pages/Notifications';
@@ -63,6 +64,7 @@ const AppContent = () => {
           <Route path="/disewa" element={<Disewa />} />
           <Route path="/rent" element={<Disewa />} />
           <Route path="/pre-launching" element={<PreLaunching />} />
+          <Route path="/new-projects" element={<NewProjects />} />
           <Route path="/dijual" element={<Properties />} />
           <Route path="/3d-showcase" element={<ThreeDShowcase />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
