@@ -29,7 +29,8 @@ import {
   Briefcase,
   Camera,
   MessageSquare,
-  Eye
+  Eye,
+  Lock
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -523,11 +524,40 @@ const EnhancedAdminDashboard = () => {
                 <CardDescription>Security monitoring and threat detection</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Security Center</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Advanced security monitoring with threat detection and vulnerability scanning
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Active Threats</p>
+                        <p className="text-2xl font-bold text-red-500">{alerts.filter(alert => alert.priority === 'high' || alert.priority === 'urgent').length}</p>
+                      </div>
+                      <AlertTriangle className="h-8 w-8 text-red-500" />
+                    </div>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Total Alerts</p>
+                        <p className="text-2xl font-bold text-orange-500">{alerts.filter(alert => !alert.is_read).length}</p>
+                      </div>
+                      <Bell className="h-8 w-8 text-orange-500" />
+                    </div>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Security Score</p>
+                        <p className="text-2xl font-bold text-green-500">
+                          {Math.max(100 - (alerts.filter(alert => alert.priority === 'high').length * 5), 75)}%
+                        </p>
+                      </div>
+                      <Shield className="h-8 w-8 text-green-500" />
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Real-time security monitoring with {alerts.length} total alerts tracked
                   </p>
                 </div>
               </CardContent>
