@@ -106,12 +106,6 @@ const Navigation = () => {
   const propertyNavItems = [
     { 
       icon: Building, 
-      label: currentText.properties, 
-      path: '/dijual',
-      color: 'text-indigo-600 dark:text-indigo-400'
-    },
-    { 
-      icon: Building, 
       label: currentText.buyProperties, 
       path: '/dijual',
       color: 'text-green-600 dark:text-green-400'
