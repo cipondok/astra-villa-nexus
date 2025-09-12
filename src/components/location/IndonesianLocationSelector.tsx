@@ -166,6 +166,10 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
     }
   };
 
+  const handleAreaChange = (value: string) => {
+    onAreaChange(value === 'all' ? '' : value);
+  };
+
   return (
     <div className={`space-y-4 ${className}`}>
       {showLabel && (
@@ -228,8 +232,8 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
         <div>
           <Label htmlFor="area">Kecamatan/Area</Label>
           <Select 
-            value={selectedAreaName} 
-            onValueChange={onAreaChange}
+            value={selectedAreaName || 'all'} 
+            onValueChange={handleAreaChange}
             disabled={!selectedCityCode || selectedCityCode === 'all' || areas.length === 0}
           >
             <SelectTrigger className="bg-white border-gray-300 text-gray-900">
@@ -244,7 +248,7 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
               />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-              <SelectItem value="">Semua Area</SelectItem>
+              <SelectItem value="all">Semua Area</SelectItem>
               {areas.map((area) => (
                 <SelectItem key={area} value={area} className="text-gray-900 hover:bg-blue-50">
                   {area}
