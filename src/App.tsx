@@ -29,6 +29,7 @@ import BookingPage from '@/pages/BookingPage';
 import BookingSuccessPage from '@/pages/BookingSuccessPage';
 import VendorKYCDashboard from '@/pages/VendorKYCDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
+import VendorOnlyRoute from '@/components/VendorOnlyRoute';
 import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
 import ProfileEditPage from '@/pages/ProfileEditPage';
@@ -81,8 +82,10 @@ const AppContent = () => {
           <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
           <Route path="/agent-listings" element={<Navigate to="/agent-dashboard" replace />} />
           <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
-          <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-          <Route path="/vendor" element={<VendorDashboard />} />
+          <Route element={<VendorOnlyRoute />}>
+            <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+            <Route path="/vendor" element={<VendorDashboard />} />
+          </Route>
           <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
           <Route path="/dashboard/user" element={<UserDashboardPage />} />
           <Route path="/dashboard" element={<UserDashboardPage />} />
