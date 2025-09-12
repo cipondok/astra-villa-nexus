@@ -226,15 +226,15 @@ const VendorBusinessProfile = () => {
         const { latitude, longitude } = position.coords;
         
         try {
-          // Use reverse geocoding to get formatted address
+          // Use a free reverse geocoding service without API key requirement
           const response = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_API_KEY&pretty=1&no_annotations=1`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
           );
           
           if (response.ok) {
             const data = await response.json();
-            if (data.results && data.results.length > 0) {
-              const formattedAddress = data.results[0].formatted;
+            if (data && data.display_name) {
+              const formattedAddress = data.display_name;
               setProfile({ ...profile, business_address: formattedAddress });
             } else {
               // Fallback to coordinates if geocoding fails

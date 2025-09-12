@@ -47,9 +47,13 @@ const LogoUpload: React.FC<LogoUploadProps> = ({
 
     setUploading(true);
     try {
+      // Get current user ID from auth
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+      
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `vendor-logos/${fileName}`;
+      const filePath = `${user.id}/vendor-logos/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('vendor-assets')
