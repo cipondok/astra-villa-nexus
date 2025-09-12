@@ -17,6 +17,7 @@ interface EnhancedLocationSelectorProps {
   onAreaChange: (area: string) => void;
   onLocationChange: (location: string) => void;
   onDetailedAddressChange?: (addressData: DetailedAddressData) => void;
+  className?: string;
 }
 
 const EnhancedLocationSelector = ({
@@ -27,7 +28,8 @@ const EnhancedLocationSelector = ({
   onCityChange,
   onAreaChange,
   onLocationChange,
-  onDetailedAddressChange
+  onDetailedAddressChange,
+  className = ""
 }: EnhancedLocationSelectorProps) => {
   const [detailedAddress, setDetailedAddress] = useState<DetailedAddressData | null>(null);
 
@@ -117,7 +119,7 @@ const EnhancedLocationSelector = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
       {/* Location Selection */}
       <Card>
         <CardHeader className="pb-3">

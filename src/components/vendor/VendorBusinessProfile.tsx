@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, MapPin, Edit3 } from "lucide-react";
 import BusinessNatureSelector from "./BusinessNatureSelector";
-import LocationSelector from "../location/LocationSelector";
+import EnhancedLocationSelector from "../property/EnhancedLocationSelector";
 import ProfilePreview from "./ProfilePreview";
 import LogoUpload from "./LogoUpload";
 
@@ -34,6 +34,15 @@ interface BusinessProfile {
   business_state?: string;
   business_city?: string;
   business_area?: string;
+  // New detailed address fields
+  building_name?: string;
+  floor_unit?: string;
+  street_address?: string;
+  business_type_location?: string;
+  postal_code?: string;
+  landmark?: string;
+  gps_coordinates?: string;
+  gps_address?: string;
 }
 
 const VendorBusinessProfile = () => {
@@ -56,7 +65,16 @@ const VendorBusinessProfile = () => {
     logo_url: '',
     business_state: 'all',
     business_city: 'all',
-    business_area: ''
+    business_area: '',
+    // Initialize new detailed address fields
+    building_name: '',
+    floor_unit: '',
+    street_address: '',
+    business_type_location: '',
+    postal_code: '',
+    landmark: '',
+    gps_coordinates: '',
+    gps_address: ''
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -105,7 +123,16 @@ const VendorBusinessProfile = () => {
           logo_url: data.logo_url || '',
           business_state: (data as any).business_state || 'all',
           business_city: (data as any).business_city || 'all',
-          business_area: (data as any).business_area || ''
+          business_area: (data as any).business_area || '',
+          // Initialize new detailed address fields
+          building_name: (data as any).building_name || '',
+          floor_unit: (data as any).floor_unit || '',
+          street_address: (data as any).street_address || '',
+          business_type_location: (data as any).business_type_location || '',
+          postal_code: (data as any).postal_code || '',
+          landmark: (data as any).landmark || '',
+          gps_coordinates: (data as any).gps_coordinates || '',
+          gps_address: (data as any).gps_address || ''
         });
         // If address exists, don't auto-enable editing
         setIsAddressEditing(!data.business_address);
@@ -226,39 +253,45 @@ const VendorBusinessProfile = () => {
         const { latitude, longitude } = position.coords;
         
         try {
+          // Store GPS coordinates
+          const coordinates = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          
           // Use a free reverse geocoding service without API key requirement
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
           );
           
+          let detectedAddress = '';
           if (response.ok) {
             const data = await response.json();
             if (data && data.display_name) {
-              const formattedAddress = data.display_name;
-              setProfile({ ...profile, business_address: formattedAddress });
-            } else {
-              // Fallback to coordinates if geocoding fails
-              const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-              setProfile({ ...profile, business_address: fallbackAddress });
+              detectedAddress = data.display_name;
             }
-          } else {
-            // Fallback to coordinates if API fails
-            const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-            setProfile({ ...profile, business_address: fallbackAddress });
           }
           
-          toast({
-            title: "Success",
-            description: "Location retrieved successfully"
+          // Update profile with GPS data
+          setProfile({ 
+            ...profile, 
+            gps_coordinates: coordinates,
+            gps_address: detectedAddress || coordinates
           });
-        } catch (error) {
-          // Fallback to coordinates if everything fails
-          const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-          setProfile({ ...profile, business_address: fallbackAddress });
           
           toast({
-            title: "Location Retrieved",
-            description: "Using coordinates format"
+            title: "GPS Location Captured",
+            description: "Location coordinates saved for service area mapping"
+          });
+        } catch (error) {
+          // Fallback to coordinates only
+          const coordinates = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          setProfile({ 
+            ...profile, 
+            gps_coordinates: coordinates,
+            gps_address: coordinates
+          });
+          
+          toast({
+            title: "GPS Location Captured",
+            description: "Coordinates saved successfully"
           });
         }
         
@@ -406,69 +439,134 @@ const VendorBusinessProfile = () => {
             </div>
           </div>
 
-          <LocationSelector
-            selectedProvince={profile.business_state || 'all'}
-            selectedCity={profile.business_city || 'all'}
-            onProvinceChange={(state) => setProfile({ ...profile, business_state: state })}
+          <EnhancedLocationSelector
+            selectedState={profile.business_state || ''}
+            selectedCity={profile.business_city || ''}
+            selectedArea={profile.business_area || ''}
+            onStateChange={(state) => setProfile({ ...profile, business_state: state })}
             onCityChange={(city) => setProfile({ ...profile, business_city: city })}
-            showLabel={true}
-            className="mb-4"
+            onAreaChange={(area) => setProfile({ ...profile, business_area: area })}
+            onLocationChange={(locationString) => {
+              // Handle the complete location string if needed
+            }}
           />
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="business_address">Business Address</Label>
-              {profile.business_address && !isAddressEditing && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsAddressEditing(true)}
-                  className="h-8 px-2"
-                >
-                  <Edit3 className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-              )}
-            </div>
-            {isAddressEditing ? (
+          {/* Detailed Address Fields */}
+          <div className="space-y-4">
+            <Label className="text-base font-semibold">Detailed Business Address</Label>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Textarea
-                  id="business_address"
-                  value={profile.business_address}
-                  onChange={(e) => setProfile({ ...profile, business_address: e.target.value })}
-                  placeholder="Enter complete business address"
-                  rows={3}
+                <Label htmlFor="building_name">Building/Complex Name</Label>
+                <Input
+                  id="building_name"
+                  value={profile.building_name || ''}
+                  onChange={(e) => setProfile({ ...profile, building_name: e.target.value })}
+                  placeholder="e.g., Plaza Indonesia, Mall Taman Anggrek"
                 />
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={getCurrentLocation}
-                    disabled={gettingLocation}
-                    className="flex items-center gap-2"
-                  >
-                    <MapPin className="h-4 w-4" />
-                    {gettingLocation ? "Getting Location..." : "Use My Location"}
-                  </Button>
-                  {profile.business_address && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsAddressEditing(false)}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-                </div>
               </div>
-            ) : (
-              <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border">
-                <p className="text-sm text-gray-700 dark:text-gray-300">
-                  {profile.business_address || "No address set"}
+              
+              <div className="space-y-2">
+                <Label htmlFor="floor_unit">Floor/Unit</Label>
+                <Input
+                  id="floor_unit"
+                  value={profile.floor_unit || ''}
+                  onChange={(e) => setProfile({ ...profile, floor_unit: e.target.value })}
+                  placeholder="e.g., 3rd Floor Unit 301"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="street_address">Street Address</Label>
+                <Input
+                  id="street_address"
+                  value={profile.street_address || ''}
+                  onChange={(e) => setProfile({ ...profile, street_address: e.target.value })}
+                  placeholder="e.g., Jl. Sudirman No. 123"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="business_type_location">Business Type</Label>
+                <Select
+                  value={profile.business_type_location || ''}
+                  onValueChange={(value) => setProfile({ ...profile, business_type_location: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select location type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="office">Office</SelectItem>
+                    <SelectItem value="shop">Shop/Store</SelectItem>
+                    <SelectItem value="warehouse">Warehouse</SelectItem>
+                    <SelectItem value="workshop">Workshop</SelectItem>
+                    <SelectItem value="home_based">Home-based</SelectItem>
+                    <SelectItem value="co_working">Co-working Space</SelectItem>
+                    <SelectItem value="industrial">Industrial Area</SelectItem>
+                    <SelectItem value="mall">Mall/Shopping Center</SelectItem>
+                    <SelectItem value="market">Traditional Market</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="postal_code">Postal Code</Label>
+              <Input
+                id="postal_code"
+                value={profile.postal_code || ''}
+                onChange={(e) => setProfile({ ...profile, postal_code: e.target.value })}
+                placeholder="e.g., 12190"
+                className="w-full md:w-48"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="landmark">Landmark/Notes</Label>
+              <Textarea
+                id="landmark"
+                value={profile.landmark || ''}
+                onChange={(e) => setProfile({ ...profile, landmark: e.target.value })}
+                placeholder="e.g., Near Bank BCA, opposite Starbucks"
+                rows={2}
+              />
+            </div>
+          </div>
+
+          {/* GPS Location Section */}
+          <div className="space-y-4 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-base font-semibold">GPS Location (for Service Area)</Label>
+                <p className="text-sm text-muted-foreground">
+                  This helps customers find your exact location and determines your service area coverage
                 </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={getCurrentLocation}
+                disabled={gettingLocation}
+                className="flex items-center gap-2"
+              >
+                <MapPin className="h-4 w-4" />
+                {gettingLocation ? "Getting Location..." : "Get Current GPS Location"}
+              </Button>
+            </div>
+            
+            {profile.gps_coordinates && (
+              <div className="p-3 bg-white dark:bg-gray-900 rounded border">
+                <p className="text-sm font-medium">GPS Coordinates:</p>
+                <p className="text-sm text-muted-foreground">{profile.gps_coordinates}</p>
+                {profile.gps_address && (
+                  <>
+                    <p className="text-sm font-medium mt-2">Detected Address:</p>
+                    <p className="text-sm text-muted-foreground">{profile.gps_address}</p>
+                  </>
+                )}
               </div>
             )}
           </div>
