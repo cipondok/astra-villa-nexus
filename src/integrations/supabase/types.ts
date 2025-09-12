@@ -5810,7 +5810,9 @@ export type Database = {
           business_type: string
           business_type_location: string | null
           business_website: string | null
+          can_change_main_category: boolean | null
           can_change_nature: boolean | null
+          category_change_reason: string | null
           certifications: Json | null
           compliance_documents: Json | null
           created_at: string | null
@@ -5827,6 +5829,10 @@ export type Database = {
           last_nature_change_at: string | null
           license_number: string | null
           logo_url: string | null
+          main_category_locked: boolean | null
+          main_category_locked_at: string | null
+          main_category_locked_by: string | null
+          main_service_category_id: string | null
           niu_verified: boolean | null
           npwp_verified: boolean | null
           postal_code: string | null
@@ -5872,7 +5878,9 @@ export type Database = {
           business_type: string
           business_type_location?: string | null
           business_website?: string | null
+          can_change_main_category?: boolean | null
           can_change_nature?: boolean | null
+          category_change_reason?: string | null
           certifications?: Json | null
           compliance_documents?: Json | null
           created_at?: string | null
@@ -5889,6 +5897,10 @@ export type Database = {
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          main_category_locked?: boolean | null
+          main_category_locked_at?: string | null
+          main_category_locked_by?: string | null
+          main_service_category_id?: string | null
           niu_verified?: boolean | null
           npwp_verified?: boolean | null
           postal_code?: string | null
@@ -5934,7 +5946,9 @@ export type Database = {
           business_type?: string
           business_type_location?: string | null
           business_website?: string | null
+          can_change_main_category?: boolean | null
           can_change_nature?: boolean | null
+          category_change_reason?: string | null
           certifications?: Json | null
           compliance_documents?: Json | null
           created_at?: string | null
@@ -5951,6 +5965,10 @@ export type Database = {
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          main_category_locked?: boolean | null
+          main_category_locked_at?: string | null
+          main_category_locked_by?: string | null
+          main_service_category_id?: string | null
           niu_verified?: boolean | null
           npwp_verified?: boolean | null
           postal_code?: string | null
@@ -5978,6 +5996,13 @@ export type Database = {
             columns: ["business_nature_id"]
             isOneToOne: false
             referencedRelation: "vendor_business_nature_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_business_profiles_main_service_category_id_fkey"
+            columns: ["main_service_category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_main_categories"
             referencedColumns: ["id"]
           },
           {
@@ -8370,6 +8395,10 @@ export type Database = {
           rating: number
           total_reviews: number
         }[]
+      }
+      unlock_vendor_main_category: {
+        Args: { p_reason?: string; p_vendor_id: string }
+        Returns: boolean
       }
       validate_field_safe: {
         Args: {
