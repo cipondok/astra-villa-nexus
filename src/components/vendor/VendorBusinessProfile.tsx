@@ -189,12 +189,18 @@ const VendorBusinessProfile = () => {
   };
 
   const businessTypes = [
-    'Individual Contractor',
-    'Small Business',
-    'Corporation',
-    'Partnership',
-    'LLC',
-    'Non-Profit'
+    'PT (Perseroan Terbatas)',
+    'CV (Commanditaire Vennootschap)',
+    'PMA (Penanaman Modal Asing)',
+    'PMDN (Penanaman Modal Dalam Negeri)',
+    'UD (Usaha Dagang)',
+    'PD (Perusahaan Daerah)',
+    'Firma',
+    'Koperasi',
+    'Yayasan',
+    'Perorangan/Individual',
+    'BUMN (Badan Usaha Milik Negara)',
+    'BUMD (Badan Usaha Milik Daerah)'
   ];
 
   if (loading) {
