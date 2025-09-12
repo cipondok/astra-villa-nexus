@@ -103,9 +103,9 @@ const VendorBusinessProfile = () => {
           can_change_nature: data.can_change_nature ?? true,
           is_active: data.is_active ?? true,
           logo_url: data.logo_url || '',
-          business_state: data.business_state || 'all',
-          business_city: data.business_city || 'all',
-          business_area: data.business_area || ''
+          business_state: (data as any).business_state || 'all',
+          business_city: (data as any).business_city || 'all',
+          business_area: (data as any).business_area || ''
         });
         // If address exists, don't auto-enable editing
         setIsAddressEditing(!data.business_address);
