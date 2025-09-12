@@ -5796,6 +5796,8 @@ export type Database = {
           bpjs_verification_date: string | null
           bpjs_verification_method: string | null
           business_address: string | null
+          business_area: string | null
+          business_city: string | null
           business_description: string | null
           business_email: string | null
           business_finalized_at: string | null
@@ -5803,6 +5805,7 @@ export type Database = {
           business_name: string
           business_nature_id: string | null
           business_phone: string | null
+          business_state: string | null
           business_type: string
           business_website: string | null
           can_change_nature: boolean | null
@@ -5847,6 +5850,8 @@ export type Database = {
           bpjs_verification_date?: string | null
           bpjs_verification_method?: string | null
           business_address?: string | null
+          business_area?: string | null
+          business_city?: string | null
           business_description?: string | null
           business_email?: string | null
           business_finalized_at?: string | null
@@ -5854,6 +5859,7 @@ export type Database = {
           business_name: string
           business_nature_id?: string | null
           business_phone?: string | null
+          business_state?: string | null
           business_type: string
           business_website?: string | null
           can_change_nature?: boolean | null
@@ -5898,6 +5904,8 @@ export type Database = {
           bpjs_verification_date?: string | null
           bpjs_verification_method?: string | null
           business_address?: string | null
+          business_area?: string | null
+          business_city?: string | null
           business_description?: string | null
           business_email?: string | null
           business_finalized_at?: string | null
@@ -5905,6 +5913,7 @@ export type Database = {
           business_name?: string
           business_nature_id?: string | null
           business_phone?: string | null
+          business_state?: string | null
           business_type?: string
           business_website?: string | null
           can_change_nature?: boolean | null
