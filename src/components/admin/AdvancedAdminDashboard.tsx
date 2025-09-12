@@ -8,6 +8,7 @@ import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings
 import SystemDiagnostics from './SystemDiagnostics';
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
+import EnhancedUserManagement from './EnhancedUserManagement';
 import PropertyManagement from './PropertyManagement';
 import VendorManagementHub from './VendorManagementHub';
 import SystemSettings from './SystemSettings';
@@ -169,7 +170,7 @@ const AdvancedAdminDashboard = () => {
             </div>
           )}
           
-          {activeTab === 'user-management' && <UserManagement />}
+          {activeTab === 'user-management' && <EnhancedUserManagement />}
           {activeTab === 'property-management' && <PropertyManagement />}
           {activeTab === 'vendor-management' && <VendorManagementHub />}
           

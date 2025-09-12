@@ -59,11 +59,16 @@ const RealTimeDashboardStats = () => {
           console.log('User activity logs not accessible:', error);
         }
 
+        const totalVendors = Math.max(
+          typeof vendorProfilesResult.count === 'number' ? vendorProfilesResult.count : 0,
+          typeof vendorsBusinessProfilesResult.count === 'number' ? vendorsBusinessProfilesResult.count : 0
+        );
+
         return {
           totalUsers: usersResult.count || 0,
           activeUsers: uniqueActiveUsers,
           totalProperties: propertiesResult.count || 0,
-          totalVendors: (vendorProfilesResult.count ?? vendorsBusinessProfilesResult.count) || 0,
+          totalVendors,
           totalOrders: ordersCount,
           systemErrors: errorsCount,
         };

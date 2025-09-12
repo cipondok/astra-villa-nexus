@@ -37,7 +37,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import SystemSettings from './SystemSettings';
-import UserManagement from './UserManagement';
+import EnhancedUserManagement from './EnhancedUserManagement';
 import ApiSettings from './ApiSettings';
 import PaymentSettings from './PaymentSettings';
 import ProjectSettings from './ProjectSettings';
@@ -427,7 +427,7 @@ const EnhancedAdminDashboard = () => {
 
           {/* Users Tab */}
           <TabsContent value="users" className="space-y-6">
-            <UserManagement />
+            <EnhancedUserManagement />
           </TabsContent>
 
           {/* Properties Management Tab */}
