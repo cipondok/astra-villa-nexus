@@ -5795,6 +5795,7 @@ export type Database = {
           bpjs_verification_complete: boolean | null
           bpjs_verification_date: string | null
           bpjs_verification_method: string | null
+          building_name: string | null
           business_address: string | null
           business_area: string | null
           business_city: string | null
@@ -5807,22 +5808,28 @@ export type Database = {
           business_phone: string | null
           business_state: string | null
           business_type: string
+          business_type_location: string | null
           business_website: string | null
           can_change_nature: boolean | null
           certifications: Json | null
           compliance_documents: Json | null
           created_at: string | null
+          floor_unit: string | null
           gallery_images: Json | null
+          gps_address: string | null
+          gps_coordinates: string | null
           id: string
           insurance_info: Json | null
           is_active: boolean | null
           is_verified: boolean | null
           ktp_verified: boolean | null
+          landmark: string | null
           last_nature_change_at: string | null
           license_number: string | null
           logo_url: string | null
           niu_verified: boolean | null
           npwp_verified: boolean | null
+          postal_code: string | null
           profile_completion_percentage: number | null
           rating: number | null
           service_areas: Json | null
@@ -5832,6 +5839,7 @@ export type Database = {
           skk_number: string | null
           skk_verified: boolean | null
           social_media: Json | null
+          street_address: string | null
           tarif_harian_max: number | null
           tarif_harian_min: number | null
           tax_id: string | null
@@ -5849,6 +5857,7 @@ export type Database = {
           bpjs_verification_complete?: boolean | null
           bpjs_verification_date?: string | null
           bpjs_verification_method?: string | null
+          building_name?: string | null
           business_address?: string | null
           business_area?: string | null
           business_city?: string | null
@@ -5861,22 +5870,28 @@ export type Database = {
           business_phone?: string | null
           business_state?: string | null
           business_type: string
+          business_type_location?: string | null
           business_website?: string | null
           can_change_nature?: boolean | null
           certifications?: Json | null
           compliance_documents?: Json | null
           created_at?: string | null
+          floor_unit?: string | null
           gallery_images?: Json | null
+          gps_address?: string | null
+          gps_coordinates?: string | null
           id?: string
           insurance_info?: Json | null
           is_active?: boolean | null
           is_verified?: boolean | null
           ktp_verified?: boolean | null
+          landmark?: string | null
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
           niu_verified?: boolean | null
           npwp_verified?: boolean | null
+          postal_code?: string | null
           profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
@@ -5886,6 +5901,7 @@ export type Database = {
           skk_number?: string | null
           skk_verified?: boolean | null
           social_media?: Json | null
+          street_address?: string | null
           tarif_harian_max?: number | null
           tarif_harian_min?: number | null
           tax_id?: string | null
@@ -5903,6 +5919,7 @@ export type Database = {
           bpjs_verification_complete?: boolean | null
           bpjs_verification_date?: string | null
           bpjs_verification_method?: string | null
+          building_name?: string | null
           business_address?: string | null
           business_area?: string | null
           business_city?: string | null
@@ -5915,22 +5932,28 @@ export type Database = {
           business_phone?: string | null
           business_state?: string | null
           business_type?: string
+          business_type_location?: string | null
           business_website?: string | null
           can_change_nature?: boolean | null
           certifications?: Json | null
           compliance_documents?: Json | null
           created_at?: string | null
+          floor_unit?: string | null
           gallery_images?: Json | null
+          gps_address?: string | null
+          gps_coordinates?: string | null
           id?: string
           insurance_info?: Json | null
           is_active?: boolean | null
           is_verified?: boolean | null
           ktp_verified?: boolean | null
+          landmark?: string | null
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
           niu_verified?: boolean | null
           npwp_verified?: boolean | null
+          postal_code?: string | null
           profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
@@ -5940,6 +5963,7 @@ export type Database = {
           skk_number?: string | null
           skk_verified?: boolean | null
           social_media?: Json | null
+          street_address?: string | null
           tarif_harian_max?: number | null
           tarif_harian_min?: number | null
           tax_id?: string | null
