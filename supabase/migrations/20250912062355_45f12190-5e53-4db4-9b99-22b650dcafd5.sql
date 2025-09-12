@@ -1,0 +1,61 @@
+-- Add sample services directly to the Home & Lifestyle Services category
+INSERT INTO vendor_services (
+  id,
+  vendor_id,
+  service_name,
+  service_description,
+  main_category_id,
+  price_range,
+  duration_value,
+  duration_unit,
+  service_location_city,
+  is_active,
+  admin_approval_status,
+  featured,
+  rating
+) VALUES 
+(
+  gen_random_uuid(),
+  'c0ddd7cc-a92c-4d80-91b3-bdf963a3f3ee',
+  'Deep House Cleaning',
+  'Complete deep cleaning service for your home including all rooms, kitchen, and bathrooms',
+  '8f991bae-7636-43bf-83f3-241993a027bf',
+  '{"min": 150000, "max": 500000}'::jsonb,
+  3,
+  'hours',
+  'Jakarta',
+  true,
+  'approved',
+  true,
+  4.8
+),
+(
+  gen_random_uuid(),
+  'c0ddd7cc-a92c-4d80-91b3-bdf963a3f3ee',
+  'Garden Design & Maintenance',
+  'Professional garden design, planting, and ongoing maintenance services',
+  '8f991bae-7636-43bf-83f3-241993a027bf',
+  '{"min": 300000, "max": 1500000}'::jsonb,
+  4,
+  'hours',
+  'Jakarta',
+  true,
+  'approved',
+  false,
+  4.6
+),
+(
+  gen_random_uuid(),
+  'c0ddd7cc-a92c-4d80-91b3-bdf963a3f3ee',
+  'Home Appliance Repair',
+  'Expert repair services for all major home appliances including warranty',
+  '8f991bae-7636-43bf-83f3-241993a027bf',
+  '{"min": 100000, "max": 800000}'::jsonb,
+  2,
+  'hours',
+  'Jakarta',
+  true,
+  'approved',
+  false,
+  4.7
+);
