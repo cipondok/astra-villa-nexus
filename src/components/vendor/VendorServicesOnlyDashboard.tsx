@@ -6,6 +6,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Plus, Settings, BarChart3 } from 'lucide-react';
 import VendorServiceManagement from './VendorServiceManagement';
 import MultiStepServiceForm from './MultiStepServiceForm';
+import VendorServiceCategoryChecker from './VendorServiceCategoryChecker';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const VendorServicesOnlyDashboard = () => {
@@ -109,8 +111,21 @@ const VendorServicesOnlyDashboard = () => {
           </Card>
         </div>
 
-        {/* Service Management */}
-        <VendorServiceManagement />
+        {/* Service Management with Category Checker */}
+        <Tabs defaultValue="services" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="services">Kelola Layanan</TabsTrigger>
+            <TabsTrigger value="categories">Cek Kategori & Diskon</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="services" className="mt-6">
+            <VendorServiceManagement />
+          </TabsContent>
+          
+          <TabsContent value="categories" className="mt-6">
+            <VendorServiceCategoryChecker />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Multi-Step Service Creation Dialog */}

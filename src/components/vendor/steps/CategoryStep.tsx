@@ -359,9 +359,14 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
               ))}
             </SelectContent>
           </Select>
-          {subCategories.length === 0 && (
+          {subCategories.length === 0 && formData.mainCategory && (
             <p className="text-sm text-muted-foreground mt-2">
               Belum ada sub-kategori tersedia untuk kategori ini.
+            </p>
+          )}
+          {!formData.mainCategory && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Pilih kategori utama terlebih dahulu untuk melihat sub-kategori.
             </p>
           )}
         </div>
