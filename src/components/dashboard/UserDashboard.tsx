@@ -160,6 +160,7 @@ const UserDashboard = () => {
           actions: [
             { label: "Search Properties", icon: Home, path: "/properties" },
             { label: "Saved Properties", icon: Building, path: "/saved" },
+            { label: "Edit Profile", icon: User, path: "/profile/edit" },
             { label: "Account Settings", icon: Settings, path: "/settings" }
           ]
         };

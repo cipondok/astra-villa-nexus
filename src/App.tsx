@@ -31,6 +31,7 @@ import VendorKYCDashboard from '@/pages/VendorKYCDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
 import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
+import ProfileEditPage from '@/pages/ProfileEditPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
 import NewProjects from '@/pages/NewProjects';
@@ -85,6 +86,7 @@ const AppContent = () => {
           <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
           <Route path="/dashboard/user" element={<UserDashboardPage />} />
           <Route path="/dashboard" element={<UserDashboardPage />} />
+          <Route path="/profile/edit" element={<ProfileEditPage />} />
           <Route path="/booking/:propertyId" element={<BookingPage />} />
           <Route path="/booking-success" element={<BookingSuccessPage />} />
           <Route path="/notifications" element={<Notifications />} />
