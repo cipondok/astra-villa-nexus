@@ -19,6 +19,7 @@ import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
 import Profile from '@/pages/Profile';
 import Services from '@/pages/Services';
+import ServiceCategory from '@/pages/ServiceCategory';
 import PropertyDetail from '@/pages/PropertyDetail';
 import AdminDashboard from '@/pages/AdminDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
@@ -59,6 +60,7 @@ const AppContent = () => {
           <Route path="/auth" element={<Profile />} />
           <Route path="/astra-tokens" element={<AstraTokensPage />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
           <Route path="/dijual" element={<Dijual />} />
           <Route path="/buy" element={<Dijual />} />
           <Route path="/disewa" element={<Disewa />} />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Services = () => {
   const { profile } = useAuth();
+  const navigate = useNavigate();
 
   // If user is an agent, show agent tools instead of general services
   if (profile?.role === 'agent') {
@@ -132,42 +134,35 @@ const Services = () => {
             {mainCategories?.map((category, index) => {
               const IconComponent = getIconForCategory(category.name);
               return (
-                <Card key={category.id} className="overflow-hidden">
+                <Card key={category.id} className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200" 
+                      onClick={() => navigate(`/services/category/${category.id}`)}>
                   <CardHeader className="pb-4">
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`p-2 rounded-lg ${getColorForCategory(index)} text-white`}>
                         <IconComponent className="h-6 w-6" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <CardTitle className="text-xl">{category.name}</CardTitle>
                         <CardDescription>{category.description}</CardDescription>
                       </div>
+                      <ArrowRight className="h-5 w-5 text-muted-foreground" />
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {category.vendor_subcategories?.slice(0, 4).map((subcategory, serviceIndex) => (
-                        <div key={subcategory.id} className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:border-border transition-colors">
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-medium text-foreground">{subcategory.name}</h4>
-                                {serviceIndex < 2 && (
-                                  <Badge variant="secondary" className="text-xs">Popular</Badge>
-                                )}
-                              </div>
-                              <p className="text-sm text-muted-foreground">{subcategory.description}</p>
-                            </div>
+                      {category.vendor_subcategories?.slice(0, 3).map((subcategory) => (
+                        <div key={subcategory.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                          <span className="text-lg">{subcategory.icon || '🔧'}</span>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-foreground text-sm">{subcategory.name}</h4>
+                            <p className="text-xs text-muted-foreground line-clamp-1">{subcategory.description}</p>
                           </div>
-                          <Button variant="outline" size="sm">
-                            <ArrowRight className="h-4 w-4" />
-                          </Button>
                         </div>
                       ))}
-                      {(category.vendor_subcategories?.length || 0) > 4 && (
+                      {(category.vendor_subcategories?.length || 0) > 3 && (
                         <div className="text-center pt-2">
-                          <Button variant="ghost" size="sm" className="text-primary">
-                            View {(category.vendor_subcategories?.length || 0) - 4} more services
+                          <Button variant="ghost" size="sm" className="text-primary w-full">
+                            View {(category.vendor_subcategories?.length || 0) - 3} more services →
                           </Button>
                         </div>
                       )}
