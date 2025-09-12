@@ -11,6 +11,9 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, MapPin, Edit3 } from "lucide-react";
 import BusinessNatureSelector from "./BusinessNatureSelector";
+import LocationSelector from "../location/LocationSelector";
+import ProfilePreview from "./ProfilePreview";
+import LogoUpload from "./LogoUpload";
 
 interface BusinessProfile {
   id?: string;
@@ -27,6 +30,10 @@ interface BusinessProfile {
   business_finalized_at: string | null;
   can_change_nature: boolean;
   is_active: boolean;
+  logo_url?: string;
+  business_state?: string;
+  business_city?: string;
+  business_area?: string;
 }
 
 const VendorBusinessProfile = () => {
@@ -45,7 +52,11 @@ const VendorBusinessProfile = () => {
     business_nature_id: '',
     business_finalized_at: null,
     can_change_nature: true,
-    is_active: true
+    is_active: true,
+    logo_url: '',
+    business_state: 'all',
+    business_city: 'all',
+    business_area: ''
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -90,7 +101,11 @@ const VendorBusinessProfile = () => {
           business_nature_id: data.business_nature_id || '',
           business_finalized_at: data.business_finalized_at,
           can_change_nature: data.can_change_nature ?? true,
-          is_active: data.is_active ?? true
+          is_active: data.is_active ?? true,
+          logo_url: data.logo_url || '',
+          business_state: data.business_state || 'all',
+          business_city: data.business_city || 'all',
+          business_area: data.business_area || ''
         });
         // If address exists, don't auto-enable editing
         setIsAddressEditing(!data.business_address);
@@ -301,15 +316,26 @@ const VendorBusinessProfile = () => {
 
       <Card data-edit-profile>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
-            Business Information
-          </CardTitle>
-          <CardDescription>
-            Manage your business profile and contact information
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5" />
+                Business Information
+              </CardTitle>
+              <CardDescription>
+                Manage your business profile and contact information
+              </CardDescription>
+            </div>
+            <ProfilePreview profile={profile} />
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          <LogoUpload 
+            currentLogoUrl={profile.logo_url}
+            businessName={profile.business_name}
+            onLogoChange={(logoUrl) => setProfile({ ...profile, logo_url: logoUrl })}
+          />
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="business_name">Business Name *</Label>
@@ -379,6 +405,15 @@ const VendorBusinessProfile = () => {
               />
             </div>
           </div>
+
+          <LocationSelector
+            selectedProvince={profile.business_state || 'all'}
+            selectedCity={profile.business_city || 'all'}
+            onProvinceChange={(state) => setProfile({ ...profile, business_state: state })}
+            onCityChange={(city) => setProfile({ ...profile, business_city: city })}
+            showLabel={true}
+            className="mb-4"
+          />
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
