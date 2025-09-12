@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, Users, Star, Clock, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import AgentTools from '@/components/agent/AgentTools';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 const Services = () => {
   const { profile } = useAuth();
@@ -27,56 +29,51 @@ const Services = () => {
         </div>
     );
   }
-  const serviceCategories = [
-    {
-      title: "Property Management",
-      description: "Comprehensive property management solutions",
-      services: [
-        { name: "Property Maintenance", price: "Starting from IDR 500,000", popular: true },
-        { name: "Tenant Screening", price: "IDR 300,000 per screening", popular: false },
-        { name: "Rent Collection", price: "2% of monthly rent", popular: true },
-        { name: "Property Inspections", price: "IDR 250,000 per inspection", popular: false }
-      ],
-      icon: Shield,
-      color: "bg-emerald-500"
-    },
-    {
-      title: "Cleaning Services",
-      description: "Professional cleaning for all property types",
-      services: [
-        { name: "Deep Cleaning", price: "IDR 150,000 per room", popular: true },
-        { name: "Regular Maintenance", price: "IDR 1,200,000 monthly", popular: true },
-        { name: "Post-Construction Cleanup", price: "IDR 25,000 per sqm", popular: false },
-        { name: "Move-in/Move-out Cleaning", price: "IDR 800,000 per unit", popular: false }
-      ],
-      icon: CheckCircle,
-      color: "bg-blue-500"
-    },
-    {
-      title: "Renovation & Repairs",
-      description: "Expert renovation and maintenance services",
-      services: [
-        { name: "Kitchen Renovation", price: "IDR 50,000,000+", popular: true },
-        { name: "Bathroom Renovation", price: "IDR 25,000,000+", popular: true },
-        { name: "Electrical Work", price: "IDR 500,000 per hour", popular: false },
-        { name: "Plumbing Services", price: "IDR 400,000 per hour", popular: false }
-      ],
-      icon: Users,
-      color: "bg-orange-500"
-    },
-    {
-      title: "Security Services",
-      description: "24/7 security and monitoring solutions",
-      services: [
-        { name: "Security Guards", price: "IDR 3,500,000 monthly", popular: true },
-        { name: "CCTV Installation", price: "IDR 2,000,000 per camera", popular: false },
-        { name: "Access Control Systems", price: "IDR 15,000,000+", popular: false },
-        { name: "Security Consultation", price: "IDR 1,000,000 per visit", popular: false }
-      ],
-      icon: Clock,
-      color: "bg-purple-500"
+  // Fetch main categories and subcategories from database
+  const { data: mainCategories, isLoading } = useQuery({
+    queryKey: ['vendor-main-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('vendor_main_categories')
+        .select(`
+          *,
+          vendor_subcategories (
+            id,
+            name,
+            description,
+            icon,
+            display_order
+          )
+        `)
+        .eq('is_active', true)
+        .order('display_order');
+      
+      if (error) throw error;
+      return data;
     }
-  ];
+  });
+
+  const getIconForCategory = (categoryName: string) => {
+    const iconMap: { [key: string]: any } = {
+      'Property Services': Shield,
+      'Home & Lifestyle Services': CheckCircle,
+      'Lifestyle & Daily Needs': Clock,
+      'Vendor & Client Marketplace': Users,
+      'Extra Value Services': Star
+    };
+    return iconMap[categoryName] || CheckCircle;
+  };
+
+  const getColorForCategory = (index: number) => {
+    const colors = [
+      'bg-emerald-500',
+      'bg-blue-500', 
+      'bg-orange-500',
+      'bg-purple-500',
+      'bg-teal-500'
+    ];
+    return colors[index % colors.length];
+  };
 
   const features = [
     { icon: CheckCircle, title: "Verified Vendors", description: "All service providers are thoroughly vetted and verified" },
@@ -113,45 +110,74 @@ const Services = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          {serviceCategories.map((category, index) => (
-            <Card key={index} className="overflow-hidden">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`p-2 rounded-lg ${category.color} text-white`}>
-                    <category.icon className="h-6 w-6" />
+        {isLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {[...Array(4)].map((_, index) => (
+              <Card key={index} className="overflow-hidden animate-pulse">
+                <CardHeader className="pb-4">
+                  <div className="h-20 bg-muted rounded"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="h-16 bg-muted rounded"></div>
+                    ))}
                   </div>
-                  <div>
-                    <CardTitle className="text-xl">{category.title}</CardTitle>
-                    <CardDescription>{category.description}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {category.services.map((service, serviceIndex) => (
-                    <div key={serviceIndex} className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:border-border transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-foreground">{service.name}</h4>
-                            {service.popular && (
-                              <Badge variant="secondary" className="text-xs">Popular</Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{service.price}</p>
-                        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {mainCategories?.map((category, index) => {
+              const IconComponent = getIconForCategory(category.name);
+              return (
+                <Card key={category.id} className="overflow-hidden">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`p-2 rounded-lg ${getColorForCategory(index)} text-white`}>
+                        <IconComponent className="h-6 w-6" />
                       </div>
-                      <Button variant="outline" size="sm">
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
+                      <div>
+                        <CardTitle className="text-xl">{category.name}</CardTitle>
+                        <CardDescription>{category.description}</CardDescription>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {category.vendor_subcategories?.slice(0, 4).map((subcategory, serviceIndex) => (
+                        <div key={subcategory.id} className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:border-border transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-medium text-foreground">{subcategory.name}</h4>
+                                {serviceIndex < 2 && (
+                                  <Badge variant="secondary" className="text-xs">Popular</Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">{subcategory.description}</p>
+                            </div>
+                          </div>
+                          <Button variant="outline" size="sm">
+                            <ArrowRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      {(category.vendor_subcategories?.length || 0) > 4 && (
+                        <div className="text-center pt-2">
+                          <Button variant="ghost" size="sm" className="text-primary">
+                            View {(category.vendor_subcategories?.length || 0) - 4} more services
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
 
         {/* CTA Section */}
         <Card className="text-center bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
