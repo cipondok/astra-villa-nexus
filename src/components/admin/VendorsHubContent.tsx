@@ -24,6 +24,7 @@ import VendorKYCManagement from './VendorKYCManagement';
 import VendorVerificationPanel from './VendorVerificationPanel';
 import ComprehensiveVendorManagement from './ComprehensiveVendorManagement';
 import VendorControlPanel from './VendorControlPanel';
+import UserDirectoryWithCategories from './UserDirectoryWithCategories';
 
 const VendorsHubContent = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -117,8 +118,9 @@ const VendorsHubContent = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="user-directory">User Directory</TabsTrigger>
           <TabsTrigger value="vendors">Vendors</TabsTrigger>
           <TabsTrigger value="applications">Applications</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
@@ -167,6 +169,10 @@ const VendorsHubContent = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="user-directory">
+          <UserDirectoryFixed />
         </TabsContent>
 
         <TabsContent value="vendors">

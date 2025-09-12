@@ -3,6 +3,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AlertTriangle, Activity, UserPlus } from 'lucide-react';
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
+import UserDirectoryWithCategories from "./UserDirectoryWithCategories";
+import UserDirectoryFixed from "./UserDirectoryFixed";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
 import EnhancedPropertyManagement from "./EnhancedPropertyManagement";
 import WebTrafficAnalytics from "./WebTrafficAnalytics";
@@ -43,6 +45,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "users":
       case "user-management":
         return <EnhancedUserManagement />;
+      case "user-directory":
+        return <UserDirectoryFixed />;
       case "properties":
       case "property-management-hub":
         return <AdminPropertyManagement />;
