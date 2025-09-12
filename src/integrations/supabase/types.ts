@@ -3792,6 +3792,123 @@ export type Database = {
           },
         ]
       }
+      property_service_bookings: {
+        Row: {
+          booking_date: string
+          booking_status: string | null
+          booking_time: string
+          completion_notes: string | null
+          created_at: string | null
+          customer_id: string | null
+          customer_rating: number | null
+          customer_review: string | null
+          duration_hours: number | null
+          id: string
+          payment_status: string | null
+          property_id: string | null
+          service_address: string
+          service_id: string | null
+          special_instructions: string | null
+          total_amount: number
+          updated_at: string | null
+          vendor_id: string
+          vendor_response: string | null
+        }
+        Insert: {
+          booking_date: string
+          booking_status?: string | null
+          booking_time: string
+          completion_notes?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_rating?: number | null
+          customer_review?: string | null
+          duration_hours?: number | null
+          id?: string
+          payment_status?: string | null
+          property_id?: string | null
+          service_address: string
+          service_id?: string | null
+          special_instructions?: string | null
+          total_amount: number
+          updated_at?: string | null
+          vendor_id: string
+          vendor_response?: string | null
+        }
+        Update: {
+          booking_date?: string
+          booking_status?: string | null
+          booking_time?: string
+          completion_notes?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_rating?: number | null
+          customer_review?: string | null
+          duration_hours?: number | null
+          id?: string
+          payment_status?: string | null
+          property_id?: string | null
+          service_address?: string
+          service_id?: string | null
+          special_instructions?: string | null
+          total_amount?: number
+          updated_at?: string | null
+          vendor_id?: string
+          vendor_response?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_service_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_service_bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_service_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          estimated_duration_hours: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          pricing_model: string | null
+          requires_property_access: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          estimated_duration_hours?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          pricing_model?: string | null
+          requires_property_access?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          estimated_duration_hours?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          pricing_model?: string | null
+          requires_property_access?: boolean | null
+        }
+        Relationships: []
+      }
       property_services: {
         Row: {
           category_id: string | null
@@ -7150,6 +7267,59 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_service_permissions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          background_check_status: string | null
+          can_access_property: boolean | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          insurance_verified: boolean | null
+          requires_supervision: boolean | null
+          service_type_id: string | null
+          updated_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          background_check_status?: string | null
+          can_access_property?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          insurance_verified?: boolean | null
+          requires_supervision?: boolean | null
+          service_type_id?: string | null
+          updated_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          background_check_status?: string | null
+          can_access_property?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          insurance_verified?: boolean | null
+          requires_supervision?: boolean | null
+          service_type_id?: string | null
+          updated_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_service_permissions_service_type_id_fkey"
+            columns: ["service_type_id"]
+            isOneToOne: false
+            referencedRelation: "property_service_types"
             referencedColumns: ["id"]
           },
         ]

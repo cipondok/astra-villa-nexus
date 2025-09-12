@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, MapPin, Clock, Star, Phone, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import PropertyServiceBooking from '@/components/property/PropertyServiceBooking';
 
 const ServiceCategory = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
+  const [selectedService, setSelectedService] = useState<{serviceId: string, vendorId: string} | null>(null);
 
   // Fetch category details and services
   const { data: category, isLoading: categoryLoading } = useQuery({
@@ -231,9 +234,29 @@ const ServiceCategory = () => {
 
                     {/* Contact Actions */}
                     <div className="flex gap-2">
-                      <Button size="sm" className="flex-1">
-                        Book Now
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => setSelectedService({
+                              serviceId: service.id,
+                              vendorId: service.vendor_id
+                            })}
+                          >
+                            Book Now
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                          {selectedService && (
+                            <PropertyServiceBooking
+                              serviceId={selectedService.serviceId}
+                              vendorId={selectedService.vendorId}
+                              onClose={() => setSelectedService(null)}
+                            />
+                          )}
+                        </DialogContent>
+                      </Dialog>
                       <Button variant="outline" size="sm">
                         <Phone className="h-4 w-4" />
                       </Button>

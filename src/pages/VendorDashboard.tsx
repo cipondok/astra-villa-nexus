@@ -43,6 +43,7 @@ import VendorReviews from '@/components/vendor/VendorReviews';
 import VendorProfileProgress from '@/components/vendor/VendorProfileProgress';
 import VendorDashboardNavigation from '@/components/vendor/VendorDashboardNavigation';
 import CategoryDiscountSettings from '@/components/vendor/CategoryDiscountSettings';
+import PropertyServiceManagement from '@/components/vendor/PropertyServiceManagement';
 import ThemeSwitcher from '@/components/ui/theme-switcher';
 
 const VendorDashboard = () => {
@@ -151,6 +152,9 @@ const VendorDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="bookings" className="tab-trigger-ios">
               Bookings
+            </TabsTrigger>
+            <TabsTrigger value="property-services" className="tab-trigger-ios">
+              Property Services
             </TabsTrigger>
             <TabsTrigger value="analytics" className="tab-trigger-ios">
               Analytics
@@ -285,6 +289,10 @@ const VendorDashboard = () => {
 
           <TabsContent value="bookings" className="tab-content-wrapper">
             <VendorBookings />
+          </TabsContent>
+
+          <TabsContent value="property-services" className="tab-content-wrapper">
+            <PropertyServiceManagement />
           </TabsContent>
 
           <TabsContent value="analytics" className="tab-content-wrapper">
