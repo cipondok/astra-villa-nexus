@@ -18,6 +18,7 @@ import VendorManagement from './VendorManagement';
 import VendorCategoryManagement from './VendorCategoryManagement';
 import AdminVendorServiceManagement from './AdminVendorServiceManagement';
 import VendorApplicationManagement from './VendorApplicationManagement';
+import VendorCategoryController from './VendorCategoryController';
 import VendorPerformanceAnalytics from './VendorPerformanceAnalytics';
 import VendorKYCManagement from './VendorKYCManagement';
 import VendorVerificationPanel from './VendorVerificationPanel';
@@ -116,12 +117,13 @@ const VendorsHubContent = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-8">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="vendors">Vendors</TabsTrigger>
           <TabsTrigger value="applications">Applications</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="category-control">Category Control</TabsTrigger>
           <TabsTrigger value="kyc">KYC/Verification</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="control">Control Panel</TabsTrigger>
@@ -173,6 +175,10 @@ const VendorsHubContent = () => {
 
         <TabsContent value="applications">
           <VendorApplicationManagement />
+        </TabsContent>
+
+        <TabsContent value="category-control">
+          <VendorCategoryController />
         </TabsContent>
 
         <TabsContent value="services">

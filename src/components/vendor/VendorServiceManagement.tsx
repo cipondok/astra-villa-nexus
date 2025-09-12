@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,11 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Edit, Trash2, Eye, DollarSign, Clock, MapPin } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, DollarSign, Clock, MapPin, AlertTriangle, Building2 } from "lucide-react";
 import MultiStepServiceForm from "./MultiStepServiceForm";
+import { useVendorCategoryStatus } from "@/hooks/useVendorCategoryStatus";
+import CategoryRequiredMessage from "./CategoryRequiredMessage";
 
 interface ServiceItem {
   item_name: string;
@@ -67,10 +70,70 @@ const VendorServiceManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
+  const [vendorProfile, setVendorProfile] = useState<any>(null);
+  const [categoryInfo, setCategoryInfo] = useState<any>(null);
   
   const { showSuccess, showError } = useAlert();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { hasMainCategory, mainCategoryId, isLoading: categoryLoading } = useVendorCategoryStatus();
+
+  // Fetch vendor profile and category info
+  useEffect(() => {
+    if (user && hasMainCategory && mainCategoryId) {
+      fetchVendorProfile();
+      fetchCategoryInfo();
+    }
+  }, [user, hasMainCategory, mainCategoryId]);
+
+  const fetchVendorProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('vendor_business_profiles')
+        .select('*')
+        .eq('vendor_id', user?.id)
+        .maybeSingle();
+      
+      if (error) throw error;
+      setVendorProfile(data);
+    } catch (error) {
+      console.error('Error fetching vendor profile:', error);
+    }
+  };
+
+  const fetchCategoryInfo = async () => {
+    if (!mainCategoryId) return;
+    
+    try {
+      // Try main categories first
+      let { data: mainCat, error: mainError } = await supabase
+        .from('vendor_main_categories')
+        .select('*')
+        .eq('id', mainCategoryId)
+        .maybeSingle();
+      
+      if (mainCat) {
+        setCategoryInfo({ ...mainCat, isSubcategory: false });
+        return;
+      }
+      
+      // Try subcategories
+      const { data: subCat, error: subError } = await supabase
+        .from('vendor_subcategories')
+        .select(`
+          *,
+          vendor_main_categories:main_category_id(*)
+        `)
+        .eq('id', mainCategoryId)
+        .maybeSingle();
+      
+      if (subCat) {
+        setCategoryInfo({ ...subCat, isSubcategory: true });
+      }
+    } catch (error) {
+      console.error('Error fetching category info:', error);
+    }
+  };
 
   // Format IDR currency
   const formatIDR = (amount: number) => {
@@ -81,10 +144,12 @@ const VendorServiceManagement = () => {
     }).format(amount);
   };
 
-  // Fetch vendor's services
+  // Fetch vendor's services (only if has main category)
   const { data: services, isLoading } = useQuery({
-    queryKey: ['vendor-services', user?.id],
+    queryKey: ['vendor-services', user?.id, mainCategoryId],
     queryFn: async () => {
+      if (!hasMainCategory) return [];
+      
       const { data, error } = await supabase
         .from('vendor_services')
         .select(`
@@ -97,7 +162,7 @@ const VendorServiceManagement = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user?.id
+    enabled: !!user?.id && hasMainCategory
   });
 
   // Create service mutation
@@ -194,23 +259,62 @@ const VendorServiceManagement = () => {
     deleteServiceMutation.mutate(serviceId);
   };
 
+  if (categoryLoading) {
+    return <div className="flex justify-center p-8">Loading category information...</div>;
+  }
+
+  if (!hasMainCategory) {
+    return (
+      <CategoryRequiredMessage
+        title="Pilih Kategori Bisnis Terlebih Dahulu"
+        description="Untuk mengelola layanan, Anda harus memilih kategori utama bisnis di profil bisnis Anda."
+      />
+    );
+  }
+
   if (isLoading) {
     return <div className="flex justify-center p-8">Loading your services...</div>;
   }
 
   return (
     <div className="space-y-6">
+      {/* Category Info Display */}
+      {categoryInfo && (
+        <Card className="border-l-4 border-l-primary">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-3">
+              <Building2 className="h-5 w-5 text-primary" />
+              <div>
+                <CardTitle className="text-lg">
+                  {categoryInfo.name}
+                  {categoryInfo.isSubcategory && categoryInfo.vendor_main_categories && (
+                    <span className="text-sm text-muted-foreground ml-2">
+                      ({categoryInfo.vendor_main_categories.name})
+                    </span>
+                  )}
+                </CardTitle>
+                <CardDescription>
+                  {categoryInfo.description || 'Kategori layanan yang dipilih untuk bisnis Anda'}
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">My Services</h2>
-          <p className="text-muted-foreground">Manage your service offerings and pricing</p>
+          <h2 className="text-2xl font-bold">Layanan Saya</h2>
+          <p className="text-muted-foreground">
+            Kelola penawaran layanan dan harga berdasarkan kategori bisnis: <span className="font-medium">{categoryInfo?.name}</span>
+          </p>
         </div>
         <Button 
           onClick={() => setIsCreateDialogOpen(true)}
           className="bg-primary hover:bg-primary/90"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add New Service
+          Tambah Layanan Baru
         </Button>
       </div>
 
@@ -220,11 +324,14 @@ const VendorServiceManagement = () => {
           <Card className="p-8 text-center">
             <CardContent>
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">No services yet</h3>
-                <p className="text-muted-foreground">Start by creating your first service offering</p>
+                <h3 className="text-lg font-medium">Belum Ada Layanan</h3>
+                <p className="text-muted-foreground">
+                  Mulai dengan membuat penawaran layanan pertama Anda untuk kategori: 
+                  <span className="font-medium block mt-1">{categoryInfo?.name}</span>
+                </p>
                 <Button onClick={() => setIsCreateDialogOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Create Your First Service
+                  Buat Layanan Pertama
                 </Button>
               </div>
             </CardContent>
