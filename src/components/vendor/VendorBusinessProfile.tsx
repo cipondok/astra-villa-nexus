@@ -170,7 +170,9 @@ const VendorBusinessProfile = () => {
     try {
       const profileData = {
         vendor_id: user.id,
-        ...profile
+        ...profile,
+        // Save to both fields for compatibility and new system
+        main_service_category_id: profile.business_nature_id
       };
 
       const { error } = await supabase
@@ -180,8 +182,8 @@ const VendorBusinessProfile = () => {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Business profile saved successfully"
+        title: "Berhasil",
+        description: "Profil bisnis berhasil disimpan"
       });
       
       // Disable address editing after successful save
@@ -190,7 +192,7 @@ const VendorBusinessProfile = () => {
       console.error('Error saving business profile:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to save business profile",
+        description: error.message || "Gagal menyimpan profil bisnis",
         variant: "destructive"
       });
     } finally {
@@ -210,7 +212,8 @@ const VendorBusinessProfile = () => {
         .from('vendor_business_profiles')
         .update({ 
           business_finalized_at: new Date().toISOString(),
-          business_nature_id: profile.business_nature_id
+          business_nature_id: profile.business_nature_id,
+          main_service_category_id: profile.business_nature_id
         })
         .eq('vendor_id', user.id);
 
@@ -222,8 +225,8 @@ const VendorBusinessProfile = () => {
       });
       
       toast({
-        title: "Success",
-        description: "Business setup finalized successfully"
+        title: "Berhasil",
+        description: "Pengaturan bisnis berhasil diselesaikan"
       });
       
       await fetchBusinessProfile();
@@ -231,7 +234,7 @@ const VendorBusinessProfile = () => {
       console.error('Error finalizing business:', error);
       toast({
         title: "Error",
-        description: "Failed to finalize business setup",
+        description: "Gagal menyelesaikan pengaturan bisnis",
         variant: "destructive"
       });
     }
@@ -342,9 +345,7 @@ const VendorBusinessProfile = () => {
       <BusinessNatureSelector
         currentNatureId={profile.business_nature_id}
         canChange={canChangeNature && profile.can_change_nature}
-        onNatureSelect={handleNatureSelect}
-        onFinalize={handleFinalize}
-        isFinalized={!!profile.business_finalized_at}
+        onSelect={handleNatureSelect}
       />
 
       <Card data-edit-profile>

@@ -187,7 +187,7 @@ const IndonesianLocationSelector: React.FC<IndonesianLocationSelectorProps> = ({
             <SelectTrigger className="bg-white border-gray-300 text-gray-900">
               <SelectValue placeholder={loading ? "Memuat provinsi..." : "Pilih Provinsi"} />
             </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+            <SelectContent className="bg-white border border-gray-200 shadow-lg z-[100]">
               <SelectItem value="all">Semua Provinsi</SelectItem>
               {provinces.map((province) => (
                 <SelectItem key={province.code} value={province.code} className="text-gray-900 hover:bg-blue-50">
