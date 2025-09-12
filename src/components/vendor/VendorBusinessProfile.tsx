@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, MapPin, Edit3 } from "lucide-react";
 import BusinessNatureSelector from "./BusinessNatureSelector";
-import EnhancedLocationSelector from "../property/EnhancedLocationSelector";
+import IndonesianLocationSelector from "../location/IndonesianLocationSelector";
 import ProfilePreview from "./ProfilePreview";
 import LogoUpload from "./LogoUpload";
 
@@ -277,8 +277,8 @@ const VendorBusinessProfile = () => {
           });
           
           toast({
-            title: "GPS Location Captured",
-            description: "Location coordinates saved for service area mapping"
+            title: "GPS Lokasi Berhasil Diambil",
+            description: "Koordinat lokasi tersimpan untuk pemetaan area layanan"
           });
         } catch (error) {
           // Fallback to coordinates only
@@ -290,8 +290,8 @@ const VendorBusinessProfile = () => {
           });
           
           toast({
-            title: "GPS Location Captured",
-            description: "Coordinates saved successfully"
+            title: "GPS Lokasi Berhasil Diambil",
+            description: "Koordinat tersimpan dengan sukses"
           });
         }
         
@@ -353,10 +353,10 @@ const VendorBusinessProfile = () => {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
-                Business Information
+                Informasi Bisnis
               </CardTitle>
               <CardDescription>
-                Manage your business profile and contact information
+                Kelola profil bisnis dan informasi kontak Anda
               </CardDescription>
             </div>
             <ProfilePreview profile={profile} />
@@ -371,23 +371,23 @@ const VendorBusinessProfile = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="business_name">Business Name *</Label>
+              <Label htmlFor="business_name">Nama Bisnis *</Label>
               <Input
                 id="business_name"
                 value={profile.business_name}
                 onChange={(e) => setProfile({ ...profile, business_name: e.target.value })}
-                placeholder="Enter your business name"
+                placeholder="Masukkan nama bisnis Anda"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="business_type">Business Type *</Label>
+              <Label htmlFor="business_type">Jenis Bisnis *</Label>
               <Select
                 value={profile.business_type}
                 onValueChange={(value) => setProfile({ ...profile, business_type: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select business type" />
+                  <SelectValue placeholder="Pilih jenis bisnis" />
                 </SelectTrigger>
                 <SelectContent>
                   {businessTypes.map((type) => (
@@ -398,23 +398,23 @@ const VendorBusinessProfile = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="business_phone">Business Phone</Label>
+              <Label htmlFor="business_phone">Telepon Bisnis</Label>
               <Input
                 id="business_phone"
                 value={profile.business_phone}
                 onChange={(e) => setProfile({ ...profile, business_phone: e.target.value })}
-                placeholder="Enter business phone"
+                placeholder="Masukkan nomor telepon bisnis"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="business_email">Business Email</Label>
+              <Label htmlFor="business_email">Email Bisnis</Label>
               <Input
                 id="business_email"
                 type="email"
                 value={profile.business_email}
                 onChange={(e) => setProfile({ ...profile, business_email: e.target.value })}
-                placeholder="Enter business email"
+                placeholder="Masukkan email bisnis"
               />
             </div>
 
@@ -424,110 +424,108 @@ const VendorBusinessProfile = () => {
                 id="business_website"
                 value={profile.business_website}
                 onChange={(e) => setProfile({ ...profile, business_website: e.target.value })}
-                placeholder="Enter website URL"
+                placeholder="Masukkan URL website"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="license_number">License Number</Label>
+              <Label htmlFor="license_number">Nomor Lisensi</Label>
               <Input
                 id="license_number"
                 value={profile.license_number}
                 onChange={(e) => setProfile({ ...profile, license_number: e.target.value })}
-                placeholder="Enter license number"
+                placeholder="Masukkan nomor lisensi"
               />
             </div>
           </div>
 
-          <EnhancedLocationSelector
-            selectedState={profile.business_state || ''}
-            selectedCity={profile.business_city || ''}
-            selectedArea={profile.business_area || ''}
-            onStateChange={(state) => setProfile({ ...profile, business_state: state })}
-            onCityChange={(city) => setProfile({ ...profile, business_city: city })}
-            onAreaChange={(area) => setProfile({ ...profile, business_area: area })}
-            onLocationChange={(locationString) => {
-              // Handle the complete location string if needed
-            }}
+          <IndonesianLocationSelector
+            selectedProvinceCode={profile.business_state || ''}
+            selectedCityCode={profile.business_city || ''}
+            selectedAreaName={profile.business_area || ''}
+            onProvinceChange={(code, name) => setProfile({ ...profile, business_state: code })}
+            onCityChange={(code, name) => setProfile({ ...profile, business_city: code })}
+            onAreaChange={(name) => setProfile({ ...profile, business_area: name })}
+            showLabel={true}
           />
 
           {/* Detailed Address Fields */}
           <div className="space-y-4">
-            <Label className="text-base font-semibold">Detailed Business Address</Label>
+            <Label className="text-base font-semibold">Alamat Bisnis Detail</Label>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="building_name">Building/Complex Name</Label>
+                <Label htmlFor="building_name">Nama Gedung/Kompleks</Label>
                 <Input
                   id="building_name"
                   value={profile.building_name || ''}
                   onChange={(e) => setProfile({ ...profile, building_name: e.target.value })}
-                  placeholder="e.g., Plaza Indonesia, Mall Taman Anggrek"
+                  placeholder="contoh: Plaza Indonesia, Mall Taman Anggrek"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="floor_unit">Floor/Unit</Label>
+                <Label htmlFor="floor_unit">Lantai/Unit</Label>
                 <Input
                   id="floor_unit"
                   value={profile.floor_unit || ''}
                   onChange={(e) => setProfile({ ...profile, floor_unit: e.target.value })}
-                  placeholder="e.g., 3rd Floor Unit 301"
+                  placeholder="contoh: Lantai 3 Unit 301"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="street_address">Street Address</Label>
+                <Label htmlFor="street_address">Alamat Jalan</Label>
                 <Input
                   id="street_address"
                   value={profile.street_address || ''}
                   onChange={(e) => setProfile({ ...profile, street_address: e.target.value })}
-                  placeholder="e.g., Jl. Sudirman No. 123"
+                  placeholder="contoh: Jl. Sudirman No. 123"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="business_type_location">Business Type</Label>
+                <Label htmlFor="business_type_location">Jenis Lokasi Bisnis</Label>
                 <Select
                   value={profile.business_type_location || ''}
                   onValueChange={(value) => setProfile({ ...profile, business_type_location: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select location type" />
+                    <SelectValue placeholder="Pilih jenis lokasi" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="office">Office</SelectItem>
-                    <SelectItem value="shop">Shop/Store</SelectItem>
-                    <SelectItem value="warehouse">Warehouse</SelectItem>
+                    <SelectItem value="office">Kantor</SelectItem>
+                    <SelectItem value="shop">Toko/Store</SelectItem>
+                    <SelectItem value="warehouse">Gudang</SelectItem>
                     <SelectItem value="workshop">Workshop</SelectItem>
-                    <SelectItem value="home_based">Home-based</SelectItem>
+                    <SelectItem value="home_based">Berbasis Rumah</SelectItem>
                     <SelectItem value="co_working">Co-working Space</SelectItem>
-                    <SelectItem value="industrial">Industrial Area</SelectItem>
-                    <SelectItem value="mall">Mall/Shopping Center</SelectItem>
-                    <SelectItem value="market">Traditional Market</SelectItem>
+                    <SelectItem value="industrial">Area Industri</SelectItem>
+                    <SelectItem value="mall">Mall/Pusat Perbelanjaan</SelectItem>
+                    <SelectItem value="market">Pasar Tradisional</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="postal_code">Postal Code</Label>
+              <Label htmlFor="postal_code">Kode Pos</Label>
               <Input
                 id="postal_code"
                 value={profile.postal_code || ''}
                 onChange={(e) => setProfile({ ...profile, postal_code: e.target.value })}
-                placeholder="e.g., 12190"
+                placeholder="contoh: 12190"
                 className="w-full md:w-48"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="landmark">Landmark/Notes</Label>
+              <Label htmlFor="landmark">Patokan/Catatan</Label>
               <Textarea
                 id="landmark"
                 value={profile.landmark || ''}
                 onChange={(e) => setProfile({ ...profile, landmark: e.target.value })}
-                placeholder="e.g., Near Bank BCA, opposite Starbucks"
+                placeholder="contoh: Dekat Bank BCA, seberang Starbucks"
                 rows={2}
               />
             </div>
@@ -537,9 +535,9 @@ const VendorBusinessProfile = () => {
           <div className="space-y-4 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-base font-semibold">GPS Location (for Service Area)</Label>
+                <Label className="text-base font-semibold">Lokasi GPS (untuk Area Layanan)</Label>
                 <p className="text-sm text-muted-foreground">
-                  This helps customers find your exact location and determines your service area coverage
+                  Ini membantu pelanggan menemukan lokasi tepat Anda dan menentukan cakupan area layanan
                 </p>
               </div>
             </div>
@@ -553,17 +551,17 @@ const VendorBusinessProfile = () => {
                 className="flex items-center gap-2"
               >
                 <MapPin className="h-4 w-4" />
-                {gettingLocation ? "Getting Location..." : "Get Current GPS Location"}
+                {gettingLocation ? "Mengambil Lokasi..." : "Ambil Lokasi GPS Saat Ini"}
               </Button>
             </div>
             
             {profile.gps_coordinates && (
               <div className="p-3 bg-white dark:bg-gray-900 rounded border">
-                <p className="text-sm font-medium">GPS Coordinates:</p>
+                <p className="text-sm font-medium">Koordinat GPS:</p>
                 <p className="text-sm text-muted-foreground">{profile.gps_coordinates}</p>
                 {profile.gps_address && (
                   <>
-                    <p className="text-sm font-medium mt-2">Detected Address:</p>
+                    <p className="text-sm font-medium mt-2">Alamat Terdeteksi:</p>
                     <p className="text-sm text-muted-foreground">{profile.gps_address}</p>
                   </>
                 )}
@@ -572,12 +570,12 @@ const VendorBusinessProfile = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="business_description">Business Description</Label>
+            <Label htmlFor="business_description">Deskripsi Bisnis</Label>
             <Textarea
               id="business_description"
               value={profile.business_description}
               onChange={(e) => setProfile({ ...profile, business_description: e.target.value })}
-              placeholder="Describe your business and services"
+              placeholder="Deskripsikan bisnis dan layanan Anda"
               rows={4}
             />
           </div>
@@ -588,14 +586,14 @@ const VendorBusinessProfile = () => {
               checked={profile.is_active}
               onCheckedChange={(checked) => setProfile({ ...profile, is_active: checked })}
             />
-            <Label htmlFor="is_active">Business Profile Active</Label>
+            <Label htmlFor="is_active">Profil Bisnis Aktif</Label>
           </div>
         </CardContent>
       </Card>
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving}>
-          {saving ? "Saving..." : "Save Profile"}
+          {saving ? "Menyimpan..." : "Simpan Profil"}
         </Button>
       </div>
     </div>
