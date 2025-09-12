@@ -151,6 +151,10 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
     fetchSubCategories();
   }, [formData.mainCategory]);
 
+  const selectedMainCategory = mainCategories.find(cat => cat.id === formData.mainCategory);
+  const isProductCategory = selectedMainCategory?.type === 'products' || selectedMainCategory?.type === 'mixed';
+  const isMainCategoryLocked = vendorProfile?.main_category_locked && !vendorProfile?.can_change_main_category;
+
   // Save main category to vendor profile when selected
   useEffect(() => {
     const updateVendorProfile = async () => {
@@ -188,10 +192,6 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
 
     updateVendorProfile();
   }, [formData.mainCategory, user?.id, isMainCategoryLocked]);
-
-  const selectedMainCategory = mainCategories.find(cat => cat.id === formData.mainCategory);
-  const isProductCategory = selectedMainCategory?.type === 'products' || selectedMainCategory?.type === 'mixed';
-  const isMainCategoryLocked = vendorProfile?.main_category_locked && !vendorProfile?.can_change_main_category;
 
   // Handle main category change request
   const requestCategoryChange = async () => {
