@@ -14,11 +14,13 @@ const RealTimeDashboardStats = () => {
         const [
           usersResult,
           propertiesResult,
-          vendorsResult
+          vendorsBusinessProfilesResult,
+          vendorProfilesResult
         ] = await Promise.all([
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
           supabase.from('properties').select('*', { count: 'exact', head: true }),
-          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true })
+          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor')
         ]);
 
         // Try to get orders and errors with fallback
@@ -61,7 +63,7 @@ const RealTimeDashboardStats = () => {
           totalUsers: usersResult.count || 0,
           activeUsers: uniqueActiveUsers,
           totalProperties: propertiesResult.count || 0,
-          totalVendors: vendorsResult.count || 0,
+          totalVendors: (vendorProfilesResult.count ?? vendorsBusinessProfilesResult.count) || 0,
           totalOrders: ordersCount,
           systemErrors: errorsCount,
         };
@@ -131,7 +133,7 @@ const RealTimeDashboardStats = () => {
       color: 'text-purple-400',
       bgColor: 'bg-purple-500/20',
       status: 'active',
-      subtitle: 'Verified'
+      subtitle: 'Vendors'
     },
     {
       title: 'Orders',

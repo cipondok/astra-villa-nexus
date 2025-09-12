@@ -49,7 +49,8 @@ const AdvancedAdminDashboard = () => {
     const section = urlParams.get('section');
     if (section) {
       console.log('Setting active tab from URL:', section);
-      setActiveTab(section);
+      const mapped = section === 'vendors-hub' ? 'vendor-management' : section;
+      setActiveTab(mapped);
     }
   }, []);
 
@@ -65,7 +66,8 @@ const AdvancedAdminDashboard = () => {
 
   const handleTabChange = (tab: string) => {
     console.log('AdvancedAdminDashboard - Tab changed to:', tab);
-    setActiveTab(tab);
+    const mapped = tab === 'vendors-hub' ? 'vendor-management' : tab;
+    setActiveTab(mapped);
   };
 
   const handleSignOut = async () => {

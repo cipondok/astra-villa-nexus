@@ -14,9 +14,24 @@ import DiagnosticAnalyticsOverview from "./DiagnosticAnalyticsOverview";
 import HierarchicalCategoryManagement from "./HierarchicalCategoryManagement";
 import VendorIssuesOverview from "./VendorIssuesOverview";
 import VendorFunctionGenerator from "./VendorFunctionGenerator";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const VendorManagementHub = () => {
   const [activeTab, setActiveTab] = useState("overview");
+
+  const { data: activeVendors = 0 } = useQuery({
+    queryKey: ['vendor-hub-active-vendors'],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'vendor')
+        .eq('is_suspended', false);
+      return count || 0;
+    },
+    refetchInterval: 60000,
+  });
 
   return (
     <div className="space-y-6">
@@ -53,7 +68,7 @@ const VendorManagementHub = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Active Vendors</p>
-                    <p className="text-2xl font-bold">127</p>
+                    <p className="text-2xl font-bold">{activeVendors}</p>
                   </div>
                   <Users className="h-8 w-8 text-blue-600" />
                 </div>
