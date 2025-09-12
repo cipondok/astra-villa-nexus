@@ -346,6 +346,7 @@ const VendorBusinessProfile = () => {
         currentNatureId={profile.business_nature_id}
         canChange={canChangeNature && profile.can_change_nature}
         onSelect={handleNatureSelect}
+        forceAllowSelection={!profile.business_nature_id} // Allow selection if no category set
       />
 
       <Card data-edit-profile>

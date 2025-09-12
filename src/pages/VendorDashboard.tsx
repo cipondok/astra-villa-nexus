@@ -44,11 +44,15 @@ import VendorProfileProgress from '@/components/vendor/VendorProfileProgress';
 import VendorDashboardNavigation from '@/components/vendor/VendorDashboardNavigation';
 import CategoryDiscountSettings from '@/components/vendor/CategoryDiscountSettings';
 import PropertyServiceManagement from '@/components/vendor/PropertyServiceManagement';
+import CategoryRequiredMessage from '@/components/vendor/CategoryRequiredMessage';
 import ThemeSwitcher from '@/components/ui/theme-switcher';
+import { useVendorCategoryStatus } from '@/hooks/useVendorCategoryStatus';
 
 const VendorDashboard = () => {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
+  const { hasMainCategory, isLoading: categoryLoading } = useVendorCategoryStatus();
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Check if user is a vendor only (not admin)
   const isVendor = profile?.role === 'vendor';
@@ -64,6 +68,23 @@ const VendorDashboard = () => {
   const handleLogout = async () => {
     await signOut();
     navigate('/', { replace: true });
+  };
+
+  const handleNavigateToProfile = () => {
+    setActiveTab('profile');
+  };
+
+  const renderTabContent = (tabValue: string, content: React.ReactNode, requireCategory = true) => {
+    if (requireCategory && !hasMainCategory && !categoryLoading) {
+      return (
+        <CategoryRequiredMessage
+          title="Kategori Bisnis Diperlukan"
+          description={`Untuk mengakses ${tabValue}, Anda harus memilih kategori bisnis utama terlebih dahulu.`}
+          onNavigateToProfile={handleNavigateToProfile}
+        />
+      );
+    }
+    return content;
   };
 
   if (!user) {
@@ -139,7 +160,7 @@ const VendorDashboard = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="overview" className="space-y-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="tab-list-ios grid w-full grid-cols-7 gap-1.5">
             <TabsTrigger value="overview" className="tab-trigger-ios">
               Overview
@@ -280,31 +301,31 @@ const VendorDashboard = () => {
           </TabsContent>
 
           <TabsContent value="services" className="tab-content-wrapper">
-            <VendorServiceManagement />
+            {renderTabContent('layanan', <VendorServiceManagement />)}
           </TabsContent>
 
           <TabsContent value="profile" className="tab-content-wrapper">
-            <VendorBusinessProfile />
+            {renderTabContent('profil', <VendorBusinessProfile />, false)}
           </TabsContent>
 
           <TabsContent value="bookings" className="tab-content-wrapper">
-            <VendorBookings />
+            {renderTabContent('pemesanan', <VendorBookings />)}
           </TabsContent>
 
           <TabsContent value="property-services" className="tab-content-wrapper">
-            <PropertyServiceManagement />
+            {renderTabContent('layanan properti', <PropertyServiceManagement />)}
           </TabsContent>
 
           <TabsContent value="analytics" className="tab-content-wrapper">
-            <VendorAnalytics />
+            {renderTabContent('analitik', <VendorAnalytics />)}
           </TabsContent>
 
           <TabsContent value="categories" className="tab-content-wrapper">
-            <CategoryDiscountSettings />
+            {renderTabContent('kategori', <CategoryDiscountSettings />)}
           </TabsContent>
 
           <TabsContent value="settings" className="tab-content-wrapper">
-            <VendorSettings />
+            {renderTabContent('pengaturan', <VendorSettings />, false)}
           </TabsContent>
         </Tabs>
       </div>

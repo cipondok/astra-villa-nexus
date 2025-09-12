@@ -11,6 +11,7 @@ interface BusinessNatureSelectorProps {
   currentNatureId?: string;
   canChange: boolean;
   onSelect: (natureId: string) => void;
+  forceAllowSelection?: boolean; // Allow selection even when locked if no category is set
 }
 
 interface MainCategory {
@@ -30,7 +31,12 @@ interface SubCategory {
   is_active: boolean;
 }
 
-const BusinessNatureSelector = ({ currentNatureId, canChange, onSelect }: BusinessNatureSelectorProps) => {
+const BusinessNatureSelector = ({ 
+  currentNatureId, 
+  canChange, 
+  onSelect, 
+  forceAllowSelection = false 
+}: BusinessNatureSelectorProps) => {
   const [mainCategories, setMainCategories] = useState<MainCategory[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -150,11 +156,20 @@ const BusinessNatureSelector = ({ currentNatureId, canChange, onSelect }: Busine
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {!canChange && currentNatureId && (
+        {!canChange && currentNatureId && !forceAllowSelection && (
           <Alert className="border-orange-200 bg-orange-50">
             <Lock className="h-4 w-4 text-orange-600" />
             <AlertDescription className="text-orange-800">
               Kategori bisnis Anda sudah dipilih dan terkunci. Hubungi customer service untuk perubahan.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {!currentNatureId && (
+          <Alert className="border-blue-200 bg-blue-50">
+            <Building2 className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              Silakan pilih kategori utama bisnis Anda untuk melanjutkan pengaturan layanan dan fitur lainnya.
             </AlertDescription>
           </Alert>
         )}
@@ -203,7 +218,7 @@ const BusinessNatureSelector = ({ currentNatureId, canChange, onSelect }: Busine
             <Select 
               value={selectedMainCategory} 
               onValueChange={handleMainCategorySelect}
-              disabled={!canChange}
+              disabled={!canChange && !forceAllowSelection}
             >
               <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                 <SelectValue placeholder="Pilih kategori utama bisnis" />
@@ -238,11 +253,11 @@ const BusinessNatureSelector = ({ currentNatureId, canChange, onSelect }: Busine
           {selectedMainCategory && (
             <div>
               <Label htmlFor="sub_category">Sub-Kategori (Opsional)</Label>
-              <Select 
-                value={selectedSubCategory} 
-                onValueChange={handleSubCategorySelect}
-                disabled={!canChange}
-              >
+               <Select 
+                 value={selectedSubCategory} 
+                 onValueChange={handleSubCategorySelect}
+                 disabled={!canChange && !forceAllowSelection}
+               >
                 <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                   <SelectValue placeholder="Pilih sub-kategori (opsional)" />
                 </SelectTrigger>
@@ -278,7 +293,7 @@ const BusinessNatureSelector = ({ currentNatureId, canChange, onSelect }: Busine
         </div>
 
         {/* Category Grid Display for reference */}
-        {canChange && (
+        {(canChange || forceAllowSelection) && (
           <div>
             <Label className="text-base font-medium mb-3 block">
               Kategori yang Tersedia
