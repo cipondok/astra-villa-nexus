@@ -24,7 +24,7 @@ import VendorKYCManagement from './VendorKYCManagement';
 import VendorVerificationPanel from './VendorVerificationPanel';
 import ComprehensiveVendorManagement from './ComprehensiveVendorManagement';
 import VendorControlPanel from './VendorControlPanel';
-import UserDirectoryWithCategories from './UserDirectoryWithCategories';
+import UserDirectoryFixed from './UserDirectoryFixed';
 
 const VendorsHubContent = () => {
   const [activeTab, setActiveTab] = useState('overview');

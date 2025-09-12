@@ -30,6 +30,16 @@ import {
   Settings
 } from "lucide-react";
 
+interface VendorProfile {
+  id: string;
+  business_name: string;
+  business_nature_id?: string;
+  main_service_category_id?: string;
+  can_change_nature: boolean;
+  main_category_locked: boolean;
+  main_category_locked_at?: string;
+}
+
 interface UserProfile {
   id: string;
   email: string;
@@ -40,15 +50,7 @@ interface UserProfile {
   created_at: string;
   phone?: string;
   company_name?: string;
-  vendor_business_profiles?: {
-    id: string;
-    business_name: string;
-    business_nature_id?: string;
-    main_service_category_id?: string;
-    can_change_nature: boolean;
-    main_category_locked: boolean;
-    main_category_locked_at?: string;
-  }[];
+  vendor_business_profiles?: VendorProfile | VendorProfile[];
 }
 
 interface MainCategory {
@@ -239,6 +241,17 @@ const UserDirectoryWithCategories = () => {
     }
   });
 
+  const getVendorProfile = (user: UserProfile): VendorProfile | null => {
+    if (user.role !== 'vendor' || !user.vendor_business_profiles) {
+      return null;
+    }
+    
+    // Handle both single object and array cases
+    return Array.isArray(user.vendor_business_profiles) 
+      ? user.vendor_business_profiles[0] 
+      : user.vendor_business_profiles;
+  };
+
   // Filter users
   const filteredUsers = users?.filter((user) => {
     const matchesSearch = 
@@ -250,14 +263,13 @@ const UserDirectoryWithCategories = () => {
     
     let matchesCategory = true;
     if (categoryFilter !== "all") {
-      if (user.role === 'vendor' && user.vendor_business_profiles?.[0]) {
-        const profile = user.vendor_business_profiles[0];
+      const profile = getVendorProfile(user);
+      if (user.role === 'vendor' && profile) {
         matchesCategory = profile.business_nature_id === categoryFilter || 
                          profile.main_service_category_id === categoryFilter;
       } else if (categoryFilter === "no-category") {
         matchesCategory = user.role === 'vendor' && 
-                         (!user.vendor_business_profiles?.[0]?.business_nature_id && 
-                          !user.vendor_business_profiles?.[0]?.main_service_category_id);
+                         (!profile?.business_nature_id && !profile?.main_service_category_id);
       }
     }
     
@@ -265,12 +277,11 @@ const UserDirectoryWithCategories = () => {
   }) || [];
 
   const getCategoryInfo = (user: UserProfile) => {
-    if (user.role !== 'vendor' || !user.vendor_business_profiles?.[0]) {
-      return null;
-    }
+    const profile = getVendorProfile(user);
+    if (!profile) return null;
 
-    const profile = user.vendor_business_profiles[0];
     const categoryId = profile.business_nature_id || profile.main_service_category_id;
+    if (!categoryId) return null;
     
     if (!categoryId) return null;
 
@@ -319,10 +330,11 @@ const UserDirectoryWithCategories = () => {
     totalUsers: users?.length || 0,
     activeUsers: users?.filter(u => !u.is_suspended).length || 0,
     vendors: users?.filter(u => u.role === 'vendor').length || 0,
-    vendorsWithCategory: users?.filter(u => 
-      u.role === 'vendor' && 
-      (u.vendor_business_profiles?.[0]?.business_nature_id || u.vendor_business_profiles?.[0]?.main_service_category_id)
-    ).length || 0
+    vendorsWithCategory: users?.filter(u => {
+      const profile = getVendorProfile(u);
+      return u.role === 'vendor' && profile && 
+        (profile.business_nature_id || profile.main_service_category_id);
+    }).length || 0
   };
 
   return (
@@ -447,6 +459,7 @@ const UserDirectoryWithCategories = () => {
               <TableBody>
                 {filteredUsers.map((user) => {
                   const categoryInfo = getCategoryInfo(user);
+                  const vendorProfile = getVendorProfile(user);
                   return (
                     <TableRow key={user.id}>
                       <TableCell>
@@ -456,9 +469,9 @@ const UserDirectoryWithCategories = () => {
                           {user.company_name && (
                             <div className="text-xs text-muted-foreground">{user.company_name}</div>
                           )}
-                          {user.vendor_business_profiles?.[0]?.business_name && (
+                          {vendorProfile?.business_name && (
                             <div className="text-xs font-medium text-blue-600">
-                              {user.vendor_business_profiles[0].business_name}
+                              {vendorProfile.business_name}
                             </div>
                           )}
                         </div>
