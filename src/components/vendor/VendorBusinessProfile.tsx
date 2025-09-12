@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Building2 } from "lucide-react";
+import { Building2, MapPin, Edit3 } from "lucide-react";
 import BusinessNatureSelector from "./BusinessNatureSelector";
 
 interface BusinessProfile {
@@ -50,6 +50,8 @@ const VendorBusinessProfile = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [canChangeNature, setCanChangeNature] = useState(true);
+  const [isAddressEditing, setIsAddressEditing] = useState(false);
+  const [gettingLocation, setGettingLocation] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -90,6 +92,8 @@ const VendorBusinessProfile = () => {
           can_change_nature: data.can_change_nature ?? true,
           is_active: data.is_active ?? true
         });
+        // If address exists, don't auto-enable editing
+        setIsAddressEditing(!data.business_address);
       }
     } catch (error: any) {
       console.error('Error fetching business profile:', error);
@@ -137,6 +141,9 @@ const VendorBusinessProfile = () => {
         title: "Success",
         description: "Business profile saved successfully"
       });
+      
+      // Disable address editing after successful save
+      setIsAddressEditing(false);
     } catch (error: any) {
       console.error('Error saving business profile:', error);
       toast({
@@ -186,6 +193,77 @@ const VendorBusinessProfile = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "Error",
+        description: "Geolocation is not supported by this browser",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        try {
+          // Use reverse geocoding to get formatted address
+          const response = await fetch(
+            `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_API_KEY&pretty=1&no_annotations=1`
+          );
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+              const formattedAddress = data.results[0].formatted;
+              setProfile({ ...profile, business_address: formattedAddress });
+            } else {
+              // Fallback to coordinates if geocoding fails
+              const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+              setProfile({ ...profile, business_address: fallbackAddress });
+            }
+          } else {
+            // Fallback to coordinates if API fails
+            const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+            setProfile({ ...profile, business_address: fallbackAddress });
+          }
+          
+          toast({
+            title: "Success",
+            description: "Location retrieved successfully"
+          });
+        } catch (error) {
+          // Fallback to coordinates if everything fails
+          const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          setProfile({ ...profile, business_address: fallbackAddress });
+          
+          toast({
+            title: "Location Retrieved",
+            description: "Using coordinates format"
+          });
+        }
+        
+        setGettingLocation(false);
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        toast({
+          title: "Error",
+          description: "Failed to get your location. Please enter address manually.",
+          variant: "destructive"
+        });
+        setGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000
+      }
+    );
   };
 
   const businessTypes = [
@@ -303,14 +381,61 @@ const VendorBusinessProfile = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="business_address">Business Address</Label>
-            <Textarea
-              id="business_address"
-              value={profile.business_address}
-              onChange={(e) => setProfile({ ...profile, business_address: e.target.value })}
-              placeholder="Enter complete business address"
-              rows={3}
-            />
+            <div className="flex items-center justify-between">
+              <Label htmlFor="business_address">Business Address</Label>
+              {profile.business_address && !isAddressEditing && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsAddressEditing(true)}
+                  className="h-8 px-2"
+                >
+                  <Edit3 className="h-4 w-4 mr-1" />
+                  Edit
+                </Button>
+              )}
+            </div>
+            {isAddressEditing ? (
+              <div className="space-y-2">
+                <Textarea
+                  id="business_address"
+                  value={profile.business_address}
+                  onChange={(e) => setProfile({ ...profile, business_address: e.target.value })}
+                  placeholder="Enter complete business address"
+                  rows={3}
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={getCurrentLocation}
+                    disabled={gettingLocation}
+                    className="flex items-center gap-2"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    {gettingLocation ? "Getting Location..." : "Use My Location"}
+                  </Button>
+                  {profile.business_address && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsAddressEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border">
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {profile.business_address || "No address set"}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
