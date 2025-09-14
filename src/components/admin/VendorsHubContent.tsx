@@ -28,6 +28,7 @@ import VendorVerificationPanel from './VendorVerificationPanel';
 import ComprehensiveVendorManagement from './ComprehensiveVendorManagement';
 import VendorControlPanel from './VendorControlPanel';
 import UserDirectoryFixed from './UserDirectoryFixed';
+import VendorUserRoleManagement from './VendorUserRoleManagement';
 
 const VendorsHubContent = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -154,10 +155,11 @@ const VendorsHubContent = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="user-directory">User Directory</TabsTrigger>
           <TabsTrigger value="vendors">Vendors</TabsTrigger>
+          <TabsTrigger value="user-roles">User Roles</TabsTrigger>
           <TabsTrigger value="applications">Applications</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
@@ -213,6 +215,10 @@ const VendorsHubContent = () => {
 
         <TabsContent value="vendors">
           <ComprehensiveVendorManagement />
+        </TabsContent>
+
+        <TabsContent value="user-roles">
+          <VendorUserRoleManagement />
         </TabsContent>
 
         <TabsContent value="applications">
