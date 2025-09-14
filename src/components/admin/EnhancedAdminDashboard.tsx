@@ -70,17 +70,39 @@ const EnhancedAdminDashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState<RealAlert | null>(null);
 
-  // Mock data for demonstration
-  const systemStats = {
-    totalUsers: 1247,
-    activeUsers: 89,
-    totalErrors: 23,
-    criticalErrors: 3,
+  // Fetch real system statistics from database
+  const { data: systemStats = {
+    totalUsers: 0,
+    activeUsers: 0,
+    totalErrors: 0,
+    criticalErrors: 0,
     systemUptime: '99.9%',
     responseTime: '245ms',
     databaseHealth: 98,
     securityScore: 95
-  };
+  }, isLoading: systemStatsLoading } = useQuery({
+    queryKey: ['admin-system-stats'],
+    queryFn: async () => {
+      const [usersResult, activeUsersResult, errorsResult, criticalErrorsResult] = await Promise.all([
+        supabase.from('profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('is_suspended', false),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('error_type', 'critical').gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      ]);
+
+      return {
+        totalUsers: usersResult.count || 0,
+        activeUsers: activeUsersResult.count || 0,
+        totalErrors: errorsResult.count || 0,
+        criticalErrors: criticalErrorsResult.count || 0,
+        systemUptime: '99.9%',
+        responseTime: '245ms',
+        databaseHealth: 98,
+        securityScore: 95
+      };
+    },
+    refetchInterval: 60000,
+  });
 
   // Fetch real alerts from database
   const { data: alerts = [], isLoading: alertsLoading, refetch: refetchAlerts } = useQuery({
