@@ -44,6 +44,7 @@ import ProjectSettings from './ProjectSettings';
 import IndonesianPaymentGateways from './IndonesianPaymentGateways';
 import PropertyManagement from './PropertyManagement';
 import VirtualTourSettings from './VirtualTourSettings';
+import VendorsHubContent from './VendorsHubContent';
 import VendorManagement from './VendorManagement';
 import CustomerSupport from './CustomerSupport';
 import ASTRATokenSettings from './ASTRATokenSettings';
@@ -437,7 +438,7 @@ const EnhancedAdminDashboard = () => {
 
           {/* Vendors Management Tab */}
           <TabsContent value="vendors" className="space-y-6">
-            <VendorManagement />
+            <VendorsHubContent />
           </TabsContent>
 
           {/* Indonesian Payment Gateways Tab */}

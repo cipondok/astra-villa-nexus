@@ -13,6 +13,9 @@ import {
   Shield
 } from 'lucide-react';
 
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+
 // Import vendor management components
 import VendorManagement from './VendorManagement';
 import VendorCategoryManagement from './VendorCategoryManagement';
@@ -29,14 +32,47 @@ import UserDirectoryFixed from './UserDirectoryFixed';
 const VendorsHubContent = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const vendorStats = {
-    totalVendors: 245,
-    activeVendors: 189,
-    pendingApplications: 23,
-    totalServices: 1047,
-    approvedServices: 892,
-    monthlyRevenue: 15750000
-  };
+  const { data: vendorStats = {
+    totalVendors: 0,
+    activeVendors: 0,
+    pendingApplications: 0,
+    totalServices: 0,
+    approvedServices: 0,
+    monthlyRevenue: 0
+  }, isLoading: vendorStatsLoading } = useQuery({
+    queryKey: ['vendors-hub-stats'],
+    queryFn: async () => {
+      const [vendorProfilesResult, activeVendorProfilesResult, vendorBizProfilesResult, activeVendorBizProfilesResult, approvedServicesResult] = await Promise.all([
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor').eq('is_suspended', false),
+        supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_active', true),
+        supabase.from('vendor_services').select('*', { count: 'exact', head: true }).eq('is_active', true).eq('admin_approval_status', 'approved')
+      ]);
+
+      const totalVendors = Math.max(
+        typeof vendorProfilesResult.count === 'number' ? vendorProfilesResult.count : 0,
+        typeof vendorBizProfilesResult.count === 'number' ? vendorBizProfilesResult.count : 0
+      );
+
+      const activeVendors = Math.max(
+        typeof activeVendorProfilesResult.count === 'number' ? activeVendorProfilesResult.count : 0,
+        typeof activeVendorBizProfilesResult.count === 'number' ? activeVendorBizProfilesResult.count : 0
+      );
+
+      const approvedServices = typeof approvedServicesResult.count === 'number' ? approvedServicesResult.count : 0;
+
+      return {
+        totalVendors,
+        activeVendors,
+        pendingApplications: 0,
+        totalServices: approvedServices,
+        approvedServices,
+        monthlyRevenue: 0
+      };
+    },
+    refetchInterval: 60000,
+  });
 
   return (
     <div className="space-y-6">
