@@ -77,7 +77,7 @@ const UserDirectoryWithCategories = () => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [editCategoryDialogOpen, setEditCategoryDialogOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("none");
   const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
   const [suspendReason, setSuspendReason] = useState("");
 
@@ -317,7 +317,7 @@ const UserDirectoryWithCategories = () => {
   const handleEditCategory = (user: UserProfile) => {
     setSelectedUser(user);
     const categoryInfo = getCategoryInfo(user);
-    setSelectedCategory(categoryInfo?.id || '');
+    setSelectedCategory(categoryInfo?.id || 'none');
     setEditCategoryDialogOpen(true);
   };
 

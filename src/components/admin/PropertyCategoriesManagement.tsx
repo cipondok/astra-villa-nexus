@@ -580,13 +580,13 @@ const CategoryModal = ({
           <Label className="text-foreground">Parent Category</Label>
           <Select 
             value={formData.parent_id} 
-            onValueChange={(value) => setFormData({ ...formData, parent_id: value })}
+            onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
           >
             <SelectTrigger className="bg-background border-border text-foreground">
               <SelectValue placeholder="Select parent category (optional)" />
             </SelectTrigger>
             <SelectContent className="bg-card border-border">
-              <SelectItem value="" className="text-foreground hover:bg-muted">No Parent (Main Category)</SelectItem>
+              <SelectItem value="none" className="text-foreground hover:bg-muted">No Parent (Main Category)</SelectItem>
               {parentCategories.map((cat) => (
                 <SelectItem key={cat.id} value={cat.id} className="text-foreground hover:bg-muted">
                   {cat.name}

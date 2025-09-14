@@ -77,7 +77,7 @@ const UserDirectoryFixed = () => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [editCategoryDialogOpen, setEditCategoryDialogOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("none");
   const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
   const [suspendReason, setSuspendReason] = useState("");
 
@@ -146,7 +146,7 @@ const UserDirectoryFixed = () => {
 
   // Update category mutation
   const updateCategoryMutation = useMutation({
-    mutationFn: async ({ userId, categoryId, lock }: { userId: string; categoryId: string; lock?: boolean }) => {
+    mutationFn: async ({ userId, categoryId, lock }: { userId: string; categoryId: string | null; lock?: boolean }) => {
       const { error } = await supabase
         .from('vendor_business_profiles')
         .update({
@@ -315,7 +315,7 @@ const UserDirectoryFixed = () => {
   const handleEditCategory = (user: UserProfile) => {
     setSelectedUser(user);
     const categoryInfo = getCategoryInfo(user);
-    setSelectedCategory(categoryInfo?.id || '');
+    setSelectedCategory(categoryInfo?.id || 'none');
     setEditCategoryDialogOpen(true);
   };
 
@@ -604,7 +604,7 @@ const UserDirectoryFixed = () => {
                   <SelectValue placeholder="Select main category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No Category</SelectItem>
+                  <SelectItem value="none">No Category</SelectItem>
                   {mainCategories?.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
                       <div className="flex items-center gap-2">
@@ -631,14 +631,14 @@ const UserDirectoryFixed = () => {
               </Button>
               <Button 
                 onClick={() => {
-                  if (selectedUser && selectedCategory) {
+                  if (selectedUser && selectedCategory && selectedCategory !== 'none') {
                     updateCategoryMutation.mutate({
                       userId: selectedUser.id,
-                      categoryId: selectedCategory
+                      categoryId: selectedCategory === 'none' ? null : selectedCategory
                     });
                   }
                 }}
-                disabled={!selectedCategory || updateCategoryMutation.isPending}
+                disabled={!selectedCategory || selectedCategory === 'none' || updateCategoryMutation.isPending}
                 className="flex-1"
               >
                 Update
@@ -646,15 +646,15 @@ const UserDirectoryFixed = () => {
               <Button 
                 variant="secondary"
                 onClick={() => {
-                  if (selectedUser && selectedCategory) {
+                  if (selectedUser && selectedCategory && selectedCategory !== 'none') {
                     updateCategoryMutation.mutate({
                       userId: selectedUser.id,
-                      categoryId: selectedCategory,
+                      categoryId: selectedCategory === 'none' ? null : selectedCategory,
                       lock: true
                     });
                   }
                 }}
-                disabled={!selectedCategory || updateCategoryMutation.isPending}
+                disabled={!selectedCategory || selectedCategory === 'none' || updateCategoryMutation.isPending}
               >
                 <Lock className="h-4 w-4" />
               </Button>

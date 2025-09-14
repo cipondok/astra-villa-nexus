@@ -419,7 +419,7 @@ const LocationDatabaseManager = () => {
                   <SelectValue placeholder="Semua Provinsi" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Semua Provinsi</SelectItem>
+                  <SelectItem value="all">Semua Provinsi</SelectItem>
                   {provinces.map((province) => (
                     <SelectItem key={province} value={province}>
                       {province}
