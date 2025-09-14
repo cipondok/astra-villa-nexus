@@ -10,7 +10,7 @@ import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import EnhancedUserManagement from './EnhancedUserManagement';
 import PropertyManagement from './PropertyManagement';
-import VendorManagementHub from './VendorManagementHub';
+import VendorsHubContent from './VendorsHubContent';
 import SystemSettings from './SystemSettings';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
@@ -172,7 +172,7 @@ const AdvancedAdminDashboard = () => {
           
           {activeTab === 'user-management' && <EnhancedUserManagement />}
           {activeTab === 'property-management' && <PropertyManagement />}
-          {activeTab === 'vendor-management' && <VendorManagementHub />}
+          {activeTab === 'vendor-management' && <VendorsHubContent />}
           
           {activeTab === 'astra-tokens' && (
             <div className="space-y-6">
