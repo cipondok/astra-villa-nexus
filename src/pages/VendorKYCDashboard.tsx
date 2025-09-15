@@ -95,14 +95,23 @@ const VendorKYCDashboard = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      const { data, error } = await supabase
-        .from('bpjs_verifications')
-        .select('*')
-        .eq('vendor_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data;
+      // BPJS verification data access has been disabled for security
+      // Use secure function instead for vendor's own data
+      try {
+        const { data, error } = await supabase.rpc('get_bpjs_verification_summary', {
+          p_vendor_id: user.id
+        });
+        
+        if (error) {
+          console.warn('BPJS verification summary requires proper authorization:', error.message);
+          return [];
+        }
+        
+        return data || [];
+      } catch (error) {
+        console.warn('Secure BPJS verification access not available:', error);
+        return [];
+      }
     },
     enabled: !!user?.id
   });
@@ -221,8 +230,18 @@ const VendorKYCDashboard = () => {
   };
 
   const getBPJSStatus = (bpjsType: string) => {
-    const verification = bpjsVerifications?.find(bpjs => bpjs.bpjs_type === bpjsType);
-    return verification?.verification_status || 'not_verified';
+    // With the new secure function, data structure is different
+    if (!bpjsVerifications || bpjsVerifications.length === 0) return 'not_verified';
+    
+    const summary = bpjsVerifications[0]; // Get first (and only) summary record
+    
+    if (bpjsType === 'kesehatan') {
+      return summary.bpjs_kesehatan_status || 'not_verified';
+    } else if (bpjsType === 'ketenagakerjaan') {
+      return summary.bpjs_ketenagakerjaan_status || 'not_verified';
+    }
+    
+    return 'not_verified';
   };
 
   const getStatusIcon = (status: string) => {
@@ -352,7 +371,7 @@ const VendorKYCDashboard = () => {
             </div>
             <div className="text-center">
               <div className="text-lg font-semibold text-blue-600">
-                {bpjsVerifications?.filter(bpjs => bpjs.verification_status === 'verified').length || 0}
+                {bpjsVerifications && bpjsVerifications.length > 0 && bpjsVerifications[0].is_fully_verified ? 2 : 0}
               </div>
               <div className="text-sm text-muted-foreground">BPJS Verified</div>
             </div>
@@ -456,7 +475,7 @@ const VendorKYCDashboard = () => {
           <div className="grid gap-6">
             {bpjsTypes.map((bpjsType) => {
               const status = getBPJSStatus(bpjsType.key);
-              const verification = bpjsVerifications?.find(bpjs => bpjs.bpjs_type === bpjsType.key);
+              const summary = bpjsVerifications && bpjsVerifications.length > 0 ? bpjsVerifications[0] : null;
               
               return (
                 <Card key={bpjsType.key}>
@@ -504,14 +523,14 @@ const VendorKYCDashboard = () => {
                           {verifyBPJSMutation.isPending ? 'Verifying...' : 'Verify BPJS'}
                         </Button>
                       </form>
-                    ) : verification && (
+                    ) : summary && (
                       <div>
                         <div className="text-sm text-muted-foreground">
-                          Number: {verification.verification_number}
+                          Status: {bpjsType.key === 'kesehatan' ? summary.bpjs_kesehatan_status : summary.bpjs_ketenagakerjaan_status}
                         </div>
-                        {verification.verified_at && (
+                        {summary.verification_date && (
                           <div className="text-sm text-muted-foreground">
-                            Verified: {new Date(verification.verified_at).toLocaleDateString()}
+                            Last Updated: {new Date(summary.verification_date).toLocaleDateString()}
                           </div>
                         )}
                       </div>

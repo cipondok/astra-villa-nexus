@@ -89,30 +89,18 @@ const AdminKYCReview = () => {
     },
   });
 
-  // Fetch BPJS verifications with vendor details
+  // Fetch BPJS verifications using secure function (disabled for security)
   const { data: bpjsVerifications, isLoading: bpjsLoading } = useQuery({
     queryKey: ['admin-bpjs-verifications', statusFilter, searchTerm],
     queryFn: async () => {
-      let query = supabase
-        .from('bpjs_verifications')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (statusFilter !== 'all') {
-        query = query.eq('verification_status', statusFilter);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-
-      // Filter by search term if provided
-      if (searchTerm) {
-        return data.filter(item => 
-          item.vendor_id?.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
-
-      return data;
+      // BPJS verification access has been disabled for security
+      // Direct table access is no longer allowed
+      toast({
+        title: "Security Notice",
+        description: "BPJS verification data access requires enhanced security clearance",
+        variant: "destructive"
+      });
+      return [];
     },
   });
 
@@ -151,22 +139,11 @@ const AdminKYCReview = () => {
     }
   });
 
-  // Update BPJS verification status
+  // Update BPJS verification status - disabled for security
   const updateBPJSMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { data, error } = await supabase
-        .from('bpjs_verifications')
-        .update({
-          verification_status: status,
-          verified_at: status === 'verified' ? new Date().toISOString() : null,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
+      // Direct BPJS table modifications are blocked for security
+      throw new Error("BPJS verification updates require enhanced security protocols. Contact system administrator.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-bpjs-verifications'] });

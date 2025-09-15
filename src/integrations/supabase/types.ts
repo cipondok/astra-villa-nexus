@@ -7966,6 +7966,16 @@ export type Database = {
         }
         Returns: string
       }
+      create_bpjs_verification_log_secure: {
+        Args: {
+          p_api_response?: Json
+          p_bpjs_number: string
+          p_vendor_id: string
+          p_verification_status: string
+          p_verification_type: string
+        }
+        Returns: string
+      }
       create_login_alert: {
         Args: {
           p_alert_type: string
@@ -8019,8 +8029,16 @@ export type Database = {
         Args: { encrypted_key: string; key_name: string }
         Returns: string
       }
+      decrypt_healthcare_data: {
+        Args: { data_type: string; encrypted_data: string }
+        Returns: string
+      }
       encrypt_api_key: {
         Args: { api_key: string; key_name: string }
+        Returns: string
+      }
+      encrypt_healthcare_data: {
+        Args: { data_type: string; healthcare_data: string }
         Returns: string
       }
       format_indonesian_phone: {
@@ -8034,6 +8052,17 @@ export type Database = {
       get_available_payout_balance: {
         Args: { p_user_id: string }
         Returns: number
+      }
+      get_bpjs_verification_summary: {
+        Args: { p_vendor_id: string }
+        Returns: {
+          bpjs_kesehatan_status: string
+          bpjs_ketenagakerjaan_status: string
+          is_fully_verified: boolean
+          last_verification_attempt: string
+          vendor_id: string
+          verification_date: string
+        }[]
       }
       get_masked_api_settings: {
         Args: Record<PropertyKey, never>
@@ -8364,6 +8393,10 @@ export type Database = {
         Returns: boolean
       }
       mask_bpjs_number: {
+        Args: { bpjs_number: string }
+        Returns: string
+      }
+      mask_bpjs_number_secure: {
         Args: { bpjs_number: string }
         Returns: string
       }

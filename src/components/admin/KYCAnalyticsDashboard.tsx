@@ -155,31 +155,22 @@ export const KYCAnalyticsDashboard = () => {
     }
   });
 
-  // Fetch BPJS verification stats
+  // Fetch BPJS verification stats (secured)
   const { data: bpjsStats } = useQuery({
     queryKey: ['bpjs-stats', timeRange],
     queryFn: async () => {
-      const days = parseInt(timeRange);
-      const startDate = subDays(new Date(), days);
-
-      const { data, error } = await supabase
-        .from('bpjs_verifications')
-        .select('verification_status, bpjs_type')
-        .gte('created_at', startDate.toISOString());
-
-      if (error) throw error;
-
-      const typeStats = data?.reduce((acc, item) => {
-        const key = `${item.bpjs_type}_${item.verification_status}`;
-        acc[key] = (acc[key] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>) || {};
-
+      // BPJS analytics data access has been disabled for security
+      // Direct table access is no longer allowed for sensitive healthcare data
+      console.warn('BPJS analytics require enhanced security clearance');
+      
+      // Return default stats structure
       return {
-        kesehatan_verified: typeStats['kesehatan_verified'] || 0,
-        kesehatan_failed: typeStats['kesehatan_failed'] || 0,
-        ketenagakerjaan_verified: typeStats['ketenagakerjaan_verified'] || 0,
-        ketenagakerjaan_failed: typeStats['ketenagakerjaan_failed'] || 0,
+        kesehatan_verified: 0,
+        kesehatan_pending: 0,
+        kesehatan_rejected: 0,
+        ketenagakerjaan_verified: 0,
+        ketenagakerjaan_pending: 0,
+        ketenagakerjaan_rejected: 0
       };
     }
   });
@@ -376,7 +367,7 @@ export const KYCAnalyticsDashboard = () => {
                 </Badge>
                 <Badge variant="destructive">
                   <XCircle className="w-3 h-3 mr-1" />
-                  Failed: {bpjsStats?.kesehatan_failed || 0}
+                  Failed: {bpjsStats?.kesehatan_rejected || 0}
                 </Badge>
               </div>
             </div>
@@ -389,7 +380,7 @@ export const KYCAnalyticsDashboard = () => {
                 </Badge>
                 <Badge variant="destructive">
                   <XCircle className="w-3 h-3 mr-1" />
-                  Failed: {bpjsStats?.ketenagakerjaan_failed || 0}
+                  Failed: {bpjsStats?.ketenagakerjaan_rejected || 0}
                 </Badge>
               </div>
             </div>

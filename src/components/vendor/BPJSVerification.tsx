@@ -52,14 +52,24 @@ const BPJSVerification = ({
       const isValid = validateBPJSNumber(number, type);
       
       if (isValid) {
-        // Log verification attempt
+        // Use secure function to log verification attempt
         if (vendorId) {
-          await supabase.from('bpjs_verification_logs').insert({
-            vendor_id: vendorId,
-            bpjs_number: number,
-            verification_type: type,
-            verification_status: 'verified' // In real scenario, this would be API response
-          });
+          try {
+            const { data, error } = await supabase.rpc('create_bpjs_verification_log_secure', {
+              p_vendor_id: vendorId,
+              p_bpjs_number: number,
+              p_verification_type: type,
+              p_verification_status: 'verified'
+            });
+            
+            if (error) {
+              console.warn('BPJS verification logging requires admin privileges:', error.message);
+              // Continue with verification even if logging fails
+            }
+          } catch (error) {
+            console.warn('Secure BPJS logging not available:', error);
+            // Continue with verification process
+          }
         }
 
         setVerificationStatus(prev => ({ ...prev, [type]: 'verified' }));
