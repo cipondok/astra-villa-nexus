@@ -27,7 +27,7 @@ import { useAlert } from '@/contexts/AlertContext';
 interface ApiSetting {
   id: string;
   api_name: string;
-  api_key: string;
+  api_key_masked: string;
   api_endpoint: string;
   description: string;
   is_active: boolean;
@@ -56,9 +56,7 @@ const ApiSettings = () => {
   const loadApiSettings = async () => {
     try {
       const { data, error } = await supabase
-        .from('api_settings')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .rpc('get_masked_api_settings');
 
       if (error) throw error;
       setApiSettings(data || []);
@@ -75,19 +73,18 @@ const ApiSettings = () => {
     
     try {
       if (editingSetting) {
-        // Update existing setting
-        const { error } = await supabase
-          .from('api_settings')
-          .update(formData)
-          .eq('id', editingSetting.id);
-
-        if (error) throw error;
-        showSuccess('Success', 'API setting updated successfully');
+        showError('Error', 'For security, API settings cannot be edited. Please create a new one.');
+        return;
       } else {
-        // Create new setting
+        // Create new setting using secure function
         const { error } = await supabase
-          .from('api_settings')
-          .insert([formData]);
+          .rpc('insert_api_setting_secure', {
+            p_api_name: formData.api_name,
+            p_api_key: formData.api_key,
+            p_api_endpoint: formData.api_endpoint || null,
+            p_description: formData.description || null,
+            p_is_active: formData.is_active
+          });
 
         if (error) throw error;
         showSuccess('Success', 'API setting created successfully');
@@ -104,39 +101,11 @@ const ApiSettings = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this API setting?')) return;
-
-    try {
-      const { error } = await supabase
-        .from('api_settings')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      setApiSettings(apiSettings.filter(setting => setting.id !== id));
-      showSuccess('Success', 'API setting deleted successfully');
-    } catch (error) {
-      showError('Error', 'Failed to delete API setting');
-    }
+    showError('Error', 'For security, API settings cannot be deleted directly. Contact system administrator.');
   };
 
   const handleToggleActive = async (id: string, isActive: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('api_settings')
-        .update({ is_active: isActive })
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      setApiSettings(apiSettings.map(setting => 
-        setting.id === id ? { ...setting, is_active: isActive } : setting
-      ));
-      showSuccess('Success', `API setting ${isActive ? 'enabled' : 'disabled'}`);
-    } catch (error) {
-      showError('Error', 'Failed to update API setting');
-    }
+    showError('Error', 'For security, API settings cannot be modified directly. Create new settings as needed.');
   };
 
   const resetForm = () => {
@@ -150,25 +119,11 @@ const ApiSettings = () => {
   };
 
   const handleEdit = (setting: ApiSetting) => {
-    setEditingSetting(setting);
-    setFormData({
-      api_name: setting.api_name,
-      api_key: setting.api_key,
-      api_endpoint: setting.api_endpoint,
-      description: setting.description,
-      is_active: setting.is_active
-    });
-    setIsAddDialogOpen(true);
+    showError('Error', 'For security, API settings cannot be edited. Please create a new setting if needed.');
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    showSuccess('Copied', 'Copied to clipboard');
-  };
-
-  const maskApiKey = (apiKey: string) => {
-    if (!apiKey || apiKey.length <= 8) return apiKey || '';
-    return apiKey.substring(0, 4) + '***' + apiKey.substring(apiKey.length - 4);
+    showError('Error', 'For security, encrypted API keys cannot be copied. Use secure functions to access.');
   };
 
   return (
@@ -270,26 +225,31 @@ const ApiSettings = () => {
                               {setting.is_active ? 'Active' : 'Inactive'}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Switch
-                              checked={setting.is_active}
-                              onCheckedChange={(checked) => handleToggleActive(setting.id, checked)}
-                            />
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEdit(setting)}
-                            >
-                              <Edit className="h-3 w-3" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDelete(setting.id)}
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </div>
+                            <div className="flex items-center gap-2">
+                              <Switch
+                                checked={setting.is_active}
+                                disabled
+                                title="Modifications disabled for security"
+                              />
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled
+                                onClick={() => handleEdit(setting)}
+                                title="Editing disabled for security"
+                              >
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled
+                                onClick={() => handleDelete(setting.id)}
+                                title="Deletion disabled for security"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -312,15 +272,11 @@ const ApiSettings = () => {
                             <Label className="text-sm font-medium">API Key</Label>
                             <div className="flex items-center gap-2 mt-1">
                               <code className="text-sm bg-muted px-2 py-1 rounded flex-1">
-                                {maskApiKey(setting.api_key)}
+                                {setting.api_key_masked}
                               </code>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => copyToClipboard(setting.api_key)}
-                              >
-                                <Copy className="h-3 w-3" />
-                              </Button>
+                              <Badge variant="secondary" className="text-xs">
+                                Encrypted
+                              </Badge>
                             </div>
                           </div>
                         </div>

@@ -8015,6 +8015,14 @@ export type Database = {
         }
         Returns: string
       }
+      decrypt_api_key: {
+        Args: { encrypted_key: string; key_name: string }
+        Returns: string
+      }
+      encrypt_api_key: {
+        Args: { api_key: string; key_name: string }
+        Returns: string
+      }
       format_indonesian_phone: {
         Args: { input_phone: string }
         Returns: string
@@ -8026,6 +8034,19 @@ export type Database = {
       get_available_payout_balance: {
         Args: { p_user_id: string }
         Returns: number
+      }
+      get_masked_api_settings: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          api_endpoint: string
+          api_key_masked: string
+          api_name: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          updated_at: string
+        }[]
       }
       get_own_vendor_profile_secure: {
         Args: Record<PropertyKey, never>
@@ -8253,6 +8274,16 @@ export type Database = {
           license_number: string
           tax_id: string
         }[]
+      }
+      insert_api_setting_secure: {
+        Args: {
+          p_api_endpoint?: string
+          p_api_key: string
+          p_api_name: string
+          p_description?: string
+          p_is_active?: boolean
+        }
+        Returns: string
       }
       is_admin_user: {
         Args: Record<PropertyKey, never>

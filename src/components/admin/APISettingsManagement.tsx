@@ -36,7 +36,7 @@ import { Eye, EyeOff, Edit, Plus, Save, X, Key } from "lucide-react";
 interface ApiSetting {
   id: string;
   api_name: string;
-  api_key: string | null;
+  api_key_masked: string;
   api_endpoint: string | null;
   description: string | null;
   is_active: boolean;
@@ -58,28 +58,29 @@ const APISettingsManagement = () => {
     is_active: true,
   });
 
-  // Fetch API settings
+  // Fetch API settings using secure function
   const { data: apiSettings, isLoading } = useQuery({
     queryKey: ["api-settings"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("api_settings")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .rpc("get_masked_api_settings");
 
       if (error) throw error;
       return data as ApiSetting[];
     },
   });
 
-  // Create API setting mutation
+  // Create API setting mutation using secure function
   const createApiMutation = useMutation({
     mutationFn: async (newApi: typeof apiData) => {
       const { data, error } = await supabase
-        .from("api_settings")
-        .insert([newApi])
-        .select()
-        .single();
+        .rpc("insert_api_setting_secure", {
+          p_api_name: newApi.api_name,
+          p_api_key: newApi.api_key,
+          p_api_endpoint: newApi.api_endpoint || null,
+          p_description: newApi.description || null,
+          p_is_active: newApi.is_active
+        });
 
       if (error) throw error;
       return data;
@@ -101,18 +102,11 @@ const APISettingsManagement = () => {
     },
   });
 
-  // Update API setting mutation
+  // Update API setting mutation - disabled for security
   const updateApiMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<typeof apiData> }) => {
-      const { data, error } = await supabase
-        .from("api_settings")
-        .update(updates)
-        .eq("id", id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
+      // For security, we'll recreate the setting instead of updating
+      throw new Error("Direct updates not allowed for security. Please delete and recreate the API setting.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["api-settings"] });
@@ -131,15 +125,10 @@ const APISettingsManagement = () => {
     },
   });
 
-  // Delete API setting mutation
+  // Delete API setting mutation - disabled for security  
   const deleteApiMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("api_settings")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
+      throw new Error("Direct deletion not allowed for security. Use admin controls to manage API settings.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["api-settings"] });
@@ -183,28 +172,18 @@ const APISettingsManagement = () => {
   };
 
   const handleEditApi = (api: ApiSetting) => {
-    setEditingApi(api);
-    setApiData({
-      api_name: api.api_name,
-      api_key: api.api_key || "",
-      api_endpoint: api.api_endpoint || "",
-      description: api.description || "",
-      is_active: api.is_active,
+    toast({
+      title: "Security Notice",
+      description: "For security, API keys cannot be edited. Please create a new setting if needed.",
+      variant: "destructive",
     });
-    setShowApiForm(true);
   };
 
   const toggleKeyVisibility = (apiId: string) => {
-    setShowKeys(prev => ({
-      ...prev,
-      [apiId]: !prev[apiId]
-    }));
-  };
-
-  const maskApiKey = (key: string | null) => {
-    if (!key) return "Not set";
-    if (key.length <= 8) return key;
-    return key.substring(0, 4) + "•".repeat(Math.max(0, key.length - 8)) + key.substring(key.length - 4);
+    toast({
+      title: "Security Notice", 
+      description: "API keys are automatically masked for security. Use secure functions to decrypt if needed.",
+    });
   };
 
   const getStatusBadge = (isActive: boolean) => (
@@ -276,20 +255,11 @@ const APISettingsManagement = () => {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-sm">
-                          {showKeys[api.id] ? api.api_key || "Not set" : maskApiKey(api.api_key)}
+                          {api.api_key_masked}
                         </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleKeyVisibility(api.id)}
-                          className="h-6 w-6 p-0"
-                        >
-                          {showKeys[api.id] ? (
-                            <EyeOff className="h-3 w-3" />
-                          ) : (
-                            <Eye className="h-3 w-3" />
-                          )}
-                        </Button>
+                        <Badge variant="secondary" className="text-xs">
+                          Encrypted
+                        </Badge>
                       </div>
                     </TableCell>
                     <TableCell className="max-w-[200px] truncate">
@@ -307,14 +277,17 @@ const APISettingsManagement = () => {
                         <Button
                           variant="outline"
                           size="sm"
+                          disabled
                           onClick={() => handleEditApi(api)}
+                          title="Editing disabled for security"
                         >
                           <Edit className="h-3 w-3" />
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => deleteApiMutation.mutate(api.id)}
+                          disabled
+                          title="Deletion disabled for security"
                           className="text-red-600 hover:text-red-700"
                         >
                           <X className="h-3 w-3" />
