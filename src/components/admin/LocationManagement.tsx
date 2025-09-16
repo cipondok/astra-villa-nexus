@@ -62,6 +62,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import IndonesianProvinceAnalysis from './IndonesianProvinceAnalysis';
 
 interface Location {
   id: string;
@@ -422,7 +423,7 @@ const LocationManagement = () => {
       </Card>
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -439,8 +440,9 @@ const LocationManagement = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Provinces</p>
-                <p className="text-2xl font-bold">{provinces.length}</p>
+                <p className="text-sm font-medium text-muted-foreground">Provinces Found</p>
+                <p className="text-2xl font-bold text-orange-600">{provinces.length}</p>
+                <p className="text-xs text-muted-foreground">of 38 expected</p>
               </div>
               <Globe className="h-8 w-8 text-green-600" />
             </div>
@@ -463,6 +465,18 @@ const LocationManagement = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
+                <p className="text-sm font-medium text-muted-foreground">Districts</p>
+                <p className="text-2xl font-bold">{[...new Set(locations.filter(l => l.district_name).map(l => l.district_name))].length}</p>
+              </div>
+              <Home className="h-8 w-8 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
                 <p className="text-sm font-medium text-muted-foreground">Active</p>
                 <p className="text-2xl font-bold">{locations.filter(l => l.is_active).length}</p>
               </div>
@@ -472,11 +486,78 @@ const LocationManagement = () => {
         </Card>
       </div>
 
+      {/* Province Analysis */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Indonesian Provinces Analysis (38 Expected)
+          </CardTitle>
+          <CardDescription>
+            Complete list of Indonesian provinces with data consistency check
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-auto">
+            {provinces.sort().map((province, index) => {
+              const provinceLocations = locations.filter(l => l.province_name === province);
+              const cityCount = [...new Set(provinceLocations.map(l => l.city_name))].length;
+              const isComplete = cityCount > 0;
+              
+              return (
+                <div key={province} className="p-3 border rounded-lg bg-card hover:bg-accent/50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant={isComplete ? "default" : "secondary"} className="text-xs">
+                      #{index + 1}
+                    </Badge>
+                    <Badge variant={isComplete ? "default" : "destructive"} className="text-xs">
+                      {cityCount} cities
+                    </Badge>
+                  </div>
+                  <h4 className="font-medium text-sm mb-1">{province}</h4>
+                  <p className="text-xs text-muted-foreground">
+                    {provinceLocations.length} locations total
+                  </p>
+                  <div className="flex items-center gap-1 mt-2">
+                    {isComplete ? (
+                      <CheckCircle className="h-3 w-3 text-green-600" />
+                    ) : (
+                      <XCircle className="h-3 w-3 text-red-600" />
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      {isComplete ? 'Data Available' : 'No Data'}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          {provinces.length < 38 && (
+            <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Info className="h-4 w-4 text-yellow-600" />
+                <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                  Missing Provinces Detected
+                </span>
+              </div>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                Found {provinces.length} out of 38 expected Indonesian provinces. Some provinces may be missing or have naming inconsistencies.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Main Content */}
       <Card>
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="analysis" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Province Analysis
+              </TabsTrigger>
               <TabsTrigger value="tree" className="flex items-center gap-2">
                 <TreePine className="h-4 w-4" />
                 Tree View
@@ -486,6 +567,10 @@ const LocationManagement = () => {
                 Table View
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="analysis" className="mt-6">
+              <IndonesianProvinceAnalysis />
+            </TabsContent>
 
             <TabsContent value="tree" className="mt-6">
               {isLoading ? (
