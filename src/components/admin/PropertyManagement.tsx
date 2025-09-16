@@ -29,7 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets, 
          Settings, BarChart3, FileCheck, MapPin as Location, Building2, Workflow, 
-         Image, Heart, MessageSquare, Star, Shield, TrendingUp } from 'lucide-react';
+         Image, Heart, MessageSquare, Star, Shield, TrendingUp, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
 
@@ -70,6 +70,12 @@ const PropertyManagement = () => {
   const [editingProperty, setEditingProperty] = usePropertyState<PropertyWithRelations | null>(null);
   const [viewingProperty, setViewingProperty] = usePropertyState<PropertyWithRelations | null>(null);
   const [selectedProperties, setSelectedProperties] = usePropertyState<string[]>([]);
+  
+  // New search and pagination state
+  const [searchTerm, setSearchTerm] = usePropertyState("");
+  const [currentPage, setCurrentPage] = usePropertyState(1);
+  const itemsPerPage = 10;
+  
   const [newProperty, setNewProperty] = usePropertyState({
     title: "",
     description: "",
@@ -88,8 +94,8 @@ const PropertyManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: properties, isLoading, error, refetch } = useQuery({
-    queryKey: ['admin-properties', statusFilter, categoryFilter],
+  const { data: allProperties = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['admin-properties', statusFilter, categoryFilter, searchTerm],
     queryFn: async () => {
       console.log('Fetching properties...');
       
@@ -97,6 +103,11 @@ const PropertyManagement = () => {
         .from('properties')
         .select('*')
         .order('created_at', { ascending: false });
+
+      // Apply search filter
+      if (searchTerm.trim()) {
+        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
+      }
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -170,12 +181,27 @@ const PropertyManagement = () => {
     },
   });
 
+  // Pagination calculations
+  const totalPages = Math.ceil(allProperties.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const properties = allProperties.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, categoryFilter]);
+
   // Debug: Log the current state
   console.log('PropertyManagement state:', { 
-    properties, 
+    allProperties, 
+    properties,
     isLoading, 
     error, 
-    propertiesCount: properties?.length 
+    totalPropertiesCount: allProperties?.length,
+    currentPagePropertiesCount: properties?.length,
+    currentPage,
+    totalPages
   });
 
   const createPropertyMutation = useMutation({
@@ -281,7 +307,7 @@ const PropertyManagement = () => {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedProperties(properties?.map(p => p.id) || []);
+      setSelectedProperties(allProperties?.map(p => p.id) || []);
     } else {
       setSelectedProperties([]);
     }
@@ -297,6 +323,14 @@ const PropertyManagement = () => {
 
   const clearSelection = () => {
     setSelectedProperties([]);
+  };
+
+  // Clear search and filters
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setCategoryFilter("all");
+    setCurrentPage(1);
   };
 
   return (
@@ -352,13 +386,13 @@ const PropertyManagement = () => {
               </TabsTrigger>
             </TabsList>
 
-            {/* Properties Tab - Keep existing functionality */}
-            <TabsContent value="properties" className="space-y-6">{/* ... keep existing properties content ... */}
+            {/* Properties Tab - Enhanced with pagination and search */}
+            <TabsContent value="properties" className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold">Property Listings</h3>
                   <p className="text-sm text-muted-foreground">
-                    Manage property listings, approvals, and content
+                    Manage property listings, approvals, and content - {allProperties.length} total properties, showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of page {currentPage}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -523,38 +557,66 @@ const PropertyManagement = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                    <SelectItem value="sold">Sold</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Filter by category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="buy">For Sale</SelectItem>
-                    <SelectItem value="rent">For Rent</SelectItem>
-                    <SelectItem value="new_project">New Projects</SelectItem>
-                    <SelectItem value="pre_launching">Pre-launching</SelectItem>
-                    <SelectItem value="has_3d">Has 3D View</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Enhanced Search and Filters */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Search className="h-5 w-5" />
+                      Search & Filters
+                    </div>
+                    <Button variant="outline" size="sm" onClick={clearAllFilters}>
+                      Clear All
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search by title, location, or description..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  
+                  {/* Filter Controls */}
+                  <div className="flex flex-wrap gap-4">
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="w-full sm:w-48">
+                        <SelectValue placeholder="Filter by status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="approved">Approved</SelectItem>
+                        <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                        <SelectItem value="sold">Sold</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                      <SelectTrigger className="w-full sm:w-48">
+                        <SelectValue placeholder="Filter by category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="buy">For Sale</SelectItem>
+                        <SelectItem value="rent">For Rent</SelectItem>
+                        <SelectItem value="new_project">New Projects</SelectItem>
+                        <SelectItem value="pre_launching">Pre-launching</SelectItem>
+                        <SelectItem value="has_3d">Has 3D View</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
 
               <PropertyBulkActions 
                 selectedProperties={selectedProperties}
                 onClearSelection={clearSelection}
-                totalProperties={properties?.length || 0}
+                totalProperties={allProperties?.length || 0}
               />
 
               {error && (
@@ -572,8 +634,8 @@ const PropertyManagement = () => {
                       <TableHead className="w-12">
                         <Checkbox
                           checked={
-                            properties?.length > 0 && 
-                            selectedProperties.length === properties.length
+                            allProperties?.length > 0 && 
+                            selectedProperties.length === allProperties.length
                           }
                           onCheckedChange={handleSelectAll}
                         />
@@ -716,6 +778,62 @@ const PropertyManagement = () => {
                     )}
                   </TableBody>
                 </Table>
+                
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center space-x-2 py-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Previous
+                    </Button>
+                    
+                    <div className="flex items-center space-x-1">
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+                        
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={currentPage === pageNum ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setCurrentPage(pageNum)}
+                            className="w-8"
+                          >
+                            {pageNum}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    
+                    <div className="text-sm text-gray-500 ml-4">
+                      Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of {allProperties.length}
+                    </div>
+                  </div>
+                )}
               </div>
             </TabsContent>
 
