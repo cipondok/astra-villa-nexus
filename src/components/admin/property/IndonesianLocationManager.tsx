@@ -40,6 +40,7 @@ const IndonesianLocationManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProvince, setSelectedProvince] = useState('all');
   const [selectedCity, setSelectedCity] = useState('all');
+  const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [newLocation, setNewLocation] = useState({
     province_code: '',
     province_name: '',
@@ -102,6 +103,16 @@ const IndonesianLocationManager = () => {
   const allUniqueCities = locations ? 
     Array.from(new Map(locations.map(l => [l.city_code, { code: l.city_code, name: l.city_name, province: l.province_name }])).values()) : [];
   const allCities = allUniqueCities.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Get all unique districts for districts tab dropdown
+  const allUniqueDistricts = locations ? 
+    Array.from(new Map(locations.filter(l => l.district_code && l.district_name).map(l => [l.district_code, { 
+      code: l.district_code!, 
+      name: l.district_name!, 
+      city: l.city_name,
+      province: l.province_name 
+    }])).values()) : [];
+  const allDistricts = allUniqueDistricts.sort((a, b) => a.name.localeCompare(b.name));
 
   // Mutations
   const createLocationMutation = useMutation({
@@ -260,7 +271,7 @@ const IndonesianLocationManager = () => {
               </TabsTrigger>
               <TabsTrigger value="districts" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
-                Districts
+                Districts ({locations ? Array.from(new Set(locations.map(l => l.district_code).filter(Boolean))).length : 0})
               </TabsTrigger>
               <TabsTrigger value="manage" className="flex items-center gap-2">
                 <Edit className="h-4 w-4" />
@@ -292,6 +303,26 @@ const IndonesianLocationManager = () => {
                           className="hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                           {city.name} ({city.province})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : activeTab === 'districts' ? (
+                  <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <SelectValue placeholder={`All Districts (${allDistricts.length} total)`} />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                      <SelectItem value="all" className="font-medium">
+                        All Districts ({allDistricts.length} total)
+                      </SelectItem>
+                      {allDistricts.map((district) => (
+                        <SelectItem 
+                          key={district.code} 
+                          value={district.code}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          {district.name} - {district.city}, {district.province}
                         </SelectItem>
                       ))}
                     </SelectContent>
