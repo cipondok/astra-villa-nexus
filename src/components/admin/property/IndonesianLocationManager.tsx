@@ -251,7 +251,7 @@ const IndonesianLocationManager = () => {
               </TabsTrigger>
               <TabsTrigger value="cities" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
-                Cities
+                Cities ({locations ? Array.from(new Set(locations.map(l => l.city_code))).length : 0})
               </TabsTrigger>
               <TabsTrigger value="districts" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
