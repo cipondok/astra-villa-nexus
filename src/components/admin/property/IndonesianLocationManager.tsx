@@ -41,6 +41,8 @@ const IndonesianLocationManager = () => {
   const [selectedProvince, setSelectedProvince] = useState('all');
   const [selectedCity, setSelectedCity] = useState('all');
   const [selectedDistrict, setSelectedDistrict] = useState('all');
+  const [selectedSubdistrict, setSelectedSubdistrict] = useState('all');
+  const [selectedPostalCode, setSelectedPostalCode] = useState('all');
   const [newLocation, setNewLocation] = useState({
     province_code: '',
     province_name: '',
@@ -113,6 +115,27 @@ const IndonesianLocationManager = () => {
       province: l.province_name 
     }])).values()) : [];
   const allDistricts = allUniqueDistricts.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Get all unique subdistricts for subdistricts tab dropdown
+  const allUniqueSubdistricts = locations ? 
+    Array.from(new Map(locations.filter(l => l.subdistrict_code && l.subdistrict_name).map(l => [l.subdistrict_code, { 
+      code: l.subdistrict_code!, 
+      name: l.subdistrict_name!, 
+      district: l.district_name,
+      city: l.city_name,
+      province: l.province_name 
+    }])).values()) : [];
+  const allSubdistricts = allUniqueSubdistricts.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Get all unique postal codes
+  const allUniquePostalCodes = locations ? 
+    Array.from(new Map(locations.filter(l => l.postal_code).map(l => [l.postal_code, { 
+      code: l.postal_code!, 
+      area: l.area_name,
+      city: l.city_name,
+      province: l.province_name 
+    }])).values()) : [];
+  const allPostalCodes = allUniquePostalCodes.sort((a, b) => a.code.localeCompare(b.code));
 
   // Mutations
   const createLocationMutation = useMutation({
@@ -252,37 +275,41 @@ const IndonesianLocationManager = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5" />
-            Indonesian Location Management
+            Pengelolaan Wilayah Indonesia
           </CardTitle>
           <CardDescription>
-            Manage provinces, cities, districts, and areas across Indonesia for property listings
+            Kelola provinsi, kota/kabupaten, kecamatan, dan kelurahan/desa untuk listing properti
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="provinces" className="flex items-center gap-2">
                 <Globe className="h-4 w-4" />
-                Provinces
+                Provinsi ({locations ? Array.from(new Set(locations.map(l => l.province_code))).length : 0})
               </TabsTrigger>
               <TabsTrigger value="cities" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
-                Cities ({locations ? Array.from(new Set(locations.map(l => l.city_code))).length : 0})
+                Kota/Kabupaten ({locations ? Array.from(new Set(locations.map(l => l.city_code))).length : 0})
               </TabsTrigger>
               <TabsTrigger value="districts" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
-                Districts ({locations ? Array.from(new Set(locations.map(l => l.district_code).filter(Boolean))).length : 0})
+                Kecamatan ({locations ? Array.from(new Set(locations.map(l => l.district_code).filter(Boolean))).length : 0})
+              </TabsTrigger>
+              <TabsTrigger value="subdistricts" className="flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Kelurahan/Desa ({locations ? Array.from(new Set(locations.map(l => l.subdistrict_code).filter(Boolean))).length : 0})
               </TabsTrigger>
               <TabsTrigger value="manage" className="flex items-center gap-2">
                 <Edit className="h-4 w-4" />
-                Manage
+                Kelola
               </TabsTrigger>
             </TabsList>
 
             <div className="flex justify-between items-center">
               <div className="flex gap-4">
                 <Input
-                  placeholder="Search locations..."
+                  placeholder="Cari lokasi..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-64"
@@ -290,11 +317,11 @@ const IndonesianLocationManager = () => {
                 {activeTab === 'cities' ? (
                   <Select value={selectedCity} onValueChange={setSelectedCity}>
                     <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`All Cities (${allCities.length} total)`} />
+                      <SelectValue placeholder={`Semua Kota/Kabupaten (${allCities.length} total)`} />
                     </SelectTrigger>
                     <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
                       <SelectItem value="all" className="font-medium">
-                        All Cities ({allCities.length} total)
+                        Semua Kota/Kabupaten ({allCities.length} total)
                       </SelectItem>
                       {allCities.map((city) => (
                         <SelectItem 
@@ -310,11 +337,11 @@ const IndonesianLocationManager = () => {
                 ) : activeTab === 'districts' ? (
                   <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
                     <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`All Districts (${allDistricts.length} total)`} />
+                      <SelectValue placeholder={`Semua Kecamatan (${allDistricts.length} total)`} />
                     </SelectTrigger>
                     <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
                       <SelectItem value="all" className="font-medium">
-                        All Districts ({allDistricts.length} total)
+                        Semua Kecamatan ({allDistricts.length} total)
                       </SelectItem>
                       {allDistricts.map((district) => (
                         <SelectItem 
@@ -327,15 +354,35 @@ const IndonesianLocationManager = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                ) : activeTab === 'subdistricts' ? (
+                  <Select value={selectedSubdistrict} onValueChange={setSelectedSubdistrict}>
+                    <SelectTrigger className="w-60 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <SelectValue placeholder={`Semua Kelurahan/Desa (${allSubdistricts.length} total)`} />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                      <SelectItem value="all" className="font-medium">
+                        Semua Kelurahan/Desa ({allSubdistricts.length} total)
+                      </SelectItem>
+                      {allSubdistricts.map((subdistrict) => (
+                        <SelectItem 
+                          key={subdistrict.code} 
+                          value={subdistrict.code}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          {subdistrict.name} - {subdistrict.district}, {subdistrict.city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 ) : (
                   <>
                     <Select value={selectedProvince} onValueChange={setSelectedProvince}>
                       <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                        <SelectValue placeholder={`All Provinces (${provinces.length} total)`} />
+                        <SelectValue placeholder={`Semua Provinsi (${provinces.length} total)`} />
                       </SelectTrigger>
                       <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
                         <SelectItem value="all" className="font-medium">
-                          All Provinces ({provinces.length} total)
+                          Semua Provinsi ({provinces.length} total)
                         </SelectItem>
                         {provinces.map((province) => (
                           <SelectItem 
@@ -351,11 +398,11 @@ const IndonesianLocationManager = () => {
                     {selectedProvince && selectedProvince !== 'all' && (
                       <Select value={selectedCity} onValueChange={setSelectedCity}>
                         <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                          <SelectValue placeholder={`All Cities (${cities.length} total)`} />
+                          <SelectValue placeholder={`Semua Kota/Kabupaten (${cities.length} total)`} />
                         </SelectTrigger>
                         <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
                           <SelectItem value="all" className="font-medium">
-                            All Cities ({cities.length} total)
+                            Semua Kota/Kabupaten ({cities.length} total)
                           </SelectItem>
                           {cities.map((city) => (
                             <SelectItem 
@@ -376,16 +423,16 @@ const IndonesianLocationManager = () => {
                 <DialogTrigger asChild>
                   <Button onClick={() => { resetForm(); setEditingLocation(null); }}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Location
+                    Tambah Lokasi
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl">
                   <DialogHeader>
                     <DialogTitle>
-                      {editingLocation ? 'Edit Location' : 'Add New Location'}
+                      {editingLocation ? 'Edit Lokasi' : 'Tambah Lokasi Baru'}
                     </DialogTitle>
                     <DialogDescription>
-                      Enter location details for Indonesian administrative divisions
+                      Masukkan detail lokasi untuk pembagian administratif Indonesia
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid grid-cols-2 gap-4 py-4 max-h-96 overflow-y-auto">
