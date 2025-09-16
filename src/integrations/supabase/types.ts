@@ -8049,6 +8049,24 @@ export type Database = {
         Args: { error_message: string; table_name?: string }
         Returns: string
       }
+      get_all_survey_bookings_admin: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          message: string
+          preferred_date: string
+          preferred_time: string
+          property_id: string
+          property_title: string
+          status: string
+          survey_type: string
+          total_count: number
+        }[]
+      }
       get_available_payout_balance: {
         Args: { p_user_id: string }
         Returns: number
@@ -8062,6 +8080,23 @@ export type Database = {
           last_verification_attempt: string
           vendor_id: string
           verification_date: string
+        }[]
+      }
+      get_customer_own_survey_bookings: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          message: string
+          preferred_date: string
+          preferred_time: string
+          property_id: string
+          property_title: string
+          status: string
+          survey_type: string
         }[]
       }
       get_masked_api_settings: {
@@ -8120,6 +8155,23 @@ export type Database = {
       get_property_booking_stats: {
         Args: { p_property_id: string }
         Returns: Json
+      }
+      get_property_survey_bookings_for_owner: {
+        Args: { p_property_id: string }
+        Returns: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          message: string
+          preferred_date: string
+          preferred_time: string
+          property_id: string
+          property_title: string
+          status: string
+          survey_type: string
+        }[]
       }
       get_public_profile_minimal: {
         Args: { profile_user_id: string }
