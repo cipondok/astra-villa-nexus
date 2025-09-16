@@ -14,6 +14,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { shareProperty } from '@/utils/shareUtils';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { 
   MapPin, 
   Bed, 
@@ -103,6 +104,7 @@ const PropertyDetail: React.FC = () => {
   const [agentInfo, setAgentInfo] = useState<any>(null);
   const [relatedProperties, setRelatedProperties] = useState<PropertyData[]>([]);
   const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
@@ -696,10 +698,12 @@ const PropertyDetail: React.FC = () => {
                           onClick={() => {
                             if (user && property.posted_by?.whatsapp_number) {
                               window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hello, I'm interested in ${property.title}`, '_blank');
+                            } else if (!user) {
+                              setShowAuthModal(true);
                             } else {
                               toast({
-                                title: "Sign in required",
-                                description: "Please sign in to contact the agent.",
+                                title: "Contact not available",
+                                description: "WhatsApp number not provided for this property.",
                                 variant: "destructive",
                               });
                             }
@@ -859,6 +863,13 @@ const PropertyDetail: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Enhanced Auth Modal for login/registration */}
+      <EnhancedAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        language="en"
+      />
     </div>
   );
 };
