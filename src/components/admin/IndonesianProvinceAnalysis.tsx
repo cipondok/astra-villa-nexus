@@ -17,7 +17,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-// Official 38 Indonesian Provinces
+// Official Indonesian Administrative Data
 const OFFICIAL_PROVINCES = [
   'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Kepulauan Riau',
   'Jambi', 'Sumatera Selatan', 'Kepulauan Bangka Belitung', 'Bengkulu', 'Lampung',
@@ -27,6 +27,14 @@ const OFFICIAL_PROVINCES = [
   'Sulawesi Utara', 'Gorontalo', 'Sulawesi Tengah', 'Sulawesi Barat', 'Sulawesi Selatan', 'Sulawesi Tenggara',
   'Maluku', 'Maluku Utara', 'Papua', 'Papua Barat', 'Papua Tengah', 'Papua Pegunungan', 'Papua Selatan', 'Papua Barat Daya'
 ];
+
+// Official Indonesian Administrative Statistics
+const OFFICIAL_STATS = {
+  PROVINCES: 38,
+  CITIES_KOTA: 98,
+  REGENCIES_KABUPATEN: 416,
+  TOTAL_SECOND_LEVEL: 514
+};
 
 interface ProvinceData {
   normalized_name: string;
@@ -40,6 +48,13 @@ interface LocationRow {
   province_name: string;
   province_code: string;
   city_name: string;
+  city_type: string;
+}
+
+interface CityTypeStats {
+  city_type: string;
+  count: number;
+  unique_cities: number;
 }
 
 const IndonesianProvinceAnalysis = () => {
@@ -51,7 +66,7 @@ const IndonesianProvinceAnalysis = () => {
     queryFn: async (): Promise<ProvinceData[]> => {
       const { data: locationData, error: fetchError } = await supabase
         .from('locations')
-        .select('province_name, province_code, city_name');
+        .select('province_name, province_code, city_name, city_type');
       
       if (fetchError) throw fetchError;
       if (!locationData) return [];
@@ -85,6 +100,34 @@ const IndonesianProvinceAnalysis = () => {
         location_count: item.location_count,
         city_count: item.cities.size
       })) as ProvinceData[];
+    }
+  });
+
+  // Fetch city type statistics
+  const { data: cityTypeStats = [] } = useQuery({
+    queryKey: ['city-type-stats'],
+    queryFn: async (): Promise<CityTypeStats[]> => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_type, city_name');
+      
+      if (error) throw error;
+      if (!data) return [];
+      
+      // Group by city type and count unique cities
+      const stats = data.reduce((acc: Record<string, Set<string>>, row: any) => {
+        if (!acc[row.city_type]) {
+          acc[row.city_type] = new Set();
+        }
+        acc[row.city_type].add(row.city_name);
+        return acc;
+      }, {});
+      
+      return Object.entries(stats).map(([city_type, cities]) => ({
+        city_type,
+        count: data.filter(row => row.city_type === city_type).length,
+        unique_cities: cities.size
+      }));
     }
   });
 
@@ -183,9 +226,9 @@ const IndonesianProvinceAnalysis = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">38</div>
+              <div className="text-2xl font-bold text-blue-600">{OFFICIAL_STATS.PROVINCES}</div>
               <div className="text-sm text-muted-foreground">Official Provinces</div>
             </div>
             <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -201,12 +244,62 @@ const IndonesianProvinceAnalysis = () => {
               <div className="text-sm text-muted-foreground">Missing Provinces</div>
             </div>
           </div>
+
+          {/* Second-Level Administrative Regions */}
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-semibold mb-4">Second-Level Administrative Regions</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">{OFFICIAL_STATS.CITIES_KOTA}</div>
+                <div className="text-sm text-muted-foreground">Cities (Kota)</div>
+                <div className="text-xs text-muted-foreground mt-1">Official Count</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">{OFFICIAL_STATS.REGENCIES_KABUPATEN}</div>
+                <div className="text-sm text-muted-foreground">Regencies (Kabupaten)</div>
+                <div className="text-xs text-muted-foreground mt-1">Official Count</div>
+              </div>
+              <div className="text-center p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                <div className="text-2xl font-bold text-indigo-600">{OFFICIAL_STATS.TOTAL_SECOND_LEVEL}</div>
+                <div className="text-sm text-muted-foreground">Total Expected</div>
+                <div className="text-xs text-muted-foreground mt-1">Cities + Regencies</div>
+              </div>
+              <div className="text-center p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
+                <div className="text-2xl font-bold text-teal-600">
+                  {cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0)}
+                </div>
+                <div className="text-sm text-muted-foreground">In Database</div>
+                <div className="text-xs text-muted-foreground mt-1">Unique Cities Found</div>
+              </div>
+            </div>
+
+            {/* City Type Breakdown */}
+            {cityTypeStats.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-md font-medium mb-3">Database Breakdown by Type</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {cityTypeStats.map((stat) => (
+                    <div key={stat.city_type} className="p-3 border rounded-lg bg-card">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{stat.city_type}</span>
+                        <Badge variant="outline">{stat.unique_cities} unique</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stat.count} total locations
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="cities">Cities Analysis</TabsTrigger>
           <TabsTrigger value="duplicates">Duplicates ({duplicates.length})</TabsTrigger>
           <TabsTrigger value="missing">Missing ({missingProvinces.length})</TabsTrigger>
           <TabsTrigger value="complete">All Provinces</TabsTrigger>
@@ -270,6 +363,167 @@ const IndonesianProvinceAnalysis = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="cities">
+          <Card>
+            <CardHeader>
+              <CardTitle>Cities & Regencies Analysis</CardTitle>
+              <CardDescription>
+                Comparison of official Indonesian administrative regions vs database content
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Comparison Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="border-orange-200 dark:border-orange-800">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg text-orange-600">Cities (Kota)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Official Count:</span>
+                        <Badge variant="default">{OFFICIAL_STATS.CITIES_KOTA}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">In Database:</span>
+                        <Badge variant="outline">
+                          {cityTypeStats.find(s => s.city_type === 'KOTA')?.unique_cities || 0}
+                        </Badge>
+                      </div>
+                      <div className="w-full bg-orange-100 dark:bg-orange-900/20 rounded-full h-2">
+                        <div 
+                          className="bg-orange-600 h-2 rounded-full transition-all duration-300" 
+                          style={{
+                            width: `${Math.min(
+                              ((cityTypeStats.find(s => s.city_type === 'KOTA')?.unique_cities || 0) / OFFICIAL_STATS.CITIES_KOTA) * 100,
+                              100
+                            )}%`
+                          }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {(((cityTypeStats.find(s => s.city_type === 'KOTA')?.unique_cities || 0) / OFFICIAL_STATS.CITIES_KOTA) * 100).toFixed(1)}% coverage
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-purple-200 dark:border-purple-800">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg text-purple-600">Regencies (Kabupaten)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Official Count:</span>
+                        <Badge variant="default">{OFFICIAL_STATS.REGENCIES_KABUPATEN}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">In Database:</span>
+                        <Badge variant="outline">
+                          {cityTypeStats.find(s => s.city_type === 'KABUPATEN')?.unique_cities || 0}
+                        </Badge>
+                      </div>
+                      <div className="w-full bg-purple-100 dark:bg-purple-900/20 rounded-full h-2">
+                        <div 
+                          className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                          style={{
+                            width: `${Math.min(
+                              ((cityTypeStats.find(s => s.city_type === 'KABUPATEN')?.unique_cities || 0) / OFFICIAL_STATS.REGENCIES_KABUPATEN) * 100,
+                              100
+                            )}%`
+                          }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {(((cityTypeStats.find(s => s.city_type === 'KABUPATEN')?.unique_cities || 0) / OFFICIAL_STATS.REGENCIES_KABUPATEN) * 100).toFixed(1)}% coverage
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Overall Coverage */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Overall Coverage Analysis</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center p-3 bg-card rounded-lg border">
+                        <span className="text-sm font-medium">Total Expected (Cities + Regencies)</span>
+                        <Badge variant="default">{OFFICIAL_STATS.TOTAL_SECOND_LEVEL}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-card rounded-lg border">
+                        <span className="text-sm font-medium">Total Found in Database</span>
+                        <Badge variant="outline">
+                          {cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0)}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-card rounded-lg border">
+                        <span className="text-sm font-medium">Coverage Percentage</span>
+                        <Badge 
+                          variant={
+                            (cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0) / OFFICIAL_STATS.TOTAL_SECOND_LEVEL) > 0.8 
+                              ? "default" 
+                              : "secondary"
+                          }
+                        >
+                          {((cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0) / OFFICIAL_STATS.TOTAL_SECOND_LEVEL) * 100).toFixed(1)}%
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* Missing Count Alert */}
+                    {cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0) < OFFICIAL_STATS.TOTAL_SECOND_LEVEL && (
+                      <Alert className="mt-4">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>
+                          <strong>Missing Administrative Regions:</strong> {' '}
+                          {OFFICIAL_STATS.TOTAL_SECOND_LEVEL - cityTypeStats.reduce((sum, stat) => sum + stat.unique_cities, 0)} second-level regions 
+                          are missing from the database. This may affect location-based features.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* All City Types Found */}
+                {cityTypeStats.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">All Administrative Types in Database</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {cityTypeStats.map((stat) => (
+                          <div key={stat.city_type} className="p-4 border rounded-lg bg-card hover:bg-accent/50 transition-colors">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-sm">{stat.city_type}</h4>
+                              <Badge variant="outline">{stat.unique_cities}</Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {stat.count} total location entries
+                            </p>
+                            <div className="mt-2 text-xs">
+                              {stat.city_type === 'KOTA' && (
+                                <span className="text-orange-600">Cities • Expected: {OFFICIAL_STATS.CITIES_KOTA}</span>
+                              )}
+                              {stat.city_type === 'KABUPATEN' && (
+                                <span className="text-purple-600">Regencies • Expected: {OFFICIAL_STATS.REGENCIES_KABUPATEN}</span>
+                              )}
+                              {!['KOTA', 'KABUPATEN'].includes(stat.city_type) && (
+                                <span className="text-muted-foreground">Other administrative type</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="duplicates">
