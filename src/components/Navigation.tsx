@@ -139,6 +139,14 @@ const Navigation = () => {
   // Check if user is admin or agent
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
   const isAgent = profile?.role === 'agent';
+  
+  // Debug admin access
+  console.log('🔍 Navigation Debug:', { 
+    userEmail: user?.email, 
+    profileRole: profile?.role, 
+    isAdmin,
+    showingAdminButton: isAdmin 
+  });
 
   return (
     <>
