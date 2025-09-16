@@ -90,10 +90,13 @@ const IndonesianLocationManager = () => {
   });
 
   // Get unique provinces and cities for filters
-  const provinces = [...new Set(locations?.map(l => ({ code: l.province_code, name: l.province_name })) || [])];
-  const cities = selectedProvince && selectedProvince !== 'all'
-    ? [...new Set(locations?.filter(l => l.province_code === selectedProvince).map(l => ({ code: l.city_code, name: l.city_name })) || [])]
-    : [];
+  const uniqueProvinces = locations ? 
+    Array.from(new Map(locations.map(l => [l.province_code, { code: l.province_code, name: l.province_name }])).values()) : [];
+  const provinces = uniqueProvinces.sort((a, b) => a.name.localeCompare(b.name));
+  
+  const uniqueCities = selectedProvince && selectedProvince !== 'all' && locations ?
+    Array.from(new Map(locations.filter(l => l.province_code === selectedProvince).map(l => [l.city_code, { code: l.city_code, name: l.city_name }])).values()) : [];
+  const cities = uniqueCities.sort((a, b) => a.name.localeCompare(b.name));
 
   // Mutations
   const createLocationMutation = useMutation({
@@ -269,13 +272,19 @@ const IndonesianLocationManager = () => {
                   className="w-64"
                 />
                   <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Filter by Province" />
+                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <SelectValue placeholder={`All Provinces (${provinces.length} total)`} />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Provinces</SelectItem>
+                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                      <SelectItem value="all" className="font-medium">
+                        All Provinces ({provinces.length} total)
+                      </SelectItem>
                       {provinces.map((province) => (
-                        <SelectItem key={province.code} value={province.code}>
+                        <SelectItem 
+                          key={province.code} 
+                          value={province.code}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
                           {province.name}
                         </SelectItem>
                       ))}
@@ -283,13 +292,19 @@ const IndonesianLocationManager = () => {
                   </Select>
                 {selectedProvince && selectedProvince !== 'all' && (
                   <Select value={selectedCity} onValueChange={setSelectedCity}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Filter by City" />
+                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <SelectValue placeholder={`All Cities (${cities.length} total)`} />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Cities</SelectItem>
+                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                      <SelectItem value="all" className="font-medium">
+                        All Cities ({cities.length} total)
+                      </SelectItem>
                       {cities.map((city) => (
-                        <SelectItem key={city.code} value={city.code}>
+                        <SelectItem 
+                          key={city.code} 
+                          value={city.code}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
                           {city.name}
                         </SelectItem>
                       ))}
