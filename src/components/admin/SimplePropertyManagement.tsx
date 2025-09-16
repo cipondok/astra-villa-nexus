@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import PropertyEditModal from "./PropertyEditModal";
@@ -19,7 +21,10 @@ import {
   Trash2, 
   Building2,
   Loader2,
-  AlertTriangle
+  AlertTriangle,
+  Filter,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
@@ -39,6 +44,10 @@ interface Property {
   status: string;
   created_at: string;
   owner_id: string;
+  posted_by?: Array<{
+    phone?: string;
+    full_name?: string;
+  }>;
 }
 
 interface SimplePropertyManagementProps {
@@ -54,6 +63,20 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   const [selectedProperties, setSelectedProperties] = useState<Set<string>>(new Set());
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
+  // Filter states
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [listingTypeFilter, setListingTypeFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  
+  // Editable WhatsApp states
+  const [editingWhatsApp, setEditingWhatsApp] = useState<string | null>(null);
+  const [whatsappValue, setWhatsappValue] = useState("");
 
   // Check if user is admin
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
@@ -64,20 +87,42 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
     isAdmin 
   });
 
-  // Fetch properties
-  const { data: properties = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['simple-properties', searchTerm],
+  // Fetch properties with enhanced filtering
+  const { data: allProperties = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['simple-properties', searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter],
     queryFn: async () => {
-      console.log('🔍 Fetching properties...');
+      console.log('🔍 Fetching properties with filters...');
       
       let query = supabase
         .from('properties')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(20);
+        .select(`
+          *,
+          posted_by:profiles!owner_id (
+            phone,
+            full_name
+          )
+        `)
+        .order('created_at', { ascending: false });
 
+      // Apply filters
       if (searchTerm.trim()) {
-        query = query.ilike('title', `%${searchTerm}%`);
+        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`);
+      }
+      
+      if (propertyTypeFilter) {
+        query = query.eq('property_type', propertyTypeFilter);
+      }
+      
+      if (statusFilter) {
+        query = query.eq('status', statusFilter);
+      }
+      
+      if (listingTypeFilter) {
+        query = query.eq('listing_type', listingTypeFilter);
+      }
+      
+      if (cityFilter) {
+        query = query.ilike('city', `%${cityFilter}%`);
       }
 
       const { data, error } = await query;
@@ -92,6 +137,17 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
     },
     enabled: !!user && isAdmin,
   });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(allProperties.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const properties = allProperties.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter]);
 
   // Delete mutation
   const deleteMutation = useMutation({
@@ -174,6 +230,43 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
     setEditingProperty(property);
   };
 
+  // WhatsApp editing functions
+  const handleEditWhatsApp = (propertyId: string, currentPhone: string) => {
+    setEditingWhatsApp(propertyId);
+    setWhatsappValue(currentPhone || "");
+  };
+
+  const handleSaveWhatsApp = async (propertyId: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ phone: whatsappValue })
+        .eq('id', allProperties.find(p => p.id === propertyId)?.owner_id);
+      
+      if (error) throw error;
+      
+      showSuccess("Success", "Phone/WhatsApp number updated successfully!");
+      setEditingWhatsApp(null);
+      refetch();
+    } catch (error: any) {
+      showError("Error", `Failed to update phone number: ${error.message}`);
+    }
+  };
+
+  const handleCancelWhatsApp = () => {
+    setEditingWhatsApp(null);
+    setWhatsappValue("");
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setPropertyTypeFilter("");
+    setStatusFilter("");
+    setListingTypeFilter("");
+    setCityFilter("");
+  };
+
   if (!user) {
     return (
       <Card>
@@ -231,7 +324,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
             Simple Property Management
           </h2>
           <p className="text-gray-600">
-            Working version - {properties.length} properties found
+            Indonesian Property Management Hub - {allProperties.length} total properties, showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of page {currentPage}
           </p>
         </div>
         <Button onClick={onAddProperty}>
@@ -240,20 +333,95 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         </Button>
       </div>
 
-      {/* Search */}
+      {/* Enhanced Search and Filters */}
       <Card>
-        <CardContent className="p-4">
-          <div className="flex gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Filter className="h-5 w-5" />
+              Search & Filters
+            </div>
+            <Button variant="outline" size="sm" onClick={clearFilters}>
+              Clear All
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search by title, location, or city..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          {/* Filter Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Property Type</label>
+              <Select value={propertyTypeFilter} onValueChange={setPropertyTypeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="house">House</SelectItem>
+                  <SelectItem value="apartment">Apartment</SelectItem>
+                  <SelectItem value="villa">Villa</SelectItem>
+                  <SelectItem value="townhouse">Townhouse</SelectItem>
+                  <SelectItem value="commercial">Commercial</SelectItem>
+                  <SelectItem value="land">Land</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-1 block">Status</label>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="sold">Sold</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="available">Available</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-1 block">Listing Type</label>
+              <Select value={listingTypeFilter} onValueChange={setListingTypeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Listings" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Listings</SelectItem>
+                  <SelectItem value="sale">For Sale</SelectItem>
+                  <SelectItem value="rent">For Rent</SelectItem>
+                  <SelectItem value="lease">For Lease</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-1 block">City</label>
               <Input
-                placeholder="Search properties..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                placeholder="Filter by city..."
+                value={cityFilter}
+                onChange={(e) => setCityFilter(e.target.value)}
               />
             </div>
-            {selectedProperties.size > 0 && (
+          </div>
+          
+          {/* Bulk Actions */}
+          {selectedProperties.size > 0 && (
+            <div className="flex justify-end">
               <Button 
                 variant="destructive" 
                 onClick={handleBulkDelete}
@@ -266,15 +434,20 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                 )}
                 Delete {selectedProperties.size} Selected
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Properties Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Properties ({properties.length})</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            <span>Properties ({allProperties.length} total, {properties.length} showing)</span>
+            <div className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
+            </div>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {properties.length === 0 ? (
@@ -303,6 +476,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                   <TableHead>Type</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Price</TableHead>
+                  <TableHead>Phone/WhatsApp</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -343,6 +517,43 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                         <div className="text-xs text-gray-500 capitalize">
                           {property.listing_type}
                         </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="max-w-32">
+                        {editingWhatsApp === property.id ? (
+                          <div className="flex gap-1">
+                            <Input
+                              value={whatsappValue}
+                              onChange={(e) => setWhatsappValue(e.target.value)}
+                              placeholder="+62..."
+                              className="text-xs h-8"
+                            />
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleSaveWhatsApp(property.id)}
+                              className="h-8 px-2"
+                            >
+                              ✓
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={handleCancelWhatsApp}
+                              className="h-8 px-2"
+                            >
+                              ✕
+                            </Button>
+                          </div>
+                        ) : (
+                          <div 
+                            className="cursor-pointer hover:bg-gray-100 p-1 rounded text-xs"
+                            onClick={() => handleEditWhatsApp(property.id, property.posted_by?.[0]?.phone || "")}
+                          >
+                            {property.posted_by?.[0]?.phone || "Not set"}
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -395,6 +606,62 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
             </Table>
           )}
         </CardContent>
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center space-x-2 py-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+            
+            <div className="flex items-center space-x-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={currentPage === pageNum ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className="w-8"
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            
+            <div className="text-sm text-gray-500 ml-4">
+              Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of {allProperties.length}
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Edit Modal */}
