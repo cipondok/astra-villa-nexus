@@ -98,6 +98,11 @@ const IndonesianLocationManager = () => {
     Array.from(new Map(locations.filter(l => l.province_code === selectedProvince).map(l => [l.city_code, { code: l.city_code, name: l.city_name }])).values()) : [];
   const cities = uniqueCities.sort((a, b) => a.name.localeCompare(b.name));
 
+  // Get all unique cities for cities tab dropdown
+  const allUniqueCities = locations ? 
+    Array.from(new Map(locations.map(l => [l.city_code, { code: l.city_code, name: l.city_name, province: l.province_name }])).values()) : [];
+  const allCities = allUniqueCities.sort((a, b) => a.name.localeCompare(b.name));
+
   // Mutations
   const createLocationMutation = useMutation({
     mutationFn: async (locationData: any) => {
@@ -271,45 +276,69 @@ const IndonesianLocationManager = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-64"
                 />
-                  <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                    <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`All Provinces (${provinces.length} total)`} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
-                      <SelectItem value="all" className="font-medium">
-                        All Provinces ({provinces.length} total)
-                      </SelectItem>
-                      {provinces.map((province) => (
-                        <SelectItem 
-                          key={province.code} 
-                          value={province.code}
-                          className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                        >
-                          {province.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                {selectedProvince && selectedProvince !== 'all' && (
+                {activeTab === 'cities' ? (
                   <Select value={selectedCity} onValueChange={setSelectedCity}>
                     <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                      <SelectValue placeholder={`All Cities (${cities.length} total)`} />
+                      <SelectValue placeholder={`All Cities (${allCities.length} total)`} />
                     </SelectTrigger>
                     <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
                       <SelectItem value="all" className="font-medium">
-                        All Cities ({cities.length} total)
+                        All Cities ({allCities.length} total)
                       </SelectItem>
-                      {cities.map((city) => (
+                      {allCities.map((city) => (
                         <SelectItem 
                           key={city.code} 
                           value={city.code}
                           className="hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
-                          {city.name}
+                          {city.name} ({city.province})
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                ) : (
+                  <>
+                    <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+                      <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                        <SelectValue placeholder={`All Provinces (${provinces.length} total)`} />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                        <SelectItem value="all" className="font-medium">
+                          All Provinces ({provinces.length} total)
+                        </SelectItem>
+                        {provinces.map((province) => (
+                          <SelectItem 
+                            key={province.code} 
+                            value={province.code}
+                            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            {province.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {selectedProvince && selectedProvince !== 'all' && (
+                      <Select value={selectedCity} onValueChange={setSelectedCity}>
+                        <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                          <SelectValue placeholder={`All Cities (${cities.length} total)`} />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-48 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                          <SelectItem value="all" className="font-medium">
+                            All Cities ({cities.length} total)
+                          </SelectItem>
+                          {cities.map((city) => (
+                            <SelectItem 
+                              key={city.code} 
+                              value={city.code}
+                              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                              {city.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </>
                 )}
               </div>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
