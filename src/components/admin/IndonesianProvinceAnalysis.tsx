@@ -10,7 +10,6 @@ import {
   AlertTriangle, 
   Globe, 
   Database,
-  Trash2,
   Merge,
   Info
 } from 'lucide-react';
@@ -37,60 +36,60 @@ interface ProvinceData {
   city_count: number;
 }
 
+interface LocationRow {
+  province_name: string;
+  province_code: string;
+  city_name: string;
+}
+
 const IndonesianProvinceAnalysis = () => {
-  const [selectedDuplicates, setSelectedDuplicates] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
   // Fetch province analysis data
-  const { data: provinceData = [], isLoading } = useQuery({
+  const { data: provinceData = [], isLoading, error } = useQuery({
     queryKey: ['province-analysis'],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_province_analysis');
-      if (error) {
-        // Fallback query if RPC doesn't exist
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('locations')
-          .select(`
-            province_name,
-            province_code,
-            city_name
-          `);
+    queryFn: async (): Promise<ProvinceData[]> => {
+      const { data: locationData, error: fetchError } = await supabase
+        .from('locations')
+        .select('province_name, province_code, city_name');
+      
+      if (fetchError) throw fetchError;
+      if (!locationData) return [];
+      
+      // Process the data manually to group by province
+      const groupedData = (locationData as LocationRow[]).reduce((acc: Record<string, any>, row: LocationRow) => {
+        const normalized = row.province_name.toUpperCase().trim();
+        const key = `${normalized}-${row.province_code}`;
         
-        if (fallbackError) throw fallbackError;
+        if (!acc[key]) {
+          acc[key] = {
+            normalized_name: normalized,
+            original_name: row.province_name,
+            province_code: row.province_code,
+            location_count: 0,
+            city_count: 0,
+            cities: new Set<string>()
+          };
+        }
         
-        // Process the data manually
-        const groupedData = fallbackData.reduce((acc: any, row: any) => {
-          const normalized = row.province_name.toUpperCase().trim();
-          const key = `${normalized}-${row.province_code}`;
-          
-          if (!acc[key]) {
-            acc[key] = {
-              normalized_name: normalized,
-              original_name: row.province_name,
-              province_code: row.province_code,
-              location_count: 0,
-              city_count: 0,
-              cities: new Set()
-            };
-          }
-          
-          acc[key].location_count++;
-          acc[key].cities.add(row.city_name);
-          
-          return acc;
-        }, {});
+        acc[key].location_count++;
+        acc[key].cities.add(row.city_name);
         
-        return Object.values(groupedData).map((item: any) => ({
-          ...item,
-          city_count: item.cities.size
-        }));
-      }
-      return data;
+        return acc;
+      }, {});
+      
+      return Object.values(groupedData).map((item: any) => ({
+        normalized_name: item.normalized_name,
+        original_name: item.original_name,
+        province_code: item.province_code,
+        location_count: item.location_count,
+        city_count: item.cities.size
+      })) as ProvinceData[];
     }
   });
 
   // Group provinces by normalized name to find duplicates
-  const duplicateGroups = provinceData.reduce((acc: any, province: ProvinceData) => {
+  const duplicateGroups = provinceData.reduce((acc: Record<string, ProvinceData[]>, province: ProvinceData) => {
     const normalized = province.normalized_name;
     if (!acc[normalized]) {
       acc[normalized] = [];
@@ -99,7 +98,7 @@ const IndonesianProvinceAnalysis = () => {
     return acc;
   }, {});
 
-  const duplicates = Object.entries(duplicateGroups).filter(([_, group]: any) => group.length > 1);
+  const duplicates = Object.entries(duplicateGroups).filter(([_, group]) => group.length > 1);
   const uniqueProvinces = Object.keys(duplicateGroups);
   const missingProvinces = OFFICIAL_PROVINCES.filter(official => 
     !uniqueProvinces.some(existing => 
@@ -144,6 +143,32 @@ const IndonesianProvinceAnalysis = () => {
   const handleCleanupDuplicates = (group: ProvinceData[]) => {
     cleanupMutation.mutate(group);
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Loading province analysis...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center py-8 text-red-600">
+            <XCircle className="h-12 w-12 mx-auto mb-4" />
+            <p>Error loading province data: {error.message}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -263,7 +288,7 @@ const IndonesianProvinceAnalysis = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {duplicates.map(([normalized, group]: any) => (
+                  {duplicates.map(([normalized, group]) => (
                     <div key={normalized} className="border rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-medium">{normalized}</h4>
@@ -350,11 +375,14 @@ const IndonesianProvinceAnalysis = () => {
                   const isPresent = !!found;
                   
                   return (
-                    <div key={province} className={`p-3 border rounded-lg ${
-                      isPresent 
-                        ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
-                        : 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800'
-                    }`}>
+                    <div 
+                      key={province} 
+                      className={`p-3 border rounded-lg ${
+                        isPresent 
+                          ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
+                          : 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800'
+                      }`}
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="outline" className="text-xs">
                           #{index + 1}
