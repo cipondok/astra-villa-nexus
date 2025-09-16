@@ -35,6 +35,27 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     area: "",
     status: "active",
     development_status: "completed",
+    // Additional comprehensive fields
+    thumbnail_url: "",
+    three_d_model_url: "",
+    virtual_tour_url: "",
+    image_urls: [] as string[],
+    agent_id: "",
+    owner_id: "",
+    approval_status: "",
+    featured: false,
+    floor_plan_url: "",
+    video_tour_url: "",
+    parking_spaces: "",
+    year_built: "",
+    lot_size: "",
+    property_tax: "",
+    maintenance_fee: "",
+    amenities: [] as string[],
+    nearby_facilities: [] as string[],
+    transportation: [] as string[],
+    seo_keywords: "",
+    custom_fields: {} as Record<string, any>,
   });
   
   const [images, setImages] = useState<string[]>([]);
@@ -176,6 +197,27 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         area: property.area || "",
         status: property.status || "active",
         development_status: property.development_status || "completed",
+        // Additional comprehensive fields
+        thumbnail_url: property.thumbnail_url || "",
+        three_d_model_url: property.three_d_model_url || "",
+        virtual_tour_url: property.virtual_tour_url || "",
+        image_urls: Array.isArray(property.image_urls) ? property.image_urls : [],
+        agent_id: property.agent_id || "",
+        owner_id: property.owner_id || "",
+        approval_status: property.approval_status || "",
+        featured: property.featured || false,
+        floor_plan_url: property.floor_plan_url || "",
+        video_tour_url: property.video_tour_url || "",
+        parking_spaces: property.parking_spaces?.toString() || "",
+        year_built: property.year_built?.toString() || "",
+        lot_size: property.lot_size?.toString() || "",
+        property_tax: property.property_tax?.toString() || "",
+        maintenance_fee: property.maintenance_fee?.toString() || "",
+        amenities: Array.isArray(property.amenities) ? property.amenities : [],
+        nearby_facilities: Array.isArray(property.nearby_facilities) ? property.nearby_facilities : [],
+        transportation: Array.isArray(property.transportation) ? property.transportation : [],
+        seo_keywords: property.seo_keywords || "",
+        custom_fields: property.custom_fields || {},
       });
 
       // Parse images from different sources
@@ -377,6 +419,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
         bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
         area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
+        // Additional numeric fields
+        parking_spaces: updates.parking_spaces ? parseInt(updates.parking_spaces) : null,
+        year_built: updates.year_built ? parseInt(updates.year_built) : null,
+        lot_size: updates.lot_size ? parseFloat(updates.lot_size) : null,
+        property_tax: updates.property_tax ? parseFloat(updates.property_tax) : null,
+        maintenance_fee: updates.maintenance_fee ? parseFloat(updates.maintenance_fee) : null,
+        // Boolean fields
+        featured: Boolean(updates.featured),
         updated_at: new Date().toISOString(),
       };
 
@@ -812,6 +862,106 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               </div>
             </div>
 
+            {/* Additional Property Details */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-4">
+                <h3 className="text-lg font-bold text-white">Additional Details</h3>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Parking Spaces</Label>
+                    <Input
+                      type="number"
+                      value={editData.parking_spaces}
+                      onChange={(e) => handleInputChange('parking_spaces', e.target.value)}
+                      placeholder="Number of parking spaces"
+                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Year Built</Label>
+                    <Input
+                      type="number"
+                      value={editData.year_built}
+                      onChange={(e) => handleInputChange('year_built', e.target.value)}
+                      placeholder="e.g., 2020"
+                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Lot Size (m²)</Label>
+                    <Input
+                      type="number"
+                      value={editData.lot_size}
+                      onChange={(e) => handleInputChange('lot_size', e.target.value)}
+                      placeholder="Lot size in square meters"
+                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Property Tax (IDR/year)</Label>
+                    <Input
+                      type="number"
+                      value={editData.property_tax}
+                      onChange={(e) => handleInputChange('property_tax', e.target.value)}
+                      placeholder="Annual property tax"
+                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Maintenance Fee (IDR/month)</Label>
+                    <Input
+                      type="number"
+                      value={editData.maintenance_fee}
+                      onChange={(e) => handleInputChange('maintenance_fee', e.target.value)}
+                      placeholder="Monthly maintenance fee"
+                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={editData.featured}
+                        onChange={(e) => setEditData(prev => ({ ...prev, featured: e.target.checked }))}
+                        className="rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
+                      />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Featured Property</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SEO & Marketing */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4">
+                <h3 className="text-lg font-bold text-white">SEO & Marketing</h3>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-slate-700 dark:text-slate-300 font-medium">SEO Keywords</Label>
+                  <Textarea
+                    value={editData.seo_keywords}
+                    onChange={(e) => handleInputChange('seo_keywords', e.target.value)}
+                    placeholder="luxury apartment, modern design, city center, investment property..."
+                    rows={3}
+                    className="border-slate-300 dark:border-slate-600 focus:border-pink-500"
+                  />
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Comma-separated keywords for better search visibility
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Advanced Features Tabs */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
               <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
@@ -872,51 +1022,58 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
                 {/* Tab Content */}
                 {activeTab === "3d" && (
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">3D View Settings</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">3D Model Quality</Label>
-                        <Select defaultValue="high">
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="low">Low Quality</SelectItem>
-                            <SelectItem value="medium">Medium Quality</SelectItem>
-                            <SelectItem value="high">High Quality</SelectItem>
-                            <SelectItem value="ultra">Ultra Quality</SelectItem>
-                          </SelectContent>
-                        </Select>
+                  <div className="space-y-6">
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">3D & Virtual Content</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">3D Model URL</Label>
+                          <Input
+                            value={editData.three_d_model_url}
+                            onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
+                            placeholder="https://example.com/model.glb"
+                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Virtual Tour URL</Label>
+                          <Input
+                            value={editData.virtual_tour_url}
+                            onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
+                            placeholder="https://example.com/virtual-tour"
+                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Viewing Mode</Label>
-                        <Select defaultValue="interior">
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="interior">Interior View</SelectItem>
-                            <SelectItem value="exterior">Exterior View</SelectItem>
-                            <SelectItem value="both">Both Views</SelectItem>
-                            <SelectItem value="panoramic">Panoramic</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Floor Plan URL</Label>
+                          <Input
+                            value={editData.floor_plan_url}
+                            onChange={(e) => handleInputChange('floor_plan_url', e.target.value)}
+                            placeholder="https://example.com/floor-plan.pdf"
+                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Video Tour URL</Label>
+                          <Input
+                            value={editData.video_tour_url}
+                            onChange={(e) => handleInputChange('video_tour_url', e.target.value)}
+                            placeholder="https://youtube.com/watch?v=..."
+                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Virtual Tour URL</Label>
-                        <Input
-                          placeholder="Enter virtual tour link..."
-                          className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Floor Plan URL</Label>
-                        <Input
-                          placeholder="Enter floor plan link..."
-                          className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                        />
-                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-slate-700 dark:text-slate-300 font-medium">Thumbnail Image URL</Label>
+                      <Input
+                        value={editData.thumbnail_url}
+                        onChange={(e) => handleInputChange('thumbnail_url', e.target.value)}
+                        placeholder="https://example.com/thumbnail.jpg"
+                        className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                      />
                     </div>
                   </div>
                 )}
@@ -1068,24 +1225,68 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 )}
 
                 {activeTab === "advanced" && (
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Analytics & Advanced Options</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-6">
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Advanced Settings & Analytics</h4>
+                    
+                    {/* Property Performance */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
-                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Property Performance</h5>
-                        <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
-                          <p>Views: 1,234</p>
-                          <p>Inquiries: 45</p>
-                          <p>Favorites: 89</p>
+                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Property Views</h5>
+                        <p className="text-2xl font-bold text-blue-600">1,234</p>
+                        <p className="text-xs text-slate-500">This month</p>
+                      </div>
+                      <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-lg">
+                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Inquiries</h5>
+                        <p className="text-2xl font-bold text-emerald-600">45</p>
+                        <p className="text-xs text-slate-500">Total received</p>
+                      </div>
+                      <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg">
+                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Favorites</h5>
+                        <p className="text-2xl font-bold text-amber-600">89</p>
+                        <p className="text-xs text-slate-500">User saves</p>
+                      </div>
+                    </div>
+
+                    {/* Advanced Options */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h5 className="font-semibold text-slate-800 dark:text-slate-200">Assignment</h5>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Agent ID</Label>
+                          <Input
+                            value={editData.agent_id}
+                            onChange={(e) => handleInputChange('agent_id', e.target.value)}
+                            placeholder="Assigned agent ID"
+                            className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Owner ID</Label>
+                          <Input
+                            value={editData.owner_id}
+                            onChange={(e) => handleInputChange('owner_id', e.target.value)}
+                            placeholder="Property owner ID"
+                            className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                          />
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">SEO Keywords</Label>
-                        <Textarea
-                          placeholder="luxury apartment, modern design, city center..."
-                          rows={3}
-                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
-                        />
+                      
+                      <div className="space-y-4">
+                        <h5 className="font-semibold text-slate-800 dark:text-slate-200">Approval Status</h5>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Approval Status</Label>
+                          <Select value={editData.approval_status} onValueChange={(value) => handleInputChange('approval_status', value)}>
+                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                              <SelectValue placeholder="Select approval status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pending Review</SelectItem>
+                              <SelectItem value="approved">Approved</SelectItem>
+                              <SelectItem value="rejected">Rejected</SelectItem>
+                              <SelectItem value="needs_revision">Needs Revision</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     </div>
                   </div>
