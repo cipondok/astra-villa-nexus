@@ -8196,6 +8196,24 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_public_vendor_profiles_safe: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          business_description: string
+          business_name: string
+          business_type: string
+          created_at: string
+          gallery_images: Json
+          id: string
+          is_active: boolean
+          logo_url: string
+          rating: number
+          service_areas: Json
+          social_media: Json
+          total_reviews: number
+        }[]
+      }
       get_public_vendor_profiles_secure: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -8249,6 +8267,14 @@ export type Database = {
           masked_number: string
           verification_status: string
           verified_at: string
+        }[]
+      }
+      get_vendor_contact_for_inquiry: {
+        Args: { vendor_profile_id: string }
+        Returns: {
+          business_email: string
+          business_phone: string
+          business_website: string
         }[]
       }
       get_vendor_contact_info: {
@@ -8460,6 +8486,25 @@ export type Database = {
           is_active: boolean
           is_verified: boolean
           rating: number
+          total_reviews: number
+        }[]
+      }
+      search_vendors_secure: {
+        Args: {
+          p_business_type?: string
+          p_limit?: number
+          p_offset?: number
+          p_search_text?: string
+          p_service_area?: string
+        }
+        Returns: {
+          business_description: string
+          business_name: string
+          business_type: string
+          id: string
+          logo_url: string
+          rating: number
+          service_areas: Json
           total_reviews: number
         }[]
       }
