@@ -7906,7 +7906,66 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      survey_bookings_secure: {
+        Row: {
+          admin_notes: string | null
+          agent_name: string | null
+          created_at: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          has_full_access: boolean | null
+          id: string | null
+          message: string | null
+          preferred_date: string | null
+          preferred_time: string | null
+          property_id: string | null
+          property_location: string | null
+          property_title: string | null
+          status: string | null
+          survey_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: never
+          agent_name?: string | null
+          created_at?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          has_full_access?: never
+          id?: string | null
+          message?: never
+          preferred_date?: string | null
+          preferred_time?: string | null
+          property_id?: string | null
+          property_location?: string | null
+          property_title?: string | null
+          status?: string | null
+          survey_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: never
+          agent_name?: string | null
+          created_at?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          has_full_access?: never
+          id?: string | null
+          message?: never
+          preferred_date?: string | null
+          preferred_time?: string | null
+          property_id?: string | null
+          property_location?: string | null
+          property_title?: string | null
+          status?: string | null
+          survey_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_customer_response_secure: {
@@ -7916,6 +7975,12 @@ export type Database = {
       aggregate_daily_analytics: {
         Args: { target_date?: string }
         Returns: undefined
+      }
+      can_access_survey_booking_details: {
+        Args: {
+          booking_row: Database["public"]["Tables"]["property_survey_bookings"]["Row"]
+        }
+        Returns: boolean
       }
       can_access_vendor_business_profile: {
         Args: { operation?: string; profile_vendor_id: string }
@@ -8296,6 +8361,10 @@ export type Database = {
           service_areas: Json
           total_reviews: number
         }[]
+      }
+      get_survey_booking_stats_secure: {
+        Args: { p_property_id?: string }
+        Returns: Json
       }
       get_user_financial_summary: {
         Args: { p_user_id?: string }
