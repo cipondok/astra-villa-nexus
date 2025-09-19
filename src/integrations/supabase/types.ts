@@ -7906,66 +7906,7 @@ export type Database = {
       }
     }
     Views: {
-      survey_bookings_secure: {
-        Row: {
-          admin_notes: string | null
-          agent_name: string | null
-          created_at: string | null
-          customer_email: string | null
-          customer_name: string | null
-          customer_phone: string | null
-          has_full_access: boolean | null
-          id: string | null
-          message: string | null
-          preferred_date: string | null
-          preferred_time: string | null
-          property_id: string | null
-          property_location: string | null
-          property_title: string | null
-          status: string | null
-          survey_type: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          admin_notes?: never
-          agent_name?: string | null
-          created_at?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          has_full_access?: never
-          id?: string | null
-          message?: never
-          preferred_date?: string | null
-          preferred_time?: string | null
-          property_id?: string | null
-          property_location?: string | null
-          property_title?: string | null
-          status?: string | null
-          survey_type?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          admin_notes?: never
-          agent_name?: string | null
-          created_at?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          has_full_access?: never
-          id?: string | null
-          message?: never
-          preferred_date?: string | null
-          preferred_time?: string | null
-          property_id?: string | null
-          property_location?: string | null
-          property_title?: string | null
-          status?: string | null
-          survey_type?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       add_customer_response_secure: {
@@ -8177,6 +8118,10 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_my_property_booking_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_own_vendor_profile_secure: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -8365,6 +8310,28 @@ export type Database = {
       get_survey_booking_stats_secure: {
         Args: { p_property_id?: string }
         Returns: Json
+      }
+      get_survey_bookings_secure: {
+        Args: { p_limit?: number; p_offset?: number; p_property_id?: string }
+        Returns: {
+          admin_notes: string
+          agent_name: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          has_full_access: boolean
+          id: string
+          message: string
+          preferred_date: string
+          preferred_time: string
+          property_id: string
+          property_location: string
+          property_title: string
+          status: string
+          survey_type: string
+          updated_at: string
+        }[]
       }
       get_user_financial_summary: {
         Args: { p_user_id?: string }

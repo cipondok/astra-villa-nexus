@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, MapPin, Clock, User, Eye, CheckCircle, XCircle } from "lucide-react";
+import { Calendar, MapPin, Clock, User, Eye, CheckCircle, XCircle, Shield, AlertTriangle } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import { useSurveyBookings, useSurveyBookingStats } from "@/hooks/useSurveyBookings";
 
 const PropertySurveyManagement = () => {
   const [selectedSurvey, setSelectedSurvey] = useState(null);
@@ -20,71 +21,31 @@ const PropertySurveyManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Mock data for demo - in real app this would come from a surveys table
-  const { data: surveys, isLoading } = useQuery({
-    queryKey: ['property-surveys'],
-    queryFn: async () => {
-      // Mock survey data
-      return [
-        {
-          id: '1',
-          property_title: 'Luxury Villa in Seminyak',
-          customer_name: 'John Smith',
-          customer_email: 'john@example.com',
-          customer_phone: '+1234567890',
-          preferred_date: '2024-12-15',
-          preferred_time: '10:00',
-          status: 'pending',
-          created_at: new Date().toISOString(),
-          notes: 'Interested in purchasing for investment purposes.',
-          property_location: 'Seminyak, Bali',
-          survey_type: 'viewing'
-        },
-        {
-          id: '2',
-          property_title: 'Modern Apartment in Canggu',
-          customer_name: 'Sarah Johnson',
-          customer_email: 'sarah@example.com',
-          customer_phone: '+9876543210',
-          preferred_date: '2024-12-18',
-          preferred_time: '14:00',
-          status: 'confirmed',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          notes: 'Looking for a holiday home near the beach.',
-          property_location: 'Canggu, Bali',
-          survey_type: 'inspection'
-        },
-        {
-          id: '3',
-          property_title: 'Traditional House in Ubud',
-          customer_name: 'Mike Wilson',
-          customer_email: 'mike@example.com',
-          customer_phone: '+5555666777',
-          preferred_date: '2024-12-20',
-          preferred_time: '16:00',
-          status: 'completed',
-          created_at: new Date(Date.now() - 172800000).toISOString(),
-          notes: 'Interested in traditional Balinese architecture.',
-          property_location: 'Ubud, Bali',
-          survey_type: 'valuation'
-        }
-      ];
-    },
-  });
+  // Fetch survey bookings using the secure function
+  const { data: surveys, isLoading, error } = useSurveyBookings();
+  
+  // Show error message if access is denied
+  if (error) {
+    showError("Access Denied", "You don't have permission to view survey bookings or the feature is loading.");
+  }
 
   const updateSurveyMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      // For demo purposes, we'll just return success
-      return Promise.resolve();
+      const { error } = await supabase
+        .from('property_survey_bookings')
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       showSuccess("Survey Updated", "Survey status has been updated successfully.");
-      queryClient.invalidateQueries({ queryKey: ['property-surveys'] });
+      queryClient.invalidateQueries({ queryKey: ['survey-bookings'] });
       setShowDetailDialog(false);
       setSelectedSurvey(null);
     },
     onError: (error: any) => {
-      showError("Update Failed", error.message);
+      showError("Update Failed", error.message || "Failed to update survey status.");
     },
   });
 
@@ -128,16 +89,35 @@ const PropertySurveyManagement = () => {
     survey.property_location?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
+  // Show access level indicator
+  const hasRestrictedAccess = surveys?.some(survey => !survey.has_full_access);
+
   return (
     <div className="space-y-6">
+      {/* Security Notice */}
+      {hasRestrictedAccess && (
+        <Card className="bg-yellow-500/10 border-yellow-500/30">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 text-yellow-400">
+              <Shield className="h-4 w-4" />
+              <span className="text-sm font-medium">Security Notice</span>
+            </div>
+            <p className="text-yellow-300 text-sm mt-1">
+              Some customer information is masked for privacy protection. You only see full details for properties you own/manage.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="bg-white/10 backdrop-blur-md border-white/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Calendar className="h-5 w-5" />
             Property Survey Booking System
+            {hasRestrictedAccess && <Shield className="h-4 w-4 text-yellow-400" />}
           </CardTitle>
           <CardDescription className="text-gray-300">
-            Manage property viewing and survey appointments
+            Manage property viewing and survey appointments with privacy protection
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -229,16 +209,17 @@ const PropertySurveyManagement = () => {
                   ) : (
                     filteredSurveys.map((survey) => (
                       <TableRow key={survey.id} className="border-white/20">
-                        <TableCell className="text-white">
-                          <div className="text-sm">
-                            <div className="font-medium flex items-center gap-2">
-                              <User className="h-3 w-3" />
-                              {survey.customer_name}
-                            </div>
-                            <div className="text-gray-400">{survey.customer_email}</div>
-                            <div className="text-gray-400">{survey.customer_phone}</div>
-                          </div>
-                        </TableCell>
+                         <TableCell className="text-white">
+                           <div className="text-sm">
+                             <div className="font-medium flex items-center gap-2">
+                               <User className="h-3 w-3" />
+                               {survey.customer_name}
+                               {!survey.has_full_access && <Shield className="h-3 w-3 text-yellow-400" />}
+                             </div>
+                             <div className="text-gray-400">{survey.customer_email}</div>
+                             <div className="text-gray-400">{survey.customer_phone}</div>
+                           </div>
+                         </TableCell>
                         <TableCell className="text-gray-300">
                           <div className="text-sm">
                             <div className="font-medium">{survey.property_title}</div>
@@ -331,8 +312,21 @@ const PropertySurveyManagement = () => {
               </div>
               <div>
                 <Label className="text-gray-300 font-medium">Notes:</Label>
-                <p className="text-white bg-gray-800 p-3 rounded mt-2">{selectedSurvey.notes}</p>
+                <p className="text-white bg-gray-800 p-3 rounded mt-2">
+                  {selectedSurvey.message || 'No additional notes provided'}
+                </p>
               </div>
+              {!selectedSurvey.has_full_access && (
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-yellow-400">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="text-sm font-medium">Privacy Protected</span>
+                  </div>
+                  <p className="text-yellow-300 text-sm mt-1">
+                    Some customer information is masked for privacy protection.
+                  </p>
+                </div>
+              )}
             </div>
           )}
           <DialogFooter className="gap-2">
