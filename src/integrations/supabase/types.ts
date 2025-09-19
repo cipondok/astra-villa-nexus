@@ -8166,6 +8166,43 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: Json
       }
+      get_property_details_secure: {
+        Args: { p_property_id: string }
+        Returns: {
+          access_level: string
+          agent_contact_info: Json
+          area: string
+          area_sqm: number
+          bathrooms: number
+          bedrooms: number
+          can_view_contact_info: boolean
+          city: string
+          created_at: string
+          description: string
+          development_status: string
+          id: string
+          image_urls: string[]
+          images: string[]
+          listing_type: string
+          location: string
+          minimum_rental_days: number
+          owner_contact_info: Json
+          price: number
+          property_features: Json
+          property_type: string
+          rental_periods: string[]
+          state: string
+          status: string
+          three_d_model_url: string
+          title: string
+          updated_at: string
+          virtual_tour_url: string
+        }[]
+      }
+      get_property_statistics_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_property_survey_bookings_for_owner: {
         Args: { p_property_id: string }
         Returns: {
@@ -8224,6 +8261,44 @@ export type Database = {
           status: string
           title: string
           total_count: number
+        }[]
+      }
+      get_public_property_listings_secure: {
+        Args: {
+          p_city?: string
+          p_limit?: number
+          p_listing_type?: string
+          p_max_price?: number
+          p_min_price?: number
+          p_offset?: number
+          p_property_type?: string
+          p_require_auth?: boolean
+          p_search?: string
+        }
+        Returns: {
+          area: string
+          area_sqm: number
+          bathrooms: number
+          bedrooms: number
+          can_view_contact_info: boolean
+          can_view_owner_info: boolean
+          city: string
+          created_at: string
+          description: string
+          development_status: string
+          id: string
+          image_urls: string[]
+          images: string[]
+          listing_type: string
+          location: string
+          price: number
+          property_type: string
+          state: string
+          status: string
+          thumbnail_url: string
+          title: string
+          total_count: number
+          virtual_tour_url: string
         }[]
       }
       get_public_vendor_directory: {
