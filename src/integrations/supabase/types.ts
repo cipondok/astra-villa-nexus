@@ -8543,7 +8543,7 @@ export type Database = {
         Returns: string
       }
       log_financial_access: {
-        Args: { p_operation: string; p_table_name: string; p_user_id?: string }
+        Args: { operation: string; table_name: string; user_id?: string }
         Returns: string
       }
       log_page_error: {
