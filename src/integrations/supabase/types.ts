@@ -8493,6 +8493,18 @@ export type Database = {
           tax_id: string
         }[]
       }
+      get_vendor_verification_summary: {
+        Args: { p_vendor_id: string }
+        Returns: {
+          document_count: number
+          kyc_level: string
+          kyc_status: string
+          overall_score: number
+          pending_documents: number
+          rejected_documents: number
+          verified_documents: number
+        }[]
+      }
       insert_api_setting_secure: {
         Args: {
           p_api_endpoint?: string
@@ -8546,6 +8558,16 @@ export type Database = {
         Args: { operation: string; table_name: string; user_id?: string }
         Returns: string
       }
+      log_identity_verification_access: {
+        Args: {
+          operation: string
+          record_id: string
+          table_name: string
+          user_id?: string
+          vendor_id: string
+        }
+        Returns: string
+      }
       log_page_error: {
         Args: {
           p_error_page?: string
@@ -8587,6 +8609,10 @@ export type Database = {
       }
       mask_bpjs_number_secure: {
         Args: { bpjs_number: string }
+        Returns: string
+      }
+      mask_document_number: {
+        Args: { doc_number: string }
         Returns: string
       }
       reset_admin_password: {
@@ -8673,6 +8699,14 @@ export type Database = {
       }
       unlock_vendor_main_category: {
         Args: { p_reason?: string; p_vendor_id: string }
+        Returns: boolean
+      }
+      update_verification_status: {
+        Args: {
+          p_document_id: string
+          p_rejection_reason?: string
+          p_status: string
+        }
         Returns: boolean
       }
       validate_field_safe: {
