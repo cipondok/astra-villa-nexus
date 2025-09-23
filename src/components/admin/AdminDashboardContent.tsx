@@ -45,6 +45,7 @@ import { BulkKYCOperations } from "./BulkKYCOperations";
 import { DocumentOCR } from "./DocumentOCR";
 import ErrorLogsTable from "./ErrorLogsTable";
 import UserExperienceTips from "./UserExperienceTips";
+import { AlgorithmDashboard } from "./AlgorithmDashboard";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -145,6 +146,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ErrorLogsTable />;
       case "user-experience-tips":
         return <UserExperienceTips />;
+      case "algorithm-dashboard":
+        return <AlgorithmDashboard />;
       default:
         return <AdminOverview />;
     }

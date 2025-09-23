@@ -36,7 +36,8 @@ import {
   Coins,
   ChevronDown,
   MapPin,
-  Key
+  Key,
+  Brain
 } from "lucide-react";
 import { navigationSections } from "./navigationSections";
 
@@ -65,6 +66,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
   const quickAccess: TabItem[] = [
     { id: "overview", label: "Overview", icon: Activity, description: "Main dashboard overview and quick stats" },
     { id: "ai-assistant", label: "AI Assistant", icon: Activity, badge: "New", description: "AI-powered admin assistant" },
+    { id: "algorithm-dashboard", label: "Algorithm", icon: Brain, badge: "New", description: "AI algorithm monitoring and analytics" },
     { id: "diagnostic", label: "Diagnostic", icon: Wrench, badge: "New", description: "System diagnostics and testing" },
     { id: "astra-token-hub", label: "ASTRA Hub", icon: Coins, description: "ASTRA token management and analytics" },
   ];
