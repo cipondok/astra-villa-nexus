@@ -104,18 +104,19 @@ const AppContent = () => {
   );
 };
 
-function App() {
-  // Create QueryClient instance directly to avoid hook context issues
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
-        refetchOnWindowFocus: false,
-        retry: false,
-      },
+// Create QueryClient instance outside component to avoid recreation on every render
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      retry: false,
     },
-  });
+  },
+});
+
+function App() {
 
   return (
     <ErrorBoundary>
