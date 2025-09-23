@@ -189,7 +189,7 @@ export function PerformanceMonitor({ metrics, onRefresh }: PerformanceMonitorPro
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Memory</CardTitle>
-            <Memory className="h-4 w-4 text-muted-foreground" />
+            <HardDrive className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${getStatusColor(systemMetrics?.memory || 0, { good: 60, warning: 80 })}`}>
