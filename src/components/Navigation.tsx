@@ -18,8 +18,16 @@ const Navigation = () => {
   const { user, profile, signOut } = useAuth();
   const { language } = useLanguage();
   const { theme, setTheme } = useTheme();
-  const navigate = useNavigate();
-  const location = useLocation();
+  // Safe router hooks with fallback
+  let navigate, location;
+  try {
+    navigate = useNavigate();
+    location = useLocation();
+  } catch (error) {
+    // Fallback when Router context is not available
+    navigate = () => {};
+    location = { pathname: '/' };
+  }
 
   useEffect(() => {
     setIsMenuOpen(false);
