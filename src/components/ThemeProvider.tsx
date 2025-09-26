@@ -27,9 +27,17 @@ export function ThemeProvider({
   storageKey = "astra-villa-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        const savedTheme = localStorage.getItem(storageKey) as Theme;
+        return savedTheme || defaultTheme;
+      }
+    } catch (error) {
+      console.warn("Error accessing localStorage:", error);
+    }
+    return defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
