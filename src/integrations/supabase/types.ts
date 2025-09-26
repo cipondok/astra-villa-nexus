@@ -7921,6 +7921,10 @@ export type Database = {
         Args: { operation?: string; profile_user_id: string }
         Returns: boolean
       }
+      can_access_rejection_codes_strict: {
+        Args: { operation?: string }
+        Returns: boolean
+      }
       can_access_survey_booking_details: {
         Args: {
           booking_row: Database["public"]["Tables"]["property_survey_bookings"]["Row"]
@@ -8111,6 +8115,22 @@ export type Database = {
           property_title: string
           status: string
           survey_type: string
+        }[]
+      }
+      get_full_rejection_data: {
+        Args: { rejection_code?: string }
+        Returns: {
+          auto_resubmit_allowed: boolean
+          category: string
+          code: string
+          description_en: string
+          description_id: string
+          estimated_fix_time_hours: number
+          reason_en: string
+          reason_id: string
+          requires_document_upload: boolean
+          resolution_steps_en: Json
+          resolution_steps_id: Json
         }[]
       }
       get_masked_api_settings: {
@@ -8388,6 +8408,17 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_safe_rejection_context: {
+        Args: { rejection_code: string }
+        Returns: {
+          category: string
+          code: string
+          estimated_fix_hours: number
+          is_auto_resubmit_allowed: boolean
+          reason_en: string
+          reason_id: string
+        }[]
+      }
       get_safe_vendor_categories: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -8622,6 +8653,14 @@ export type Database = {
           p_user_ip?: unknown
         }
         Returns: string
+      }
+      log_rejection_code_usage: {
+        Args: {
+          application_id?: string
+          rejection_code: string
+          usage_context: string
+        }
+        Returns: undefined
       }
       log_security_event: {
         Args: {
