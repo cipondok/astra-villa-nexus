@@ -310,7 +310,7 @@ const Navigation = () => {
               {/* Enhanced User Section with Stats and Badges */}
               {user ? (
                 <div className="animate-scale-in" style={{ animationDelay: '300ms' }}>
-                  <UserIconWithBadge />
+                  <UserIconWithBadge onNavigate={(path) => navigate(path)} />
                 </div>
               ) : (
                 <div className="relative group animate-scale-in" style={{ animationDelay: '300ms' }}>

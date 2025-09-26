@@ -25,10 +25,21 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "@/contexts/NotificationContext";
 
-const UserIconWithBadge = () => {
+interface UserIconWithBadgeProps {
+  onNavigate?: (path: string) => void;
+}
+
+const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate: undefined }) => {
   const { user, profile, signOut } = useAuth();
   const { unreadCount } = useNotifications();
-  const navigate = useNavigate();
+  
+  // Safe navigation with fallback
+  let navigate;
+  try {
+    navigate = useNavigate();
+  } catch (error) {
+    navigate = onNavigate || (() => {});
+  }
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {

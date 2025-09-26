@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp } from "lucide-react";
 import PartnerNetworkModal from "./partners/PartnerNetworkModal";
 import BecomePartnerModal from "./partners/BecomePartnerModal";
@@ -16,14 +16,6 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
   const [isPartnerBenefitsOpen, setIsPartnerBenefitsOpen] = useState(false);
   const [isJointVenturesOpen, setIsJointVenturesOpen] = useState(false);
-
-  // Safe navigation hook with fallback
-  let navigate;
-  try {
-    navigate = useNavigate();
-  } catch (error) {
-    navigate = () => {};
-  }
 
   const text = {
     en: {
