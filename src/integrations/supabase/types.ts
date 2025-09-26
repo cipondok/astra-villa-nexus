@@ -7917,6 +7917,10 @@ export type Database = {
         Args: { target_date?: string }
         Returns: undefined
       }
+      can_access_profile_strict: {
+        Args: { operation?: string; profile_user_id: string }
+        Returns: boolean
+      }
       can_access_survey_booking_details: {
         Args: {
           booking_row: Database["public"]["Tables"]["property_survey_bookings"]["Row"]
@@ -8372,6 +8376,18 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_safe_public_profile: {
+        Args: { profile_user_id: string }
+        Returns: {
+          avatar_url: string
+          company_name: string
+          full_name: string
+          id: string
+          is_public_profile: boolean
+          role: Database["public"]["Enums"]["user_role"]
+          verification_status: string
+        }[]
+      }
       get_safe_vendor_categories: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -8641,6 +8657,10 @@ export type Database = {
       }
       mask_document_number: {
         Args: { doc_number: string }
+        Returns: string
+      }
+      mask_sensitive_profile_data: {
+        Args: { data_type: string; data_value: string }
         Returns: string
       }
       reset_admin_password: {
