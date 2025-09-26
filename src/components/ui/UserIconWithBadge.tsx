@@ -33,13 +33,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
   const { user, profile, signOut } = useAuth();
   const { unreadCount } = useNotifications();
   
-  // Safe navigation with fallback
-  let navigate;
-  try {
-    navigate = useNavigate();
-  } catch (error) {
-    navigate = onNavigate || (() => {});
-  }
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {

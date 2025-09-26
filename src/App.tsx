@@ -117,29 +117,28 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-          <LanguageProvider>
-            <AlertProvider>
-              <AuthProvider>
-                <NotificationProvider>
-                  <PropertyComparisonProvider>
-                    <Router>
+      <Router>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+            <LanguageProvider>
+              <AlertProvider>
+                <AuthProvider>
+                  <NotificationProvider>
+                    <PropertyComparisonProvider>
                       <AppInitializer>
                         <AppContent />
                       </AppInitializer>
-                    </Router>
-                    <Toaster />
-                  </PropertyComparisonProvider>
-                </NotificationProvider>
-              </AuthProvider>
-            </AlertProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+                      <Toaster />
+                    </PropertyComparisonProvider>
+                  </NotificationProvider>
+                </AuthProvider>
+              </AlertProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </Router>
     </ErrorBoundary>
   );
 }
