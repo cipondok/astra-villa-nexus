@@ -2,10 +2,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp } from "lucide-react";
-import PartnerNetworkModal from "./partners/PartnerNetworkModal";
-import BecomePartnerModal from "./partners/BecomePartnerModal";
-import PartnerBenefitsModal from "./partners/PartnerBenefitsModal";
-import JointVenturesModal from "./partners/JointVenturesModal";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -258,23 +254,6 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </div>
       </div>
 
-      {/* Modals */}
-      <PartnerNetworkModal 
-        isOpen={isPartnerNetworkOpen} 
-        onClose={() => setIsPartnerNetworkOpen(false)} 
-      />
-      <BecomePartnerModal 
-        isOpen={isBecomePartnerOpen} 
-        onClose={() => setIsBecomePartnerOpen(false)} 
-      />
-      <PartnerBenefitsModal 
-        isOpen={isPartnerBenefitsOpen} 
-        onClose={() => setIsPartnerBenefitsOpen(false)} 
-      />
-      <JointVenturesModal 
-        isOpen={isJointVenturesOpen} 
-        onClose={() => setIsJointVenturesOpen(false)} 
-      />
     </footer>
   );
 };
