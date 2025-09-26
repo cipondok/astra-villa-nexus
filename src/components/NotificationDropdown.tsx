@@ -5,7 +5,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useFavorites } from '@/hooks/useFavorites';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import {
   Bell,
@@ -20,10 +19,9 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 
-const NotificationDropdown: React.FC = () => {
+const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = ({ onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
   const { toast } = useToast();
   const {
     notifications,
@@ -66,7 +64,7 @@ const NotificationDropdown: React.FC = () => {
     }
     
     if (notification.propertyId) {
-      navigate(`/properties/${notification.propertyId}`);
+      onNavigate?.(`/properties/${notification.propertyId}`);
       setIsOpen(false);
     }
   };
@@ -251,7 +249,7 @@ const NotificationDropdown: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  navigate('/saved');
+                  onNavigate?.('/saved');
                   setIsOpen(false);
                 }}
                 className="w-full text-sm"
