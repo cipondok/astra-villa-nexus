@@ -7927,6 +7927,10 @@ export type Database = {
         Args: { operation?: string; profile_vendor_id: string }
         Returns: boolean
       }
+      can_access_vendor_categories_strict: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       can_change_business_nature: {
         Args: { vendor_id: string }
         Returns: boolean
@@ -8368,6 +8372,21 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_safe_vendor_categories: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          category_code: string
+          display_order: number
+          icon: string
+          id: string
+          is_active: boolean
+          level: number
+          name_en: string
+          name_id: string
+          parent_id: string
+          vendor_type: string
+        }[]
+      }
       get_safe_vendor_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -8451,6 +8470,15 @@ export type Database = {
       get_vendor_financial_summary_secure: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_vendor_pricing_data: {
+        Args: { category_id: string }
+        Returns: {
+          base_price_range: Json
+          commission_rate: number
+          id: string
+          pricing_model: string
+        }[]
       }
       get_vendor_profile_summary: {
         Args: { p_vendor_id: string }
