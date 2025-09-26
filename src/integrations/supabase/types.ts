@@ -7917,6 +7917,10 @@ export type Database = {
         Args: { target_date?: string }
         Returns: undefined
       }
+      can_access_financial_reward_config_strict: {
+        Args: { operation?: string }
+        Returns: boolean
+      }
       can_access_profile_strict: {
         Args: { operation?: string; profile_user_id: string }
         Returns: boolean
@@ -7970,6 +7974,16 @@ export type Database = {
       check_super_admin_email: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      check_user_reward_eligibility: {
+        Args: { reward_type_param: string; user_id_param: string }
+        Returns: {
+          is_eligible: boolean
+          reward_type: string
+          user_role: string
+          valid_from: string
+          valid_until: string
+        }[]
       }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
@@ -8131,6 +8145,22 @@ export type Database = {
           requires_document_upload: boolean
           resolution_steps_en: Json
           resolution_steps_id: Json
+        }[]
+      }
+      get_full_reward_configuration: {
+        Args: { reward_type_param?: string }
+        Returns: {
+          conditions: Json
+          created_at: string
+          id: string
+          is_active: boolean
+          percentage_rate: number
+          reward_amount: number
+          reward_type: string
+          updated_at: string
+          user_role: string
+          valid_from: string
+          valid_until: string
         }[]
       }
       get_masked_api_settings: {
@@ -8696,6 +8726,10 @@ export type Database = {
       }
       mask_document_number: {
         Args: { doc_number: string }
+        Returns: string
+      }
+      mask_financial_reward_data: {
+        Args: { amount: number; data_type: string }
         Returns: string
       }
       mask_sensitive_profile_data: {
