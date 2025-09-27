@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import EnhancedAdminDashboard from '@/components/admin/EnhancedAdminDashboard';
 import AlertMonitoringProvider from '@/components/admin/AlertMonitoringProvider';
 import LoadingPage from '@/components/LoadingPage';
@@ -13,7 +12,6 @@ const AdminDashboard = () => {
   const { profile, user } = useAuth();
   const { connectionStatus } = useDatabaseConnection();
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('AdminDashboard mounted');
@@ -58,18 +56,18 @@ const AdminDashboard = () => {
             </AlertDescription>
           </Alert>
           <div className="mt-4 space-x-2">
-            <button 
-              onClick={() => navigate('/?from=admin', { replace: true })}
-              className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
+            <a 
+              href="/?from=admin"
+              className="inline-block bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
             >
               Go to Home
-            </button>
-            <button 
-              onClick={() => navigate('/?auth=true', { replace: true })}
-              className="bg-gray-600 dark:bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+            </a>
+            <a 
+              href="/?auth=true"
+              className="inline-block bg-gray-600 dark:bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
             >
               Re-login
-            </button>
+            </a>
           </div>
         </div>
       </div>
