@@ -21,10 +21,11 @@ export const useDatabaseConnection = () => {
         controller.abort();
       }, 5000); // Increased timeout to 5 seconds
 
-      // Try to run a simple query that should always work
+      // Try to run a simple query that should always work - just test the connection
       const { data, error } = await supabase
-        .from('profiles')
-        .select('count')
+        .from('system_settings')
+        .select('id')
+        .eq('is_public', true)
         .limit(1)
         .abortSignal(controller.signal);
 
