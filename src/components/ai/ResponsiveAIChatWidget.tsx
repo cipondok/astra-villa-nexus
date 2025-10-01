@@ -1,9 +1,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot } from "lucide-react";
 import AIChatTrigger from "./AIChatTrigger";
 import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
@@ -21,6 +22,7 @@ interface ResponsiveAIChatWidgetProps {
 
 const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatWidgetProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +64,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
+
+    // Expand if minimized
+    if (isMinimized) setIsMinimized(false);
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -208,20 +213,19 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Chat trigger - always visible and clickable */}
+      {/* Chat trigger - Fixed position, always visible */}
       {!isOpen && (
         <div 
           style={{ 
-            position: 'fixed' as const,
-            bottom: '20px',
-            right: '20px',
-            zIndex: 9999,
-            pointerEvents: 'auto' as const,
-            cursor: 'pointer'
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            zIndex: 9999
           }}
           onClick={() => {
             console.log('Chat trigger clicked');
             setIsOpen(true);
+            setIsMinimized(false);
           }}
         >
           <div style={{ position: 'relative', width: '60px', height: '60px' }}>
@@ -241,57 +245,87 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       )}
 
-      {/* Chat window - visible when open */}
+      {/* Chat window - Sticky fixed position */}
       {isOpen && (
         <div 
           style={{
-            position: 'fixed' as const,
-            top: '50%',
-            right: '20px',
-            transform: 'translateY(-50%)',
-            width: isMobile ? 'calc(100vw - 40px)' : '380px',
-            height: isMobile ? 'calc(100vh - 40px)' : '550px',
-            maxHeight: '90vh',
+            position: 'fixed',
+            bottom: isMinimized ? '24px' : isMobile ? '20px' : '24px',
+            right: '24px',
+            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 40px)' : '400px',
+            height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 100px)' : '600px',
+            maxHeight: isMinimized ? 'auto' : '90vh',
             zIndex: 9999,
-            pointerEvents: 'auto' as const
+            transition: 'all 0.3s ease-in-out'
           }}
         >
-          <Card className="h-full w-full flex flex-col border-primary/20 overflow-hidden bg-background/95 backdrop-blur-xl shadow-2xl rounded-2xl border shadow-xl transition-all duration-300 hover:shadow-3xl">
-            <AIChatHeader onClose={() => setIsOpen(false)} />
-            <CardContent className="p-0 flex-1 flex flex-col min-h-0">
-              <ScrollArea className="flex-1">
-                <div className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}>
-                  <AIChatMessages
-                    messages={messages}
-                    isLoading={isLoading}
-                    messagesEndRef={messagesEndRef}
-                  />
-                </div>
-              </ScrollArea>
-
-              {messages.length <= 1 && (
-                <div className={`${isMobile ? 'px-3 pb-2' : 'px-4 pb-2'}`}>
-                  <AIChatQuickActions
-                    quickActions={quickActions}
-                    onActionClick={setMessage}
-                  />
-                </div>
-              )}
-
-              <div className={cn(
-                "border-t border-primary/10 bg-background/50",
-                isMobile ? 'p-3' : 'p-4'
-              )}>
-                <AIChatInput
-                  message={message}
-                  setMessage={setMessage}
-                  onSendMessage={handleSendMessage}
-                  onVoiceInput={handleVoiceInput}
-                  isLoading={isLoading}
-                  isListening={isListening}
-                />
+          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
+            {/* Header with Close and Minimize */}
+            <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+              <div className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                <span className="font-semibold text-sm">AI Assistant</span>
               </div>
-            </CardContent>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  onClick={() => setIsMinimized(!isMinimized)}
+                >
+                  {isMinimized ? '□' : '−'}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setIsMinimized(false);
+                  }}
+                >
+                  ✕
+                </Button>
+              </div>
+            </div>
+
+            {/* Chat content - only show when not minimized */}
+            {!isMinimized && (
+              <CardContent className="p-0 flex-1 flex flex-col min-h-0">
+                <ScrollArea className="flex-1">
+                  <div className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}>
+                    <AIChatMessages
+                      messages={messages}
+                      isLoading={isLoading}
+                      messagesEndRef={messagesEndRef}
+                    />
+                  </div>
+                </ScrollArea>
+
+                {messages.length <= 1 && (
+                  <div className={`${isMobile ? 'px-3 pb-2' : 'px-4 pb-2'}`}>
+                    <AIChatQuickActions
+                      quickActions={quickActions}
+                      onActionClick={setMessage}
+                    />
+                  </div>
+                )}
+
+                <div className={cn(
+                  "border-t border-primary/10 bg-background/50",
+                  isMobile ? 'p-3' : 'p-4'
+                )}>
+                  <AIChatInput
+                    message={message}
+                    setMessage={setMessage}
+                    onSendMessage={handleSendMessage}
+                    onVoiceInput={handleVoiceInput}
+                    isLoading={isLoading}
+                    isListening={isListening}
+                  />
+                </div>
+              </CardContent>
+            )}
           </Card>
         </div>
       )}
