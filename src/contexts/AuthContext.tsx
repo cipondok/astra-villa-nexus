@@ -58,40 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Fetching profile for user:', userId);
       
-      // Check if user is super admin by email
+      // Fetch user auth data for default profile fallback
       const { data: authUser } = await supabase.auth.getUser();
-      
-      if (authUser.user?.email === 'mycode103@gmail.com') {
-        const adminProfile: Profile = {
-          id: userId,
-          email: authUser.user.email,
-          full_name: authUser.user.user_metadata?.full_name || 'Admin',
-          role: 'admin',
-          verification_status: 'approved',
-          is_admin: true
-        };
-        console.log('Setting admin profile:', adminProfile);
-        setProfile(adminProfile);
-        setLoading(false);
-        return;
-      }
-      
-      // Check for hardcoded vendor emails for backwards compatibility
-      const vendorEmails = ['vendor@astravilla.com', 'vendor@test.com'];
-      if (vendorEmails.includes(authUser.user?.email || '')) {
-        const vendorProfile: Profile = {
-          id: userId,
-          email: authUser.user.email!,
-          full_name: authUser.user.user_metadata?.full_name || 'Vendor User',
-          role: 'vendor',
-          verification_status: 'approved',
-          company_name: 'AstraVilla Services'
-        };
-        console.log('Setting hardcoded vendor profile:', vendorProfile);
-        setProfile(vendorProfile);
-        setLoading(false);
-        return;
-      }
       
       // Try to fetch profile with aggressive timeout
       const controller = new AbortController();

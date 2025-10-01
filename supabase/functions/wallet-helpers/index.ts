@@ -20,10 +20,33 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
+    // Verify authentication
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        },
+      )
+    }
+
     const { user_id, wallet_address } = await req.json()
 
     if (!user_id || !wallet_address) {
       throw new Error('Missing required parameters')
+    }
+
+    // Verify user can only query their own data
+    if (user_id !== user.id) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Can only access own wallet data' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 403,
+        },
+      )
     }
 
     const { data, error } = await supabaseClient
