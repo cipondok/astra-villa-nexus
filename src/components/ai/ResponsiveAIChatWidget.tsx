@@ -97,11 +97,23 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         functionName = 'ai-assistant';
       }
 
+      console.log('Invoking edge function:', functionName, 'with body:', body);
+      
       const { data, error } = await supabase.functions.invoke(functionName, {
         body
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+
+      if (!data || !data.message) {
+        console.error('Invalid response from edge function:', data);
+        throw new Error('Invalid response from AI assistant');
+      }
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -196,19 +208,23 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Chat trigger - always visible in viewport */}
-      <div 
-        style={{ 
-          position: 'fixed' as const,
-          bottom: '20px',
-          right: '20px',
-          zIndex: 2147483647,
-          pointerEvents: 'auto' as const,
-          display: 'block'
-        }}
-      >
-        {!isOpen && (
-          <div style={{ position: 'relative' }}>
+      {/* Chat trigger - always visible and clickable */}
+      {!isOpen && (
+        <div 
+          style={{ 
+            position: 'fixed' as const,
+            bottom: '20px',
+            right: '20px',
+            zIndex: 9999,
+            pointerEvents: 'auto' as const,
+            cursor: 'pointer'
+          }}
+          onClick={() => {
+            console.log('Chat trigger clicked');
+            setIsOpen(true);
+          }}
+        >
+          <div style={{ position: 'relative', width: '60px', height: '60px' }}>
             <AIChatTrigger onOpen={() => setIsOpen(true)} />
             <div 
               style={{
@@ -217,14 +233,15 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4))',
                 borderRadius: '50%',
                 animation: 'pulse 2s infinite',
-                opacity: 0.9
+                opacity: 0.9,
+                pointerEvents: 'none'
               }}
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Chat window - always visible in viewport when open */}
+      {/* Chat window - visible when open */}
       {isOpen && (
         <div 
           style={{
@@ -235,9 +252,8 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             width: isMobile ? 'calc(100vw - 40px)' : '380px',
             height: isMobile ? 'calc(100vh - 40px)' : '550px',
             maxHeight: '90vh',
-            zIndex: 2147483647,
-            pointerEvents: 'auto' as const,
-            display: 'block'
+            zIndex: 9999,
+            pointerEvents: 'auto' as const
           }}
         >
           <Card className="h-full w-full flex flex-col border-primary/20 overflow-hidden bg-background/95 backdrop-blur-xl shadow-2xl rounded-2xl border shadow-xl transition-all duration-300 hover:shadow-3xl">

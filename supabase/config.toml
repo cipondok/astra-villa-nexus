@@ -2,5 +2,14 @@
 project_id = "zymrajuuyyfkzdmptebl"
 
 [functions]
+  [functions.ai-assistant]
+    verify_jwt = false
+  
+  [functions.rental-negotiator]
+    verify_jwt = false
+  
+  [functions.neighborhood-simulator]
+    verify_jwt = false
+  
   [functions.listing-reviver]
     verify_jwt = false
