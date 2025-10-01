@@ -24,6 +24,7 @@ import EnhancedTreeNavigation from './EnhancedTreeNavigation';
 import AdminDashboardHeader from './AdminDashboardHeader';
 import AdminQuickAccess from './AdminQuickAccess';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, User } from "lucide-react";
@@ -40,6 +41,7 @@ import { useNavigate } from "react-router-dom";
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const { user, profile, signOut } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const navigate = useNavigate();
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
@@ -79,9 +81,6 @@ const AdvancedAdminDashboard = () => {
       console.error('Error signing out:', error);
     }
   };
-
-  // Check if user is admin or super admin
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   // Real header counts with basic state
   const [headerCounts, setHeaderCounts] = React.useState({ 

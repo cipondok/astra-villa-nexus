@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAlert } from "@/contexts/AlertContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
 import { 
@@ -37,7 +39,6 @@ import {
   SortDesc
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface PropertyListManagementProps {
   onAddProperty?: () => void;
@@ -65,6 +66,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdminCheck();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -88,10 +90,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       timestamp: new Date().toISOString()
     });
   }, [user, profile]);
-
-  // Check if user is admin
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
-  console.log('👤 Admin Status:', { isAdmin, userRole: profile?.role, userEmail: user?.email });
 
   // Don't render if not authenticated or not admin
   if (!user) {

@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
 import { 
@@ -31,7 +33,6 @@ import {
   Square
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface Property {
   id: string;
@@ -61,6 +62,7 @@ interface Property {
 
 const EnhancedPropertyManagement = () => {
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   
@@ -78,9 +80,6 @@ const EnhancedPropertyManagement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-
-  // Check if user is admin
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   // Enhanced property fetch with comprehensive filtering
   const { data: properties = [], isLoading, error, refetch, isError } = useQuery({

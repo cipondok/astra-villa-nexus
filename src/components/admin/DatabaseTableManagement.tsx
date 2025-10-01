@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
+import { useAdminCheck } from "@/hooks/useAdminCheck";
+import {
   Database, 
   Shield, 
   Eye, 
@@ -58,9 +59,10 @@ const DatabaseTableManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { isAdmin } = useAdminCheck();
 
-  // Direct check for super admin using email
-  const isSuperAdmin = user?.email === 'mycode103@gmail.com';
+  // Use admin check hook instead of hardcoded email
+  const isSuperAdmin = isAdmin;
 
   console.log('DatabaseTableManagement render - isSuperAdmin:', isSuperAdmin, 'user email:', user?.email);
 

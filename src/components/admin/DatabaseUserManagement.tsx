@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
+import { useAdminCheck } from "@/hooks/useAdminCheck";
+import {
   Database, 
   Users, 
   Shield, 
@@ -74,9 +75,10 @@ const DatabaseUserManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { isAdmin } = useAdminCheck();
 
-  // Direct check for super admin using email
-  const isSuperAdmin = user?.email === 'mycode103@gmail.com';
+  // Use admin check hook instead of hardcoded email
+  const isSuperAdmin = isAdmin;
 
   // Fetch all users with admin status
   const { data: databaseUsers, isLoading, refetch } = useQuery({
@@ -431,7 +433,7 @@ const DatabaseUserManagement = () => {
               <div>
                 <h3 className="font-semibold text-red-900">Super Administrator Control Panel</h3>
                 <p className="text-sm text-red-700">
-                  Full database access enabled for mycode103@gmail.com - Exercise caution with user modifications
+                  Full database access enabled for super admin - Exercise caution with user modifications
                 </p>
               </div>
             </div>
@@ -617,8 +619,8 @@ const DatabaseUserManagement = () => {
                     </TableCell>
                     <TableCell>
                       {user.email}
-                      {user.email === 'mycode103@gmail.com' && (
-                        <Badge variant="destructive" className="ml-2 text-xs">OWNER</Badge>
+                      {selectedUser.admin_permissions?.includes('super_admin') && (
+                        <Badge variant="destructive" className="ml-2 text-xs">SUPER ADMIN</Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -804,7 +806,7 @@ const DatabaseUserManagement = () => {
                       revokeAdminMutation.mutate(selectedUser.id);
                       setIsViewModalOpen(false);
                     }}
-                    disabled={revokeAdminMutation.isPending || selectedUser.email === 'mycode103@gmail.com'}
+                    disabled={revokeAdminMutation.isPending || selectedUser.admin_permissions?.includes('super_admin')}
                     variant="destructive"
                     className="flex-1"
                   >

@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useAlert } from "@/contexts/AlertContext";
 
 const ContentSampleData = () => {
   const { user } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const { showSuccess, showError } = useAlert();
 
   const sampleContent = [
@@ -193,8 +195,8 @@ const ContentSampleData = () => {
 
   useEffect(() => {
     const addSampleContent = async () => {
-      // Only run for the specific admin email to avoid RLS issues
-      if (!user || user.email !== 'mycode103@gmail.com') {
+      // Only run for admins to avoid RLS issues
+      if (!user || !isAdmin) {
         console.log('User not admin, skipping sample content creation');
         return;
       }

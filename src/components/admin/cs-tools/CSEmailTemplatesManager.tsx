@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { useAlert } from "@/contexts/AlertContext";
 import { Mail, Plus, Edit, Trash2, Copy, Eye } from "lucide-react";
+import DOMPurify from "dompurify";
 
 interface EmailTemplate {
   id: string;
@@ -333,7 +334,11 @@ const CSEmailTemplatesManager = () => {
                   <label className="text-sm font-medium">HTML Preview:</label>
                   <div 
                     className="border rounded p-4 bg-white text-black min-h-[200px]"
-                    dangerouslySetInnerHTML={{ __html: selectedTemplate.body_html.replace(/{{.*?}}/g, '[VARIABLE]') }}
+                    dangerouslySetInnerHTML={{ 
+                      __html: DOMPurify.sanitize(
+                        selectedTemplate.body_html.replace(/{{.*?}}/g, '[VARIABLE]')
+                      ) 
+                    }}
                   />
                 </div>
                 {selectedTemplate.body_text && (

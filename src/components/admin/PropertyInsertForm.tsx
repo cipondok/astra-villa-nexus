@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { Building2, Save, AlertTriangle } from "lucide-react";
 
 interface PropertyFormData {
@@ -32,6 +33,7 @@ interface PropertyFormData {
 
 const PropertyInsertForm = () => {
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
     description: "",
@@ -64,11 +66,8 @@ const PropertyInsertForm = () => {
   const isAuthorizedForRestrictedTypes = () => {
     if (!profile) return false;
     
-    // Super admin check
-    if (user?.email === 'mycode103@gmail.com') return true;
-    
-    // Authorized roles
-    return ['admin', 'agent', 'property_owner'].includes(profile.role);
+    // Use admin check hook  
+    return isAdmin || ['agent', 'property_owner'].includes(profile.role);
   };
 
   // Get available development status options based on user authorization

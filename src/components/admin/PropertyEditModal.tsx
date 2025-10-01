@@ -12,6 +12,7 @@ import { formatIDR } from "@/utils/currency";
 import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle, Box, Filter, BarChart3, MapPin, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 interface PropertyEditModalProps {
   property: any;
@@ -69,16 +70,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdminCheck();
 
   // Check if user is authorized to create restricted development statuses
   const isAuthorizedForRestrictedTypes = () => {
     if (!profile) return false;
     
-    // Super admin check
-    if (user?.email === 'mycode103@gmail.com') return true;
-    
-    // Authorized roles
-    return ['admin', 'agent', 'property_owner'].includes(profile.role);
+    // Use admin check hook
+    return isAdmin || ['agent', 'property_owner'].includes(profile.role);
   };
 
   // Get available development status options based on user authorization

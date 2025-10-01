@@ -59,8 +59,9 @@ export const BiometricAuth = ({ onSuccess }: BiometricAuthProps) => {
       });
 
       if (credential) {
-        // Store credential ID for future use
-        localStorage.setItem('biometric_credential', 'enabled');
+        // Store credential info in secure session storage only (not credential itself)
+        // In production, credential should be stored server-side
+        sessionStorage.setItem('biometric_enabled', 'true');
         onSuccess();
       }
     } catch (err: any) {
@@ -102,7 +103,7 @@ export const BiometricAuth = ({ onSuccess }: BiometricAuthProps) => {
     return null;
   }
 
-  const hasBiometricSetup = localStorage.getItem('biometric_credential') === 'enabled';
+  const hasBiometricSetup = sessionStorage.getItem('biometric_enabled') === 'true';
 
   return (
     <div className="space-y-4">

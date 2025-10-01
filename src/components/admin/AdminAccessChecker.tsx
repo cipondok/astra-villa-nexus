@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +10,9 @@ import { CheckCircle, XCircle, AlertTriangle, User, Shield, Database, Settings }
 
 const AdminAccessChecker = () => {
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const [dbTestResult, setDbTestResult] = useState<any>(null);
   const [isTestingDB, setIsTestingDB] = useState(false);
-
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   const testDatabaseAccess = async () => {
     setIsTestingDB(true);
