@@ -191,26 +191,6 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Responsive positioning and sizing for all devices
-  const chatDimensions = {
-    width: isMobile ? 'min(320px, 90vw)' : 'min(380px, 25vw)',
-    height: isMobile ? 'min(500px, 70vh)' : 'min(550px, 70vh)',
-    maxHeight: '70vh'
-  };
-
-  // Sticky positioning - always visible on screen like header
-  const positionStyles = {
-    mobile: "fixed bottom-4 right-4 z-[99999]",
-    tablet: "fixed bottom-6 right-6 z-[99999]", 
-    desktop: "fixed bottom-6 right-6 z-[99999]"
-  };
-
-  const getPositionClass = () => {
-    if (isMobile) return positionStyles.mobile;
-    if (window.innerWidth <= 1024) return positionStyles.tablet;
-    return positionStyles.desktop;
-  };
-
   return (
     <>
       {/* Chat trigger - Fixed position, always visible */}
@@ -218,9 +198,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <div 
           style={{ 
             position: 'fixed',
-            bottom: '24px',
-            right: '24px',
-            zIndex: 9999
+            bottom: isMobile ? '16px' : '24px',
+            right: isMobile ? '16px' : '24px',
+            zIndex: 999999
           }}
           onClick={() => {
             console.log('Chat trigger clicked');
@@ -250,12 +230,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <div 
           style={{
             position: 'fixed',
-            bottom: isMinimized ? '24px' : isMobile ? '20px' : '24px',
-            right: '24px',
-            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 40px)' : '400px',
+            bottom: isMinimized ? (isMobile ? '16px' : '24px') : (isMobile ? '16px' : '24px'),
+            right: isMobile ? '16px' : '24px',
+            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 32px)' : '400px',
             height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 100px)' : '600px',
             maxHeight: isMinimized ? 'auto' : '90vh',
-            zIndex: 9999,
+            zIndex: 999999,
             transition: 'all 0.3s ease-in-out'
           }}
         >
