@@ -1,5 +1,6 @@
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import AdminDashboard from "./AdminDashboard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import LoadingPage from "@/components/LoadingPage";
 
 const AdminDashboardPage = () => {
   const { user, profile, loading } = useAuth();
+  const { isAdmin, isLoading: adminCheckLoading } = useAdminCheck();
   const [timeoutReached, setTimeoutReached] = useState(false);
   const navigate = useNavigate();
 
@@ -51,8 +53,15 @@ const AdminDashboardPage = () => {
     );
   }
 
-  // Check if user has admin role or is the super admin
-  const isAdmin = profile?.role === 'admin' || user.email === 'mycode103@gmail.com';
+  // Show loading while checking admin status
+  if (adminCheckLoading) {
+    return (
+      <LoadingPage
+        message="Verifying admin access..."
+        showConnectionStatus={false}
+      />
+    );
+  }
   
   if (!isAdmin) {
     return (

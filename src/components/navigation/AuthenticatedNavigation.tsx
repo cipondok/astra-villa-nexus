@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { Button } from "@/components/ui/button";
 import { 
   NavigationMenu, 
@@ -49,6 +50,7 @@ const AuthenticatedNavigation = ({
   onThemeToggle 
 }: AuthenticatedNavigationProps) => {
   const { user, profile, signOut } = useAuth();
+  const { isAdmin: canAccessAdmin } = useAdminCheck();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -89,8 +91,6 @@ const AuthenticatedNavigation = ({
 
   const canAccessPropertyManagement = profile?.role && 
     ['property_owner', 'agent', 'admin'].includes(profile.role);
-
-  const canAccessAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   const text = {
     en: {

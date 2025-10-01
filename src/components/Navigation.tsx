@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
@@ -16,6 +17,7 @@ const Navigation = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, profile, signOut } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const { language } = useLanguage();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -136,12 +138,10 @@ const Navigation = () => {
     }
   ];
 
-  // Check if user is admin or agent
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
   const isAgent = profile?.role === 'agent';
   
   // Debug admin access
-  console.log('🔍 Navigation Debug:', { 
+  console.log('🔍 Navigation Debug:', {
     userEmail: user?.email, 
     profileRole: profile?.role, 
     isAdmin,

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import EnhancedAdminDashboard from '@/components/admin/EnhancedAdminDashboard';
@@ -10,6 +11,7 @@ import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 
 const AdminDashboard = () => {
   const { profile, user } = useAuth();
+  const { isAdmin, isLoading: adminCheckLoading } = useAdminCheck();
   const { connectionStatus } = useDatabaseConnection();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,12 +32,9 @@ const AdminDashboard = () => {
     }
   }, [user, profile]);
 
-  // Check if user is admin or super admin
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
-
   console.log('isAdmin:', isAdmin);
 
-  if (isLoading) {
+  if (isLoading || adminCheckLoading) {
     return (
       <LoadingPage
         message="Loading admin dashboard..."

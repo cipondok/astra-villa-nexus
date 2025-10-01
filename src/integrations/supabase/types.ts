@@ -1979,6 +1979,36 @@ export type Database = {
           },
         ]
       }
+      financial_data_audit_log: {
+        Row: {
+          accessed_at: string | null
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          operation: string
+          table_name: string
+          user_id: string | null
+        }
+        Insert: {
+          accessed_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          operation: string
+          table_name: string
+          user_id?: string | null
+        }
+        Update: {
+          accessed_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          operation?: string
+          table_name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fraud_patterns: {
         Row: {
           auto_reject: boolean | null
@@ -8278,6 +8308,15 @@ export type Database = {
           survey_type: string
         }[]
       }
+      get_public_category_names: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          category_description: string
+          category_name: string
+          id: string
+          is_active: boolean
+        }[]
+      }
       get_public_profile_minimal: {
         Args: { profile_user_id: string }
         Returns: {
@@ -8357,6 +8396,14 @@ export type Database = {
           title: string
           total_count: number
           virtual_tour_url: string
+        }[]
+      }
+      get_public_reward_tiers: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          required_points: number
+          tier_description: string
+          tier_name: string
         }[]
       }
       get_public_vendor_directory: {
@@ -8662,6 +8709,10 @@ export type Database = {
       log_financial_access: {
         Args: { operation: string; table_name: string; user_id?: string }
         Returns: string
+      }
+      log_financial_data_access: {
+        Args: { p_metadata?: Json; p_operation: string; p_table_name: string }
+        Returns: undefined
       }
       log_identity_verification_access: {
         Args: {
