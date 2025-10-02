@@ -30,23 +30,23 @@ const SystemAnalytics = () => {
     },
   });
 
-  // Fetch page views from last 30 days
+  // Fetch page views from web_analytics (last 30 days)
   const { data: pageViews = 0 } = useQuery({
     queryKey: ['total-page-views'],
     queryFn: async () => {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const { data } = await supabase
-        .from('daily_analytics')
-        .select('total_page_views')
-        .gte('date', thirtyDaysAgo.toISOString().split('T')[0]);
+      const { count } = await supabase
+        .from('web_analytics')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', thirtyDaysAgo.toISOString());
 
-      return data?.reduce((sum, day) => sum + (day.total_page_views || 0), 0) || 0;
+      return count || 0;
     },
   });
 
-  // Fetch search count from last 30 days
+  // Fetch search count from web_analytics page paths (last 30 days)
   const { data: searchCount = 0 } = useQuery({
     queryKey: ['total-searches'],
     queryFn: async () => {
@@ -54,8 +54,9 @@ const SystemAnalytics = () => {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
       const { count } = await supabase
-        .from('search_analytics')
+        .from('web_analytics')
         .select('*', { count: 'exact', head: true })
+        .ilike('page_path', '%search%')
         .gte('created_at', thirtyDaysAgo.toISOString());
 
       return count || 0;
