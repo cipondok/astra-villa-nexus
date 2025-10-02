@@ -12,6 +12,7 @@ import EnhancedUserManagement from './EnhancedUserManagement';
 import PropertyManagement from './PropertyManagement';
 import VendorsHubContent from './VendorsHubContent';
 import SystemSettings from './SystemSettings';
+import MFASettings from '../auth/MFASettings';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
 import AnimatedThemeToggle from '@/components/ui/animated-theme-toggle';
@@ -170,6 +171,15 @@ const AdvancedAdminDashboard = () => {
           )}
           
           {activeTab === 'user-management' && <EnhancedUserManagement />}
+          {activeTab === 'user-auth-mfa' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Shield className="h-6 w-6 text-blue-500" />
+                User Management & Authentication
+              </h2>
+              <MFASettings />
+            </div>
+          )}
           {activeTab === 'property-management' && <PropertyManagement />}
           {activeTab === 'vendor-management' && <VendorsHubContent />}
           

@@ -102,6 +102,12 @@ export const navigationSections = {
       description: "Manage user accounts and roles"
     },
     {
+      key: "user-auth-mfa",
+      label: "User Management & Authentication",
+      icon: Shield,
+      description: "MFA settings, email verification, and user authentication management"
+    },
+    {
       key: "property-management",
       label: "Property Management",
       icon: Building,
