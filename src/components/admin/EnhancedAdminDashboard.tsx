@@ -30,7 +30,8 @@ import {
   Camera,
   MessageSquare,
   Eye,
-  Lock
+  Lock,
+  Target
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -49,6 +50,7 @@ import VendorManagement from './VendorManagement';
 import CustomerSupport from './CustomerSupport';
 import ASTRATokenSettings from './ASTRATokenSettings';
 import SystemAnalytics from './SystemAnalytics';
+import ProjectProgressReport from './ProjectProgressReport';
 
 interface RealAlert {
   id: string;
@@ -326,6 +328,10 @@ const EnhancedAdminDashboard = () => {
             <TabsTrigger value="errors" className="gap-2 whitespace-nowrap">
               <AlertTriangle className="h-4 w-4" />
               Errors
+            </TabsTrigger>
+            <TabsTrigger value="progress" className="gap-2 whitespace-nowrap">
+              <Target className="h-4 w-4" />
+              Progress
             </TabsTrigger>
           </TabsList>
 
@@ -608,6 +614,11 @@ const EnhancedAdminDashboard = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Progress Report Tab */}
+          <TabsContent value="progress">
+            <ProjectProgressReport />
           </TabsContent>
         </Tabs>
       </div>
