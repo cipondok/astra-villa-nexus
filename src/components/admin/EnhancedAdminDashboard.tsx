@@ -52,6 +52,7 @@ import ASTRATokenSettings from './ASTRATokenSettings';
 import SystemAnalytics from './SystemAnalytics';
 import ProjectProgressReport from './ProjectProgressReport';
 import LoadTestingPanel from './LoadTestingPanel';
+import MFASettings from '../auth/MFASettings';
 
 interface RealAlert {
   id: string;
@@ -290,6 +291,10 @@ const EnhancedAdminDashboard = () => {
               <Users className="h-4 w-4" />
               Users
             </TabsTrigger>
+            <TabsTrigger value="auth-mfa" className="gap-2 whitespace-nowrap">
+              <Lock className="h-4 w-4" />
+              Auth & MFA
+            </TabsTrigger>
             <TabsTrigger value="properties" className="gap-2 whitespace-nowrap">
               <Globe className="h-4 w-4" />
               Properties
@@ -463,6 +468,22 @@ const EnhancedAdminDashboard = () => {
           {/* Users Tab */}
           <TabsContent value="users" className="space-y-6">
             <EnhancedUserManagement />
+          </TabsContent>
+
+          {/* Auth & MFA Tab */}
+          <TabsContent value="auth-mfa" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  User Management & Authentication
+                </CardTitle>
+                <CardDescription>Multi-factor authentication, email verification, and user security settings</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MFASettings />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Properties Management Tab */}
