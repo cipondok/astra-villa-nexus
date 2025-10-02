@@ -38,27 +38,71 @@ import {
 const WebTrafficAnalytics = () => {
   const [timeRange, setTimeRange] = useState("7");
 
-  // Fetch daily analytics data
+  // Fetch and aggregate web analytics data
   const { data: dailyStats, isLoading: dailyLoading } = useQuery({
-    queryKey: ['daily-analytics', timeRange],
+    queryKey: ['web-analytics-aggregated', timeRange],
     queryFn: async () => {
       const endDate = new Date();
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - parseInt(timeRange));
 
       const { data, error } = await supabase
-        .from('daily_analytics')
+        .from('web_analytics')
         .select('*')
-        .gte('date', startDate.toISOString().split('T')[0])
-        .lte('date', endDate.toISOString().split('T')[0])
-        .order('date', { ascending: true });
+        .gte('created_at', startDate.toISOString())
+        .lte('created_at', endDate.toISOString())
+        .order('created_at', { ascending: true });
 
       if (error) throw error;
-      return data || [];
+
+      // Aggregate data by date
+      const aggregated = (data || []).reduce((acc: any, record) => {
+        const date = new Date(record.created_at).toISOString().split('T')[0];
+        
+        if (!acc[date]) {
+          acc[date] = {
+            date,
+            total_visitors: 0,
+            unique_visitors: new Set(),
+            total_page_views: 0,
+            total_searches: 0,
+            new_users: new Set(),
+            returning_users: new Set(),
+          };
+        }
+
+        acc[date].total_visitors += 1;
+        acc[date].total_page_views += 1;
+        if (record.visitor_id) acc[date].unique_visitors.add(record.visitor_id);
+        if (record.user_id) {
+          // Simple heuristic: if we haven't seen this user before, they're new
+          const isNewUser = !Object.values(acc).some((day: any) => 
+            day.date < date && (day.new_users.has(record.user_id) || day.returning_users.has(record.user_id))
+          );
+          if (isNewUser) {
+            acc[date].new_users.add(record.user_id);
+          } else {
+            acc[date].returning_users.add(record.user_id);
+          }
+        }
+
+        return acc;
+      }, {});
+
+      // Convert to array and finalize counts
+      return Object.values(aggregated).map((day: any) => ({
+        date: day.date,
+        total_visitors: day.total_visitors,
+        unique_visitors: day.unique_visitors.size,
+        total_page_views: day.total_page_views,
+        total_searches: day.total_searches,
+        new_users: day.new_users.size,
+        returning_users: day.returning_users.size,
+      }));
     },
   });
 
-  // Fetch top search keywords
+  // Fetch top search keywords from page paths
   const { data: topKeywords } = useQuery({
     queryKey: ['top-keywords', timeRange],
     queryFn: async () => {
@@ -67,19 +111,28 @@ const WebTrafficAnalytics = () => {
       startDate.setDate(startDate.getDate() - parseInt(timeRange));
 
       const { data, error } = await supabase
-        .from('search_analytics')
-        .select('search_query')
+        .from('web_analytics')
+        .select('page_path')
         .gte('created_at', startDate.toISOString())
-        .lte('created_at', endDate.toISOString());
+        .lte('created_at', endDate.toISOString())
+        .ilike('page_path', '%search%');
 
       if (error) throw error;
 
-      // Count occurrences of each keyword
-      const keywordCounts = data?.reduce((acc: any, item) => {
-        const query = item.search_query.toLowerCase();
-        acc[query] = (acc[query] || 0) + 1;
+      // Extract search terms from URLs (if they have query params)
+      const searchTerms = (data || [])
+        .map(item => {
+          const url = new URL(`http://example.com${item.page_path}`);
+          return url.searchParams.get('q') || url.searchParams.get('search');
+        })
+        .filter(Boolean);
+
+      // Count occurrences
+      const keywordCounts = searchTerms.reduce((acc: any, term) => {
+        const query = (term || '').toLowerCase();
+        if (query) acc[query] = (acc[query] || 0) + 1;
         return acc;
-      }, {}) || {};
+      }, {});
 
       return Object.entries(keywordCounts)
         .map(([keyword, count]) => ({ keyword, count }))
