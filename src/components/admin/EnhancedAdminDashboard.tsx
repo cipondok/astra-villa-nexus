@@ -53,6 +53,7 @@ import SystemAnalytics from './SystemAnalytics';
 import ProjectProgressReport from './ProjectProgressReport';
 import LoadTestingPanel from './LoadTestingPanel';
 import MFASettings from '../auth/MFASettings';
+import EnhancedErrorReporting from './EnhancedErrorReporting';
 
 interface RealAlert {
   id: string;
@@ -605,41 +606,7 @@ const EnhancedAdminDashboard = () => {
 
           {/* Error Reports Tab */}
           <TabsContent value="errors" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  Advanced Error Reporting System
-                </CardTitle>
-                <CardDescription>Comprehensive error tracking and management</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Enhanced Error Reporting</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    Real-time error tracking, categorization, and automated resolution suggestions
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                    <div className="p-4 border rounded-lg">
-                      <Zap className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-                      <h4 className="font-medium">Real-time Monitoring</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Live error detection</p>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <Brain className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                      <h4 className="font-medium">Smart Analysis</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">AI-powered insights</p>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <CheckCircle className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-                      <h4 className="font-medium">Auto Resolution</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Automated fixes</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <EnhancedErrorReporting />
           </TabsContent>
 
           {/* Progress Report Tab */}
