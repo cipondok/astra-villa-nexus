@@ -51,6 +51,7 @@ import CustomerSupport from './CustomerSupport';
 import ASTRATokenSettings from './ASTRATokenSettings';
 import SystemAnalytics from './SystemAnalytics';
 import ProjectProgressReport from './ProjectProgressReport';
+import LoadTestingPanel from './LoadTestingPanel';
 
 interface RealAlert {
   id: string;
@@ -332,6 +333,10 @@ const EnhancedAdminDashboard = () => {
             <TabsTrigger value="progress" className="gap-2 whitespace-nowrap">
               <Target className="h-4 w-4" />
               Progress
+            </TabsTrigger>
+            <TabsTrigger value="load-testing" className="gap-2 whitespace-nowrap">
+              <Zap className="h-4 w-4" />
+              Load Testing
             </TabsTrigger>
           </TabsList>
 
@@ -619,6 +624,11 @@ const EnhancedAdminDashboard = () => {
           {/* Progress Report Tab */}
           <TabsContent value="progress">
             <ProjectProgressReport />
+          </TabsContent>
+
+          {/* Load Testing Tab */}
+          <TabsContent value="load-testing">
+            <LoadTestingPanel />
           </TabsContent>
         </Tabs>
       </div>
