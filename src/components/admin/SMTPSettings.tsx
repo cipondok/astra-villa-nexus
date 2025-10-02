@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,11 +8,14 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, Shield, AlertCircle, CheckCircle, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const SMTPSettings = () => {
   const { toast } = useToast();
   const [isConnected, setIsConnected] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [settings, setSettings] = useState({
     host: '',
@@ -25,32 +28,147 @@ const SMTPSettings = () => {
     isEnabled: false
   });
 
-  const handleSave = () => {
-    toast({
-      title: "Settings Saved",
-      description: "SMTP configuration has been updated successfully.",
-    });
+  // Load SMTP settings on mount
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('category', 'smtp')
+        .eq('key', 'config')
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (data?.value) {
+        setSettings(data.value as any);
+      }
+    } catch (error) {
+      console.error('Error loading SMTP settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load SMTP settings",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert({
+          category: 'smtp',
+          key: 'config',
+          value: settings,
+          description: 'SMTP email configuration',
+          is_public: false
+        }, {
+          onConflict: 'category,key'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Settings Saved",
+        description: "SMTP configuration has been updated successfully.",
+      });
+    } catch (error) {
+      console.error('Error saving SMTP settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save SMTP settings",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const testConnection = async () => {
     setIsTesting(true);
-    // Simulate test
-    setTimeout(() => {
-      setIsTesting(false);
-      setIsConnected(true);
-      toast({
-        title: "Connection Successful",
-        description: "SMTP server is reachable and credentials are valid.",
+    try {
+      const { data, error } = await supabase.functions.invoke('test-smtp', {
+        body: {
+          smtp_config: {
+            host: settings.host,
+            port: parseInt(settings.port),
+            username: settings.username,
+            password: settings.password,
+            encryption: settings.encryption,
+            from_email: settings.fromEmail,
+            from_name: settings.fromName,
+            enabled: settings.isEnabled
+          },
+          test_email: {
+            to: settings.username,
+            subject: 'SMTP Test Email',
+            message: 'This is a test email to verify your SMTP configuration.'
+          }
+        }
       });
-    }, 2000);
+
+      if (error) throw error;
+
+      if (data?.success) {
+        setIsConnected(true);
+        toast({
+          title: "Connection Successful",
+          description: "SMTP server is reachable and credentials are valid.",
+        });
+      }
+    } catch (error) {
+      console.error('SMTP test failed:', error);
+      toast({
+        title: "Connection Failed",
+        description: "Could not connect to SMTP server. Please check your settings.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsTesting(false);
+    }
   };
 
-  const sendTestEmail = () => {
-    toast({
-      title: "Test Email Sent",
-      description: "A test email has been sent to verify the configuration.",
-    });
+  const sendTestEmail = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase.functions.invoke('generate-otp', {
+        body: {
+          purpose: 'email_verification',
+          email: user.email
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Test Email Sent",
+        description: `A test OTP email has been sent to ${user.email}`,
+      });
+    } catch (error) {
+      console.error('Test email failed:', error);
+      toast({
+        title: "Failed to Send",
+        description: "Could not send test email. Please check your SMTP configuration.",
+        variant: "destructive"
+      });
+    }
   };
+
+  if (isLoading) {
+    return <div className="p-4">Loading SMTP settings...</div>;
+  }
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">
@@ -220,8 +338,8 @@ const SMTPSettings = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button onClick={handleSave} className="flex-1 sm:flex-none">
-                Save Configuration
+              <Button onClick={handleSave} disabled={isSaving} className="flex-1 sm:flex-none">
+                {isSaving ? 'Saving...' : 'Save Configuration'}
               </Button>
               <Button 
                 variant="outline" 

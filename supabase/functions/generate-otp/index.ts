@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -83,18 +84,72 @@ serve(async (req) => {
       );
     }
 
-    // Send OTP via email notification (using Supabase's built-in notifications)
-    // Store in user_notifications table for the user to see
+    // Send OTP via SMTP email
     try {
-      await supabase.from('user_notifications' as any).insert({
-        user_id: user.id,
-        title: 'Verification Code',
-        message: `Your verification code is: ${code}. This code will expire in 10 minutes.`,
-        type: 'security',
-      });
-    } catch (notifError) {
-      console.error('Error sending notification:', notifError);
-      // Continue even if notification fails
+      // Get SMTP settings from system_settings
+      const { data: smtpSettings } = await supabase
+        .from('system_settings' as any)
+        .select('value')
+        .eq('category', 'smtp')
+        .eq('key', 'config')
+        .single();
+
+      if (smtpSettings?.value) {
+        const smtp = smtpSettings.value as any;
+        
+        // Only send if SMTP is enabled
+        if (smtp.isEnabled) {
+          const client = new SMTPClient({
+            connection: {
+              hostname: smtp.host,
+              port: parseInt(smtp.port),
+              tls: smtp.encryption === 'tls' || smtp.encryption === 'ssl',
+              auth: {
+                username: smtp.username,
+                password: smtp.password,
+              },
+            },
+          });
+
+          const purposeText = purpose === 'mfa' ? 'Multi-Factor Authentication' 
+                            : purpose === 'email_verification' ? 'Email Verification'
+                            : 'Password Reset';
+
+          await client.send({
+            from: `${smtp.fromName} <${smtp.fromEmail}>`,
+            to: email || user.email,
+            subject: `Your ${purposeText} Code`,
+            content: `
+              <html>
+                <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                  <h2 style="color: #2563eb;">Verification Code</h2>
+                  <p>Your verification code for ${purposeText} is:</p>
+                  <div style="background: #f3f4f6; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 8px; margin: 20px 0; border-radius: 8px;">
+                    ${code}
+                  </div>
+                  <p style="color: #666;">This code will expire in 10 minutes.</p>
+                  <p style="color: #666; font-size: 14px; margin-top: 20px;">
+                    If you didn't request this code, please ignore this email.
+                  </p>
+                  <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                  <p style="color: #999; font-size: 12px;">
+                    Request details:<br>
+                    IP Address: ${clientIp}<br>
+                    Time: ${new Date().toISOString()}
+                  </p>
+                </body>
+              </html>
+            `,
+            html: true,
+          });
+
+          await client.close();
+          console.log(`OTP email sent successfully to ${email || user.email}`);
+        }
+      }
+    } catch (emailError) {
+      console.error('Error sending OTP email:', emailError);
+      // Continue even if email fails - OTP is still generated
     }
 
     // Log security event
