@@ -56,7 +56,7 @@ const LoadTestingPanel = () => {
     queryKey: ['load-test-history'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('load_test_results')
+        .from('load_test_results' as any)
         .select('*')
         .order('created_at', { ascending: false })
         .limit(10);

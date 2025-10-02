@@ -2654,6 +2654,72 @@ export type Database = {
         }
         Relationships: []
       }
+      load_test_results: {
+        Row: {
+          average_response_time: number
+          concurrency: number
+          created_at: string | null
+          created_by: string | null
+          error_rate: number
+          errors: Json | null
+          failed_requests: number
+          id: string
+          max_response_time: number
+          min_response_time: number
+          p50_response_time: number
+          p95_response_time: number
+          p99_response_time: number
+          requests_per_second: number
+          successful_requests: number
+          target_url: string | null
+          test_duration: number
+          test_type: string
+          total_requests: number
+        }
+        Insert: {
+          average_response_time: number
+          concurrency: number
+          created_at?: string | null
+          created_by?: string | null
+          error_rate: number
+          errors?: Json | null
+          failed_requests: number
+          id?: string
+          max_response_time: number
+          min_response_time: number
+          p50_response_time: number
+          p95_response_time: number
+          p99_response_time: number
+          requests_per_second: number
+          successful_requests: number
+          target_url?: string | null
+          test_duration: number
+          test_type: string
+          total_requests: number
+        }
+        Update: {
+          average_response_time?: number
+          concurrency?: number
+          created_at?: string | null
+          created_by?: string | null
+          error_rate?: number
+          errors?: Json | null
+          failed_requests?: number
+          id?: string
+          max_response_time?: number
+          min_response_time?: number
+          p50_response_time?: number
+          p95_response_time?: number
+          p99_response_time?: number
+          requests_per_second?: number
+          successful_requests?: number
+          target_url?: string | null
+          test_duration?: number
+          test_type?: string
+          total_requests?: number
+        }
+        Relationships: []
+      }
       location_admin_settings: {
         Row: {
           created_at: string | null

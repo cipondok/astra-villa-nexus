@@ -161,7 +161,7 @@ serve(async (req) => {
 
     // Store test results in database
     try {
-      await supabase.from('load_test_results').insert({
+      await supabase.from('load_test_results' as any).insert({
         test_type: config.testType,
         target_url: config.targetUrl,
         total_requests: result.totalRequests,
