@@ -16,3 +16,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.load-test]
     verify_jwt = true
+
+  [functions.generate-otp]
+    verify_jwt = true
+
+  [functions.verify-otp]
+    verify_jwt = true

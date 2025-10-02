@@ -2897,6 +2897,39 @@ export type Database = {
         }
         Relationships: []
       }
+      mfa_settings: {
+        Row: {
+          backup_codes: string[] | null
+          created_at: string | null
+          id: string
+          is_enabled: boolean | null
+          last_verified_at: string | null
+          method: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          backup_codes?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_verified_at?: string | null
+          method?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          backup_codes?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_verified_at?: string | null
+          method?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       office_locations: {
         Row: {
           address_en: string
@@ -3004,6 +3037,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      otp_codes: {
+        Row: {
+          attempts: number | null
+          code: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          is_used: boolean | null
+          max_attempts: number | null
+          purpose: string
+          used_at: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          attempts?: number | null
+          code: string
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: unknown | null
+          is_used?: boolean | null
+          max_attempts?: number | null
+          purpose: string
+          used_at?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          attempts?: number | null
+          code?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_used?: boolean | null
+          max_attempts?: number | null
+          purpose?: string
+          used_at?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       payment_logs: {
         Row: {
@@ -5285,6 +5363,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_verification: {
+        Row: {
+          created_at: string | null
+          email_verified: boolean | null
+          email_verified_at: string | null
+          id: string
+          identity_verified: boolean | null
+          identity_verified_at: string | null
+          phone_verified: boolean | null
+          phone_verified_at: string | null
+          updated_at: string | null
+          user_id: string
+          verification_notes: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_verified?: boolean | null
+          email_verified_at?: string | null
+          id?: string
+          identity_verified?: boolean | null
+          identity_verified_at?: string | null
+          phone_verified?: boolean | null
+          phone_verified_at?: string | null
+          updated_at?: string | null
+          user_id: string
+          verification_notes?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_verified?: boolean | null
+          email_verified_at?: string | null
+          id?: string
+          identity_verified?: boolean | null
+          identity_verified_at?: string | null
+          phone_verified?: boolean | null
+          phone_verified_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verification_notes?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
       }
       validation_logs: {
         Row: {
@@ -8081,6 +8204,10 @@ export type Database = {
           valid_until: string
         }[]
       }
+      clean_expired_otp_codes: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -8175,6 +8302,10 @@ export type Database = {
       }
       generate_error_signature: {
         Args: { error_message: string; table_name?: string }
+        Returns: string
+      }
+      generate_otp: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       get_all_survey_bookings_admin: {
