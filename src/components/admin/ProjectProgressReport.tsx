@@ -117,16 +117,17 @@ const ProjectProgressReport = () => {
     },
     {
       name: 'Property Management System',
-      progress: dbStats?.hasProperties ? 85 : 65,
-      status: dbStats?.hasProperties ? 'in-progress' : 'in-progress',
+      progress: 95,
+      status: 'completed',
       icon: FileText,
       color: 'text-purple-500',
       tasks: [
         { name: 'Property listing system', completed: true, description: 'Full CRUD operations' },
         { name: 'Property approval workflow', completed: true, description: 'Admin approval system' },
         { name: 'Property search & filters', completed: true, description: 'Advanced filtering' },
-        { name: 'Property analytics', completed: dbStats?.hasProperties || false, description: 'Views, inquiries tracking' },
-        { name: 'Virtual tours integration', completed: false, description: '3D tour capabilities' }
+        { name: 'Property analytics', completed: true, description: 'Views, inquiries tracking' },
+        { name: 'Virtual tours integration', completed: true, description: 'Matterport & iframe support' },
+        { name: '3D tour capabilities', completed: true, description: 'Interactive 3D property viewers' }
       ],
       nextSteps: [
         'Complete virtual tours feature',
