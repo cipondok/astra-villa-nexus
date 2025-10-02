@@ -132,11 +132,11 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <div className="space-y-2">
             <h3 className="text-sm font-semibold">{currentText.quickLinks}</h3>
             <ul className="space-y-1 text-xs">
-              <li><Link to="/" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.home}</Link></li>
-              <li><Link to="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.properties}</Link></li>
-              <li><Link to="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.buy}</Link></li>
-              <li><Link to="/disewa" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.rent}</Link></li>
-              <li><Link to="/about" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.about}</Link></li>
+              <li><a href="/" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.home}</a></li>
+              <li><a href="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.properties}</a></li>
+              <li><a href="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.buy}</a></li>
+              <li><a href="/disewa" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.rent}</a></li>
+              <li><a href="/about" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.about}</a></li>
             </ul>
           </div>
 
