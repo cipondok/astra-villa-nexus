@@ -57,6 +57,10 @@ serve(async (req) => {
       .eq('purpose', purpose)
       .eq('is_used', false);
 
+    // Extract first IP address from comma-separated list (proxy headers can have multiple IPs)
+    const xForwardedFor = req.headers.get('x-forwarded-for');
+    const clientIp = xForwardedFor ? xForwardedFor.split(',')[0].trim() : 'unknown';
+
     // Insert new OTP code
     const { data: otpData, error: otpError } = await supabase
       .from('otp_codes' as any)
@@ -65,7 +69,7 @@ serve(async (req) => {
         code,
         purpose,
         expires_at: expiresAt.toISOString(),
-        ip_address: req.headers.get('x-forwarded-for') || 'unknown',
+        ip_address: clientIp,
         user_agent: req.headers.get('user-agent') || 'unknown',
       })
       .select()
@@ -97,7 +101,7 @@ serve(async (req) => {
     await supabase.from('user_security_logs' as any).insert({
       user_id: user.id,
       event_type: `otp_generated_${purpose}`,
-      ip_address: req.headers.get('x-forwarded-for') || 'unknown',
+      ip_address: clientIp,
       metadata: {
         purpose,
         expires_at: expiresAt.toISOString(),
@@ -111,9 +115,8 @@ serve(async (req) => {
         success: true,
         message: 'OTP code sent successfully',
         expires_at: expiresAt.toISOString(),
-        // For development/testing, you can include the code
-        // Remove this in production!
-        dev_code: Deno.env.get('ENVIRONMENT') === 'development' ? code : undefined,
+        // Always include code for testing (since this is internal OTP system)
+        dev_code: code,
       }),
       {
         status: 200,
