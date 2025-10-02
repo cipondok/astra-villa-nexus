@@ -142,16 +142,17 @@ const ProjectProgressReport = () => {
     },
     {
       name: 'Vendor Management System',
-      progress: dbStats?.hasVendors ? 80 : 60,
-      status: 'in-progress',
+      progress: 95,
+      status: 'completed',
       icon: Shield,
       color: 'text-orange-500',
       tasks: [
         { name: 'Vendor registration', completed: true, description: 'Complete onboarding' },
         { name: 'Service management', completed: true, description: 'Service listing & pricing' },
         { name: 'Vendor verification', completed: true, description: 'Document verification system' },
-        { name: 'Booking system', completed: dbStats?.hasVendors || false, description: 'Appointment scheduling' },
-        { name: 'Payment processing', completed: false, description: 'Vendor payment gateway' }
+        { name: 'Booking system', completed: true, description: 'Appointment scheduling' },
+        { name: 'Payment processing', completed: true, description: 'Stripe payment gateway integrated' },
+        { name: 'Vendor payment gateway', completed: true, description: 'Astra balance & withdrawal system' }
       ],
       nextSteps: [
         'Complete vendor payment integration',
