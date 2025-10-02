@@ -8186,6 +8186,10 @@ export type Database = {
         Args: { p_ip_address: unknown }
         Returns: boolean
       }
+      check_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       check_super_admin_access: {
         Args: Record<PropertyKey, never>
         Returns: boolean
