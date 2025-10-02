@@ -48,6 +48,7 @@ import VendorsHubContent from './VendorsHubContent';
 import VendorManagement from './VendorManagement';
 import CustomerSupport from './CustomerSupport';
 import ASTRATokenSettings from './ASTRATokenSettings';
+import SystemAnalytics from './SystemAnalytics';
 
 interface RealAlert {
   id: string;
@@ -516,24 +517,7 @@ const EnhancedAdminDashboard = () => {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Advanced Analytics Dashboard
-                </CardTitle>
-                <CardDescription>Comprehensive system and user analytics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Analytics Dashboard</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Advanced analytics with user behavior tracking, performance metrics, and predictive insights
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <SystemAnalytics />
           </TabsContent>
 
           {/* Security Tab */}
