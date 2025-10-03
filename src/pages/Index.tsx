@@ -19,6 +19,7 @@ import PropertiesForSaleSection from "@/components/property/PropertiesForSaleSec
 import PropertiesForRentSection from "@/components/property/PropertiesForRentSection";
 import IPhoneSearchPanel from "@/components/iPhoneSearchPanel";
 import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
+import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -420,6 +421,11 @@ const Index = () => {
               </section>
             ) : (
               <>
+                {/* AI Recommended Properties */}
+                <div className="section-compact mb-6">
+                  <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
+                </div>
+
                 {/* Featured Properties - Zero-waste Compact Layout */}
                 <section className={cn(
                   "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",

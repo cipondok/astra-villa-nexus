@@ -193,13 +193,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Chat trigger - Fixed position, always visible */}
+      {/* Chat trigger - Fixed position at right center, always visible */}
       {!isOpen && (
         <div 
           style={{ 
             position: 'fixed',
-            bottom: isMobile ? '16px' : '24px',
-            right: isMobile ? '16px' : '24px',
+            top: '50%',
+            right: isMobile ? '0px' : '0px',
+            transform: 'translateY(-50%)',
             zIndex: 999999
           }}
           onClick={() => {
@@ -208,7 +209,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             setIsMinimized(false);
           }}
         >
-          <div style={{ position: 'relative', width: '60px', height: '60px' }}>
+          <div style={{ position: 'relative', width: isMobile ? '56px' : '64px', height: isMobile ? '56px' : '64px' }}>
             <AIChatTrigger onOpen={() => setIsOpen(true)} />
             <div 
               style={{
@@ -225,16 +226,17 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       )}
 
-      {/* Chat window - Sticky fixed position */}
+      {/* Chat window - Fixed position at right center */}
       {isOpen && (
         <div 
           style={{
             position: 'fixed',
-            bottom: isMinimized ? (isMobile ? '16px' : '24px') : (isMobile ? '16px' : '24px'),
-            right: isMobile ? '16px' : '24px',
-            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 32px)' : '400px',
-            height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 100px)' : '600px',
-            maxHeight: isMinimized ? 'auto' : '90vh',
+            top: '50%',
+            right: isMobile ? '8px' : '16px',
+            transform: isMinimized ? 'translateY(-50%)' : 'translateY(-50%)',
+            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 16px)' : '420px',
+            height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 60px)' : '680px',
+            maxHeight: isMinimized ? 'auto' : '85vh',
             zIndex: 999999,
             transition: 'all 0.3s ease-in-out'
           }}
