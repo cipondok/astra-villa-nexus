@@ -3,10 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, Users, Clock, CheckCircle, Target, AlertCircle, Award, ArrowRight, Home } from "lucide-react";
+import { TrendingUp, Users, Clock, CheckCircle, Target, AlertCircle, Award, ArrowRight, Home, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import ProgressAnalyticsDashboard from "./progress/ProgressAnalyticsDashboard";
 
 interface VendorProgress {
   id: string;
@@ -171,12 +173,23 @@ const VendorProgressReports = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Vendor Progress Reports</h2>
-          <p className="text-muted-foreground">Real-time vendor progress tracking and analytics</p>
+          <p className="text-muted-foreground">Advanced progress tracking with diagnostic tools</p>
         </div>
         <Badge variant="secondary" className="animate-pulse">
           Live Updates
         </Badge>
       </div>
+
+      <Tabs defaultValue="reports" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="reports">Progress Reports</TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="reports" className="space-y-6 mt-6">
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -405,6 +418,26 @@ const VendorProgressReports = () => {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          {vendorProgress && vendorProgress.length > 0 ? (
+            <ProgressAnalyticsDashboard 
+              vendorId={vendorProgress[0].vendor_id} 
+              vendorName={vendorProgress[0].vendor?.full_name || 'Vendor'}
+            />
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center text-muted-foreground py-12">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Select a vendor from the Progress Reports tab to view analytics</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
