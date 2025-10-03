@@ -77,7 +77,7 @@ const EnhancedAdminDashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState<RealAlert | null>(null);
 
-  // Fetch real system statistics from database
+  // Fetch real system statistics from database using RPC
   const { data: systemStats = {
     totalUsers: 0,
     activeUsers: 0,
@@ -90,16 +90,21 @@ const EnhancedAdminDashboard = () => {
   }, isLoading: systemStatsLoading } = useQuery({
     queryKey: ['admin-system-stats'],
     queryFn: async () => {
-      const [usersResult, activeUsersResult, errorsResult, criticalErrorsResult] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('is_suspended', false),
+      const [profileStatsResult, errorsResult, criticalErrorsResult] = await Promise.all([
+        supabase.rpc('get_admin_profile_stats'),
         supabase.from('error_logs').select('*', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
         supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('error_type', 'critical').gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       ]);
 
+      // Handle both single object and array responses
+      const statsData = Array.isArray(profileStatsResult.data) 
+        ? profileStatsResult.data[0] 
+        : profileStatsResult.data;
+      const stats = statsData || { total: 0, suspended: 0 };
+
       return {
-        totalUsers: usersResult.count || 0,
-        activeUsers: activeUsersResult.count || 0,
+        totalUsers: stats.total || 0,
+        activeUsers: (stats.total || 0) - (stats.suspended || 0),
         totalErrors: errorsResult.count || 0,
         criticalErrors: criticalErrorsResult.count || 0,
         systemUptime: '99.9%',
