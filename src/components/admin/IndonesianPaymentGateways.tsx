@@ -68,17 +68,6 @@ const IndonesianPaymentGateways = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Indonesian Payment Gateways</h2>
-          <p className="text-muted-foreground">Manage local Indonesian payment methods</p>
-        </div>
-        <Button>
-          <Settings className="h-4 w-4 mr-2" />
-          Gateway Settings
-        </Button>
-      </div>
-
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>

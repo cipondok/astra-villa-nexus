@@ -335,22 +335,7 @@ const PropertyManagement = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5" />
-                Indonesian Property Management Hub
-              </CardTitle>
-              <CardDescription>
-                Complete property management system for Indonesian real estate market
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
+      <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="properties" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
@@ -937,9 +922,7 @@ const PropertyManagement = () => {
                 </Card>
               </div>
             </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+      </Tabs>
 
       {/* Edit Modal */}
       <PropertyEditModal

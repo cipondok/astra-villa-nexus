@@ -109,17 +109,6 @@ const VirtualTourSettings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">3D Virtual Tour Settings</h2>
-          <p className="text-muted-foreground">Manage virtual tours and 3D viewing experiences</p>
-        </div>
-        <Button>
-          <Upload className="h-4 w-4 mr-2" />
-          Upload New Tour
-        </Button>
-      </div>
-
       <Tabs defaultValue="tours" className="w-full">
         <TabsList>
           <TabsTrigger value="tours">Virtual Tours</TabsTrigger>

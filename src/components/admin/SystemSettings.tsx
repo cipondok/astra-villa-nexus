@@ -69,22 +69,6 @@ const SystemSettings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">System Configuration</h2>
-          <p className="text-gray-600">Configure system-wide settings and manage system functions</p>
-        </div>
-        <div className="flex gap-2">
-          <Button onClick={clearCache} disabled={loading} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Clear Cache
-          </Button>
-          <Button onClick={saveSettings} disabled={loading}>
-            {loading ? 'Saving...' : 'Save Settings'}
-          </Button>
-        </div>
-      </div>
-
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="overflow-x-auto">
           <TabsList className="grid w-full grid-cols-10 min-w-fit">
