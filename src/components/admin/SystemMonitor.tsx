@@ -6,10 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw, Activity, Server, AlertTriangle, TrendingUp, BarChart3, Stethoscope } from "lucide-react";
 import { useEnhancedDatabaseConnection } from "@/hooks/useEnhancedDatabaseConnection";
 import { useRealTimeMetrics } from "@/hooks/useRealTimeMetrics";
-import RealTimeSystemHealth from "./RealTimeSystemHealth";
-import EnhancedAlertManagement from "./EnhancedAlertManagement";
 import ConnectionStatusIndicator from "./ConnectionStatusIndicator";
-import SupabaseDiagnosticsPanel from "./SupabaseDiagnosticsPanel";
+import UnifiedDiagnosticsPanel from "./UnifiedDiagnosticsPanel";
 
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -85,45 +83,17 @@ const SystemMonitor = () => {
         </Card>
       </div>
 
-      {/* Main Monitoring Tabs */}
-      <Tabs defaultValue="health" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="health" className="flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            System Health
-          </TabsTrigger>
+      {/* Unified System Diagnostics */}
+      <Tabs defaultValue="diagnostics" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-1">
           <TabsTrigger value="diagnostics" className="flex items-center gap-2">
             <Stethoscope className="h-4 w-4" />
-            Diagnostics
-          </TabsTrigger>
-          <TabsTrigger value="alerts" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            Alert Management
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Analytics
+            Complete System Diagnostics & Health Monitor
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="health">
-          <RealTimeSystemHealth />
-        </TabsContent>
-
-        <TabsContent value="diagnostics">
-          <SupabaseDiagnosticsPanel />
-        </TabsContent>
-
-        <TabsContent value="alerts">
-          <EnhancedAlertManagement />
-        </TabsContent>
-
-        <TabsContent value="analytics">
-          <div className="text-center py-12 text-muted-foreground">
-            <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Advanced analytics dashboard coming soon...</p>
-            <p className="text-sm mt-2">Will include performance trends, usage patterns, and predictive insights</p>
-          </div>
+        <TabsContent value="diagnostics" className="space-y-6">
+          <UnifiedDiagnosticsPanel />
         </TabsContent>
       </Tabs>
     </div>
