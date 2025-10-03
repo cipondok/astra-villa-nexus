@@ -76,116 +76,103 @@ const UsersHub = () => {
   return (
     <div className="space-y-6">
 
-      {/* Statistics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Compact Micro Statistics */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
         <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Total Users
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.total.toLocaleString()}</div>
-            <p className="text-blue-100 text-xs mt-1">All registered users</p>
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium opacity-90">Total</p>
+                <p className="text-xl font-bold">{stats.total.toLocaleString()}</p>
+              </div>
+              <Users className="h-6 w-6 opacity-80" />
+            </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Briefcase className="h-4 w-4" />
-              Vendors
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.vendors.toLocaleString()}</div>
-            <p className="text-purple-100 text-xs mt-1">Service providers</p>
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium opacity-90">Vendors</p>
+                <p className="text-xl font-bold">{stats.vendors.toLocaleString()}</p>
+              </div>
+              <Briefcase className="h-6 w-6 opacity-80" />
+            </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <UserCheck className="h-4 w-4" />
-              Agents & Owners
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {(stats.agents + stats.propertyOwners).toLocaleString()}
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium opacity-90">Agents</p>
+                <p className="text-xl font-bold">{(stats.agents + stats.propertyOwners).toLocaleString()}</p>
+              </div>
+              <UserCheck className="h-6 w-6 opacity-80" />
             </div>
-            <p className="text-green-100 text-xs mt-1">
-              {stats.agents} agents, {stats.propertyOwners} owners
-            </p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Active Today
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.activeToday.toLocaleString()}</div>
-            <p className="text-orange-100 text-xs mt-1">Last 24 hours</p>
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium opacity-90">Active</p>
+                <p className="text-xl font-bold">{stats.activeToday.toLocaleString()}</p>
+              </div>
+              <Activity className="h-6 w-6 opacity-80" />
+            </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white border-0">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Pending Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {(stats.pending + stats.suspended).toLocaleString()}
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium opacity-90">Pending</p>
+                <p className="text-xl font-bold">{(stats.pending + stats.suspended).toLocaleString()}</p>
+              </div>
+              <Shield className="h-6 w-6 opacity-80" />
             </div>
-            <p className="text-red-100 text-xs mt-1">
-              {stats.pending} pending, {stats.suspended} suspended
-            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Additional Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Additional Compact Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">General Users</p>
-                <p className="text-2xl font-bold">{stats.generalUsers.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">General</p>
+                <p className="text-lg font-bold">{stats.generalUsers.toLocaleString()}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-5 w-5 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Customer Service</p>
-                <p className="text-2xl font-bold">{stats.customerService.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">CS Staff</p>
+                <p className="text-lg font-bold">{stats.customerService.toLocaleString()}</p>
               </div>
-              <Headphones className="h-8 w-8 text-green-500" />
+              <Headphones className="h-5 w-5 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Admin Staff</p>
-                <p className="text-2xl font-bold">{stats.admins.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">Admins</p>
+                <p className="text-lg font-bold">{stats.admins.toLocaleString()}</p>
               </div>
-              <Shield className="h-8 w-8 text-purple-500" />
+              <Shield className="h-5 w-5 text-purple-500" />
             </div>
           </CardContent>
         </Card>
