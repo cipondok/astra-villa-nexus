@@ -27,10 +27,10 @@ const PropertyGridView = ({
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      return `IDR ${(price / 1000000000).toFixed(1)}B`;
+      return `IDR ${(price / 1000000000).toFixed(1)} Miliar`;
     }
     if (price >= 1000000) {
-      return `IDR ${(price / 1000000).toFixed(1)}M`;
+      return `IDR ${(price / 1000000).toFixed(1)} Jt`;
     }
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -102,6 +102,12 @@ const PropertyGridView = ({
               {property.property_type && (
                 <Badge variant="outline" className="badge-secondary capitalize text-xs">
                   {property.property_type}
+                </Badge>
+              )}
+              {(property.city || property.location) && (
+                <Badge variant="outline" className="glass-effect text-xs">
+                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
+                  {property.city || property.location.split(',')[0]}
                 </Badge>
               )}
             </div>
