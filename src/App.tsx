@@ -37,6 +37,10 @@ import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
 import NewProjects from '@/pages/NewProjects';
 import AstraTokensPage from '@/pages/AstraTokensPage';
+import ConstructionCostCalculator from '@/pages/calculators/ConstructionCostCalculator';
+import HomeLoanCalculator from '@/pages/calculators/HomeLoanCalculator';
+import AreaUnitConverter from '@/pages/calculators/AreaUnitConverter';
+import AreaGuides from '@/pages/AreaGuides';
 import Properties from '@/pages/Properties';
 import Notifications from '@/pages/Notifications';
 import Users from '@/pages/Users';
@@ -95,6 +99,10 @@ const AppContent = () => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/users" element={<Users />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/calculators/construction" element={<ConstructionCostCalculator />} />
+          <Route path="/calculators/loan" element={<HomeLoanCalculator />} />
+          <Route path="/calculators/area" element={<AreaUnitConverter />} />
+          <Route path="/areas" element={<AreaGuides />} />
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>

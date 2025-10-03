@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   Building2, 
@@ -119,25 +120,24 @@ interface FeatureCardProps {
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   const Icon = feature.icon;
+  const navigate = useNavigate();
 
   const handleClick = () => {
     // Route to different pages based on feature
     const routes: Record<string, string> = {
-      'New Projects': '/properties?development_status=new_project',
+      'New Projects': '/new-projects',
       'Construction Cost Calculator': '/calculators/construction',
       'Home Loan Calculator': '/calculators/loan',
       'Area Guides': '/areas',
-      'Plot Finder': '/properties?property_type=land',
-      'Property Index': '/market-trends',
+      'Plot Finder': '/search?property_type=land',
+      'Property Index': '/analytics',
       'Area Unit Converter': '/calculators/area',
-      'Property Trends': '/trends'
+      'Property Trends': '/analytics'
     };
     
     const route = routes[feature.title];
     if (route) {
-      console.log(`Navigating to: ${route}`);
-      // TODO: Implement actual navigation
-      window.location.href = route;
+      navigate(route);
     }
   };
 
