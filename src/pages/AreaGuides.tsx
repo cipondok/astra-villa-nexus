@@ -203,31 +203,33 @@ const AreaGuides = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Sticky Header with Language Toggle */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
+      {/* Modern Sticky Header with Glass Effect */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 p-2 bg-primary/10 rounded-lg">
-                <Compass className="w-6 h-6 text-primary" />
+            <div className="flex items-center gap-3 group">
+              <div className="flex items-center gap-2 p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Compass className="w-6 h-6 text-primary animate-pulse" />
               </div>
               <div>
-                <h1 className="text-xl md:text-2xl font-bold">{language === 'id' ? 'Panduan Area' : 'Area Guides'}</h1>
-                <p className="text-xs text-muted-foreground hidden md:block">
+                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  {language === 'id' ? 'Panduan Area' : 'Area Guides'}
+                </h1>
+                <p className="text-xs text-muted-foreground hidden md:block font-medium">
                   {language === 'id' ? 'Jelajahi Perumahan Indonesia' : 'Explore Indonesian Housing'}
                 </p>
               </div>
             </div>
             
-            {/* Language Toggle */}
+            {/* Modern Language Toggle */}
             <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
-              <TabsList className="grid w-[200px] grid-cols-2">
-                <TabsTrigger value="id" className="gap-2">
+              <TabsList className="grid w-[200px] grid-cols-2 bg-muted/50 backdrop-blur-sm">
+                <TabsTrigger value="id" className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80">
                   <Globe className="w-4 h-4" />
                   Bahasa
                 </TabsTrigger>
-                <TabsTrigger value="en" className="gap-2">
+                <TabsTrigger value="en" className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80">
                   <Globe className="w-4 h-4" />
                   English
                 </TabsTrigger>
@@ -237,42 +239,49 @@ const AreaGuides = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary/10 via-primary/5 to-background py-16 px-4 relative overflow-hidden">
-        {/* Decorative background illustration */}
-        <div className="absolute right-0 top-0 w-1/2 h-full opacity-10">
+      {/* Modern Hero Section with Gradient */}
+      <section className="relative py-20 px-4 overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
+        </div>
+        
+        {/* Decorative Elements */}
+        <div className="absolute right-0 top-0 w-1/2 h-full opacity-5">
           <svg viewBox="0 0 400 300" className="w-full h-full" preserveAspectRatio="xMaxYMid slice">
-            <g transform="rotate(-15 200 150)">
-              <rect x="50" y="100" width="40" height="80" fill="currentColor" className="text-primary" opacity="0.3"/>
-              <rect x="100" y="80" width="40" height="100" fill="currentColor" className="text-primary" opacity="0.4"/>
-              <rect x="150" y="60" width="40" height="120" fill="currentColor" className="text-primary" opacity="0.5"/>
-              <rect x="200" y="90" width="40" height="90" fill="currentColor" className="text-primary" opacity="0.3"/>
-              <rect x="250" y="70" width="40" height="110" fill="currentColor" className="text-primary" opacity="0.4"/>
+            <g className="animate-pulse">
+              <rect x="50" y="100" width="40" height="80" fill="currentColor" className="text-primary" opacity="0.4"/>
+              <rect x="100" y="80" width="40" height="100" fill="currentColor" className="text-primary" opacity="0.5"/>
+              <rect x="150" y="60" width="40" height="120" fill="currentColor" className="text-primary" opacity="0.6"/>
+              <rect x="200" y="90" width="40" height="90" fill="currentColor" className="text-primary" opacity="0.4"/>
+              <rect x="250" y="70" width="40" height="110" fill="currentColor" className="text-primary" opacity="0.5"/>
             </g>
           </svg>
         </div>
         
-        <div className="container mx-auto text-center max-w-4xl relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {t.title}
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            {t.subtitle}
-          </p>
+        <div className="container mx-auto text-center max-w-4xl relative z-10 space-y-8">
+          <div className="space-y-4 animate-fade-in">
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight">
+              {t.title}
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              {t.subtitle}
+            </p>
+          </div>
           
-          {/* Enhanced Search Section */}
-          <Card className="max-w-3xl mx-auto border-2 shadow-xl">
+          {/* Modern Search Card with Glass Effect */}
+          <Card className="max-w-3xl mx-auto border-2 shadow-2xl bg-background/50 backdrop-blur-sm hover:shadow-primary/20 transition-all duration-300 animate-scale-in">
             <CardContent className="pt-6 pb-6">
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr_auto] gap-4">
                 <div>
-                  <label className="text-sm font-semibold mb-2 block text-left">{t.searchCity}</label>
+                  <label className="text-sm font-semibold mb-2 block text-left text-foreground/80">{t.searchCity}</label>
                   <Select value={selectedCity} onValueChange={setSelectedCity}>
-                    <SelectTrigger className="bg-background">
+                    <SelectTrigger className="bg-background/80 backdrop-blur-sm border-2 hover:border-primary/50 transition-colors">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-background/95 backdrop-blur-sm">
                       {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.id}>
+                        <SelectItem key={city.id} value={city.id} className="hover:bg-primary/10">
                           {city.name}
                         </SelectItem>
                       ))}
@@ -281,20 +290,20 @@ const AreaGuides = () => {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold mb-2 block text-left">{t.searchSociety}</label>
+                  <label className="text-sm font-semibold mb-2 block text-left text-foreground/80">{t.searchSociety}</label>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                     <Input
                       placeholder={t.searchSociety}
                       value={searchSociety}
                       onChange={(e) => setSearchSociety(e.target.value)}
-                      className="pl-10 bg-background"
+                      className="pl-10 bg-background/80 backdrop-blur-sm border-2 hover:border-primary/50 transition-colors"
                     />
                   </div>
                 </div>
                 
                 <div className="flex items-end">
-                  <Button size="lg" className="w-full md:w-auto gap-2">
+                  <Button size="lg" className="w-full md:w-auto gap-2 bg-gradient-to-r from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/50 transition-all duration-300">
                     <Search className="w-4 h-4" />
                     {t.searchButton}
                   </Button>
@@ -305,18 +314,21 @@ const AreaGuides = () => {
         </div>
       </section>
 
-      {/* Main Features */}
-      <section className="container mx-auto px-4 py-16">
+      {/* Modern Features Section */}
+      <section className="container mx-auto px-4 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {mainFeatures.map((feature, index) => (
-            <Card key={index} className="text-center hover:shadow-xl transition-all border-2 hover:border-primary/20">
-              <CardContent className="pt-8 pb-6">
+            <Card 
+              key={index} 
+              className="group text-center hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/30 bg-gradient-to-br from-background to-primary/5 hover:scale-105 cursor-pointer"
+            >
+              <CardContent className="pt-8 pb-6 space-y-4">
                 <div className="flex justify-center mb-6">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center text-6xl">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-6xl shadow-lg group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300 group-hover:scale-110">
                     {feature.image}
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
@@ -326,19 +338,26 @@ const AreaGuides = () => {
         </div>
       </section>
 
-      {/* Most Viewed Societies Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-6">{t.mostViewed}</h2>
+      {/* Modern Societies Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="mb-12 space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              {t.mostViewed}
+            </h2>
+            <p className="text-muted-foreground">
+              {language === 'id' ? 'Temukan komunitas terbaik di berbagai kota' : 'Discover the best communities across cities'}
+            </p>
+          </div>
           
-          {/* City Tabs */}
+          {/* Modern City Tabs */}
           <Tabs value={selectedCity} onValueChange={setSelectedCity} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-8">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-8 bg-muted/50 backdrop-blur-sm p-1 rounded-xl">
               {cities.map((city) => (
                 <TabsTrigger 
                   key={city.id} 
                   value={city.id}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-lg transition-all duration-300"
                 >
                   {city.name}
                 </TabsTrigger>
@@ -347,44 +366,54 @@ const AreaGuides = () => {
           </Tabs>
         </div>
 
-        {/* Societies Grid */}
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-2xl font-semibold">
+        {/* Modern Societies Grid */}
+        <div className="mb-8 flex items-center justify-between">
+          <h3 className="text-2xl font-semibold bg-gradient-to-r from-foreground to-primary/80 bg-clip-text text-transparent">
             {t.viewedIn} {cities.find(c => c.id === selectedCity)?.name}
           </h3>
-          <Button variant="link" className="gap-2">
-            {t.viewGuide} {cities.find(c => c.id === selectedCity)?.name}
+          <Button variant="link" className="gap-2 text-primary hover:gap-3 transition-all">
+            {t.viewGuide}
             <TrendingUp className="w-4 h-4" />
           </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {popularSocieties[selectedCity as keyof typeof popularSocieties]?.map((society, index) => (
-            <Card key={index} className="hover:shadow-lg transition-all cursor-pointer group">
+            <Card 
+              key={index} 
+              className="group hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer border-2 hover:border-primary/30 bg-gradient-to-br from-background to-primary/5 hover:-translate-y-1"
+            >
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Home className="w-5 h-5 text-primary" />
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                        <Home className="w-5 h-5 text-primary" />
+                      </div>
                       <CardTitle className="text-lg group-hover:text-primary transition-colors">
                         {society.name}
                       </CardTitle>
                     </div>
-                    <CardDescription className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
+                    <CardDescription className="flex items-center gap-2 text-sm">
+                      <MapPin className="w-4 h-4 text-primary" />
                       {society.location}
                     </CardDescription>
                   </div>
-                  <Badge variant="secondary">{society.type}</Badge>
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                    {society.type}
+                  </Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
-                    <span className="text-sm text-muted-foreground">{t.avgPrice}</span>
-                    <span className="font-semibold text-primary">{society.avgPrice}</span>
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl shadow-sm">
+                    <span className="text-sm font-medium text-muted-foreground">{t.avgPrice}</span>
+                    <span className="font-bold text-lg text-primary">{society.avgPrice}</span>
                   </div>
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300"
+                  >
                     {t.viewDetails}
                   </Button>
                 </div>
@@ -394,23 +423,32 @@ const AreaGuides = () => {
         </div>
       </section>
 
-      {/* Amenities Section */}
-      <section className="bg-muted/30 py-16 px-4">
+      {/* Modern Amenities Section */}
+      <section className="bg-gradient-to-br from-muted/50 to-primary/5 py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">{t.discoverAmenities}</h2>
-            <p className="text-muted-foreground">
+          <div className="text-center mb-12 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              {t.discoverAmenities}
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               {t.amenitiesDesc}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {amenities.map((amenity, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-all">
-                <CardContent className="pt-6 pb-6">
-                  <amenity.icon className={`w-12 h-12 mx-auto mb-4 ${amenity.color}`} />
-                  <h3 className="font-semibold mb-2">{amenity.name}</h3>
-                  <p className="text-2xl font-bold text-primary">{amenity.count}</p>
+              <Card 
+                key={index} 
+                className="group text-center hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 border-2 hover:border-primary/30 bg-gradient-to-br from-background to-primary/5 hover:scale-105 cursor-pointer"
+              >
+                <CardContent className="pt-8 pb-6 space-y-4">
+                  <div className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl w-20 h-20 mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl">
+                    <amenity.icon className={`w-10 h-10 ${amenity.color} group-hover:scale-110 transition-transform`} />
+                  </div>
+                  <h3 className="font-semibold text-foreground/90 group-hover:text-primary transition-colors">{amenity.name}</h3>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                    {amenity.count}
+                  </p>
                 </CardContent>
               </Card>
             ))}
