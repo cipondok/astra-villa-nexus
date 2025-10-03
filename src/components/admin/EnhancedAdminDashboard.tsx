@@ -57,6 +57,7 @@ import ASTRATokenSettings from './ASTRATokenSettings';
 import SystemAnalytics from './SystemAnalytics';
 import MFASettings from '../auth/MFASettings';
 import UnifiedDiagnosticsPanel from './UnifiedDiagnosticsPanel';
+import { AlgorithmDashboard } from './AlgorithmDashboard';
 
 interface RealAlert {
   id: string;
@@ -307,7 +308,7 @@ const EnhancedAdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-9 lg:w-fit overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-10 lg:w-fit overflow-x-auto">
             <TabsTrigger value="overview" className="gap-2 whitespace-nowrap">
               <BarChart3 className="h-4 w-4" />
               Overview
@@ -335,6 +336,10 @@ const EnhancedAdminDashboard = () => {
             <TabsTrigger value="support" className="gap-2 whitespace-nowrap">
               <MessageSquare className="h-4 w-4" />
               Support
+            </TabsTrigger>
+            <TabsTrigger value="algorithms" className="gap-2 whitespace-nowrap">
+              <Brain className="h-4 w-4" />
+              Algorithms
             </TabsTrigger>
             <TabsTrigger value="api" className="gap-2 whitespace-nowrap">
               <Key className="h-4 w-4" />
@@ -572,6 +577,11 @@ const EnhancedAdminDashboard = () => {
                 <SystemAnalytics />
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* Algorithms Tab */}
+          <TabsContent value="algorithms" className="space-y-6">
+            <AlgorithmDashboard />
           </TabsContent>
         </Tabs>
       </div>
