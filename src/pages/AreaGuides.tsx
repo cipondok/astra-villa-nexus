@@ -1,30 +1,107 @@
 import React, { useState } from 'react';
-import { MapPin, School, Hospital, ShoppingCart, Trees, Map, DollarSign, TrendingUp, Building2, Compass, Home } from 'lucide-react';
+import { MapPin, School, Hospital, ShoppingCart, Trees, Map, DollarSign, TrendingUp, Building2, Compass, Home, Globe, Search } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 const AreaGuides = () => {
+  const [language, setLanguage] = useState<'en' | 'id'>('id');
   const [selectedCity, setSelectedCity] = useState('jakarta');
+  const [searchSociety, setSearchSociety] = useState('');
+
+  const translations = {
+    id: {
+      title: 'Jelajahi Perumahan di Indonesia',
+      subtitle: 'ASTRA Villa menyediakan gambaran kehidupan sehari-hari di berbagai kompleks perumahan di Indonesia',
+      searchCity: 'Kota',
+      searchSociety: 'Cari Perumahan',
+      searchButton: 'Cari',
+      feature1Title: 'Lihat peta detail perumahan',
+      feature1Desc: 'Jelajahi peta lengkap semua kompleks perumahan di Indonesia, termasuk master plan, jaringan jalan, dan plot kavling.',
+      feature2Title: 'Fasilitas Lokal Terbaik',
+      feature2Desc: 'Temukan tempat favorit warga lokal. Temukan sekolah, rumah sakit, taman, toko kelontong, dan banyak lagi.',
+      feature3Title: 'Harga Rumah & Kavling',
+      feature3Desc: 'Temukan ribuan listing rumah dan kavling murah untuk dijual di kompleks pilihan Anda. Lihat rumah terjangkau untuk disewa dan properti komersial.',
+      mostViewed: 'Perumahan Paling Banyak Dilihat',
+      viewedIn: 'Perumahan paling banyak dilihat di',
+      viewGuide: 'Lihat Panduan Area',
+      viewDetails: 'Lihat Detail',
+      avgPrice: 'Harga Rata-rata',
+      discoverAmenities: 'Temukan Fasilitas Lokal',
+      amenitiesDesc: 'Jelajahi ribuan fasilitas di seluruh kompleks perumahan Indonesia',
+      schools: 'Sekolah',
+      hospitals: 'Rumah Sakit',
+      shopping: 'Pusat Belanja',
+      parks: 'Taman',
+      whyUse: 'Mengapa Menggunakan Panduan Area ASTRA Villa?',
+      whyUseDesc: 'Buat keputusan yang tepat tentang rumah Anda berikutnya',
+      detailedMaps: 'Peta Perumahan Detail',
+      detailedMapsDesc: 'Akses master plan lengkap, jaringan jalan, dan tata letak kavling untuk setiap kompleks perumahan',
+      localInsights: 'Wawasan Lokal',
+      localInsightsDesc: 'Temukan sekolah, rumah sakit, pusat belanja, dan hiburan terdekat',
+      pricing: 'Harga Transparan',
+      pricingDesc: 'Bandingkan harga properti dan temukan penawaran terbaik di lokasi pilihan Anda',
+      trends: 'Tren Pasar',
+      trendsDesc: 'Lacak pertumbuhan nilai properti dan identifikasi peluang investasi baru'
+    },
+    en: {
+      title: 'Explore Housing Societies in Indonesia',
+      subtitle: 'ASTRA Villa provides you with a vibe of what everyday life looks like in different housing societies of Indonesia',
+      searchCity: 'City',
+      searchSociety: 'Search Societies',
+      searchButton: 'Search',
+      feature1Title: 'Take a look inside society maps',
+      feature1Desc: 'Conveniently browse through detailed maps of all the housing societies established across Indonesia, featuring master plans, road networks, and plots.',
+      feature2Title: 'Best of Local Amenities',
+      feature2Desc: 'Surf through the \'hot spots\' that the locals love to flock to. Discover top places including schools, hospitals, parks, grocery stores, and much more.',
+      feature3Title: 'Houses & Plot Prices',
+      feature3Desc: 'Find thousands of listings of low price houses and plots for sale in your desired society. Check out these affordable houses for rent and commercial properties for sale.',
+      mostViewed: 'Most Viewed Societies',
+      viewedIn: 'Most viewed societies in',
+      viewGuide: 'View Area Guide',
+      viewDetails: 'View Details',
+      avgPrice: 'Average Price',
+      discoverAmenities: 'Discover Local Amenities',
+      amenitiesDesc: 'Explore thousands of facilities across Indonesian housing societies',
+      schools: 'Schools',
+      hospitals: 'Hospitals',
+      shopping: 'Shopping Centers',
+      parks: 'Parks',
+      whyUse: 'Why Use ASTRA Villa Area Guides?',
+      whyUseDesc: 'Make informed decisions about your next home',
+      detailedMaps: 'Detailed Society Maps',
+      detailedMapsDesc: 'Access comprehensive master plans, road networks, and plot layouts for every housing society',
+      localInsights: 'Local Insights',
+      localInsightsDesc: 'Discover nearby schools, hospitals, shopping centers, and entertainment options',
+      pricing: 'Transparent Pricing',
+      pricingDesc: 'Compare property prices and find the best deals in your preferred location',
+      trends: 'Market Trends',
+      trendsDesc: 'Track property value growth and identify emerging investment opportunities'
+    }
+  };
+
+  const t = translations[language];
 
   const mainFeatures = [
     {
       icon: Map,
-      title: 'Take a look inside society maps',
-      description: 'Conveniently browse through detailed maps of all the housing societies established across Indonesia, featuring master plans, road networks, and plots.',
+      title: t.feature1Title,
+      description: t.feature1Desc,
       image: '🗺️'
     },
     {
       icon: MapPin,
-      title: 'Best of Local Amenities',
-      description: 'Surf through the \'hot spots\' that the locals love to flock to. Discover top places including schools, hospitals, parks, grocery stores, and much more.',
+      title: t.feature2Title,
+      description: t.feature2Desc,
       image: '📍'
     },
     {
       icon: DollarSign,
-      title: 'Houses & Plot Prices',
-      description: 'Find thousands of listings of low price houses and plots for sale in your desired society. Check out these affordable houses for rent and commercial properties for sale.',
+      title: t.feature3Title,
+      description: t.feature3Desc,
       image: '🏘️'
     }
   ];
@@ -74,28 +151,112 @@ const AreaGuides = () => {
   };
 
   const amenities = [
-    { icon: School, name: 'Schools', count: '500+', color: 'text-blue-500' },
-    { icon: Hospital, name: 'Hospitals', count: '200+', color: 'text-red-500' },
-    { icon: ShoppingCart, name: 'Shopping Centers', count: '350+', color: 'text-purple-500' },
-    { icon: Trees, name: 'Parks', count: '180+', color: 'text-green-500' }
+    { icon: School, name: t.schools, count: '500+', color: 'text-blue-500' },
+    { icon: Hospital, name: t.hospitals, count: '200+', color: 'text-red-500' },
+    { icon: ShoppingCart, name: t.shopping, count: '350+', color: 'text-purple-500' },
+    { icon: Trees, name: t.parks, count: '180+', color: 'text-green-500' }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary/10 via-primary/5 to-background py-16 px-4">
-        <div className="container mx-auto text-center max-w-4xl">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <Compass className="w-8 h-8 text-primary" />
+      {/* Sticky Header with Language Toggle */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 p-2 bg-primary/10 rounded-lg">
+                <Compass className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl md:text-2xl font-bold">{language === 'id' ? 'Panduan Area' : 'Area Guides'}</h1>
+                <p className="text-xs text-muted-foreground hidden md:block">
+                  {language === 'id' ? 'Jelajahi Perumahan Indonesia' : 'Explore Indonesian Housing'}
+                </p>
+              </div>
             </div>
+            
+            {/* Language Toggle */}
+            <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
+              <TabsList className="grid w-[200px] grid-cols-2">
+                <TabsTrigger value="id" className="gap-2">
+                  <Globe className="w-4 h-4" />
+                  Bahasa
+                </TabsTrigger>
+                <TabsTrigger value="en" className="gap-2">
+                  <Globe className="w-4 h-4" />
+                  English
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-primary/10 via-primary/5 to-background py-16 px-4 relative overflow-hidden">
+        {/* Decorative background illustration */}
+        <div className="absolute right-0 top-0 w-1/2 h-full opacity-10">
+          <svg viewBox="0 0 400 300" className="w-full h-full" preserveAspectRatio="xMaxYMid slice">
+            <g transform="rotate(-15 200 150)">
+              <rect x="50" y="100" width="40" height="80" fill="currentColor" className="text-primary" opacity="0.3"/>
+              <rect x="100" y="80" width="40" height="100" fill="currentColor" className="text-primary" opacity="0.4"/>
+              <rect x="150" y="60" width="40" height="120" fill="currentColor" className="text-primary" opacity="0.5"/>
+              <rect x="200" y="90" width="40" height="90" fill="currentColor" className="text-primary" opacity="0.3"/>
+              <rect x="250" y="70" width="40" height="110" fill="currentColor" className="text-primary" opacity="0.4"/>
+            </g>
+          </svg>
+        </div>
+        
+        <div className="container mx-auto text-center max-w-4xl relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Find the Perfect Place to live in!
+            {t.title}
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Stop wondering how your life will be like in a housing society & make informed decisions with ASTRA Villa Area Guides
+          <p className="text-lg text-muted-foreground mb-8">
+            {t.subtitle}
           </p>
+          
+          {/* Enhanced Search Section */}
+          <Card className="max-w-3xl mx-auto border-2 shadow-xl">
+            <CardContent className="pt-6 pb-6">
+              <div className="grid grid-cols-1 md:grid-cols-[200px_1fr_auto] gap-4">
+                <div>
+                  <label className="text-sm font-semibold mb-2 block text-left">{t.searchCity}</label>
+                  <Select value={selectedCity} onValueChange={setSelectedCity}>
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((city) => (
+                        <SelectItem key={city.id} value={city.id}>
+                          {city.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-semibold mb-2 block text-left">{t.searchSociety}</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder={t.searchSociety}
+                      value={searchSociety}
+                      onChange={(e) => setSearchSociety(e.target.value)}
+                      className="pl-10 bg-background"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex items-end">
+                  <Button size="lg" className="w-full md:w-auto gap-2">
+                    <Search className="w-4 h-4" />
+                    {t.searchButton}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -123,7 +284,7 @@ const AreaGuides = () => {
       {/* Most Viewed Societies Section */}
       <section className="container mx-auto px-4 py-12">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-6">Most Viewed Societies</h2>
+          <h2 className="text-3xl font-bold mb-6">{t.mostViewed}</h2>
           
           {/* City Tabs */}
           <Tabs value={selectedCity} onValueChange={setSelectedCity} className="w-full">
@@ -144,10 +305,10 @@ const AreaGuides = () => {
         {/* Societies Grid */}
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-2xl font-semibold">
-            Most viewed societies in {cities.find(c => c.id === selectedCity)?.name}
+            {t.viewedIn} {cities.find(c => c.id === selectedCity)?.name}
           </h3>
           <Button variant="link" className="gap-2">
-            View {cities.find(c => c.id === selectedCity)?.name} Area Guide
+            {t.viewGuide} {cities.find(c => c.id === selectedCity)?.name}
             <TrendingUp className="w-4 h-4" />
           </Button>
         </div>
@@ -175,11 +336,11 @@ const AreaGuides = () => {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
-                    <span className="text-sm text-muted-foreground">Average Price</span>
+                    <span className="text-sm text-muted-foreground">{t.avgPrice}</span>
                     <span className="font-semibold text-primary">{society.avgPrice}</span>
                   </div>
                   <Button variant="outline" className="w-full">
-                    View Details
+                    {t.viewDetails}
                   </Button>
                 </div>
               </CardContent>
@@ -192,9 +353,9 @@ const AreaGuides = () => {
       <section className="bg-muted/30 py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Discover Local Amenities</h2>
+            <h2 className="text-3xl font-bold mb-4">{t.discoverAmenities}</h2>
             <p className="text-muted-foreground">
-              Explore thousands of facilities across Indonesian housing societies
+              {t.amenitiesDesc}
             </p>
           </div>
 
@@ -216,8 +377,8 @@ const AreaGuides = () => {
       <section className="container mx-auto px-4 py-16">
         <Card className="border-2">
           <CardHeader>
-            <CardTitle className="text-2xl">Why Use ASTRA Villa Area Guides?</CardTitle>
-            <CardDescription>Make informed decisions about your next home</CardDescription>
+            <CardTitle className="text-2xl">{t.whyUse}</CardTitle>
+            <CardDescription>{t.whyUseDesc}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -226,9 +387,9 @@ const AreaGuides = () => {
                   <Map className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">Detailed Society Maps</h4>
+                  <h4 className="font-semibold mb-2">{t.detailedMaps}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Access comprehensive master plans, road networks, and plot layouts for every housing society
+                    {t.detailedMapsDesc}
                   </p>
                 </div>
               </div>
@@ -238,9 +399,9 @@ const AreaGuides = () => {
                   <MapPin className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">Local Insights</h4>
+                  <h4 className="font-semibold mb-2">{t.localInsights}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Discover nearby schools, hospitals, shopping centers, and entertainment options
+                    {t.localInsightsDesc}
                   </p>
                 </div>
               </div>
@@ -250,9 +411,9 @@ const AreaGuides = () => {
                   <DollarSign className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">Transparent Pricing</h4>
+                  <h4 className="font-semibold mb-2">{t.pricing}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Compare property prices and find the best deals in your preferred location
+                    {t.pricingDesc}
                   </p>
                 </div>
               </div>
@@ -262,9 +423,9 @@ const AreaGuides = () => {
                   <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">Market Trends</h4>
+                  <h4 className="font-semibold mb-2">{t.trends}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Track property value growth and identify emerging investment opportunities
+                    {t.trendsDesc}
                   </p>
                 </div>
               </div>
