@@ -771,6 +771,16 @@
   .animation-delay-1000 {
     animation-delay: 1000ms;
   }
+
+  /* Hide Scrollbar Utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Scrollbar Styling */

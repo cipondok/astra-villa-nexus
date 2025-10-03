@@ -339,7 +339,7 @@ const AreaGuides = () => {
       </section>
 
       {/* Modern Societies Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-16 max-w-7xl">
         <div className="mb-12 space-y-6">
           <div className="text-center space-y-2">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
@@ -350,22 +350,31 @@ const AreaGuides = () => {
             </p>
           </div>
           
-          {/* Modern City Tabs - Scrollable */}
+          {/* Modern City Tabs - Horizontally Scrollable with Gradient Fade */}
           <Tabs value={selectedCity} onValueChange={setSelectedCity} className="w-full">
-            <div className="relative">
-              <TabsList className="inline-flex w-auto min-w-full h-auto mb-8 bg-muted/50 backdrop-blur-sm p-1.5 rounded-xl overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                <div className="flex gap-2 px-1">
-                  {cities.map((city) => (
-                    <TabsTrigger 
-                      key={city.id} 
-                      value={city.id}
-                      className="flex-shrink-0 px-6 py-2.5 whitespace-nowrap data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-lg transition-all duration-300 hover:bg-primary/10"
-                    >
-                      {city.name}
-                    </TabsTrigger>
-                  ))}
-                </div>
-              </TabsList>
+            <div className="relative mx-auto max-w-full">
+              {/* Left Fade Indicator */}
+              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+              
+              {/* Right Fade Indicator */}
+              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+              
+              {/* Scrollable Tabs Container */}
+              <div className="overflow-x-auto scrollbar-hide pb-2 mb-6">
+                <TabsList className="inline-flex w-auto h-auto bg-muted/30 backdrop-blur-md p-2 rounded-2xl border border-primary/10 shadow-lg mx-auto">
+                  <div className="flex gap-2">
+                    {cities.map((city) => (
+                      <TabsTrigger 
+                        key={city.id} 
+                        value={city.id}
+                        className="flex-shrink-0 px-6 py-3 whitespace-nowrap rounded-xl font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-primary/10 hover:scale-102"
+                      >
+                        {city.name}
+                      </TabsTrigger>
+                    ))}
+                  </div>
+                </TabsList>
+              </div>
             </div>
           </Tabs>
         </div>
