@@ -354,7 +354,7 @@ const EnhancedAdminDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="system-diagnostics" className="gap-2 whitespace-nowrap">
               <Activity className="h-4 w-4" />
-              System Diagnostics
+              Diagnostics
             </TabsTrigger>
           </TabsList>
 
