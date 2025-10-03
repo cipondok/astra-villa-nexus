@@ -350,19 +350,23 @@ const AreaGuides = () => {
             </p>
           </div>
           
-          {/* Modern City Tabs */}
+          {/* Modern City Tabs - Scrollable */}
           <Tabs value={selectedCity} onValueChange={setSelectedCity} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-8 bg-muted/50 backdrop-blur-sm p-1 rounded-xl">
-              {cities.map((city) => (
-                <TabsTrigger 
-                  key={city.id} 
-                  value={city.id}
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-lg transition-all duration-300"
-                >
-                  {city.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <div className="relative">
+              <TabsList className="inline-flex w-auto min-w-full h-auto mb-8 bg-muted/50 backdrop-blur-sm p-1.5 rounded-xl overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                <div className="flex gap-2 px-1">
+                  {cities.map((city) => (
+                    <TabsTrigger 
+                      key={city.id} 
+                      value={city.id}
+                      className="flex-shrink-0 px-6 py-2.5 whitespace-nowrap data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-lg transition-all duration-300 hover:bg-primary/10"
+                    >
+                      {city.name}
+                    </TabsTrigger>
+                  ))}
+                </div>
+              </TabsList>
+            </div>
           </Tabs>
         </div>
 
@@ -385,30 +389,30 @@ const AreaGuides = () => {
             >
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div className="flex-1 space-y-3">
+                  <div className="flex-1 space-y-3 min-w-0">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                      <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors flex-shrink-0">
                         <Home className="w-5 h-5 text-primary" />
                       </div>
-                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors truncate">
                         {society.name}
                       </CardTitle>
                     </div>
                     <CardDescription className="flex items-center gap-2 text-sm">
-                      <MapPin className="w-4 h-4 text-primary" />
-                      {society.location}
+                      <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                      <span className="truncate">{society.location}</span>
                     </CardDescription>
                   </div>
-                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 flex-shrink-0 whitespace-nowrap">
                     {society.type}
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl shadow-sm">
-                    <span className="text-sm font-medium text-muted-foreground">{t.avgPrice}</span>
-                    <span className="font-bold text-lg text-primary">{society.avgPrice}</span>
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl shadow-sm gap-2">
+                    <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">{t.avgPrice}</span>
+                    <span className="font-bold text-lg text-primary whitespace-nowrap">{society.avgPrice}</span>
                   </div>
                   <Button 
                     variant="outline" 
