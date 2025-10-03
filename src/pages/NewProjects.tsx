@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, MapPin, Search, DollarSign, Maximize2, Home, Store, Map } from 'lucide-react';
+import { Building2, Search, Home, Store, Map, Building, Warehouse, Factory, Trees, MapPinned, Briefcase, Crown } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import PropertyCard from '@/components/property/PropertyCard';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface SearchFilters {
   city: string;
@@ -135,7 +136,15 @@ const NewProjects = () => {
       bgColor: 'bg-emerald-50 dark:bg-emerald-950/30'
     },
     {
-      name: 'Land/Plots',
+      name: 'Commercial',
+      icon: Store,
+      type: 'commercial',
+      count: categoryCounts?.commercial || 0,
+      color: 'from-purple-400 to-purple-600',
+      bgColor: 'bg-purple-50 dark:bg-purple-950/30'
+    },
+    {
+      name: 'Plots',
       icon: Map,
       type: 'land',
       count: categoryCounts?.land || 0,
@@ -143,14 +152,68 @@ const NewProjects = () => {
       bgColor: 'bg-amber-50 dark:bg-amber-950/30'
     },
     {
-      name: 'Commercial',
-      icon: Store,
-      type: 'commercial',
-      count: categoryCounts?.commercial || 0,
-      color: 'from-purple-400 to-purple-600',
-      bgColor: 'bg-purple-50 dark:bg-purple-950/30'
+      name: 'Offices',
+      icon: Briefcase,
+      type: 'office',
+      count: 0,
+      color: 'from-cyan-400 to-cyan-600',
+      bgColor: 'bg-cyan-50 dark:bg-cyan-950/30'
+    },
+    {
+      name: 'Penthouse',
+      icon: Crown,
+      type: 'penthouse',
+      count: 0,
+      color: 'from-rose-400 to-rose-600',
+      bgColor: 'bg-rose-50 dark:bg-rose-950/30'
+    },
+    {
+      name: 'Farm Houses',
+      icon: Trees,
+      type: 'farmhouse',
+      count: 0,
+      color: 'from-green-400 to-green-600',
+      bgColor: 'bg-green-50 dark:bg-green-950/30'
+    },
+    {
+      name: 'Buildings',
+      icon: Building,
+      type: 'building',
+      count: 0,
+      color: 'from-slate-400 to-slate-600',
+      bgColor: 'bg-slate-50 dark:bg-slate-950/30'
+    },
+    {
+      name: 'Warehouses',
+      icon: Warehouse,
+      type: 'warehouse',
+      count: 0,
+      color: 'from-orange-400 to-orange-600',
+      bgColor: 'bg-orange-50 dark:bg-orange-950/30'
+    },
+    {
+      name: 'Industrial Land',
+      icon: Factory,
+      type: 'industrial',
+      count: 0,
+      color: 'from-red-400 to-red-600',
+      bgColor: 'bg-red-50 dark:bg-red-950/30'
+    },
+    {
+      name: 'Agricultural Land',
+      icon: MapPinned,
+      type: 'agricultural',
+      count: 0,
+      color: 'from-lime-400 to-lime-600',
+      bgColor: 'bg-lime-50 dark:bg-lime-950/30'
     }
   ];
+
+  const [emblaRef] = useEmblaCarousel({ 
+    align: 'start',
+    slidesToScroll: 1,
+    containScroll: 'trimSnaps'
+  });
 
   const handleCategoryClick = (type: string) => {
     setFilters(prev => ({ ...prev, propertyType: type }));
@@ -297,29 +360,34 @@ const NewProjects = () => {
       </div>
 
       {/* Browse by Category Section */}
-      <div className="container mx-auto px-4 py-12">
-        <h2 className="text-2xl md:text-3xl font-bold mb-8">Browse Projects by Category</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {categories.map((category, index) => {
-            const Icon = category.icon;
-            return (
-              <Card 
-                key={category.type}
-                className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => handleCategoryClick(category.type)}
-              >
-                <CardContent className="p-6">
-                  <div className={`w-16 h-16 rounded-xl ${category.bgColor} flex items-center justify-center mb-4`}>
-                    <Icon className={`w-8 h-8 bg-gradient-to-br ${category.color} bg-clip-text text-transparent`} strokeWidth={2} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-1">{category.name}</h3>
-                  <p className="text-muted-foreground">{category.count} Projects</p>
-                </CardContent>
-              </Card>
-            );
-          })}
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-xl md:text-2xl font-bold mb-6">Browse Projects by Category</h2>
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-3">
+            {categories.map((category, index) => {
+              const Icon = category.icon;
+              return (
+                <Card 
+                  key={category.type}
+                  className="flex-[0_0_140px] md:flex-[0_0_160px] cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                  onClick={() => handleCategoryClick(category.type)}
+                >
+                  <CardContent className="p-4">
+                    <div className={`w-12 h-12 rounded-lg ${category.bgColor} flex items-center justify-center mb-3`}>
+                      <Icon className={`w-6 h-6 bg-gradient-to-br ${category.color} bg-clip-text text-transparent`} strokeWidth={2} />
+                    </div>
+                    <h3 className="text-sm font-bold mb-1 line-clamp-2">{category.name}</h3>
+                    <p className="text-xs text-muted-foreground">{category.count} Projects</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 pb-12">
 
         {/* Results Section */}
         <div>
