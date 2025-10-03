@@ -30,47 +30,25 @@ const UsersHub = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch user statistics
+  // Fetch user statistics using RPC to avoid RLS/HEAD issues
   const { data: userStats, refetch: refetchStats } = useQuery({
     queryKey: ['user-hub-stats'],
     queryFn: async () => {
-      const [
-        allUsers,
-        generalUsers,
-        vendors,
-        agents,
-        propertyOwners,
-        customerService,
-        admins,
-        suspendedUsers,
-        pendingUsers,
-        activeToday
-      ] = await Promise.all([
-        supabase.from('profiles').select('id', { count: 'exact' }).limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'general_user').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'vendor').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'agent').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'property_owner').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'customer_service').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'admin').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('is_suspended', true).limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('verification_status', 'pending').limit(1),
-        supabase.from('profiles').select('id', { count: 'exact' })
-          .gte('last_seen_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-          .limit(1)
-      ]);
-
+      const { data, error } = await supabase.rpc('get_admin_profile_stats');
+      if (error) throw error;
+      
+      const stats = data?.[0];
       return {
-        total: allUsers.count || 0,
-        generalUsers: generalUsers.count || 0,
-        vendors: vendors.count || 0,
-        agents: agents.count || 0,
-        propertyOwners: propertyOwners.count || 0,
-        customerService: customerService.count || 0,
-        admins: admins.count || 0,
-        suspended: suspendedUsers.count || 0,
-        pending: pendingUsers.count || 0,
-        activeToday: activeToday.count || 0
+        total: Number(stats?.total || 0),
+        generalUsers: Number(stats?.general_users || 0),
+        vendors: Number(stats?.vendors || 0),
+        agents: Number(stats?.agents || 0),
+        propertyOwners: Number(stats?.property_owners || 0),
+        customerService: Number(stats?.customer_service || 0),
+        admins: Number(stats?.admins || 0),
+        suspended: Number(stats?.suspended || 0),
+        pending: Number(stats?.pending || 0),
+        activeToday: Number(stats?.active_today || 0)
       };
     },
     refetchInterval: 30000,

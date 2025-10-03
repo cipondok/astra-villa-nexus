@@ -8312,6 +8312,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_admin_profile_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_today: number
+          admins: number
+          agents: number
+          customer_service: number
+          general_users: number
+          pending: number
+          property_owners: number
+          suspended: number
+          total: number
+          vendors: number
+        }[]
+      }
       get_admin_profiles: {
         Args: { p_limit?: number; p_offset?: number; p_role?: string }
         Returns: {
