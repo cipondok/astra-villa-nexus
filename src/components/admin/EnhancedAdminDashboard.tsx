@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -31,8 +32,11 @@ import {
   MessageSquare,
   Eye,
   Lock,
-  Target
+  Target,
+  Home,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQuery } from '@tanstack/react-query';
@@ -73,6 +77,8 @@ interface RealAlert {
 }
 
 const EnhancedAdminDashboard = () => {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState<RealAlert | null>(null);
@@ -216,10 +222,28 @@ const EnhancedAdminDashboard = () => {
               Complete system monitoring and control center
             </p>
           </div>
-          <Button onClick={handleRefresh} disabled={isRefreshing} className="gap-2">
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh All
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => navigate('/')} 
+              variant="outline" 
+              className="gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Button>
+            <Button onClick={handleRefresh} disabled={isRefreshing} className="gap-2">
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button 
+              onClick={() => signOut()} 
+              variant="destructive" 
+              className="gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Real-time Alerts */}
