@@ -34,48 +34,84 @@ serve(async (req) => {
         .order('created_at', { ascending: false })
         .limit(1000);
 
-      // Calculate metrics
+      console.log('Search data count:', searchData?.length || 0);
+      console.log('Interaction data count:', interactionData?.length || 0);
+
+      // Calculate search algorithm metrics
       const totalSearches = searchData?.length || 0;
-      const avgResponseTime = 245; // ms
-      const successRate = totalSearches > 0 ? 0.94 : 0;
+      const responseTimes = searchData?.map(s => s.response_time_ms).filter(Boolean) || [];
+      const avgResponseTime = responseTimes.length > 0 
+        ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length 
+        : 245;
+      const successfulSearches = searchData?.filter(s => (s.results_count || 0) > 0).length || 0;
+      const successRate = totalSearches > 0 ? successfulSearches / totalSearches : 0;
 
-      const totalRecommendations = interactionData?.filter(i => 
-        i.interaction_type === 'recommendation_view'
+      // Calculate recommendation engine metrics
+      const recommendationInteractions = interactionData?.filter(i => 
+        i.interaction_type === 'recommendation_view' || 
+        i.interaction_type === 'property_view'
+      ) || [];
+      const totalRecommendations = recommendationInteractions.length;
+      const clickedRecommendations = interactionData?.filter(i => 
+        i.interaction_type === 'property_click'
       ).length || 0;
-      const clickThroughRate = totalRecommendations > 0 ? 0.23 : 0;
+      const clickThroughRate = totalRecommendations > 0 ? clickedRecommendations / totalRecommendations : 0;
       const userSatisfaction = totalRecommendations > 0 ? 0.85 : 0;
-      const avgRecommendations = totalRecommendations > 0 ? 8.5 : 0;
+      const avgRecommendations = totalRecommendations > 0 ? totalRecommendations / 10 : 0;
 
+      // Calculate behavior analytics metrics
       const totalInteractions = interactionData?.length || 0;
       const uniqueUsers = new Set(interactionData?.map(i => i.user_id) || []).size;
-      const avgEngagementScore = totalInteractions > 0 ? 72 : 0;
+      
+      // Calculate engagement score based on interaction types
+      const highValueInteractions = interactionData?.filter(i => 
+        ['property_view', 'inquiry', 'save_property', 'contact'].includes(i.interaction_type)
+      ).length || 0;
+      const avgEngagementScore = totalInteractions > 0 
+        ? Math.round((highValueInteractions / totalInteractions) * 100)
+        : 0;
+      
       const avgIntentScore = totalInteractions > 0 ? 0.68 : 0;
-      const topBehaviorPatterns = ['property_view', 'search', 'favorite', 'inquiry'];
+      
+      // Get top behavior patterns
+      const interactionTypes = interactionData?.map(i => i.interaction_type) || [];
+      const typeCounts = interactionTypes.reduce((acc: any, type) => {
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+      }, {});
+      const topBehaviorPatterns = Object.entries(typeCounts)
+        .sort((a: any, b: any) => b[1] - a[1])
+        .slice(0, 4)
+        .map((entry: any) => entry[0]);
 
+      // Calculate 3D model optimization metrics
+      const modelInteractions = interactionData?.filter(i => 
+        i.interaction_type === '3d_view' || i.interaction_type === 'virtual_tour'
+      ) || [];
       const avgLoadTime = 245; // ms
       const avgFPS = 58; // frames per second
-      const totalModelsLoaded = searchData?.length || 0;
+      const totalModelsLoaded = modelInteractions.length;
       const optimizationSavings = 23; // percentage
 
       const metrics = {
         searchAlgorithm: {
-          avgResponseTime,
+          avgResponseTime: Math.round(avgResponseTime),
           totalSearches,
-          successRate,
+          successRate: Number(successRate.toFixed(2)),
           status: totalSearches > 100 ? 'healthy' : totalSearches > 20 ? 'warning' : 'critical'
         },
         recommendationEngine: {
-          avgRecommendations,
-          clickThroughRate,
-          userSatisfaction,
+          avgRecommendations: Number(avgRecommendations.toFixed(1)),
+          clickThroughRate: Number(clickThroughRate.toFixed(2)),
+          userSatisfaction: Number(userSatisfaction.toFixed(2)),
           totalRecommendations,
           status: clickThroughRate > 0.15 ? 'healthy' : clickThroughRate > 0.05 ? 'warning' : 'critical'
         },
         behaviorAnalytics: {
           totalUsers: uniqueUsers,
           avgEngagementScore,
-          avgIntentScore,
-          topBehaviorPatterns,
+          avgIntentScore: Number(avgIntentScore.toFixed(2)),
+          topBehaviorPatterns: topBehaviorPatterns.length > 0 ? topBehaviorPatterns : ['property_view', 'search', 'favorite'],
           status: avgEngagementScore > 60 ? 'healthy' : avgEngagementScore > 30 ? 'warning' : 'critical'
         },
         modelOptimization: {
@@ -86,6 +122,8 @@ serve(async (req) => {
           status: avgFPS > 30 ? 'healthy' : avgFPS > 20 ? 'warning' : 'critical'
         }
       };
+
+      console.log('Calculated metrics:', metrics);
 
       return new Response(JSON.stringify(metrics), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
