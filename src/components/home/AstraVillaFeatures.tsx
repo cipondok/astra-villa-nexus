@@ -8,7 +8,9 @@ import {
   Map, 
   TrendingUp, 
   Maximize2, 
-  BarChart3 
+  BarChart3,
+  Sparkles,
+  Globe
 } from 'lucide-react';
 
 interface Feature {
@@ -80,20 +82,24 @@ const features: Feature[] = [
 
 const AstraVillaFeatures = () => {
   return (
-    <section className="w-full py-12 md:py-16 lg:py-20">
+    <section className="w-full py-8 md:py-12 lg:py-16">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-300 dark:to-purple-400 bg-clip-text text-transparent">
+        <div className="text-center mb-8 md:mb-10 animate-fade-in relative">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Globe className="w-6 h-6 text-primary animate-pulse" />
+            <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
+          </div>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 bg-gradient-to-r from-primary via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-300 dark:to-purple-400 bg-clip-text text-transparent">
             Explore More on ASTRA Villa
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Indonesia's premier 3D property platform with cutting-edge tools
+          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+            AI-Powered 3D Property Platform • Smart Tools for Indonesia
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} index={index} />
           ))}
@@ -114,15 +120,15 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-2xl transition-all duration-500 cursor-pointer',
-        'bg-white dark:bg-gray-900',
-        'border border-gray-200 dark:border-gray-800',
-        'shadow-sm hover:shadow-2xl',
-        'hover:-translate-y-2 hover:scale-[1.02]',
+        'group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer',
+        'bg-gradient-to-br from-background to-accent/5',
+        'border border-border/50 dark:border-border',
+        'shadow-sm hover:shadow-xl hover:border-primary/30',
+        'hover:-translate-y-1 hover:scale-[1.01]',
         'animate-fade-in'
       )}
       style={{
-        animationDelay: `${index * 0.1}s`
+        animationDelay: `${index * 0.05}s`
       }}
     >
       {/* Gradient Overlay on Hover */}
@@ -135,44 +141,47 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
       />
 
       {/* Card Content */}
-      <div className="relative p-6 md:p-8 h-full flex flex-col">
-        {/* Icon Container */}
-        <div className={cn(
-          'w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mb-4 md:mb-6',
-          'transition-all duration-500 group-hover:scale-110 group-hover:rotate-3',
-          feature.bgGradient
-        )}>
-          <Icon className={cn(
-            'w-8 h-8 md:w-10 md:h-10 transition-all duration-500',
-            `bg-gradient-to-br ${feature.color} bg-clip-text text-transparent`
-          )} 
-            strokeWidth={1.5}
-          />
+      <div className="relative p-4 md:p-5 h-full flex flex-col">
+        {/* Icon Container with AI Badge */}
+        <div className="relative mb-3 md:mb-4">
+          <div className={cn(
+            'w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center',
+            'transition-all duration-300 group-hover:scale-110',
+            feature.bgGradient
+          )}>
+            <Icon className={cn(
+              'w-6 h-6 md:w-7 md:h-7 transition-all duration-300',
+              `bg-gradient-to-br ${feature.color} bg-clip-text text-transparent`
+            )} 
+              strokeWidth={2}
+            />
+          </div>
+          <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-amber-500 animate-pulse" />
         </div>
 
         {/* Title */}
         <h3 className={cn(
-          'text-lg md:text-xl font-bold mb-2 md:mb-3',
-          'text-gray-900 dark:text-white',
+          'text-base md:text-lg font-bold mb-2',
+          'text-foreground',
           'group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:text-transparent',
           `group-hover:${feature.color}`,
-          'transition-all duration-500'
+          'transition-all duration-300'
         )}>
           {feature.title}
         </h3>
 
         {/* Description */}
-        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed flex-grow">
+        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed flex-grow">
           {feature.description}
         </p>
 
         {/* Hover Arrow Indicator */}
-        <div className="mt-4 flex items-center text-sm font-medium text-gray-500 dark:text-gray-500 group-hover:text-primary transition-colors duration-300">
-          <span className="mr-2 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-            Learn more
+        <div className="mt-3 flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors duration-300">
+          <span className="mr-1 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+            Explore
           </span>
           <svg 
-            className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" 
+            className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -184,7 +193,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
 
       {/* Decorative Corner Element */}
       <div className={cn(
-        'absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-10 transition-opacity duration-500',
+        'absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-10 transition-opacity duration-300',
         'bg-gradient-to-br',
         feature.color
       )}
