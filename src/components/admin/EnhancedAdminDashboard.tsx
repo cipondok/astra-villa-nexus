@@ -39,6 +39,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import SystemSettings from './SystemSettings';
 import EnhancedUserManagement from './EnhancedUserManagement';
+import UsersHub from './UsersHub';
 import ApiSettings from './ApiSettings';
 import PaymentSettings from './PaymentSettings';
 import ProjectSettings from './ProjectSettings';
@@ -468,7 +469,7 @@ const EnhancedAdminDashboard = () => {
 
           {/* Users Tab */}
           <TabsContent value="users" className="space-y-6">
-            <EnhancedUserManagement />
+            <UsersHub />
           </TabsContent>
 
           {/* Auth & MFA Tab */}
