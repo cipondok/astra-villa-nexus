@@ -46,17 +46,18 @@ const UsersHub = () => {
         pendingUsers,
         activeToday
       ] = await Promise.all([
-        supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'general_user'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'vendor'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'agent'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'property_owner'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'customer_service'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'admin'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('is_suspended', true),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('verification_status', 'pending'),
-        supabase.from('profiles').select('id', { count: 'exact', head: true })
+        supabase.from('profiles').select('id', { count: 'exact' }).limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'general_user').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'vendor').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'agent').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'property_owner').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'customer_service').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'admin').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('is_suspended', true).limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('verification_status', 'pending').limit(1),
+        supabase.from('profiles').select('id', { count: 'exact' })
           .gte('last_seen_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+          .limit(1)
       ]);
 
       return {
