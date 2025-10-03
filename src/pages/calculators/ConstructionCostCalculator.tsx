@@ -1,16 +1,33 @@
 import React, { useState } from 'react';
-import { Calculator, Home, Hammer, DollarSign } from 'lucide-react';
+import { Calculator, Home, Hammer, DollarSign, Building2, Wrench, PaintBucket, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+
+interface CostBreakdown {
+  foundation: number;
+  structure: number;
+  walls: number;
+  roofing: number;
+  flooring: number;
+  plumbing: number;
+  electrical: number;
+  finishing: number;
+  parking?: number;
+  landscaping?: number;
+  total: number;
+}
 
 const ConstructionCostCalculator = () => {
   const [area, setArea] = useState<string>('');
   const [buildingType, setBuildingType] = useState<string>('standard');
   const [floors, setFloors] = useState<string>('1');
-  const [totalCost, setTotalCost] = useState<number | null>(null);
+  const [includeParking, setIncludeParking] = useState(false);
+  const [includeLandscaping, setIncludeLandscaping] = useState(false);
+  const [costBreakdown, setCostBreakdown] = useState<CostBreakdown | null>(null);
 
   const costPerSqm = {
     economy: 3500000,
@@ -25,8 +42,33 @@ const ConstructionCostCalculator = () => {
     
     if (sqm && numFloors && buildingType) {
       const baseRate = costPerSqm[buildingType as keyof typeof costPerSqm];
-      const total = sqm * baseRate * numFloors;
-      setTotalCost(total);
+      const totalArea = sqm * numFloors;
+      
+      // Cost breakdown percentages
+      const breakdown: CostBreakdown = {
+        foundation: totalArea * baseRate * 0.15, // 15%
+        structure: totalArea * baseRate * 0.25,   // 25%
+        walls: totalArea * baseRate * 0.15,       // 15%
+        roofing: totalArea * baseRate * 0.10,     // 10%
+        flooring: totalArea * baseRate * 0.08,    // 8%
+        plumbing: totalArea * baseRate * 0.07,    // 7%
+        electrical: totalArea * baseRate * 0.10,  // 10%
+        finishing: totalArea * baseRate * 0.10,   // 10%
+        total: totalArea * baseRate
+      };
+
+      // Add optional features
+      if (includeParking) {
+        breakdown.parking = sqm * 500000; // Rp 500k per sqm for parking
+        breakdown.total += breakdown.parking;
+      }
+
+      if (includeLandscaping) {
+        breakdown.landscaping = sqm * 300000; // Rp 300k per sqm for landscaping
+        breakdown.total += breakdown.landscaping;
+      }
+
+      setCostBreakdown(breakdown);
     }
   };
 
@@ -93,34 +135,155 @@ const ConstructionCostCalculator = () => {
             />
           </div>
 
+          <div className="space-y-3 pt-2 border-t">
+            <Label className="text-base">Additional Features</Label>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="parking"
+                checked={includeParking}
+                onCheckedChange={(checked) => setIncludeParking(checked as boolean)}
+              />
+              <Label htmlFor="parking" className="text-sm font-normal cursor-pointer">
+                Include Parking Area (Rp 500k/sqm)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="landscaping"
+                checked={includeLandscaping}
+                onCheckedChange={(checked) => setIncludeLandscaping(checked as boolean)}
+              />
+              <Label htmlFor="landscaping" className="text-sm font-normal cursor-pointer">
+                Include Landscaping (Rp 300k/sqm)
+              </Label>
+            </div>
+          </div>
+
           <Button onClick={calculateCost} className="w-full" size="lg">
             <Calculator className="w-4 h-4 mr-2" />
             Calculate Cost
           </Button>
 
-          {totalCost && (
-            <Card className="bg-primary/5 border-primary/20">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground mb-2">Estimated Total Cost</p>
-                  <p className="text-3xl font-bold text-primary">{formatCurrency(totalCost)}</p>
-                  <div className="mt-4 pt-4 border-t">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Area</p>
-                        <p className="font-semibold">{area} sqm</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Rate/sqm</p>
-                        <p className="font-semibold">
-                          {formatCurrency(costPerSqm[buildingType as keyof typeof costPerSqm])}
-                        </p>
+          {costBreakdown && (
+            <div className="space-y-4">
+              <Card className="bg-primary/5 border-primary/20">
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-2">Estimated Total Cost</p>
+                    <p className="text-3xl font-bold text-primary">{formatCurrency(costBreakdown.total)}</p>
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Total Area</p>
+                          <p className="font-semibold">{parseFloat(area) * parseInt(floors)} sqm</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Floors</p>
+                          <p className="font-semibold">{floors}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Cost Breakdown</CardTitle>
+                  <CardDescription>Detailed construction cost analysis</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Foundation Work</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.foundation)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Home className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Structure & Frame</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.structure)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Hammer className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Walls & Masonry</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.walls)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Home className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Roofing System</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.roofing)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Flooring</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.flooring)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Wrench className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Plumbing</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.plumbing)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Electrical Systems</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.electrical)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <PaintBucket className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">Finishing & Paint</span>
+                    </div>
+                    <span className="font-semibold text-sm">{formatCurrency(costBreakdown.finishing)}</span>
+                  </div>
+
+                  {costBreakdown.parking && (
+                    <div className="flex items-center justify-between py-2 border-b">
+                      <div className="flex items-center gap-2">
+                        <Home className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm">Parking Area</span>
+                      </div>
+                      <span className="font-semibold text-sm">{formatCurrency(costBreakdown.parking)}</span>
+                    </div>
+                  )}
+
+                  {costBreakdown.landscaping && (
+                    <div className="flex items-center justify-between py-2 border-b">
+                      <div className="flex items-center gap-2">
+                        <Home className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm">Landscaping</span>
+                      </div>
+                      <span className="font-semibold text-sm">{formatCurrency(costBreakdown.landscaping)}</span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between py-3 bg-primary/5 px-3 rounded-md mt-2">
+                    <span className="font-bold">Total Construction Cost</span>
+                    <span className="font-bold text-primary">{formatCurrency(costBreakdown.total)}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
           <div className="text-xs text-muted-foreground pt-4 border-t">
