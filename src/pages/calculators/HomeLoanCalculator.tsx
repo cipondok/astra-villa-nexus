@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface EligibilityCheck {
   eligible: boolean;
@@ -229,24 +231,40 @@ const HomeLoanCalculator = () => {
   const t = translations[language];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <Home className="w-10 h-10 text-primary" />
-          <Calculator className="w-8 h-8 text-blue-500" />
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-            className="ml-4"
-          >
-            <Globe className="w-4 h-4 mr-2" />
-            {language === 'id' ? 'English' : 'Bahasa'}
-          </Button>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Modern Header with Language Toggle */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 p-2 bg-primary/10 rounded-lg">
+                <Home className="w-6 h-6 text-primary" />
+                <Calculator className="w-5 h-5 text-primary/70" />
+              </div>
+              <div>
+                <h1 className="text-xl md:text-2xl font-bold">{t.title}</h1>
+                <p className="text-xs text-muted-foreground hidden md:block">{t.subtitle}</p>
+              </div>
+            </div>
+            
+            {/* Language Toggle */}
+            <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
+              <TabsList className="grid w-[200px] grid-cols-2">
+                <TabsTrigger value="id" className="gap-2">
+                  <Globe className="w-4 h-4" />
+                  Bahasa
+                </TabsTrigger>
+                <TabsTrigger value="en" className="gap-2">
+                  <Globe className="w-4 h-4" />
+                  English
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">{t.title}</h1>
-        <p className="text-muted-foreground">{t.subtitle}</p>
-      </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
 
       <Card>
         <CardHeader>
@@ -332,60 +350,167 @@ const HomeLoanCalculator = () => {
             </Select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="monthlyIncome">{t.monthlyIncome} (IDR)</Label>
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="monthlyIncome" className="text-base font-semibold">
+                  {t.monthlyIncome}
+                </Label>
+                <span className="text-sm font-mono bg-primary/10 px-3 py-1 rounded-full">
+                  {monthlyIncome ? formatCurrency(parseFloat(monthlyIncome)) : 'Rp 0'}
+                </span>
+              </div>
+              <div className="space-y-2">
+                <Slider
+                  value={[parseFloat(monthlyIncome) || 5000000]}
+                  onValueChange={(v) => setMonthlyIncome(v[0].toString())}
+                  min={5000000}
+                  max={100000000}
+                  step={1000000}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Rp 5jt</span>
+                  <span>Rp 100jt</span>
+                </div>
+              </div>
               <Input
                 id="monthlyIncome"
                 type="number"
-                placeholder="e.g., 15000000"
+                placeholder="atau masukkan manual"
                 value={monthlyIncome}
                 onChange={(e) => setMonthlyIncome(e.target.value)}
+                className="mt-2"
               />
-              <p className="text-xs text-muted-foreground">
-                {language === 'id' ? 'Minimum Rp 5.000.000' : 'Minimum Rp 5,000,000'}
-              </p>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="propertyValue">{t.propertyValue} (IDR)</Label>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="propertyValue" className="text-base font-semibold">
+                  {t.propertyValue}
+                </Label>
+                <span className="text-sm font-mono bg-primary/10 px-3 py-1 rounded-full">
+                  {propertyValue ? formatCurrency(parseFloat(propertyValue)) : 'Rp 0'}
+                </span>
+              </div>
+              <div className="space-y-2">
+                <Slider
+                  value={[parseFloat(propertyValue) || 500000000]}
+                  onValueChange={(v) => {
+                    const value = v[0].toString();
+                    setPropertyValue(value);
+                    // Auto-calculate max loan based on LTV
+                    const maxLoan = parseFloat(value) * regulations.maxLTV[applicantType][propertyType];
+                    if (maxLoan > 0) {
+                      setLoanAmount(maxLoan.toFixed(0));
+                    }
+                  }}
+                  min={100000000}
+                  max={10000000000}
+                  step={50000000}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Rp 100jt</span>
+                  <span>Rp 10M</span>
+                </div>
+              </div>
               <Input
                 id="propertyValue"
                 type="number"
-                placeholder="e.g., 1000000000"
+                placeholder="atau masukkan manual"
                 value={propertyValue}
                 onChange={(e) => {
                   setPropertyValue(e.target.value);
-                  // Auto-calculate max loan based on LTV
                   const maxLoan = parseFloat(e.target.value) * regulations.maxLTV[applicantType][propertyType];
                   if (maxLoan > 0 && !loanAmount) {
                     setLoanAmount(maxLoan.toFixed(0));
                   }
                 }}
+                className="mt-2"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="loanAmount">{t.loanAmount} (IDR)</Label>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="loanAmount" className="text-base font-semibold">
+                {t.loanAmount}
+              </Label>
+              <span className="text-sm font-mono bg-primary/10 px-3 py-1 rounded-full">
+                {loanAmount ? formatCurrency(parseFloat(loanAmount)) : 'Rp 0'}
+              </span>
+            </div>
+            <div className="space-y-2">
+              <Slider
+                value={[parseFloat(loanAmount) || 0]}
+                onValueChange={(v) => setLoanAmount(v[0].toString())}
+                min={50000000}
+                max={parseFloat(propertyValue) || 5000000000}
+                step={10000000}
+                className="w-full"
+                disabled={!propertyValue}
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Rp 50jt</span>
+                <span>{propertyValue ? formatCurrency(parseFloat(propertyValue)) : 'Rp 5M'}</span>
+              </div>
+            </div>
             <Input
               id="loanAmount"
               type="number"
-              placeholder="e.g., 800000000"
+              placeholder="atau masukkan manual"
               value={loanAmount}
               onChange={(e) => setLoanAmount(e.target.value)}
+              className="mt-2"
             />
             {propertyValue && loanAmount && (
-              <p className="text-xs text-muted-foreground">
-                LTV: {((parseFloat(loanAmount) / parseFloat(propertyValue)) * 100).toFixed(1)}% 
-                {' '}({language === 'id' ? 'Maks' : 'Max'}: {(regulations.maxLTV[applicantType][propertyType] * 100).toFixed(0)}%)
-              </p>
+              <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">LTV Ratio:</span>
+                  <span className="font-semibold">
+                    {((parseFloat(loanAmount) / parseFloat(propertyValue)) * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="mt-2 h-2 bg-background rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary transition-all"
+                    style={{ 
+                      width: `${Math.min(((parseFloat(loanAmount) / parseFloat(propertyValue)) * 100), 100)}%` 
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'id' ? 'Maksimum' : 'Maximum'}: {(regulations.maxLTV[applicantType][propertyType] * 100).toFixed(0)}%
+                </p>
+              </div>
             )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="interestRate">{t.interestRate}</Label>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="interestRate" className="text-base font-semibold">
+                  {t.interestRate}
+                </Label>
+                <span className="text-sm font-mono bg-primary/10 px-3 py-1 rounded-full">
+                  {interestRate || getDefaultInterestRate()}%
+                </span>
+              </div>
+              <div className="space-y-2">
+                <Slider
+                  value={[parseFloat(interestRate) || parseFloat(getDefaultInterestRate())]}
+                  onValueChange={(v) => setInterestRate(v[0].toString())}
+                  min={regulations.typicalRates.fixed.min}
+                  max={regulations.typicalRates.floating.max}
+                  step={0.1}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>{regulations.typicalRates.fixed.min}%</span>
+                  <span>{regulations.typicalRates.floating.max}%</span>
+                </div>
+              </div>
               <Input
                 id="interestRate"
                 type="number"
@@ -393,14 +518,33 @@ const HomeLoanCalculator = () => {
                 placeholder={getDefaultInterestRate()}
                 value={interestRate}
                 onChange={(e) => setInterestRate(e.target.value)}
+                className="mt-2"
               />
-              <p className="text-xs text-muted-foreground">
-                {language === 'id' ? 'Rentang' : 'Range'}: {regulations.typicalRates.fixed.min}% - {regulations.typicalRates.floating.max}%
-              </p>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="loanTerm">{t.loanTerm}</Label>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="loanTerm" className="text-base font-semibold">
+                  {t.loanTerm}
+                </Label>
+                <span className="text-sm font-mono bg-primary/10 px-3 py-1 rounded-full">
+                  {loanTerm} {language === 'id' ? 'tahun' : 'years'}
+                </span>
+              </div>
+              <div className="space-y-2">
+                <Slider
+                  value={[parseInt(loanTerm)]}
+                  onValueChange={(v) => setLoanTerm(v[0].toString())}
+                  min={5}
+                  max={regulations.maxLoanTerm}
+                  step={1}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>5 {language === 'id' ? 'tahun' : 'yrs'}</span>
+                  <span>{regulations.maxLoanTerm} {language === 'id' ? 'tahun' : 'yrs'}</span>
+                </div>
+              </div>
               <Input
                 id="loanTerm"
                 type="number"
@@ -408,14 +552,17 @@ const HomeLoanCalculator = () => {
                 value={loanTerm}
                 onChange={(e) => setLoanTerm(e.target.value)}
                 max={regulations.maxLoanTerm}
+                className="mt-2"
               />
-              <p className="text-xs text-muted-foreground">
-                {language === 'id' ? 'Maksimum' : 'Maximum'}: {regulations.maxLoanTerm} {language === 'id' ? 'tahun' : 'years'}
-              </p>
             </div>
           </div>
 
-          <Button onClick={calculateLoan} className="w-full" size="lg">
+          <Button 
+            onClick={calculateLoan} 
+            className="w-full" 
+            size="lg"
+            disabled={!loanAmount || !propertyValue || !interestRate || !monthlyIncome}
+          >
             <Calculator className="w-4 h-4 mr-2" />
             {t.calculate}
           </Button>
@@ -628,6 +775,7 @@ const HomeLoanCalculator = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
