@@ -18,6 +18,7 @@ interface SearchFilters {
   maxArea: string;
   projectTitle: string;
   developer: string;
+  marketedBy: string;
 }
 
 const NewProjects = () => {
@@ -29,7 +30,8 @@ const NewProjects = () => {
     minArea: '',
     maxArea: '',
     projectTitle: '',
-    developer: ''
+    developer: '',
+    marketedBy: 'all'
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -85,6 +87,10 @@ const NewProjects = () => {
 
       if (filters.projectTitle) {
         query = query.ilike('title', `%${filters.projectTitle}%`);
+      }
+
+      if (filters.marketedBy && filters.marketedBy !== 'all') {
+        query = query.ilike('marketed_by', `%${filters.marketedBy}%`);
       }
 
       const { data, error } = await query
@@ -351,7 +357,7 @@ const NewProjects = () => {
               </div>
 
               {showAdvanced && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t animate-fade-in">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t animate-fade-in">
                   <div>
                     <label className="text-sm font-semibold text-foreground mb-2 block">Project Title</label>
                     <Input 
@@ -367,6 +373,19 @@ const NewProjects = () => {
                       value={filters.developer}
                       onChange={(e) => setFilters(prev => ({ ...prev, developer: e.target.value }))}
                     />
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-foreground mb-2 block">Marketed By</label>
+                    <Select value={filters.marketedBy} onValueChange={(value) => setFilters(prev => ({ ...prev, marketedBy: value }))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All Marketers" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Marketers</SelectItem>
+                        <SelectItem value="ASTRA Villa">ASTRA Villa Developer</SelectItem>
+                        <SelectItem value="Independent">Independent Developer</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               )}
