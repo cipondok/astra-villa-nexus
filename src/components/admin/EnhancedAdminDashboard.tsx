@@ -307,18 +307,14 @@ const EnhancedAdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-12 lg:w-fit overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-9 lg:w-fit overflow-x-auto">
             <TabsTrigger value="overview" className="gap-2 whitespace-nowrap">
               <BarChart3 className="h-4 w-4" />
               Overview
             </TabsTrigger>
             <TabsTrigger value="users" className="gap-2 whitespace-nowrap">
               <Users className="h-4 w-4" />
-              Users
-            </TabsTrigger>
-            <TabsTrigger value="auth-mfa" className="gap-2 whitespace-nowrap">
-              <Lock className="h-4 w-4" />
-              Auth & MFA
+              Users & Auth
             </TabsTrigger>
             <TabsTrigger value="properties" className="gap-2 whitespace-nowrap">
               <Globe className="h-4 w-4" />
@@ -346,15 +342,7 @@ const EnhancedAdminDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="system" className="gap-2 whitespace-nowrap">
               <Server className="h-4 w-4" />
-              System
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-2 whitespace-nowrap">
-              <TrendingUp className="h-4 w-4" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="system-diagnostics" className="gap-2 whitespace-nowrap">
-              <Activity className="h-4 w-4" />
-              Diagnostics
+              System & Diagnostics
             </TabsTrigger>
           </TabsList>
 
@@ -478,25 +466,33 @@ const EnhancedAdminDashboard = () => {
             </Card>
           </TabsContent>
 
-          {/* Users Tab */}
+          {/* Users & Auth Management Tab */}
           <TabsContent value="users" className="space-y-6">
-            <UsersHub />
-          </TabsContent>
-
-          {/* Auth & MFA Tab */}
-          <TabsContent value="auth-mfa" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  User Management & Authentication
-                </CardTitle>
-                <CardDescription>Multi-factor authentication, email verification, and user security settings</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <MFASettings />
-              </CardContent>
-            </Card>
+            <Tabs defaultValue="user-management" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="user-management">User Management</TabsTrigger>
+                <TabsTrigger value="auth-mfa">Authentication & MFA</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="user-management" className="mt-6">
+                <UsersHub />
+              </TabsContent>
+              
+              <TabsContent value="auth-mfa" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      User Management & Authentication
+                    </CardTitle>
+                    <CardDescription>Multi-factor authentication, email verification, and user security settings</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <MFASettings />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           {/* Properties Management Tab */}
@@ -555,19 +551,27 @@ const EnhancedAdminDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* System Settings Tab */}
+          {/* System & Diagnostics Tab */}
           <TabsContent value="system" className="space-y-6">
-            <SystemSettings />
-          </TabsContent>
-
-          {/* System Diagnostics */}
-          <TabsContent value="system-diagnostics" className="space-y-6">
-            <UnifiedDiagnosticsPanel />
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <SystemAnalytics />
+            <Tabs defaultValue="settings" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="settings">System Settings</TabsTrigger>
+                <TabsTrigger value="diagnostics">Diagnostics</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="settings" className="mt-6">
+                <SystemSettings />
+              </TabsContent>
+              
+              <TabsContent value="diagnostics" className="mt-6">
+                <UnifiedDiagnosticsPanel />
+              </TabsContent>
+              
+              <TabsContent value="analytics" className="mt-6">
+                <SystemAnalytics />
+              </TabsContent>
+            </Tabs>
           </TabsContent>
         </Tabs>
       </div>
