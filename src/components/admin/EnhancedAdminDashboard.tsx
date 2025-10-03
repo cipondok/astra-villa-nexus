@@ -232,57 +232,53 @@ const EnhancedAdminDashboard = () => {
           </Alert>
         )}
 
-        {/* Quick Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Compact Micro Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Total Users
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemStats.totalUsers.toLocaleString()}</div>
-              <p className="text-blue-100 text-xs">+12% from last month</p>
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium opacity-90">Users</p>
+                  <p className="text-xl font-bold">{systemStats.totalUsers.toLocaleString()}</p>
+                </div>
+                <Users className="h-6 w-6 opacity-80" />
+              </div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Activity className="h-4 w-4" />
-                System Health
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemStats.databaseHealth}%</div>
-              <p className="text-green-100 text-xs">All systems operational</p>
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium opacity-90">Health</p>
+                  <p className="text-xl font-bold">{systemStats.databaseHealth}%</p>
+                </div>
+                <Activity className="h-6 w-6 opacity-80" />
+              </div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
-                Active Errors
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemStats.totalErrors}</div>
-              <p className="text-red-100 text-xs">{systemStats.criticalErrors} critical</p>
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium opacity-90">Errors</p>
+                  <p className="text-xl font-bold">{systemStats.totalErrors}</p>
+                </div>
+                <AlertTriangle className="h-6 w-6 opacity-80" />
+              </div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Security Score
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemStats.securityScore}%</div>
-              <p className="text-purple-100 text-xs">Excellent protection</p>
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium opacity-90">Security</p>
+                  <p className="text-xl font-bold">{systemStats.securityScore}%</p>
+                </div>
+                <Shield className="h-6 w-6 opacity-80" />
+              </div>
             </CardContent>
           </Card>
         </div>
