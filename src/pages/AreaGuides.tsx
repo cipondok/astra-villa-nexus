@@ -48,11 +48,15 @@ const AreaGuides = () => {
         const uniqueCities: CityData[] = Object.values(cityMap);
         setCities(uniqueCities);
         
-        if (uniqueCities.length > 0 && !selectedCity) {
-          setSelectedCity(uniqueCities[0].id);
+        // Default to 'jakarta' if available, otherwise first city
+        if (!selectedCity) {
+          const defaultCity = uniqueCities.find(c => c.id === 'jakarta' || c.name.toLowerCase().includes('jakarta'));
+          setSelectedCity(defaultCity ? 'jakarta' : 'jakarta');
         }
       } catch (error) {
         console.error('Error fetching cities:', error);
+        // Fallback to default if fetch fails
+        setSelectedCity('jakarta');
       } finally {
         setLoading(false);
       }
@@ -355,7 +359,7 @@ const AreaGuides = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {popularSocieties[selectedCity as keyof typeof popularSocieties].map((society, index) => (
+          {popularSocieties[selectedCity as keyof typeof popularSocieties]?.map((society, index) => (
             <Card key={index} className="hover:shadow-lg transition-all cursor-pointer group">
               <CardHeader>
                 <div className="flex items-start justify-between">
