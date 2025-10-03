@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, School, Hospital, ShoppingCart, Trees, Map, DollarSign, TrendingUp, Building2, Compass, Home, Globe, Search } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -9,8 +10,56 @@ import { Input } from '@/components/ui/input';
 
 const AreaGuides = () => {
   const [language, setLanguage] = useState<'en' | 'id'>('id');
-  const [selectedCity, setSelectedCity] = useState('jakarta');
+  const [selectedCity, setSelectedCity] = useState('');
   const [searchSociety, setSearchSociety] = useState('');
+  const [cities, setCities] = useState<Array<{ id: string; name: string; count: number }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('locations')
+          .select('city_name, city_code')
+          .eq('is_active', true)
+          .order('city_name');
+
+        if (error) throw error;
+
+        interface CityData {
+          id: string;
+          name: string;
+          count: number;
+        }
+
+        // De-duplicate cities and count
+        const cityMap: { [key: string]: CityData } = {};
+        data?.forEach((location: any) => {
+          if (!cityMap[location.city_code]) {
+            cityMap[location.city_code] = {
+              id: location.city_code.toLowerCase(),
+              name: location.city_name,
+              count: 0
+            };
+          }
+          cityMap[location.city_code].count++;
+        });
+
+        const uniqueCities: CityData[] = Object.values(cityMap);
+        setCities(uniqueCities);
+        
+        if (uniqueCities.length > 0 && !selectedCity) {
+          setSelectedCity(uniqueCities[0].id);
+        }
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const translations = {
     id: {
@@ -106,14 +155,6 @@ const AreaGuides = () => {
     }
   ];
 
-  const cities = [
-    { id: 'jakarta', name: 'Jakarta', count: 1250 },
-    { id: 'surabaya', name: 'Surabaya', count: 890 },
-    { id: 'bandung', name: 'Bandung', count: 780 },
-    { id: 'medan', name: 'Medan', count: 650 },
-    { id: 'semarang', name: 'Semarang', count: 520 },
-    { id: 'bali', name: 'Bali', count: 450 }
-  ];
 
   const popularSocieties = {
     jakarta: [
