@@ -86,9 +86,12 @@ const AstraVillaFeatures = () => {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-10 animate-fade-in relative">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Globe className="w-6 h-6 text-primary animate-pulse" />
-            <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="relative">
+              <Globe className="w-8 h-8 text-blue-500 dark:text-blue-400" strokeWidth={2} />
+              <div className="absolute inset-0 bg-blue-500/20 blur-lg rounded-full animate-pulse"></div>
+            </div>
+            <Sparkles className="w-7 h-7 text-amber-500 dark:text-amber-400 animate-pulse" strokeWidth={2} />
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 bg-gradient-to-r from-primary via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-300 dark:to-purple-400 bg-clip-text text-transparent">
             Explore More on ASTRA Villa
