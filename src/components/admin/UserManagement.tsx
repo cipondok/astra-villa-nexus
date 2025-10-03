@@ -41,13 +41,12 @@ const UserManagement = () => {
   const loadUsers = async () => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .rpc('get_admin_profiles', { p_role: null, p_limit: 500, p_offset: 0 });
 
       if (error) throw error;
-      setUsers(data || []);
-    } catch (error) {
+      setUsers((data as User[]) || []);
+    } catch (error: any) {
+      console.error('Failed to load users:', error?.message || error);
       showError('Error', 'Failed to load users');
     } finally {
       setLoading(false);

@@ -49,20 +49,9 @@ const VendorUserManagement = () => {
     queryKey: ['vendor-users'],
     queryFn: async (): Promise<VendorUser[]> => {
       const { data, error } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          user_levels (
-            name,
-            max_properties,
-            max_listings
-          )
-        `)
-        .eq('role', 'vendor')
-        .order('created_at', { ascending: false });
-      
+        .rpc('get_admin_profiles', { p_role: 'vendor', p_limit: 500, p_offset: 0 });
       if (error) throw error;
-      return data || [];
+      return (data as VendorUser[]) || [];
     },
   });
 

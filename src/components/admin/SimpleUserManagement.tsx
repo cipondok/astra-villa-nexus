@@ -51,12 +51,9 @@ const SimpleUserManagement = () => {
     queryKey: ['users'],
     queryFn: async (): Promise<User[]> => {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
+        .rpc('get_admin_profiles', { p_role: null, p_limit: 500, p_offset: 0 });
       if (error) throw error;
-      return data || [];
+      return (data as User[]) || [];
     },
   });
 

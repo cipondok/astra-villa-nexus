@@ -8312,6 +8312,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_admin_profiles: {
+        Args: { p_limit?: number; p_offset?: number; p_role?: string }
+        Returns: {
+          company_name: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_suspended: boolean
+          last_seen_at: string
+          role: Database["public"]["Enums"]["user_role"]
+          suspension_reason: string
+          verification_status: string
+        }[]
+      }
       get_all_survey_bookings_admin: {
         Args: { p_limit?: number; p_offset?: number }
         Returns: {

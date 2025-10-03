@@ -50,20 +50,9 @@ const CustomerServiceUserManagement = () => {
     queryKey: ['customer-service-users'],
     queryFn: async (): Promise<CustomerServiceUser[]> => {
       const { data, error } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          user_levels (
-            name,
-            max_properties,
-            max_listings
-          )
-        `)
-        .eq('role', 'customer_service')
-        .order('created_at', { ascending: false });
-      
+        .rpc('get_admin_profiles', { p_role: 'customer_service', p_limit: 500, p_offset: 0 });
       if (error) throw error;
-      return data || [];
+      return (data as CustomerServiceUser[]) || [];
     },
   });
 
