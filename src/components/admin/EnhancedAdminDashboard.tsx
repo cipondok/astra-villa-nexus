@@ -59,6 +59,7 @@ import ProjectProgressReport from './ProjectProgressReport';
 import LoadTestingPanel from './LoadTestingPanel';
 import MFASettings from '../auth/MFASettings';
 import EnhancedErrorReporting from './EnhancedErrorReporting';
+import UnifiedDiagnosticsPanel from './UnifiedDiagnosticsPanel';
 
 interface RealAlert {
   id: string;
@@ -358,6 +359,10 @@ const EnhancedAdminDashboard = () => {
               <Shield className="h-4 w-4" />
               Security
             </TabsTrigger>
+            <TabsTrigger value="system-diagnostics" className="gap-2 whitespace-nowrap">
+              <Activity className="h-4 w-4" />
+              System Diagnostics
+            </TabsTrigger>
             <TabsTrigger value="errors" className="gap-2 whitespace-nowrap">
               <AlertTriangle className="h-4 w-4" />
               Errors
@@ -572,6 +577,11 @@ const EnhancedAdminDashboard = () => {
           {/* System Settings Tab */}
           <TabsContent value="system" className="space-y-6">
             <SystemSettings />
+          </TabsContent>
+
+          {/* System Diagnostics */}
+          <TabsContent value="system-diagnostics" className="space-y-6">
+            <UnifiedDiagnosticsPanel />
           </TabsContent>
 
           {/* Analytics Tab */}
