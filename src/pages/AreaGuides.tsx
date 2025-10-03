@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const AreaGuides = () => {
-  const [language, setLanguage] = useState<'en' | 'id'>('id');
+  const { language } = useLanguage();
   const [selectedCity, setSelectedCity] = useState('');
   const [searchSociety, setSearchSociety] = useState('');
   const [cities, setCities] = useState<Array<{ id: string; name: string; count: number }>>([]);
@@ -221,20 +222,6 @@ const AreaGuides = () => {
                 </p>
               </div>
             </div>
-            
-            {/* Modern Language Toggle */}
-            <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
-              <TabsList className="grid w-[200px] grid-cols-2 bg-muted/50 backdrop-blur-sm">
-                <TabsTrigger value="id" className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80">
-                  <Globe className="w-4 h-4" />
-                  Bahasa
-                </TabsTrigger>
-                <TabsTrigger value="en" className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80">
-                  <Globe className="w-4 h-4" />
-                  English
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
           </div>
         </div>
       </header>
