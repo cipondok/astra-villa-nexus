@@ -55,10 +55,7 @@ import VendorManagement from './VendorManagement';
 import CustomerSupport from './CustomerSupport';
 import ASTRATokenSettings from './ASTRATokenSettings';
 import SystemAnalytics from './SystemAnalytics';
-import ProjectProgressReport from './ProjectProgressReport';
-import LoadTestingPanel from './LoadTestingPanel';
 import MFASettings from '../auth/MFASettings';
-import EnhancedErrorReporting from './EnhancedErrorReporting';
 import UnifiedDiagnosticsPanel from './UnifiedDiagnosticsPanel';
 
 interface RealAlert {
@@ -355,25 +352,9 @@ const EnhancedAdminDashboard = () => {
               <TrendingUp className="h-4 w-4" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="security" className="gap-2 whitespace-nowrap">
-              <Shield className="h-4 w-4" />
-              Security
-            </TabsTrigger>
             <TabsTrigger value="system-diagnostics" className="gap-2 whitespace-nowrap">
               <Activity className="h-4 w-4" />
               System Diagnostics
-            </TabsTrigger>
-            <TabsTrigger value="errors" className="gap-2 whitespace-nowrap">
-              <AlertTriangle className="h-4 w-4" />
-              Errors
-            </TabsTrigger>
-            <TabsTrigger value="progress" className="gap-2 whitespace-nowrap">
-              <Target className="h-4 w-4" />
-              Progress
-            </TabsTrigger>
-            <TabsTrigger value="load-testing" className="gap-2 whitespace-nowrap">
-              <Zap className="h-4 w-4" />
-              Load Testing
             </TabsTrigger>
           </TabsList>
 
@@ -587,72 +568,6 @@ const EnhancedAdminDashboard = () => {
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
             <SystemAnalytics />
-          </TabsContent>
-
-          {/* Security Tab */}
-          <TabsContent value="security" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Security Dashboard
-                </CardTitle>
-                <CardDescription>Security monitoring and threat detection</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Active Threats</p>
-                        <p className="text-2xl font-bold text-red-500">{alerts.filter(alert => alert.priority === 'high' || alert.priority === 'urgent').length}</p>
-                      </div>
-                      <AlertTriangle className="h-8 w-8 text-red-500" />
-                    </div>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Total Alerts</p>
-                        <p className="text-2xl font-bold text-orange-500">{alerts.filter(alert => !alert.is_read).length}</p>
-                      </div>
-                      <Bell className="h-8 w-8 text-orange-500" />
-                    </div>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Security Score</p>
-                        <p className="text-2xl font-bold text-green-500">
-                          {Math.max(100 - (alerts.filter(alert => alert.priority === 'high').length * 5), 75)}%
-                        </p>
-                      </div>
-                      <Shield className="h-8 w-8 text-green-500" />
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    Real-time security monitoring with {alerts.length} total alerts tracked
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Error Reports Tab */}
-          <TabsContent value="errors" className="space-y-6">
-            <EnhancedErrorReporting />
-          </TabsContent>
-
-          {/* Progress Report Tab */}
-          <TabsContent value="progress">
-            <ProjectProgressReport />
-          </TabsContent>
-
-          {/* Load Testing Tab */}
-          <TabsContent value="load-testing">
-            <LoadTestingPanel />
           </TabsContent>
         </Tabs>
       </div>
