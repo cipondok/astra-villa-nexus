@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Search, Home, Store, Map, Building, Warehouse, Factory, Trees, MapPinned, Briefcase, Crown } from 'lucide-react';
+import { Building2, Search, Home, Store, Map, Building, Warehouse, Factory, Trees, MapPinned, Briefcase, Crown, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -120,6 +120,14 @@ const NewProjects = () => {
 
   const categories = [
     {
+      name: 'Discover New Projects',
+      icon: Sparkles,
+      type: 'all',
+      count: Object.values(categoryCounts || {}).reduce((a, b) => a + b, 0),
+      color: 'from-violet-400 to-fuchsia-600',
+      bgColor: 'bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-violet-950/30 dark:to-fuchsia-950/30'
+    },
+    {
       name: 'Apartments',
       icon: Building2,
       type: 'apartment',
@@ -209,11 +217,19 @@ const NewProjects = () => {
     }
   ];
 
-  const [emblaRef] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
     align: 'start',
     slidesToScroll: 1,
     containScroll: 'trimSnaps'
   });
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
   const handleCategoryClick = (type: string) => {
     setFilters(prev => ({ ...prev, propertyType: type }));
@@ -361,7 +377,27 @@ const NewProjects = () => {
 
       {/* Browse by Category Section */}
       <div className="container mx-auto px-4 py-8">
-        <h2 className="text-xl md:text-2xl font-bold mb-6">Browse Projects by Category</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl md:text-2xl font-bold">Browse Projects by Category</h2>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={scrollPrev}
+              className="h-10 w-10 rounded-full"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={scrollNext}
+              className="h-10 w-10 rounded-full"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-3">
             {categories.map((category, index) => {
