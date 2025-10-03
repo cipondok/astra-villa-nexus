@@ -53,47 +53,14 @@ const VendorCategoryDashboard = () => {
         </TabsList>
 
         <TabsContent value="showcase" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LayoutGrid className="h-5 w-5" />
-                Service Categories Showcase
-              </CardTitle>
-              <CardDescription>
-                Customer-facing view of all vendor service categories with live services and pricing
-              </CardDescription>
-            </CardHeader>
-          </Card>
           <VendorServicesCategoryShowcase />
         </TabsContent>
 
         <TabsContent value="blog" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Category Blog Content
-              </CardTitle>
-              <CardDescription>
-                Blog-style content generated from your vendor categories and services
-              </CardDescription>
-            </CardHeader>
-          </Card>
           <VendorCategoryBlogView />
         </TabsContent>
 
         <TabsContent value="management" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Category Management
-              </CardTitle>
-              <CardDescription>
-                Administrative interface for managing categories, subcategories, and service organization
-              </CardDescription>
-            </CardHeader>
-          </Card>
           <VendorCategoryManagement />
         </TabsContent>
 

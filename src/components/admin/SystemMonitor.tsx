@@ -119,24 +119,11 @@ const SystemMonitor = () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                System Analytics
-              </CardTitle>
-              <CardDescription>
-                Performance trends and usage analytics
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Advanced analytics dashboard coming soon...</p>
-                <p className="text-sm mt-2">Will include performance trends, usage patterns, and predictive insights</p>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="text-center py-12 text-muted-foreground">
+            <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>Advanced analytics dashboard coming soon...</p>
+            <p className="text-sm mt-2">Will include performance trends, usage patterns, and predictive insights</p>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
