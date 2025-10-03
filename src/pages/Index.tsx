@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
+import AstraVillaFeatures from "@/components/home/AstraVillaFeatures";
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -424,6 +425,11 @@ const Index = () => {
                 {/* AI Recommended Properties */}
                 <div className="section-compact mb-6">
                   <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
+                </div>
+
+                {/* ASTRA Villa Features Section */}
+                <div className="section-compact mb-6">
+                  <AstraVillaFeatures />
                 </div>
 
                 {/* Featured Properties - Zero-waste Compact Layout */}
