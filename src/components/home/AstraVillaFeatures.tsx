@@ -85,24 +85,24 @@ const AstraVillaFeatures = () => {
     <section className="w-full py-8 md:py-12 lg:py-16">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-8 md:mb-10 animate-fade-in relative">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="relative">
-              <Globe className="w-8 h-8 text-blue-500 dark:text-blue-400" strokeWidth={2} />
-              <div className="absolute inset-0 bg-blue-500/20 blur-lg rounded-full animate-pulse"></div>
+        <div className="text-center mb-6 md:mb-8 animate-fade-in">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="relative w-10 h-10 flex items-center justify-center rounded-full bg-blue-500/10 dark:bg-blue-400/10">
+              <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400 relative z-10" strokeWidth={2.5} />
+              <div className="absolute inset-0 bg-blue-500/30 dark:bg-blue-400/30 rounded-full animate-pulse"></div>
             </div>
-            <Sparkles className="w-7 h-7 text-amber-500 dark:text-amber-400 animate-pulse" strokeWidth={2} />
+            <Sparkles className="w-6 h-6 text-amber-500 dark:text-amber-400 animate-pulse" strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 bg-gradient-to-r from-primary via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-300 dark:to-purple-400 bg-clip-text text-transparent">
-            Explore More on ASTRA Villa
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+            AI-Powered Tools & Features
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-            AI-Powered 3D Property Platform • Smart Tools for Indonesia
+          <p className="text-xs md:text-sm text-muted-foreground">
+            Smart Property Solutions for Indonesia
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} index={index} />
           ))}
@@ -120,14 +120,36 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   const Icon = feature.icon;
 
+  const handleClick = () => {
+    // Route to different pages based on feature
+    const routes: Record<string, string> = {
+      'New Projects': '/properties?development_status=new_project',
+      'Construction Cost Calculator': '/calculators/construction',
+      'Home Loan Calculator': '/calculators/loan',
+      'Area Guides': '/areas',
+      'Plot Finder': '/properties?property_type=land',
+      'Property Index': '/market-trends',
+      'Area Unit Converter': '/calculators/area',
+      'Property Trends': '/trends'
+    };
+    
+    const route = routes[feature.title];
+    if (route) {
+      console.log(`Navigating to: ${route}`);
+      // TODO: Implement actual navigation
+      window.location.href = route;
+    }
+  };
+
   return (
     <div
+      onClick={handleClick}
       className={cn(
-        'group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer',
+        'group relative overflow-hidden rounded-lg transition-all duration-300 cursor-pointer',
         'bg-gradient-to-br from-background to-accent/5',
         'border border-border/50 dark:border-border',
-        'shadow-sm hover:shadow-xl hover:border-primary/30',
-        'hover:-translate-y-1 hover:scale-[1.01]',
+        'shadow-sm hover:shadow-lg hover:border-primary/30',
+        'hover:-translate-y-1 hover:scale-[1.02]',
         'animate-fade-in'
       )}
       style={{
@@ -144,27 +166,27 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
       />
 
       {/* Card Content */}
-      <div className="relative p-4 md:p-5 h-full flex flex-col">
+      <div className="relative p-3 md:p-4 h-full flex flex-col">
         {/* Icon Container with AI Badge */}
-        <div className="relative mb-3 md:mb-4">
+        <div className="relative mb-2 md:mb-3">
           <div className={cn(
-            'w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center',
+            'w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center',
             'transition-all duration-300 group-hover:scale-110',
             feature.bgGradient
           )}>
             <Icon className={cn(
-              'w-6 h-6 md:w-7 md:h-7 transition-all duration-300',
+              'w-5 h-5 md:w-6 md:h-6 transition-all duration-300',
               `bg-gradient-to-br ${feature.color} bg-clip-text text-transparent`
             )} 
               strokeWidth={2}
             />
           </div>
-          <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-amber-500 animate-pulse" />
+          <Sparkles className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 text-amber-500 animate-pulse" />
         </div>
 
         {/* Title */}
         <h3 className={cn(
-          'text-base md:text-lg font-bold mb-2',
+          'text-sm md:text-base font-bold mb-1.5',
           'text-foreground',
           'group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:text-transparent',
           `group-hover:${feature.color}`,
@@ -174,14 +196,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
         </h3>
 
         {/* Description */}
-        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed flex-grow">
+        <p className="text-xs text-muted-foreground leading-relaxed flex-grow line-clamp-2">
           {feature.description}
         </p>
 
         {/* Hover Arrow Indicator */}
-        <div className="mt-3 flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors duration-300">
+        <div className="mt-2 flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors duration-300">
           <span className="mr-1 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-            Explore
+            Open
           </span>
           <svg 
             className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" 
