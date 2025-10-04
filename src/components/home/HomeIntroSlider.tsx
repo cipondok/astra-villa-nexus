@@ -188,9 +188,9 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
         </article>
       </div>
 
-      {/* Search Panel Overlay */}
+      {/* Search Panel Overlay - Centered */}
       {children && (
-        <div className="absolute bottom-8 md:bottom-12 left-0 right-0 z-20 px-4 animate-fade-in" style={{ animationDelay: '300ms' }}>
+        <div className="absolute top-1/2 left-0 right-0 z-20 px-4 -translate-y-1/2 animate-fade-in" style={{ animationDelay: '300ms' }}>
           <div className="w-full mx-auto">
             {children}
           </div>
