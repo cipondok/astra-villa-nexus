@@ -318,8 +318,8 @@ const Index = () => {
         {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
         <section className="relative w-full">
           <HomeIntroSlider language={language} className="h-[70vh] md:h-[75vh] lg:h-[80vh] model-container-mobile">
-            {/* Search Panel - Full Width */}
-            <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full">
+            {/* Search Panel - No Background */}
+            <div className="p-4 md:p-6 w-full">
               <div className="mb-4 text-center">
                 <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
                   {t.findYour}
