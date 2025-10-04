@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ForeignInvestmentContactDialog } from "@/components/ForeignInvestmentContactDialog";
+import { EligibilityChecker } from "@/components/EligibilityChecker";
 
 const ForeignInvestment = () => {
   const { language } = useLanguage();
@@ -32,8 +33,9 @@ const ForeignInvestment = () => {
         </Alert>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="eligibility">Check Eligibility</TabsTrigger>
             <TabsTrigger value="ownership">Ownership Types</TabsTrigger>
             <TabsTrigger value="requirements">Requirements</TabsTrigger>
             <TabsTrigger value="restrictions">Restrictions</TabsTrigger>
@@ -132,6 +134,11 @@ const ForeignInvestment = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Eligibility Checker Tab */}
+          <TabsContent value="eligibility" className="space-y-6">
+            <EligibilityChecker />
           </TabsContent>
 
           {/* Ownership Types Tab */}
