@@ -321,7 +321,7 @@ const Index = () => {
             {/* Container for Search Panel and Chatbot */}
             <div className="flex items-start justify-center gap-4 w-full px-4">
               {/* Search Panel */}
-              <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 flex-1 max-w-3xl">
+              <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full md:w-[500px] lg:w-[600px]">
                 <div className="mb-4 text-center">
                   <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
                     {t.findYour}
