@@ -807,7 +807,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     <div className="w-full max-w-7xl mx-auto">
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div className="p-4 lg:p-6 space-y-3 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl">
+        <div className="p-4 lg:p-6 space-y-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl">
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
