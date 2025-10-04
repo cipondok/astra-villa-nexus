@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
+import { Loader2, Send, Wifi } from "lucide-react";
 
 interface SMTPSettings {
   host: string;
@@ -135,6 +136,85 @@ export default function EmailSettings() {
   const handleSMTPSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateSMTP.mutate(smtpForm);
+  };
+
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [sendingTestEmail, setSendingTestEmail] = useState(false);
+
+  const testConnection = async () => {
+    setTestingConnection(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('test-smtp', {
+        body: { 
+          smtp_config: {
+            host: smtpForm.host,
+            port: parseInt(smtpForm.port),
+            username: smtpForm.username,
+            password: smtpForm.password,
+            encryption: smtpForm.encryption,
+            from_email: smtpForm.from_email,
+            from_name: smtpForm.from_name,
+            enabled: smtpForm.enabled
+          },
+          test_email: {
+            to: smtpForm.from_email,
+            subject: "SMTP Test",
+            message: "Testing connection"
+          }
+        }
+      });
+
+      if (error) throw error;
+      
+      if (data?.success) {
+        toast.success("SMTP connection successful!");
+      } else {
+        toast.error(data?.error || "Connection test failed");
+      }
+    } catch (error: any) {
+      console.error("SMTP test failed:", error);
+      toast.error(error.message || "Failed to test connection");
+    } finally {
+      setTestingConnection(false);
+    }
+  };
+
+  const sendTestEmail = async () => {
+    setSendingTestEmail(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('test-smtp', {
+        body: { 
+          smtp_config: {
+            host: smtpForm.host,
+            port: parseInt(smtpForm.port),
+            username: smtpForm.username,
+            password: smtpForm.password,
+            encryption: smtpForm.encryption,
+            from_email: smtpForm.from_email,
+            from_name: smtpForm.from_name,
+            enabled: true // Force enabled for test
+          },
+          test_email: {
+            to: smtpForm.from_email,
+            subject: "Test Email from ASTRA Villa",
+            message: "This is a test email to verify your SMTP configuration is working correctly."
+          }
+        }
+      });
+
+      if (error) throw error;
+      
+      if (data?.success) {
+        toast.success(`Test email sent to ${smtpForm.from_email}!`);
+      } else {
+        toast.error(data?.error || "Failed to send test email");
+      }
+    } catch (error: any) {
+      console.error("Test email failed:", error);
+      toast.error(error.message || "Failed to send test email");
+    } finally {
+      setSendingTestEmail(false);
+    }
   };
 
   const getTemplate = (key: string): EmailTemplate => {
@@ -264,9 +344,49 @@ export default function EmailSettings() {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={updateSMTP.isPending}>
-                  {updateSMTP.isPending ? "Saving..." : "Save SMTP Settings"}
-                </Button>
+                <div className="flex gap-2 flex-wrap">
+                  <Button type="submit" disabled={updateSMTP.isPending}>
+                    {updateSMTP.isPending ? "Saving..." : "Save SMTP Settings"}
+                  </Button>
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={testConnection}
+                    disabled={testingConnection || !smtpForm.host || !smtpForm.port}
+                  >
+                    {testingConnection ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Testing...
+                      </>
+                    ) : (
+                      <>
+                        <Wifi className="mr-2 h-4 w-4" />
+                        Test Connection
+                      </>
+                    )}
+                  </Button>
+
+                  <Button 
+                    type="button" 
+                    variant="secondary"
+                    onClick={sendTestEmail}
+                    disabled={sendingTestEmail || !smtpForm.enabled || !smtpForm.host || !smtpForm.port}
+                  >
+                    {sendingTestEmail ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Send Test Email
+                      </>
+                    )}
+                  </Button>
+                </div>
               </form>
             </CardContent>
           </Card>
