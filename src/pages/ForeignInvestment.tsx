@@ -4,10 +4,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones } from "lucide-react";
+import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones, MessageSquare, BookOpen, ListChecks } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ForeignInvestmentContactDialog } from "@/components/ForeignInvestmentContactDialog";
 import { EligibilityChecker } from "@/components/EligibilityChecker";
+import { ForeignInvestmentSteps } from "@/components/ForeignInvestmentSteps";
+import { ForeignInvestmentFAQ } from "@/components/ForeignInvestmentFAQ";
+import { ForeignInvestmentChat } from "@/components/ForeignInvestmentChat";
 
 const ForeignInvestment = () => {
   const { language } = useLanguage();
@@ -33,13 +36,43 @@ const ForeignInvestment = () => {
         </Alert>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="eligibility">Check Eligibility</TabsTrigger>
-            <TabsTrigger value="ownership">Ownership Types</TabsTrigger>
-            <TabsTrigger value="requirements">Requirements</TabsTrigger>
-            <TabsTrigger value="restrictions">Restrictions</TabsTrigger>
-            <TabsTrigger value="process">Process</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-9 h-auto">
+            <TabsTrigger value="overview" className="gap-1">
+              <Globe className="h-4 w-4" />
+              <span className="hidden sm:inline">Overview</span>
+            </TabsTrigger>
+            <TabsTrigger value="steps" className="gap-1">
+              <ListChecks className="h-4 w-4" />
+              <span className="hidden sm:inline">Process Steps</span>
+            </TabsTrigger>
+            <TabsTrigger value="eligibility" className="gap-1">
+              <CheckCircle2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Check Eligibility</span>
+            </TabsTrigger>
+            <TabsTrigger value="chat" className="gap-1">
+              <MessageSquare className="h-4 w-4" />
+              <span className="hidden sm:inline">Ask AI</span>
+            </TabsTrigger>
+            <TabsTrigger value="faq" className="gap-1">
+              <BookOpen className="h-4 w-4" />
+              <span className="hidden sm:inline">FAQ</span>
+            </TabsTrigger>
+            <TabsTrigger value="ownership" className="gap-1">
+              <Key className="h-4 w-4" />
+              <span className="hidden sm:inline">Ownership</span>
+            </TabsTrigger>
+            <TabsTrigger value="requirements" className="gap-1">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Requirements</span>
+            </TabsTrigger>
+            <TabsTrigger value="restrictions" className="gap-1">
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">Restrictions</span>
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="gap-1">
+              <Headphones className="h-4 w-4" />
+              <span className="hidden sm:inline">Contact</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -136,9 +169,24 @@ const ForeignInvestment = () => {
             </Card>
           </TabsContent>
 
+          {/* Process Steps Tab */}
+          <TabsContent value="steps" className="space-y-6">
+            <ForeignInvestmentSteps />
+          </TabsContent>
+
           {/* Eligibility Checker Tab */}
           <TabsContent value="eligibility" className="space-y-6">
             <EligibilityChecker />
+          </TabsContent>
+
+          {/* AI Chat Assistant Tab */}
+          <TabsContent value="chat" className="space-y-6">
+            <ForeignInvestmentChat />
+          </TabsContent>
+
+          {/* FAQ & Knowledge Base Tab */}
+          <TabsContent value="faq" className="space-y-6">
+            <ForeignInvestmentFAQ />
           </TabsContent>
 
           {/* Ownership Types Tab */}
