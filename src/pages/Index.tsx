@@ -319,8 +319,7 @@ const Index = () => {
         <section className="relative w-full">
           <HomeIntroSlider language={language} className="h-[70vh] md:h-[75vh] lg:h-[80vh] model-container-mobile">
             {/* Search Panel Overlaid on Slider - Centered */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[55%] max-w-4xl">
-              <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full">
+            <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full">
               <div className="mb-4 text-center">
                 <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
                   {t.findYour}
@@ -339,7 +338,6 @@ const Index = () => {
                 onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
                 resultsCount={hasSearched ? searchResults.length : undefined}
               />
-              </div>
             </div>
           </HomeIntroSlider>
         </section>
