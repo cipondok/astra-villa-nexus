@@ -310,7 +310,7 @@ const Index = () => {
         <section className="relative w-full">
           <HomeIntroSlider language={language} className="h-[70vh] md:h-[75vh] lg:h-[80vh] model-container-mobile">
             {/* Search Panel Overlaid on Slider */}
-            <div className="bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6">
+            <div className="bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full">
               <div className="mb-4 text-center">
                 <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
                   {t.findYour}
