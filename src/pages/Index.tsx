@@ -238,6 +238,14 @@ const Index = () => {
         }
       }
 
+      // Handle nearby search (requires lat/lng columns in properties table)
+      if (searchData?.nearbySearch && searchData?.userLocation) {
+        console.warn('Nearby search requested but properties table lacks latitude/longitude columns');
+        // TODO: Add latitude, longitude columns to properties table for distance-based search
+        // For now, show message to user
+        setSearchError('Nearby search requires property GPS coordinates. Showing all results instead.');
+      }
+
       const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(20);

@@ -878,22 +878,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </Button>
             
             {useNearbyLocation && userLocation && (
-              <Select
-                value={nearbyRadius.toString()}
-                onValueChange={(value) => setNearbyRadius(parseInt(value))}
-              >
-                <SelectTrigger className="w-28 h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">{currentText.within} 1 km</SelectItem>
-                  <SelectItem value="3">{currentText.within} 3 km</SelectItem>
-                  <SelectItem value="5">{currentText.within} 5 km</SelectItem>
-                  <SelectItem value="10">{currentText.within} 10 km</SelectItem>
-                  <SelectItem value="20">{currentText.within} 20 km</SelectItem>
-                  <SelectItem value="50">{currentText.within} 50 km</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-2">
+                <Select
+                  value={nearbyRadius.toString()}
+                  onValueChange={(value) => setNearbyRadius(parseInt(value))}
+                >
+                  <SelectTrigger className="w-28 h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">{currentText.within} 1 km</SelectItem>
+                    <SelectItem value="3">{currentText.within} 3 km</SelectItem>
+                    <SelectItem value="5">{currentText.within} 5 km</SelectItem>
+                    <SelectItem value="10">{currentText.within} 10 km</SelectItem>
+                    <SelectItem value="20">{currentText.within} 20 km</SelectItem>
+                    <SelectItem value="50">{currentText.within} 50 km</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-xs text-amber-600 dark:text-amber-400">
+                  ⚠️ Requires property GPS data
+                </span>
+              </div>
             )}
           </div>
           
