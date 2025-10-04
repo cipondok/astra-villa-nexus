@@ -16,151 +16,183 @@ const ForeignInvestment = () => {
   const { language } = useLanguage();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-foreground">Foreign Investment in Indonesian Property</h1>
-          <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-            Comprehensive guide to property investment regulations, requirements, and limitations for foreign investors in Indonesia
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
+        {/* Friendly Hero Header */}
+        <div className="text-center space-y-6 animate-fade-in">
+          <div className="inline-block">
+            <Badge className="mb-4 px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
+              <Globe className="h-4 w-4 inline mr-2" />
+              Your Journey Starts Here
+            </Badge>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
+            Welcome to Indonesian Property Investment
+          </h1>
+          <p className="text-muted-foreground text-xl max-w-3xl mx-auto leading-relaxed">
+            We're here to guide you through every step of investing in Indonesian property. 
+            Let's make your investment journey smooth and successful! 🏡
           </p>
         </div>
 
-        {/* Important Notice */}
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Important Legal Notice</AlertTitle>
-          <AlertDescription>
-            This information is for general guidance only. Please consult with a qualified legal advisor and Indonesian property lawyer before making any investment decisions.
+        {/* Friendly Notice */}
+        <Alert className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5 shadow-lg">
+          <AlertCircle className="h-5 w-5 text-primary" />
+          <AlertTitle className="text-lg font-semibold">We're Here to Help!</AlertTitle>
+          <AlertDescription className="text-base">
+            This guide provides general information to get you started. For personalized advice, 
+            we recommend consulting with our qualified legal advisors who specialize in foreign property investment.
           </AlertDescription>
         </Alert>
 
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-9 h-auto">
-            <TabsTrigger value="overview" className="gap-1">
-              <Globe className="h-4 w-4" />
-              <span className="hidden sm:inline">Overview</span>
+        <Tabs defaultValue="overview" className="w-full space-y-8">
+          <TabsList className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2 bg-card/50 backdrop-blur-sm p-2 rounded-2xl border border-border/50 shadow-lg h-auto">
+            <TabsTrigger value="overview" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <Globe className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Overview</span>
             </TabsTrigger>
-            <TabsTrigger value="steps" className="gap-1">
-              <ListChecks className="h-4 w-4" />
-              <span className="hidden sm:inline">Process Steps</span>
+            <TabsTrigger value="steps" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <ListChecks className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Steps</span>
             </TabsTrigger>
-            <TabsTrigger value="eligibility" className="gap-1">
-              <CheckCircle2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Check Eligibility</span>
+            <TabsTrigger value="eligibility" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <CheckCircle2 className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Eligibility</span>
             </TabsTrigger>
-            <TabsTrigger value="chat" className="gap-1">
-              <MessageSquare className="h-4 w-4" />
-              <span className="hidden sm:inline">Ask AI</span>
+            <TabsTrigger value="chat" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <MessageSquare className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Ask AI</span>
             </TabsTrigger>
-            <TabsTrigger value="faq" className="gap-1">
-              <BookOpen className="h-4 w-4" />
-              <span className="hidden sm:inline">FAQ</span>
+            <TabsTrigger value="faq" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <BookOpen className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">FAQ</span>
             </TabsTrigger>
-            <TabsTrigger value="ownership" className="gap-1">
-              <Key className="h-4 w-4" />
-              <span className="hidden sm:inline">Ownership</span>
+            <TabsTrigger value="ownership" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <Key className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Ownership</span>
             </TabsTrigger>
-            <TabsTrigger value="requirements" className="gap-1">
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Requirements</span>
+            <TabsTrigger value="requirements" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <FileText className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Documents</span>
             </TabsTrigger>
-            <TabsTrigger value="restrictions" className="gap-1">
-              <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">Restrictions</span>
+            <TabsTrigger value="restrictions" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <Shield className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Rules</span>
             </TabsTrigger>
-            <TabsTrigger value="contact" className="gap-1">
-              <Headphones className="h-4 w-4" />
-              <span className="hidden sm:inline">Contact</span>
+            <TabsTrigger value="contact" className="flex-col sm:flex-row gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300">
+              <Headphones className="h-5 w-5" />
+              <span className="text-xs sm:text-sm font-medium">Contact</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  Foreign Investment Overview
+          <TabsContent value="overview" className="space-y-6 animate-fade-in">
+            <Card className="border-border/50 shadow-xl bg-gradient-to-br from-card to-card/50 backdrop-blur-sm overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl -z-10" />
+              <CardHeader className="space-y-3">
+                <CardTitle className="flex items-center gap-3 text-2xl">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+                    <Building2 className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  Investment Opportunities
                 </CardTitle>
-                <CardDescription>Key information about foreign property investment in Indonesia</CardDescription>
+                <CardDescription className="text-base">Discover what you can invest in and the exciting opportunities waiting for you</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
-                      What Foreigners CAN Buy
-                    </h3>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <span className="text-green-600 mt-1">•</span>
-                        <span>Apartments/condominiums (Strata Title/SHMRS)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-green-600 mt-1">•</span>
-                        <span>Houses with Hak Pakai (Right to Use) title - 30 years renewable</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-green-600 mt-1">•</span>
-                        <span>Villa properties in tourist areas</span>
-                      </li>
-                    </ul>
-                  </div>
+                  <Card className="border-accent/30 bg-gradient-to-br from-accent/5 to-accent/10 hover:shadow-lg transition-all duration-300">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2 text-accent">
+                        <CheckCircle2 className="h-6 w-6" />
+                        ✅ You CAN Invest In
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card/50 hover:bg-card transition-colors">
+                          <Home className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Apartments & Condos</strong> - Modern living with Strata Title (SHMRS)</span>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card/50 hover:bg-card transition-colors">
+                          <Key className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Houses</strong> - With Hak Pakai (Right to Use) - 30 years, renewable</span>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card/50 hover:bg-card transition-colors">
+                          <Building2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Villas</strong> - Perfect for tourist destinations like Bali</span>
+                        </li>
+                      </ul>
+                    </CardContent>
+                  </Card>
 
-                  <div className="space-y-3">
-                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      <XCircle className="h-5 w-5 text-red-600" />
-                      What Foreigners CANNOT Buy
-                    </h3>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <span className="text-red-600 mt-1">•</span>
-                        <span>Land with Hak Milik (Freehold) title directly</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-red-600 mt-1">•</span>
-                        <span>Agricultural land</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-red-600 mt-1">•</span>
-                        <span>Government or state-owned land</span>
-                      </li>
-                    </ul>
-                  </div>
+                  <Card className="border-destructive/30 bg-gradient-to-br from-destructive/5 to-destructive/10 hover:shadow-lg transition-all duration-300">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+                        <XCircle className="h-6 w-6" />
+                        ❌ Investment Restrictions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card/50">
+                          <Shield className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Freehold Land</strong> - Hak Milik title not available directly</span>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card/50">
+                          <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Agricultural Land</strong> - Reserved for local farmers</span>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card/50">
+                          <FileText className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Government Property</strong> - State-owned land not for sale</span>
+                        </li>
+                      </ul>
+                    </CardContent>
+                  </Card>
                 </div>
 
-                <div className="pt-4 border-t">
-                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                    <DollarSign className="h-5 w-5" />
-                    Minimum Investment Requirements
+                <div className="pt-6 space-y-4">
+                  <h3 className="font-semibold text-xl mb-4 flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                    </div>
+                    Investment Starting Points
                   </h3>
                   <div className="grid md:grid-cols-3 gap-4">
-                    <Card>
+                    <Card className="border-primary/30 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-primary/5 to-transparent">
                       <CardHeader>
-                        <CardTitle className="text-sm">Houses (Hak Pakai)</CardTitle>
+                        <Home className="h-8 w-8 text-primary mb-2" />
+                        <CardTitle className="text-base">Houses</CardTitle>
+                        <CardDescription className="text-xs">Hak Pakai Title</CardDescription>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-2xl font-bold text-primary">IDR 5 Billion</p>
-                        <p className="text-xs text-muted-foreground mt-1">Minimum property value</p>
+                      <CardContent className="space-y-2">
+                        <p className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">IDR 5B</p>
+                        <p className="text-xs text-muted-foreground">Minimum investment required</p>
+                        <Badge className="mt-2" variant="secondary">30 Years Renewable</Badge>
                       </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="border-accent/30 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-accent/5 to-transparent">
                       <CardHeader>
-                        <CardTitle className="text-sm">Apartments/Condos</CardTitle>
+                        <Building2 className="h-8 w-8 text-accent mb-2" />
+                        <CardTitle className="text-base">Apartments</CardTitle>
+                        <CardDescription className="text-xs">Strata Title (SHMRS)</CardDescription>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-2xl font-bold text-primary">IDR 3 Billion</p>
-                        <p className="text-xs text-muted-foreground mt-1">Minimum property value</p>
+                      <CardContent className="space-y-2">
+                        <p className="text-3xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">IDR 3B</p>
+                        <p className="text-xs text-muted-foreground">Minimum investment required</p>
+                        <Badge className="mt-2" variant="secondary">Most Popular</Badge>
                       </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="border-primary/30 hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-primary/5 to-accent/5">
                       <CardHeader>
-                        <CardTitle className="text-sm">Tourist Areas</CardTitle>
+                        <Globe className="h-8 w-8 text-primary mb-2" />
+                        <CardTitle className="text-base">Tourist Areas</CardTitle>
+                        <CardDescription className="text-xs">Special Zones</CardDescription>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-2xl font-bold text-primary">Varies</p>
-                        <p className="text-xs text-muted-foreground mt-1">Check regional regulations</p>
+                      <CardContent className="space-y-2">
+                        <p className="text-3xl font-bold text-primary">Varies</p>
+                        <p className="text-xs text-muted-foreground">Check local regulations</p>
+                        <Badge className="mt-2" variant="secondary">Regional Rules</Badge>
                       </CardContent>
                     </Card>
                   </div>
