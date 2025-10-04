@@ -158,71 +158,69 @@ const Navigation = () => {
   return (
     <>
       <nav className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform animate-fade-in">
-        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16">
-          <div className="flex items-center justify-between h-14">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation */}
             <div 
-              className="flex items-center space-x-3 cursor-pointer group" 
+              className="flex items-center space-x-2 cursor-pointer group flex-shrink-0" 
               onClick={() => navigate('/')}
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <Brain className="h-6 w-6 text-white animate-pulse" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <Brain className="h-5 w-5 text-white animate-pulse" />
               </div>
-              <div className="flex items-center space-x-1">
-                <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
+              <div className="hidden sm:flex items-center space-x-1">
+                <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
               </div>
             </div>
 
             {/* Enhanced Desktop Navigation - Main Menu */}
-            <div className="hidden lg:flex items-center space-x-2">
+            <div className="hidden xl:flex items-center gap-1 flex-1 justify-center max-w-5xl">
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
                 onClick={() => navigate('/')}
               >
-                <HomeIcon className="h-4 w-4 mr-2" />
-                {currentText.home}
+                <HomeIcon className="h-4 w-4 xl:mr-1.5" />
+                <span className="hidden xl:inline text-xs">{currentText.home}</span>
               </Button>
 
-              {/* Enhanced Property Navigation Items with Better Tooltips */}
+              {/* Enhanced Property Navigation Items - Icon Only */}
               {propertyNavItems.map((item, index) => (
                 <div key={item.path} className="relative group">
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className={`h-11 px-4 text-sm font-medium hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white animate-scale-in`}
-                    style={{ animationDelay: `${index * 100}ms` }}
+                    className="h-10 w-10 p-0 hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 text-gray-900 dark:text-white/90"
                     onClick={() => navigate(item.path)}
                   >
                     <item.icon className="h-4 w-4" />
                   </Button>
-                  {/* Enhanced Tooltip - Positioned Below with Animation */}
-                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-3 py-2 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-50 shadow-lg animate-fade-in">
-                      {item.label}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
-                   </div>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
+                    {item.label}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
+                  </div>
                 </div>
               ))}
 
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
                 onClick={() => navigate('/services')}
               >
-                <Settings2 className="h-4 w-4 mr-2" />
-                {currentText.services}
+                <Settings2 className="h-4 w-4 xl:mr-1.5" />
+                <span className="hidden xl:inline text-xs">{currentText.services}</span>
               </Button>
 
               {/* Add Property Button */}
               <Button 
                 size="sm"
                 onClick={() => navigate('/add-property')}
-                className="h-11 px-6 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                className="h-10 px-4 text-xs font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-105 rounded-xl transition-all duration-200"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 mr-1.5" />
                 Add Property
               </Button>
 
@@ -232,14 +230,14 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                    className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
                   >
-                    <TrendingUp className="h-4 w-4 mr-2" />
-                    Investment
-                    <ChevronDown className="h-3 w-3 ml-1" />
+                    <TrendingUp className="h-4 w-4 xl:mr-1.5" />
+                    <span className="hidden xl:inline text-xs">Investment</span>
+                    <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl">
+                <DropdownMenuContent align="end" className="w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl z-[10001]">
                   <DropdownMenuItem 
                     onClick={() => navigate('/foreign-investment')}
                     className="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -255,11 +253,11 @@ const Navigation = () => {
                  <Button 
                    variant="ghost" 
                    size="sm"
-                   className="h-10 px-3 text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-all"
+                   className="h-10 px-2.5 text-xs font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-all"
                    onClick={() => navigate('/astra-tokens')}
                  >
-                   <Coins className="h-4 w-4 mr-1" />
-                   ASTRA Tokens
+                   <Coins className="h-4 w-4 xl:mr-1" />
+                   <span className="hidden xl:inline">Tokens</span>
                  </Button>
                )}
 
@@ -268,11 +266,11 @@ const Navigation = () => {
                  <Button 
                    variant="ghost" 
                    size="sm"
-                   className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                   className="h-10 px-2.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
                    onClick={() => navigate('/dashboard/user')}
                  >
-                   <BarChart3 className="h-4 w-4 mr-1" />
-                   {currentText.dashboard}
+                   <BarChart3 className="h-4 w-4 xl:mr-1" />
+                   <span className="hidden xl:inline">Dashboard</span>
                  </Button>
                )}
 
@@ -281,11 +279,11 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-10 px-3 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all"
+                  className="h-10 px-2.5 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all"
                   onClick={() => navigate('/agent')}
                 >
-                  <User className="h-4 w-4 mr-1" />
-                  Agent Dashboard
+                  <User className="h-4 w-4 xl:mr-1" />
+                  <span className="hidden xl:inline">Agent</span>
                 </Button>
               )}
 
@@ -294,11 +292,11 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-10 px-3 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-all"
+                  className="h-10 px-2.5 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-all"
                   onClick={() => navigate('/vendor')}
                 >
-                  <Settings className="h-4 w-4 mr-1" />
-                  Vendor Dashboard
+                  <Settings className="h-4 w-4 xl:mr-1" />
+                  <span className="hidden xl:inline">Vendor</span>
                 </Button>
               )}
 
@@ -307,56 +305,53 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-10 px-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                  className="h-10 px-2.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
                   onClick={() => navigate('/admin-dashboard')}
                 >
-                  <Crown className="h-4 w-4 mr-1" />
-                  Admin
+                  <Crown className="h-4 w-4 xl:mr-1" />
+                  <span className="hidden xl:inline">Admin</span>
                 </Button>
               )}
             </div>
 
-            {/* Enhanced Right Section - Compact Controls with Better Spacing */}
-            <div className="flex items-center space-x-3">
+            {/* Enhanced Right Section - Compact Controls */}
+            <div className="flex items-center gap-2 flex-shrink-0">
               {/* Enhanced Dark Mode Toggle */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-11 h-11 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg animate-scale-in"
+                className="w-9 h-9 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg"
               >
                 {theme === "light" ? (
-                  <Moon className="h-5 w-5" />
+                  <Moon className="h-4 w-4" />
                 ) : (
-                  <Sun className="h-5 w-5" />
+                  <Sun className="h-4 w-4" />
                 )}
               </Button>
 
               {/* Enhanced Language Toggle - Hidden on mobile */}
-              <div className="hidden md:block animate-scale-in" style={{ animationDelay: '100ms' }}>
+              <div className="hidden lg:block">
                 <LanguageToggleSwitch />
               </div>
 
               {/* Enhanced Notification Dropdown - only show for authenticated users */}
-              {user && <div className="animate-scale-in" style={{ animationDelay: '200ms' }}><NotificationDropdown /></div>}
+              {user && <NotificationDropdown />}
 
               {/* Enhanced User Section with Stats and Badges */}
               {user ? (
-                <div className="animate-scale-in" style={{ animationDelay: '300ms' }}>
-                  <UserIconWithBadge onNavigate={(path) => navigate(path)} />
-                </div>
+                <UserIconWithBadge onNavigate={(path) => navigate(path)} />
               ) : (
-                <div className="relative group animate-scale-in" style={{ animationDelay: '300ms' }}>
+                <div className="relative group">
                   <Button
                     onClick={() => setShowAuthModal(true)}
                     variant="ghost"
                     size="sm"
-                    className="w-11 h-11 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg"
+                    className="w-9 h-9 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg"
                   >
-                    <User className="h-5 w-5" />
+                    <User className="h-4 w-4" />
                   </Button>
-                  {/* Enhanced User login tooltip */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-3 py-2 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-50 shadow-lg animate-fade-in">
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
                     {currentText.signIn}
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
                   </div>
