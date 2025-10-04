@@ -2,9 +2,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const ForeignInvestment = () => {
+  const navigate = useNavigate();
+  const { language } = useLanguage();
   return (
     <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -575,6 +580,74 @@ const ForeignInvestment = () => {
             </Alert>
           </TabsContent>
         </Tabs>
+      </div>
+
+      {/* Contact Specialist Section */}
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-2xl p-8 border border-blue-200 dark:border-blue-800">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {language === "id" ? "Butuh Bantuan Khusus?" : "Need Specialized Assistance?"}
+          </h2>
+          <p className="text-muted-foreground">
+            {language === "id" 
+              ? "Tim spesialis investasi asing kami siap membantu Anda dengan bahasa Inggris yang lancar dan pemahaman mendalam tentang regulasi"
+              : "Our foreign investment specialists are ready to assist you with fluent English and in-depth knowledge of regulations"}
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center">
+            <Globe className="h-12 w-12 mx-auto mb-4 text-blue-600" />
+            <h3 className="font-semibold mb-2">
+              {language === "id" ? "Konsultasi Bahasa Inggris" : "English Consultation"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {language === "id" 
+                ? "Komunikasi lancar dalam bahasa Inglris untuk investor asing"
+                : "Fluent English communication for foreign investors"}
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center">
+            <FileText className="h-12 w-12 mx-auto mb-4 text-purple-600" />
+            <h3 className="font-semibold mb-2">
+              {language === "id" ? "Ahli Regulasi" : "Regulation Experts"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {language === "id" 
+                ? "Pemahaman mendalam tentang hukum dan regulasi Indonesia"
+                : "In-depth knowledge of Indonesian laws and regulations"}
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center">
+            <Briefcase className="h-12 w-12 mx-auto mb-4 text-green-600" />
+            <h3 className="font-semibold mb-2">
+              {language === "id" ? "Dukungan Penuh" : "Full Support"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {language === "id" 
+                ? "Pendampingan dari awal hingga selesai proses investasi"
+                : "Support from start to finish of your investment process"}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <Button 
+            size="lg" 
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            onClick={() => navigate('/dashboard/customer-service')}
+          >
+            <Headphones className="h-5 w-5 mr-2" />
+            {language === "id" ? "Hubungi Spesialis Kami" : "Contact Our Specialists"}
+          </Button>
+          <p className="mt-4 text-sm text-muted-foreground">
+            {language === "id" 
+              ? "Layanan khusus investasi asing tersedia 24/7"
+              : "Foreign investment service available 24/7"}
+          </p>
+        </div>
       </div>
     </div>
   );

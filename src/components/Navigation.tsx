@@ -209,6 +209,16 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                onClick={() => navigate('/foreign-investment')}
+              >
+                <Building className="h-4 w-4 mr-2" />
+                Foreign Investment
+              </Button>
+
                {/* ASTRA Tokens - show for authenticated users */}
                {user && (
                  <Button 
@@ -360,6 +370,11 @@ const Navigation = () => {
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/services'); toggleMenu(); }}>
                   <Settings2 className="h-4 w-4 mr-2" />
                   {currentText.services}
+                </Button>
+
+                <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/foreign-investment'); toggleMenu(); }}>
+                  <Building className="h-4 w-4 mr-2" />
+                  Foreign Investment
                 </Button>
 
                 {/* ASTRA Tokens - show for authenticated users */}
