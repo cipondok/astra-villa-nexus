@@ -5,13 +5,30 @@ import { AdminCommandPalette } from "./AdminCommandPalette";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
 import AdminDashboardContent from "./AdminDashboardContent";
 import { Button } from "@/components/ui/button";
-import { Bell, Settings } from "lucide-react";
+import { Bell, Settings, LogOut, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
-import { Sun, Moon } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const ModernEnhancedAdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("overview");
   const { theme, setTheme } = useTheme();
+  const { signOut, profile } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <SidebarProvider defaultOpen>
@@ -64,14 +81,41 @@ const ModernEnhancedAdminDashboard = () => {
                   )}
                 </Button>
 
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setActiveSection('system-settings')}
-                  title="System Settings"
-                >
-                  <Settings className="h-5 w-5" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="relative">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {profile?.full_name?.charAt(0).toUpperCase() || 'A'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium">{profile?.full_name || 'Admin'}</p>
+                        <p className="text-xs text-muted-foreground">{profile?.role || 'Administrator'}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setActiveSection('system-settings')}
+                      title="System Settings"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/')}>
+                      <Bell className="h-4 w-4 mr-2" />
+                      Go to Home
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>

@@ -57,8 +57,8 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
         <CommandInput placeholder="Type a section name to search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          {Object.entries(navigationSections).map(([category, sections]) => (
-            <React.Fragment key={category}>
+          {Object.entries(navigationSections).map(([category, sections], index) => (
+            <div key={category}>
               <CommandGroup heading={sectionTitles[category as keyof typeof sectionTitles]}>
                 {sections.map((section) => {
                   const Icon = section.icon;
@@ -79,8 +79,8 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                   );
                 })}
               </CommandGroup>
-              <CommandSeparator />
-            </React.Fragment>
+              {index < Object.entries(navigationSections).length - 1 && <CommandSeparator />}
+            </div>
           ))}
         </CommandList>
       </CommandDialog>
