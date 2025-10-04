@@ -218,10 +218,9 @@ const Navigation = () => {
 
               {/* Add Property Button */}
               <Button 
-                variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/add-property')}
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                className="h-11 px-6 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Property
