@@ -26,7 +26,8 @@ import {
   Blocks,
   Mail,
   ShoppingBag,
-  Coins
+  Coins,
+  Brain
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -100,7 +101,21 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       label: "Diagnostic", 
       icon: Wrench, 
       category: "dashboard",
-      badge: "New"
+      updatedDate: new Date().toISOString()
+    },
+    { 
+      id: "project-progress", 
+      label: "Project Progress", 
+      icon: TrendingUp, 
+      category: "dashboard",
+      addedDate: new Date().toISOString()
+    },
+    { 
+      id: "algorithm-dashboard", 
+      label: "Algorithms", 
+      icon: Brain, 
+      category: "analytics",
+      addedDate: new Date().toISOString()
     },
     { 
       id: "astra-token-hub", 
@@ -303,6 +318,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       icon: Headphones, 
       category: "service",
       badge: "New"
+    },
+    { 
+      id: "admin-guide", 
+      label: "Admin Guide", 
+      icon: Star, 
+      category: "help",
+      addedDate: new Date().toISOString()
     }
   ];
 

@@ -58,7 +58,8 @@ export const categories = [
   "content-settings",
   "system-settings",
   "technical",
-  "features"
+  "features",
+  "help"
 ];
 
 export const navigationSections = {
@@ -184,6 +185,20 @@ export const navigationSections = {
   ],
 
   "analytics-monitoring": [
+    {
+      key: "project-progress",
+      label: "Project Progress Monitor",
+      icon: TrendingUp,
+      description: "Track development progress, features, and project milestones",
+      badge: "New"
+    },
+    {
+      key: "algorithm-dashboard",
+      label: "Algorithm Dashboard",
+      icon: Activity,
+      description: "Monitor recommendation algorithms, search analytics, and user behavior patterns",
+      badge: "New"
+    },
     {
       key: "analytics",
       label: "Web Traffic Analytics",
@@ -316,6 +331,16 @@ export const navigationSections = {
       icon: HelpCircle,
       description: "Performance tips and user engagement guidelines"
     }
+  ],
+
+  help: [
+    {
+      key: "admin-guide",
+      label: "Admin Guide & Documentation",
+      icon: HelpCircle,
+      description: "Complete admin panel user guide and feature documentation",
+      badge: "New"
+    }
   ]
 };
 
@@ -332,5 +357,6 @@ export const sectionTitles = {
   "content-settings": "Content & Settings",
   "system-settings": "System Settings",
   technical: "Technical",
-  features: "Feature Enhancements"
+  features: "Feature Enhancements",
+  help: "Help & Documentation"
 };
