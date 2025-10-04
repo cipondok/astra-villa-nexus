@@ -306,21 +306,16 @@ const Index = () => {
       <div className="relative z-10 min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile"
       >
         
-        {/* Hero Intro Slider Section - Mobile optimized */}
+        {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
         <section className="relative w-full">
-          <HomeIntroSlider language={language} className="h-[50vh] md:h-[60vh] lg:h-[70vh] model-container-mobile" />
-        </section>
-
-        {/* Search Panel Section - Mobile-first responsive */}
-        <section className="relative w-full bg-white/95 dark:bg-black/95 backdrop-blur-sm border-t border-white/20 p-4 md:p-6 lg:p-8">
-          <div className="mx-auto text-center w-full max-w-6xl">
-            {/* Search Panel */}
-            <div className="animate-scale-in max-w-4xl mx-auto">
-              <div className="mb-6">
-                <h2 className="text-mobile-h2">
+          <HomeIntroSlider language={language} className="h-[70vh] md:h-[75vh] lg:h-[80vh] model-container-mobile">
+            {/* Search Panel Overlaid on Slider */}
+            <div className="bg-white/95 dark:bg-black/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6">
+              <div className="mb-4 text-center">
+                <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
                   {t.findYour}
                 </h2>
-                <p className="text-mobile-body text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   🔍 {t.searchPowered}
                 </p>
               </div>
@@ -335,7 +330,7 @@ const Index = () => {
                 resultsCount={hasSearched ? searchResults.length : undefined}
               />
             </div>
-          </div>
+          </HomeIntroSlider>
         </section>
 
         {/* Advanced Filters - Minimal Space */}

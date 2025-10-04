@@ -8,6 +8,7 @@ import slide3 from "@/assets/home/slide-3.webp";
 interface HomeIntroSliderProps {
   className?: string;
   language?: "en" | "id";
+  children?: React.ReactNode;
 }
 
 interface SlideItem {
@@ -82,7 +83,7 @@ const slidesEn: SlideItem[] = [
   },
 ];
 
-const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en' }) => {
+const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en', children }) => {
   const [index, setIndex] = useState(0);
   const [flash, setFlash] = useState(false);
 
@@ -186,6 +187,15 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
           )}
         </article>
       </div>
+
+      {/* Search Panel Overlay */}
+      {children && (
+        <div className="absolute bottom-8 md:bottom-12 left-0 right-0 z-20 px-4 md:px-6 animate-fade-in" style={{ animationDelay: '300ms' }}>
+          <div className="max-w-4xl mx-auto">
+            {children}
+          </div>
+        </div>
+      )}
 
       {/* Dots */}
       <div className="absolute inset-x-0 bottom-4 z-10 flex items-center justify-center gap-2">
