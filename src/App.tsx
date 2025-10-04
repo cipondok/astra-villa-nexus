@@ -48,6 +48,7 @@ import Analytics from '@/pages/Analytics';
 import AddProperty from '@/pages/AddProperty';
 import ErrorPage from '@/pages/ErrorPage';
 import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
+import ForeignInvestment from '@/pages/ForeignInvestment';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 
@@ -105,6 +106,7 @@ const AppContent = () => {
           <Route path="/calculators/loan" element={<HomeLoanCalculator />} />
           <Route path="/calculators/area" element={<AreaUnitConverter />} />
           <Route path="/areas" element={<AreaGuides />} />
+          <Route path="/foreign-investment" element={<ForeignInvestment />} />
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
