@@ -204,15 +204,20 @@ const Navigation = () => {
                 </div>
               ))}
 
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
-                onClick={() => navigate('/services')}
-              >
-                <Settings2 className="h-4 w-4 xl:mr-1.5" />
-                <span className="hidden xl:inline text-xs">{currentText.services}</span>
-              </Button>
+              <div className="relative group">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 w-10 p-0 hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 text-gray-900 dark:text-white/90"
+                  onClick={() => navigate('/services')}
+                >
+                  <Settings2 className="h-4 w-4" />
+                </Button>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
+                  {currentText.services}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
+                </div>
+              </div>
 
               {/* Add Property Button */}
               <Button 
