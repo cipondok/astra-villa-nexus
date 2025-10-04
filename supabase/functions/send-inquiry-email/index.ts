@@ -33,19 +33,29 @@ serve(async (req) => {
     const { data: smtpData } = await supabase
       .from('system_settings')
       .select('value')
-      .eq('category', 'email')
-      .eq('key', 'smtp_config')
+      .eq('category', 'smtp')
+      .eq('key', 'config')
       .single();
 
-    if (!smtpData?.value?.enabled) {
+    if (!smtpData?.value) {
+      console.log('SMTP settings not found');
+      return new Response(
+        JSON.stringify({ success: false, message: 'SMTP settings not configured' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const smtpConfig = smtpData.value;
+    
+    // Check if enabled (handle both formats)
+    const isEnabled = smtpConfig.isEnabled ?? smtpConfig.enabled ?? false;
+    if (!isEnabled) {
       console.log('SMTP not enabled, skipping email');
       return new Response(
         JSON.stringify({ success: true, message: 'Email sending disabled' }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    const smtpConfig = smtpData.value;
 
     // Get email template
     const { data: templateData } = await supabase
@@ -67,12 +77,15 @@ serve(async (req) => {
       .replace(/\{\{inquiry_type\}\}/g, inquiry_type)
       .replace(/\{\{message\}\}/g, message);
 
-    // Send email using SMTP
+    // Send email using SMTP (handle both key formats)
+    const fromName = smtpConfig.fromName || smtpConfig.from_name || 'ASTRA Villa';
+    const fromEmail = smtpConfig.fromEmail || smtpConfig.from_email || 'noreply@astravilla.com';
+    
     const client = new SMTPClient({
       connection: {
         hostname: smtpConfig.host,
         port: parseInt(smtpConfig.port),
-        tls: true,
+        tls: smtpConfig.encryption === 'tls',
         auth: {
           username: smtpConfig.username,
           password: smtpConfig.password,
@@ -81,7 +94,7 @@ serve(async (req) => {
     });
 
     await client.send({
-      from: `${smtpConfig.from_name} <${smtpConfig.from_email}>`,
+      from: `${fromName} <${fromEmail}>`,
       to: customer_email,
       subject: emailSubject,
       content: emailBody,

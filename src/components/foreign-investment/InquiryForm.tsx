@@ -39,15 +39,35 @@ export const InquiryForm = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("foreign_investment_inquiries").insert({
+      const { data: inquiry, error } = await supabase.from("foreign_investment_inquiries").insert({
         user_id: user.id,
         subject: formData.subject,
         message: formData.message,
         inquiry_type: formData.inquiry_type,
         status: "new",
-      });
+      }).select().single();
 
       if (error) throw error;
+
+      // Get user profile for email
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', user.id)
+        .single();
+
+      // Send confirmation email via SMTP
+      if (inquiry && profile?.email) {
+        await supabase.functions.invoke('send-inquiry-email', {
+          body: {
+            inquiry_id: inquiry.id,
+            customer_email: profile.email,
+            customer_name: profile.full_name || 'Valued Customer',
+            inquiry_type: formData.inquiry_type,
+            message: formData.message
+          }
+        });
+      }
 
       toast({
         title: "Inquiry Submitted",

@@ -32,16 +32,29 @@ export const ForeignInvestmentContactDialog = ({ open, onOpenChange }: ForeignIn
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("inquiries").insert({
+      const { data: inquiry, error } = await supabase.from("inquiries").insert({
         inquiry_type: "foreign_investment",
         subject: `Foreign Investment Inquiry - ${formData.investmentType || "General"}`,
         message: `Name: ${formData.name}\nNationality: ${formData.nationality}\nInvestment Type: ${formData.investmentType}\n\nMessage:\n${formData.message}`,
         contact_email: formData.email,
         contact_phone: formData.phone,
         status: "new"
-      });
+      }).select().single();
 
       if (error) throw error;
+
+      // Send confirmation email via SMTP
+      if (inquiry) {
+        await supabase.functions.invoke('send-inquiry-email', {
+          body: {
+            inquiry_id: inquiry.id,
+            customer_email: formData.email,
+            customer_name: formData.name,
+            inquiry_type: "foreign_investment",
+            message: formData.message
+          }
+        });
+      }
 
       toast({
         title: language === "id" ? "Berhasil!" : "Success!",
