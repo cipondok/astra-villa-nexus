@@ -209,20 +209,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             setIsMinimized(false);
           }}
         >
-          <div style={{ position: 'relative', width: isMobile ? '56px' : '64px', height: isMobile ? '56px' : '64px' }}>
-            <AIChatTrigger onOpen={() => setIsOpen(true)} />
-            <div 
-              style={{
-                position: 'absolute',
-                inset: '-8px',
-                background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4))',
-                borderRadius: '50%',
-                animation: 'pulse 2s infinite',
-                opacity: 0.9,
-                pointerEvents: 'none'
-              }}
-            />
-          </div>
+          <AIChatTrigger onOpen={() => setIsOpen(true)} />
         </div>
       )}
 
