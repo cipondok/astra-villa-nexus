@@ -11,6 +11,7 @@ import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
+import PropertyMapView from "@/components/search/PropertyMapView";
 import PropertyGridView from "@/components/search/PropertyGridView";
 import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
@@ -431,6 +432,13 @@ const Index = () => {
                       onSave={(property) => console.log('Save property:', property.id)}
                       onShare={(property) => console.log('Share property:', property.id)}
                       onContact={(property) => console.log('Contact for property:', property.id)}
+                    />
+                  )}
+
+                  {viewMode === 'map' && (
+                    <PropertyMapView
+                      properties={searchResults}
+                      onPropertyClick={handlePropertyClick}
                     />
                   )}
                 </div>
