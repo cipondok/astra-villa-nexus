@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, AlertCircle, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { formatIDR, parseIDR } from "@/utils/currency";
 
 interface EligibilityResult {
   overallScore: number;
@@ -413,15 +414,18 @@ export const EligibilityChecker = () => {
             </h3>
 
             <div className="space-y-2">
-              <Label>{language === "id" ? "Pendapatan Bulanan (IDR)" : "Monthly Income (IDR)"}</Label>
+              <Label>{language === "id" ? "Pendapatan Bulanan" : "Monthly Income"}</Label>
               <Input
-                type="number"
-                value={formData.monthlyIncome}
-                onChange={(e) => setFormData({ ...formData, monthlyIncome: e.target.value })}
-                placeholder="50000000"
+                type="text"
+                value={formData.monthlyIncome ? formatIDR(parseFloat(formData.monthlyIncome)) : ""}
+                onChange={(e) => {
+                  const numericValue = parseIDR(e.target.value).toString();
+                  setFormData({ ...formData, monthlyIncome: numericValue });
+                }}
+                placeholder="Rp 50.000.000"
               />
               <p className="text-xs text-muted-foreground">
-                {language === "id" ? "Minimal IDR 30 juta/bulan untuk KPR" : "Minimum IDR 30 million/month for mortgage"}
+                {language === "id" ? "Minimal Rp 30.000.000/bulan untuk KPR" : "Minimum Rp 30,000,000/month for mortgage"}
               </p>
             </div>
 
@@ -451,12 +455,15 @@ export const EligibilityChecker = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>{language === "id" ? "Total Tabungan/Dana Tersedia (IDR)" : "Total Savings/Available Funds (IDR)"}</Label>
+              <Label>{language === "id" ? "Total Tabungan/Dana Tersedia" : "Total Savings/Available Funds"}</Label>
               <Input
-                type="number"
-                value={formData.savings}
-                onChange={(e) => setFormData({ ...formData, savings: e.target.value })}
-                placeholder="2000000000"
+                type="text"
+                value={formData.savings ? formatIDR(parseFloat(formData.savings)) : ""}
+                onChange={(e) => {
+                  const numericValue = parseIDR(e.target.value).toString();
+                  setFormData({ ...formData, savings: numericValue });
+                }}
+                placeholder="Rp 2.000.000.000"
               />
             </div>
           </div>
@@ -485,17 +492,20 @@ export const EligibilityChecker = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>{language === "id" ? "Nilai Investasi yang Direncanakan (IDR)" : "Planned Investment Amount (IDR)"}</Label>
+              <Label>{language === "id" ? "Nilai Investasi yang Direncanakan" : "Planned Investment Amount"}</Label>
               <Input
-                type="number"
-                value={formData.investmentAmount}
-                onChange={(e) => setFormData({ ...formData, investmentAmount: e.target.value })}
-                placeholder="3000000000"
+                type="text"
+                value={formData.investmentAmount ? formatIDR(parseFloat(formData.investmentAmount)) : ""}
+                onChange={(e) => {
+                  const numericValue = parseIDR(e.target.value).toString();
+                  setFormData({ ...formData, investmentAmount: numericValue });
+                }}
+                placeholder="Rp 3.000.000.000"
               />
               <p className="text-xs text-muted-foreground">
                 {language === "id" 
-                  ? "Minimal IDR 3 miliar untuk apartemen, IDR 5 miliar untuk rumah"
-                  : "Minimum IDR 3 billion for apartments, IDR 5 billion for houses"}
+                  ? "Minimal Rp 3.000.000.000 untuk apartemen, Rp 5.000.000.000 untuk rumah"
+                  : "Minimum Rp 3,000,000,000 for apartments, Rp 5,000,000,000 for houses"}
               </p>
             </div>
 
