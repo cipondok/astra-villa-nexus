@@ -237,18 +237,14 @@ const Navigation = () => {
                     <List className="h-4 w-4 mr-2" />
                     Browse Properties
                   </DropdownMenuItem>
-                  {user && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={() => navigate('/add-property')}
-                        className="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Property
-                      </DropdownMenuItem>
-                    </>
-                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => navigate('/add-property')}
+                    className="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Property
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -438,12 +434,10 @@ const Navigation = () => {
                     <List className="h-4 w-4 mr-2" />
                     Browse Properties
                   </Button>
-                  {user && (
-                    <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 pl-6" onClick={() => { navigate('/add-property'); toggleMenu(); }}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Property
-                    </Button>
-                  )}
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 pl-6" onClick={() => { navigate('/add-property'); toggleMenu(); }}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Property
+                  </Button>
                 </div>
 
                 {/* Investment Section */}
