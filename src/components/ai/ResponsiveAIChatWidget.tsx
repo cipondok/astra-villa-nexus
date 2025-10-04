@@ -193,17 +193,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Chat trigger - Positioned inline on desktop, fixed on mobile */}
+      {/* Chat trigger - Fixed position on right side */}
       {!isOpen && (
         <div 
-          style={isMobile ? { 
+          style={{ 
             position: 'fixed',
             top: '50%',
-            right: '8px',
+            right: isMobile ? '8px' : '20px',
             transform: 'translateY(-50%)',
-            zIndex: 999999
-          } : {
-            position: 'relative',
             zIndex: 999999
           }}
           onClick={() => {
@@ -229,23 +226,16 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       )}
 
-      {/* Chat window - Positioned inline on desktop, fixed on mobile */}
+      {/* Chat window - Fixed position on right side */}
       {isOpen && (
         <div 
-          style={isMobile ? {
+          style={{
             position: 'fixed',
             top: '50%',
-            right: '8px',
+            right: isMobile ? '8px' : '20px',
             transform: 'translateY(-50%)',
-            width: 'calc(100vw - 16px)',
-            height: isMinimized ? 'auto' : 'calc(100vh - 60px)',
-            maxHeight: isMinimized ? 'auto' : '85vh',
-            zIndex: 999999,
-            transition: 'all 0.3s ease-in-out'
-          } : {
-            position: 'relative',
-            width: '100%',
-            height: isMinimized ? 'auto' : '680px',
+            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 16px)' : '420px',
+            height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 60px)' : '680px',
             maxHeight: isMinimized ? 'auto' : '85vh',
             zIndex: 999999,
             transition: 'all 0.3s ease-in-out'
