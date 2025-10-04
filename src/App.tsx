@@ -10,6 +10,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import AppInitializer from '@/components/AppInitializer';
 import Navigation from '@/components/Navigation';
@@ -143,6 +144,7 @@ function App() {
                         <AppContent />
                       </AppInitializer>
                       <Toaster />
+                      <Sonner />
                     </PropertyComparisonProvider>
                   </NotificationProvider>
                 </AuthProvider>
