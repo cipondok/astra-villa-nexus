@@ -7,6 +7,7 @@ import slide3 from "@/assets/home/slide-3.webp";
 
 interface HomeIntroSliderProps {
   className?: string;
+  language?: "en" | "id";
 }
 
 interface SlideItem {
@@ -17,7 +18,7 @@ interface SlideItem {
   alt: string;
 }
 
-const slides: SlideItem[] = [
+const slidesId: SlideItem[] = [
   {
     title: "Layanan 3D Virtual Tour Properti Pertama di Indonesia",
     subtitle: "Perkenalkan ASTRA — platform all‑in‑one untuk pemasaran properti modern.",
@@ -47,12 +48,50 @@ const slides: SlideItem[] = [
     bg: slide3,
     alt: "Pemandangan balkon apartemen kota, cocok sebagai latar tur 3D",
   },
+]; 
+
+const slidesEn: SlideItem[] = [
+  {
+    title: "Indonesia’s First 3D Virtual Property Tour Service",
+    subtitle: "Meet ASTRA — an all-in-one platform for modern property marketing.",
+    cta: [
+      { label: "View 3D Demo", href: "/3d-showcase" },
+      { label: "Services & Pricing", href: "/services" },
+    ],
+    bg: slide1,
+    alt: "Modern villa hero background for Indonesia 3D virtual property tours",
+  },
+  {
+    title: "All‑in‑One: Design, 3D Render, Virtual Staging, Hosting",
+    subtitle: "Pro team, fast process, premium results for sales and rentals.",
+    cta: [
+      { label: "Explore Features", href: "/3d-showcase" },
+      { label: "Contact Team", href: "/services" },
+    ],
+    bg: slide2,
+    alt: "Modern minimalist interior for ASTRA design and virtual staging services",
+  },
+  {
+    title: "Boost Listing Conversions with Interactive 3D",
+    subtitle: "Show floor plans, dimensions, and immersive tours to build buyer confidence faster.",
+    cta: [
+      { label: "Get Started", href: "/services" },
+    ],
+    bg: slide3,
+    alt: "City apartment balcony view, perfect as a 3D tour backdrop",
+  },
 ];
 
-const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
+const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en' }) => {
   const [index, setIndex] = useState(0);
   const [flash, setFlash] = useState(false);
 
+  const copy = {
+    en: { sectionAria: "Intro 3D Virtual Tour", prev: "Prev", next: "Next" },
+    id: { sectionAria: "Intro Tur Virtual 3D", prev: "Sebelumnya", next: "Berikutnya" }
+  } as const;
+  const t = copy[language];
+  const slides = language === 'id' ? slidesId : slidesEn;
   const total = slides.length;
   const next = () => setIndex((i) => (i + 1) % total);
   const prev = () => setIndex((i) => (i - 1 + total) % total);
@@ -78,7 +117,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
         "relative w-full overflow-hidden bg-background",
         className
       )}
-      aria-label="Intro 3D Virtual Tour"
+      aria-label={t.sectionAria}
     >
       {/* Background image layer with crossfade */}
       <div className="absolute inset-0 z-0">

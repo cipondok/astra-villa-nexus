@@ -48,10 +48,12 @@ import Analytics from '@/pages/Analytics';
 import AddProperty from '@/pages/AddProperty';
 import ErrorPage from '@/pages/ErrorPage';
 import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 
 const AppContent = () => {
   const location = useLocation();
+  const { language } = useLanguage();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
 
   return (
@@ -107,7 +109,7 @@ const AppContent = () => {
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
-      {!isAdminRoute && <ProfessionalFooter language="en" />}
+      {!isAdminRoute && <ProfessionalFooter language={language} />}
     </div>
   );
 };

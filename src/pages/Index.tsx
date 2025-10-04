@@ -308,7 +308,7 @@ const Index = () => {
         
         {/* Hero Intro Slider Section - Mobile optimized */}
         <section className="relative w-full">
-          <HomeIntroSlider className="h-[50vh] md:h-[60vh] lg:h-[70vh] model-container-mobile" />
+          <HomeIntroSlider language={language} className="h-[50vh] md:h-[60vh] lg:h-[70vh] model-container-mobile" />
         </section>
 
         {/* Search Panel Section - Mobile-first responsive */}
