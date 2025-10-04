@@ -24,11 +24,19 @@ const ModernEnhancedAdminDashboard = () => {
   const { theme, setTheme } = useTheme();
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const handleLogout = async () => {
     await signOut();
     navigate('/');
   };
+
+  // Mock notifications - you can replace this with real data from your admin_alerts table
+  const notifications = [
+    { id: 1, title: "New user registration", time: "5 mins ago", type: "info" },
+    { id: 2, title: "System update available", time: "1 hour ago", type: "warning" },
+    { id: 3, title: "Database backup completed", time: "2 hours ago", type: "success" },
+  ];
 
   return (
     <SidebarProvider defaultOpen>
@@ -58,16 +66,53 @@ const ModernEnhancedAdminDashboard = () => {
               <div className="flex items-center gap-3">
                 <AdminCommandPalette onSectionChange={setActiveSection} />
                 
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative"
-                  title="Notifications"
-                >
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full animate-pulse" />
-                </Button>
-
+                {/* Notifications Dropdown */}
+                <DropdownMenu open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="relative"
+                      title="Notifications"
+                    >
+                      <Bell className="h-5 w-5" />
+                      <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full animate-pulse" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80">
+                    <DropdownMenuLabel>
+                      <div className="flex items-center justify-between">
+                        <span>Notifications</span>
+                        <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setActiveSection('admin-alerts')}>
+                          View All
+                        </Button>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <DropdownMenuItem key={notification.id} className="flex flex-col items-start py-3">
+                          <div className="flex items-start justify-between w-full">
+                            <p className="text-sm font-medium">{notification.title}</p>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${
+                              notification.type === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                              notification.type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                            }`}>
+                              {notification.type}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                        </DropdownMenuItem>
+                      ))
+                    ) : (
+                      <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                        No new notifications
+                      </div>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
                 <Button
                   variant="ghost"
                   size="icon"
@@ -80,6 +125,8 @@ const ModernEnhancedAdminDashboard = () => {
                     <Moon className="h-5 w-5" />
                   )}
                 </Button>
+
+                {/* Profile Dropdown */}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
