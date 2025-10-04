@@ -387,13 +387,8 @@ const Index = () => {
         )}
 
         {/* Property Display Section - Space Optimized */}
-        <div className={cn(
-          isMobile ? "px-2 py-2 space-y-2" : "px-4 py-4 space-y-4"
-        )}>
-          <div className={cn(
-            "mx-auto",
-            isMobile ? "max-w-sm space-y-2" : "max-w-[1800px] space-y-4"
-          )}>
+        <div className="px-4 py-4 space-y-4">
+          <div className="w-full mx-auto space-y-4">
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">
                 <div className="p-6">
