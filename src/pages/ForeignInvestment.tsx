@@ -6,25 +6,43 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones, MessageSquare, BookOpen, ListChecks } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { ForeignInvestmentContactDialog } from "@/components/ForeignInvestmentContactDialog";
 import { EligibilityChecker } from "@/components/EligibilityChecker";
 import { ForeignInvestmentSteps } from "@/components/ForeignInvestmentSteps";
 import { ForeignInvestmentFAQ } from "@/components/ForeignInvestmentFAQ";
 import { ForeignInvestmentChat } from "@/components/ForeignInvestmentChat";
+import { UserInvestmentDashboard } from "@/components/foreign-investment/UserInvestmentDashboard";
 
 const ForeignInvestment = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  
+  // If user is logged in, show the dashboard
+  if (user) {
+    return <UserInvestmentDashboard />;
+  }
+  
+  // If not logged in, show the public information page
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
         {/* Friendly Hero Header */}
         <div className="text-center space-y-6 animate-fade-in">
-          <div className="inline-block">
+          <div className="inline-flex justify-center items-center gap-4">
             <Badge className="mb-4 px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
               <Globe className="h-4 w-4 inline mr-2" />
               Your Journey Starts Here
             </Badge>
+            <Button 
+              onClick={() => navigate('/auth')}
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
+            >
+              Sign In to Get Started
+            </Button>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
             Welcome to Indonesian Property Investment

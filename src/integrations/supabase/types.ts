@@ -2009,6 +2009,87 @@ export type Database = {
         }
         Relationships: []
       }
+      foreign_investment_inquiries: {
+        Row: {
+          admin_response: string | null
+          created_at: string | null
+          id: string
+          inquiry_type: string
+          message: string
+          responded_at: string | null
+          responded_by: string | null
+          status: string
+          subject: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          created_at?: string | null
+          id?: string
+          inquiry_type: string
+          message: string
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string
+          subject: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          created_at?: string | null
+          id?: string
+          inquiry_type?: string
+          message?: string
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      foreign_investment_orders: {
+        Row: {
+          created_at: string | null
+          id: string
+          investment_amount: number
+          investment_timeline: string | null
+          location_preference: string | null
+          notes: string | null
+          property_type: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          investment_amount: number
+          investment_timeline?: string | null
+          location_preference?: string | null
+          notes?: string | null
+          property_type: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          investment_amount?: number
+          investment_timeline?: string | null
+          location_preference?: string | null
+          notes?: string | null
+          property_type?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       fraud_patterns: {
         Row: {
           auto_reject: boolean | null
@@ -5059,6 +5140,42 @@ export type Database = {
           saved_value?: Json
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_ideas: {
+        Row: {
+          admin_response: string | null
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          status: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
