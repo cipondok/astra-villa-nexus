@@ -35,7 +35,8 @@ import {
   Download,
   ArrowLeftRight,
   Search,
-  HelpCircle
+  HelpCircle,
+  Bell
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -124,6 +125,12 @@ export const navigationSections = {
       label: "Property Survey Booking",
       icon: Calendar,
       description: "Manage property viewing and survey appointments"
+    },
+    {
+      key: "notifications-center",
+      label: "Notifications Center",
+      icon: Bell,
+      description: "View and manage all system notifications and alerts"
     }
   ],
 

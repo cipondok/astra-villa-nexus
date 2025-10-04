@@ -46,6 +46,7 @@ import { DocumentOCR } from "./DocumentOCR";
 import ErrorLogsTable from "./ErrorLogsTable";
 import UserExperienceTips from "./UserExperienceTips";
 import { AlgorithmDashboard } from "./AlgorithmDashboard";
+import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -148,6 +149,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <UserExperienceTips />;
       case "algorithm-dashboard":
         return <AlgorithmDashboard />;
+      case "notifications-center":
+        return <AdminNotificationsCenter />;
       default:
         return <AdminOverview />;
     }
