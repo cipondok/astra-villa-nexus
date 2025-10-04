@@ -1,15 +1,16 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, FileText, Shield, DollarSign, Home, Key, AlertCircle, CheckCircle2, XCircle, Globe, Briefcase, Headphones } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ForeignInvestmentContactDialog } from "@/components/ForeignInvestmentContactDialog";
 
 const ForeignInvestment = () => {
-  const navigate = useNavigate();
   const { language } = useLanguage();
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -637,7 +638,7 @@ const ForeignInvestment = () => {
           <Button 
             size="lg" 
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            onClick={() => navigate('/dashboard/customer-service')}
+            onClick={() => setContactDialogOpen(true)}
           >
             <Headphones className="h-5 w-5 mr-2" />
             {language === "id" ? "Hubungi Spesialis Kami" : "Contact Our Specialists"}
@@ -649,6 +650,11 @@ const ForeignInvestment = () => {
           </p>
         </div>
       </div>
+
+      <ForeignInvestmentContactDialog 
+        open={contactDialogOpen} 
+        onOpenChange={setContactDialogOpen} 
+      />
     </div>
   );
 };
