@@ -42,16 +42,32 @@ export default function EmailSettings() {
         .maybeSingle();
       
       if (error) throw error;
-      const value = (data?.value as unknown as SMTPSettings) || null;
-      return value ?? {
-        host: "",
-        port: "",
-        username: "",
-        password: "",
-        from_email: "",
-        from_name: "",
-        encryption: "ssl",
-        enabled: false,
+      
+      // Handle both old and new data formats
+      const dbValue = data?.value as any;
+      if (!dbValue) {
+        return {
+          host: "",
+          port: "",
+          username: "",
+          password: "",
+          from_email: "",
+          from_name: "",
+          encryption: "ssl" as const,
+          enabled: false,
+        };
+      }
+      
+      // Normalize the data format
+      return {
+        host: dbValue.host || "",
+        port: String(dbValue.port || ""),
+        username: dbValue.username || "",
+        password: dbValue.password || "",
+        from_email: dbValue.fromEmail || dbValue.from_email || "",
+        from_name: dbValue.fromName || dbValue.from_name || "",
+        encryption: (dbValue.encryption || "ssl") as "ssl" | "tls" | "none",
+        enabled: dbValue.isEnabled ?? dbValue.enabled ?? false,
       };
     },
   });
@@ -72,24 +88,42 @@ export default function EmailSettings() {
 
   // Update SMTP settings
   const updateSMTP = useMutation({
-    mutationFn: async (settings: any) => {
+    mutationFn: async (settings: SMTPSettings) => {
+      // Convert to database format with consistent keys
+      const dbFormat = {
+        host: settings.host,
+        port: settings.port,
+        username: settings.username,
+        password: settings.password,
+        fromEmail: settings.from_email,
+        fromName: settings.from_name,
+        encryption: settings.encryption,
+        isEnabled: settings.enabled,
+      };
+
       const { error } = await supabase
         .from("system_settings")
         .upsert({
           category: "smtp",
           key: "config",
-          value: settings,
+          value: dbFormat,
           is_public: false,
+        }, {
+          onConflict: "category,key"
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error("SMTP update error:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["email-smtp-settings"] });
-      toast.success("SMTP settings updated successfully");
+      toast.success("SMTP settings saved successfully!");
     },
-    onError: () => {
-      toast.error("Failed to update SMTP settings");
+    onError: (error: any) => {
+      console.error("Failed to update SMTP settings:", error);
+      toast.error(`Failed to save settings: ${error.message || 'Unknown error'}`);
     },
   });
 
