@@ -199,7 +199,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           style={{ 
             position: 'fixed',
             top: '50%',
-            right: isMobile ? '0px' : '0px',
+            right: isMobile ? '8px' : '20px',
             transform: 'translateY(-50%)',
             zIndex: 999999
           }}
@@ -232,7 +232,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           style={{
             position: 'fixed',
             top: '50%',
-            right: isMobile ? '8px' : '16px',
+            right: isMobile ? '8px' : '20px',
             transform: isMinimized ? 'translateY(-50%)' : 'translateY(-50%)',
             width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 16px)' : '420px',
             height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 60px)' : '680px',
