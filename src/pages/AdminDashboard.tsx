@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import EnhancedAdminDashboard from '@/components/admin/EnhancedAdminDashboard';
+import ModernEnhancedAdminDashboard from '@/components/admin/ModernEnhancedAdminDashboard';
 import AlertMonitoringProvider from '@/components/admin/AlertMonitoringProvider';
 import LoadingPage from '@/components/LoadingPage';
 import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
 
   return (
     <AlertMonitoringProvider>
-      <EnhancedAdminDashboard />
+      <ModernEnhancedAdminDashboard />
     </AlertMonitoringProvider>
   );
 };
