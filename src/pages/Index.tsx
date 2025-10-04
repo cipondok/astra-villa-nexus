@@ -319,9 +319,9 @@ const Index = () => {
         <section className="relative w-full">
           <HomeIntroSlider language={language} className="h-[70vh] md:h-[75vh] lg:h-[80vh] model-container-mobile">
             {/* Container for Search Panel and Chatbot */}
-            <div className="flex items-start justify-center gap-4 w-full px-4">
-              {/* Search Panel */}
-              <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full md:w-[500px] lg:w-[600px]">
+            <div className="flex items-start justify-center gap-6 w-full px-4 max-w-[1400px] mx-auto">
+              {/* Search Panel - Takes most space */}
+              <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 flex-1">
                 <div className="mb-4 text-center">
                   <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
                     {t.findYour}
@@ -342,9 +342,9 @@ const Index = () => {
                 />
               </div>
               
-              {/* AI Chat Widget - Right side of search panel (hidden on mobile) */}
-              {!isMobile && (
-                <div className="w-[420px]">
+              {/* AI Chat Widget - Right side of search panel (hidden on mobile and tablet) */}
+              {!isMobile && !isTablet && (
+                <div className="w-[420px] flex-shrink-0">
                   <ResponsiveAIChatWidget />
                 </div>
               )}
@@ -533,8 +533,8 @@ const Index = () => {
           searchQuery={quickSearch}
         />
         
-        {/* Customer AI Chat Widget - Mobile only (desktop version is in slider) */}
-        {isMobile && <ResponsiveAIChatWidget />}
+        {/* Customer AI Chat Widget - Mobile and Tablet only (desktop version is in slider) */}
+        {(isMobile || isTablet) && <ResponsiveAIChatWidget />}
       </div>
     </div>
   );
