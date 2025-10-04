@@ -1,7 +1,13 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins, ChevronDown, TrendingUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -209,15 +215,29 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
-                onClick={() => navigate('/foreign-investment')}
-              >
-                <Building className="h-4 w-4 mr-2" />
-                Foreign Investment
-              </Button>
+              {/* Investment Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Investment
+                    <ChevronDown className="h-3 w-3 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl">
+                  <DropdownMenuItem 
+                    onClick={() => navigate('/foreign-investment')}
+                    className="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <Building className="h-4 w-4 mr-2" />
+                    Foreign Investment
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
                {/* ASTRA Tokens - show for authenticated users */}
                {user && (
@@ -372,10 +392,16 @@ const Navigation = () => {
                   {currentText.services}
                 </Button>
 
-                <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/foreign-investment'); toggleMenu(); }}>
-                  <Building className="h-4 w-4 mr-2" />
-                  Foreign Investment
-                </Button>
+                {/* Investment Section */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Investment
+                  </div>
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 pl-6" onClick={() => { navigate('/foreign-investment'); toggleMenu(); }}>
+                    <Building className="h-4 w-4 mr-2" />
+                    Foreign Investment
+                  </Button>
+                </div>
 
                 {/* ASTRA Tokens - show for authenticated users */}
                 {user && (
