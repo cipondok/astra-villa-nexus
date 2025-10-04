@@ -47,6 +47,7 @@ import ErrorLogsTable from "./ErrorLogsTable";
 import UserExperienceTips from "./UserExperienceTips";
 import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
+import ProjectProgressReport from "./ProjectProgressReport";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -60,6 +61,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AdminOverview onSectionChange={onSectionChange} />;
       case "diagnostic":
         return <ProjectDiagnosticSystem />;
+      case "project-progress":
+        return <ProjectProgressReport />;
       case "user-management":
         return <EnhancedUserManagement />;
       case "property-management-hub":
