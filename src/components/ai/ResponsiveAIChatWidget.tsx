@@ -193,16 +193,17 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Chat trigger - Sticky position at right side */}
+      {/* Chat trigger - Positioned inline on desktop, fixed on mobile */}
       {!isOpen && (
         <div 
-          style={{ 
-            position: 'sticky',
-            top: isMobile ? '20px' : '100px',
-            right: '0',
-            float: 'right',
-            marginRight: isMobile ? '8px' : '20px',
-            marginTop: isMobile ? '10px' : '20px',
+          style={isMobile ? { 
+            position: 'fixed',
+            top: '50%',
+            right: '8px',
+            transform: 'translateY(-50%)',
+            zIndex: 999999
+          } : {
+            position: 'relative',
             zIndex: 999999
           }}
           onClick={() => {
@@ -228,18 +229,23 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       )}
 
-      {/* Chat window - Sticky position at right side */}
+      {/* Chat window - Positioned inline on desktop, fixed on mobile */}
       {isOpen && (
         <div 
-          style={{
-            position: 'sticky',
-            top: isMobile ? '20px' : '100px',
-            right: '0',
-            float: 'right',
-            marginRight: isMobile ? '8px' : '20px',
-            marginTop: isMobile ? '10px' : '20px',
-            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 16px)' : '420px',
-            height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 120px)' : '680px',
+          style={isMobile ? {
+            position: 'fixed',
+            top: '50%',
+            right: '8px',
+            transform: 'translateY(-50%)',
+            width: 'calc(100vw - 16px)',
+            height: isMinimized ? 'auto' : 'calc(100vh - 60px)',
+            maxHeight: isMinimized ? 'auto' : '85vh',
+            zIndex: 999999,
+            transition: 'all 0.3s ease-in-out'
+          } : {
+            position: 'relative',
+            width: '100%',
+            height: isMinimized ? 'auto' : '680px',
             maxHeight: isMinimized ? 'auto' : '85vh',
             zIndex: 999999,
             transition: 'all 0.3s ease-in-out'

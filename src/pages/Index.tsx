@@ -318,26 +318,36 @@ const Index = () => {
         {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
         <section className="relative w-full">
           <HomeIntroSlider language={language} className="h-[70vh] md:h-[75vh] lg:h-[80vh] model-container-mobile">
-            {/* Search Panel Overlaid on Slider - Centered */}
-            <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 w-full">
-              <div className="mb-4 text-center">
-                <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
-                  {t.findYour}
-                </h2>
-                <p className="text-xs md:text-sm text-muted-foreground">
-                  🔍 {t.searchPowered}
-                </p>
+            {/* Container for Search Panel and Chatbot */}
+            <div className="flex items-start justify-center gap-4 w-full px-4">
+              {/* Search Panel */}
+              <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-4 md:p-6 flex-1 max-w-3xl">
+                <div className="mb-4 text-center">
+                  <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2">
+                    {t.findYour}
+                  </h2>
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    🔍 {t.searchPowered}
+                  </p>
+                </div>
+                
+                <IPhoneSearchPanel
+                  language={language}
+                  onSearch={(searchData) => {
+                    setQuickSearch(searchData.searchQuery || "");
+                    handleQuickSearch(searchData);
+                  }}
+                  onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                  resultsCount={hasSearched ? searchResults.length : undefined}
+                />
               </div>
               
-              <IPhoneSearchPanel
-                language={language}
-                onSearch={(searchData) => {
-                  setQuickSearch(searchData.searchQuery || "");
-                  handleQuickSearch(searchData);
-                }}
-                onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                resultsCount={hasSearched ? searchResults.length : undefined}
-              />
+              {/* AI Chat Widget - Right side of search panel (hidden on mobile) */}
+              {!isMobile && (
+                <div className="w-[420px]">
+                  <ResponsiveAIChatWidget />
+                </div>
+              )}
             </div>
           </HomeIntroSlider>
         </section>
@@ -523,8 +533,8 @@ const Index = () => {
           searchQuery={quickSearch}
         />
         
-        {/* Customer AI Chat Widget - Positioned Right Center */}
-        <ResponsiveAIChatWidget />
+        {/* Customer AI Chat Widget - Mobile only (desktop version is in slider) */}
+        {isMobile && <ResponsiveAIChatWidget />}
       </div>
     </div>
   );
