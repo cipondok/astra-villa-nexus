@@ -158,23 +158,26 @@ export const ForeignInvestmentFAQ = () => {
   })).filter(cat => cat.faqs.length > 0);
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            Search Knowledge Base
-          </CardTitle>
-          <CardDescription>Find answers to common questions about foreign property investment</CardDescription>
+    <div className="space-y-6 animate-fade-in">
+      <Card className="border-border/50 shadow-xl bg-gradient-to-br from-card to-primary/5">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl -z-10" />
+        <CardHeader className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+              <Search className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <CardTitle className="text-2xl">🔍 Knowledge Base</CardTitle>
+          </div>
+          <CardDescription className="text-base">Find instant answers to your investment questions</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search topics, questions, regulations..."
+              placeholder="Type your question here... 💭"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-12 h-12 text-base border-primary/20 focus:border-primary/50 shadow-sm"
             />
           </div>
         </CardContent>
@@ -184,13 +187,15 @@ export const ForeignInvestmentFAQ = () => {
         {filteredFAQs.map((category, idx) => {
           const Icon = category.icon;
           return (
-            <Card key={idx}>
+            <Card key={idx} className="border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Icon className={`h-5 w-5 ${category.color}`} />
-                  {category.category}
-                  <Badge variant="secondary" className="ml-auto">{category.faqs.length} topics</Badge>
-                </CardTitle>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10">
+                    <Icon className={`h-6 w-6 ${category.color}`} />
+                  </div>
+                  <CardTitle className="text-xl">{category.category}</CardTitle>
+                  <Badge className="ml-auto bg-gradient-to-r from-primary to-accent text-primary-foreground">{category.faqs.length} topics</Badge>
+                </div>
               </CardHeader>
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
@@ -211,11 +216,14 @@ export const ForeignInvestmentFAQ = () => {
         })}
 
         {filteredFAQs.length === 0 && (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No results found for "{searchQuery}"</p>
-              <p className="text-sm text-muted-foreground mt-2">Try using the chat assistant for more specific questions</p>
+          <Card className="border-border/50 shadow-lg">
+            <CardContent className="py-16 text-center">
+              <div className="inline-block p-4 rounded-full bg-muted mb-4">
+                <Search className="h-12 w-12 text-muted-foreground" />
+              </div>
+              <p className="text-lg font-semibold mb-2">No results found for "{searchQuery}"</p>
+              <p className="text-muted-foreground mb-4">Try different keywords or use our AI chat for personalized help</p>
+              <Badge variant="secondary" className="text-sm">💬 Chat available in the "Ask AI" tab</Badge>
             </CardContent>
           </Card>
         )}

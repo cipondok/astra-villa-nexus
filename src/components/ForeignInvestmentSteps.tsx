@@ -1,20 +1,21 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Clock, FileText, Building2, Shield, DollarSign, Home } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2, FileText, Home, Shield, ListChecks, AlertCircle, Clock, DollarSign, Building2 } from "lucide-react";
 
 export const ForeignInvestmentSteps = () => {
   const steps = [
     {
       number: 1,
-      title: "Eligibility Assessment",
-      description: "Verify your eligibility for foreign property investment",
-      icon: CheckCircle2,
-      duration: "1-2 days",
+      title: "Research & Planning 🎯",
+      description: "Start your journey with proper planning",
+      icon: FileText,
+      duration: "1-2 weeks",
       tasks: [
-        "Check nationality eligibility (green, yellow, or red list)",
-        "Verify minimum investment requirements",
-        "Assess financial capability",
-        "Review residence permit requirements"
+        "Consult with property lawyer",
+        "Review investment goals",
+        "Check eligibility requirements",
+        "Understand local regulations"
       ]
     },
     {
@@ -110,64 +111,57 @@ export const ForeignInvestmentSteps = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Step-by-Step Investment Process</h2>
-        <p className="text-muted-foreground">Complete guide from eligibility to ownership</p>
-        <Badge variant="outline" className="mt-2">Estimated Total Timeline: 2-4 months</Badge>
-      </div>
+    <div className="space-y-6 animate-fade-in">
+      <Card className="border-border/50 shadow-xl bg-gradient-to-br from-card to-primary/5">
+        <CardHeader className="text-center space-y-3">
+          <div className="inline-block mx-auto p-3 rounded-2xl bg-gradient-to-br from-primary to-accent mb-2 shadow-lg">
+            <ListChecks className="h-8 w-8 text-primary-foreground" />
+          </div>
+          <CardTitle className="text-3xl">Your Investment Journey 🗺️</CardTitle>
+          <CardDescription className="text-lg">Follow these steps for a successful investment!</CardDescription>
+          <Badge className="mx-auto bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-2">
+            ⏱️ Timeline: 2-4 Months
+          </Badge>
+        </CardHeader>
+      </Card>
 
-      <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border hidden md:block" />
-
-        <div className="space-y-8">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.number} className="relative">
-                {/* Step number badge */}
-                <div className="absolute left-0 top-0 z-10 hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground font-bold text-lg">
-                  {step.number}
-                </div>
-
-                <Card className={`md:ml-24 ${index % 2 === 0 ? 'md:mr-0' : 'md:mr-0'}`}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2 md:hidden">
-                          <Badge variant="default" className="w-8 h-8 rounded-full flex items-center justify-center p-0">
-                            {step.number}
-                          </Badge>
-                          <Icon className="h-5 w-5 text-primary" />
-                        </div>
-                        <CardTitle className="flex items-center gap-2">
-                          <Icon className="h-5 w-5 text-primary hidden md:block" />
-                          {step.title}
-                        </CardTitle>
-                        <CardDescription>{step.description}</CardDescription>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
-                        <Clock className="h-4 w-4" />
-                        <span className="whitespace-nowrap">{step.duration}</span>
-                      </div>
+      <div className="space-y-4">
+        {steps.map((step, index) => {
+          const Icon = step.icon;
+          const isEven = index % 2 === 0;
+          return (
+            <Card key={step.number} className={`border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br ${isEven ? 'from-primary/5' : 'from-accent/5'} to-transparent`}>
+              <CardHeader>
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${isEven ? 'from-primary to-accent' : 'from-accent to-primary'} flex items-center justify-center text-primary-foreground font-bold text-xl shadow-lg flex-shrink-0`}>
+                    {step.number}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        <Icon className="h-5 w-5" />
+                        {step.title}
+                      </CardTitle>
+                      <Badge className={`${isEven ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'} border-0`}>
+                        <Clock className="h-3 w-3 mr-1" />
+                        {step.duration}
+                      </Badge>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {step.tasks.map((task, taskIndex) => (
-                        <li key={taskIndex} className="flex items-start gap-2 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                          <span>{task}</span>
-                        </li>
+                    <CardDescription className="mb-3">{step.description}</CardDescription>
+                    <div className="grid md:grid-cols-2 gap-2">
+                      {step.tasks.map((task, taskIdx) => (
+                        <div key={taskIdx} className="flex items-center gap-2 p-2 rounded-lg bg-card/50 hover:bg-card transition-colors">
+                          <CheckCircle2 className={`h-4 w-4 ${isEven ? 'text-primary' : 'text-accent'} flex-shrink-0`} />
+                          <span className="text-sm">{task}</span>
+                        </div>
                       ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })}
-        </div>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

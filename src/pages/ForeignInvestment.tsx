@@ -222,109 +222,127 @@ const ForeignInvestment = () => {
           </TabsContent>
 
           {/* Ownership Types Tab */}
-          <TabsContent value="ownership" className="space-y-6">
+          <TabsContent value="ownership" className="space-y-6 animate-fade-in">
             <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Key className="h-5 w-5" />
-                    Hak Pakai (Right to Use)
-                  </CardTitle>
-                  <CardDescription>For foreign individuals</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="space-y-2">
-                    <p className="font-semibold">Duration:</p>
-                    <p className="text-sm text-muted-foreground">30 years, renewable for 20 years, then another 30 years</p>
+              <Card className="border-primary/30 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl" />
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+                      <Key className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">Hak Pakai 🏡</CardTitle>
+                      <CardDescription className="text-sm">Perfect for foreign individuals</CardDescription>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <p className="font-semibold">Requirements:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Valid passport</li>
-                      <li>• KITAS/KITAP (residence permit)</li>
-                      <li>• NPWP (tax identification number)</li>
-                      <li>• Minimum property value requirement met</li>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-3 rounded-lg bg-card/50">
+                    <p className="font-semibold text-sm mb-2">⏱️ Duration:</p>
+                    <p className="text-sm text-muted-foreground">30 years → 20 years → 30 years (up to 80 years total!)</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-card/50">
+                    <p className="font-semibold text-sm mb-2">📋 What You'll Need:</p>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> Valid passport</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> KITAS/KITAP permit</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> NPWP tax ID</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> Meet minimum value</li>
                     </ul>
                   </div>
-                  <Badge variant="secondary">Most Common for Foreigners</Badge>
+                  <Badge className="bg-gradient-to-r from-accent to-primary text-primary-foreground">⭐ Most Popular Choice</Badge>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building2 className="h-5 w-5" />
-                    SHMRS/Strata Title
-                  </CardTitle>
-                  <CardDescription>For apartments and condominiums</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="space-y-2">
-                    <p className="font-semibold">Duration:</p>
-                    <p className="text-sm text-muted-foreground">Perpetual (as long as building exists)</p>
+              <Card className="border-accent/30 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-accent/5 to-transparent">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-2xl" />
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-gradient-to-br from-accent to-primary">
+                      <Building2 className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">SHMRS/Strata 🏢</CardTitle>
+                      <CardDescription className="text-sm">For apartments & condos</CardDescription>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <p className="font-semibold">Requirements:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Valid passport</li>
-                      <li>• KITAS/KITAP</li>
-                      <li>• NPWP</li>
-                      <li>• Minimum IDR 3 billion property value</li>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-3 rounded-lg bg-card/50">
+                    <p className="font-semibold text-sm mb-2">⏱️ Duration:</p>
+                    <p className="text-sm text-muted-foreground">Perpetual ownership (as long as building stands)</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-card/50">
+                    <p className="font-semibold text-sm mb-2">📋 Requirements:</p>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> Valid passport</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> KITAS/KITAP</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> NPWP</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-accent" /> Min. IDR 3 billion</li>
                     </ul>
                   </div>
-                  <Badge variant="secondary">Apartments Only</Badge>
+                  <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground">🏙️ Urban Living</Badge>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Home className="h-5 w-5" />
-                    PT PMA (Foreign Investment Company)
-                  </CardTitle>
-                  <CardDescription>Company ownership structure</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="space-y-2">
-                    <p className="font-semibold">Duration:</p>
-                    <p className="text-sm text-muted-foreground">Based on company structure (Hak Guna Bangunan - 30 years)</p>
+              <Card className="border-primary/30 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5">
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+                      <Briefcase className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">PT PMA 🏢</CardTitle>
+                      <CardDescription className="text-sm">Company ownership</CardDescription>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <p className="font-semibold">Requirements:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Establish PT PMA company</li>
-                      <li>• Minimum capital requirements</li>
-                      <li>• Business license (NIB)</li>
-                      <li>• Property used for business purposes</li>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-3 rounded-lg bg-card/50">
+                    <p className="font-semibold text-sm mb-2">⏱️ Duration:</p>
+                    <p className="text-sm text-muted-foreground">Hak Guna Bangunan - 30 years renewable</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-card/50">
+                    <p className="font-semibold text-sm mb-2">📋 What's Needed:</p>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li className="flex items-center gap-2"><Briefcase className="h-4 w-4 text-primary" /> PT PMA company</li>
+                      <li className="flex items-center gap-2"><DollarSign className="h-4 w-4 text-primary" /> Capital requirements</li>
+                      <li className="flex items-center gap-2"><FileText className="h-4 w-4 text-primary" /> Business license</li>
+                      <li className="flex items-center gap-2"><Building2 className="h-4 w-4 text-primary" /> Commercial use</li>
                     </ul>
                   </div>
-                  <Badge variant="secondary">Commercial Use</Badge>
+                  <Badge className="bg-gradient-to-r from-accent to-primary text-primary-foreground">💼 Business Investors</Badge>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5" />
-                    Nominee Structure (Not Recommended)
-                  </CardTitle>
-                  <CardDescription>Using Indonesian nominee</CardDescription>
+              <Card className="border-destructive/50 shadow-xl bg-gradient-to-br from-destructive/10 to-destructive/5">
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-destructive/20">
+                      <Shield className="h-6 w-6 text-destructive" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl text-destructive">Nominee ⚠️</CardTitle>
+                      <CardDescription className="text-sm">Not recommended!</CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Warning</AlertTitle>
-                    <AlertDescription className="text-xs">
-                      Nominee arrangements are legally questionable and carry significant risks. Not recommended by legal experts.
+                <CardContent className="space-y-4">
+                  <Alert variant="destructive" className="border-destructive">
+                    <AlertCircle className="h-5 w-5" />
+                    <AlertTitle className="font-bold">⛔ High Risk Warning</AlertTitle>
+                    <AlertDescription className="text-sm">
+                      Legally questionable with serious risks. Our experts strongly advise against this approach.
                     </AlertDescription>
                   </Alert>
-                  <div className="space-y-2">
-                    <p className="font-semibold text-sm">Risks Include:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• No legal protection</li>
-                      <li>• Property can be seized</li>
-                      <li>• Disputes with nominee</li>
-                      <li>• Illegal under certain conditions</li>
+                  <div className="p-3 rounded-lg bg-destructive/10">
+                    <p className="font-semibold text-sm mb-2 text-destructive">⚠️ Major Risks:</p>
+                    <ul className="text-sm space-y-2">
+                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-destructive" /> No legal protection</li>
+                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-destructive" /> Property seizure risk</li>
+                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-destructive" /> Nominee disputes</li>
+                      <li className="flex items-center gap-2"><XCircle className="h-4 w-4 text-destructive" /> Illegal complications</li>
                     </ul>
                   </div>
                 </CardContent>
@@ -333,118 +351,160 @@ const ForeignInvestment = () => {
           </TabsContent>
 
           {/* Requirements Tab */}
-          <TabsContent value="requirements" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Required Documents for Foreign Buyers
-                </CardTitle>
+          <TabsContent value="requirements" className="space-y-6 animate-fade-in">
+            <Card className="border-border/50 shadow-xl bg-gradient-to-br from-card to-card/50">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl -z-10" />
+              <CardHeader className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+                    <FileText className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <CardTitle className="text-2xl">Documents Checklist 📋</CardTitle>
+                </div>
+                <CardDescription className="text-base">Everything you need to prepare for a smooth investment process</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Personal Documents</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Valid Passport</p>
-                          <p className="text-muted-foreground text-xs">Original and certified copy</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">KITAS or KITAP</p>
-                          <p className="text-muted-foreground text-xs">Valid Indonesian residence permit</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">NPWP</p>
-                          <p className="text-muted-foreground text-xs">Indonesian tax identification number</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Proof of Address</p>
-                          <p className="text-muted-foreground text-xs">In Indonesia (rental agreement, utility bills)</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Marriage Certificate</p>
-                          <p className="text-muted-foreground text-xs">If applicable, translated to Indonesian</p>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Financial Documents</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Proof of Funds</p>
-                          <p className="text-muted-foreground text-xs">Bank statements showing sufficient funds</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Source of Funds Declaration</p>
-                          <p className="text-muted-foreground text-xs">Letter explaining origin of funds</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Employment Letter</p>
-                          <p className="text-muted-foreground text-xs">Or business registration documents</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Tax Returns</p>
-                          <p className="text-muted-foreground text-xs">Recent tax filing documents</p>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-6 border-t">
-                  <h3 className="font-semibold mb-4">KPR (Mortgage) for Foreigners</h3>
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Limited Availability</AlertTitle>
-                    <AlertDescription>
-                      <p className="mb-2">Most Indonesian banks do not offer mortgages (KPR) to foreigners. Cash payment is typically required.</p>
-                      <p className="text-sm">Some international banks may offer financing options with:</p>
-                      <ul className="text-sm mt-2 space-y-1">
-                        <li>• Down payment: 40-50% minimum</li>
-                        <li>• Maximum loan period: 10-15 years</li>
-                        <li>• Higher interest rates than locals</li>
-                        <li>• Extensive documentation requirements</li>
+                  <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Globe className="h-5 w-5 text-primary" />
+                        👤 Personal Documents
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-accent/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Valid Passport 🛂</p>
+                            <p className="text-muted-foreground text-sm">Original and certified copy</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-accent/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">KITAS or KITAP 🏠</p>
+                            <p className="text-muted-foreground text-sm">Valid Indonesian residence permit</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-accent/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">NPWP 📊</p>
+                            <p className="text-muted-foreground text-sm">Indonesian tax identification number</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-accent/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Proof of Address 📍</p>
+                            <p className="text-muted-foreground text-sm">Rental agreement or utility bills</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-accent/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Marriage Certificate 💑</p>
+                            <p className="text-muted-foreground text-sm">If applicable, translated</p>
+                          </div>
+                        </li>
                       </ul>
-                    </AlertDescription>
-                  </Alert>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-transparent">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <DollarSign className="h-5 w-5 text-accent" />
+                        💰 Financial Documents
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-primary/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Proof of Funds 💵</p>
+                            <p className="text-muted-foreground text-sm">Bank statements (3-6 months)</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-primary/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Source of Funds 📝</p>
+                            <p className="text-muted-foreground text-sm">Declaration letter required</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-primary/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Employment Letter 💼</p>
+                            <p className="text-muted-foreground text-sm">Or business registration</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-primary/5 transition-colors">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Tax Returns 📑</p>
+                            <p className="text-muted-foreground text-sm">Recent tax filings</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </CardContent>
+                  </Card>
                 </div>
+
+                <Card className="mt-6 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                      🏦 Mortgage Options (KPR)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Alert className="border-primary/30 bg-primary/5">
+                      <AlertCircle className="h-5 w-5 text-primary" />
+                      <AlertTitle className="text-base font-bold">💡 Important to Know</AlertTitle>
+                      <AlertDescription className="space-y-3 mt-2">
+                        <p className="text-sm">Most Indonesian banks don't offer mortgages to foreigners. Cash payment is usually needed.</p>
+                        <div className="p-3 rounded-lg bg-card">
+                          <p className="text-sm font-semibold mb-2">Some international banks may offer:</p>
+                          <ul className="text-sm space-y-2">
+                            <li className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">40-50%</Badge>
+                              <span>Minimum down payment</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">10-15y</Badge>
+                              <span>Maximum loan period</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">Higher</Badge>
+                              <span>Interest rates</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </AlertDescription>
+                    </Alert>
+                  </CardContent>
+                </Card>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Restrictions Tab */}
-          <TabsContent value="restrictions" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Investment Restrictions and Limitations</CardTitle>
+          <TabsContent value="restrictions" className="space-y-6 animate-fade-in">
+            <Card className="border-border/50 shadow-xl bg-gradient-to-br from-card to-card/50">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-destructive/10 to-primary/10 rounded-full blur-3xl -z-10" />
+              <CardHeader className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-destructive/20 to-primary/20">
+                    <Shield className="h-6 w-6 text-destructive" />
+                  </div>
+                  <CardTitle className="text-2xl">📜 Investment Rules & Restrictions</CardTitle>
+                </div>
+                <CardDescription className="text-base">Understanding the boundaries helps you invest with confidence</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">

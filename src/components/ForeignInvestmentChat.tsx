@@ -114,22 +114,23 @@ Please provide detailed, accurate information about Indonesian property investme
   };
 
   return (
-    <div className="space-y-4">
-      <Card className="border-primary/20">
-        <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/10">
-          <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Bot className="h-6 w-6 text-primary" />
+    <div className="space-y-4 animate-fade-in">
+      <Card className="border-border/50 shadow-xl bg-gradient-to-br from-card to-accent/5 overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-3xl -z-10" />
+        <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-accent/5 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+              <Bot className="h-7 w-7 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="flex items-center gap-2">
-                AI Investment Assistant
-                <Badge variant="secondary" className="gap-1">
+              <CardTitle className="text-xl flex items-center gap-2">
+                💬 AI Investment Assistant
+                <Badge className="gap-1 bg-gradient-to-r from-accent to-primary text-primary-foreground border-0">
                   <Sparkles className="h-3 w-3" />
-                  Powered by AI
+                  AI Powered
                 </Badge>
               </CardTitle>
-              <CardDescription>Ask questions about foreign property investment in Indonesia</CardDescription>
+              <CardDescription className="text-base">I'm here to help with your investment questions 24/7! 🌟</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -139,39 +140,42 @@ Please provide detailed, accurate information about Indonesian property investme
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
                 >
                   {message.role === 'assistant' && (
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Bot className="h-5 w-5 text-primary" />
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <Bot className="h-6 w-6 text-accent" />
                     </div>
                   )}
                   <div
-                    className={`max-w-[80%] rounded-lg p-4 ${
+                    className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${
                       message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                        ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground'
+                        : 'bg-card border border-border/50'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     <span className="text-xs opacity-70 mt-2 block">
                       {message.timestamp.toLocaleTimeString()}
                     </span>
                   </div>
                   {message.role === 'user' && (
-                    <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                      <User className="h-5 w-5 text-primary-foreground" />
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <User className="h-6 w-6 text-primary-foreground" />
                     </div>
                   )}
                 </div>
               ))}
               {isLoading && (
-                <div className="flex gap-3 justify-start">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Bot className="h-5 w-5 text-primary" />
+                <div className="flex gap-3 justify-start animate-fade-in">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center shadow-sm">
+                    <Bot className="h-6 w-6 text-accent" />
                   </div>
-                  <div className="bg-muted rounded-lg p-4">
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                  <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      <span className="text-sm text-muted-foreground">Thinking... 🤔</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -180,10 +184,10 @@ Please provide detailed, accurate information about Indonesian property investme
           </ScrollArea>
 
           {messages.length <= 1 && (
-            <div className="p-4 border-t bg-muted/50">
-              <p className="text-sm font-medium mb-3 flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
-                Quick Questions:
+            <div className="p-4 border-t bg-gradient-to-br from-muted/50 to-transparent">
+              <p className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-primary" />
+                💡 Quick Questions:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {quickQuestions.map((question, idx) => (
@@ -192,7 +196,7 @@ Please provide detailed, accurate information about Indonesian property investme
                     variant="outline"
                     size="sm"
                     onClick={() => handleQuickQuestion(question)}
-                    className="text-left justify-start h-auto py-2 px-3 text-xs"
+                    className="text-left justify-start h-auto py-3 px-4 text-xs hover:bg-primary/5 hover:border-primary/30 transition-all"
                   >
                     {question}
                   </Button>
@@ -207,25 +211,25 @@ Please provide detailed, accurate information about Indonesian property investme
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                placeholder="Ask about foreign investment regulations, requirements, process..."
+                placeholder="Type your question here... ✨"
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 h-12 border-primary/20 focus:border-primary/50"
               />
               <Button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-12 w-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg"
               >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <Send className="h-4 w-4" />
+                  <Send className="h-5 w-5" />
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              AI responses are for informational purposes only. Consult with legal professionals for advice.
+            <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+              💡 AI responses are for informational purposes. Consult with our legal professionals for specific advice.
             </p>
           </div>
         </CardContent>
