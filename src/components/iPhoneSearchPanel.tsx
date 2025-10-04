@@ -26,6 +26,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
+  const [useNearbyLocation, setUseNearbyLocation] = useState(false);
+  const [nearbyRadius, setNearbyRadius] = useState(5); // Default 5km
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
   
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
@@ -283,7 +287,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       concierge: "Concierge",
       coworking: "Co-working Space",
       playground: "Children Playground",
-      bbqArea: "BBQ Area"
+      bbqArea: "BBQ Area",
+      nearMe: "Near Me",
+      searchNearby: "Search Nearby",
+      radius: "Radius",
+      gettingLocation: "Getting location...",
+      locationError: "Location access denied",
+      within: "Within"
     },
     id: {
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
@@ -366,11 +376,57 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       concierge: "Concierge",
       coworking: "Ruang Co-working",
       playground: "Taman Bermain Anak",
-      bbqArea: "Area BBQ"
+      bbqArea: "Area BBQ",
+      nearMe: "Dekat Saya",
+      searchNearby: "Cari Sekitar",
+      radius: "Radius",
+      gettingLocation: "Mendapatkan lokasi...",
+      locationError: "Akses lokasi ditolak",
+      within: "Dalam"
     }
   };
 
   const currentText = text[language];
+  
+  // Get user's current location
+  const getUserLocation = () => {
+    setIsGettingLocation(true);
+    
+    if (!navigator.geolocation) {
+      alert(currentText.locationError);
+      setIsGettingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setUseNearbyLocation(true);
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        alert(currentText.locationError);
+        setIsGettingLocation(false);
+      }
+    );
+  };
+  
+  const toggleSearchType = (type: 'location' | 'nearby') => {
+    if (type === 'nearby') {
+      if (!userLocation) {
+        getUserLocation();
+      } else {
+        setUseNearbyLocation(true);
+      }
+    } else {
+      setUseNearbyLocation(false);
+    }
+  };
+
 
   const staticPropertyTypes = [
     { value: 'villa', label: currentText.villa, icon: Building },
@@ -737,7 +793,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       features: filters.features,
       yearBuilt: filters.yearBuilt === 'all' ? '' : filters.yearBuilt,
       condition: filters.condition === 'all' ? '' : filters.condition,
-      sortBy: filters.sortBy
+      sortBy: filters.sortBy,
+      nearbySearch: useNearbyLocation,
+      userLocation: userLocation,
+      radius: nearbyRadius
     };
 
     console.log('Search data being sent:', searchData);
@@ -794,6 +853,48 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 {currentText.newProject}
               </button>
             </div>
+          </div>
+          
+          {/* Nearby Search Toggle & Radius Selection */}
+          <div className="flex gap-2 items-center justify-center">
+            <Button
+              onClick={() => toggleSearchType('location')}
+              variant={!useNearbyLocation ? "default" : "outline"}
+              size="sm"
+              className="text-xs h-8"
+            >
+              <MapPin className="h-3 w-3 mr-1" />
+              {currentText.location}
+            </Button>
+            <Button
+              onClick={() => toggleSearchType('nearby')}
+              variant={useNearbyLocation ? "default" : "outline"}
+              size="sm"
+              className="text-xs h-8"
+              disabled={isGettingLocation}
+            >
+              <MapPin className="h-3 w-3 mr-1" />
+              {isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
+            </Button>
+            
+            {useNearbyLocation && userLocation && (
+              <Select
+                value={nearbyRadius.toString()}
+                onValueChange={(value) => setNearbyRadius(parseInt(value))}
+              >
+                <SelectTrigger className="w-28 h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">{currentText.within} 1 km</SelectItem>
+                  <SelectItem value="3">{currentText.within} 3 km</SelectItem>
+                  <SelectItem value="5">{currentText.within} 5 km</SelectItem>
+                  <SelectItem value="10">{currentText.within} 10 km</SelectItem>
+                  <SelectItem value="20">{currentText.within} 20 km</SelectItem>
+                  <SelectItem value="50">{currentText.within} 50 km</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
           
           {/* Compact Search Row */}
