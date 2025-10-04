@@ -22,7 +22,7 @@ interface IPhoneSearchPanelProps {
 
 const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: IPhoneSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
@@ -206,6 +206,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       searchPlaceholder: "Search properties, locations, or keywords...",
       search: "Search",
       all: "All",
+      forSale: "Buy",
+      forRent: "Rent",
+      newProject: "New Project",
       location: "Location",
       propertyType: "Property Type",
       listingType: "Listing Type",
@@ -218,8 +221,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       condition: "Condition",
       sortBy: "Sort By",
       any: "Any",
-      forSale: "For Sale",
-      forRent: "For Rent",
       villa: "Villa",
       apartment: "Apartment",
       house: "House",
@@ -288,6 +289,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
       search: "Cari",
       all: "Semua",
+      forSale: "Beli",
+      forRent: "Sewa",
+      newProject: "Proyek Baru",
       location: "Lokasi",
       propertyType: "Jenis Properti",
       listingType: "Tipe Listing",
@@ -300,8 +304,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       condition: "Kondisi",
       sortBy: "Urutkan",
       any: "Semua",
-      forSale: "Dijual",
-      forRent: "Disewa",
       villa: "Villa",
       apartment: "Apartemen",
       house: "Rumah",
@@ -780,6 +782,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 }`}
               >
                 {currentText.forRent}
+              </button>
+              <button
+                onClick={() => setActiveTab('new_project')}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                  activeTab === 'new_project' 
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                }`}
+              >
+                {currentText.newProject}
               </button>
             </div>
           </div>
