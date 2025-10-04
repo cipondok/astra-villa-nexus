@@ -31,6 +31,31 @@ type ViewMode = 'list' | 'grid' | 'map';
 
 const Index = () => {
   const { language } = useLanguage();
+  const copy = {
+    en: {
+      findYour: "Find Your Dream Property",
+      searchPowered: "Enhanced search & filtering powered by AI",
+      searchResults: "Search Results",
+      searching: "Searching...",
+      propertiesFound: "properties found",
+      for: "for",
+      clearError: "Clear Error",
+      featuredProperties: "Featured Properties",
+      premiumProperties: "Premium properties with enhanced display"
+    },
+    id: {
+      findYour: "Temukan Properti Impian Anda",
+      searchPowered: "Pencarian & penyaringan canggih dengan AI",
+      searchResults: "Hasil Pencarian",
+      searching: "Mencari...",
+      propertiesFound: "properti ditemukan",
+      for: "untuk",
+      clearError: "Hapus Kesalahan",
+      featuredProperties: "Properti Unggulan",
+      premiumProperties: "Properti premium dengan tampilan lebih baik"
+    }
+  } as const;
+  const t = copy[language];
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const { isMobile, isTablet, deviceInfo } = useIsMobile();
@@ -293,10 +318,10 @@ const Index = () => {
             <div className="animate-scale-in max-w-4xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-mobile-h2">
-                  Find Your Dream Property
+                  {t.findYour}
                 </h2>
                 <p className="text-mobile-body text-muted-foreground">
-                  🔍 Enhanced search & filtering powered by AI
+                  🔍 {t.searchPowered}
                 </p>
               </div>
               
@@ -359,7 +384,7 @@ const Index = () => {
                     isMobile ? "mt-1 px-2 py-0.5 text-xs" : "mt-2 px-4 py-1 text-sm"
                   )}
                 >
-                  Clear Error
+                  {t.clearError}
                 </button>
               </div>
             </div>
@@ -380,13 +405,13 @@ const Index = () => {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
-                        Search Results
+                        {t.searchResults}
                       </h2>
                       <p className="text-muted-foreground">
-                        {isSearching ? "Searching..." : `${searchResults.length} properties found`}
+                        {isSearching ? t.searching : `${searchResults.length} ${t.propertiesFound}`}
                         {quickSearch && (
                           <span className="ml-2 text-primary font-medium">
-                            for "{quickSearch}"
+                            {t.for} "{quickSearch}"
                           </span>
                         )}
                       </p>
@@ -445,13 +470,13 @@ const Index = () => {
                       "font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent",
                       isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
                     )}>
-                      Featured Properties
+                      {t.featuredProperties}
                     </h2>
                     <p className={cn(
                       "text-gray-600 dark:text-gray-300",
                       isMobile ? "text-xs" : "text-sm lg:text-base"
                     )}>
-                      Premium properties with enhanced display
+                      {t.premiumProperties}
                     </p>
                   </div>
                   
