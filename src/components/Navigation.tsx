@@ -216,17 +216,6 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
-              {/* Browse Properties Button */}
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/buy')}
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 animate-scale-in"
-              >
-                <Building className="h-4 w-4 mr-2" />
-                Properties
-              </Button>
-
               {/* Add Property Button */}
               <Button 
                 variant="ghost" 
