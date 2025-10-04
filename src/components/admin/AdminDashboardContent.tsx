@@ -33,7 +33,7 @@ import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
 import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
 import Property3DViewSettings from "./Property3DViewSettings";
 import PropertySurveyManagement from "./PropertySurveyManagement";
-import SMTPSettings from "./SMTPSettings";
+import EmailSettings from "@/pages/admin/EmailSettings";
 import LocationManagement from "./LocationManagement";
 import APISettingsManagement from "./APISettingsManagement";
 import AIPropertyAssistant from "./AIPropertyAssistant";
@@ -68,7 +68,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "settings":
         return <SystemSettings />;
       case "smtp-settings":
-        return <SMTPSettings />;
+        return <EmailSettings />;
       case "indonesian-payment-config":
         return <IndonesianPaymentMerchantConfig />;
       case "analytics":
