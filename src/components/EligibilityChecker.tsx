@@ -9,6 +9,72 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, AlertCircle, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatIDR, parseIDR } from "@/utils/currency";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+// Countries allowed to invest in Indonesia based on BKPM regulations
+// Green: Fully allowed, Yellow: Restricted sectors, Red: High scrutiny/limited
+const INVESTMENT_COUNTRIES = {
+  green: [
+    { value: "SG", label: "Singapore" },
+    { value: "JP", label: "Japan" },
+    { value: "KR", label: "South Korea" },
+    { value: "MY", label: "Malaysia" },
+    { value: "TH", label: "Thailand" },
+    { value: "PH", label: "Philippines" },
+    { value: "VN", label: "Vietnam" },
+    { value: "BN", label: "Brunei" },
+    { value: "AU", label: "Australia" },
+    { value: "NZ", label: "New Zealand" },
+    { value: "GB", label: "United Kingdom" },
+    { value: "DE", label: "Germany" },
+    { value: "FR", label: "France" },
+    { value: "NL", label: "Netherlands" },
+    { value: "CH", label: "Switzerland" },
+    { value: "AE", label: "United Arab Emirates" },
+    { value: "SA", label: "Saudi Arabia" },
+    { value: "QA", label: "Qatar" },
+    { value: "KW", label: "Kuwait" },
+    { value: "CA", label: "Canada" },
+  ],
+  yellow: [
+    { value: "US", label: "United States" },
+    { value: "CN", label: "China" },
+    { value: "HK", label: "Hong Kong" },
+    { value: "TW", label: "Taiwan" },
+    { value: "IN", label: "India" },
+    { value: "BD", label: "Bangladesh" },
+    { value: "PK", label: "Pakistan" },
+    { value: "IT", label: "Italy" },
+    { value: "ES", label: "Spain" },
+    { value: "SE", label: "Sweden" },
+    { value: "NO", label: "Norway" },
+    { value: "DK", label: "Denmark" },
+    { value: "FI", label: "Finland" },
+    { value: "AT", label: "Austria" },
+    { value: "BE", label: "Belgium" },
+    { value: "BR", label: "Brazil" },
+    { value: "MX", label: "Mexico" },
+    { value: "AR", label: "Argentina" },
+    { value: "CL", label: "Chile" },
+    { value: "ZA", label: "South Africa" },
+    { value: "EG", label: "Egypt" },
+    { value: "TR", label: "Turkey" },
+  ],
+  red: [
+    { value: "KP", label: "North Korea ⚠️" },
+    { value: "IR", label: "Iran ⚠️" },
+    { value: "SY", label: "Syria ⚠️" },
+    { value: "RU", label: "Russia ⚠️" },
+    { value: "BY", label: "Belarus ⚠️" },
+    { value: "MM", label: "Myanmar ⚠️" },
+    { value: "AF", label: "Afghanistan ⚠️" },
+    { value: "IQ", label: "Iraq ⚠️" },
+    { value: "LY", label: "Libya ⚠️" },
+    { value: "SO", label: "Somalia ⚠️" },
+    { value: "YE", label: "Yemen ⚠️" },
+    { value: "SD", label: "Sudan ⚠️" },
+  ]
+};
 
 interface EligibilityResult {
   overallScore: number;
@@ -359,11 +425,52 @@ export const EligibilityChecker = () => {
             
             <div className="space-y-2">
               <Label>{language === "id" ? "Kewarganegaraan" : "Nationality"}</Label>
-              <Input
+              <Select
                 value={formData.nationality}
-                onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-                placeholder={language === "id" ? "Contoh: USA, UK, Australia" : "e.g., USA, UK, Australia"}
-              />
+                onValueChange={(value) => setFormData({ ...formData, nationality: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={language === "id" ? "Pilih kewarganegaraan Anda" : "Select your nationality"} />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  <SelectItem value="ID">🇮🇩 {language === "id" ? "Indonesia (WNI)" : "Indonesia (Indonesian Citizen)"}</SelectItem>
+                  
+                  {/* Green Status - Fully Allowed */}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-green-600 bg-green-50 dark:bg-green-950 dark:text-green-400 sticky top-0 z-10">
+                    ✓ {language === "id" ? "Status Hijau - Diizinkan Penuh" : "Green Status - Fully Allowed"}
+                  </div>
+                  {INVESTMENT_COUNTRIES.green.map(country => (
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label}
+                    </SelectItem>
+                  ))}
+                  
+                  {/* Yellow Status - Restricted Sectors */}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-yellow-600 bg-yellow-50 dark:bg-yellow-950 dark:text-yellow-400 sticky top-0 z-10 mt-1">
+                    ⚠ {language === "id" ? "Status Kuning - Sektor Terbatas" : "Yellow Status - Restricted Sectors"}
+                  </div>
+                  {INVESTMENT_COUNTRIES.yellow.map(country => (
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label}
+                    </SelectItem>
+                  ))}
+                  
+                  {/* Red Status - High Scrutiny */}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950 dark:text-red-400 sticky top-0 z-10 mt-1">
+                    ⛔ {language === "id" ? "Status Merah - Pengawasan Ketat" : "Red Status - High Scrutiny"}
+                  </div>
+                  {INVESTMENT_COUNTRIES.red.map(country => (
+                    <SelectItem key={country.value} value={country.value} className="text-red-600 dark:text-red-400">
+                      {country.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                {language === "id" 
+                  ? "Status diperbarui berdasarkan regulasi BKPM & peraturan investasi Indonesia terbaru"
+                  : "Status updated based on latest BKPM regulations & Indonesian investment laws"}
+              </p>
             </div>
 
             <div className="space-y-2">
