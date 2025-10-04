@@ -17,6 +17,7 @@ interface SMTPSettings {
   password: string;
   from_email: string;
   from_name: string;
+  encryption: "ssl" | "tls" | "none";
   enabled: boolean;
 }
 
@@ -35,18 +36,20 @@ export default function EmailSettings() {
       const { data, error } = await supabase
         .from("system_settings")
         .select("*")
-        .eq("category", "email")
-        .eq("key", "smtp_config")
-        .single();
+        .eq("category", "smtp")
+        .eq("key", "config")
+        .maybeSingle();
       
-      if (error && error.code !== 'PGRST116') throw error;
-      return (data?.value as unknown as SMTPSettings) || {
+      if (error) throw error;
+      const value = (data?.value as unknown as SMTPSettings) || null;
+      return value ?? {
         host: "",
         port: "",
         username: "",
         password: "",
         from_email: "",
         from_name: "",
+        encryption: "ssl",
         enabled: false,
       };
     },
@@ -72,8 +75,8 @@ export default function EmailSettings() {
       const { error } = await supabase
         .from("system_settings")
         .upsert({
-          category: "email",
-          key: "smtp_config",
+          category: "smtp",
+          key: "config",
           value: settings,
           is_public: false,
         });
@@ -119,6 +122,7 @@ export default function EmailSettings() {
     password: "",
     from_email: "",
     from_name: "",
+    encryption: "ssl",
     enabled: false,
   });
 
@@ -203,6 +207,20 @@ export default function EmailSettings() {
                       onChange={(e) => setSmtpForm({ ...smtpForm, port: e.target.value })}
                       placeholder="587"
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="encryption">Encryption</Label>
+                    <select
+                      id="encryption"
+                      value={smtpForm.encryption}
+                      onChange={(e) => setSmtpForm({ ...smtpForm, encryption: e.target.value as SMTPSettings["encryption"] })}
+                      className="h-10 rounded-md border bg-background px-3 text-sm"
+                    >
+                      <option value="ssl">SSL (465)</option>
+                      <option value="tls">TLS (587)</option>
+                      <option value="none">None</option>
+                    </select>
                   </div>
 
                   <div className="space-y-2">
