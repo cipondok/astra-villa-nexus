@@ -1930,6 +1930,13 @@ export type Database = {
             referencedRelation: "properties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "favorites_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
         ]
       }
       feedback_monitoring: {
@@ -2643,6 +2650,13 @@ export type Database = {
             referencedRelation: "properties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "inquiries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
         ]
       }
       invoices: {
@@ -3207,6 +3221,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
           {
@@ -3859,6 +3880,13 @@ export type Database = {
             referencedRelation: "properties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "property_facilities_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
         ]
       }
       property_filter_configurations: {
@@ -3955,6 +3983,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -4064,6 +4099,13 @@ export type Database = {
             referencedRelation: "properties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "property_rental_items_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
         ]
       }
       property_rental_terms: {
@@ -4105,6 +4147,13 @@ export type Database = {
             referencedRelation: "properties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "property_rental_terms_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
         ]
       }
       property_revival_log: {
@@ -4142,6 +4191,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_revival_log_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -4216,6 +4272,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_service_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
           {
@@ -4451,6 +4514,13 @@ export type Database = {
             referencedRelation: "properties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "property_watermark_settings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
         ]
       }
       rejection_codes: {
@@ -4576,6 +4646,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -8401,7 +8478,114 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_properties: {
+        Row: {
+          advance_booking_days: number | null
+          area: string | null
+          area_sqm: number | null
+          available_from: string | null
+          available_until: string | null
+          bathrooms: number | null
+          bedrooms: number | null
+          booking_type: string | null
+          city: string | null
+          created_at: string | null
+          description: string | null
+          development_status: string | null
+          id: string | null
+          image_urls: string[] | null
+          images: string[] | null
+          listing_type: string | null
+          location: string | null
+          minimum_rental_days: number | null
+          online_booking_enabled: boolean | null
+          price: number | null
+          property_features: Json | null
+          property_type: string | null
+          rental_periods: string[] | null
+          rental_terms: Json | null
+          seo_description: string | null
+          seo_title: string | null
+          state: string | null
+          status: string | null
+          three_d_model_url: string | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string | null
+          virtual_tour_url: string | null
+        }
+        Insert: {
+          advance_booking_days?: number | null
+          area?: string | null
+          area_sqm?: number | null
+          available_from?: string | null
+          available_until?: string | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          booking_type?: string | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          development_status?: string | null
+          id?: string | null
+          image_urls?: string[] | null
+          images?: string[] | null
+          listing_type?: string | null
+          location?: string | null
+          minimum_rental_days?: number | null
+          online_booking_enabled?: boolean | null
+          price?: number | null
+          property_features?: Json | null
+          property_type?: string | null
+          rental_periods?: string[] | null
+          rental_terms?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          state?: string | null
+          status?: string | null
+          three_d_model_url?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          virtual_tour_url?: string | null
+        }
+        Update: {
+          advance_booking_days?: number | null
+          area?: string | null
+          area_sqm?: number | null
+          available_from?: string | null
+          available_until?: string | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          booking_type?: string | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          development_status?: string | null
+          id?: string | null
+          image_urls?: string[] | null
+          images?: string[] | null
+          listing_type?: string | null
+          location?: string | null
+          minimum_rental_days?: number | null
+          online_booking_enabled?: boolean | null
+          price?: number | null
+          property_features?: Json | null
+          property_type?: string | null
+          rental_periods?: string[] | null
+          rental_terms?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          state?: string | null
+          status?: string | null
+          three_d_model_url?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          virtual_tour_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_customer_response_secure: {
