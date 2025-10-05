@@ -29,7 +29,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       
       const { data: interactions } = await supabase
         .from('user_interactions')
-        .select('metadata')
+        .select('interaction_data')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20);

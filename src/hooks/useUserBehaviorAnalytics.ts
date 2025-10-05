@@ -51,9 +51,15 @@ export function useUserBehaviorAnalytics() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      // Only insert if user is logged in (user_id must be valid UUID, not undefined)
+      if (!user?.id) {
+        console.debug('Skipping interaction tracking: user not authenticated');
+        return;
+      }
+
       const interactionData = {
         ...interaction,
-        user_id: user?.id,
+        user_id: user.id,
         session_id: currentSession,
         interaction_data: {
           ...interaction.interaction_data,
@@ -168,9 +174,15 @@ export function useUserBehaviorAnalytics() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      // Only batch insert if user is authenticated
+      if (!user?.id) {
+        console.debug('Skipping batch tracking: user not authenticated');
+        return;
+      }
+
       const batchData = interactions.map(interaction => ({
         ...interaction,
-        user_id: user?.id,
+        user_id: user.id,
         session_id: currentSession,
         interaction_data: {
           ...interaction.interaction_data,
