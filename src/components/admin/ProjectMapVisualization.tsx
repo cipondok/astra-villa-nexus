@@ -515,8 +515,8 @@ const ProjectMapVisualization = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
+              <div className="flex items-start gap-3 p-3 rounded-lg status-warning">
+                <AlertTriangle className="h-5 w-5 text-primary mt-0.5" />
                 <div>
                   <div className="font-medium text-sm">Minor Issues Detected</div>
                   <div className="text-xs text-muted-foreground mt-1">
