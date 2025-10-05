@@ -140,14 +140,19 @@ export const useAdvancedAuthSecurity = () => {
     try {
       const userInfo = await getUserInfo();
       
-      await supabase.from('login_attempts').insert({
+      // Track login attempt with upsert to avoid duplicates
+      await supabase.from('login_attempts').upsert({
         ip_address: userInfo.ip,
         email: attempt.email,
         user_agent: attempt.user_agent,
         device_fingerprint: attempt.device_fingerprint,
         success: attempt.success,
         geolocation: attempt.geolocation || userInfo.location,
-        risk_score: attempt.risk_score || 0
+        risk_score: attempt.risk_score || 0,
+        attempt_time: new Date().toISOString()
+      }, {
+        onConflict: 'ip_address,email,attempt_time',
+        ignoreDuplicates: true // Ignore if exact duplicate within same second
       });
 
       // If login failed, check if account should be locked
@@ -254,9 +259,9 @@ export const useAdvancedAuthSecurity = () => {
         return { success: false, error };
       }
 
-      // Successful login - create device session
+      // Successful login - create or update device session
       if (data.user) {
-        await supabase.from('user_device_sessions').insert({
+        await supabase.from('user_device_sessions').upsert({
           user_id: data.user.id,
           session_token: data.session?.access_token || '',
           device_fingerprint: deviceFingerprint,
@@ -266,7 +271,12 @@ export const useAdvancedAuthSecurity = () => {
             language: navigator.language
           },
           ip_address: userInfo.ip,
-          location_data: userInfo.location
+          location_data: userInfo.location,
+          is_active: true,
+          last_activity_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,device_fingerprint',
+          ignoreDuplicates: false
         });
       }
 

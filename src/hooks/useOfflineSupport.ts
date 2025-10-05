@@ -179,7 +179,12 @@ export const useOfflineSupport = () => {
   const executeProfilesOperation = async (operation: QueuedOperation) => {
     switch (operation.type) {
       case 'insert':
-        return await supabase.from('profiles').insert(operation.data as TableInsert<'profiles'>);
+        // Use upsert to handle potential duplicates
+        return await supabase.from('profiles')
+          .upsert(operation.data as TableInsert<'profiles'>, {
+            onConflict: 'id',
+            ignoreDuplicates: false
+          });
       case 'update':
         return await supabase.from('profiles')
           .update(operation.data as TableUpdate<'profiles'>)
