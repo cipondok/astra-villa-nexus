@@ -1,9 +1,42 @@
-import { Handshake, Building, Users2, PieChart, Shield, Rocket } from "lucide-react";
+import { Handshake, Building, Users2, PieChart, Shield, Rocket, Mail, Phone, User, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const JointVentures = () => {
   const { language } = useLanguage();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    investmentRange: "",
+    projectType: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast({
+      title: language === "en" ? "Inquiry Submitted!" : "Pertanyaan Terkirim!",
+      description: language === "en" 
+        ? "Our partnership team will contact you shortly." 
+        : "Tim kemitraan kami akan segera menghubungi Anda.",
+    });
+    
+    setFormData({ name: "", email: "", phone: "", company: "", investmentRange: "", projectType: "", message: "" });
+    setIsSubmitting(false);
+  };
 
   const text = {
     en: {
@@ -51,7 +84,28 @@ const JointVentures = () => {
         "Enhanced competitive advantage"
       ],
       exploreButton: "Explore Opportunities",
-      contactUs: "Contact Us"
+      contactUs: "Contact Us",
+      formTitle: "Joint Venture Inquiry",
+      formSubtitle: "Tell us about your venture interests and investment capacity",
+      namePlaceholder: "Full Name",
+      emailPlaceholder: "Email Address",
+      phonePlaceholder: "Phone Number",
+      companyPlaceholder: "Company Name",
+      investmentRange: "Investment Range",
+      selectInvestment: "Select investment range",
+      range1: "Under $500K",
+      range2: "$500K - $1M",
+      range3: "$1M - $5M",
+      range4: "Above $5M",
+      projectType: "Project Interest",
+      selectProject: "Select project type",
+      residential: "Residential Development",
+      commercial: "Commercial Development",
+      mixed: "Mixed-Use Development",
+      landInvestment: "Land Investment",
+      messagePlaceholder: "Describe your venture goals and expectations...",
+      submitButton: "Submit Inquiry",
+      submitting: "Submitting..."
     },
     id: {
       title: "Usaha Patungan",
@@ -98,7 +152,28 @@ const JointVentures = () => {
         "Keunggulan kompetitif ditingkatkan"
       ],
       exploreButton: "Jelajahi Peluang",
-      contactUs: "Hubungi Kami"
+      contactUs: "Hubungi Kami",
+      formTitle: "Pertanyaan Usaha Patungan",
+      formSubtitle: "Ceritakan minat dan kapasitas investasi Anda",
+      namePlaceholder: "Nama Lengkap",
+      emailPlaceholder: "Alamat Email",
+      phonePlaceholder: "Nomor Telepon",
+      companyPlaceholder: "Nama Perusahaan",
+      investmentRange: "Rentang Investasi",
+      selectInvestment: "Pilih rentang investasi",
+      range1: "Di bawah $500K",
+      range2: "$500K - $1M",
+      range3: "$1M - $5M",
+      range4: "Di atas $5M",
+      projectType: "Minat Proyek",
+      selectProject: "Pilih jenis proyek",
+      residential: "Pengembangan Residensial",
+      commercial: "Pengembangan Komersial",
+      mixed: "Pengembangan Campuran",
+      landInvestment: "Investasi Tanah",
+      messagePlaceholder: "Jelaskan tujuan dan harapan usaha Anda...",
+      submitButton: "Kirim Pertanyaan",
+      submitting: "Mengirim..."
     }
   };
 
@@ -172,23 +247,138 @@ const JointVentures = () => {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="glass-card p-12 rounded-2xl max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-foreground">
-              Let's Build Together
-            </h2>
-            <p className="text-muted-foreground mb-8 text-lg">
-              Start exploring partnership opportunities today
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8">
-                {currentText.exploreButton}
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8">
-                {currentText.contactUs}
-              </Button>
+        {/* Inquiry Form Section */}
+        <div className="max-w-3xl mx-auto">
+          <div className="glass-card p-12 rounded-2xl">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 text-foreground">
+                {currentText.formTitle}
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                {currentText.formSubtitle}
+              </p>
             </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    {currentText.namePlaceholder}
+                  </label>
+                  <Input
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder={currentText.namePlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    {currentText.emailPlaceholder}
+                  </label>
+                  <Input
+                    required
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder={currentText.emailPlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    {currentText.phonePlaceholder}
+                  </label>
+                  <Input
+                    required
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder={currentText.phonePlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Building className="w-4 h-4" />
+                    {currentText.companyPlaceholder}
+                  </label>
+                  <Input
+                    required
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    placeholder={currentText.companyPlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <DollarSign className="w-4 h-4" />
+                    {currentText.investmentRange}
+                  </label>
+                  <Select value={formData.investmentRange} onValueChange={(value) => setFormData({ ...formData, investmentRange: value })}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder={currentText.selectInvestment} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="under-500k">{currentText.range1}</SelectItem>
+                      <SelectItem value="500k-1m">{currentText.range2}</SelectItem>
+                      <SelectItem value="1m-5m">{currentText.range3}</SelectItem>
+                      <SelectItem value="above-5m">{currentText.range4}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Building className="w-4 h-4" />
+                    {currentText.projectType}
+                  </label>
+                  <Select value={formData.projectType} onValueChange={(value) => setFormData({ ...formData, projectType: value })}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder={currentText.selectProject} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="residential">{currentText.residential}</SelectItem>
+                      <SelectItem value="commercial">{currentText.commercial}</SelectItem>
+                      <SelectItem value="mixed">{currentText.mixed}</SelectItem>
+                      <SelectItem value="land">{currentText.landInvestment}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {currentText.messagePlaceholder}
+                </label>
+                <Textarea
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder={currentText.messagePlaceholder}
+                  rows={5}
+                  className="resize-none"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isSubmitting}
+                className="w-full text-lg h-14"
+              >
+                {isSubmitting ? currentText.submitting : currentText.submitButton}
+              </Button>
+            </form>
           </div>
         </div>
       </div>

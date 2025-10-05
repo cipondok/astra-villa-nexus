@@ -1,9 +1,42 @@
-import { Building2, TrendingUp, Award, Target, CheckCircle } from "lucide-react";
+import { Building2, TrendingUp, Award, Target, CheckCircle, Mail, Phone, User, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const BecomePartner = () => {
   const { language } = useLanguage();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    businessType: "",
+    experience: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast({
+      title: language === "en" ? "Application Submitted!" : "Aplikasi Terkirim!",
+      description: language === "en" 
+        ? "We'll review your application and contact you soon." 
+        : "Kami akan meninjau aplikasi Anda dan segera menghubungi Anda.",
+    });
+    
+    setFormData({ name: "", email: "", phone: "", company: "", businessType: "", experience: "", message: "" });
+    setIsSubmitting(false);
+  };
 
   const text = {
     en: {
@@ -41,7 +74,28 @@ const BecomePartner = () => {
         }
       ],
       applyButton: "Apply Now",
-      contactUs: "Contact Us"
+      contactUs: "Contact Us",
+      formTitle: "Partner Application",
+      formSubtitle: "Complete the application form to become our partner",
+      namePlaceholder: "Full Name",
+      emailPlaceholder: "Email Address",
+      phonePlaceholder: "Phone Number",
+      companyPlaceholder: "Company Name",
+      businessType: "Business Type",
+      selectBusinessType: "Select business type",
+      agent: "Real Estate Agent",
+      developer: "Developer",
+      investor: "Investor",
+      other: "Other",
+      experience: "Years of Experience",
+      selectExperience: "Select experience",
+      years1_3: "1-3 years",
+      years3_5: "3-5 years",
+      years5_10: "5-10 years",
+      years10plus: "10+ years",
+      messagePlaceholder: "Tell us about your business...",
+      submitButton: "Submit Application",
+      submitting: "Submitting..."
     },
     id: {
       title: "Jadi Mitra",
@@ -78,7 +132,28 @@ const BecomePartner = () => {
         }
       ],
       applyButton: "Daftar Sekarang",
-      contactUs: "Hubungi Kami"
+      contactUs: "Hubungi Kami",
+      formTitle: "Aplikasi Mitra",
+      formSubtitle: "Lengkapi formulir aplikasi untuk menjadi mitra kami",
+      namePlaceholder: "Nama Lengkap",
+      emailPlaceholder: "Alamat Email",
+      phonePlaceholder: "Nomor Telepon",
+      companyPlaceholder: "Nama Perusahaan",
+      businessType: "Jenis Bisnis",
+      selectBusinessType: "Pilih jenis bisnis",
+      agent: "Agen Real Estat",
+      developer: "Pengembang",
+      investor: "Investor",
+      other: "Lainnya",
+      experience: "Tahun Pengalaman",
+      selectExperience: "Pilih pengalaman",
+      years1_3: "1-3 tahun",
+      years3_5: "3-5 tahun",
+      years5_10: "5-10 tahun",
+      years10plus: "10+ tahun",
+      messagePlaceholder: "Ceritakan tentang bisnis Anda...",
+      submitButton: "Kirim Aplikasi",
+      submitting: "Mengirim..."
     }
   };
 
@@ -140,23 +215,138 @@ const BecomePartner = () => {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="glass-card p-12 rounded-2xl max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-foreground">
-              Ready to Partner?
-            </h2>
-            <p className="text-muted-foreground mb-8 text-lg">
-              Start your journey with us today
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8">
-                {currentText.applyButton}
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8">
-                {currentText.contactUs}
-              </Button>
+        {/* Application Form Section */}
+        <div className="max-w-3xl mx-auto">
+          <div className="glass-card p-12 rounded-2xl">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 text-foreground">
+                {currentText.formTitle}
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                {currentText.formSubtitle}
+              </p>
             </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    {currentText.namePlaceholder}
+                  </label>
+                  <Input
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder={currentText.namePlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    {currentText.emailPlaceholder}
+                  </label>
+                  <Input
+                    required
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder={currentText.emailPlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    {currentText.phonePlaceholder}
+                  </label>
+                  <Input
+                    required
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder={currentText.phonePlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    {currentText.companyPlaceholder}
+                  </label>
+                  <Input
+                    required
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    placeholder={currentText.companyPlaceholder}
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Briefcase className="w-4 h-4" />
+                    {currentText.businessType}
+                  </label>
+                  <Select value={formData.businessType} onValueChange={(value) => setFormData({ ...formData, businessType: value })}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder={currentText.selectBusinessType} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="agent">{currentText.agent}</SelectItem>
+                      <SelectItem value="developer">{currentText.developer}</SelectItem>
+                      <SelectItem value="investor">{currentText.investor}</SelectItem>
+                      <SelectItem value="other">{currentText.other}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Award className="w-4 h-4" />
+                    {currentText.experience}
+                  </label>
+                  <Select value={formData.experience} onValueChange={(value) => setFormData({ ...formData, experience: value })}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder={currentText.selectExperience} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1-3">{currentText.years1_3}</SelectItem>
+                      <SelectItem value="3-5">{currentText.years3_5}</SelectItem>
+                      <SelectItem value="5-10">{currentText.years5_10}</SelectItem>
+                      <SelectItem value="10+">{currentText.years10plus}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {currentText.messagePlaceholder}
+                </label>
+                <Textarea
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder={currentText.messagePlaceholder}
+                  rows={5}
+                  className="resize-none"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isSubmitting}
+                className="w-full text-lg h-14"
+              >
+                {isSubmitting ? currentText.submitting : currentText.submitButton}
+              </Button>
+            </form>
           </div>
         </div>
       </div>

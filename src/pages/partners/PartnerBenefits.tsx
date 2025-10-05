@@ -1,9 +1,38 @@
-import { TrendingUp, DollarSign, Headphones, GraduationCap, Trophy, Megaphone } from "lucide-react";
+import { TrendingUp, DollarSign, Headphones, GraduationCap, Trophy, Megaphone, Mail, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const PartnerBenefits = () => {
   const { language } = useLanguage();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast({
+      title: language === "en" ? "Request Submitted!" : "Permintaan Terkirim!",
+      description: language === "en" 
+        ? "We'll send you detailed benefit information soon." 
+        : "Kami akan mengirimkan informasi manfaat detail segera.",
+    });
+    
+    setFormData({ name: "", email: "", phone: "", message: "" });
+    setIsSubmitting(false);
+  };
 
   const text = {
     en: {
@@ -49,7 +78,15 @@ const PartnerBenefits = () => {
         }
       ],
       joinButton: "Join Now",
-      learnMore: "Learn More"
+      learnMore: "Learn More",
+      formTitle: "Get Detailed Benefits Information",
+      formSubtitle: "Leave your contact details and we'll send you the complete benefits package",
+      namePlaceholder: "Full Name",
+      emailPlaceholder: "Email Address",
+      phonePlaceholder: "Phone Number",
+      messagePlaceholder: "Any specific questions about benefits?",
+      submitButton: "Request Information",
+      submitting: "Sending..."
     },
     id: {
       title: "Manfaat Mitra",
@@ -94,7 +131,15 @@ const PartnerBenefits = () => {
         }
       ],
       joinButton: "Bergabung Sekarang",
-      learnMore: "Pelajari Lebih Lanjut"
+      learnMore: "Pelajari Lebih Lanjut",
+      formTitle: "Dapatkan Informasi Manfaat Detail",
+      formSubtitle: "Tinggalkan detail kontak Anda dan kami akan mengirimkan paket manfaat lengkap",
+      namePlaceholder: "Nama Lengkap",
+      emailPlaceholder: "Alamat Email",
+      phonePlaceholder: "Nomor Telepon",
+      messagePlaceholder: "Pertanyaan spesifik tentang manfaat?",
+      submitButton: "Minta Informasi",
+      submitting: "Mengirim..."
     }
   };
 
@@ -149,23 +194,85 @@ const PartnerBenefits = () => {
           })}
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="glass-card p-12 rounded-2xl max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-foreground">
-              Ready to Get Started?
-            </h2>
-            <p className="text-muted-foreground mb-8 text-lg">
-              Join today and start enjoying these exclusive benefits
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8">
-                {currentText.joinButton}
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8">
-                {currentText.learnMore}
-              </Button>
+        {/* Contact Form Section */}
+        <div className="max-w-2xl mx-auto">
+          <div className="glass-card p-12 rounded-2xl">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 text-foreground">
+                {currentText.formTitle}
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                {currentText.formSubtitle}
+              </p>
             </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  {currentText.namePlaceholder}
+                </label>
+                <Input
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder={currentText.namePlaceholder}
+                  className="h-12"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  {currentText.emailPlaceholder}
+                </label>
+                <Input
+                  required
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder={currentText.emailPlaceholder}
+                  className="h-12"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  {currentText.phonePlaceholder}
+                </label>
+                <Input
+                  required
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder={currentText.phonePlaceholder}
+                  className="h-12"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {currentText.messagePlaceholder}
+                </label>
+                <Textarea
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder={currentText.messagePlaceholder}
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isSubmitting}
+                className="w-full text-lg h-14"
+              >
+                {isSubmitting ? currentText.submitting : currentText.submitButton}
+              </Button>
+            </form>
           </div>
         </div>
       </div>
