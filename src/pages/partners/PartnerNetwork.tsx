@@ -82,17 +82,6 @@ const PartnerNetwork = () => {
 
       if (insertError) throw insertError;
 
-      // Send acknowledgement email to user
-      await supabase.functions.invoke('send-inquiry-email', {
-        body: {
-          inquiry_id: inserted.id,
-          customer_email: formData.email,
-          customer_name: formData.name,
-          inquiry_type: 'partner_network',
-          message: formData.message,
-        },
-      });
-
       const formatted = formatIndonesianPhone(formData.phone);
       toast({
         title: language === "en" ? "Application Submitted!" : "Aplikasi Terkirim!",
