@@ -5,29 +5,49 @@ import { Mail, Sparkles } from 'lucide-react';
 import GmailOfferPopup from './GmailOfferPopup';
 import { useAuth } from '@/contexts/AuthContext';
 
+const GMAIL_OFFER_SHOWN_KEY = 'astra-villa-gmail-offer-shown';
+const COOKIE_CONSENT_KEY = 'astra-villa-cookie-consent';
+
 const OfferRegistration = () => {
   const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [showGmailOffer, setShowGmailOffer] = useState(false);
-  const [hasShownOffer, setHasShownOffer] = useState(false);
 
   // Auto-detect Gmail user on mount
   useEffect(() => {
-    if (user?.email && user.email.toLowerCase().endsWith('@gmail.com') && !hasShownOffer) {
+    // Check if cookies are accepted
+    const cookieConsent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    const offerAlreadyShown = localStorage.getItem(GMAIL_OFFER_SHOWN_KEY);
+    
+    // Only show offer if cookies accepted and not shown before
+    if (
+      cookieConsent === 'accepted' && 
+      !offerAlreadyShown &&
+      user?.email && 
+      user.email.toLowerCase().endsWith('@gmail.com')
+    ) {
       setEmail(user.email);
       setShowGmailOffer(true);
-      setHasShownOffer(true);
+      localStorage.setItem(GMAIL_OFFER_SHOWN_KEY, 'true');
     }
-  }, [user, hasShownOffer]);
+  }, [user]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
 
-    // Check if email ends with @gmail.com and offer hasn't been shown yet
-    if (value.toLowerCase().endsWith('@gmail.com') && !hasShownOffer && value.length > 10) {
+    // Check if email ends with @gmail.com, cookies accepted, and offer not shown
+    const cookieConsent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    const offerAlreadyShown = localStorage.getItem(GMAIL_OFFER_SHOWN_KEY);
+    
+    if (
+      cookieConsent === 'accepted' &&
+      !offerAlreadyShown &&
+      value.toLowerCase().endsWith('@gmail.com') && 
+      value.length > 10
+    ) {
       setShowGmailOffer(true);
-      setHasShownOffer(true);
+      localStorage.setItem(GMAIL_OFFER_SHOWN_KEY, 'true');
     }
   };
 
