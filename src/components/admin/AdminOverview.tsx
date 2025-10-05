@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -20,7 +21,11 @@ import {
   MessageSquare,
   BarChart3,
   Zap,
-  Eye
+  Eye,
+  ArrowUpRight,
+  ArrowDownRight,
+  Server,
+  Cpu
 } from "lucide-react";
 import AdminQuickActions from "./AdminQuickActions";
 import AdminQuickAccess from "./AdminQuickAccess";
@@ -137,155 +142,309 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   ];
 
   return (
-    <div className="space-y-6 hud-grid min-h-screen p-4">
-      {/* HUD Header */}
-      <div className="hud-border p-6 relative overflow-hidden">
-        <div className="data-stream"></div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-            <div className="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
-            <h1 className="text-3xl font-bold hud-text">ADMIN CONTROL INTERFACE</h1>
-          </div>
-          <div className="text-right">
-            <div className="hud-accent text-sm">SYSTEM STATUS</div>
-            <div className="hud-text text-lg font-mono">ONLINE</div>
-          </div>
-        </div>
-        <div className="grid grid-cols-4 gap-4 text-center">
-          <div className="hud-border p-3">
-            <div className="hud-accent text-xs">UPTIME</div>
-            <div className="hud-text font-mono text-lg">99.9%</div>
-          </div>
-          <div className="hud-border p-3">
-            <div className="hud-accent text-xs">PROCESSES</div>
-            <div className="hud-text font-mono text-lg">{systemHealth?.activeUsers || 0}</div>
-          </div>
-          <div className="hud-border p-3">
-            <div className="hud-accent text-xs">MEMORY</div>
-            <div className="hud-text font-mono text-lg">2.1GB</div>
-          </div>
-          <div className="hud-border p-3">
-            <div className="hud-accent text-xs">LOAD</div>
-            <div className="hud-text font-mono text-lg">0.42</div>
-          </div>
-        </div>
-      </div>
-
-      {/* System Analytics Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* System Health Matrix */}
-        <div className="lg:col-span-2">
-          <div className="hud-border p-6 hud-glow">
-            <div className="flex items-center gap-3 mb-4">
-              <Activity className="h-6 w-6 hud-text" />
-              <h3 className="text-xl font-bold hud-text">SYSTEM MATRIX</h3>
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Welcome Header */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-border/50 p-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+        <div className="relative">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+                Admin Dashboard
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Welcome back! Here's what's happening with your platform.
+              </p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="hud-border p-4 bg-gradient-to-br from-green-900/20 to-green-700/20">
-                <div className="flex items-center justify-between mb-2">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-xs hud-accent">OPERATIONAL</span>
-                </div>
-                <div className="text-2xl font-bold text-green-400">{systemHealth?.activeUsers || 0}</div>
-                <div className="text-xs text-green-300">Active Users</div>
-              </div>
-              <div className="hud-border p-4 bg-gradient-to-br from-blue-900/20 to-blue-700/20">
-                <div className="flex items-center justify-between mb-2">
-                  <Database className="h-5 w-5 text-blue-400" />
-                  <span className="text-xs hud-accent">STABLE</span>
-                </div>
-                <div className="text-2xl font-bold text-blue-400">{systemHealth?.dbErrors === 0 ? 'OK' : 'ERR'}</div>
-                <div className="text-xs text-blue-300">Database Status</div>
-              </div>
-              <div className="hud-border p-4 bg-gradient-to-br from-orange-900/20 to-orange-700/20">
-                <div className="flex items-center justify-between mb-2">
-                  <Clock className="h-5 w-5 text-orange-400" />
-                  <span className="text-xs hud-accent">PENDING</span>
-                </div>
-                <div className="text-2xl font-bold text-orange-400">{systemHealth?.pendingVendors || 0}</div>
-                <div className="text-xs text-orange-300">Vendor Reviews</div>
-              </div>
-              <div className="hud-border p-4 bg-gradient-to-br from-purple-900/20 to-purple-700/20">
-                <div className="flex items-center justify-between mb-2">
-                  <TrendingUp className="h-5 w-5 text-purple-400" />
-                  <span className="text-xs hud-accent">ANALYTICS</span>
-                </div>
-                <div className="text-2xl font-bold text-purple-400">2.4K</div>
-                <div className="text-xs text-purple-300">Daily Events</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Alert Stream */}
-        <div className="hud-border p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <AlertTriangle className="h-6 w-6 hud-accent" />
-            <h3 className="text-xl font-bold hud-text">ALERT STREAM</h3>
-          </div>
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            {recentAlerts && recentAlerts.length > 0 ? (
-              recentAlerts.slice(0, 4).map((alert, index) => (
-                <div key={alert.id} className="hud-border p-3 bg-gradient-to-r from-red-900/20 to-transparent">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 bg-red-500 rounded-full pulse-dot"></div>
-                    <span className="text-sm hud-text font-mono">{alert.title}</span>
-                  </div>
-                  <div className="text-xs text-red-300 ml-4">{alert.message}</div>
-                  <div className="text-xs hud-accent mt-1 ml-4">
-                    {new Date(alert.created_at).toLocaleTimeString()}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-green-400">
-                <CheckCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">ALL SYSTEMS NOMINAL</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Access Panel */}
-      <AdminQuickAccess onSectionChange={onSectionChange} />
-
-      {/* Quick Actions Command Panel */}
-      <div className="hud-border p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Wrench className="h-6 w-6 hud-text" />
-          <h3 className="text-xl font-bold hud-text">COMMAND INTERFACE</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {quickManagementActions.map((action, index) => (
-            <div 
-              key={index}
-              className="hud-border p-4 cursor-pointer hover:hud-glow transition-all duration-300 group rounded-full aspect-square flex flex-col items-center justify-center relative"
-              onClick={() => handleQuickAction(action.action)}
-            >
-              {/* Circular Background Animation */}
-              <div className="absolute inset-2 rounded-full border-2 border-cyan-900/30"></div>
-              <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-cyan-400/50 group-hover:border-t-cyan-400 transition-colors"></div>
-              
-              <div className="text-center z-10">
-                <div className="p-3 rounded-full bg-gradient-to-br from-cyan-900/40 to-blue-900/40 mb-2">
-                  <action.icon className="h-6 w-6 hud-text" />
-                </div>
-                <p className="font-medium hud-text group-hover:hud-accent transition-colors text-sm">
-                  {action.title}
-                </p>
-                <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${
-                  action.priority === 'critical' ? 'bg-red-900/40 text-red-300' :
-                  action.priority === 'high' ? 'bg-orange-900/40 text-orange-300' :
-                  'bg-blue-900/40 text-blue-300'
-                }`}>
-                  {action.priority}
+            <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${
+                systemHealth?.systemStatus === 'healthy' 
+                  ? 'bg-green-500/10 border border-green-500/20' 
+                  : 'bg-orange-500/10 border border-orange-500/20'
+              }`}>
+                <div className={`w-2 h-2 rounded-full ${
+                  systemHealth?.systemStatus === 'healthy' ? 'bg-green-500 animate-pulse' : 'bg-orange-500 animate-pulse'
+                }`}></div>
+                <span className="text-sm font-medium">
+                  {systemHealth?.systemStatus === 'healthy' ? 'All Systems Operational' : 'Needs Attention'}
                 </span>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
+
+      {/* Key Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Active Users Metric */}
+        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-blue-500/5 to-background hover:shadow-lg transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Active Users
+            </CardTitle>
+            <Users className="h-5 w-5 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold mb-2">{systemHealth?.activeUsers || 0}</div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-1 text-green-500">
+                <ArrowUpRight className="h-3 w-3" />
+                <span>12%</span>
+              </div>
+              <span className="text-muted-foreground">vs last 24h</span>
+            </div>
+            <Progress value={75} className="mt-3 h-1" />
+          </CardContent>
+        </Card>
+
+        {/* Database Status Metric */}
+        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-green-500/5 to-background hover:shadow-lg transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Database Health
+            </CardTitle>
+            <Database className="h-5 w-5 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold mb-2">
+              {systemHealth?.dbErrors === 0 ? 'Healthy' : `${systemHealth?.dbErrors} Issues`}
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className={systemHealth?.dbErrors === 0 ? "text-green-500" : "text-orange-500"}>
+                {systemHealth?.dbErrors === 0 ? '✓ No errors detected' : '⚠ Requires attention'}
+              </span>
+            </div>
+            <Progress value={systemHealth?.dbErrors === 0 ? 100 : 60} className="mt-3 h-1" />
+          </CardContent>
+        </Card>
+
+        {/* Pending Vendors Metric */}
+        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-orange-500/5 to-background hover:shadow-lg transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Pending Reviews
+            </CardTitle>
+            <Clock className="h-5 w-5 text-orange-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold mb-2">{systemHealth?.pendingVendors || 0}</div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-orange-500">Vendor applications</span>
+            </div>
+            {systemHealth?.pendingVendors && systemHealth.pendingVendors > 0 && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="mt-3 w-full text-xs"
+                onClick={() => handleQuickAction('vendors-hub')}
+              >
+                Review Now →
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* System Performance Metric */}
+        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-purple-500/5 to-background hover:shadow-lg transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              System Load
+            </CardTitle>
+            <Activity className="h-5 w-5 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold mb-2">99.9%</div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-1 text-green-500">
+                <CheckCircle className="h-3 w-3" />
+                <span>Optimal</span>
+              </div>
+              <span className="text-muted-foreground">uptime</span>
+            </div>
+            <Progress value={99.9} className="mt-3 h-1" />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Alerts */}
+        <Card className="lg:col-span-2 border-border/50">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-orange-500" />
+                <CardTitle>Recent Alerts</CardTitle>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => handleQuickAction('admin-alerts')}
+              >
+                View All
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentAlerts && recentAlerts.length > 0 ? (
+                recentAlerts.slice(0, 5).map((alert) => (
+                  <div 
+                    key={alert.id}
+                    className="flex items-start gap-3 p-4 rounded-lg border border-border/50 hover:bg-accent/5 transition-colors cursor-pointer"
+                    onClick={() => handleQuickAction('admin-alerts')}
+                  >
+                    <div className={`p-2 rounded-lg ${
+                      alert.priority === 'high' ? 'bg-red-500/10' :
+                      alert.priority === 'medium' ? 'bg-orange-500/10' :
+                      'bg-blue-500/10'
+                    }`}>
+                      <AlertTriangle className={`h-4 w-4 ${
+                        alert.priority === 'high' ? 'text-red-500' :
+                        alert.priority === 'medium' ? 'text-orange-500' :
+                        'text-blue-500'
+                      }`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-medium text-sm truncate">{alert.title}</p>
+                        <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="ml-2">
+                          {alert.priority}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-1">{alert.message}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {new Date(alert.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <CheckCircle className="h-12 w-12 mx-auto text-green-500 mb-3 opacity-50" />
+                  <p className="text-muted-foreground">No active alerts</p>
+                  <p className="text-sm text-muted-foreground mt-1">All systems operating normally</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* System Resources */}
+        <Card className="border-border/50">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Server className="h-5 w-5 text-primary" />
+              <CardTitle>System Resources</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* CPU Usage */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Cpu className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">CPU Usage</span>
+                </div>
+                <span className="text-sm text-muted-foreground">42%</span>
+              </div>
+              <Progress value={42} className="h-2" />
+            </div>
+
+            {/* Memory Usage */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Database className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Memory</span>
+                </div>
+                <span className="text-sm text-muted-foreground">2.1 / 4.0 GB</span>
+              </div>
+              <Progress value={52.5} className="h-2" />
+            </div>
+
+            {/* Storage */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Server className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Storage</span>
+                </div>
+                <span className="text-sm text-muted-foreground">68.4 / 100 GB</span>
+              </div>
+              <Progress value={68.4} className="h-2" />
+            </div>
+
+            {/* Network */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Network</span>
+                </div>
+                <span className="text-sm text-muted-foreground">↓ 1.2 MB/s</span>
+              </div>
+              <Progress value={30} className="h-2" />
+            </div>
+
+            <Button 
+              variant="outline" 
+              className="w-full mt-4"
+              onClick={() => handleQuickAction('diagnostic')}
+            >
+              <Activity className="h-4 w-4 mr-2" />
+              Full Diagnostics
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Access Panel */}
+      <Card className="border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-primary" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {quickManagementActions.map((action, index) => (
+              <button
+                key={index}
+                onClick={() => handleQuickAction(action.action)}
+                className="group relative overflow-hidden rounded-xl border border-border/50 p-6 text-left transition-all hover:shadow-lg hover:border-primary/50 hover:-translate-y-1 bg-gradient-to-br from-background to-accent/5"
+              >
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+                <div className="relative">
+                  <div className={`inline-flex p-3 rounded-lg mb-4 ${action.color}`}>
+                    <action.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                    {action.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {action.description}
+                  </p>
+                  <Badge 
+                    variant={action.priority === 'critical' ? 'destructive' : 'secondary'}
+                    className="mt-3"
+                  >
+                    {action.priority}
+                  </Badge>
+                </div>
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Additional Quick Access */}
+      <AdminQuickAccess onSectionChange={onSectionChange} />
     </div>
   );
 };
