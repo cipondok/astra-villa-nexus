@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -253,6 +255,116 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
         </div>
       </div>
+
+      {/* Partner Network Dialog */}
+      <Dialog open={isPartnerNetworkOpen} onOpenChange={setIsPartnerNetworkOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-6 h-6 text-blue-400" />
+              {currentText.partnerNetwork}
+            </DialogTitle>
+            <DialogDescription>
+              Connect with our trusted network of real estate professionals
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Join our extensive network of verified real estate partners including agents, developers, and service providers.
+            </p>
+            <ul className="space-y-2 text-sm">
+              <li>✓ Access to verified professionals</li>
+              <li>✓ Collaborative opportunities</li>
+              <li>✓ Shared resources and tools</li>
+              <li>✓ Regular networking events</li>
+            </ul>
+            <Button className="w-full">Learn More</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Become Partner Dialog */}
+      <Dialog open={isBecomePartnerOpen} onOpenChange={setIsBecomePartnerOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-green-400" />
+              {currentText.becomePartner}
+            </DialogTitle>
+            <DialogDescription>
+              Join our partner program and grow your business with us
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Become a valued partner and unlock exclusive opportunities to expand your real estate business.
+            </p>
+            <ul className="space-y-2 text-sm">
+              <li>✓ Exclusive lead generation</li>
+              <li>✓ Marketing support and resources</li>
+              <li>✓ Advanced analytics dashboard</li>
+              <li>✓ Dedicated partner manager</li>
+            </ul>
+            <Button className="w-full">Apply Now</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Partner Benefits Dialog */}
+      <Dialog open={isPartnerBenefitsOpen} onOpenChange={setIsPartnerBenefitsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-purple-400" />
+              {currentText.partnerBenefits}
+            </DialogTitle>
+            <DialogDescription>
+              Exclusive benefits and rewards for our valued partners
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Enjoy a comprehensive suite of benefits designed to help you succeed and grow.
+            </p>
+            <ul className="space-y-2 text-sm">
+              <li>✓ Competitive commission structure</li>
+              <li>✓ Priority customer support</li>
+              <li>✓ Training and development programs</li>
+              <li>✓ Performance-based rewards</li>
+              <li>✓ Co-marketing opportunities</li>
+            </ul>
+            <Button className="w-full">View Full Benefits</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Joint Ventures Dialog */}
+      <Dialog open={isJointVenturesOpen} onOpenChange={setIsJointVenturesOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Handshake className="w-6 h-6 text-orange-400" />
+              {currentText.jointVentures}
+            </DialogTitle>
+            <DialogDescription>
+              Explore joint venture opportunities in real estate
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Partner with us on strategic real estate development projects and investment opportunities.
+            </p>
+            <ul className="space-y-2 text-sm">
+              <li>✓ Co-development opportunities</li>
+              <li>✓ Investment partnerships</li>
+              <li>✓ Risk-sharing arrangements</li>
+              <li>✓ Shared expertise and resources</li>
+              <li>✓ Long-term strategic partnerships</li>
+            </ul>
+            <Button className="w-full">Explore Opportunities</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </footer>
   );
