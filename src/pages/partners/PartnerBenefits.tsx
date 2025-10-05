@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptcha } from "@/hooks/useCaptcha";
 import { verifyCaptchaToken } from "@/utils/captchaVerification";
+import { validateIndonesianPhone } from "@/utils/phoneValidation";
 import { supabase } from "@/integrations/supabase/client";
 
 const PartnerBenefits = () => {
@@ -42,6 +43,20 @@ const PartnerBenefits = () => {
     setIsSubmitting(true);
     
     try {
+      // Validate Indonesian phone number
+      const phoneValidation = validateIndonesianPhone(formData.phone);
+      if (!phoneValidation.isValid) {
+        toast({
+          title: language === "en" ? "Invalid Phone Number" : "Nomor Telepon Tidak Valid",
+          description: phoneValidation.message || (language === "en" 
+            ? "Please enter a valid Indonesian phone number" 
+            : "Silakan masukkan nomor telepon Indonesia yang valid"),
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       if (captchaEnabled && isAvailable) {
         const token = await executeRecaptcha('partner_benefits_form');
         

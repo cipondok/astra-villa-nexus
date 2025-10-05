@@ -1,5 +1,6 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CaptchaContextType {
   siteKey: string;
@@ -19,27 +20,47 @@ interface CaptchaProviderProps {
   children: React.ReactNode;
 }
 
-// Add your Google reCAPTCHA site key here
-// Get it from: https://www.google.com/recaptcha/admin
-const RECAPTCHA_SITE_KEY = "YOUR_RECAPTCHA_SITE_KEY_HERE";
-
 export const CaptchaProvider = ({ children }: CaptchaProviderProps) => {
-  // If no site key is configured, render children without captcha
-  if (!RECAPTCHA_SITE_KEY || RECAPTCHA_SITE_KEY === "YOUR_RECAPTCHA_SITE_KEY_HERE") {
-    console.warn("reCAPTCHA site key not configured. Captcha protection is disabled.");
+  const [siteKey, setSiteKey] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadSiteKey = async () => {
+      try {
+        const { data } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('key', 'recaptcha_site_key')
+          .single();
+        
+        if (data?.value) {
+          setSiteKey(data.value as string);
+        }
+      } catch (error) {
+        console.error('Failed to load reCAPTCHA site key:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadSiteKey();
+  }, []);
+
+  // Show children immediately if loading or no site key
+  if (isLoading || !siteKey) {
     return <>{children}</>;
   }
 
   return (
     <GoogleReCaptchaProvider
-      reCaptchaKey={RECAPTCHA_SITE_KEY}
+      reCaptchaKey={siteKey}
       scriptProps={{
         async: true,
         defer: true,
         appendTo: "head",
       }}
     >
-      <CaptchaContext.Provider value={{ siteKey: RECAPTCHA_SITE_KEY }}>
+      <CaptchaContext.Provider value={{ siteKey }}>
         {children}
       </CaptchaContext.Provider>
     </GoogleReCaptchaProvider>
