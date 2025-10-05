@@ -2,6 +2,9 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { supabase } from '@/integrations/supabase/client';
 
+// Fallback site key (used if not found in system_settings)
+const DEFAULT_RECAPTCHA_SITE_KEY = '6LewWN8rAAAAAAd8owK443nCjoNqrCoky_aLnSjI';
+
 interface CaptchaContextType {
   siteKey: string;
 }
@@ -35,9 +38,14 @@ export const CaptchaProvider = ({ children }: CaptchaProviderProps) => {
         
         if (data?.value) {
           setSiteKey(data.value as string);
+        } else if (DEFAULT_RECAPTCHA_SITE_KEY) {
+          setSiteKey(DEFAULT_RECAPTCHA_SITE_KEY);
         }
       } catch (error) {
         console.error('Failed to load reCAPTCHA site key:', error);
+        if (DEFAULT_RECAPTCHA_SITE_KEY) {
+          setSiteKey(DEFAULT_RECAPTCHA_SITE_KEY);
+        }
       } finally {
         setIsLoading(false);
       }

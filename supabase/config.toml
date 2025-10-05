@@ -1,4 +1,3 @@
-
 project_id = "zymrajuuyyfkzdmptebl"
 
 [functions]
@@ -24,6 +23,9 @@ project_id = "zymrajuuyyfkzdmptebl"
     verify_jwt = true
 
   [functions.algorithm-analytics]
+    verify_jwt = false
+
+  [functions.verify-captcha]
     verify_jwt = false
 
   [functions.send-inquiry-email]

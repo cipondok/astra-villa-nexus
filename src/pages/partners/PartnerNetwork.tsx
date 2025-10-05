@@ -15,7 +15,7 @@ const PartnerNetwork = () => {
   const { language } = useLanguage();
   const { toast } = useToast();
   const { executeRecaptcha, isAvailable } = useCaptcha();
-  const [captchaEnabled, setCaptchaEnabled] = useState(false);
+  const [captchaEnabled, setCaptchaEnabled] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
