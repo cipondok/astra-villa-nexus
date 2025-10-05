@@ -1,119 +1,62 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 interface InquiryEmailRequest {
-  inquiry_id: string;
+  inquiry_id?: string;
   customer_email: string;
   customer_name: string;
-  inquiry_type: string;
-  message: string;
+  inquiry_type?: string;
+  message?: string;
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { customer_email, customer_name, inquiry_type = 'inquiry', message = '' }: InquiryEmailRequest = await req.json();
 
-    const { inquiry_id, customer_email, customer_name, inquiry_type, message }: InquiryEmailRequest = await req.json();
-
-    console.log('Processing inquiry email for:', customer_email);
-
-    // Get SMTP settings
-    const { data: smtpData } = await supabase
-      .from('system_settings')
-      .select('value')
-      .eq('category', 'smtp')
-      .eq('key', 'config')
-      .single();
-
-    if (!smtpData?.value) {
-      console.log('SMTP settings not found');
+    if (!customer_email || !customer_name) {
       return new Response(
-        JSON.stringify({ success: false, message: 'SMTP settings not configured' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Missing customer_email or customer_name" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    const smtpConfig = smtpData.value;
-    
-    // Check if enabled (handle both formats)
-    const isEnabled = smtpConfig.isEnabled ?? smtpConfig.enabled ?? false;
-    if (!isEnabled) {
-      console.log('SMTP not enabled, skipping email');
-      return new Response(
-        JSON.stringify({ success: true, message: 'Email sending disabled' }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const subject = `We received your ${inquiry_type}!`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Thank you, ${customer_name}!</h2>
+        <p>We have received your message and our team will get back to you shortly.</p>
+        ${message ? `<p style="white-space: pre-wrap;"><strong>Your message:</strong><br/>${message}</p>` : ''}
+        <p style="margin-top: 16px;">Best regards,<br/>Astra Villa Team</p>
+      </div>
+    `;
 
-    // Get email template
-    const { data: templateData } = await supabase
-      .from('system_settings')
-      .select('value')
-      .eq('category', 'email_templates')
-      .eq('key', 'inquiry_received')
-      .single();
-
-    const template = templateData?.value || {
-      subject: 'Thank you for your inquiry',
-      body: 'Dear {{customer_name}},\n\nThank you for contacting us. We have received your inquiry regarding {{inquiry_type}}.\n\nYour message: {{message}}\n\nWe will get back to you as soon as possible.\n\nBest regards,\nYour Team'
-    };
-
-    // Replace template variables
-    let emailSubject = template.subject;
-    let emailBody = template.body
-      .replace(/\{\{customer_name\}\}/g, customer_name)
-      .replace(/\{\{inquiry_type\}\}/g, inquiry_type)
-      .replace(/\{\{message\}\}/g, message);
-
-    // Send email using SMTP (handle both key formats)
-    const fromName = smtpConfig.fromName || smtpConfig.from_name || 'ASTRA Villa';
-    const fromEmail = smtpConfig.fromEmail || smtpConfig.from_email || 'noreply@astravilla.com';
-    
-    const client = new SMTPClient({
-      connection: {
-        hostname: smtpConfig.host,
-        port: parseInt(smtpConfig.port),
-        tls: smtpConfig.encryption === 'tls',
-        auth: {
-          username: smtpConfig.username,
-          password: smtpConfig.password,
-        },
-      },
+    const emailResponse = await resend.emails.send({
+      from: "Astra Villa <onboarding@resend.dev>",
+      to: [customer_email],
+      subject,
+      html,
     });
 
-    await client.send({
-      from: `${fromName} <${fromEmail}>`,
-      to: customer_email,
-      subject: emailSubject,
-      content: emailBody,
+    return new Response(JSON.stringify({ success: true, emailResponse }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
-
-    await client.close();
-
-    console.log('Inquiry email sent successfully');
-
-    return new Response(
-      JSON.stringify({ success: true, message: 'Email sent successfully' }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-
   } catch (error: any) {
-    console.error('Error sending inquiry email:', error);
+    console.error("Error in send-inquiry-email:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: error?.message || "Internal Server Error" }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 });
