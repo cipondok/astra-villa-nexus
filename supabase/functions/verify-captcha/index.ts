@@ -21,7 +21,7 @@ serve(async (req) => {
     if (!token) {
       return new Response(
         JSON.stringify({ success: false, error: 'No token provided' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -31,7 +31,7 @@ serve(async (req) => {
       console.error('RECAPTCHA_SECRET_KEY not configured');
       return new Response(
         JSON.stringify({ success: false, error: 'reCAPTCHA not configured on server' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -62,12 +62,12 @@ serve(async (req) => {
           error: 'reCAPTCHA verification failed',
           'error-codes': verifyData['error-codes']
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check if action matches (optional but recommended)
-    if (verifyData.action !== action) {
+    // Check if action matches (only when both provided)
+    if (action && verifyData.action && verifyData.action !== action) {
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -75,7 +75,7 @@ serve(async (req) => {
           expected: action,
           received: verifyData.action
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -89,7 +89,7 @@ serve(async (req) => {
           score: verifyData.score,
           minScore
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
