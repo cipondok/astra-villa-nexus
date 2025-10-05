@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useCaptcha } from "@/hooks/useCaptcha";
-import { verifyCaptchaToken } from "@/utils/captchaVerification";
+import { SimpleCaptcha, useCaptcha } from "@/components/captcha/SimpleCaptcha";
+import { validateCaptcha } from "@/utils/captchaGenerator";
 import { validateIndonesianPhone, formatIndonesianPhone } from "@/utils/phoneValidation";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -14,38 +14,35 @@ import { z } from "zod";
 const PartnerNetwork = () => {
   const { language } = useLanguage();
   const { toast } = useToast();
-  const { executeRecaptcha, isAvailable } = useCaptcha();
-  const [captchaEnabled, setCaptchaEnabled] = useState(true);
+  const { captchaCode, refreshCaptcha } = useCaptcha();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     company: "",
-    message: ""
+    message: "",
+    captchaInput: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    // Check if captcha is enabled
-    const checkCaptchaSettings = async () => {
-      const { data } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('key', 'captcha_enabled')
-        .single();
-      
-      if (data) {
-        setCaptchaEnabled(data.value === true || data.value === 'true');
-      }
-    };
-    checkCaptchaSettings();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      // Validate captcha first
+      if (!validateCaptcha(formData.captchaInput, captchaCode)) {
+        toast({
+          title: language === "en" ? "Invalid Captcha" : "Captcha Tidak Valid",
+          description: language === "en" ? "Please enter the correct captcha code." : "Silakan masukkan kode captcha yang benar.",
+          variant: "destructive",
+        });
+        refreshCaptcha();
+        setFormData({ ...formData, captchaInput: "" });
+        setIsSubmitting(false);
+        return;
+      }
+
       // Validate inputs with zod (email, phone, min words)
       const schema = z.object({
         name: z.string().trim().min(2, { message: language === "en" ? "Name must be at least 2 characters" : "Nama minimal 2 karakter" }),
@@ -65,41 +62,6 @@ const PartnerNetwork = () => {
         toast({ title: language === "en" ? "Invalid Input" : "Input Tidak Valid", description: msg, variant: "destructive" });
         setIsSubmitting(false);
         return;
-      }
-
-      // Execute captcha if enabled (require availability)
-      if (captchaEnabled) {
-        if (!isAvailable) {
-          toast({
-            title: language === "en" ? "Security Check Not Ready" : "Pemeriksaan Keamanan Belum Siap",
-            description: language === "en" ? "Please wait a moment and try again." : "Silakan tunggu sebentar lalu coba lagi.",
-            variant: "destructive",
-          });
-          setIsSubmitting(false);
-          return;
-        }
-
-        const token = await executeRecaptcha('partner_network_form');
-        if (!token) {
-          toast({
-            title: language === "en" ? "Error" : "Kesalahan",
-            description: language === "en" ? "Captcha verification failed. Please try again." : "Verifikasi captcha gagal. Silakan coba lagi.",
-            variant: "destructive",
-          });
-          setIsSubmitting(false);
-          return;
-        }
-
-        const verification = await verifyCaptchaToken(token, 'partner_network_form');
-        if (!verification.success) {
-          toast({
-            title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal",
-            description: verification.error || (language === "en" ? "Please try again later." : "Silakan coba lagi nanti."),
-            variant: "destructive",
-          });
-          setIsSubmitting(false);
-          return;
-        }
       }
 
       // Store inquiry for admin visibility
@@ -137,7 +99,8 @@ const PartnerNetwork = () => {
         description: language === "en" ? `We'll contact you soon at ${formatted}.` : `Kami akan segera menghubungi Anda di ${formatted}.`,
       });
 
-      setFormData({ name: "", email: "", phone: "", company: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", company: "", message: "", captchaInput: "" });
+      refreshCaptcha();
     } catch (error) {
       console.error('Form submission error:', error);
       toast({
@@ -360,6 +323,21 @@ const PartnerNetwork = () => {
                   placeholder={currentText.messagePlaceholder}
                   rows={5}
                   className="resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
+                </label>
+                <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
+                <Input
+                  required
+                  value={formData.captchaInput}
+                  onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
+                  placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
+                  className="h-12"
+                  maxLength={6}
                 />
               </div>
 

@@ -55,7 +55,6 @@ import PartnerNetwork from '@/pages/partners/PartnerNetwork';
 import BecomePartner from '@/pages/partners/BecomePartner';
 import PartnerBenefits from '@/pages/partners/PartnerBenefits';
 import JointVentures from '@/pages/partners/JointVentures';
-import { CaptchaProvider } from '@/contexts/CaptchaContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
 
@@ -148,22 +147,20 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
             <LanguageProvider>
-              <CaptchaProvider>
-                <AlertProvider>
-                  <AuthProvider>
-                    <NotificationProvider>
-                      <PropertyComparisonProvider>
-                        <AppInitializer>
-                          <AppContent />
-                        </AppInitializer>
-                        <Toaster />
-                        <Sonner />
-                        <CookieSystem />
-                      </PropertyComparisonProvider>
-                    </NotificationProvider>
-                  </AuthProvider>
-                </AlertProvider>
-              </CaptchaProvider>
+              <AlertProvider>
+                <AuthProvider>
+                  <NotificationProvider>
+                    <PropertyComparisonProvider>
+                      <AppInitializer>
+                        <AppContent />
+                      </AppInitializer>
+                      <Toaster />
+                      <Sonner />
+                      <CookieSystem />
+                    </PropertyComparisonProvider>
+                  </NotificationProvider>
+                </AuthProvider>
+              </AlertProvider>
             </LanguageProvider>
           </ThemeProvider>
         </QueryClientProvider>
