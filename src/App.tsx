@@ -50,7 +50,9 @@ import AddProperty from '@/pages/AddProperty';
 import ErrorPage from '@/pages/ErrorPage';
 import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
 import ForeignInvestment from '@/pages/ForeignInvestment';
+import Offers from '@/pages/Offers';
 import { useLanguage } from '@/contexts/LanguageContext';
+import CookieSystem from '@/components/cookies/CookieSystem';
 
 
 const AppContent = () => {
@@ -108,6 +110,7 @@ const AppContent = () => {
           <Route path="/calculators/area" element={<AreaUnitConverter />} />
           <Route path="/areas" element={<AreaGuides />} />
           <Route path="/foreign-investment" element={<ForeignInvestment />} />
+          <Route path="/offers" element={<Offers />} />
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
@@ -145,6 +148,7 @@ function App() {
                       </AppInitializer>
                       <Toaster />
                       <Sonner />
+                      <CookieSystem />
                     </PropertyComparisonProvider>
                   </NotificationProvider>
                 </AuthProvider>
