@@ -51,6 +51,10 @@ import ErrorPage from '@/pages/ErrorPage';
 import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
 import ForeignInvestment from '@/pages/ForeignInvestment';
 import Offers from '@/pages/Offers';
+import PartnerNetwork from '@/pages/partners/PartnerNetwork';
+import BecomePartner from '@/pages/partners/BecomePartner';
+import PartnerBenefits from '@/pages/partners/PartnerBenefits';
+import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
 
@@ -111,6 +115,10 @@ const AppContent = () => {
           <Route path="/areas" element={<AreaGuides />} />
           <Route path="/foreign-investment" element={<ForeignInvestment />} />
           <Route path="/offers" element={<Offers />} />
+          <Route path="/partners/network" element={<PartnerNetwork />} />
+          <Route path="/partners/become" element={<BecomePartner />} />
+          <Route path="/partners/benefits" element={<PartnerBenefits />} />
+          <Route path="/partners/ventures" element={<JointVentures />} />
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
