@@ -1,13 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, Sparkles } from 'lucide-react';
 import GmailOfferPopup from './GmailOfferPopup';
+import { useAuth } from '@/contexts/AuthContext';
 
 const OfferRegistration = () => {
+  const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [showGmailOffer, setShowGmailOffer] = useState(false);
   const [hasShownOffer, setHasShownOffer] = useState(false);
+
+  // Auto-detect Gmail user on mount
+  useEffect(() => {
+    if (user?.email && user.email.toLowerCase().endsWith('@gmail.com') && !hasShownOffer) {
+      setEmail(user.email);
+      setShowGmailOffer(true);
+      setHasShownOffer(true);
+    }
+  }, [user, hasShownOffer]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
