@@ -264,6 +264,13 @@ export const navigationSections = {
       description: "Configure global system settings"
     },
     {
+      key: "captcha-settings",
+      label: "Captcha Security",
+      icon: Shield,
+      description: "Configure reCAPTCHA v3 protection for forms",
+      badge: "New"
+    },
+    {
       key: "smtp-settings",
       label: "SMTP Settings",
       icon: Mail,

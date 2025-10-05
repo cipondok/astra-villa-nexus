@@ -51,6 +51,7 @@ import ProjectProgressReport from "./ProjectProgressReport";
 import HomepageSliderSettings from "./HomepageSliderSettings";
 import ProjectMapVisualization from "./ProjectMapVisualization";
 import CookieConsentSettings from "./CookieConsentSettings";
+import CaptchaSettings from "./CaptchaSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -163,6 +164,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ProjectMapVisualization />;
       case "cookie-settings":
         return <CookieConsentSettings />;
+      case "captcha-settings":
+        return <CaptchaSettings />;
       default:
         return <AdminOverview />;
     }

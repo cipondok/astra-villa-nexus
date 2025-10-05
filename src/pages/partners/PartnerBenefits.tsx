@@ -3,12 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useCaptcha } from "@/hooks/useCaptcha";
+import { verifyCaptchaToken } from "@/utils/captchaVerification";
+import { supabase } from "@/integrations/supabase/client";
 
 const PartnerBenefits = () => {
   const { language } = useLanguage();
   const { toast } = useToast();
+  const { executeRecaptcha, isAvailable } = useCaptcha();
+  const [captchaEnabled, setCaptchaEnabled] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,21 +22,74 @@ const PartnerBenefits = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    const checkCaptchaSettings = async () => {
+      const { data } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'captcha_enabled')
+        .single();
+      
+      if (data) {
+        setCaptchaEnabled(data.value === true || data.value === 'true');
+      }
+    };
+    checkCaptchaSettings();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: language === "en" ? "Request Submitted!" : "Permintaan Terkirim!",
-      description: language === "en" 
-        ? "We'll send you detailed benefit information soon." 
-        : "Kami akan mengirimkan informasi manfaat detail segera.",
-    });
-    
-    setFormData({ name: "", email: "", phone: "", message: "" });
-    setIsSubmitting(false);
+    try {
+      if (captchaEnabled && isAvailable) {
+        const token = await executeRecaptcha('partner_benefits_form');
+        
+        if (!token) {
+          toast({
+            title: language === "en" ? "Error" : "Kesalahan",
+            description: language === "en" 
+              ? "Captcha verification failed. Please try again." 
+              : "Verifikasi captcha gagal. Silakan coba lagi.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        const verification = await verifyCaptchaToken(token, 'partner_benefits_form');
+        
+        if (!verification.success) {
+          toast({
+            title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal",
+            description: verification.error || (language === "en" ? "Please try again later." : "Silakan coba lagi nanti."),
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: language === "en" ? "Request Submitted!" : "Permintaan Terkirim!",
+        description: language === "en" 
+          ? "We'll send you detailed benefit information soon." 
+          : "Kami akan mengirimkan informasi manfaat detail segera.",
+      });
+      
+      setFormData({ name: "", email: "", phone: "", message: "" });
+    } catch (error) {
+      console.error('Form submission error:', error);
+      toast({
+        title: language === "en" ? "Error" : "Kesalahan",
+        description: language === "en" ? "Something went wrong. Please try again." : "Terjadi kesalahan. Silakan coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const text = {
