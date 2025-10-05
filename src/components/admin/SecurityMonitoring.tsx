@@ -18,57 +18,64 @@ const SecurityMonitoring = () => {
   const { data: errorLogs, isLoading: logsLoading } = useQuery({
     queryKey: ['error-logs', searchTerm, severityFilter],
     queryFn: async () => {
-      let query = supabase
-        .from('system_error_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
+      try {
+        let query = supabase
+          .from('system_error_logs')
+          .select('id,error_message,error_type,severity,request_url,created_at,is_resolved,stack_trace')
+          .order('created_at', { ascending: false })
+          .limit(100);
 
-      if (searchTerm) {
-        query = query.or(`error_message.ilike.%${searchTerm}%,error_type.ilike.%${searchTerm}%`);
+        if (searchTerm) {
+          query = query.or(`error_message.ilike.%${searchTerm}%,error_type.ilike.%${searchTerm}%`);
+        }
+
+        if (severityFilter !== 'all') {
+          query = query.eq('severity', severityFilter);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data ?? [];
+      } catch (err) {
+        console.error('Error fetching system_error_logs:', err);
+        return [];
       }
-
-      if (severityFilter !== 'all') {
-        query = query.eq('severity', severityFilter);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
     },
   });
 
   const { data: activityLogs, isLoading: activityLoading } = useQuery({
     queryKey: ['activity-logs'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_activity_logs')
-        .select(`
-          *,
-          user:profiles!user_activity_logs_user_id_fkey(full_name, email)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(100);
-      
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from('user_activity_logs')
+          .select('id,user_id,activity_type,description,ip_address,created_at')
+          .order('created_at', { ascending: false })
+          .limit(100);
+        if (error) throw error;
+        return data ?? [];
+      } catch (err) {
+        console.error('Error fetching user_activity_logs:', err);
+        return [];
+      }
     },
   });
 
   const { data: sessions, isLoading: sessionsLoading } = useQuery({
     queryKey: ['user-sessions'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_sessions')
-        .select(`
-          *,
-          user:profiles!user_sessions_user_id_fkey(full_name, email)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(50);
-      
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from('user_sessions')
+          .select('id,user_id,is_active,ip_address,user_agent,created_at,expires_at')
+          .order('created_at', { ascending: false })
+          .limit(50);
+        if (error) throw error;
+        return data ?? [];
+      } catch (err) {
+        console.error('Error fetching user_sessions:', err);
+        return [];
+      }
     },
   });
 
@@ -245,8 +252,7 @@ const SecurityMonitoring = () => {
                         <TableRow key={log.id}>
                           <TableCell>
                             <div className="space-y-1">
-                              <div className="font-medium">{String(log.user?.full_name || 'Unknown')}</div>
-                              <div className="text-sm text-muted-foreground">{String(log.user?.email || '')}</div>
+                              <div className="font-medium">{String(log.user_id || 'Unknown')}</div>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -306,8 +312,7 @@ const SecurityMonitoring = () => {
                         <TableRow key={session.id}>
                           <TableCell>
                             <div className="space-y-1">
-                              <div className="font-medium">{String(session.user?.full_name || 'Unknown')}</div>
-                              <div className="text-sm text-muted-foreground">{String(session.user?.email || '')}</div>
+                              <div className="font-medium">{String(session.user_id || 'Unknown')}</div>
                             </div>
                           </TableCell>
                           <TableCell>
