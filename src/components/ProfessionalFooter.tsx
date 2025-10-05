@@ -1,19 +1,12 @@
 
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp, ArrowUpRight } from "lucide-react";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
 }
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
-  const [isPartnerNetworkOpen, setIsPartnerNetworkOpen] = useState(false);
-  const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
-  const [isPartnerBenefitsOpen, setIsPartnerBenefitsOpen] = useState(false);
-  const [isJointVenturesOpen, setIsJointVenturesOpen] = useState(false);
 
   const text = {
     en: {
@@ -97,73 +90,109 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const currentText = text[language];
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-4">
+    <footer className="relative bg-gradient-to-b from-background via-background to-muted/30 border-t border-border/50">
+      {/* Backdrop blur effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-accent/5 pointer-events-none" />
+      
+      <div className="container relative mx-auto px-4 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Rocket className="w-4 h-4 text-blue-400" />
-              <span className="text-base font-bold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-primary to-accent rounded-xl shadow-lg">
+                <Rocket className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold gradient-text">
                 {currentText.company}
               </span>
             </div>
-            <p className="text-gray-300 text-xs leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               {currentText.tagline}
             </p>
             
             {/* Contact Info */}
-            <div className="space-y-1 text-xs">
-              <div className="flex items-center space-x-2 text-gray-300">
-                <Phone className="w-3 h-3" />
+            <div className="space-y-3 text-sm">
+              <a href="tel:+622112345678" className="flex items-center space-x-3 text-muted-foreground hover:text-primary transition-colors group">
+                <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
+                  <Phone className="w-4 h-4" />
+                </div>
                 <span>+62 21 1234 5678</span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-300">
-                <Mail className="w-3 h-3" />
+              </a>
+              <a href="mailto:info@astravilla.com" className="flex items-center space-x-3 text-muted-foreground hover:text-primary transition-colors group">
+                <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
+                  <Mail className="w-4 h-4" />
+                </div>
                 <span>info@astravilla.com</span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-300">
-                <MapPin className="w-3 h-3" />
+              </a>
+              <div className="flex items-center space-x-3 text-muted-foreground">
+                <div className="p-2 bg-muted rounded-lg">
+                  <MapPin className="w-4 h-4" />
+                </div>
                 <span>Jakarta, Indonesia</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold">{currentText.quickLinks}</h3>
-            <ul className="space-y-1 text-xs">
-              <li><a href="/" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.home}</a></li>
-              <li><a href="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.properties}</a></li>
-              <li><a href="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.buy}</a></li>
-              <li><a href="/disewa" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.rent}</a></li>
-              <li><a href="/about" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.about}</a></li>
+          <div className="space-y-4">
+            <h3 className="text-base font-bold text-foreground">{currentText.quickLinks}</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
+                  <ArrowUpRight className="w-3 h-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {currentText.home}
+                </Link>
+              </li>
+              <li>
+                <Link to="/dijual" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
+                  <ArrowUpRight className="w-3 h-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {currentText.properties}
+                </Link>
+              </li>
+              <li>
+                <Link to="/dijual" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
+                  <ArrowUpRight className="w-3 h-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {currentText.buy}
+                </Link>
+              </li>
+              <li>
+                <Link to="/disewa" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
+                  <ArrowUpRight className="w-3 h-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {currentText.rent}
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
+                  <ArrowUpRight className="w-3 h-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {currentText.about}
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Services */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold">{currentText.services}</h3>
-            <ul className="space-y-1 text-xs">
-              <li><span className="text-gray-300">{currentText.propertySearch}</span></li>
-              <li><span className="text-gray-300">{currentText.consultation}</span></li>
-              <li><span className="text-gray-300">{currentText.valuation}</span></li>
-              <li><span className="text-gray-300">{currentText.investment}</span></li>
+          <div className="space-y-4">
+            <h3 className="text-base font-bold text-foreground">{currentText.services}</h3>
+            <ul className="space-y-3 text-sm">
+              <li><span className="text-muted-foreground">{currentText.propertySearch}</span></li>
+              <li><span className="text-muted-foreground">{currentText.consultation}</span></li>
+              <li><span className="text-muted-foreground">{currentText.valuation}</span></li>
+              <li><span className="text-muted-foreground">{currentText.investment}</span></li>
             </ul>
           </div>
 
           {/* Newsletter */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold">{currentText.newsletter}</h3>
-            <p className="text-gray-300 text-xs">{currentText.newsletterText}</p>
-            <div className="space-y-1">
+          <div className="space-y-4">
+            <h3 className="text-base font-bold text-foreground">{currentText.newsletter}</h3>
+            <p className="text-muted-foreground text-sm">{currentText.newsletterText}</p>
+            <div className="space-y-3">
               <input
                 type="email"
                 placeholder={currentText.emailPlaceholder}
-                className="w-full px-2 py-1 bg-gray-800 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 text-xs"
+                className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
               />
-              <button className="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-1 px-2 rounded hover:from-blue-700 hover:to-orange-600 transition-all duration-300 text-xs font-medium">
+              <button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground py-2.5 px-4 rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-300 text-sm font-semibold">
                 {currentText.subscribe}
               </button>
             </div>
@@ -171,201 +200,116 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </div>
 
         {/* Business Partners Section */}
-        <div className="border-t border-gray-800 pt-4 pb-4">
-          <div className="text-center mb-4">
-            <h2 className="text-lg font-bold text-white mb-2 flex items-center justify-center space-x-2">
-              <Handshake className="w-5 h-5 text-blue-400" />
-              <span>{currentText.businessPartners}</span>
+        <div className="border-t border-border/50 pt-12 pb-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-primary to-accent rounded-lg">
+                <Handshake className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <span className="gradient-text">{currentText.businessPartners}</span>
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Partner Network */}
-            <div 
-              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
-              onClick={() => setIsPartnerNetworkOpen(true)}
+            <Link 
+              to="/partners/network"
+              className="group glass-card p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
-              <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-              <h3 className="text-sm font-semibold text-white mb-1">{currentText.partnerNetwork}</h3>
-              <p className="text-xs text-gray-300">Connect with our trusted network of real estate professionals</p>
-            </div>
+              <div className="p-4 bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-2xl mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <Users className="w-10 h-10 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                {currentText.partnerNetwork}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Connect with our trusted network of real estate professionals
+              </p>
+            </Link>
 
             {/* Become Partner */}
-            <div 
-              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
-              onClick={() => setIsBecomePartnerOpen(true)}
+            <Link 
+              to="/partners/become"
+              className="group glass-card p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
-              <Building2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
-              <h3 className="text-sm font-semibold text-white mb-1">{currentText.becomePartner}</h3>
-              <p className="text-xs text-gray-300">Join our partner program and grow your business with us</p>
-            </div>
+              <div className="p-4 bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-2xl mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <Building2 className="w-10 h-10 text-accent" />
+              </div>
+              <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
+                {currentText.becomePartner}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Join our partner program and grow your business with us
+              </p>
+            </Link>
 
             {/* Partner Benefits */}
-            <div 
-              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
-              onClick={() => setIsPartnerBenefitsOpen(true)}
+            <Link 
+              to="/partners/benefits"
+              className="group glass-card p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
-              <TrendingUp className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-              <h3 className="text-sm font-semibold text-white mb-1">{currentText.partnerBenefits}</h3>
-              <p className="text-xs text-gray-300">Exclusive benefits and rewards for our valued partners</p>
-            </div>
+              <div className="p-4 bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-2xl mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-10 h-10 text-purple-500" />
+              </div>
+              <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-purple-500 transition-colors">
+                {currentText.partnerBenefits}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Exclusive benefits and rewards for our valued partners
+              </p>
+            </Link>
 
             {/* Joint Ventures */}
-            <div 
-              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
-              onClick={() => setIsJointVenturesOpen(true)}
+            <Link 
+              to="/partners/ventures"
+              className="group glass-card p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
-              <Handshake className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-              <h3 className="text-sm font-semibold text-white mb-1">{currentText.jointVentures}</h3>
-              <p className="text-xs text-gray-300">Explore joint venture opportunities in real estate</p>
-            </div>
+              <div className="p-4 bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-2xl mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <Handshake className="w-10 h-10 text-orange-500" />
+              </div>
+              <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-orange-500 transition-colors">
+                {currentText.jointVentures}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Explore joint venture opportunities in real estate
+              </p>
+            </Link>
           </div>
         </div>
 
         {/* Social Media & Bottom Bar */}
-        <div className="border-t border-gray-800 pt-2">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-1 md:space-y-0">
+        <div className="border-t border-border/50 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Social Media */}
             <div className="flex space-x-3">
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Facebook className="w-4 h-4" />
+              <a href="#" className="p-2.5 bg-muted hover:bg-primary/10 rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Twitter className="w-4 h-4" />
+              <a href="#" className="p-2.5 bg-muted hover:bg-primary/10 rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Instagram className="w-4 h-4" />
+              <a href="#" className="p-2.5 bg-muted hover:bg-primary/10 rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Youtube className="w-4 h-4" />
+              <a href="#" className="p-2.5 bg-muted hover:bg-primary/10 rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Youtube className="w-5 h-5" />
               </a>
             </div>
 
             {/* Copyright */}
             <div className="text-center md:text-right">
-              <p className="text-gray-400 text-xs">
+              <p className="text-muted-foreground text-sm font-medium">
                 © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
               </p>
-              <div className="flex flex-wrap justify-center md:justify-end space-x-3 mt-1 text-xs">
-                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">{currentText.privacy}</a>
-                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">{currentText.terms}</a>
-                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">{currentText.cookies}</a>
+              <div className="flex flex-wrap justify-center md:justify-end space-x-4 mt-2 text-sm">
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">{currentText.privacy}</a>
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">{currentText.terms}</a>
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">{currentText.cookies}</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Partner Network Dialog */}
-      <Dialog open={isPartnerNetworkOpen} onOpenChange={setIsPartnerNetworkOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Users className="w-6 h-6 text-blue-400" />
-              {currentText.partnerNetwork}
-            </DialogTitle>
-            <DialogDescription>
-              Connect with our trusted network of real estate professionals
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <p className="text-sm text-muted-foreground">
-              Join our extensive network of verified real estate partners including agents, developers, and service providers.
-            </p>
-            <ul className="space-y-2 text-sm">
-              <li>✓ Access to verified professionals</li>
-              <li>✓ Collaborative opportunities</li>
-              <li>✓ Shared resources and tools</li>
-              <li>✓ Regular networking events</li>
-            </ul>
-            <Button className="w-full">Learn More</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Become Partner Dialog */}
-      <Dialog open={isBecomePartnerOpen} onOpenChange={setIsBecomePartnerOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Building2 className="w-6 h-6 text-green-400" />
-              {currentText.becomePartner}
-            </DialogTitle>
-            <DialogDescription>
-              Join our partner program and grow your business with us
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <p className="text-sm text-muted-foreground">
-              Become a valued partner and unlock exclusive opportunities to expand your real estate business.
-            </p>
-            <ul className="space-y-2 text-sm">
-              <li>✓ Exclusive lead generation</li>
-              <li>✓ Marketing support and resources</li>
-              <li>✓ Advanced analytics dashboard</li>
-              <li>✓ Dedicated partner manager</li>
-            </ul>
-            <Button className="w-full">Apply Now</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Partner Benefits Dialog */}
-      <Dialog open={isPartnerBenefitsOpen} onOpenChange={setIsPartnerBenefitsOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-purple-400" />
-              {currentText.partnerBenefits}
-            </DialogTitle>
-            <DialogDescription>
-              Exclusive benefits and rewards for our valued partners
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <p className="text-sm text-muted-foreground">
-              Enjoy a comprehensive suite of benefits designed to help you succeed and grow.
-            </p>
-            <ul className="space-y-2 text-sm">
-              <li>✓ Competitive commission structure</li>
-              <li>✓ Priority customer support</li>
-              <li>✓ Training and development programs</li>
-              <li>✓ Performance-based rewards</li>
-              <li>✓ Co-marketing opportunities</li>
-            </ul>
-            <Button className="w-full">View Full Benefits</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Joint Ventures Dialog */}
-      <Dialog open={isJointVenturesOpen} onOpenChange={setIsJointVenturesOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Handshake className="w-6 h-6 text-orange-400" />
-              {currentText.jointVentures}
-            </DialogTitle>
-            <DialogDescription>
-              Explore joint venture opportunities in real estate
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <p className="text-sm text-muted-foreground">
-              Partner with us on strategic real estate development projects and investment opportunities.
-            </p>
-            <ul className="space-y-2 text-sm">
-              <li>✓ Co-development opportunities</li>
-              <li>✓ Investment partnerships</li>
-              <li>✓ Risk-sharing arrangements</li>
-              <li>✓ Shared expertise and resources</li>
-              <li>✓ Long-term strategic partnerships</li>
-            </ul>
-            <Button className="w-full">Explore Opportunities</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
     </footer>
   );
 };
