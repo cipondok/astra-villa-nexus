@@ -49,6 +49,7 @@ import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
 import ProjectProgressReport from "./ProjectProgressReport";
 import HomepageSliderSettings from "./HomepageSliderSettings";
+import ProjectMapVisualization from "./ProjectMapVisualization";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -157,6 +158,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AlgorithmDashboard />;
       case "notifications-center":
         return <AdminNotificationsCenter />;
+      case "project-map":
+        return <ProjectMapVisualization />;
       default:
         return <AdminOverview />;
     }

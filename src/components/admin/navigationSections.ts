@@ -37,7 +37,8 @@ import {
   Search,
   HelpCircle,
   Bell,
-  ImageIcon
+  ImageIcon,
+  Map
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -70,6 +71,13 @@ export const navigationSections = {
       label: "Dashboard Overview", 
       icon: Home,
       description: "Main dashboard overview and quick stats"
+    },
+    {
+      key: "project-map",
+      label: "Project Map",
+      icon: Map,
+      description: "Complete visualization of project structure, database, and code analysis",
+      badge: "New"
     }
   ],
 
