@@ -105,7 +105,7 @@ const AstraVillaFeatures = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} index={index} />
           ))}
@@ -167,26 +167,41 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
       />
 
       {/* Card Content */}
-      <div className="relative p-3 md:p-4 h-full flex flex-col">
+      <div className="relative p-4 md:p-6 h-full flex flex-col">
         {/* Icon Container with AI Badge */}
-        <div className="relative mb-2 md:mb-3">
+        <div className="relative mb-3 md:mb-4 flex items-center justify-center">
           <div className={cn(
-            'w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center overflow-hidden',
-            'transition-all duration-300 group-hover:scale-110',
-            feature.bgGradient
+            'relative w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center',
+            'transition-all duration-500 group-hover:scale-110 group-hover:rotate-3',
+            'bg-white/80 dark:bg-background/80 backdrop-blur-sm',
+            'border-2 border-border/30 dark:border-border/50',
+            'shadow-lg group-hover:shadow-2xl',
+            'before:absolute before:inset-0 before:rounded-2xl before:opacity-0 group-hover:before:opacity-100 before:transition-opacity',
+            'before:bg-gradient-to-br',
+            `before:${feature.color}`,
+            'before:-z-10 before:blur-xl'
           )}>
             <img 
               src={feature.icon} 
               alt={feature.title}
-              className="w-6 h-6 md:w-7 md:h-7 object-contain transition-transform duration-300 group-hover:scale-110"
+              className="w-10 h-10 md:w-12 md:h-12 object-contain transition-all duration-500 group-hover:scale-110 relative z-10 drop-shadow-lg"
+              style={{
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+              }}
             />
           </div>
-          <Sparkles className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 text-amber-500 animate-pulse" />
+          <div className={cn(
+            'absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center',
+            'bg-gradient-to-br from-amber-400 to-orange-500',
+            'shadow-lg animate-pulse'
+          )}>
+            <Sparkles className="w-3 h-3 text-white" strokeWidth={3} />
+          </div>
         </div>
 
         {/* Title */}
         <h3 className={cn(
-          'text-sm md:text-base font-bold mb-1.5',
+          'text-sm md:text-base font-bold mb-2 text-center',
           'text-foreground',
           'group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:text-transparent',
           `group-hover:${feature.color}`,
@@ -196,14 +211,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
         </h3>
 
         {/* Description */}
-        <p className="text-xs text-muted-foreground leading-relaxed flex-grow line-clamp-2">
+        <p className="text-xs text-muted-foreground leading-relaxed flex-grow line-clamp-2 text-center">
           {feature.description}
         </p>
 
         {/* Hover Arrow Indicator */}
-        <div className="mt-2 flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors duration-300">
+        <div className="mt-2 flex items-center justify-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors duration-300">
           <span className="mr-1 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-            Open
+            Explore
           </span>
           <svg 
             className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" 
