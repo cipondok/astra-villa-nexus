@@ -66,7 +66,35 @@ const DatabaseErrorManager = () => {
   const fetchDatabaseErrors = async () => {
     setIsLoading(true);
     try {
-      // Get tracked errors from our persistence table
+      // Invoke diagnostics first so new errors are logged to tracking table
+      const { data: diagnosticData, error: diagnosticError } = await supabase.functions.invoke('database-diagnostics', {
+        body: { action: 'get_postgres_logs' }
+      });
+
+      if (diagnosticError) {
+        console.error('Failed to fetch diagnostics:', diagnosticError);
+      }
+
+      // Prefer tracked errors returned by the diagnostics function
+      const trackedFromFunction = diagnosticData?.tracked_errors || [];
+      if (trackedFromFunction.length > 0) {
+        const mapped: DatabaseError[] = trackedFromFunction.map((error: any) => ({
+          id: error.id,
+          error_type: error.error_type,
+          error_message: error.error_message,
+          error_severity: error.error_severity,
+          table_name: error.table_name,
+          suggested_fix: error.suggested_fix,
+          is_resolved: error.is_resolved,
+          created_at: error.first_seen_at,
+          resolved_at: error.resolved_at,
+          resolved_by: error.resolved_by
+        }));
+        setErrors(mapped);
+        return;
+      }
+
+      // Fallback: fetch directly from tracking table (in case function just inserted)
       const { data: trackedErrors, error: trackedError } = await supabase
         .from('database_error_tracking')
         .select('*')
@@ -78,17 +106,7 @@ const DatabaseErrorManager = () => {
         console.error('Failed to fetch tracked errors:', trackedError);
       }
 
-      // Also get diagnostic data to populate any new errors
-      const { data: diagnosticData, error: diagnosticError } = await supabase.functions.invoke('database-diagnostics', {
-        body: { action: 'get_postgres_logs' }
-      });
-
-      if (diagnosticError) {
-        console.error('Failed to fetch diagnostics:', diagnosticError);
-      }
-
-      // Convert tracked errors to our interface format
-      const persistentErrors: DatabaseError[] = (trackedErrors || []).map(error => ({
+      const persistentErrors: DatabaseError[] = (trackedErrors || []).map((error: any) => ({
         id: error.id,
         error_type: error.error_type,
         error_message: error.error_message,
@@ -101,15 +119,28 @@ const DatabaseErrorManager = () => {
         resolved_by: error.resolved_by
       }));
 
-      // If we have real persistent errors, use them
       if (persistentErrors.length > 0) {
         setErrors(persistentErrors);
       } else {
-        // Fallback to diagnostic mock data only if no persistent errors exist
+        // Last resort: map diagnostic logs (non-persistent) to show something meaningful
+        const logs = diagnosticData?.logs || [];
+        if (logs.length > 0) {
+          const logMapped: DatabaseError[] = logs.map((l: any) => ({
+            id: l.id,
+            error_type: 'ANALYTICS_LOG',
+            error_message: l.event_message,
+            error_severity: l.error_severity || 'ERROR',
+            table_name: null,
+            suggested_fix: undefined,
+            is_resolved: false,
+            created_at: new Date((l.timestamp || Date.now()) / 1000).toISOString()
+          }));
+          setErrors(logMapped);
+        } else {
+          setErrors([]);
+        }
         console.log('No persistent errors found, showing diagnostic data');
-        setErrors([]);
       }
-
     } catch (error) {
       console.error('Failed to fetch database errors:', error);
       setErrors([]);
