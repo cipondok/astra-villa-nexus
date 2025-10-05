@@ -166,6 +166,7 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
         { id: 'diagnostic', label: 'Diagnostics', icon: '🔍', count: '0', color: 'cyan', category: 'core' },
         { id: 'system-reports', label: 'Reports', icon: '📋', count: '24', color: 'purple', category: 'core' },
         { id: 'system-settings', label: 'System Settings', icon: '⚙️', count: '12', color: 'orange', category: 'core' },
+        { id: 'cookie-settings', label: 'Cookie Consent', icon: '🍪', count: '4', color: 'purple', category: 'core', isNew: true },
         { id: 'api-configuration', label: 'API Config', icon: '🔧', count: '8', color: 'blue', category: 'core' },
         { id: 'loading-customization', label: 'Loading Page', icon: '⏳', count: '3', color: 'purple', category: 'core' }
       ]

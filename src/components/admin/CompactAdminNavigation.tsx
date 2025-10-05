@@ -37,7 +37,8 @@ import {
   ChevronDown,
   MapPin,
   Key,
-  Brain
+  Brain,
+  Cookie
 } from "lucide-react";
 import { navigationSections } from "./navigationSections";
 
@@ -122,6 +123,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
       icon: Settings,
       items: [
         { id: "system-settings", label: "System", icon: Settings },
+        { id: "cookie-settings", label: "Cookie Consent", icon: Cookie, badge: "New" },
         { id: "api-settings", label: "API Keys", icon: Key },
         { id: "bpjs-api-settings", label: "BPJS API", icon: Shield, badge: "New" },
         { id: "smtp-settings", label: "Email Settings", icon: Mail, badge: "Updated" },

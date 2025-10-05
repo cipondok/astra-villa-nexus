@@ -50,6 +50,7 @@ import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
 import ProjectProgressReport from "./ProjectProgressReport";
 import HomepageSliderSettings from "./HomepageSliderSettings";
 import ProjectMapVisualization from "./ProjectMapVisualization";
+import CookieConsentSettings from "./CookieConsentSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -160,6 +161,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AdminNotificationsCenter />;
       case "project-map":
         return <ProjectMapVisualization />;
+      case "cookie-settings":
+        return <CookieConsentSettings />;
       default:
         return <AdminOverview />;
     }
