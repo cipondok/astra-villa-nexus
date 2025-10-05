@@ -38,45 +38,46 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
 
       {/* Cookie Banner */}
       <div className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 transition-all duration-700 ease-out",
+        "fixed bottom-0 left-0 right-0 z-50 p-3 md:p-4 transition-all duration-700 ease-out",
         show ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       )}>
-        <div className="max-w-6xl mx-auto">
-          <div className="glass-effect rounded-2xl border border-white/20 shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-br from-primary/10 via-background to-background p-6 md:p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="glass-effect rounded-xl border border-white/20 shadow-xl overflow-hidden">
+            <div className="bg-gradient-to-br from-primary/10 via-background to-background p-4 md:p-5">
               {!showCustomize ? (
                 // Main Cookie Banner
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                      <Cookie className="w-7 h-7 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                      <Cookie className="w-5 h-5 text-primary" />
                     </div>
                   </div>
                   
-                  <div className="flex-grow space-y-3">
-                    <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                  <div className="flex-grow space-y-2">
+                    <h3 className="text-base md:text-lg font-bold text-foreground">
                       Welcome to ASTRA Villa
                     </h3>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                      We use cookies to enhance your luxury browsing experience, analyze site traffic, 
-                      and personalize your villa recommendations. By accepting, you agree to our use of cookies.
+                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                      We use cookies to enhance your experience. By accepting, you agree to our cookie policy.
                     </p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                  <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                     <Button
                       onClick={() => setShowCustomize(true)}
                       variant="outline"
-                      className="gap-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5"
+                      size="sm"
+                      className="gap-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5 text-xs"
                     >
-                      <Settings className="w-4 h-4" />
+                      <Settings className="w-3 h-3" />
                       Customize
                     </Button>
                     <Button
                       onClick={handleAcceptAll}
-                      className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
+                      size="sm"
+                      className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 text-xs"
                     >
-                      <Shield className="w-4 h-4" />
+                      <Shield className="w-3 h-3" />
                       Accept All
                     </Button>
                   </div>

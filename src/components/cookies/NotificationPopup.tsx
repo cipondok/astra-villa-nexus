@@ -29,12 +29,12 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
   if (!show) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-md animate-in slide-in-from-top-5 duration-500">
+    <div className="fixed top-4 right-4 z-50 max-w-sm animate-in slide-in-from-top-5 duration-500">
       <div className={cn(
-        "glass-effect rounded-2xl border border-white/20 shadow-2xl overflow-hidden transition-all duration-500",
+        "glass-effect rounded-xl border border-white/20 shadow-xl overflow-hidden transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
       )}>
-        <div className="relative bg-gradient-to-br from-primary/20 via-background to-background p-6">
+        <div className="relative bg-gradient-to-br from-primary/20 via-background to-background p-4">
           {/* Close Button */}
           <Button
             variant="ghost"
@@ -46,17 +46,17 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
           </Button>
 
           {/* Icon */}
-          <div className="flex items-start gap-4 mb-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
-              <Sparkles className="w-6 h-6 text-white" />
+          <div className="flex items-start gap-3 mb-3">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
             
             <div className="flex-grow">
-              <h3 className="text-lg font-bold text-foreground mb-2">
+              <h3 className="text-base font-bold text-foreground mb-1">
                 New Arrivals! 
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                ✨ New 3D villas added in Bali! Register now for exclusive offers.
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                ✨ New 3D villas in Bali! Register for exclusive offers.
               </p>
             </div>
           </div>
@@ -64,10 +64,11 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
           {/* CTA Button */}
           <Button
             onClick={handleNavigateToOffers}
-            className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 group"
+            size="sm"
+            className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 group text-xs"
           >
-            View Exclusive Offers
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            View Offers
+            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </div>

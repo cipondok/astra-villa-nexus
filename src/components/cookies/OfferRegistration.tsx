@@ -28,65 +28,66 @@ const OfferRegistration = () => {
 
   return (
     <>
-      <div className="w-full max-w-2xl mx-auto p-6">
-        <div className="glass-effect rounded-2xl border border-white/20 shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-br from-primary/10 via-background to-background p-8">
+      <div className="w-full max-w-xl mx-auto p-4">
+        <div className="glass-effect rounded-xl border border-white/20 shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-br from-primary/10 via-background to-background p-6">
             {/* Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 mb-4">
-                <Sparkles className="w-8 h-8 text-white" />
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/60 mb-3">
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                 Exclusive Villa Offers
               </h2>
-              <p className="text-muted-foreground text-lg">
-                Register now to receive personalized luxury villa recommendations
+              <p className="text-muted-foreground text-sm">
+                Register to receive personalized recommendations
               </p>
             </div>
 
             {/* Registration Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="email"
                   placeholder="Enter your email address"
                   value={email}
                   onChange={handleEmailChange}
                   required
-                  className="pl-12 h-14 text-base bg-background/50 border-border/50 focus:border-primary rounded-xl"
+                  className="pl-10 h-11 text-sm bg-background/50 border-border/50 focus:border-primary rounded-lg"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-14 text-base gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
+                size="sm"
+                className="w-full h-11 text-sm gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 Get Exclusive Access
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-4 h-4" />
               </Button>
             </form>
 
             {/* Benefits */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="mt-6 grid grid-cols-3 gap-3">
               {[
                 { icon: '🏝️', text: 'Bali Villas' },
-                { icon: '🎁', text: 'Special Offers' },
+                { icon: '🎁', text: 'Offers' },
                 { icon: '⚡', text: 'Early Access' }
               ].map((benefit, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-muted/30 border border-border/50"
+                  className="flex flex-col items-center gap-1 p-3 rounded-lg bg-muted/30 border border-border/50"
                 >
-                  <span className="text-3xl">{benefit.icon}</span>
-                  <span className="text-sm font-medium text-muted-foreground">{benefit.text}</span>
+                  <span className="text-2xl">{benefit.icon}</span>
+                  <span className="text-xs font-medium text-muted-foreground">{benefit.text}</span>
                 </div>
               ))}
             </div>
 
             {/* Privacy Notice */}
-            <p className="text-xs text-center text-muted-foreground mt-6">
-              By registering, you agree to receive marketing emails. Unsubscribe anytime.
+            <p className="text-xs text-center text-muted-foreground mt-4">
+              By registering, you agree to receive emails. Unsubscribe anytime.
             </p>
           </div>
         </div>
