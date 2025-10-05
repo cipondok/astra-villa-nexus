@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import CustomizableLoadingPage from './CustomizableLoadingPage';
+import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 
 interface AppInitializerProps {
   children: React.ReactNode;
@@ -8,6 +9,9 @@ interface AppInitializerProps {
 
 const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   const [initializationComplete, setInitializationComplete] = useState(false);
+  
+  // Initialize performance optimizations
+  usePerformanceOptimization();
 
   useEffect(() => {
     // Simple loading timeout

@@ -4,16 +4,36 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-// Register Service Worker for PWA - Non-blocking
+// Performance monitoring
+if (typeof window !== 'undefined' && 'performance' in window) {
+  window.addEventListener('load', () => {
+    const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    if (perfData && process.env.NODE_ENV === 'development') {
+      console.log('Performance Metrics:', {
+        'DNS': perfData.domainLookupEnd - perfData.domainLookupStart,
+        'TCP': perfData.connectEnd - perfData.connectStart,
+        'TTFB': perfData.responseStart - perfData.requestStart,
+        'Download': perfData.responseEnd - perfData.responseStart,
+        'DOM Processing': perfData.domComplete - perfData.domInteractive,
+        'Total Load': perfData.loadEventEnd - perfData.fetchStart
+      });
+    }
+  });
+}
+
+// Register Service Worker for PWA - Non-blocking with update check
 if ('serviceWorker' in navigator) {
-  // Use requestIdleCallback for better performance
   const registerSW = () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
-        // Only log in development
         if (process.env.NODE_ENV === 'development') {
           console.log('SW registered: ', registration);
         }
+        
+        // Check for updates periodically
+        setInterval(() => {
+          registration.update();
+        }, 60000); // Check every minute
       })
       .catch((registrationError) => {
         if (process.env.NODE_ENV === 'development') {
