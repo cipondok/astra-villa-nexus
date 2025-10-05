@@ -2236,6 +2236,105 @@ export type Database = {
           },
         ]
       }
+      homepage_slider_settings: {
+        Row: {
+          animation_duration: number | null
+          animation_type: string | null
+          auto_play: boolean | null
+          auto_play_delay: number | null
+          button_text_en: string | null
+          button_text_id: string | null
+          created_at: string | null
+          created_by: string | null
+          desktop_height: number | null
+          id: string
+          image_desktop: string | null
+          image_mobile: string | null
+          image_tablet: string | null
+          image_url: string
+          is_active: boolean | null
+          link_url: string | null
+          mobile_height: number | null
+          show_navigation: boolean | null
+          show_on_desktop: boolean | null
+          show_on_mobile: boolean | null
+          show_on_tablet: boolean | null
+          show_pagination: boolean | null
+          slide_order: number
+          subtitle_en: string | null
+          subtitle_id: string | null
+          tablet_height: number | null
+          title_en: string | null
+          title_id: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          animation_duration?: number | null
+          animation_type?: string | null
+          auto_play?: boolean | null
+          auto_play_delay?: number | null
+          button_text_en?: string | null
+          button_text_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          desktop_height?: number | null
+          id?: string
+          image_desktop?: string | null
+          image_mobile?: string | null
+          image_tablet?: string | null
+          image_url: string
+          is_active?: boolean | null
+          link_url?: string | null
+          mobile_height?: number | null
+          show_navigation?: boolean | null
+          show_on_desktop?: boolean | null
+          show_on_mobile?: boolean | null
+          show_on_tablet?: boolean | null
+          show_pagination?: boolean | null
+          slide_order: number
+          subtitle_en?: string | null
+          subtitle_id?: string | null
+          tablet_height?: number | null
+          title_en?: string | null
+          title_id?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          animation_duration?: number | null
+          animation_type?: string | null
+          auto_play?: boolean | null
+          auto_play_delay?: number | null
+          button_text_en?: string | null
+          button_text_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          desktop_height?: number | null
+          id?: string
+          image_desktop?: string | null
+          image_mobile?: string | null
+          image_tablet?: string | null
+          image_url?: string
+          is_active?: boolean | null
+          link_url?: string | null
+          mobile_height?: number | null
+          show_navigation?: boolean | null
+          show_on_desktop?: boolean | null
+          show_on_mobile?: boolean | null
+          show_on_tablet?: boolean | null
+          show_pagination?: boolean | null
+          slide_order?: number
+          subtitle_en?: string | null
+          subtitle_id?: string | null
+          tablet_height?: number | null
+          title_en?: string | null
+          title_id?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       indonesian_business_categories: {
         Row: {
           category_code: string
