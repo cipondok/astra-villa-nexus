@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
 import { ChatMessage } from "../types/chatTypes";
+import { safeUUID } from "@/utils/uuid-validation";
 
 export const useChatMessages = (sessionId: string | null) => {
   const { user } = useAuth();
@@ -48,7 +49,7 @@ export const useChatMessages = (sessionId: string | null) => {
     mutationFn: async ({ sessionId, content }: { sessionId: string; content: string }) => {
       const messageData = {
         session_id: sessionId,
-        sender_user_id: user?.id,
+        sender_user_id: safeUUID(user?.id), // Validate UUID before insert
         sender_type: 'agent' as const,
         content: content.trim(),
         message_type: 'text' as const,
@@ -80,7 +81,7 @@ export const useChatMessages = (sessionId: string | null) => {
       const optimisticMessage: ChatMessage = {
         id: `temp-${Date.now()}`,
         session_id: sessionId,
-        sender_user_id: user?.id || null,
+        sender_user_id: safeUUID(user?.id), // Validate UUID
         sender_type: 'agent',
         message_type: 'text',
         content: content.trim(),

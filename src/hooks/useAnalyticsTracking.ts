@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { safeUUID } from '@/utils/uuid-validation';
 
 // Generate a visitor ID that persists in localStorage
 const getVisitorId = () => {
@@ -68,7 +69,7 @@ export const useAnalyticsTracking = () => {
         
         await supabase.from('web_analytics').insert({
           visitor_id: visitorId,
-          user_id: user?.id || null,
+          user_id: safeUUID(user?.id), // Validate UUID before insert
           page_path: location.pathname + location.search,
           referrer: document.referrer || null,
           user_agent: navigator.userAgent,
@@ -93,7 +94,7 @@ export const useAnalyticsTracking = () => {
       
       await supabase.from('search_analytics').insert({
         visitor_id: visitorId,
-        user_id: user?.id || null,
+        user_id: safeUUID(user?.id), // Validate UUID before insert
         search_query: searchQuery,
         search_filters: filters || null,
         results_count: resultsCount || null,

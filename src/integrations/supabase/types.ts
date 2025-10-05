@@ -5428,7 +5428,7 @@ export type Database = {
           is_read: boolean | null
           location_data: Json | null
           message: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           alert_type: string
@@ -5439,7 +5439,7 @@ export type Database = {
           is_read?: boolean | null
           location_data?: Json | null
           message: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           alert_type?: string
@@ -5450,7 +5450,7 @@ export type Database = {
           is_read?: boolean | null
           location_data?: Json | null
           message?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
