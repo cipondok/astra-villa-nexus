@@ -48,6 +48,7 @@ import UserExperienceTips from "./UserExperienceTips";
 import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
 import ProjectProgressReport from "./ProjectProgressReport";
+import HomepageSliderSettings from "./HomepageSliderSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -86,6 +87,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ContactManagement />;
       case "vendors-hub":
         return <VendorsHubContent />;
+      case "homepage-slider":
+        return <HomepageSliderSettings />;
       case "content-management":
         return <ContentManagement />;
       case "search-filters":

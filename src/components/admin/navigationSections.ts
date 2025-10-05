@@ -36,7 +36,8 @@ import {
   ArrowLeftRight,
   Search,
   HelpCircle,
-  Bell
+  Bell,
+  ImageIcon
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -226,6 +227,13 @@ export const navigationSections = {
   ],
 
   "content-settings": [
+    {
+      key: "homepage-slider",
+      label: "Homepage Slider",
+      icon: ImageIcon,
+      description: "Manage main page slider images and settings for different devices",
+      badge: "New"
+    },
     {
       key: "content-management",
       label: "Content Management",
