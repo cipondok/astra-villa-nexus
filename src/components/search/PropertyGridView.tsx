@@ -195,8 +195,8 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-2 space-y-1 flex-1 flex flex-col justify-between bg-transparent">
-            <div className="space-y-2 flex-1">
+          <CardContent className="p-2 space-y-1 flex-1 flex flex-col bg-transparent">
+            <div className="space-y-1.5">
               {/* Title */}
               <h3 className="font-semibold text-foreground line-clamp-2 text-sm leading-tight group-hover:text-primary transition-colors">
                 {property.title}
@@ -210,7 +210,7 @@ const PropertyGridView = ({
 
               {/* Property Details */}
               {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
                   <div className="flex items-center gap-2">
                     {property.bedrooms && (
                       <div className="flex items-center gap-1">
