@@ -1,13 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-
-// UUID validation helper
-const isValidUUID = (uuid: string | undefined | null): boolean => {
-  if (!uuid) return false;
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(uuid);
-};
+import { isValidUUID } from '@/utils/uuid-validation';
 
 export const useAdminCheck = () => {
   const { user, profile } = useAuth();
