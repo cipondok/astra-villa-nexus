@@ -420,7 +420,7 @@ const ProjectMapVisualization = () => {
                     <li>✓ All user tables have RLS enabled</li>
                     <li>✓ Authentication properly configured</li>
                     <li>✓ API keys secured in vault</li>
-                    <li>⚠ 2 tables need policy review</li>
+                    <li>⚠ Some functions need search_path set</li>
                   </ul>
                 </div>
               </CardContent>
