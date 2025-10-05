@@ -29,7 +29,7 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
   if (!show) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-sm animate-in slide-in-from-top-5 duration-500">
+    <div className="fixed top-20 right-4 z-[9999] max-w-sm animate-in slide-in-from-top-5 duration-500">
       <div className={cn(
         "glass-effect rounded-xl border border-white/20 shadow-xl overflow-hidden transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
