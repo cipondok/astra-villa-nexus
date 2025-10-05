@@ -1,59 +1,42 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface VerifyCaptchaRequest {
+interface VerifyRequest {
   token: string;
   action: string;
 }
 
-interface RecaptchaResponse {
-  success: boolean;
-  score: number;
-  action: string;
-  challenge_ts: string;
-  hostname: string;
-  'error-codes'?: string[];
-}
-
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { token, action } = await req.json() as VerifyCaptchaRequest;
-
+    const { token, action }: VerifyRequest = await req.json();
+    
     if (!token) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Token is required' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ success: false, error: 'No token provided' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Get secret key from environment
     const secretKey = Deno.env.get('RECAPTCHA_SECRET_KEY');
     
     if (!secretKey) {
       console.error('RECAPTCHA_SECRET_KEY not configured');
       return new Response(
-        JSON.stringify({ success: false, error: 'Captcha verification not configured' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ success: false, error: 'reCAPTCHA not configured on server' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Verify the token with Google reCAPTCHA
-    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
+    // Verify token with Google reCAPTCHA API
+    const verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
     const verifyResponse = await fetch(verifyUrl, {
       method: 'POST',
       headers: {
@@ -62,74 +45,72 @@ serve(async (req) => {
       body: `secret=${secretKey}&response=${token}`,
     });
 
-    const verifyData = await verifyResponse.json() as RecaptchaResponse;
+    const verifyData = await verifyResponse.json();
+
+    console.log('reCAPTCHA verification:', {
+      success: verifyData.success,
+      score: verifyData.score,
+      action: verifyData.action,
+      expectedAction: action,
+    });
 
     // Check if verification was successful
     if (!verifyData.success) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Captcha verification failed',
-          errorCodes: verifyData['error-codes']
+          error: 'reCAPTCHA verification failed',
+          'error-codes': verifyData['error-codes']
         }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check score (reCAPTCHA v3 returns a score from 0.0 to 1.0)
-    // 0.0 is very likely a bot, 1.0 is very likely a human
-    const minimumScore = 0.5;
-    if (verifyData.score < minimumScore) {
+    // Check if action matches (optional but recommended)
+    if (verifyData.action !== action) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Captcha score too low',
-          score: verifyData.score 
+          error: 'Action mismatch',
+          expected: action,
+          received: verifyData.action
         }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Verify action matches
-    if (action && verifyData.action !== action) {
+    // Check score (for reCAPTCHA v3, score should be >= 0.5)
+    const minScore = 0.5;
+    if (verifyData.score < minScore) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Action mismatch' 
+          error: 'Low reCAPTCHA score',
+          score: verifyData.score,
+          minScore
         }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // All checks passed
     return new Response(
       JSON.stringify({ 
-        success: true, 
+        success: true,
         score: verifyData.score,
-        action: verifyData.action 
+        action: verifyData.action
       }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
-    console.error('Error verifying captcha:', error);
+  } catch (error: any) {
+    console.error('Error verifying reCAPTCHA:', error);
     return new Response(
-      JSON.stringify({ success: false, error: 'Internal server error' }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      JSON.stringify({ 
+        success: false, 
+        error: 'Internal server error',
+        message: error.message 
+      }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
