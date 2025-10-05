@@ -7,8 +7,9 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptcha } from "@/hooks/useCaptcha";
 import { verifyCaptchaToken } from "@/utils/captchaVerification";
-import { validateIndonesianPhone } from "@/utils/phoneValidation";
+import { validateIndonesianPhone, formatIndonesianPhone } from "@/utils/phoneValidation";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
 
 const PartnerNetwork = () => {
   const { language } = useLanguage();
@@ -43,41 +44,53 @@ const PartnerNetwork = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
-      // Validate Indonesian phone number
-      const phoneValidation = validateIndonesianPhone(formData.phone);
-      if (!phoneValidation.isValid) {
-        toast({
-          title: language === "en" ? "Invalid Phone Number" : "Nomor Telepon Tidak Valid",
-          description: phoneValidation.message || (language === "en" 
-            ? "Please enter a valid Indonesian phone number" 
-            : "Silakan masukkan nomor telepon Indonesia yang valid"),
-          variant: "destructive",
-        });
+      // Validate inputs with zod (email, phone, min words)
+      const schema = z.object({
+        name: z.string().trim().min(2, { message: language === "en" ? "Name must be at least 2 characters" : "Nama minimal 2 karakter" }),
+        email: z.string().trim().email({ message: language === "en" ? "Invalid email address" : "Alamat email tidak valid" }),
+        phone: z.string().trim().refine(v => validateIndonesianPhone(v).isValid, {
+          message: language === "en" ? "Please enter a valid Indonesian phone number" : "Silakan masukkan nomor telepon Indonesia yang valid",
+        }),
+        company: z.string().trim().min(2, { message: language === "en" ? "Company name must be at least 2 characters" : "Nama perusahaan minimal 2 karakter" }),
+        message: z.string().trim().refine(v => v.split(/\s+/).filter(Boolean).length >= 10, {
+          message: language === "en" ? "Please write at least 10 words" : "Harap tulis minimal 10 kata",
+        }),
+      });
+
+      const parsed = schema.safeParse(formData);
+      if (!parsed.success) {
+        const msg = parsed.error.errors[0]?.message || (language === "en" ? "Please check your inputs" : "Periksa input Anda");
+        toast({ title: language === "en" ? "Invalid Input" : "Input Tidak Valid", description: msg, variant: "destructive" });
         setIsSubmitting(false);
         return;
       }
 
-      // Execute captcha if enabled
-      if (captchaEnabled && isAvailable) {
-        const token = await executeRecaptcha('partner_network_form');
-        
-        if (!token) {
+      // Execute captcha if enabled (require availability)
+      if (captchaEnabled) {
+        if (!isAvailable) {
           toast({
-            title: language === "en" ? "Error" : "Kesalahan",
-            description: language === "en" 
-              ? "Captcha verification failed. Please try again." 
-              : "Verifikasi captcha gagal. Silakan coba lagi.",
+            title: language === "en" ? "Security Check Not Ready" : "Pemeriksaan Keamanan Belum Siap",
+            description: language === "en" ? "Please wait a moment and try again." : "Silakan tunggu sebentar lalu coba lagi.",
             variant: "destructive",
           });
           setIsSubmitting(false);
           return;
         }
 
-        // Verify on backend
+        const token = await executeRecaptcha('partner_network_form');
+        if (!token) {
+          toast({
+            title: language === "en" ? "Error" : "Kesalahan",
+            description: language === "en" ? "Captcha verification failed. Please try again." : "Verifikasi captcha gagal. Silakan coba lagi.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
         const verification = await verifyCaptchaToken(token, 'partner_network_form');
-        
         if (!verification.success) {
           toast({
             title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal",
@@ -89,16 +102,41 @@ const PartnerNetwork = () => {
         }
       }
 
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Store inquiry for admin visibility
+      const { data: inserted, error: insertError } = await supabase
+        .from('inquiries')
+        .insert([
+          {
+            inquiry_type: 'partner_network',
+            subject: `Partner Network Application - ${formData.name}${formData.company ? ` (${formData.company})` : ''}`,
+            message: formData.message,
+            contact_email: formData.email,
+            contact_phone: formData.phone,
+            status: 'new',
+          },
+        ])
+        .select('id')
+        .single();
+
+      if (insertError) throw insertError;
+
+      // Send acknowledgement email to user
+      await supabase.functions.invoke('send-inquiry-email', {
+        body: {
+          inquiry_id: inserted.id,
+          customer_email: formData.email,
+          customer_name: formData.name,
+          inquiry_type: 'partner_network',
+          message: formData.message,
+        },
+      });
+
+      const formatted = formatIndonesianPhone(formData.phone);
       toast({
         title: language === "en" ? "Application Submitted!" : "Aplikasi Terkirim!",
-        description: language === "en" 
-          ? "We'll contact you within 24 hours." 
-          : "Kami akan menghubungi Anda dalam 24 jam.",
+        description: language === "en" ? `We'll contact you soon at ${formatted}.` : `Kami akan segera menghubungi Anda di ${formatted}.`,
       });
-      
+
       setFormData({ name: "", email: "", phone: "", company: "", message: "" });
     } catch (error) {
       console.error('Form submission error:', error);

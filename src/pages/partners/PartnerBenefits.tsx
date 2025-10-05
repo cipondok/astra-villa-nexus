@@ -7,8 +7,9 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptcha } from "@/hooks/useCaptcha";
 import { verifyCaptchaToken } from "@/utils/captchaVerification";
-import { validateIndonesianPhone } from "@/utils/phoneValidation";
+import { validateIndonesianPhone, formatIndonesianPhone } from "@/utils/phoneValidation";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
 
 const PartnerBenefits = () => {
   const { language } = useLanguage();
@@ -41,67 +42,84 @@ const PartnerBenefits = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
-      // Validate Indonesian phone number
-      const phoneValidation = validateIndonesianPhone(formData.phone);
-      if (!phoneValidation.isValid) {
-        toast({
-          title: language === "en" ? "Invalid Phone Number" : "Nomor Telepon Tidak Valid",
-          description: phoneValidation.message || (language === "en" 
-            ? "Please enter a valid Indonesian phone number" 
-            : "Silakan masukkan nomor telepon Indonesia yang valid"),
-          variant: "destructive",
-        });
+      const schema = z.object({
+        name: z.string().trim().min(2, { message: language === "en" ? "Name must be at least 2 characters" : "Nama minimal 2 karakter" }),
+        email: z.string().trim().email({ message: language === "en" ? "Invalid email address" : "Alamat email tidak valid" }),
+        phone: z.string().trim().refine(v => validateIndonesianPhone(v).isValid, {
+          message: language === "en" ? "Please enter a valid Indonesian phone number" : "Silakan masukkan nomor telepon Indonesia yang valid",
+        }),
+        message: z.string().trim().refine(v => v.split(/\s+/).filter(Boolean).length >= 10, {
+          message: language === "en" ? "Please write at least 10 words" : "Harap tulis minimal 10 kata",
+        }),
+      });
+
+      const parsed = schema.safeParse(formData);
+      if (!parsed.success) {
+        const msg = parsed.error.errors[0]?.message || (language === "en" ? "Please check your inputs" : "Periksa input Anda");
+        toast({ title: language === "en" ? "Invalid Input" : "Input Tidak Valid", description: msg, variant: "destructive" });
         setIsSubmitting(false);
         return;
       }
 
-      if (captchaEnabled && isAvailable) {
-        const token = await executeRecaptcha('partner_benefits_form');
-        
-        if (!token) {
-          toast({
-            title: language === "en" ? "Error" : "Kesalahan",
-            description: language === "en" 
-              ? "Captcha verification failed. Please try again." 
-              : "Verifikasi captcha gagal. Silakan coba lagi.",
-            variant: "destructive",
-          });
+      if (captchaEnabled) {
+        if (!isAvailable) {
+          toast({ title: language === "en" ? "Security Check Not Ready" : "Pemeriksaan Keamanan Belum Siap", description: language === "en" ? "Please wait a moment and try again." : "Silakan tunggu sebentar lalu coba lagi.", variant: "destructive" });
           setIsSubmitting(false);
           return;
         }
-
+        const token = await executeRecaptcha('partner_benefits_form');
+        if (!token) {
+          toast({ title: language === "en" ? "Error" : "Kesalahan", description: language === "en" ? "Captcha verification failed. Please try again." : "Verifikasi captcha gagal. Silakan coba lagi.", variant: "destructive" });
+          setIsSubmitting(false);
+          return;
+        }
         const verification = await verifyCaptchaToken(token, 'partner_benefits_form');
-        
         if (!verification.success) {
-          toast({
-            title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal",
-            description: verification.error || (language === "en" ? "Please try again later." : "Silakan coba lagi nanti."),
-            variant: "destructive",
-          });
+          toast({ title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal", description: verification.error || (language === "en" ? "Please try again later." : "Silakan coba lagi nanti."), variant: "destructive" });
           setIsSubmitting(false);
           return;
         }
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const { data: inserted, error: insertError } = await supabase
+        .from('inquiries')
+        .insert([
+          {
+            inquiry_type: 'partner_benefits',
+            subject: `Benefits Info Request - ${formData.name}`,
+            message: formData.message,
+            contact_email: formData.email,
+            contact_phone: formData.phone,
+            status: 'new',
+          },
+        ])
+        .select('id')
+        .single();
+
+      if (insertError) throw insertError;
+
+      await supabase.functions.invoke('send-inquiry-email', {
+        body: {
+          inquiry_id: inserted.id,
+          customer_email: formData.email,
+          customer_name: formData.name,
+          inquiry_type: 'partner_benefits',
+          message: formData.message,
+        },
+      });
+
+      const formatted = formatIndonesianPhone(formData.phone);
       toast({
         title: language === "en" ? "Request Submitted!" : "Permintaan Terkirim!",
-        description: language === "en" 
-          ? "We'll send you detailed benefit information soon." 
-          : "Kami akan mengirimkan informasi manfaat detail segera.",
+        description: language === "en" ? `We'll send details and contact you at ${formatted}.` : `Kami akan mengirimkan detail dan menghubungi Anda di ${formatted}.`,
       });
-      
+
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       console.error('Form submission error:', error);
-      toast({
-        title: language === "en" ? "Error" : "Kesalahan",
-        description: language === "en" ? "Something went wrong. Please try again." : "Terjadi kesalahan. Silakan coba lagi.",
-        variant: "destructive",
-      });
+      toast({ title: language === "en" ? "Error" : "Kesalahan", description: language === "en" ? "Something went wrong. Please try again." : "Terjadi kesalahan. Silakan coba lagi.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }

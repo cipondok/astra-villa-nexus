@@ -8,8 +8,9 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptcha } from "@/hooks/useCaptcha";
 import { verifyCaptchaToken } from "@/utils/captchaVerification";
-import { validateIndonesianPhone } from "@/utils/phoneValidation";
+import { validateIndonesianPhone, formatIndonesianPhone } from "@/utils/phoneValidation";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
 
 const BecomePartner = () => {
   const { language } = useLanguage();
@@ -45,67 +46,91 @@ const BecomePartner = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
-      // Validate Indonesian phone number
-      const phoneValidation = validateIndonesianPhone(formData.phone);
-      if (!phoneValidation.isValid) {
-        toast({
-          title: language === "en" ? "Invalid Phone Number" : "Nomor Telepon Tidak Valid",
-          description: phoneValidation.message || (language === "en" 
-            ? "Please enter a valid Indonesian phone number" 
-            : "Silakan masukkan nomor telepon Indonesia yang valid"),
-          variant: "destructive",
-        });
+      const schema = z.object({
+        name: z.string().trim().min(2, { message: language === "en" ? "Name must be at least 2 characters" : "Nama minimal 2 karakter" }),
+        email: z.string().trim().email({ message: language === "en" ? "Invalid email address" : "Alamat email tidak valid" }),
+        phone: z.string().trim().refine(v => validateIndonesianPhone(v).isValid, {
+          message: language === "en" ? "Please enter a valid Indonesian phone number" : "Silakan masukkan nomor telepon Indonesia yang valid",
+        }),
+        company: z.string().trim().min(2, { message: language === "en" ? "Company name must be at least 2 characters" : "Nama perusahaan minimal 2 karakter" }),
+        businessType: z.string().trim().min(2, { message: language === "en" ? "Select a business type" : "Pilih jenis bisnis" }),
+        experience: z.string().trim().min(1, { message: language === "en" ? "Select your experience" : "Pilih pengalaman Anda" }),
+        message: z.string().trim().refine(v => v.split(/\s+/).filter(Boolean).length >= 10, {
+          message: language === "en" ? "Please write at least 10 words" : "Harap tulis minimal 10 kata",
+        }),
+      });
+
+      const parsed = schema.safeParse(formData);
+      if (!parsed.success) {
+        const msg = parsed.error.errors[0]?.message || (language === "en" ? "Please check your inputs" : "Periksa input Anda");
+        toast({ title: language === "en" ? "Invalid Input" : "Input Tidak Valid", description: msg, variant: "destructive" });
         setIsSubmitting(false);
         return;
       }
 
-      if (captchaEnabled && isAvailable) {
-        const token = await executeRecaptcha('become_partner_form');
-        
-        if (!token) {
+      if (captchaEnabled) {
+        if (!isAvailable) {
           toast({
-            title: language === "en" ? "Error" : "Kesalahan",
-            description: language === "en" 
-              ? "Captcha verification failed. Please try again." 
-              : "Verifikasi captcha gagal. Silakan coba lagi.",
+            title: language === "en" ? "Security Check Not Ready" : "Pemeriksaan Keamanan Belum Siap",
+            description: language === "en" ? "Please wait a moment and try again." : "Silakan tunggu sebentar lalu coba lagi.",
             variant: "destructive",
           });
           setIsSubmitting(false);
           return;
         }
-
+        const token = await executeRecaptcha('become_partner_form');
+        if (!token) {
+          toast({ title: language === "en" ? "Error" : "Kesalahan", description: language === "en" ? "Captcha verification failed. Please try again." : "Verifikasi captcha gagal. Silakan coba lagi.", variant: "destructive" });
+          setIsSubmitting(false);
+          return;
+        }
         const verification = await verifyCaptchaToken(token, 'become_partner_form');
-        
         if (!verification.success) {
-          toast({
-            title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal",
-            description: verification.error || (language === "en" ? "Please try again later." : "Silakan coba lagi nanti."),
-            variant: "destructive",
-          });
+          toast({ title: language === "en" ? "Security Check Failed" : "Pemeriksaan Keamanan Gagal", description: verification.error || (language === "en" ? "Please try again later." : "Silakan coba lagi nanti."), variant: "destructive" });
           setIsSubmitting(false);
           return;
         }
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const { data: inserted, error: insertError } = await supabase
+        .from('inquiries')
+        .insert([
+          {
+            inquiry_type: 'become_partner',
+            subject: `Partner Application - ${formData.name}${formData.company ? ` (${formData.company})` : ''}`,
+            message: formData.message,
+            contact_email: formData.email,
+            contact_phone: formData.phone,
+            status: 'new',
+          },
+        ])
+        .select('id')
+        .single();
+
+      if (insertError) throw insertError;
+
+      await supabase.functions.invoke('send-inquiry-email', {
+        body: {
+          inquiry_id: inserted.id,
+          customer_email: formData.email,
+          customer_name: formData.name,
+          inquiry_type: 'become_partner',
+          message: formData.message,
+        },
+      });
+
+      const formatted = formatIndonesianPhone(formData.phone);
       toast({
         title: language === "en" ? "Application Submitted!" : "Aplikasi Terkirim!",
-        description: language === "en" 
-          ? "We'll review your application and contact you soon." 
-          : "Kami akan meninjau aplikasi Anda dan segera menghubungi Anda.",
+        description: language === "en" ? `We'll review your application and contact you at ${formatted}.` : `Kami akan meninjau aplikasi Anda dan menghubungi Anda di ${formatted}.`,
       });
-      
+
       setFormData({ name: "", email: "", phone: "", company: "", businessType: "", experience: "", message: "" });
     } catch (error) {
       console.error('Form submission error:', error);
-      toast({
-        title: language === "en" ? "Error" : "Kesalahan",
-        description: language === "en" ? "Something went wrong. Please try again." : "Terjadi kesalahan. Silakan coba lagi.",
-        variant: "destructive",
-      });
+      toast({ title: language === "en" ? "Error" : "Kesalahan", description: language === "en" ? "Something went wrong. Please try again." : "Terjadi kesalahan. Silakan coba lagi.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
