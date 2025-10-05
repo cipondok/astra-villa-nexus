@@ -9216,6 +9216,10 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_sanitized_booking_contact: {
+        Args: { p_booking_id: string; p_requester_id: string }
+        Returns: Json
+      }
       get_survey_booking_stats_secure: {
         Args: { p_property_id?: string }
         Returns: Json
