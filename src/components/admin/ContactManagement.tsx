@@ -305,11 +305,11 @@ const ContactManagement = () => {
                         <TableCell>
                           <Button
                             size="sm"
-                            variant="outline"
                             onClick={() => handleViewDetails(contact)}
+                            className="bg-primary hover:bg-primary/90"
                           >
                             <Eye className="h-4 w-4 mr-1" />
-                            View
+                            View Details
                           </Button>
                         </TableCell>
                       </TableRow>
