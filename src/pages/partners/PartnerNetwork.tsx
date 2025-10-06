@@ -203,8 +203,8 @@ const PartnerNetwork = () => {
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="bg-macos-card p-8 rounded-2xl shadow-macos border border-macos-light-gray/20">
-            <p className="text-lg text-foreground leading-relaxed">
+          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800">
+            <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
               {currentText.description}
             </p>
           </div>
@@ -215,14 +215,14 @@ const PartnerNetwork = () => {
           {currentText.features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <div key={index} className="bg-macos-card p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-macos-light-gray/20">
+              <div key={index} className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-macos-gradient rounded-xl shadow-macos">
                     <Icon className="w-8 h-8 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
-                    <p className="text-macos-gray">{feature.description}</p>
+                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{feature.title}</h3>
+                    <p className="text-neutral-600 dark:text-neutral-400">{feature.description}</p>
                   </div>
                 </div>
               </div>
