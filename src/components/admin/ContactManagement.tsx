@@ -144,17 +144,19 @@ const ContactManagement = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
-        <CardHeader>
+      <Card className="bg-gradient-to-br from-blue-950/50 via-purple-950/30 to-blue-950/50 backdrop-blur-md border-blue-500/30 shadow-xl">
+        <CardHeader className="border-b border-blue-500/20">
           <CardTitle className="flex items-center gap-2 text-white">
-            <MessageCircle className="h-5 w-5" />
+            <div className="p-2 bg-blue-600/20 rounded-lg">
+              <MessageCircle className="h-5 w-5 text-blue-400" />
+            </div>
             Contact Us System
           </CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardDescription className="text-blue-200/80">
             Manage customer inquiries and support requests
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="space-y-6">
             {/* Search and Tabs */}
             <div className="space-y-4">
@@ -162,19 +164,28 @@ const ContactManagement = () => {
                 placeholder="Search contacts by name, email, or content..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="bg-blue-950/30 border-blue-500/30 text-white placeholder:text-blue-300/50 focus:border-blue-400"
               />
               
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="bg-white/10 border-white/20">
-                  <TabsTrigger value="all" className="data-[state=active]:bg-white/20">
+                <TabsList className="bg-blue-950/50 border border-blue-500/30">
+                  <TabsTrigger 
+                    value="all" 
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                  >
                     All Inquiries
                   </TabsTrigger>
-                  <TabsTrigger value="business_partners" className="data-[state=active]:bg-white/20">
+                  <TabsTrigger 
+                    value="business_partners" 
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                  >
                     <Building2 className="h-4 w-4 mr-2" />
                     Business Partners
                   </TabsTrigger>
-                  <TabsTrigger value="general" className="data-[state=active]:bg-white/20">
+                  <TabsTrigger 
+                    value="general" 
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                  >
                     General
                   </TabsTrigger>
                 </TabsList>
@@ -183,44 +194,52 @@ const ContactManagement = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-gradient-to-br from-orange-950/40 to-orange-900/20 border-orange-500/30 hover:border-orange-500/50 transition-all">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-orange-400" />
-                    <span className="text-sm text-gray-300">Pending</span>
+                    <div className="p-2 bg-orange-500/20 rounded-lg">
+                      <Clock className="h-4 w-4 text-orange-400" />
+                    </div>
+                    <span className="text-sm text-orange-200">Pending</span>
                   </div>
                   <p className="text-2xl font-bold text-white mt-2">
                     {contacts?.filter(c => c.status === 'pending').length || 0}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-gradient-to-br from-yellow-950/40 to-yellow-900/20 border-yellow-500/30 hover:border-yellow-500/50 transition-all">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Reply className="h-4 w-4 text-yellow-400" />
-                    <span className="text-sm text-gray-300">In Progress</span>
+                    <div className="p-2 bg-yellow-500/20 rounded-lg">
+                      <Reply className="h-4 w-4 text-yellow-400" />
+                    </div>
+                    <span className="text-sm text-yellow-200">In Progress</span>
                   </div>
                   <p className="text-2xl font-bold text-white mt-2">
                     {contacts?.filter(c => c.status === 'in_progress').length || 0}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-gradient-to-br from-green-950/40 to-green-900/20 border-green-500/30 hover:border-green-500/50 transition-all">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4 text-green-400" />
-                    <span className="text-sm text-gray-300">Resolved</span>
+                    <div className="p-2 bg-green-500/20 rounded-lg">
+                      <MessageCircle className="h-4 w-4 text-green-400" />
+                    </div>
+                    <span className="text-sm text-green-200">Resolved</span>
                   </div>
                   <p className="text-2xl font-bold text-white mt-2">
                     {contacts?.filter(c => c.status === 'resolved').length || 0}
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 border-white/20">
+              <Card className="bg-gradient-to-br from-blue-950/40 to-blue-900/20 border-blue-500/30 hover:border-blue-500/50 transition-all">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-blue-400" />
-                    <span className="text-sm text-gray-300">Total</span>
+                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                      <Mail className="h-4 w-4 text-blue-400" />
+                    </div>
+                    <span className="text-sm text-blue-200">Total</span>
                   </div>
                   <p className="text-2xl font-bold text-white mt-2">
                     {contacts?.length || 0}
@@ -230,46 +249,46 @@ const ContactManagement = () => {
             </div>
 
             {/* Contacts Table */}
-            <div className="border border-white/20 rounded-lg bg-white/5">
+            <div className="border border-blue-500/30 rounded-lg bg-blue-950/20 backdrop-blur-sm overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-white/20">
-                    <TableHead className="text-gray-300">Contact</TableHead>
-                    <TableHead className="text-gray-300">Type / Department</TableHead>
-                    <TableHead className="text-gray-300">Message Preview</TableHead>
-                    <TableHead className="text-gray-300">Status</TableHead>
-                    <TableHead className="text-gray-300">Date</TableHead>
-                    <TableHead className="text-gray-300">Actions</TableHead>
+                  <TableRow className="border-blue-500/30 bg-blue-950/50 hover:bg-blue-950/50">
+                    <TableHead className="text-blue-200 font-semibold">Contact</TableHead>
+                    <TableHead className="text-blue-200 font-semibold">Type / Department</TableHead>
+                    <TableHead className="text-blue-200 font-semibold">Message Preview</TableHead>
+                    <TableHead className="text-blue-200 font-semibold">Status</TableHead>
+                    <TableHead className="text-blue-200 font-semibold">Date</TableHead>
+                    <TableHead className="text-blue-200 font-semibold">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-300">
+                      <TableCell colSpan={6} className="text-center py-8 text-blue-200">
                         Loading contacts...
                       </TableCell>
                     </TableRow>
                   ) : filteredContacts.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-300">
+                      <TableCell colSpan={6} className="text-center py-8 text-blue-200">
                         No contact inquiries found
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredContacts.map((contact) => (
-                      <TableRow key={contact.id} className="border-white/20">
+                      <TableRow key={contact.id} className="border-blue-500/20 hover:bg-blue-950/30 transition-colors">
                         <TableCell className="text-white">
                           <div className="text-sm space-y-1">
                             <div className="font-medium flex items-center gap-2">
-                              <User className="h-3 w-3" />
+                              <User className="h-3 w-3 text-blue-400" />
                               {contact.contact_name || 'Anonymous'}
                             </div>
-                            <div className="text-gray-400 flex items-center gap-1">
+                            <div className="text-blue-300/70 flex items-center gap-1">
                               <Mail className="h-3 w-3" />
                               {contact.contact_email || 'N/A'}
                             </div>
                             {contact.contact_phone && (
-                              <div className="text-gray-400 flex items-center gap-1">
+                              <div className="text-blue-300/70 flex items-center gap-1">
                                 <Phone className="h-3 w-3" />
                                 {contact.contact_phone}
                               </div>
@@ -278,20 +297,20 @@ const ContactManagement = () => {
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs border-blue-400/50 text-blue-300">
                               {contact.inquiry_type?.replace('_', ' ') || 'General'}
                             </Badge>
                             {contact.department && (
-                              <div className="text-xs text-gray-400">
+                              <div className="text-xs text-blue-300/70">
                                 Dept: {contact.department}
                               </div>
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-gray-300">
+                        <TableCell className="text-blue-200">
                           <div className="max-w-xs">
                             <div className="font-medium text-sm mb-1">{contact.subject}</div>
-                            <div className="text-xs truncate">
+                            <div className="text-xs text-blue-300/70 truncate">
                               {contact.message?.substring(0, 80)}...
                             </div>
                           </div>
@@ -299,14 +318,14 @@ const ContactManagement = () => {
                         <TableCell>
                           {getStatusBadge(contact.status)}
                         </TableCell>
-                        <TableCell className="text-gray-300">
+                        <TableCell className="text-blue-200">
                           {new Date(contact.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
                           <Button
                             size="sm"
                             onClick={() => handleViewDetails(contact)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            className="bg-blue-600 hover:bg-blue-700 text-white shadow-md"
                           >
                             <Eye className="h-4 w-4 mr-1" />
                             View Details
