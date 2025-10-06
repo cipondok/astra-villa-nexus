@@ -67,20 +67,15 @@ const PartnerNetwork = () => {
       }
 
       // Store inquiry for admin visibility
-      const { data: inserted, error: insertError } = await supabase
-        .from('inquiries')
+      const { error: insertError } = await supabase
+        .from('feedback_monitoring')
         .insert([
           {
-            inquiry_type: 'partner_network',
-            subject: `Partner Network Application - ${formData.name}${formData.company ? ` (${formData.company})` : ''}`,
-            message: formData.message,
-            contact_email: formData.email,
-            contact_phone: formData.phone,
-            status: 'new',
+            feedback_type: 'contact',
+            content: `Partner Network Application\n\nName: ${formData.name}\nCompany: ${formData.company}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`,
+            status: 'pending'
           },
-        ])
-        .select('id')
-        .single();
+        ]);
 
       if (insertError) throw insertError;
 
