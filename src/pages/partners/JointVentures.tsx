@@ -1,4 +1,4 @@
-import { Handshake, Building, Users2, PieChart, Shield, Rocket, Mail, Phone, User, DollarSign } from "lucide-react";
+import { Handshake, Building, Users2, PieChart, Shield, Rocket, Mail, Phone, User, DollarSign, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +27,8 @@ const JointVentures = () => {
     captchaInput: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [phoneValid, setPhoneValid] = useState<boolean | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -256,21 +258,21 @@ const JointVentures = () => {
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-2xl mb-6">
-            <Handshake className="w-12 h-12 text-orange-500" />
+          <div className="inline-flex items-center justify-center p-3 bg-macos-gradient rounded-2xl mb-6 shadow-macos">
+            <Handshake className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
             {currentText.title}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-macos-gray max-w-2xl mx-auto">
             {currentText.subtitle}
           </p>
         </div>
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="glass-card p-8 rounded-2xl text-center">
-            <p className="text-lg text-foreground leading-relaxed">
+          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800 text-center">
+            <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
               {currentText.description}
             </p>
           </div>
@@ -278,24 +280,24 @@ const JointVentures = () => {
 
         {/* Opportunities */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+          <h2 className="text-3xl font-bold text-center mb-12 bg-macos-gradient bg-clip-text text-transparent">
             Partnership Opportunities
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {currentText.opportunities.map((opportunity, index) => {
               const Icon = opportunity.icon;
               return (
-                <div key={index} className="glass-card p-8 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div key={index} className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="p-4 bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-2xl">
-                      <Icon className="w-8 h-8 text-orange-500" />
+                    <div className="p-4 bg-macos-gradient rounded-2xl shadow-macos">
+                      <Icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-foreground mb-2">{opportunity.title}</h3>
-                      <p className="text-muted-foreground">{opportunity.description}</p>
+                      <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{opportunity.title}</h3>
+                      <p className="text-neutral-600 dark:text-neutral-400">{opportunity.description}</p>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground pl-16">{opportunity.details}</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 pl-16">{opportunity.details}</p>
                 </div>
               );
             })}
@@ -304,15 +306,15 @@ const JointVentures = () => {
 
         {/* Advantages */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+          <h2 className="text-3xl font-bold text-center mb-12 bg-macos-gradient bg-clip-text text-transparent">
             Joint Venture Advantages
           </h2>
-          <div className="glass-card p-8 rounded-2xl max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-macos border border-neutral-200 dark:border-neutral-800 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {currentText.advantages.map((advantage, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full" />
-                  <span className="text-foreground">{advantage}</span>
+                  <div className="w-2 h-2 bg-macos-gradient rounded-full shadow-macos" />
+                  <span className="text-neutral-700 dark:text-neutral-300">{advantage}</span>
                 </div>
               ))}
             </div>
@@ -321,12 +323,12 @@ const JointVentures = () => {
 
         {/* Inquiry Form Section */}
         <div className="max-w-3xl mx-auto">
-          <div className="glass-card p-12 rounded-2xl">
+          <div className="bg-white dark:bg-neutral-900 p-12 rounded-2xl shadow-macos-hover border border-neutral-200 dark:border-neutral-800 animate-macos-window-in">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4 text-foreground">
+              <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-neutral-600 dark:text-neutral-400 text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
@@ -334,8 +336,8 @@ const JointVentures = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <User className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <User className="w-4 h-4 text-macos-blue" />
                     {currentText.namePlaceholder}
                   </label>
                   <Input
@@ -343,43 +345,79 @@ const JointVentures = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder={currentText.namePlaceholder}
-                    className="h-12"
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-macos-blue" />
                     {currentText.emailPlaceholder}
                   </label>
-                  <Input
-                    required
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder={currentText.emailPlaceholder}
-                    className="h-12"
-                  />
+                  <div className="relative">
+                    <Input
+                      required
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => {
+                        const email = e.target.value;
+                        setFormData({ ...formData, email });
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
+                      }}
+                      placeholder={currentText.emailPlaceholder}
+                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    />
+                    {emailValid !== null && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {emailValid ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <X className="w-5 h-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-macos-blue" />
                     {currentText.phonePlaceholder}
                   </label>
-                  <Input
-                    required
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder={currentText.phonePlaceholder}
-                    className="h-12"
-                  />
+                  <div className="relative">
+                    <Input
+                      required
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const phone = e.target.value;
+                        setFormData({ ...formData, phone });
+                        if (phone.length > 0) {
+                          const validation = validateIndonesianPhone(phone);
+                          setPhoneValid(validation.isValid);
+                        } else {
+                          setPhoneValid(null);
+                        }
+                      }}
+                      placeholder={currentText.phonePlaceholder}
+                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                    />
+                    {phoneValid !== null && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {phoneValid ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <X className="w-5 h-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Building className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Building className="w-4 h-4 text-macos-blue" />
                     {currentText.companyPlaceholder}
                   </label>
                   <Input
@@ -387,17 +425,17 @@ const JointVentures = () => {
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     placeholder={currentText.companyPlaceholder}
-                    className="h-12"
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <DollarSign className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-macos-blue" />
                     {currentText.investmentRange}
                   </label>
                   <Select value={formData.investmentRange} onValueChange={(value) => setFormData({ ...formData, investmentRange: value })}>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue">
                       <SelectValue placeholder={currentText.selectInvestment} />
                     </SelectTrigger>
                     <SelectContent>
@@ -410,12 +448,12 @@ const JointVentures = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Building className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Building className="w-4 h-4 text-macos-blue" />
                     {currentText.projectType}
                   </label>
                   <Select value={formData.projectType} onValueChange={(value) => setFormData({ ...formData, projectType: value })}>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue">
                       <SelectValue placeholder={currentText.selectProject} />
                     </SelectTrigger>
                     <SelectContent>
@@ -429,7 +467,7 @@ const JointVentures = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                   {currentText.messagePlaceholder}
                 </label>
                 <Textarea
@@ -438,12 +476,12 @@ const JointVentures = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={currentText.messagePlaceholder}
                   rows={5}
-                  className="resize-none"
+                  className="resize-none bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                   {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
                 </label>
                 <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
@@ -452,7 +490,7 @@ const JointVentures = () => {
                   value={formData.captchaInput}
                   onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
                   placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
-                  className="h-12"
+                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                   maxLength={6}
                 />
               </div>
@@ -461,7 +499,7 @@ const JointVentures = () => {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full text-lg h-14"
+                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-white font-semibold border-0"
               >
                 {isSubmitting ? currentText.submitting : currentText.submitButton}
               </Button>
