@@ -185,6 +185,31 @@ export const useRealTimeAlerts = () => {
     });
   };
 
+  const handleFeedbackSubmission = async (feedbackData: any) => {
+    // Extract title from content for partner applications
+    const isPartnerApp = feedbackData.content?.includes('Partner Network Application');
+    const title = isPartnerApp ? '🤝 New Partner Application' : '💬 New Contact Submission';
+    
+    await createAlert({
+      title,
+      message: feedbackData.content.substring(0, 300) + (feedbackData.content.length > 300 ? '...' : ''),
+      type: 'contact',
+      priority: isPartnerApp ? 'medium' : 'low',
+      alert_category: 'support',
+      urgency_level: isPartnerApp ? 3 : 2,
+      action_required: true,
+      reference_type: 'feedback',
+      reference_id: feedbackData.id,
+      source_table: 'feedback_monitoring',
+      source_id: feedbackData.id,
+      metadata: {
+        feedback_type: feedbackData.feedback_type,
+        status: feedbackData.status,
+        is_partner_app: isPartnerApp
+      }
+    });
+  };
+
   useEffect(() => {
     if (!user || profile?.role !== 'admin') return;
 
@@ -339,6 +364,27 @@ export const useRealTimeAlerts = () => {
       )
       .subscribe();
 
+    // Listen for feedback/contact submissions (including partner applications)
+    const feedbackChannel = supabase
+      .channel('feedback-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'feedback_monitoring'
+        },
+        (payload) => {
+          console.log('New feedback/contact submission detected:', payload.new);
+          handleFeedbackSubmission(payload.new);
+          const isPartnerApp = payload.new.content?.includes('Partner Network Application');
+          toast.info(isPartnerApp ? 'New Partner Application!' : 'New Contact Submission!', {
+            description: 'Check Contact Management'
+          });
+        }
+      )
+      .subscribe();
+
     return () => {
       console.log('Cleaning up real-time alert monitoring...');
       supabase.removeChannel(profilesChannel);
@@ -348,6 +394,7 @@ export const useRealTimeAlerts = () => {
       supabase.removeChannel(reportsChannel);
       supabase.removeChannel(vendorServicesChannel);
       supabase.removeChannel(securityChannel);
+      supabase.removeChannel(feedbackChannel);
       setIsMonitoring(false);
     };
   }, [user, profile?.role]);
