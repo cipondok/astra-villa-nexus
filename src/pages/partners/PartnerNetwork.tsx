@@ -232,12 +232,12 @@ const PartnerNetwork = () => {
 
         {/* Application Form Section */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-macos-card p-12 rounded-2xl shadow-macos border border-macos-light-gray/20 animate-macos-window-in">
+          <div className="bg-white dark:bg-neutral-900 p-12 rounded-2xl shadow-macos-hover border border-neutral-200 dark:border-neutral-800 animate-macos-window-in">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-macos-gray text-lg">
+              <p className="text-neutral-600 dark:text-neutral-400 text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
@@ -245,8 +245,8 @@ const PartnerNetwork = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <User className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <User className="w-4 h-4 text-macos-blue" />
                     {currentText.namePlaceholder}
                   </label>
                   <Input
@@ -254,13 +254,13 @@ const PartnerNetwork = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder={currentText.namePlaceholder}
-                    className="h-12"
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-macos-blue" />
                     {currentText.emailPlaceholder}
                   </label>
                   <div className="relative">
@@ -275,7 +275,7 @@ const PartnerNetwork = () => {
                         setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
                       }}
                       placeholder={currentText.emailPlaceholder}
-                      className="h-12 pr-10"
+                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                     />
                     {emailValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -290,8 +290,8 @@ const PartnerNetwork = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-macos-blue" />
                     {currentText.phonePlaceholder}
                   </label>
                   <div className="relative">
@@ -310,7 +310,7 @@ const PartnerNetwork = () => {
                         }
                       }}
                       placeholder={currentText.phonePlaceholder}
-                      className="h-12 pr-10"
+                      className="h-12 pr-10 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                     />
                     {phoneValid !== null && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -325,8 +325,8 @@ const PartnerNetwork = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                    <Building className="w-4 h-4" />
+                  <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                    <Building className="w-4 h-4 text-macos-blue" />
                     {currentText.companyPlaceholder}
                   </label>
                   <Input
@@ -334,13 +334,13 @@ const PartnerNetwork = () => {
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     placeholder={currentText.companyPlaceholder}
-                    className="h-12"
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                   {currentText.messagePlaceholder}
                 </label>
                 <Textarea
@@ -349,12 +349,12 @@ const PartnerNetwork = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder={currentText.messagePlaceholder}
                   rows={5}
-                  className="resize-none"
+                  className="resize-none bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                   {language === "en" ? "Security Check" : "Pemeriksaan Keamanan"}
                 </label>
                 <SimpleCaptcha code={captchaCode} onRefresh={refreshCaptcha} />
@@ -363,7 +363,7 @@ const PartnerNetwork = () => {
                   value={formData.captchaInput}
                   onChange={(e) => setFormData({ ...formData, captchaInput: e.target.value })}
                   placeholder={language === "en" ? "Enter the code above" : "Masukkan kode di atas"}
-                  className="h-12"
+                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
                   maxLength={6}
                 />
               </div>
