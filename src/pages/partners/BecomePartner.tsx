@@ -24,6 +24,13 @@ const BecomePartner = () => {
     businessType: "",
     experience: "",
     message: "",
+    website: "",
+    propertyTypes: [] as string[],
+    serviceAreas: "",
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    twitter: "",
     captchaInput: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,6 +66,12 @@ const BecomePartner = () => {
         message: z.string().trim().refine(v => v.split(/\s+/).filter(Boolean).length >= 10, {
           message: language === "en" ? "Please write at least 10 words" : "Harap tulis minimal 10 kata",
         }),
+        propertyTypes: z.array(z.string()).min(1, {
+          message: language === "en" ? "Select at least one property type" : "Pilih minimal satu jenis properti",
+        }),
+        serviceAreas: z.string().trim().min(5, {
+          message: language === "en" ? "Please specify your service areas" : "Sebutkan area layanan Anda",
+        }),
       });
 
       const parsed = schema.safeParse(formData);
@@ -69,13 +82,31 @@ const BecomePartner = () => {
         return;
       }
 
+      // Prepare detailed message with all form data
+      const detailedMessage = `
+${formData.message}
+
+--- Application Details ---
+Business Type: ${formData.businessType}
+Years of Experience: ${formData.experience}
+Website: ${formData.website || 'Not provided'}
+Property Types: ${formData.propertyTypes.join(', ')}
+Service Areas: ${formData.serviceAreas}
+
+Social Media:
+${formData.instagram ? `Instagram: ${formData.instagram}` : ''}
+${formData.facebook ? `Facebook: ${formData.facebook}` : ''}
+${formData.linkedin ? `LinkedIn: ${formData.linkedin}` : ''}
+${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
+      `.trim();
+
       const { data: inserted, error: insertError } = await supabase
         .from('inquiries')
         .insert([
           {
             inquiry_type: 'become_partner',
             subject: `Partner Application - ${formData.name}${formData.company ? ` (${formData.company})` : ''}`,
-            message: formData.message,
+            message: detailedMessage,
             contact_email: formData.email,
             contact_phone: formData.phone,
             status: 'new',
@@ -102,7 +133,23 @@ const BecomePartner = () => {
         description: language === "en" ? `We'll review your application and contact you at ${formatted}.` : `Kami akan meninjau aplikasi Anda dan menghubungi Anda di ${formatted}.`,
       });
 
-      setFormData({ name: "", email: "", phone: "", company: "", businessType: "", experience: "", message: "", captchaInput: "" });
+      setFormData({ 
+        name: "", 
+        email: "", 
+        phone: "", 
+        company: "", 
+        businessType: "", 
+        experience: "", 
+        message: "", 
+        website: "", 
+        propertyTypes: [], 
+        serviceAreas: "", 
+        instagram: "", 
+        facebook: "", 
+        linkedin: "", 
+        twitter: "", 
+        captchaInput: "" 
+      });
       refreshCaptcha();
     } catch (error) {
       console.error('Form submission error:', error);
@@ -168,6 +215,20 @@ const BecomePartner = () => {
       years5_10: "5-10 years",
       years10plus: "10+ years",
       messagePlaceholder: "Tell us about your business...",
+      website: "Website",
+      websitePlaceholder: "https://your-website.com",
+      propertyTypes: "Property Types You Work With",
+      residential: "Residential",
+      commercial: "Commercial",
+      industrial: "Industrial",
+      land: "Land",
+      serviceAreas: "Service Areas",
+      serviceAreasPlaceholder: "e.g., Jakarta, Bogor, Depok, Tangerang, Bekasi",
+      socialMedia: "Social Media Links (Optional)",
+      instagram: "Instagram",
+      facebook: "Facebook",
+      linkedin: "LinkedIn",
+      twitter: "Twitter",
       submitButton: "Submit Application",
       submitting: "Submitting..."
     },
@@ -226,6 +287,20 @@ const BecomePartner = () => {
       years5_10: "5-10 tahun",
       years10plus: "10+ tahun",
       messagePlaceholder: "Ceritakan tentang bisnis Anda...",
+      website: "Website",
+      websitePlaceholder: "https://website-anda.com",
+      propertyTypes: "Jenis Properti yang Anda Tangani",
+      residential: "Residensial",
+      commercial: "Komersial",
+      industrial: "Industri",
+      land: "Tanah",
+      serviceAreas: "Area Layanan",
+      serviceAreasPlaceholder: "misal: Jakarta, Bogor, Depok, Tangerang, Bekasi",
+      socialMedia: "Tautan Media Sosial (Opsional)",
+      instagram: "Instagram",
+      facebook: "Facebook",
+      linkedin: "LinkedIn",
+      twitter: "Twitter",
       submitButton: "Kirim Aplikasi",
       submitting: "Mengirim..."
     }
@@ -431,6 +506,100 @@ const BecomePartner = () => {
                       <SelectItem value="10+">{currentText.years10plus}</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  {currentText.website}
+                </label>
+                <Input
+                  type="url"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  placeholder={currentText.websitePlaceholder}
+                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  {currentText.propertyTypes}
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { value: 'residential', label: currentText.residential },
+                    { value: 'commercial', label: currentText.commercial },
+                    { value: 'industrial', label: currentText.industrial },
+                    { value: 'land', label: currentText.land }
+                  ].map((type) => (
+                    <label key={type.value} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.propertyTypes.includes(type.value)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFormData({ ...formData, propertyTypes: [...formData.propertyTypes, type.value] });
+                          } else {
+                            setFormData({ ...formData, propertyTypes: formData.propertyTypes.filter(t => t !== type.value) });
+                          }
+                        }}
+                        className="w-4 h-4 text-macos-blue border-neutral-300 rounded focus:ring-macos-blue"
+                      />
+                      <span className="text-sm text-neutral-700 dark:text-neutral-300">
+                        {type.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  {currentText.serviceAreas}
+                </label>
+                <Input
+                  required
+                  value={formData.serviceAreas}
+                  onChange={(e) => setFormData({ ...formData, serviceAreas: e.target.value })}
+                  placeholder={currentText.serviceAreasPlaceholder}
+                  className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                  {currentText.socialMedia}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    type="url"
+                    value={formData.instagram}
+                    onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                    placeholder={`${currentText.instagram} URL`}
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  />
+                  <Input
+                    type="url"
+                    value={formData.facebook}
+                    onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                    placeholder={`${currentText.facebook} URL`}
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  />
+                  <Input
+                    type="url"
+                    value={formData.linkedin}
+                    onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                    placeholder={`${currentText.linkedin} URL`}
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  />
+                  <Input
+                    type="url"
+                    value={formData.twitter}
+                    onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
+                    placeholder={`${currentText.twitter} URL`}
+                    className="h-12 bg-neutral-50 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 focus:border-macos-blue focus:ring-macos-blue"
+                  />
                 </div>
               </div>
 
