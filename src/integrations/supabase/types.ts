@@ -2597,8 +2597,10 @@ export type Database = {
         Row: {
           admin_response: string | null
           contact_email: string | null
+          contact_name: string | null
           contact_phone: string | null
           created_at: string | null
+          department: string | null
           id: string
           inquiry_type: string
           message: string
@@ -2613,8 +2615,10 @@ export type Database = {
         Insert: {
           admin_response?: string | null
           contact_email?: string | null
+          contact_name?: string | null
           contact_phone?: string | null
           created_at?: string | null
+          department?: string | null
           id?: string
           inquiry_type: string
           message: string
@@ -2629,8 +2633,10 @@ export type Database = {
         Update: {
           admin_response?: string | null
           contact_email?: string | null
+          contact_name?: string | null
           contact_phone?: string | null
           created_at?: string | null
+          department?: string | null
           id?: string
           inquiry_type?: string
           message?: string
