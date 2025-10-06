@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Phone, Mail, MessageCircle, Eye, Reply, Clock, User } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Phone, Mail, MessageCircle, Eye, Reply, Clock, User, Building2 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -18,6 +19,7 @@ const ContactManagement = () => {
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [response, setResponse] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -27,15 +29,8 @@ const ContactManagement = () => {
     queryKey: ['contact-inquiries'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('feedback_monitoring')
-        .select(`
-          *,
-          profiles!feedback_monitoring_user_id_fkey (
-            full_name,
-            email
-          )
-        `)
-        .eq('feedback_type', 'contact')
+        .from('inquiries')
+        .select('*')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -46,13 +41,17 @@ const ContactManagement = () => {
 
   const updateContactMutation = useMutation({
     mutationFn: async ({ id, status, response }: { id: string; status: string; response?: string }) => {
-      const updateData: any = { status };
+      const updateData: any = { 
+        status,
+        responded_at: new Date().toISOString(),
+        responded_by: profile?.id
+      };
       if (response) {
         updateData.admin_response = response;
       }
       
       const { error } = await supabase
-        .from('feedback_monitoring')
+        .from('inquiries')
         .update(updateData)
         .eq('id', id);
         
@@ -106,11 +105,20 @@ const ContactManagement = () => {
     return <Badge className={colors[priority] || colors.medium}>{priority?.toUpperCase()}</Badge>;
   };
 
-  const filteredContacts = contacts?.filter(contact =>
-    contact.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.content?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredContacts = contacts?.filter(contact => {
+    const matchesSearch = 
+      contact.contact_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.contact_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.message?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTab = 
+      activeTab === "all" || 
+      (activeTab === "business_partners" && contact.inquiry_type === "business_partnership") ||
+      (activeTab === "general" && contact.inquiry_type !== "business_partnership");
+    
+    return matchesSearch && matchesTab;
+  }) || [];
 
   const authorizedRoles = ['admin', 'agent', 'customer_service'];
   if (!profile || !authorizedRoles.includes(profile.role)) {
@@ -140,14 +148,29 @@ const ContactManagement = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {/* Search */}
-            <div className="flex gap-4">
+            {/* Search and Tabs */}
+            <div className="space-y-4">
               <Input
                 placeholder="Search contacts by name, email, or content..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
+              
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="bg-white/10 border-white/20">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-white/20">
+                    All Inquiries
+                  </TabsTrigger>
+                  <TabsTrigger value="business_partners" className="data-[state=active]:bg-white/20">
+                    <Building2 className="h-4 w-4 mr-2" />
+                    Business Partners
+                  </TabsTrigger>
+                  <TabsTrigger value="general" className="data-[state=active]:bg-white/20">
+                    General
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
 
             {/* Quick Stats */}
@@ -204,8 +227,8 @@ const ContactManagement = () => {
                 <TableHeader>
                   <TableRow className="border-white/20">
                     <TableHead className="text-gray-300">Contact</TableHead>
+                    <TableHead className="text-gray-300">Type / Department</TableHead>
                     <TableHead className="text-gray-300">Message Preview</TableHead>
-                    <TableHead className="text-gray-300">Priority</TableHead>
                     <TableHead className="text-gray-300">Status</TableHead>
                     <TableHead className="text-gray-300">Date</TableHead>
                     <TableHead className="text-gray-300">Actions</TableHead>
@@ -228,21 +251,42 @@ const ContactManagement = () => {
                     filteredContacts.map((contact) => (
                       <TableRow key={contact.id} className="border-white/20">
                         <TableCell className="text-white">
-                          <div className="text-sm">
-                            <div className="font-medium">{contact.profiles?.full_name || 'Anonymous'}</div>
+                          <div className="text-sm space-y-1">
+                            <div className="font-medium flex items-center gap-2">
+                              <User className="h-3 w-3" />
+                              {contact.contact_name || 'Anonymous'}
+                            </div>
                             <div className="text-gray-400 flex items-center gap-1">
                               <Mail className="h-3 w-3" />
-                              {contact.profiles?.email || 'N/A'}
+                              {contact.contact_email || 'N/A'}
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-gray-300">
-                          <div className="max-w-xs truncate">
-                            {contact.content?.substring(0, 100)}...
+                            {contact.contact_phone && (
+                              <div className="text-gray-400 flex items-center gap-1">
+                                <Phone className="h-3 w-3" />
+                                {contact.contact_phone}
+                              </div>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell>
-                          {getPriorityBadge(contact.priority)}
+                          <div className="space-y-1">
+                            <Badge variant="outline" className="text-xs">
+                              {contact.inquiry_type?.replace('_', ' ') || 'General'}
+                            </Badge>
+                            {contact.department && (
+                              <div className="text-xs text-gray-400">
+                                Dept: {contact.department}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-300">
+                          <div className="max-w-xs">
+                            <div className="font-medium text-sm mb-1">{contact.subject}</div>
+                            <div className="text-xs truncate">
+                              {contact.message?.substring(0, 80)}...
+                            </div>
+                          </div>
                         </TableCell>
                         <TableCell>
                           {getStatusBadge(contact.status)}
@@ -286,22 +330,52 @@ const ContactManagement = () => {
           {selectedContact && (
             <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto pr-4">
               {/* Contact Info */}
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                 <div>
                   <label className="text-gray-400 font-medium">Name:</label>
-                  <p className="text-white flex items-center gap-2"><User className="h-4 w-4" />{selectedContact.profiles?.full_name || 'Anonymous'}</p>
+                  <p className="text-white flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    {selectedContact.contact_name || 'Anonymous'}
+                  </p>
                 </div>
                 <div>
                   <label className="text-gray-400 font-medium">Email:</label>
-                  <p className="text-white flex items-center gap-2"><Mail className="h-4 w-4" />{selectedContact.profiles?.email || 'N/A'}</p>
+                  <p className="text-white flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    {selectedContact.contact_email || 'N/A'}
+                  </p>
                 </div>
+                {selectedContact.contact_phone && (
+                  <div>
+                    <label className="text-gray-400 font-medium">Phone:</label>
+                    <p className="text-white flex items-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      {selectedContact.contact_phone}
+                    </p>
+                  </div>
+                )}
                 <div>
-                  <label className="text-gray-400 font-medium">Priority:</label>
-                  <div>{getPriorityBadge(selectedContact.priority)}</div>
+                  <label className="text-gray-400 font-medium">Type:</label>
+                  <Badge variant="outline" className="mt-1">
+                    {selectedContact.inquiry_type?.replace('_', ' ') || 'General'}
+                  </Badge>
                 </div>
+                {selectedContact.department && (
+                  <div>
+                    <label className="text-gray-400 font-medium">Department:</label>
+                    <p className="text-white flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      {selectedContact.department}
+                    </p>
+                  </div>
+                )}
                 <div>
                   <label className="text-gray-400 font-medium">Status:</label>
-                  <div>{getStatusBadge(selectedContact.status)}</div>
+                  <div className="mt-1">{getStatusBadge(selectedContact.status)}</div>
+                </div>
+                <div>
+                  <label className="text-gray-400 font-medium">Subject:</label>
+                  <p className="text-white mt-1">{selectedContact.subject}</p>
                 </div>
               </div>
 
@@ -312,11 +386,11 @@ const ContactManagement = () => {
                 {/* User's Message */}
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                    {selectedContact.profiles?.full_name?.charAt(0) || 'U'}
+                    {selectedContact.contact_name?.charAt(0) || 'U'}
                   </div>
                   <div className="flex-1">
                     <div className="bg-gray-800 p-3 rounded-lg rounded-tl-none">
-                      <p className="text-white text-sm">{selectedContact.content}</p>
+                      <p className="text-white text-sm">{selectedContact.message}</p>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       {new Date(selectedContact.created_at).toLocaleString()}
@@ -332,7 +406,7 @@ const ContactManagement = () => {
                          <p className="text-white text-sm">{selectedContact.admin_response}</p>
                        </div>
                        <p className="text-xs text-gray-500 mt-1">
-                         Replied
+                         Replied by {selectedContact.responded_by || 'Admin'} • {selectedContact.responded_at ? new Date(selectedContact.responded_at).toLocaleString() : 'Recently'}
                        </p>
                     </div>
                      <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">

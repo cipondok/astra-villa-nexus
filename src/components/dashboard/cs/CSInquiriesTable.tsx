@@ -8,10 +8,14 @@ interface Inquiry {
   subject: string;
   message?: string;
   inquiry_type: string;
+  contact_name?: string;
   contact_email: string;
   contact_phone?: string;
+  department?: string;
   status: string;
   created_at: string;
+  responded_by?: string;
+  responded_at?: string;
 }
 
 interface CSInquiriesTableProps {
@@ -44,9 +48,10 @@ const CSInquiriesTable = ({ inquiries, isLoading, onReply }: CSInquiriesTablePro
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Contact Name</TableHead>
             <TableHead>Subject</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Contact</TableHead>
+            <TableHead>Type / Dept</TableHead>
+            <TableHead>Contact Info</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Actions</TableHead>
