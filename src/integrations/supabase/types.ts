@@ -9019,6 +9019,29 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_public_properties_secure: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: {
+          area: string
+          area_sqm: number
+          bathrooms: number
+          bedrooms: number
+          city: string
+          created_at: string
+          description: string
+          id: string
+          image_urls: string[]
+          images: string[]
+          listing_type: string
+          location: string
+          price: number
+          property_type: string
+          state: string
+          status: string
+          title: string
+          total_count: number
+        }[]
+      }
       get_public_property_listings: {
         Args: {
           p_city?: string
@@ -9249,6 +9272,10 @@ export type Database = {
       get_user_financial_summary: {
         Args: { p_user_id?: string }
         Returns: Json
+      }
+      get_user_role: {
+        Args: { p_user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
       }
       get_user_security_status: {
         Args: Record<PropertyKey, never>
