@@ -324,82 +324,93 @@ const ContactManagement = () => {
 
       {/* Detail Dialog */}
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-        <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
-          <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
-              <span>Contact Inquiry</span>
+        <DialogContent className="max-w-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 backdrop-blur-xl border-2 border-blue-500/30 shadow-2xl">
+          <DialogHeader className="border-b border-blue-500/20 pb-4">
+            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
+              <div className="p-2 bg-blue-600/20 rounded-lg">
+                <MessageCircle className="h-6 w-6 text-blue-400" />
+              </div>
+              <span>Contact Inquiry Details</span>
             </DialogTitle>
-            <DialogDescription className="text-gray-300">
+            <DialogDescription className="text-gray-300 mt-2">
               Review and respond to the customer's message.
             </DialogDescription>
           </DialogHeader>
           {selectedContact && (
-            <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto pr-4">
-              {/* Contact Info */}
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                <div>
-                  <label className="text-gray-400 font-medium">Name:</label>
-                  <p className="text-white flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    {selectedContact.contact_name || 'Anonymous'}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-gray-400 font-medium">Email:</label>
-                  <p className="text-white flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    {selectedContact.contact_email || 'N/A'}
-                  </p>
-                </div>
-                {selectedContact.contact_phone && (
-                  <div>
-                    <label className="text-gray-400 font-medium">Phone:</label>
-                    <p className="text-white flex items-center gap-2">
-                      <Phone className="h-4 w-4" />
-                      {selectedContact.contact_phone}
+            <div className="space-y-6 py-6 max-h-[65vh] overflow-y-auto pr-2">
+              {/* Contact Info Card */}
+              <div className="bg-gradient-to-r from-blue-950/40 to-purple-950/40 rounded-xl p-5 border border-blue-500/20">
+                <h3 className="text-sm font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Contact Information
+                </h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-1">
+                    <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Name</label>
+                    <p className="text-white font-medium flex items-center gap-2">
+                      {selectedContact.contact_name || 'Anonymous'}
                     </p>
                   </div>
-                )}
-                <div>
-                  <label className="text-gray-400 font-medium">Type:</label>
-                  <Badge variant="outline" className="mt-1">
-                    {selectedContact.inquiry_type?.replace('_', ' ') || 'General'}
-                  </Badge>
-                </div>
-                {selectedContact.department && (
-                  <div>
-                    <label className="text-gray-400 font-medium">Department:</label>
-                    <p className="text-white flex items-center gap-2">
-                      <Building2 className="h-4 w-4" />
-                      {selectedContact.department}
+                  <div className="space-y-1">
+                    <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Email</label>
+                    <p className="text-white flex items-center gap-2 break-all">
+                      <Mail className="h-3 w-3 text-blue-400 shrink-0" />
+                      {selectedContact.contact_email || 'N/A'}
                     </p>
                   </div>
-                )}
-                <div>
-                  <label className="text-gray-400 font-medium">Status:</label>
-                  <div className="mt-1">{getStatusBadge(selectedContact.status)}</div>
-                </div>
-                <div>
-                  <label className="text-gray-400 font-medium">Subject:</label>
-                  <p className="text-white mt-1">{selectedContact.subject}</p>
+                  {selectedContact.contact_phone && (
+                    <div className="space-y-1">
+                      <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Phone</label>
+                      <p className="text-white flex items-center gap-2">
+                        <Phone className="h-3 w-3 text-green-400 shrink-0" />
+                        {selectedContact.contact_phone}
+                      </p>
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Type</label>
+                    <Badge variant="outline" className="mt-1 border-blue-400/50 text-blue-300">
+                      {selectedContact.inquiry_type?.replace('_', ' ') || 'General'}
+                    </Badge>
+                  </div>
+                  {selectedContact.department && (
+                    <div className="space-y-1">
+                      <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Department</label>
+                      <p className="text-white flex items-center gap-2">
+                        <Building2 className="h-3 w-3 text-purple-400 shrink-0" />
+                        {selectedContact.department}
+                      </p>
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Status</label>
+                    <div className="mt-1">{getStatusBadge(selectedContact.status)}</div>
+                  </div>
+                  <div className="col-span-2 space-y-1">
+                    <label className="text-gray-400 text-xs font-medium uppercase tracking-wide">Subject</label>
+                    <p className="text-white font-medium">{selectedContact.subject}</p>
+                  </div>
                 </div>
               </div>
 
               {/* Conversation Thread */}
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-400 border-b border-gray-700 pb-2">Conversation History</h3>
+                <h3 className="text-sm font-semibold text-blue-300 flex items-center gap-2 border-b border-blue-500/20 pb-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Conversation History
+                </h3>
                 
                 {/* User's Message */}
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                    {selectedContact.contact_name?.charAt(0) || 'U'}
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-lg">
+                    {selectedContact.contact_name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
                   <div className="flex-1">
-                    <div className="bg-gray-800 p-3 rounded-lg rounded-tl-none">
-                      <p className="text-white text-sm">{selectedContact.message}</p>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-750 p-4 rounded-2xl rounded-tl-none border border-gray-700/50 shadow-lg">
+                      <p className="text-white text-sm leading-relaxed">{selectedContact.message}</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
                       {new Date(selectedContact.created_at).toLocaleString()}
                     </p>
                   </div>
@@ -409,14 +420,15 @@ const ContactManagement = () => {
                 {selectedContact.admin_response && (
                   <div className="flex gap-3 justify-end">
                     <div className="flex-1 max-w-[85%] text-right">
-                       <div className="bg-green-800 inline-block p-3 rounded-lg rounded-br-none text-left">
-                         <p className="text-white text-sm">{selectedContact.admin_response}</p>
+                       <div className="bg-gradient-to-br from-green-800 to-green-700 inline-block p-4 rounded-2xl rounded-br-none text-left border border-green-600/50 shadow-lg">
+                         <p className="text-white text-sm leading-relaxed">{selectedContact.admin_response}</p>
                        </div>
-                       <p className="text-xs text-gray-500 mt-1">
+                       <p className="text-xs text-gray-500 mt-2 flex items-center gap-1 justify-end">
+                         <Reply className="h-3 w-3" />
                          Replied by {selectedContact.responded_by || 'Admin'} • {selectedContact.responded_at ? new Date(selectedContact.responded_at).toLocaleString() : 'Recently'}
                        </p>
                     </div>
-                     <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-green-400 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-lg">
                        A
                      </div>
                   </div>
@@ -425,25 +437,28 @@ const ContactManagement = () => {
 
               {/* Response Form */}
               {!selectedContact.admin_response && selectedContact.status !== 'resolved' && (
-                <div>
-                  <Label htmlFor="response" className="text-gray-300 font-medium">Your Response:</Label>
+                <div className="bg-gradient-to-r from-blue-950/40 to-purple-950/40 rounded-xl p-5 border border-blue-500/20">
+                  <Label htmlFor="response" className="text-blue-300 font-semibold flex items-center gap-2 mb-3">
+                    <Reply className="h-4 w-4" />
+                    Your Response
+                  </Label>
                   <Textarea
                     id="response"
                     value={response}
                     onChange={(e) => setResponse(e.target.value)}
-                    placeholder="Type your response here... This will be sent to the user."
-                    className="mt-2 bg-gray-800 border-gray-700 text-white"
-                    rows={4}
+                    placeholder="Type your response here... This will be sent to the customer."
+                    className="bg-gray-900/50 border-blue-500/30 text-white placeholder:text-gray-500 focus:border-blue-400 focus:ring-blue-400/20"
+                    rows={5}
                   />
                 </div>
               )}
             </div>
           )}
-          <DialogFooter className="gap-2 sm:justify-between pt-4 border-t border-gray-700">
+          <DialogFooter className="gap-3 sm:justify-between pt-4 border-t border-blue-500/20">
             <Button 
               variant="outline" 
               onClick={() => setShowDetailDialog(false)}
-              className="border-gray-600 text-gray-300"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800"
             >
               Close
             </Button>
@@ -451,7 +466,7 @@ const ContactManagement = () => {
               <Button 
                 onClick={handleSendResponse}
                 disabled={updateContactMutation.isPending || !response.trim()}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg"
               >
                 <Reply className="h-4 w-4 mr-2" />
                 Send Response
