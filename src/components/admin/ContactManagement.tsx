@@ -105,6 +105,14 @@ const ContactManagement = () => {
     return <Badge className={colors[priority] || colors.medium}>{priority?.toUpperCase()}</Badge>;
   };
 
+  const businessPartnerTypes = [
+    'business_partnership',
+    'partner_network',
+    'become_a_partner',
+    'partner_benefits',
+    'joint_ventures'
+  ];
+
   const filteredContacts = contacts?.filter(contact => {
     const matchesSearch = 
       contact.contact_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -114,8 +122,8 @@ const ContactManagement = () => {
     
     const matchesTab = 
       activeTab === "all" || 
-      (activeTab === "business_partners" && contact.inquiry_type === "business_partnership") ||
-      (activeTab === "general" && contact.inquiry_type !== "business_partnership");
+      (activeTab === "business_partners" && businessPartnerTypes.includes(contact.inquiry_type)) ||
+      (activeTab === "general" && !businessPartnerTypes.includes(contact.inquiry_type));
     
     return matchesSearch && matchesTab;
   }) || [];
