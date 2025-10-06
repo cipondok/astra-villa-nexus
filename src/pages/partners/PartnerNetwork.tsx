@@ -1,4 +1,4 @@
-import { Users, CheckCircle, Network, Building, Mail, Phone, User } from "lucide-react";
+import { Users, CheckCircle, Network, Building, Mail, Phone, User, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,8 @@ const PartnerNetwork = () => {
     captchaInput: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [phoneValid, setPhoneValid] = useState<boolean | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -261,14 +263,30 @@ const PartnerNetwork = () => {
                     <Mail className="w-4 h-4" />
                     {currentText.emailPlaceholder}
                   </label>
-                  <Input
-                    required
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder={currentText.emailPlaceholder}
-                    className="h-12"
-                  />
+                  <div className="relative">
+                    <Input
+                      required
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => {
+                        const email = e.target.value;
+                        setFormData({ ...formData, email });
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        setEmailValid(email.length > 0 ? emailRegex.test(email) : null);
+                      }}
+                      placeholder={currentText.emailPlaceholder}
+                      className="h-12 pr-10"
+                    />
+                    {emailValid !== null && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {emailValid ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <X className="w-5 h-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -276,14 +294,34 @@ const PartnerNetwork = () => {
                     <Phone className="w-4 h-4" />
                     {currentText.phonePlaceholder}
                   </label>
-                  <Input
-                    required
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder={currentText.phonePlaceholder}
-                    className="h-12"
-                  />
+                  <div className="relative">
+                    <Input
+                      required
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const phone = e.target.value;
+                        setFormData({ ...formData, phone });
+                        if (phone.length > 0) {
+                          const validation = validateIndonesianPhone(phone);
+                          setPhoneValid(validation.isValid);
+                        } else {
+                          setPhoneValid(null);
+                        }
+                      }}
+                      placeholder={currentText.phonePlaceholder}
+                      className="h-12 pr-10"
+                    />
+                    {phoneValid !== null && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {phoneValid ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <X className="w-5 h-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
