@@ -190,20 +190,20 @@ const PartnerNetwork = () => {
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl mb-6">
-            <Users className="w-12 h-12 text-primary" />
+          <div className="inline-flex items-center justify-center p-3 bg-macos-gradient rounded-2xl mb-6 shadow-macos">
+            <Users className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
             {currentText.title}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-macos-gray max-w-2xl mx-auto">
             {currentText.subtitle}
           </p>
         </div>
 
         {/* Description */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="glass-card p-8 rounded-2xl">
+          <div className="bg-macos-card p-8 rounded-2xl shadow-macos border border-macos-light-gray/20">
             <p className="text-lg text-foreground leading-relaxed">
               {currentText.description}
             </p>
@@ -215,14 +215,14 @@ const PartnerNetwork = () => {
           {currentText.features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <div key={index} className="glass-card p-8 rounded-2xl hover:shadow-xl transition-all duration-300">
+              <div key={index} className="bg-macos-card p-8 rounded-2xl shadow-macos hover:shadow-macos-hover transition-all duration-300 border border-macos-light-gray/20">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl">
-                    <Icon className="w-8 h-8 text-primary" />
+                  <div className="p-3 bg-macos-gradient rounded-xl shadow-macos">
+                    <Icon className="w-8 h-8 text-white" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                    <p className="text-macos-gray">{feature.description}</p>
                   </div>
                 </div>
               </div>
@@ -232,12 +232,12 @@ const PartnerNetwork = () => {
 
         {/* Application Form Section */}
         <div className="max-w-3xl mx-auto">
-          <div className="glass-card p-12 rounded-2xl">
+          <div className="bg-macos-card p-12 rounded-2xl shadow-macos border border-macos-light-gray/20 animate-macos-window-in">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4 text-foreground">
+              <h2 className="text-3xl font-bold mb-4 bg-macos-gradient bg-clip-text text-transparent">
                 {currentText.formTitle}
               </h2>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-macos-gray text-lg">
                 {currentText.formSubtitle}
               </p>
             </div>
@@ -372,7 +372,7 @@ const PartnerNetwork = () => {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full text-lg h-14"
+                className="w-full text-lg h-14 bg-macos-gradient hover:shadow-macos-hover transition-all duration-300 text-white font-semibold border-0"
               >
                 {isSubmitting ? currentText.submitting : currentText.submitButton}
               </Button>
