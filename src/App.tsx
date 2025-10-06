@@ -19,6 +19,7 @@ import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
 import Profile from '@/pages/Profile';
+import Auth from '@/pages/Auth';
 import Services from '@/pages/Services';
 import ServiceCategory from '@/pages/ServiceCategory';
 import PropertyDetail from '@/pages/PropertyDetail';
@@ -73,7 +74,7 @@ const AppContent = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/auth" element={<Profile />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/astra-tokens" element={<AstraTokensPage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
