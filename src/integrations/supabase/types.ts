@@ -3551,7 +3551,6 @@ export type Database = {
           npwp_number: string | null
           phone: string | null
           profile_completion_percentage: number | null
-          role: Database["public"]["Enums"]["user_role"]
           specializations: string | null
           suspended_at: string | null
           suspended_by: string | null
@@ -3577,7 +3576,6 @@ export type Database = {
           npwp_number?: string | null
           phone?: string | null
           profile_completion_percentage?: number | null
-          role?: Database["public"]["Enums"]["user_role"]
           specializations?: string | null
           suspended_at?: string | null
           suspended_by?: string | null
@@ -3603,7 +3601,6 @@ export type Database = {
           npwp_number?: string | null
           phone?: string | null
           profile_completion_percentage?: number | null
-          role?: Database["public"]["Enums"]["user_role"]
           specializations?: string | null
           suspended_at?: string | null
           suspended_by?: string | null

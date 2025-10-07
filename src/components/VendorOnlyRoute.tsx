@@ -2,15 +2,17 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useHasRole } from '@/hooks/useUserRoles';
 
 const VendorOnlyRoute: React.FC = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { hasRole: isVendor, isLoading: rolesLoading } = useHasRole('vendor');
 
-  if (loading) {
+  if (authLoading || rolesLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!user || !profile || profile.role !== 'vendor') {
+  if (!user || !isVendor) {
     return <Navigate to="/" replace />;
   }
 

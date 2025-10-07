@@ -3,14 +3,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
+export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin';
 
 interface Profile {
   id: string;
   email: string;
   full_name?: string;
   phone?: string;
-  role: UserRole;
+  role: UserRole; // Populated from user_roles table (read-only)
   company_name?: string;
   license_number?: string;
   verification_status?: string;
@@ -78,11 +78,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error) {
           if (error.code === 'PGRST116') {
             console.log('Profile not found, creating default profile');
+            // Fetch primary role from user_roles
+            const { data: rolesData } = await supabase
+              .from('user_roles')
+              .select('role')
+              .eq('user_id', userId)
+              .eq('is_active', true)
+              .limit(1)
+              .single();
+            
             const defaultProfile: Profile = {
               id: userId,
               email: authUser.user?.email || '',
               full_name: authUser.user?.user_metadata?.full_name || 'User',
-              role: 'general_user',
+              role: (rolesData?.role as UserRole) || 'general_user',
               verification_status: 'pending'
             };
             setProfile(defaultProfile);
@@ -93,7 +102,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         console.log('Profile fetched successfully:', data);
-        setProfile(data as Profile);
+        
+        // Fetch primary role from user_roles table (READ-ONLY, prevents privilege escalation)
+        const { data: rolesData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .order('role', { ascending: true }) // admin comes before general_user
+          .limit(1)
+          .maybeSingle();
+        
+        const profileWithRole: Profile = {
+          ...data,
+          role: (rolesData?.role as UserRole) || 'general_user'
+        };
+        
+        setProfile(profileWithRole);
         setLoading(false);
       } catch (fetchError) {
         clearTimeout(timeoutId);
@@ -104,11 +129,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         // Create default profile on any error
+        const { data: rolesData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .limit(1)
+          .maybeSingle();
+        
         const defaultProfile: Profile = {
           id: userId,
           email: authUser.user?.email || '',
           full_name: authUser.user?.user_metadata?.full_name || 'User',
-          role: 'general_user',
+          role: (rolesData?.role as UserRole) || 'general_user',
           verification_status: 'pending'
         };
         setProfile(defaultProfile);
@@ -119,11 +152,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Profile fetch error:', error);
       // Always clear loading state and provide default profile
       const { data: authUser } = await supabase.auth.getUser();
+      const { data: rolesData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .limit(1)
+        .maybeSingle();
+      
       const defaultProfile: Profile = {
         id: userId,
         email: authUser.user?.email || '',
         full_name: authUser.user?.user_metadata?.full_name || 'User',
-        role: 'general_user',
+        role: (rolesData?.role as UserRole) || 'general_user',
         verification_status: 'pending'
       };
       setProfile(defaultProfile);
@@ -450,7 +491,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) return { error: new Error('No user found'), success: false };
 
-      console.log('Updating profile with data:', data);
+      // SECURITY: Remove 'role' from data if present - roles can only be changed via user_roles table
+      const { role: _, ...safeData } = data as any;
+
+      console.log('Updating profile with data:', safeData);
       setLoading(true);
 
       // Format Indonesian phone number if provided
@@ -545,3 +589,6 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// Export Profile type for use in other components
+export type { Profile, UserRole };
