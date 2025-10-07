@@ -104,13 +104,13 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
 
         // Vendors
         const { count: vendors } = await supabase
-          .from('profiles')
+          .from('user_roles')
           .select('*', { count: 'exact', head: true })
           .eq('role', 'vendor');
 
         // Agents
         const { count: agents } = await supabase
-          .from('profiles')
+          .from('user_roles')
           .select('*', { count: 'exact', head: true })
           .eq('role', 'agent');
 

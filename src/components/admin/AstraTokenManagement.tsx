@@ -75,7 +75,7 @@ const AstraTokenManagement = () => {
         .from('astra_token_balances')
         .select(`
           *,
-          profiles!inner(email, full_name, role)
+          profiles!inner(email, full_name)
         `)
         .order('total_tokens', { ascending: false })
         .limit(50);
@@ -85,7 +85,7 @@ const AstraTokenManagement = () => {
         ...balance,
         user_email: balance.profiles.email,
         user_name: balance.profiles.full_name || 'Unknown',
-        user_role: balance.profiles.role
+        user_role: 'general_user'
       })) as TokenBalance[];
     }
   });
@@ -404,7 +404,7 @@ const ManualTokenAward = ({ onAward, isLoading }: { onAward: Function; isLoading
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, role')
+        .select('id, email, full_name')
         .order('full_name');
       
       if (error) throw error;
@@ -444,7 +444,7 @@ const ManualTokenAward = ({ onAward, isLoading }: { onAward: Function; isLoading
             <SelectContent>
               {users?.map((user) => (
                 <SelectItem key={user.id} value={user.id}>
-                  {user.full_name || user.email} ({user.role})
+                  {user.full_name || user.email}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -18,7 +18,7 @@ interface User {
   id: string;
   full_name: string;
   email: string;
-  role: string;
+  role?: string;
   created_at: string;
 }
 
@@ -92,8 +92,8 @@ const ActivityDetailsModal = ({ isOpen, onClose, type, title, data }: ActivityDe
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <h4 className="font-medium">{(item as User).full_name || 'No name'}</h4>
-                        <Badge className={getRoleColor((item as User).role)}>
-                          {(item as User).role}
+                        <Badge className={getRoleColor((item as User).role || 'general_user')}>
+                          {(item as User).role || 'general_user'}
                         </Badge>
                       </div>
                       <div className="text-sm text-muted-foreground">

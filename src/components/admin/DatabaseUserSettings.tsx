@@ -30,7 +30,7 @@ interface DatabaseUser {
   id: string;
   email: string;
   full_name: string;
-  role: UserRole;
+  role?: UserRole;
   verification_status: string;
   created_at: string;
   updated_at: string;
@@ -81,7 +81,7 @@ const DatabaseUserSettings = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('role, verification_status, is_suspended');
+        .select('verification_status, is_suspended');
       
       if (error) throw error;
       
@@ -93,8 +93,11 @@ const DatabaseUserSettings = () => {
         by_role: {} as Record<string, number>
       };
       
-      data.forEach(user => {
-        stats.by_role[user.role] = (stats.by_role[user.role] || 0) + 1;
+      data.forEach((user: any) => {
+        const r = (user as any).role;
+        if (r) {
+          stats.by_role[r] = (stats.by_role[r] || 0) + 1;
+        }
       });
       
       return stats;

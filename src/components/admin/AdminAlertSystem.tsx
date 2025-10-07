@@ -76,7 +76,7 @@ const AdminAlertSystem = () => {
       const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, full_name, email, role, created_at')
+        .select('id, full_name, email, created_at')
         .gte('created_at', today)
         .order('created_at', { ascending: false });
       

@@ -39,7 +39,7 @@ interface DatabaseUser {
   id: string;
   email: string;
   full_name: string | null;
-  role: UserRole;
+  role?: UserRole;
   verification_status: string;
   created_at: string;
   updated_at: string;
@@ -112,10 +112,10 @@ const DatabaseUserManagement = () => {
         
         return {
           ...profile,
-          is_admin: profile.role === 'admin' || !!adminRecord,
+          is_admin: !!adminRecord,
           admin_permissions: adminRecord ? 
             (adminRecord.is_super_admin ? ['super_admin'] : ['admin']) : 
-            (profile.role === 'admin' ? ['admin'] : []),
+            [],
           last_sign_in_at: null,
           email_confirmed_at: null
         };
@@ -138,7 +138,6 @@ const DatabaseUserManagement = () => {
         .update({
           full_name: userData.full_name,
           phone: userData.phone,
-          role: userData.role as UserRole,
           verification_status: userData.verification_status,
           company_name: userData.company_name,
           license_number: userData.license_number,
@@ -234,16 +233,8 @@ const DatabaseUserManagement = () => {
   const grantAdminMutation = useMutation({
     mutationFn: async ({ userId, isSuperAdmin = false }: { userId: string; isSuperAdmin?: boolean }) => {
       console.log('Granting admin access:', userId, isSuperAdmin);
-      
-      // First update the profile role to admin
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ role: 'admin' as UserRole })
-        .eq('id', userId);
-      
-      if (profileError) {
-        throw new Error(`Failed to update profile role: ${profileError.message}`);
-      }
+      // Grant admin by inserting into admin_users only (roles managed via user_roles)
+      // No direct profile role updates
       
       // Then add to admin_users table
       const { error: adminError } = await supabase
@@ -288,15 +279,7 @@ const DatabaseUserManagement = () => {
         throw new Error(`Failed to revoke admin access: ${adminError.message}`);
       }
       
-      // Update profile role back to general_user
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ role: 'general_user' as UserRole })
-        .eq('id', userId);
-      
-      if (profileError) {
-        throw new Error(`Failed to update profile role: ${profileError.message}`);
-      }
+      // Roles are managed via user_roles; no profile role updates on revoke
       
       return userId;
     },

@@ -71,7 +71,7 @@ const ComprehensiveVendorServiceManagement = () => {
             bpjs_kesehatan_verified,
             profile_completion_percentage
           ),
-          profiles!vendor_services_vendor_id_fkey(full_name, email, role),
+          profiles!vendor_services_vendor_id_fkey(full_name, email),
           vendor_service_items(*)
         `)
         .order('created_at', { ascending: false });

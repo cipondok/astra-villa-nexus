@@ -45,8 +45,7 @@ const AIVendorVerification = () => {
           *,
           profiles:vendor_id (
             full_name,
-            email,
-            role
+            email
           )
         `)
         .order('created_at', { ascending: false });
