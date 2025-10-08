@@ -14,14 +14,19 @@ const RealTimeDashboardStats = () => {
         const [
           usersResult,
           propertiesResult,
-          vendorsBusinessProfilesResult,
-          vendorProfilesResult
+          vendorsBusinessProfilesResult
         ] = await Promise.all([
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
           supabase.from('properties').select('*', { count: 'exact', head: true }),
-          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor')
+          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true })
         ]);
+
+        // Get vendor count from user_roles table
+        const { count: vendorRolesCount } = await supabase
+          .from('user_roles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'vendor')
+          .eq('is_active', true);
 
         // Try to get orders and errors with fallback
         let ordersCount = 0;
@@ -60,7 +65,7 @@ const RealTimeDashboardStats = () => {
         }
 
         const totalVendors = Math.max(
-          typeof vendorProfilesResult.count === 'number' ? vendorProfilesResult.count : 0,
+          vendorRolesCount || 0,
           typeof vendorsBusinessProfilesResult.count === 'number' ? vendorsBusinessProfilesResult.count : 0
         );
 
