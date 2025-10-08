@@ -34,9 +34,10 @@ const CSPerformanceMonitor = () => {
         
       // Get CS agents
       const { data: agents } = await supabase
-        .from('profiles')
+        .from('user_roles')
         .select('*')
-        .eq('role', 'customer_service');
+        .eq('role', 'customer_service')
+        .eq('is_active', true);
 
       // Get live chat sessions
       const { data: chatSessions } = await supabase

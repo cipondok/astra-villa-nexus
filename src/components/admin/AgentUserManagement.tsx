@@ -21,7 +21,7 @@ interface AgentUser {
   phone?: string;
   company_name?: string;
   license_number?: string;
-  role: string;
+  role?: string;
   verification_status: string;
   is_suspended: boolean;
   suspension_reason?: string;
@@ -59,7 +59,6 @@ const AgentUserManagement = () => {
             max_listings
           )
         `)
-        .eq('role', 'agent')
         .order('created_at', { ascending: false });
       
       if (error) throw error;

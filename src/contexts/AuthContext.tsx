@@ -591,4 +591,4 @@ export const useAuth = () => {
 };
 
 // Export Profile type for use in other components
-export type { Profile, UserRole };
+export type { Profile };

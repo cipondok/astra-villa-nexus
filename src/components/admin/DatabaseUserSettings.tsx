@@ -176,7 +176,7 @@ const DatabaseUserSettings = () => {
       user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.id.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    const matchesRole = roleFilter === "all" || (user.role || 'general_user') === roleFilter;
     
     const matchesStatus = statusFilter === "all" || 
       (statusFilter === "active" && !user.is_suspended) ||

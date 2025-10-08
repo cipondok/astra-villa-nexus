@@ -52,7 +52,7 @@ const Analytics = () => {
       // Fetch user stats
       const { data: usersData } = await supabase
         .from('profiles')
-        .select('created_at, role');
+        .select('created_at');
 
       // Fetch property stats
       const { data: propertiesData } = await supabase

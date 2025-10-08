@@ -20,7 +20,7 @@ interface EnhancedUser {
   id: string;
   email: string;
   full_name: string;
-  role: UserRole;
+  role?: UserRole;
   verification_status: string;
   is_suspended: boolean;
   suspension_reason?: string;
@@ -226,10 +226,8 @@ const EnhancedUserManagement = () => {
   const updateUserRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
       const { error } = await supabase
-        .from('profiles')
-        .update({ role })
-        .eq('id', userId);
-      
+        .from('user_roles')
+        .upsert({ user_id: userId, role, is_active: true }, { onConflict: 'user_id,role' });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -247,7 +245,7 @@ const EnhancedUserManagement = () => {
       user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    const matchesRole = roleFilter === "all" || (user.role || 'general_user') === roleFilter;
     const matchesSuspension = suspensionFilter === "all" || 
       (suspensionFilter === "suspended" && user.is_suspended) ||
       (suspensionFilter === "active" && !user.is_suspended);
@@ -369,9 +367,9 @@ const EnhancedUserManagement = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <Badge variant="outline">{user.role.replace('_', ' ').toUpperCase()}</Badge>
+                        <Badge variant="outline">{(user.role || 'general_user').replace('_', ' ').toUpperCase()}</Badge>
                         <Select 
-                          value={user.role} 
+                          value={user.role || 'general_user'} 
                           onValueChange={(role: UserRole) => updateUserRoleMutation.mutate({ userId: user.id, role })}
                         >
                           <SelectTrigger className="w-[100px] h-6 text-xs">

@@ -16,7 +16,7 @@ interface VendorUser {
   id: string;
   email: string;
   full_name?: string;
-  role: string;
+  role?: string;
   verification_status: string;
   is_suspended: boolean;
   suspension_reason?: string;
@@ -52,7 +52,6 @@ const VendorUserRoleManagement = () => {
             is_active
           )
         `)
-        .eq('role', 'vendor')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -64,9 +63,8 @@ const VendorUserRoleManagement = () => {
   const updateUserRoleMutation = useMutation({
     mutationFn: async ({ userId, newRole }: { userId: string; newRole: "general_user" | "property_owner" | "agent" | "vendor" | "admin" | "customer_service" }) => {
       const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole })
-        .eq('id', userId);
+        .from('user_roles')
+        .upsert({ user_id: userId, role: newRole, is_active: true }, { onConflict: 'user_id,role' });
       
       if (error) throw error;
     },

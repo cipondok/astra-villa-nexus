@@ -29,7 +29,7 @@ interface User {
   id: string;
   email: string;
   full_name: string;
-  role: UserRole;
+  role?: UserRole;
   verification_status: string;
   created_at: string;
   phone?: string;
@@ -52,7 +52,7 @@ const EnhancedAdminUserControls = ({ user, onUserUpdate }: EnhancedAdminUserCont
     full_name: user.full_name || "",
     phone: user.phone || "",
     company_name: user.company_name || "",
-    role: user.role as UserRole,
+    role: (user.role as UserRole) ?? 'general_user',
     verification_status: user.verification_status
   });
   const [suspensionReason, setSuspensionReason] = useState("");
@@ -115,13 +115,14 @@ const EnhancedAdminUserControls = ({ user, onUserUpdate }: EnhancedAdminUserCont
   // Update user data mutation
   const updateUserMutation = useMutation({
     mutationFn: async (data: typeof editData) => {
+      const { role: _role, ...safeData } = data;
       const { error } = await supabase
         .from('profiles')
-        .update(data)
+        .update(safeData)
         .eq('id', user.id);
       
       if (error) throw error;
-      return data;
+      return safeData as typeof editData;
     },
     onSuccess: () => {
       showSuccess("User Updated", "User information has been updated successfully.");

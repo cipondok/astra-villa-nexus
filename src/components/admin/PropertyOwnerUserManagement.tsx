@@ -19,7 +19,7 @@ interface PropertyOwnerUser {
   email: string;
   full_name: string;
   phone?: string;
-  role: string;
+  role?: string;
   verification_status: string;
   is_suspended: boolean;
   suspension_reason?: string;
@@ -57,7 +57,6 @@ const PropertyOwnerUserManagement = () => {
             max_listings
           )
         `)
-        .eq('role', 'property_owner')
         .order('created_at', { ascending: false });
       
       if (error) throw error;

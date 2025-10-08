@@ -44,8 +44,6 @@ const VendorsHubContent = () => {
     queryKey: ['vendors-hub-stats'],
     queryFn: async () => {
       const [vendorProfilesResult, activeVendorProfilesResult, vendorBizProfilesResult, activeVendorBizProfilesResult, approvedServicesResult] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor').eq('is_suspended', false),
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_active', true),
         supabase.from('vendor_services').select('*', { count: 'exact', head: true }).eq('is_active', true).eq('admin_approval_status', 'approved')

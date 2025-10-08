@@ -46,12 +46,10 @@ const EnhancedVendorAgentControl = () => {
           id,
           full_name,
           email,
-          role,
           verification_status,
           created_at,
           updated_at
         `)
-        .eq('role', 'vendor')
         .order('created_at', { ascending: false });
 
       if (searchTerm) {
@@ -78,12 +76,10 @@ const EnhancedVendorAgentControl = () => {
           id,
           full_name,
           email,
-          role,
           verification_status,
           created_at,
           updated_at
         `)
-        .eq('role', 'agent')
         .order('created_at', { ascending: false });
 
       if (searchTerm) {

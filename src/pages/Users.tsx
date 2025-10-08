@@ -27,7 +27,7 @@ interface UserProfile {
   email: string;
   full_name: string;
   phone: string;
-  role: string;
+  role?: string;
   avatar_url: string;
   company_name: string;
   verification_status: string;
@@ -54,9 +54,6 @@ const Users = () => {
         query = query.or(`full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,company_name.ilike.%${searchQuery}%`);
       }
 
-      if (roleFilter !== 'all') {
-        query = query.eq('role', roleFilter as any);
-      }
 
       const { data, error } = await query;
       if (error) throw error;
@@ -98,20 +95,20 @@ const Users = () => {
   };
 
   const filteredUsers = users.filter(user => {
-    if (activeTab === "admins") return user.role === 'admin';
-    if (activeTab === "agents") return user.role === 'agent';
-    if (activeTab === "vendors") return user.role === 'vendor';
-    if (activeTab === "customers") return user.role === 'general_user';
+    if (activeTab === "admins") return (user.role || 'general_user') === 'admin';
+    if (activeTab === "agents") return (user.role || 'general_user') === 'agent';
+    if (activeTab === "vendors") return (user.role || 'general_user') === 'vendor';
+    if (activeTab === "customers") return (user.role || 'general_user') === 'general_user';
     if (activeTab === "suspended") return user.is_suspended;
     return true;
   });
 
   const stats = {
     total: users.length,
-    admins: users.filter(u => u.role === 'admin').length,
-    agents: users.filter(u => u.role === 'agent').length,
-    vendors: users.filter(u => u.role === 'vendor').length,
-    customers: users.filter(u => u.role === 'general_user').length,
+    admins: users.filter(u => (u.role || 'general_user') === 'admin').length,
+    agents: users.filter(u => (u.role || 'general_user') === 'agent').length,
+    vendors: users.filter(u => (u.role || 'general_user') === 'vendor').length,
+    customers: users.filter(u => (u.role || 'general_user') === 'general_user').length,
     suspended: users.filter(u => u.is_suspended).length,
   };
 

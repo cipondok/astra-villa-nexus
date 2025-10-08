@@ -44,7 +44,7 @@ interface UserProfile {
   id: string;
   email: string;
   full_name: string;
-  role: string;
+  role?: string;
   verification_status: string;
   is_suspended: boolean;
   created_at: string;
@@ -91,7 +91,6 @@ const UserDirectoryWithCategories = () => {
           id,
           email,
           full_name,
-          role,
           verification_status,
           is_suspended,
           created_at,
