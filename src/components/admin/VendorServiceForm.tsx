@@ -18,6 +18,16 @@ interface VendorServiceFormProps {
   onCancel: () => void;
 }
 
+interface VendorOption {
+  id: string;
+  full_name: string;
+  email: string;
+  vendor_business_profiles?: {
+    business_name: string;
+    business_email: string;
+  } | null;
+}
+
 interface ServiceItem {
   item_name: string;
   item_description: string;
@@ -49,9 +59,9 @@ const VendorServiceForm = ({ service, onSuccess, onCancel }: VendorServiceFormPr
   const { showSuccess, showError } = useAlert();
 
   // Fetch vendors for selection
-  const { data: vendors } = useQuery({
+  const { data: vendors } = useQuery<VendorOption[]>({
     queryKey: ['vendors-for-service'],
-    queryFn: async () => {
+    queryFn: async (): Promise<VendorOption[]> => {
       // First get vendor user IDs from user_roles
       const { data: vendorRoles, error: rolesError } = await supabase
         .from('user_roles')
@@ -66,7 +76,7 @@ const VendorServiceForm = ({ service, onSuccess, onCancel }: VendorServiceFormPr
       if (vendorIds.length === 0) return [];
       
       // Then fetch profiles for those vendors
-      const { data, error } = await supabase
+      const { data: profiles, error } = await supabase
         .from('profiles')
         .select('id, full_name, email')
         .in('id', vendorIds)
@@ -80,11 +90,15 @@ const VendorServiceForm = ({ service, onSuccess, onCancel }: VendorServiceFormPr
         .select('vendor_id, business_name, business_email')
         .in('vendor_id', vendorIds);
       
-      // Combine the data
-      return data?.map(profile => ({
-        ...profile,
-        vendor_business_profiles: businessProfiles?.find(bp => bp.vendor_id === profile.id)
-      })) || [];
+      // Combine the data with explicit typing
+      const result: VendorOption[] = (profiles || []).map(profile => ({
+        id: profile.id,
+        full_name: profile.full_name || '',
+        email: profile.email || '',
+        vendor_business_profiles: businessProfiles?.find(bp => bp.vendor_id === profile.id) || null
+      }));
+      
+      return result;
     }
   });
 
