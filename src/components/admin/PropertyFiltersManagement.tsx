@@ -6,13 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Filter, Plus, Edit, Trash2 } from 'lucide-react';
-import { usePropertyFilters } from '@/hooks/usePropertyFilters';
+import { usePropertyFilters, FilterOption } from '@/hooks/usePropertyFilters';
 import { useToast } from '@/hooks/use-toast';
+import { FilterDialog } from './filters/FilterDialog';
 
 const PropertyFiltersManagement = () => {
-  const { filters, loading, updateFilter, deleteFilter } = usePropertyFilters();
+  const { filters, loading, updateFilter, deleteFilter, addFilter } = usePropertyFilters();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingFilter, setEditingFilter] = useState<FilterOption | null>(null);
 
   const handleToggleFilter = async (filterId: string, currentState: boolean) => {
     try {
@@ -32,6 +35,30 @@ const PropertyFiltersManagement = () => {
     }
   };
 
+  const handleEditFilter = (filter: FilterOption) => {
+    setEditingFilter(filter);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveFilter = async (filterData: Omit<FilterOption, 'id'>) => {
+    try {
+      if (editingFilter) {
+        await updateFilter(editingFilter.id, filterData);
+      } else {
+        await addFilter(filterData);
+      }
+      setIsDialogOpen(false);
+      setEditingFilter(null);
+    } catch (error) {
+      console.error('Failed to save filter:', error);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setEditingFilter(null);
+  };
+
   const filteredFilters = filters.flatMap(category => 
     category.options.filter(option => 
       option.filter_name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -49,6 +76,10 @@ const PropertyFiltersManagement = () => {
           <h2 className="text-2xl font-bold">Property Filters Management</h2>
           <p className="text-muted-foreground">Configure rental property filters and facilities</p>
         </div>
+        <Button onClick={() => setIsDialogOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Filter
+        </Button>
       </div>
 
       <div className="mb-4">
@@ -93,6 +124,13 @@ const PropertyFiltersManagement = () => {
                           checked={filter.is_active}
                           onCheckedChange={() => handleToggleFilter(filter.id, filter.is_active)}
                         />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleEditFilter(filter)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -166,6 +204,13 @@ const PropertyFiltersManagement = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <FilterDialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        onSave={handleSaveFilter}
+        filter={editingFilter}
+      />
     </div>
   );
 };
