@@ -151,10 +151,19 @@ const VendorManagement = () => {
         throw new Error(`Failed to approve request: ${requestError.message}`);
       }
       
-      // Update user role to vendor
+      // Update user role to vendor via user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .upsert({ user_id: userId, role: 'vendor', is_active: true }, { onConflict: 'user_id,role' });
+      
+      if (roleError) {
+        throw new Error(`Failed to update user role: ${roleError.message}`);
+      }
+      
+      // Update verification status in profiles
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ role: 'vendor' })
+        .update({ verification_status: 'approved' })
         .eq('id', userId);
       
       if (profileError) {

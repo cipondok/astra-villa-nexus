@@ -18,7 +18,7 @@ interface User {
   id: string;
   email: string;
   full_name: string;
-  role: UserRole;
+  role?: UserRole;
   verification_status: string;
   created_at: string;
   phone?: string;
@@ -93,7 +93,7 @@ const UserRolesManagement = () => {
         }
       }
       
-      return profilesData || [];
+      return (profilesData || []).map(p => ({ ...p, role: 'general_user' as UserRole }));
     },
     retry: 2,
     refetchOnWindowFocus: false,

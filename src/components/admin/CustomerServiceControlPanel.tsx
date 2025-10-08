@@ -54,6 +54,18 @@ const CustomerServiceControlPanel = () => {
   const { data: csAgents, isLoading: agentsLoading } = useQuery({
     queryKey: ['cs-agents', searchTerm],
     queryFn: async () => {
+      // Get user IDs with customer_service role
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'customer_service')
+        .eq('is_active', true);
+
+      if (roleError) throw roleError;
+      
+      const userIds = roleData?.map(r => r.user_id) || [];
+      if (userIds.length === 0) return [];
+
       let query = supabase
         .from('profiles')
         .select(`
@@ -64,7 +76,7 @@ const CustomerServiceControlPanel = () => {
           created_at,
           updated_at
         `)
-        .eq('role', 'customer_service')
+        .in('id', userIds)
         .order('created_at', { ascending: false });
 
       if (searchTerm) {
@@ -137,15 +149,22 @@ const CustomerServiceControlPanel = () => {
 
   // Create new CS agent mutation
   const createAgentMutation = useMutation({
-    mutationFn: async (agentData: { email: string; full_name: string }) => {
+    mutationFn: async (agentData: { email: string; full_name: string; userId: string }) => {
+      // Update user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .upsert({ user_id: agentData.userId, role: 'customer_service', is_active: true }, { onConflict: 'user_id,role' });
+      
+      if (roleError) throw roleError;
+
+      // Update profile
       const { error } = await supabase
         .from('profiles')
         .update({ 
-          role: 'customer_service',
           verification_status: 'approved',
           full_name: agentData.full_name
         })
-        .eq('email', agentData.email);
+        .eq('id', agentData.userId);
       if (error) throw error;
     },
     onSuccess: () => {

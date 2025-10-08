@@ -10,14 +10,13 @@ interface Profile {
   email: string;
   full_name?: string;
   phone?: string;
-  role: UserRole; // Populated from user_roles table (read-only)
   company_name?: string;
   license_number?: string;
   verification_status?: string;
   avatar_url?: string;
   created_at?: string;
   updated_at?: string;
-  availability_status?: 'online' | 'busy' | 'offline';
+  availability_status?: string;
   last_seen_at?: string;
   is_admin?: boolean;
   wallet_verified?: boolean;
@@ -28,6 +27,8 @@ interface Profile {
   specializations?: string;
   bio?: string;
   profile_completion_percentage?: number;
+  is_suspended?: boolean;
+  suspension_reason?: string;
 }
 
 interface AuthContextType {
@@ -113,12 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .limit(1)
           .maybeSingle();
         
-        const profileWithRole: Profile = {
-          ...data,
-          role: (rolesData?.role as UserRole) || 'general_user'
-        };
-        
-        setProfile(profileWithRole);
+        setProfile(data);
         setLoading(false);
       } catch (fetchError) {
         clearTimeout(timeoutId);
@@ -548,7 +544,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Profile updated successfully:', updatedProfile);
       
       // Update local profile state immediately
-      setProfile(updatedProfile as Profile);
+      setProfile(updatedProfile);
       setLoading(false);
       
       return { error: null, success: true };
