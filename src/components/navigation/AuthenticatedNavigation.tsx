@@ -134,14 +134,14 @@ const AuthenticatedNavigation = ({
   return (
     <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-12">
           {/* Logo */}
           <div className="flex items-center">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors"
+              className="flex items-center space-x-2 text-lg font-bold text-blue-600 hover:text-blue-700 transition-colors"
             >
-              <Building2 className="h-8 w-8" />
+              <Building2 className="h-6 w-6" />
               <span>VillaAstra</span>
             </button>
           </div>
@@ -149,22 +149,22 @@ const AuthenticatedNavigation = ({
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <NavigationMenu>
-              <NavigationMenuList className="space-x-6">
+              <NavigationMenuList className="space-x-4">
                 {/* Home */}
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                    className="flex items-center space-x-1 px-2 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                     onClick={() => navigate('/')}
                   >
-                    <Home className="h-4 w-4" />
+                    <Home className="h-3.5 w-3.5" />
                     <span>{currentText.home}</span>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 {/* Properties Dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="flex items-center space-x-1">
-                    <Search className="h-4 w-4" />
+                  <NavigationMenuTrigger className="flex items-center space-x-1 text-xs px-2 py-1.5">
+                    <Search className="h-3.5 w-3.5" />
                     <span>{currentText.browse}</span>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -206,8 +206,8 @@ const AuthenticatedNavigation = ({
                 {/* Property Management (Role-based) */}
                 {canAccessPropertyManagement && (
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="flex items-center space-x-1">
-                      <Building2 className="h-4 w-4" />
+                    <NavigationMenuTrigger className="flex items-center space-x-1 text-xs px-2 py-1.5">
+                      <Building2 className="h-3.5 w-3.5" />
                       <span>Properties</span>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -239,10 +239,10 @@ const AuthenticatedNavigation = ({
                 {canAccessAdmin && (
                   <NavigationMenuItem>
                     <NavigationMenuLink
-                      className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                      className="flex items-center space-x-1 px-2 py-1.5 rounded-md text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
                       onClick={() => navigate('/admin')}
                     >
-                      <Shield className="h-4 w-4" />
+                      <Shield className="h-3.5 w-3.5" />
                       <span>{currentText.admin}</span>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
@@ -252,7 +252,7 @@ const AuthenticatedNavigation = ({
           </div>
 
           {/* Right side controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             {/* Theme Toggle */}
             <ThemeToggleSwitch />
             
@@ -262,8 +262,8 @@ const AuthenticatedNavigation = ({
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0">
+                  <Avatar className="h-7 w-7">
                     <AvatarFallback className="bg-blue-600 text-white text-xs">
                       {getUserInitials()}
                     </AvatarFallback>

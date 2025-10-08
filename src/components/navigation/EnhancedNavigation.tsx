@@ -81,19 +81,19 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-ios">
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-14">
           {/* Animated Logo */}
           <Link to="/">
             <AnimatedLogo />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
+                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
               >
                 {item.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-200 group-hover:w-full"></span>
@@ -102,7 +102,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             {/* Theme Toggle */}
             <ThemeToggleSwitch language={language} />
 
@@ -155,12 +155,13 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               </div>
             ) : (
               onLoginClick && (
-                <Button
-                  onClick={onLoginClick}
-                  className="btn-primary-ios px-6 py-2"
-                >
-                  {currentText.signIn}
-                </Button>
+                  <Button
+                    onClick={onLoginClick}
+                    size="sm"
+                    className="btn-primary-ios px-4 py-1 text-xs"
+                  >
+                    {currentText.signIn}
+                  </Button>
               )
             )}
 

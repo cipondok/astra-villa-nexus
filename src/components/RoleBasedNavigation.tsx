@@ -165,28 +165,28 @@ const RoleBasedNavigation = ({
   return (
     <nav className="sticky top-0 left-0 right-0 z-50 header-ios border-b border-white/10 backdrop-blur-xl">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-12">
           {/* Logo - Clickable to go home */}
           <div 
             className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={handleHomeClick}
           >
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-800 dark:from-white dark:to-white/90 bg-clip-text text-transparent drop-shadow-lg">
+            <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-800 dark:from-white dark:to-white/90 bg-clip-text text-transparent drop-shadow-lg">
               Astra Villa
             </h1>
           </div>
 
           {/* Desktop Navigation - Removed navigation links, kept only controls */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2">
             {/* Language Toggle */}
             <Button
               variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
-              className="header-button-ios"
+              className="header-button-ios px-2 py-1 h-8"
             >
-              <Globe className="h-4 w-4 mr-1" />
-              <span className="text-sm font-medium">{language.toUpperCase()}</span>
+              <Globe className="h-3.5 w-3.5 mr-1" />
+              <span className="text-xs font-medium">{language.toUpperCase()}</span>
             </Button>
 
             {/* Theme Toggle */}
@@ -194,9 +194,9 @@ const RoleBasedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onThemeToggle}
-              className="header-button-ios"
+              className="header-button-ios px-2 py-1 h-8"
             >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              {theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
             </Button>
 
             {/* Auth Section */}
@@ -206,14 +206,14 @@ const RoleBasedNavigation = ({
                 <div className="flex items-center space-x-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="header-button-ios flex items-center space-x-2 p-2">
-                        <Avatar className="h-8 w-8">
+                      <Button variant="ghost" className="header-button-ios flex items-center space-x-2 px-2 py-1 h-8">
+                        <Avatar className="h-7 w-7">
                           <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                          <AvatarFallback className="text-sm bg-white/20 text-white border border-white/20">
+                          <AvatarFallback className="text-xs bg-white/20 text-white border border-white/20">
                             {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="hidden md:block text-sm font-medium text-white">
+                        <span className="hidden md:block text-xs font-medium text-white">
                           {profile.full_name || profile.email}
                         </span>
                       </Button>
@@ -258,10 +258,11 @@ const RoleBasedNavigation = ({
             ) : (
               <Button 
                 onClick={onLoginClick} 
-                className="header-button-ios"
+                size="sm"
+                className="header-button-ios px-3 py-1 h-8"
               >
-                <User className="h-4 w-4 mr-2" />
-                {currentText.loginRegister}
+                <User className="h-3.5 w-3.5 mr-1.5" />
+                <span className="text-xs">{currentText.loginRegister}</span>
               </Button>
             )}
           </div>
