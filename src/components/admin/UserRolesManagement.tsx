@@ -132,14 +132,14 @@ const UserRolesManagement = () => {
         throw fetchError;
       }
 
-      // Update with all required fields
+      // Update user_roles table instead of profiles
       const { error } = await supabase
-        .from('profiles')
-        .update({ 
+        .from('user_roles')
+        .upsert({ 
+          user_id: userId,
           role: role,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId);
+          is_active: true
+        }, { onConflict: 'user_id,role' });
       
       if (error) throw error;
       return { userId, role };
@@ -161,16 +161,16 @@ const UserRolesManagement = () => {
     mutationFn: async ({ userId, isSuperAdmin = false }: { userId: string; isSuperAdmin?: boolean }) => {
       console.log('Granting admin access to user:', userId);
       
-      // First update the profile role
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ 
+      // Add to user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .upsert({ 
+          user_id: userId,
           role: 'admin' as UserRole,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId);
+          is_active: true
+        }, { onConflict: 'user_id,role' });
       
-      if (profileError) throw profileError;
+      if (roleError) throw roleError;
       
       // Then add to admin_users table
       const { error: adminError } = await supabase
@@ -203,6 +203,15 @@ const UserRolesManagement = () => {
     mutationFn: async (userId: string) => {
       console.log('Revoking admin access for user:', userId);
       
+      // Remove from user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'admin');
+      
+      if (roleError) throw roleError;
+      
       // Remove from admin_users table
       const { error: adminError } = await supabase
         .from('admin_users')
@@ -210,17 +219,6 @@ const UserRolesManagement = () => {
         .eq('user_id', userId);
       
       if (adminError) throw adminError;
-      
-      // Update profile role
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ 
-          role: 'general_user' as UserRole,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId);
-      
-      if (profileError) throw profileError;
       return userId;
     },
     onSuccess: () => {

@@ -10,6 +10,7 @@ interface Profile {
   email: string;
   full_name?: string;
   phone?: string;
+  role?: UserRole; // Populated from user_roles table (read-only, for display only)
   company_name?: string;
   license_number?: string;
   verification_status?: string;
@@ -543,8 +544,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('Profile updated successfully:', updatedProfile);
       
-      // Update local profile state immediately
-      setProfile(updatedProfile);
+      // Re-fetch the role from user_roles to ensure consistency
+      const { data: rolesData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', updatedProfile.id)
+        .eq('is_active', true)
+        .order('role', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      
+      // Update local profile state immediately with role
+      setProfile({
+        ...updatedProfile,
+        role: (rolesData?.role as UserRole) || profile?.role || 'general_user'
+      });
       setLoading(false);
       
       return { error: null, success: true };

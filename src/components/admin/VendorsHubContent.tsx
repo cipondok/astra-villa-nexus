@@ -43,7 +43,7 @@ const VendorsHubContent = () => {
   }, isLoading: vendorStatsLoading } = useQuery({
     queryKey: ['vendors-hub-stats'],
     queryFn: async () => {
-      const [vendorProfilesResult, activeVendorProfilesResult, vendorBizProfilesResult, activeVendorBizProfilesResult, approvedServicesResult] = await Promise.all([
+      const [vendorProfilesResult, activeVendorProfilesResult, vendorBizProfilesResult] = await Promise.all([
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_active', true),
         supabase.from('vendor_services').select('*', { count: 'exact', head: true }).eq('is_active', true).eq('admin_approval_status', 'approved')
@@ -54,12 +54,8 @@ const VendorsHubContent = () => {
         typeof vendorBizProfilesResult.count === 'number' ? vendorBizProfilesResult.count : 0
       );
 
-      const activeVendors = Math.max(
-        typeof activeVendorProfilesResult.count === 'number' ? activeVendorProfilesResult.count : 0,
-        typeof activeVendorBizProfilesResult.count === 'number' ? activeVendorBizProfilesResult.count : 0
-      );
-
-      const approvedServices = typeof approvedServicesResult.count === 'number' ? approvedServicesResult.count : 0;
+      const activeVendors = typeof activeVendorProfilesResult?.count === 'number' ? activeVendorProfilesResult.count : 0;
+      const approvedServices = typeof vendorBizProfilesResult?.count === 'number' ? vendorBizProfilesResult.count : 0;
 
       return {
         totalVendors,

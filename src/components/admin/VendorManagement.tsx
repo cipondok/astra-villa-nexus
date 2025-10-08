@@ -160,7 +160,7 @@ const VendorManagement = () => {
         throw new Error(`Failed to update user role: ${roleError.message}`);
       }
       
-      // Update verification status in profiles
+      // Update verification status
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ verification_status: 'approved' })

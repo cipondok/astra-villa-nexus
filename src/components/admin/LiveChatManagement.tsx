@@ -64,10 +64,23 @@ const LiveChatManagement = () => {
   const { data: agents, isLoading: isLoadingAgents } = useQuery<AgentUser[]>({
     queryKey: ['customer-service-agents'],
     queryFn: async () => {
+      // First get user IDs with customer_service role
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'customer_service')
+        .eq('is_active', true);
+
+      if (roleError) throw roleError;
+      
+      const userIds = roleData?.map(r => r.user_id) || [];
+      if (userIds.length === 0) return [];
+
+      // Then get profiles for those users
       const { data, error } = await supabase
         .from('profiles')
         .select('id, email, full_name, availability_status, last_seen_at')
-        .eq('role', 'customer_service')
+        .in('id', userIds)
         .order('full_name');
       if (error) throw error;
       return data || [];

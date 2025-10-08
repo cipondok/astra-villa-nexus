@@ -23,10 +23,23 @@ const VendorManagementHub = () => {
   const { data: activeVendors = 0 } = useQuery({
     queryKey: ['vendor-hub-active-vendors'],
     queryFn: async () => {
+      // Get vendor user IDs from user_roles table
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'vendor')
+        .eq('is_active', true);
+
+      if (roleError) throw roleError;
+      
+      const userIds = roleData?.map(r => r.user_id) || [];
+      if (userIds.length === 0) return 0;
+
+      // Count non-suspended profiles
       const { count } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'vendor')
+        .in('id', userIds)
         .eq('is_suspended', false);
       return count || 0;
     },

@@ -25,14 +25,27 @@ const LiveAgentStatusDashboard = () => {
   const queryClient = useQueryClient();
   const [localStatus, setLocalStatus] = useState(profile?.availability_status || 'offline');
 
-  // Fetch all agents with 'agent' or 'admin' role
+  // Fetch all agents with 'agent' or 'admin' role from user_roles table
   const { data: agents, isLoading } = useQuery({
     queryKey: ['live-agents'],
     queryFn: async () => {
+      // First get user IDs with the required roles
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .in('role', ['agent', 'admin', 'customer_service'])
+        .eq('is_active', true);
+
+      if (roleError) throw roleError;
+      
+      const userIds = roleData?.map(r => r.user_id) || [];
+      if (userIds.length === 0) return [];
+
+      // Then get profiles for those users
       const { data, error } = await supabase
         .from('profiles')
         .select('id, full_name, email, avatar_url, availability_status, last_seen_at')
-        .in('role', ['agent', 'admin', 'customer_service']);
+        .in('id', userIds);
       if (error) throw error;
       return data as AgentProfile[];
     },
