@@ -15,6 +15,7 @@ import PropertyGridView from "./PropertyGridView";
 import PropertyMapView from "./PropertyMapView";
 import PropertyDetailModal from "../property/PropertyDetailModal";
 import Property3DViewModal from "../property/Property3DViewModal";
+import SearchPagination from "./SearchPagination";
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -49,106 +50,74 @@ const EnhancedPropertySearch = ({
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
   const [quickSearch, setQuickSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
 
-  // Fetch properties with filtering
+  // Fetch properties with filtering using optimized RPC function
   const { data: properties = [], isLoading, error } = useQuery({
-    queryKey: ['enhanced-property-search', filters],
+    queryKey: ['enhanced-property-search', filters, page],
     queryFn: async () => {
+      const startTime = performance.now();
       console.log('Fetching properties with filters:', filters);
+      const offset = (page - 1) * pageSize;
       
-      let query = supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'active')
-        .not('title', 'is', null)
-        .not('title', 'eq', '')
-        .gt('price', 0);
+      const { data, error } = await supabase.rpc('search_properties_advanced', {
+        p_search_text: filters.searchQuery || null,
+        p_property_type: filters.propertyTypes.length > 0 ? filters.propertyTypes[0] : null,
+        p_listing_type: filters.listingType !== 'all' ? filters.listingType : null,
+        p_development_status: null,
+        p_state: null,
+        p_city: null,
+        p_location: filters.location || null,
+        p_min_price: filters.priceRange[0] > 0 ? filters.priceRange[0] : null,
+        p_max_price: filters.priceRange[1] < 50000000000 ? filters.priceRange[1] : null,
+        p_min_bedrooms: filters.bedrooms ? parseInt(filters.bedrooms) : null,
+        p_max_bedrooms: null,
+        p_min_bathrooms: filters.bathrooms ? parseInt(filters.bathrooms) : null,
+        p_max_bathrooms: null,
+        p_min_area: filters.minArea || null,
+        p_max_area: filters.maxArea || null,
+        p_furnishing: null,
+        p_parking: null,
+        p_floor_level: null,
+        p_building_age: null,
+        p_amenities: null,
+        p_certifications: null,
+        p_features: null,
+        p_has_3d: null,
+        p_has_virtual_tour: null,
+        p_sort_by: filters.sortBy || 'newest',
+        p_limit: pageSize,
+        p_offset: offset
+      });
 
-      // Apply search query
-      if (filters.searchQuery) {
-        query = query.or(`title.ilike.%${filters.searchQuery}%,description.ilike.%${filters.searchQuery}%,location.ilike.%${filters.searchQuery}%`);
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      
+      if (duration > 1000) {
+        console.warn(`Slow search: ${duration.toFixed(0)}ms`);
+      } else {
+        console.log(`Search completed in ${duration.toFixed(0)}ms`);
       }
-
-      // Apply price range
-      if (filters.priceRange[0] > 0) {
-        query = query.gte('price', filters.priceRange[0]);
-      }
-      if (filters.priceRange[1] < 50000000000) {
-        query = query.lte('price', filters.priceRange[1]);
-      }
-
-      // Apply location filter
-      if (filters.location) {
-        query = query.or(`city.ilike.%${filters.location}%,state.ilike.%${filters.location}%,location.ilike.%${filters.location}%`);
-      }
-
-      // Apply property types
-      if (filters.propertyTypes.length > 0) {
-        query = query.in('property_type', filters.propertyTypes);
-      }
-
-      // Apply listing type
-      if (filters.listingType !== 'all') {
-        query = query.eq('listing_type', filters.listingType);
-      }
-
-      // Apply bedroom filter
-      if (filters.bedrooms) {
-        query = query.gte('bedrooms', filters.bedrooms);
-      }
-
-      // Apply bathroom filter
-      if (filters.bathrooms) {
-        query = query.gte('bathrooms', filters.bathrooms);
-      }
-
-      // Apply area filters
-      if (filters.minArea) {
-        query = query.gte('area_sqm', filters.minArea);
-      }
-      if (filters.maxArea) {
-        query = query.lte('area_sqm', filters.maxArea);
-      }
-
-      // Apply sorting
-      switch (filters.sortBy) {
-        case 'price_low':
-          query = query.order('price', { ascending: true });
-          break;
-        case 'price_high':
-          query = query.order('price', { ascending: false });
-          break;
-        case 'area_large':
-          query = query.order('area_sqm', { ascending: false });
-          break;
-        case 'popularity':
-          // In a real app, you'd have a popularity score
-          query = query.order('created_at', { ascending: false });
-          break;
-        case 'newest':
-        default:
-          query = query.order('created_at', { ascending: false });
-          break;
-      }
-
-      // Limit results
-      query = query.limit(100);
-
-      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching properties:', error);
         throw error;
       }
 
+      const results = data || [];
+      const total = results.length > 0 ? Number(results[0].total_count) : 0;
+      setTotalCount(total);
+
       // Filter out properties with missing essential data
-      const validProperties = (data || []).filter(property => 
+      const validProperties = results.filter((property: any) => 
         property.title?.trim() &&
         property.price > 0 &&
         (property.images?.length > 0 || property.image_urls?.length > 0 || property.thumbnail_url)
       ) as BaseProperty[];
 
-      console.log('Properties loaded:', validProperties.length);
+      console.log('Properties loaded:', validProperties.length, 'of', total, 'total');
       return validProperties;
     },
     retry: 1,
@@ -169,6 +138,7 @@ const EnhancedPropertySearch = ({
 
   const handleFiltersChange = (newFilters: PropertyFilters) => {
     setFilters(newFilters);
+    setPage(1); // Reset to first page when filters change
   };
 
   const handleClearFilters = () => {
@@ -348,6 +318,25 @@ const EnhancedPropertySearch = ({
 
       {/* Property Results */}
       {!isLoading && renderPropertyView()}
+
+      {/* Pagination */}
+      {!isLoading && totalCount > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <SearchPagination
+              currentPage={page}
+              totalPages={Math.ceil(totalCount / pageSize)}
+              totalCount={totalCount}
+              pageSize={pageSize}
+              onPageChange={(newPage) => {
+                setPage(newPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              disabled={isLoading}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Property Detail Modal */}
       {selectedProperty && showDetailModal && (

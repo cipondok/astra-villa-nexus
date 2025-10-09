@@ -9560,6 +9560,71 @@ export type Database = {
         }
         Returns: boolean
       }
+      search_properties_advanced: {
+        Args: {
+          p_amenities?: string[]
+          p_building_age?: string
+          p_certifications?: string[]
+          p_city?: string
+          p_development_status?: string
+          p_features?: string[]
+          p_floor_level?: string
+          p_furnishing?: string
+          p_has_3d?: boolean
+          p_has_virtual_tour?: boolean
+          p_limit?: number
+          p_listing_type?: string
+          p_location?: string
+          p_max_area?: number
+          p_max_bathrooms?: number
+          p_max_bedrooms?: number
+          p_max_price?: number
+          p_min_area?: number
+          p_min_bathrooms?: number
+          p_min_bedrooms?: number
+          p_min_price?: number
+          p_offset?: number
+          p_parking?: string
+          p_property_type?: string
+          p_search_text?: string
+          p_sort_by?: string
+          p_state?: string
+        }
+        Returns: {
+          area: string
+          area_sqm: number
+          bathrooms: number
+          bedrooms: number
+          certificate_type: string
+          city: string
+          created_at: string
+          description: string
+          development_status: string
+          district: string
+          id: string
+          image_urls: string[]
+          images: string[]
+          listing_type: string
+          location: string
+          minimum_rental_days: number
+          orientation: string
+          owner_type: string
+          price: number
+          property_condition: string
+          property_features: Json
+          property_type: string
+          rental_period: string
+          state: string
+          status: string
+          subdistrict: string
+          three_d_model_url: string
+          thumbnail_url: string
+          title: string
+          total_count: number
+          updated_at: string
+          virtual_tour_url: string
+        }[]
+      }
       search_properties_optimized: {
         Args: {
           p_city?: string

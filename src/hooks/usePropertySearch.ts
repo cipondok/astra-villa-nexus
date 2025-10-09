@@ -31,120 +31,9 @@ interface SearchFilters {
 export const usePropertySearch = () => {
   const [filters, setFilters] = useState<SearchFilters>({});
   const [searchQuery, setSearchQuery] = useState('');
-
-  const buildQuery = useCallback((filters: SearchFilters) => {
-    let query = supabase
-      .from('properties')
-      .select('*')
-      .eq('status', 'active');
-
-    // Text search
-    if (filters.query) {
-      query = query.or(`title.ilike.%${filters.query}%,location.ilike.%${filters.query}%,description.ilike.%${filters.query}%`);
-    }
-
-    // Property type filter
-    if (filters.propertyType && filters.propertyType !== 'all') {
-      query = query.eq('property_type', filters.propertyType);
-    }
-
-    // Listing type filter
-    if (filters.listingType && filters.listingType !== 'all') {
-      query = query.eq('listing_type', filters.listingType);
-    }
-
-    // Price range filter
-    if (filters.priceRange && filters.priceRange.length === 2) {
-      const [minPrice, maxPrice] = filters.priceRange;
-      if (minPrice > 0) {
-        query = query.gte('price', minPrice);
-      }
-      if (maxPrice < 20000000000) {
-        query = query.lte('price', maxPrice);
-      }
-    }
-
-    // Bedrooms filter
-    if (filters.bedrooms && filters.bedrooms !== 'all') {
-      query = query.gte('bedrooms', parseInt(filters.bedrooms));
-    }
-
-    // Bathrooms filter
-    if (filters.bathrooms && filters.bathrooms !== 'all') {
-      query = query.gte('bathrooms', parseInt(filters.bathrooms));
-    }
-
-    // Area range filter
-    if (filters.areaRange && filters.areaRange.length === 2) {
-      const [minArea, maxArea] = filters.areaRange;
-      if (minArea > 0) {
-        query = query.gte('area_sqm', minArea);
-      }
-      if (maxArea < 2000) {
-        query = query.lte('area_sqm', maxArea);
-      }
-    }
-
-    // Location filters
-    if (filters.location) {
-      query = query.ilike('location', `%${filters.location}%`);
-    }
-
-    if (filters.state) {
-      query = query.eq('state', filters.state);
-    }
-
-    if (filters.city) {
-      query = query.eq('city', filters.city);
-    }
-
-    // Development status filter
-    if (filters.developmentStatus && filters.developmentStatus !== 'all') {
-      query = query.eq('development_status', filters.developmentStatus);
-    }
-
-    // Special features
-    if (filters.has3D) {
-      query = query.not('three_d_model_url', 'is', null);
-    }
-
-    if (filters.hasVirtualTour) {
-      query = query.not('virtual_tour_url', 'is', null);
-    }
-
-    // Property features filter (using JSONB contains)
-    if (filters.features && filters.features.length > 0) {
-      filters.features.forEach(feature => {
-        query = query.contains('property_features', { [feature]: true });
-      });
-    }
-
-    // Sorting
-    switch (filters.sortBy) {
-      case 'newest':
-        query = query.order('created_at', { ascending: false });
-        break;
-      case 'oldest':
-        query = query.order('created_at', { ascending: true });
-        break;
-      case 'price_low_high':
-        query = query.order('price', { ascending: true });
-        break;
-      case 'price_high_low':
-        query = query.order('price', { ascending: false });
-        break;
-      case 'area_large_small':
-        query = query.order('area_sqm', { ascending: false });
-        break;
-      case 'area_small_large':
-        query = query.order('area_sqm', { ascending: true });
-        break;
-      default:
-        query = query.order('created_at', { ascending: false });
-    }
-
-    return query;
-  }, []);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
 
   const {
     data: searchResults,
@@ -152,87 +41,113 @@ export const usePropertySearch = () => {
     error,
     refetch
   } = useQuery({
-    queryKey: ['property-search', filters],
+    queryKey: ['property-search', filters, page],
     queryFn: async () => {
-      const query = buildQuery(filters);
-      const { data, error } = await query;
+      const startTime = performance.now();
+      const offset = (page - 1) * pageSize;
+      
+      const { data, error } = await supabase.rpc('search_properties_advanced', {
+        p_search_text: filters.query || null,
+        p_property_type: filters.propertyType !== 'all' ? filters.propertyType : null,
+        p_listing_type: filters.listingType !== 'all' ? filters.listingType : null,
+        p_development_status: filters.developmentStatus !== 'all' ? filters.developmentStatus : null,
+        p_state: filters.state || null,
+        p_city: filters.city || null,
+        p_location: filters.location || null,
+        p_min_price: filters.priceRange?.[0] && filters.priceRange[0] > 0 ? filters.priceRange[0] : null,
+        p_max_price: filters.priceRange?.[1] && filters.priceRange[1] < 20000000000 ? filters.priceRange[1] : null,
+        p_min_bedrooms: filters.bedrooms && filters.bedrooms !== 'all' ? parseInt(filters.bedrooms) : null,
+        p_max_bedrooms: null,
+        p_min_bathrooms: filters.bathrooms && filters.bathrooms !== 'all' ? parseInt(filters.bathrooms) : null,
+        p_max_bathrooms: null,
+        p_min_area: filters.areaRange?.[0] && filters.areaRange[0] > 0 ? filters.areaRange[0] : null,
+        p_max_area: filters.areaRange?.[1] && filters.areaRange[1] < 2000 ? filters.areaRange[1] : null,
+        p_furnishing: filters.furnishing && filters.furnishing !== 'all' ? filters.furnishing : null,
+        p_parking: filters.parking && filters.parking !== 'all' ? filters.parking : null,
+        p_floor_level: filters.floorLevel && filters.floorLevel !== 'all' ? filters.floorLevel : null,
+        p_building_age: filters.buildingAge && filters.buildingAge !== 'all' ? filters.buildingAge : null,
+        p_amenities: filters.amenities && filters.amenities.length > 0 ? filters.amenities : null,
+        p_certifications: filters.certification && filters.certification.length > 0 ? filters.certification : null,
+        p_features: filters.features && filters.features.length > 0 ? filters.features : null,
+        p_has_3d: filters.has3D || null,
+        p_has_virtual_tour: filters.hasVirtualTour || null,
+        p_sort_by: filters.sortBy || 'newest',
+        p_limit: pageSize,
+        p_offset: offset
+      });
+      
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      
+      // Log slow queries for monitoring
+      if (duration > 1000) {
+        console.warn(`Slow property search: ${duration.toFixed(0)}ms`, {
+          filters,
+          page,
+          resultCount: data?.length || 0
+        });
+      } else {
+        console.log(`Property search completed in ${duration.toFixed(0)}ms`);
+      }
       
       if (error) throw error;
-      return data as BaseProperty[];
+      
+      const results = data || [];
+      const total = results.length > 0 ? Number(results[0].total_count) : 0;
+      setTotalCount(total);
+      
+      return results as BaseProperty[];
     },
     enabled: Object.keys(filters).length > 0 || searchQuery.length > 0,
+    staleTime: 30000,
+    gcTime: 5 * 60 * 1000,
   });
 
   const searchProperties = useCallback((searchFilters: SearchFilters) => {
     setFilters(searchFilters);
     setSearchQuery(searchFilters.query || '');
+    setPage(1); // Reset to first page on new search
   }, []);
 
   const clearSearch = useCallback(() => {
     setFilters({});
     setSearchQuery('');
+    setPage(1);
+    setTotalCount(0);
   }, []);
 
-  const filteredResults = useMemo(() => {
-    if (!searchResults) return [];
-    
-    // Additional client-side filtering for complex features
-    return searchResults.filter(property => {
-      // Furnishing filter (if stored in property_features)
-      if (filters.furnishing && filters.furnishing !== 'all') {
-        const furnishing = property.property_features?.furnishing;
-        if (furnishing !== filters.furnishing) return false;
-      }
+  const goToPage = useCallback((newPage: number) => {
+    const totalPages = Math.ceil(totalCount / pageSize);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  }, [totalCount, pageSize]);
 
-      // Parking filter (if stored in property_features)
-      if (filters.parking && filters.parking !== 'all') {
-        const parking = property.property_features?.parking;
-        if (filters.parking === 'none' && parking) return false;
-        if (filters.parking === 'one' && parking !== 'one') return false;
-        if (filters.parking === 'multiple' && !['two', 'multiple'].includes(parking)) return false;
-      }
+  const nextPage = useCallback(() => {
+    goToPage(page + 1);
+  }, [page, goToPage]);
 
-      // Floor level filter (if stored in property_features)
-      if (filters.floorLevel && filters.floorLevel !== 'all') {
-        const floorLevel = property.property_features?.floorLevel;
-        if (floorLevel !== filters.floorLevel) return false;
-      }
-
-      // Building age filter (if stored in property_features)
-      if (filters.buildingAge && filters.buildingAge !== 'all') {
-        const buildingAge = property.property_features?.buildingAge;
-        if (buildingAge !== filters.buildingAge) return false;
-      }
-
-      // Amenities filter (if stored in property_features)
-      if (filters.amenities && filters.amenities.length > 0) {
-        const propertyAmenities = property.property_features?.amenities || [];
-        const hasRequiredAmenities = filters.amenities.every(amenity => 
-          propertyAmenities.includes(amenity)
-        );
-        if (!hasRequiredAmenities) return false;
-      }
-
-      // Certifications filter (if stored in property_features)
-      if (filters.certification && filters.certification.length > 0) {
-        const propertyCertifications = property.property_features?.certifications || [];
-        const hasRequiredCertifications = filters.certification.every(cert => 
-          propertyCertifications.includes(cert)
-        );
-        if (!hasRequiredCertifications) return false;
-      }
-
-      return true;
-    });
-  }, [searchResults, filters]);
+  const previousPage = useCallback(() => {
+    goToPage(page - 1);
+  }, [page, goToPage]);
 
   return {
-    searchResults: filteredResults,
+    searchResults: searchResults || [],
     isLoading,
     error,
     searchProperties,
     clearSearch,
     filters,
-    refetch
+    refetch,
+    // Pagination
+    page,
+    pageSize,
+    totalCount,
+    totalPages: Math.ceil(totalCount / pageSize),
+    goToPage,
+    nextPage,
+    previousPage,
+    hasNextPage: page < Math.ceil(totalCount / pageSize),
+    hasPreviousPage: page > 1,
   };
 };

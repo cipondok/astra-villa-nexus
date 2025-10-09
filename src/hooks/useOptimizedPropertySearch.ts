@@ -171,11 +171,14 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
     try {
       const offset = (currentPage - 1) * pageSize;
       
-      const { data, error: searchError } = await supabase.rpc('search_properties_optimized', {
+      const { data, error: searchError } = await supabase.rpc('search_properties_advanced', {
         p_search_text: debouncedSearchText || null,
         p_property_type: currentFilters.propertyType || null,
         p_listing_type: currentFilters.listingType || null,
+        p_development_status: null,
+        p_state: null,
         p_city: currentFilters.city || null,
+        p_location: null,
         p_min_price: currentFilters.minPrice || null,
         p_max_price: currentFilters.maxPrice || null,
         p_min_bedrooms: currentFilters.minBedrooms || null,
@@ -184,6 +187,16 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
         p_max_bathrooms: currentFilters.maxBathrooms || null,
         p_min_area: currentFilters.minArea || null,
         p_max_area: currentFilters.maxArea || null,
+        p_furnishing: null,
+        p_parking: null,
+        p_floor_level: null,
+        p_building_age: null,
+        p_amenities: null,
+        p_certifications: null,
+        p_features: null,
+        p_has_3d: null,
+        p_has_virtual_tour: null,
+        p_sort_by: 'newest',
         p_limit: pageSize,
         p_offset: offset
       });
