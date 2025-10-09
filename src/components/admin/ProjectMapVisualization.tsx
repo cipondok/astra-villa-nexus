@@ -7,30 +7,46 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Database, FileCode, Package, AlertTriangle, CheckCircle, XCircle,
   TrendingUp, Eye, Shield, Layers, Activity, FolderOpen, Zap,
-  Users, Lock, Code, Gauge, LineChart, Braces, Box
+  Users, Lock, Code, Gauge, LineChart, Braces, Box, RefreshCw
 } from 'lucide-react';
 import {
   BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer,
   XAxis, YAxis, Tooltip, Legend, RadialBarChart, RadialBar,
   LineChart as RechartsLineChart, Line, AreaChart, Area
 } from 'recharts';
+import { useProjectAnalytics } from '@/hooks/useProjectAnalytics';
+import { Button } from '@/components/ui/button';
+import { formatDistanceToNow } from 'date-fns';
 
 const ProjectMapVisualization = () => {
   const [selectedView, setSelectedView] = useState('overview');
+  const { data: analytics, isLoading, refetch, isFetching } = useProjectAnalytics();
   
-  // Enhanced project statistics
-  const projectStats = {
-    totalFiles: 89,
-    components: 34,
-    pages: 12,
-    hooks: 8,
-    databaseTables: 40,
-    linesOfCode: 12543,
-    dependencies: 64,
-    migrations: 127,
-    healthScore: 87,
-    securityScore: 92
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <RefreshCw className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">Loading project analytics...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!analytics) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <AlertTriangle className="h-8 w-8 text-destructive mx-auto" />
+          <p className="text-muted-foreground">Failed to load project analytics</p>
+          <Button onClick={() => refetch()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const projectStats = analytics.statistics;
+  const databaseTables = analytics.databaseTables;
 
   // File type distribution using semantic colors
   const fileTypeData = [
@@ -65,15 +81,6 @@ const ProjectMapVisualization = () => {
     { week: 'W4', complexity: 44, maintainability: 77 }
   ];
 
-  // Database tables
-  const databaseTables = [
-    { name: 'profiles', columns: 15, policies: 4, rows: 156, usage: 85, hasRLS: true },
-    { name: 'properties', columns: 30, policies: 3, rows: 342, usage: 92, hasRLS: true },
-    { name: 'vendor_business_profiles', columns: 40, policies: 4, rows: 89, usage: 78, hasRLS: true },
-    { name: 'rental_bookings', columns: 20, policies: 3, rows: 523, usage: 95, hasRLS: true },
-    { name: 'user_roles', columns: 5, policies: 2, rows: 12, usage: 45, hasRLS: true },
-    { name: 'api_settings', columns: 9, policies: 2, rows: 3, usage: 25, hasRLS: true }
-  ];
 
   // Dependencies data
   const topDependencies = [
@@ -91,7 +98,7 @@ const ProjectMapVisualization = () => {
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         
         <div className="relative z-10">
-          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-start justify-between mb-6">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 Project Intelligence
@@ -99,6 +106,19 @@ const ProjectMapVisualization = () => {
               <p className="text-muted-foreground max-w-2xl">
                 Comprehensive analysis of architecture, security, code quality, and database health
               </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Activity className="h-3 w-3" />
+                Last updated: {formatDistanceToNow(analytics.lastUpdated, { addSuffix: true })}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                  className="h-6 px-2"
+                >
+                  <RefreshCw className={`h-3 w-3 ${isFetching ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
             </div>
             
             <div className="flex items-center gap-6">
