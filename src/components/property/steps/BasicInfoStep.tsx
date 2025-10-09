@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ContentValidator } from "@/utils/contentValidation";
+import { ContentCensor } from "@/utils/contentCensor";
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
 
@@ -14,7 +14,7 @@ interface BasicInfoStepProps {
 
 const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
   const { language } = useLanguage();
-  const [descriptionError, setDescriptionError] = useState<string>('');
+  const [showCensorWarning, setShowCensorWarning] = useState<boolean>(false);
 
   const t = {
     en: {
@@ -32,7 +32,7 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
       descriptionPlaceholder: "Describe your property in detail...",
       descriptionHint: "Include key features, nearby amenities, and what makes this property special",
       descriptionGuide: "Important: Do NOT include phone numbers, email addresses, websites, or WhatsApp links. Contact information will be shown from your profile.",
-      minLength: "Minimum 50 characters required",
+      censorWarning: "Contact information was automatically censored. Your contact details will be shown from your profile.",
       // Property types
       house: "House",
       apartment: "Apartment",
@@ -71,7 +71,7 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
       descriptionPlaceholder: "Deskripsikan properti Anda secara detail...",
       descriptionHint: "Sertakan fitur utama, fasilitas terdekat, dan apa yang membuat properti ini istimewa",
       descriptionGuide: "Penting: JANGAN sertakan nomor telepon, alamat email, website, atau link WhatsApp. Informasi kontak akan ditampilkan dari profil Anda.",
-      minLength: "Minimal 50 karakter diperlukan",
+      censorWarning: "Informasi kontak telah disensor secara otomatis. Detail kontak Anda akan ditampilkan dari profil Anda.",
       // Property types
       house: "Rumah",
       apartment: "Apartemen",
@@ -187,42 +187,30 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
           value={formData.description}
           onChange={(e) => {
             const value = e.target.value;
-            onUpdate('description', value);
             
-            // Validate on change
-            if (value.length >= 50) {
-              const validation = ContentValidator.validateDescription(value, language);
-              if (!validation.isValid) {
-                setDescriptionError(validation.errors[0]);
-              } else {
-                setDescriptionError('');
-              }
+            // Check if content contains prohibited information
+            const hasProhibited = ContentCensor.containsProhibitedContent(value);
+            
+            if (hasProhibited) {
+              // Censor the content
+              const censoredValue = ContentCensor.censorContent(value);
+              onUpdate('description', censoredValue);
+              setShowCensorWarning(true);
+              
+              // Hide warning after 3 seconds
+              setTimeout(() => setShowCensorWarning(false), 3000);
             } else {
-              setDescriptionError('');
-            }
-          }}
-          onBlur={(e) => {
-            // Validate on blur
-            const value = e.target.value;
-            if (value.length > 0 && value.length < 50) {
-              setDescriptionError(t.minLength);
-            } else if (value.length >= 50) {
-              const validation = ContentValidator.validateDescription(value, language);
-              if (!validation.isValid) {
-                setDescriptionError(validation.errors[0]);
-              } else {
-                setDescriptionError('');
-              }
+              onUpdate('description', value);
             }
           }}
           placeholder={t.descriptionPlaceholder}
           rows={6}
-          className={`mt-2 ${descriptionError ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+          className="mt-2"
         />
-        {descriptionError && (
-          <div className="flex items-start gap-2 mt-2 text-red-600 dark:text-red-400">
-            <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-            <p className="text-sm">{descriptionError}</p>
+        {showCensorWarning && (
+          <div className="flex items-start gap-2 mt-2 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md">
+            <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-amber-600 dark:text-amber-400" />
+            <p className="text-sm text-amber-900 dark:text-amber-100">{t.censorWarning}</p>
           </div>
         )}
         <p className="text-sm text-muted-foreground mt-1">
