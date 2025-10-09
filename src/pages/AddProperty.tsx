@@ -4,7 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
+import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogIn, UserPlus, Lock } from "lucide-react";
@@ -134,9 +134,9 @@ const AddProperty = () => {
             )}
           </div>
 
-          {/* Form with enhanced styling */}
+          {/* Multi-Step Form with enhanced styling */}
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
-            <RoleBasedPropertyForm />
+            <MultiStepPropertyForm />
           </div>
         </div>
       </div>
