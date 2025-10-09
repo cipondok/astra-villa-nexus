@@ -1253,6 +1253,161 @@ export type Database = {
           },
         ]
       }
+      cloudflare_audit_log: {
+        Row: {
+          action: string
+          changed_by: string | null
+          created_at: string | null
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          setting_id: string | null
+        }
+        Insert: {
+          action: string
+          changed_by?: string | null
+          created_at?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          setting_id?: string | null
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          created_at?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          setting_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cloudflare_audit_log_setting_id_fkey"
+            columns: ["setting_id"]
+            isOneToOne: false
+            referencedRelation: "cloudflare_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cloudflare_settings: {
+        Row: {
+          account_id: string | null
+          always_online: boolean | null
+          always_use_https: boolean | null
+          analytics_enabled: boolean | null
+          api_email: string | null
+          api_token: string | null
+          auto_minify_css: boolean | null
+          auto_minify_enabled: boolean | null
+          auto_minify_html: boolean | null
+          auto_minify_js: boolean | null
+          automatic_https_rewrites: boolean | null
+          brotli_enabled: boolean | null
+          browser_cache_ttl: number | null
+          cache_level: string | null
+          cdn_enabled: boolean | null
+          challenge_passage: number | null
+          created_at: string | null
+          ddos_protection: string | null
+          development_mode: boolean | null
+          early_hints: boolean | null
+          edge_cache_ttl: number | null
+          http2_enabled: boolean | null
+          http3_enabled: boolean | null
+          id: string
+          image_optimization_quality: number | null
+          image_resizing_enabled: boolean | null
+          is_active: boolean | null
+          mirage: boolean | null
+          polish: string | null
+          rate_limiting_enabled: boolean | null
+          rocket_loader: boolean | null
+          ssl_mode: string | null
+          tls_version: string | null
+          updated_at: string | null
+          webp_enabled: boolean | null
+          zone_id: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          always_online?: boolean | null
+          always_use_https?: boolean | null
+          analytics_enabled?: boolean | null
+          api_email?: string | null
+          api_token?: string | null
+          auto_minify_css?: boolean | null
+          auto_minify_enabled?: boolean | null
+          auto_minify_html?: boolean | null
+          auto_minify_js?: boolean | null
+          automatic_https_rewrites?: boolean | null
+          brotli_enabled?: boolean | null
+          browser_cache_ttl?: number | null
+          cache_level?: string | null
+          cdn_enabled?: boolean | null
+          challenge_passage?: number | null
+          created_at?: string | null
+          ddos_protection?: string | null
+          development_mode?: boolean | null
+          early_hints?: boolean | null
+          edge_cache_ttl?: number | null
+          http2_enabled?: boolean | null
+          http3_enabled?: boolean | null
+          id?: string
+          image_optimization_quality?: number | null
+          image_resizing_enabled?: boolean | null
+          is_active?: boolean | null
+          mirage?: boolean | null
+          polish?: string | null
+          rate_limiting_enabled?: boolean | null
+          rocket_loader?: boolean | null
+          ssl_mode?: string | null
+          tls_version?: string | null
+          updated_at?: string | null
+          webp_enabled?: boolean | null
+          zone_id?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          always_online?: boolean | null
+          always_use_https?: boolean | null
+          analytics_enabled?: boolean | null
+          api_email?: string | null
+          api_token?: string | null
+          auto_minify_css?: boolean | null
+          auto_minify_enabled?: boolean | null
+          auto_minify_html?: boolean | null
+          auto_minify_js?: boolean | null
+          automatic_https_rewrites?: boolean | null
+          brotli_enabled?: boolean | null
+          browser_cache_ttl?: number | null
+          cache_level?: string | null
+          cdn_enabled?: boolean | null
+          challenge_passage?: number | null
+          created_at?: string | null
+          ddos_protection?: string | null
+          development_mode?: boolean | null
+          early_hints?: boolean | null
+          edge_cache_ttl?: number | null
+          http2_enabled?: boolean | null
+          http3_enabled?: boolean | null
+          id?: string
+          image_optimization_quality?: number | null
+          image_resizing_enabled?: boolean | null
+          is_active?: boolean | null
+          mirage?: boolean | null
+          polish?: string | null
+          rate_limiting_enabled?: boolean | null
+          rocket_loader?: boolean | null
+          ssl_mode?: string | null
+          tls_version?: string | null
+          updated_at?: string | null
+          webp_enabled?: boolean | null
+          zone_id?: string | null
+        }
+        Relationships: []
+      }
       cms_content: {
         Row: {
           author_id: string | null
