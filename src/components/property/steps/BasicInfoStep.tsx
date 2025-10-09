@@ -3,6 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ContentValidator } from "@/utils/contentValidation";
+import { useState } from "react";
+import { AlertCircle } from "lucide-react";
 
 interface BasicInfoStepProps {
   formData: any;
@@ -11,6 +14,7 @@ interface BasicInfoStepProps {
 
 const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
   const { language } = useLanguage();
+  const [descriptionError, setDescriptionError] = useState<string>('');
 
   const t = {
     en: {
@@ -27,6 +31,8 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
       description: "Description",
       descriptionPlaceholder: "Describe your property in detail...",
       descriptionHint: "Include key features, nearby amenities, and what makes this property special",
+      descriptionGuide: "Important: Do NOT include phone numbers, email addresses, websites, or WhatsApp links. Contact information will be shown from your profile.",
+      minLength: "Minimum 50 characters required",
       // Property types
       house: "House",
       apartment: "Apartment",
@@ -64,6 +70,8 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
       description: "Deskripsi",
       descriptionPlaceholder: "Deskripsikan properti Anda secara detail...",
       descriptionHint: "Sertakan fitur utama, fasilitas terdekat, dan apa yang membuat properti ini istimewa",
+      descriptionGuide: "Penting: JANGAN sertakan nomor telepon, alamat email, website, atau link WhatsApp. Informasi kontak akan ditampilkan dari profil Anda.",
+      minLength: "Minimal 50 karakter diperlukan",
       // Property types
       house: "Rumah",
       apartment: "Apartemen",
@@ -169,14 +177,54 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
 
       <div>
         <Label htmlFor="description">{t.description} *</Label>
+        <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-md">
+          <p className="text-sm text-blue-900 dark:text-blue-100 font-medium">
+            {t.descriptionGuide}
+          </p>
+        </div>
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => onUpdate('description', e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            onUpdate('description', value);
+            
+            // Validate on change
+            if (value.length >= 50) {
+              const validation = ContentValidator.validateDescription(value, language);
+              if (!validation.isValid) {
+                setDescriptionError(validation.errors[0]);
+              } else {
+                setDescriptionError('');
+              }
+            } else {
+              setDescriptionError('');
+            }
+          }}
+          onBlur={(e) => {
+            // Validate on blur
+            const value = e.target.value;
+            if (value.length > 0 && value.length < 50) {
+              setDescriptionError(t.minLength);
+            } else if (value.length >= 50) {
+              const validation = ContentValidator.validateDescription(value, language);
+              if (!validation.isValid) {
+                setDescriptionError(validation.errors[0]);
+              } else {
+                setDescriptionError('');
+              }
+            }
+          }}
           placeholder={t.descriptionPlaceholder}
           rows={6}
-          className="mt-2"
+          className={`mt-2 ${descriptionError ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
         />
+        {descriptionError && (
+          <div className="flex items-start gap-2 mt-2 text-red-600 dark:text-red-400">
+            <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <p className="text-sm">{descriptionError}</p>
+          </div>
+        )}
         <p className="text-sm text-muted-foreground mt-1">
           {t.descriptionHint}
         </p>
