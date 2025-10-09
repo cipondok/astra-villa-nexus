@@ -8,10 +8,13 @@ import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogIn, UserPlus, Lock } from "lucide-react";
+import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 
 const AddProperty = () => {
   const { isAuthenticated, profile } = useAuth();
   const { language } = useLanguage();
+  const { isAdmin, isLoading: adminLoading } = useIsAdmin();
+  const { data: userRoles = [] } = useUserRoles();
   const navigate = useNavigate();
 
   // Show login/register prompt for non-authenticated users
@@ -64,8 +67,14 @@ const AddProperty = () => {
     );
   }
 
-  // Show role upgrade prompt for general users
-  if (profile?.role === 'general_user') {
+  // Check if user has permission to add properties
+  const canAddProperty = isAdmin || 
+    userRoles.includes('agent') || 
+    userRoles.includes('property_owner') || 
+    userRoles.includes('vendor');
+
+  // Show role upgrade prompt for users without permission
+  if (!adminLoading && !canAddProperty) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50/60 via-purple-50/60 to-pink-50/60 px-4">
         <Card className="w-full max-w-md shadow-xl">
@@ -113,11 +122,9 @@ const AddProperty = () => {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {language === "en" ? "Add New Property" : "Tambah Properti Baru"}
-              {(profile?.role === 'vendor' || profile?.role === 'agent' || profile?.role === 'property_owner') && (
-                <span className="text-sm font-normal text-blue-600 block">
-                  {language === "en" ? "Create property for sale/rent" : "Buat properti untuk dijual/disewa"}
-                </span>
-              )}
+              <span className="text-sm font-normal text-blue-600 block">
+                {language === "en" ? "Create property for sale/rent" : "Buat properti untuk dijual/disewa"}
+              </span>
             </h1>
             <p className="text-xl text-gray-600">
               {language === "en" 
@@ -125,11 +132,13 @@ const AddProperty = () => {
                 : "Buat listing properti yang lengkap dengan semua detail"
               }
             </p>
-            {profile?.role && (
-              <div className="mt-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                  Role: {profile.role.replace('_', ' ').charAt(0).toUpperCase() + profile.role.replace('_', ' ').slice(1)}
-                </span>
+            {userRoles.length > 0 && (
+              <div className="mt-4 flex gap-2 justify-center flex-wrap">
+                {userRoles.map(role => (
+                  <span key={role} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    {role.replace('_', ' ').charAt(0).toUpperCase() + role.replace('_', ' ').slice(1)}
+                  </span>
+                ))}
               </div>
             )}
           </div>
