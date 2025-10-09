@@ -38,7 +38,8 @@ import {
   HelpCircle,
   Bell,
   ImageIcon,
-  Map
+  Map,
+  Cloud
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -291,6 +292,13 @@ export const navigationSections = {
   ],
 
   technical: [
+    {
+      key: "cloudflare-settings",
+      label: "Cloudflare CDN",
+      icon: Cloud,
+      description: "Configure Cloudflare CDN, caching, security, and performance optimization",
+      badge: "New"
+    },
     {
       key: "database-management",
       label: "Database Management",

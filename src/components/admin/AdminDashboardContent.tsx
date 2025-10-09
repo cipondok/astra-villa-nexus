@@ -52,6 +52,7 @@ import HomepageSliderSettings from "./HomepageSliderSettings";
 import ProjectMapVisualization from "./ProjectMapVisualization";
 import CookieConsentSettings from "./CookieConsentSettings";
 import CaptchaSettings from "./CaptchaSettings";
+import CloudflareSettings from "./CloudflareSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -166,6 +167,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <CookieConsentSettings />;
       case "captcha-settings":
         return <CaptchaSettings />;
+      case "cloudflare-settings":
+        return <CloudflareSettings />;
       default:
         return <AdminOverview />;
     }
