@@ -2,6 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface BasicInfoStepProps {
   formData: any;
@@ -9,95 +10,175 @@ interface BasicInfoStepProps {
 }
 
 const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
+  const { language } = useLanguage();
+
+  const t = {
+    en: {
+      title: "Property Title",
+      titlePlaceholder: "e.g., Modern 3BR Villa in Seminyak",
+      propertyType: "Property Type",
+      selectPropertyType: "Select property type",
+      listingType: "Listing Type",
+      selectListingType: "Select listing type",
+      price: "Price (IDR)",
+      pricePlaceholder: "e.g., 5000000000",
+      monthlyRental: "Monthly rental price",
+      salePrice: "Sale price",
+      description: "Description",
+      descriptionPlaceholder: "Describe your property in detail...",
+      descriptionHint: "Include key features, nearby amenities, and what makes this property special",
+      // Property types
+      house: "House",
+      apartment: "Apartment",
+      villa: "Villa",
+      townhouse: "Townhouse",
+      condo: "Condo",
+      land: "Land",
+      commercial: "Commercial",
+      office: "Office Space",
+      virtualOffice: "Virtual Office",
+      warehouse: "Warehouse",
+      retail: "Retail Space",
+      hotel: "Hotel",
+      resort: "Resort",
+      studio: "Studio",
+      penthouse: "Penthouse",
+      duplex: "Duplex",
+      shophouse: "Shophouse",
+      // Listing types
+      forSale: "For Sale",
+      forRent: "For Rent",
+      forLease: "For Lease",
+    },
+    id: {
+      title: "Judul Properti",
+      titlePlaceholder: "mis., Villa Modern 3KT di Seminyak",
+      propertyType: "Tipe Properti",
+      selectPropertyType: "Pilih tipe properti",
+      listingType: "Tipe Listing",
+      selectListingType: "Pilih tipe listing",
+      price: "Harga (IDR)",
+      pricePlaceholder: "mis., 5000000000",
+      monthlyRental: "Harga sewa bulanan",
+      salePrice: "Harga jual",
+      description: "Deskripsi",
+      descriptionPlaceholder: "Deskripsikan properti Anda secara detail...",
+      descriptionHint: "Sertakan fitur utama, fasilitas terdekat, dan apa yang membuat properti ini istimewa",
+      // Property types
+      house: "Rumah",
+      apartment: "Apartemen",
+      villa: "Villa",
+      townhouse: "Rumah Teres",
+      condo: "Kondominium",
+      land: "Tanah",
+      commercial: "Komersial",
+      office: "Ruang Kantor",
+      virtualOffice: "Kantor Virtual",
+      warehouse: "Gudang",
+      retail: "Ruang Ritel",
+      hotel: "Hotel",
+      resort: "Resor",
+      studio: "Studio",
+      penthouse: "Penthouse",
+      duplex: "Duplex",
+      shophouse: "Ruko",
+      // Listing types
+      forSale: "Dijual",
+      forRent: "Disewakan",
+      forLease: "Disewa Jangka Panjang",
+    }
+  }[language];
+
   return (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="title">Property Title *</Label>
+        <Label htmlFor="title">{t.title} *</Label>
         <Input
           id="title"
           value={formData.title}
           onChange={(e) => onUpdate('title', e.target.value)}
-          placeholder="e.g., Modern 3BR Villa in Seminyak"
+          placeholder={t.titlePlaceholder}
           className="mt-2"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="property_type">Property Type *</Label>
+          <Label htmlFor="property_type">{t.propertyType} *</Label>
           <Select 
             value={formData.property_type} 
             onValueChange={(value) => onUpdate('property_type', value)}
           >
             <SelectTrigger className="mt-2">
-              <SelectValue placeholder="Select property type" />
+              <SelectValue placeholder={t.selectPropertyType} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="house">House</SelectItem>
-              <SelectItem value="apartment">Apartment</SelectItem>
-              <SelectItem value="villa">Villa</SelectItem>
-              <SelectItem value="townhouse">Townhouse</SelectItem>
-              <SelectItem value="condo">Condo</SelectItem>
-              <SelectItem value="land">Land</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="office">Office Space</SelectItem>
-              <SelectItem value="virtual_office">Virtual Office</SelectItem>
-              <SelectItem value="warehouse">Warehouse</SelectItem>
-              <SelectItem value="retail">Retail Space</SelectItem>
-              <SelectItem value="hotel">Hotel</SelectItem>
-              <SelectItem value="resort">Resort</SelectItem>
-              <SelectItem value="studio">Studio</SelectItem>
-              <SelectItem value="penthouse">Penthouse</SelectItem>
-              <SelectItem value="duplex">Duplex</SelectItem>
+              <SelectItem value="house">{t.house}</SelectItem>
+              <SelectItem value="apartment">{t.apartment}</SelectItem>
+              <SelectItem value="villa">{t.villa}</SelectItem>
+              <SelectItem value="townhouse">{t.townhouse}</SelectItem>
+              <SelectItem value="condo">{t.condo}</SelectItem>
+              <SelectItem value="land">{t.land}</SelectItem>
+              <SelectItem value="commercial">{t.commercial}</SelectItem>
+              <SelectItem value="office">{t.office}</SelectItem>
+              <SelectItem value="virtual_office">{t.virtualOffice}</SelectItem>
+              <SelectItem value="warehouse">{t.warehouse}</SelectItem>
+              <SelectItem value="retail">{t.retail}</SelectItem>
+              <SelectItem value="hotel">{t.hotel}</SelectItem>
+              <SelectItem value="resort">{t.resort}</SelectItem>
+              <SelectItem value="studio">{t.studio}</SelectItem>
+              <SelectItem value="penthouse">{t.penthouse}</SelectItem>
+              <SelectItem value="duplex">{t.duplex}</SelectItem>
+              <SelectItem value="shophouse">{t.shophouse}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <Label htmlFor="listing_type">Listing Type *</Label>
+          <Label htmlFor="listing_type">{t.listingType} *</Label>
           <Select 
             value={formData.listing_type} 
             onValueChange={(value) => onUpdate('listing_type', value)}
           >
             <SelectTrigger className="mt-2">
-              <SelectValue placeholder="Select listing type" />
+              <SelectValue placeholder={t.selectListingType} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="sale">For Sale</SelectItem>
-              <SelectItem value="rent">For Rent</SelectItem>
-              <SelectItem value="lease">For Lease</SelectItem>
+              <SelectItem value="sale">{t.forSale}</SelectItem>
+              <SelectItem value="rent">{t.forRent}</SelectItem>
+              <SelectItem value="lease">{t.forLease}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       <div>
-        <Label htmlFor="price">Price (IDR) *</Label>
+        <Label htmlFor="price">{t.price} *</Label>
         <Input
           id="price"
           type="number"
           value={formData.price}
           onChange={(e) => onUpdate('price', e.target.value)}
-          placeholder="e.g., 5000000000"
+          placeholder={t.pricePlaceholder}
           className="mt-2"
         />
         <p className="text-sm text-muted-foreground mt-1">
-          {formData.listing_type === 'rent' ? 'Monthly rental price' : 'Sale price'}
+          {formData.listing_type === 'rent' ? t.monthlyRental : t.salePrice}
         </p>
       </div>
 
       <div>
-        <Label htmlFor="description">Description *</Label>
+        <Label htmlFor="description">{t.description} *</Label>
         <Textarea
           id="description"
           value={formData.description}
           onChange={(e) => onUpdate('description', e.target.value)}
-          placeholder="Describe your property in detail..."
+          placeholder={t.descriptionPlaceholder}
           rows={6}
           className="mt-2"
         />
         <p className="text-sm text-muted-foreground mt-1">
-          Include key features, nearby amenities, and what makes this property special
+          {t.descriptionHint}
         </p>
       </div>
     </div>

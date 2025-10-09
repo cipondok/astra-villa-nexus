@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { optimizeImageForUpload } from "@/utils/imageCompression";
 import { 
   Upload, 
   X, 
@@ -126,8 +127,31 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
         throw new Error('User not authenticated');
       }
 
+      // Optimize images to WebP format before uploading
+      const optimizedFiles = [];
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const optimizedFile = await optimizeImageForUpload(files[i], {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+            fileType: 'image/webp'
+          });
+          optimizedFiles.push(optimizedFile);
+          setUploadProgress(Math.round(((i + 1) / files.length) * 50)); // First 50% for optimization
+        } catch (error) {
+          console.error('Image optimization failed:', error);
+          toast({
+            title: "Optimization Failed",
+            description: `Failed to optimize ${files[i].name}. Using original file.`,
+            variant: "destructive",
+          });
+          optimizedFiles.push(files[i]); // Fall back to original if optimization fails
+        }
+      }
+
       const formData = new FormData();
-      files.forEach(file => formData.append('files', file));
+      optimizedFiles.forEach(file => formData.append('files', file));
       formData.append('property_type', propertyType);
       if (propertyId) {
         formData.append('property_id', propertyId);
@@ -159,7 +183,7 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
 
       toast({
         title: "Upload Successful",
-        description: `Successfully uploaded ${result.files.length} image(s) for ${getPropertyTypeLabel(propertyType)}`,
+        description: `Successfully uploaded ${result.files.length} optimized WebP image(s) for ${getPropertyTypeLabel(propertyType)}`,
       });
 
     } catch (error) {

@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PropertyDetailsStepProps {
   formData: any;
@@ -8,24 +9,129 @@ interface PropertyDetailsStepProps {
 }
 
 const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) => {
+  const { language } = useLanguage();
+
+  const t = {
+    en: {
+      bedrooms: "Bedrooms",
+      bathrooms: "Bathrooms",
+      area: "Area (m²)",
+      floors: "Number of Floors",
+      garages: "Garages",
+      yearBuilt: "Year Built",
+      developmentStatus: "Development Status",
+      selectStatus: "Select status",
+      completed: "Completed",
+      underConstruction: "Under Construction",
+      planned: "Planned",
+      ownerType: "Owner Type",
+      selectOwnerType: "Select owner type",
+      individual: "Individual",
+      developer: "Developer",
+      company: "Company",
+      furnished: "Furnished Status",
+      selectFurnished: "Select furnished status",
+      unfurnished: "Unfurnished",
+      semiFurnished: "Semi Furnished",
+      fullyFurnished: "Fully Furnished",
+      condition: "Property Condition",
+      selectCondition: "Select condition",
+      newConstruction: "New Construction",
+      excellent: "Excellent",
+      good: "Good",
+      fair: "Fair",
+      needsRenovation: "Needs Renovation",
+      rentalInfo: "Rental Information",
+      rentalPeriods: "Rental Periods Available",
+      daily: "Daily",
+      weekly: "Weekly",
+      monthly: "Monthly",
+      yearly: "Yearly",
+      minimumRentalDays: "Minimum Rental Days",
+      certificateType: "Certificate Type",
+      selectCertificate: "Select certificate type",
+      shm: "SHM (Hak Milik)",
+      hgb: "HGB (Hak Guna Bangunan)",
+      hgu: "HGU (Hak Guna Usaha)",
+      girik: "Girik / Petok D",
+      adat: "Sertifikat Adat",
+      other: "Other",
+      buildingOrientation: "Building Orientation",
+      north: "North",
+      south: "South",
+      east: "East",
+      west: "West",
+    },
+    id: {
+      bedrooms: "Kamar Tidur",
+      bathrooms: "Kamar Mandi",
+      area: "Luas (m²)",
+      floors: "Jumlah Lantai",
+      garages: "Garasi",
+      yearBuilt: "Tahun Dibangun",
+      developmentStatus: "Status Pembangunan",
+      selectStatus: "Pilih status",
+      completed: "Selesai",
+      underConstruction: "Sedang Dibangun",
+      planned: "Direncanakan",
+      ownerType: "Tipe Pemilik",
+      selectOwnerType: "Pilih tipe pemilik",
+      individual: "Individu",
+      developer: "Developer",
+      company: "Perusahaan",
+      furnished: "Status Perabotan",
+      selectFurnished: "Pilih status perabotan",
+      unfurnished: "Tidak Berperabotan",
+      semiFurnished: "Semi Furnished",
+      fullyFurnished: "Fully Furnished",
+      condition: "Kondisi Properti",
+      selectCondition: "Pilih kondisi",
+      newConstruction: "Bangunan Baru",
+      excellent: "Sangat Baik",
+      good: "Baik",
+      fair: "Cukup",
+      needsRenovation: "Perlu Renovasi",
+      rentalInfo: "Informasi Sewa",
+      rentalPeriods: "Periode Sewa Tersedia",
+      daily: "Harian",
+      weekly: "Mingguan",
+      monthly: "Bulanan",
+      yearly: "Tahunan",
+      minimumRentalDays: "Minimal Hari Sewa",
+      certificateType: "Tipe Sertifikat",
+      selectCertificate: "Pilih tipe sertifikat",
+      shm: "SHM (Hak Milik)",
+      hgb: "HGB (Hak Guna Bangunan)",
+      hgu: "HGU (Hak Guna Usaha)",
+      girik: "Girik / Petok D",
+      adat: "Sertifikat Adat",
+      other: "Lainnya",
+      buildingOrientation: "Orientasi Bangunan",
+      north: "Utara",
+      south: "Selatan",
+      east: "Timur",
+      west: "Barat",
+    }
+  }[language];
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <Label htmlFor="bedrooms">Bedrooms</Label>
+          <Label htmlFor="bedrooms">{t.bedrooms}</Label>
           <Input
             id="bedrooms"
             type="number"
             min="0"
             value={formData.bedrooms}
             onChange={(e) => onUpdate('bedrooms', e.target.value)}
-            placeholder="e.g., 3"
+            placeholder="3"
             className="mt-2"
           />
         </div>
 
         <div>
-          <Label htmlFor="bathrooms">Bathrooms</Label>
+          <Label htmlFor="bathrooms">{t.bathrooms}</Label>
           <Input
             id="bathrooms"
             type="number"
@@ -33,20 +139,62 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
             step="0.5"
             value={formData.bathrooms}
             onChange={(e) => onUpdate('bathrooms', e.target.value)}
-            placeholder="e.g., 2"
+            placeholder="2"
             className="mt-2"
           />
         </div>
 
         <div>
-          <Label htmlFor="area_sqm">Area (m²) *</Label>
+          <Label htmlFor="area_sqm">{t.area} *</Label>
           <Input
             id="area_sqm"
             type="number"
             min="0"
             value={formData.area_sqm}
             onChange={(e) => onUpdate('area_sqm', e.target.value)}
-            placeholder="e.g., 150"
+            placeholder="150"
+            className="mt-2"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <Label htmlFor="floors">{t.floors}</Label>
+          <Input
+            id="floors"
+            type="number"
+            min="1"
+            value={formData.floors}
+            onChange={(e) => onUpdate('floors', e.target.value)}
+            placeholder="2"
+            className="mt-2"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="garages">{t.garages}</Label>
+          <Input
+            id="garages"
+            type="number"
+            min="0"
+            value={formData.garages}
+            onChange={(e) => onUpdate('garages', e.target.value)}
+            placeholder="1"
+            className="mt-2"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="year_built">{t.yearBuilt}</Label>
+          <Input
+            id="year_built"
+            type="number"
+            min="1900"
+            max={new Date().getFullYear()}
+            value={formData.year_built}
+            onChange={(e) => onUpdate('year_built', e.target.value)}
+            placeholder="2020"
             className="mt-2"
           />
         </div>
@@ -54,35 +202,113 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="development_status">Development Status</Label>
+          <Label htmlFor="development_status">{t.developmentStatus}</Label>
           <Select 
             value={formData.development_status} 
             onValueChange={(value) => onUpdate('development_status', value)}
           >
             <SelectTrigger className="mt-2">
-              <SelectValue placeholder="Select status" />
+              <SelectValue placeholder={t.selectStatus} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="under_construction">Under Construction</SelectItem>
-              <SelectItem value="planned">Planned</SelectItem>
+              <SelectItem value="completed">{t.completed}</SelectItem>
+              <SelectItem value="under_construction">{t.underConstruction}</SelectItem>
+              <SelectItem value="planned">{t.planned}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <Label htmlFor="owner_type">Owner Type</Label>
+          <Label htmlFor="owner_type">{t.ownerType}</Label>
           <Select 
             value={formData.owner_type} 
             onValueChange={(value) => onUpdate('owner_type', value)}
           >
             <SelectTrigger className="mt-2">
-              <SelectValue placeholder="Select owner type" />
+              <SelectValue placeholder={t.selectOwnerType} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="developer">Developer</SelectItem>
-              <SelectItem value="company">Company</SelectItem>
+              <SelectItem value="individual">{t.individual}</SelectItem>
+              <SelectItem value="developer">{t.developer}</SelectItem>
+              <SelectItem value="company">{t.company}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="furnished">{t.furnished}</Label>
+          <Select 
+            value={formData.furnished} 
+            onValueChange={(value) => onUpdate('furnished', value)}
+          >
+            <SelectTrigger className="mt-2">
+              <SelectValue placeholder={t.selectFurnished} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="unfurnished">{t.unfurnished}</SelectItem>
+              <SelectItem value="semi_furnished">{t.semiFurnished}</SelectItem>
+              <SelectItem value="fully_furnished">{t.fullyFurnished}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="condition">{t.condition}</Label>
+          <Select 
+            value={formData.condition} 
+            onValueChange={(value) => onUpdate('condition', value)}
+          >
+            <SelectTrigger className="mt-2">
+              <SelectValue placeholder={t.selectCondition} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="new_construction">{t.newConstruction}</SelectItem>
+              <SelectItem value="excellent">{t.excellent}</SelectItem>
+              <SelectItem value="good">{t.good}</SelectItem>
+              <SelectItem value="fair">{t.fair}</SelectItem>
+              <SelectItem value="needs_renovation">{t.needsRenovation}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="certificate_type">{t.certificateType}</Label>
+          <Select 
+            value={formData.certificate_type} 
+            onValueChange={(value) => onUpdate('certificate_type', value)}
+          >
+            <SelectTrigger className="mt-2">
+              <SelectValue placeholder={t.selectCertificate} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="shm">{t.shm}</SelectItem>
+              <SelectItem value="hgb">{t.hgb}</SelectItem>
+              <SelectItem value="hgu">{t.hgu}</SelectItem>
+              <SelectItem value="girik">{t.girik}</SelectItem>
+              <SelectItem value="adat">{t.adat}</SelectItem>
+              <SelectItem value="other">{t.other}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="building_orientation">{t.buildingOrientation}</Label>
+          <Select 
+            value={formData.building_orientation} 
+            onValueChange={(value) => onUpdate('building_orientation', value)}
+          >
+            <SelectTrigger className="mt-2">
+              <SelectValue placeholder={t.buildingOrientation} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="north">{t.north}</SelectItem>
+              <SelectItem value="south">{t.south}</SelectItem>
+              <SelectItem value="east">{t.east}</SelectItem>
+              <SelectItem value="west">{t.west}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -90,16 +316,16 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
 
       {formData.listing_type === 'rent' && (
         <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
-          <h4 className="font-semibold">Rental Information</h4>
+          <h4 className="font-semibold">{t.rentalInfo}</h4>
           
           <div>
-            <Label>Rental Periods Available</Label>
+            <Label>{t.rentalPeriods}</Label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
               {[
-                { value: 'daily', label: 'Daily' },
-                { value: 'weekly', label: 'Weekly' },
-                { value: 'monthly', label: 'Monthly' },
-                { value: 'yearly', label: 'Yearly' }
+                { value: 'daily', label: t.daily },
+                { value: 'weekly', label: t.weekly },
+                { value: 'monthly', label: t.monthly },
+                { value: 'yearly', label: t.yearly }
               ].map((period) => (
                 <div key={period.value} className="flex items-center space-x-2">
                   <input
@@ -124,14 +350,14 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
           </div>
 
           <div>
-            <Label htmlFor="minimum_rental_days">Minimum Rental Days</Label>
+            <Label htmlFor="minimum_rental_days">{t.minimumRentalDays}</Label>
             <Input
               id="minimum_rental_days"
               type="number"
               min="1"
               value={formData.minimum_rental_days}
               onChange={(e) => onUpdate('minimum_rental_days', e.target.value)}
-              placeholder="e.g., 30"
+              placeholder="30"
               className="mt-2"
             />
           </div>
