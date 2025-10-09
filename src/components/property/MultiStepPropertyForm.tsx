@@ -449,7 +449,11 @@ const MultiStepPropertyForm = () => {
             </TabsContent>
 
             <TabsContent value="features" className="mt-0">
-              <FeaturesStep features={features} onUpdate={updateFeature} />
+              <FeaturesStep 
+                features={features} 
+                listingType={formData.listing_type as 'sale' | 'rent' | 'lease' || 'sale'}
+                onUpdate={updateFeature} 
+              />
             </TabsContent>
 
             <TabsContent value="images" className="mt-0">

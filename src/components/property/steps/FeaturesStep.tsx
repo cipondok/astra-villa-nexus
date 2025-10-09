@@ -1,134 +1,167 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { 
-  Car, Waves, Trees, LayoutGrid, Sofa, Wind, Shield, Building, 
-  Wifi, Video, Dumbbell, Baby, Sparkles, Utensils, Zap, Store,
-  GraduationCap, Hospital, ShoppingBag, Bus, Home
+import { getFeaturesByListingType } from "@/config/propertyFilters";
+import { Badge } from "@/components/ui/badge";
+import {
+  Wifi,
+  Car,
+  Dumbbell,
+  Trees,
+  Wind,
+  ShieldCheck,
+  Camera,
+  DoorOpen,
+  Home,
+  Waves,
+  School,
+  Building,
+  ShoppingBag,
+  Bus,
+  Plane,
+  UtensilsCrossed,
+  PawPrint,
+  Armchair,
+  Zap,
+  Sun,
+  Hammer,
+  Hospital,
+  Globe
 } from "lucide-react";
 
 interface FeaturesStepProps {
   features: any;
+  listingType: 'sale' | 'rent' | 'lease';
   onUpdate: (feature: string, value: boolean) => void;
 }
 
-const FeaturesStep = ({ features, onUpdate }: FeaturesStepProps) => {
+const FeaturesStep = ({ features, listingType, onUpdate }: FeaturesStepProps) => {
   const { language } = useLanguage();
 
   const t = {
     en: {
       title: "Property Features",
-      subtitle: "Select all the features that apply to your property",
-      parking: "Parking",
-      swimmingPool: "Swimming Pool",
-      garden: "Garden",
-      balcony: "Balcony/Terrace",
-      furnished: "Furnished",
-      airConditioning: "Air Conditioning",
-      security: "24/7 Security",
-      elevator: "Elevator/Lift",
-      internet: "Internet/WiFi",
-      cctv: "CCTV",
-      gym: "Gym/Fitness Center",
-      playground: "Children's Playground",
-      petFriendly: "Pet Friendly",
-      kitchen: "Modern Kitchen",
-      waterHeater: "Water Heater",
-      powerBackup: "Power Backup/Generator",
-      maidRoom: "Maid's Room",
-      laundry: "Laundry Room",
-      storage: "Storage Room",
-      nearSchool: "Near School",
-      nearHospital: "Near Hospital",
-      nearMall: "Near Shopping Mall",
-      nearPublicTransport: "Near Public Transport",
+      subtitle: "Select features that apply to your property",
+      basic: "Basic Features",
+      amenity: "Amenities",
+      security: "Security",
+      environment: "Location & Environment",
+      accessibility: "Accessibility",
+      forType: "Available for"
     },
     id: {
       title: "Fitur Properti",
-      subtitle: "Pilih semua fitur yang berlaku untuk properti Anda",
-      parking: "Parkir",
-      swimmingPool: "Kolam Renang",
-      garden: "Taman",
-      balcony: "Balkon/Teras",
-      furnished: "Berperabotan",
-      airConditioning: "AC",
-      security: "Keamanan 24/7",
-      elevator: "Lift",
-      internet: "Internet/WiFi",
-      cctv: "CCTV",
-      gym: "Gym/Pusat Kebugaran",
-      playground: "Taman Bermain Anak",
-      petFriendly: "Ramah Hewan Peliharaan",
-      kitchen: "Dapur Modern",
-      waterHeater: "Pemanas Air",
-      powerBackup: "Cadangan Listrik/Generator",
-      maidRoom: "Kamar Pembantu",
-      laundry: "Ruang Cuci",
-      storage: "Ruang Penyimpanan",
-      nearSchool: "Dekat Sekolah",
-      nearHospital: "Dekat Rumah Sakit",
-      nearMall: "Dekat Mall",
-      nearPublicTransport: "Dekat Transportasi Umum",
+      subtitle: "Pilih fitur yang sesuai dengan properti Anda",
+      basic: "Fitur Dasar",
+      amenity: "Fasilitas",
+      security: "Keamanan",
+      environment: "Lokasi & Lingkungan",
+      accessibility: "Aksesibilitas",
+      forType: "Tersedia untuk"
     }
   }[language];
 
-  const featuresList = [
-    { key: 'parking', label: t.parking, icon: Car },
-    { key: 'swimming_pool', label: t.swimmingPool, icon: Waves },
-    { key: 'garden', label: t.garden, icon: Trees },
-    { key: 'balcony', label: t.balcony, icon: LayoutGrid },
-    { key: 'furnished', label: t.furnished, icon: Sofa },
-    { key: 'air_conditioning', label: t.airConditioning, icon: Wind },
-    { key: 'security', label: t.security, icon: Shield },
-    { key: 'elevator', label: t.elevator, icon: Building },
-    { key: 'internet', label: t.internet, icon: Wifi },
-    { key: 'cctv', label: t.cctv, icon: Video },
-    { key: 'gym', label: t.gym, icon: Dumbbell },
-    { key: 'playground', label: t.playground, icon: Baby },
-    { key: 'pet_friendly', label: t.petFriendly, icon: Sparkles },
-    { key: 'modern_kitchen', label: t.kitchen, icon: Utensils },
-    { key: 'water_heater', label: t.waterHeater, icon: Zap },
-    { key: 'power_backup', label: t.powerBackup, icon: Zap },
-    { key: 'maid_room', label: t.maidRoom, icon: Home },
-    { key: 'laundry', label: t.laundry, icon: Home },
-    { key: 'storage', label: t.storage, icon: Store },
-    { key: 'near_school', label: t.nearSchool, icon: GraduationCap },
-    { key: 'near_hospital', label: t.nearHospital, icon: Hospital },
-    { key: 'near_mall', label: t.nearMall, icon: ShoppingBag },
-    { key: 'near_public_transport', label: t.nearPublicTransport, icon: Bus },
+  // Get features based on listing type
+  const availableFeatures = getFeaturesByListingType(listingType);
+
+  // Group features by category
+  const groupedFeatures = availableFeatures.reduce((acc, feature) => {
+    if (!acc[feature.category]) {
+      acc[feature.category] = [];
+    }
+    acc[feature.category].push(feature);
+    return acc;
+  }, {} as Record<string, typeof availableFeatures>);
+
+  const getIcon = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      '❄️': Wind,
+      '📶': Wifi,
+      '🚗': Car,
+      '🏊': Waves,
+      '💪': Dumbbell,
+      '🌳': Trees,
+      '🏠': Home,
+      '🛡️': ShieldCheck,
+      '📹': Camera,
+      '🛗': Building,
+      '🐕': PawPrint,
+      '🛋️': Armchair,
+      '🪑': Armchair,
+      '💡': Zap,
+      '🌐': Globe,
+      '🧹': UtensilsCrossed,
+      '🏗️': Building,
+      '🔨': Hammer,
+      '☀️': Sun,
+      '🏫': School,
+      '🏥': Hospital,
+      '🛍️': ShoppingBag,
+      '🚇': Bus,
+      '✈️': Plane,
+      '🏖️': Waves,
+      '🏙️': Building
+    };
+    return iconMap[iconName] || Home;
+  };
+
+  const categoryOrder: Array<keyof typeof groupedFeatures> = [
+    'basic',
+    'amenity',
+    'security',
+    'environment',
+    'accessibility'
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-2">{t.title}</h3>
-        <p className="text-sm text-muted-foreground">
-          {t.subtitle}
-        </p>
+        <h3 className="text-lg font-semibold">{t.title}</h3>
+        <p className="text-sm text-muted-foreground">{t.subtitle}</p>
+        <Badge variant="outline" className="mt-2">
+          {t.forType}: {listingType === 'sale' ? (language === 'en' ? 'For Sale' : 'Dijual') : 
+                         listingType === 'rent' ? (language === 'en' ? 'For Rent' : 'Disewakan') :
+                         (language === 'en' ? 'For Lease' : 'Disewa Jangka Panjang')}
+        </Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {featuresList.map(({ key, label, icon: Icon }) => (
-          <div
-            key={key}
-            className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Icon className="h-5 w-5 text-primary" />
-              </div>
-              <Label htmlFor={key} className="text-base font-medium cursor-pointer">
-                {label}
-              </Label>
+      {categoryOrder.map((category) => {
+        const categoryFeatures = groupedFeatures[category];
+        if (!categoryFeatures || categoryFeatures.length === 0) return null;
+
+        return (
+          <div key={category} className="space-y-4">
+            <h4 className="text-md font-semibold text-primary">
+              {t[category as keyof typeof t] as string}
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {categoryFeatures.map((feature) => {
+                const Icon = getIcon(feature.icon);
+                const label = language === 'en' ? feature.labelEn : feature.labelId;
+
+                return (
+                  <div
+                    key={feature.key}
+                    className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-5 w-5 text-primary" />
+                      <Label htmlFor={feature.key} className="cursor-pointer">
+                        {label}
+                      </Label>
+                    </div>
+                    <Switch
+                      id={feature.key}
+                      checked={features[feature.key] || false}
+                      onCheckedChange={(checked) => onUpdate(feature.key, checked)}
+                    />
+                  </div>
+                );
+              })}
             </div>
-            <Switch
-              id={key}
-              checked={features[key] || false}
-              onCheckedChange={(checked) => onUpdate(key, checked)}
-            />
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 };
