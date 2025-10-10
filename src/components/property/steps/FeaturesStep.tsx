@@ -71,6 +71,7 @@ const getDefaultFeaturesByPropertyType = (propertyType: string, listingType: 'sa
 const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: FeaturesStepProps) => {
   const { language } = useLanguage();
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
   // Auto-select features when property type is first selected
   useEffect(() => {
@@ -85,6 +86,13 @@ const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: Feature
       setHasAutoSelected(true);
     }
   }, [propertyType, listingType]);
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
 
   const t = {
     en: {
@@ -176,35 +184,62 @@ const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: Feature
       {categoryOrder.map((category) => {
         const categoryFeatures = groupedFeatures[category];
         if (!categoryFeatures || categoryFeatures.length === 0) return null;
+        
+        const isExpanded = expandedCategories[category];
+        const selectedCount = categoryFeatures.filter(f => features[f.key]).length;
 
         return (
-          <div key={category} className="space-y-2">
-            <h4 className="text-sm font-semibold text-primary">
-              {t[category as keyof typeof t] as string}
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
-              {categoryFeatures.map((feature) => {
-                const Icon = getIcon(feature.icon);
-                const label = language === 'en' ? feature.labelEn : feature.labelId;
-                const isChecked = features[feature.key] || false;
+          <div key={category} className="space-y-2 border rounded-lg p-3 bg-card">
+            <button
+              type="button"
+              onClick={() => toggleCategory(category)}
+              className="w-full flex items-center justify-between text-left hover:opacity-70 transition-opacity"
+            >
+              <h4 className="text-sm font-semibold text-primary">
+                {t[category as keyof typeof t] as string}
+              </h4>
+              <div className="flex items-center gap-2">
+                {selectedCount > 0 && (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                    {selectedCount}
+                  </span>
+                )}
+                <svg 
+                  className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+            
+            {isExpanded && (
+              <div className="flex flex-wrap gap-1.5 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                {categoryFeatures.map((feature) => {
+                  const Icon = getIcon(feature.icon);
+                  const label = language === 'en' ? feature.labelEn : feature.labelId;
+                  const isChecked = features[feature.key] || false;
 
-                return (
-                  <button
-                    key={feature.key}
-                    type="button"
-                    onClick={() => onUpdate(feature.key, !isChecked)}
-                    className={`flex items-center gap-1.5 px-2.5 h-7 rounded-md border text-xs font-medium transition-all active:scale-95 ${
-                      isChecked
-                        ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                        : 'bg-background hover:bg-accent hover:border-primary'
-                    }`}
-                  >
-                    <Icon className="h-3 w-3" />
-                    <span>{label}</span>
-                  </button>
-                );
-              })}
-            </div>
+                  return (
+                    <button
+                      key={feature.key}
+                      type="button"
+                      onClick={() => onUpdate(feature.key, !isChecked)}
+                      className={`flex items-center gap-1.5 px-2.5 h-7 rounded-md border text-xs font-medium transition-all active:scale-95 ${
+                        isChecked
+                          ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                          : 'bg-background hover:bg-accent hover:border-primary'
+                      }`}
+                    >
+                      <Icon className="h-3 w-3" />
+                      <span>{label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         );
       })}
