@@ -200,9 +200,29 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
 
     } catch (error) {
       console.error('Upload error:', error);
+      
+      // Parse security violations if present
+      let errorMessage = 'Failed to upload images';
+      let errorDetails = '';
+      
+      if (error instanceof Error) {
+        try {
+          // Check if error message contains security violations
+          const errorText = error.message;
+          if (errorText.includes('violations') || errorText.includes('Security check failed')) {
+            errorMessage = 'Security Check Failed';
+            errorDetails = 'Image contains prohibited content:\n• Contact information (phone, email, social media)\n• Inappropriate or offensive content\n• Unauthorized watermarks or logos';
+          } else {
+            errorMessage = errorText;
+          }
+        } catch {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
-        title: "Upload Failed",
-        description: error instanceof Error ? error.message : 'Failed to upload images',
+        title: errorMessage,
+        description: errorDetails || (error instanceof Error ? error.message : 'Failed to upload images'),
         variant: "destructive",
       });
     } finally {

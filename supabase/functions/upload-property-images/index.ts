@@ -7,6 +7,137 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 }
 
+// Security patterns for detecting contact information
+const SECURITY_PATTERNS = {
+  phone: /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|\d{10,}/g,
+  email: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+  url: /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g,
+  whatsapp: /wa\.me|whatsapp|chat\.whatsapp/gi,
+  telegram: /t\.me|telegram/gi,
+  social: /instagram\.com|facebook\.com|twitter\.com|linkedin\.com/gi
+}
+
+// Extract text from image using browser-compatible OCR simulation
+// Note: Deno edge functions don't support full Tesseract, so we'll use a simpler approach
+async function analyzeImageSecurity(fileBytes: Uint8Array, fileName: string): Promise<{ 
+  safe: boolean; 
+  violations: string[]; 
+  detectedText?: string 
+}> {
+  const violations: string[] = []
+  
+  try {
+    // Check file signature for valid image types
+    const signature = Array.from(fileBytes.slice(0, 4))
+      .map(byte => byte.toString(16).padStart(2, '0'))
+      .join('')
+    
+    const validSignatures: { [key: string]: string } = {
+      '89504e47': 'PNG',
+      'ffd8ffe0': 'JPEG',
+      'ffd8ffe1': 'JPEG',
+      'ffd8ffe2': 'JPEG',
+      '47494638': 'GIF',
+      '52494646': 'WEBP'
+    }
+    
+    const fileType = validSignatures[signature.slice(0, 8)]
+    if (!fileType) {
+      violations.push('Invalid image file signature - possible file type mismatch')
+    }
+    
+    // Check for suspicious file sizes (too large might be hiding data)
+    const sizeInMB = fileBytes.length / (1024 * 1024)
+    if (sizeInMB > 5) {
+      violations.push('File size exceeds security threshold')
+    }
+    
+    // Basic metadata checks (check for common steganography signatures)
+    const dataString = new TextDecoder().decode(fileBytes.slice(0, 1000))
+    
+    // Check for hidden text/metadata patterns
+    if (dataString.includes('BEGIN PGP') || dataString.includes('-----BEGIN')) {
+      violations.push('Suspicious encrypted content detected in image metadata')
+    }
+    
+    // Use OpenAI Vision API for advanced content analysis if API key is available
+    const openAIKey = Deno.env.get('OPENAI_API_KEY')
+    if (openAIKey) {
+      try {
+        const base64Image = btoa(String.fromCharCode(...fileBytes))
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openAIKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              {
+                role: 'user',
+                content: [
+                  {
+                    type: 'text',
+                    text: 'Analyze this property image for: 1) Any visible text with contact information (phone numbers, emails, websites, social media handles), 2) Inappropriate or offensive content, 3) Watermarks or logos that suggest unauthorized use. Return ONLY a JSON object with: {"hasContactInfo": boolean, "contactInfoFound": string[], "inappropriate": boolean, "watermarked": boolean, "extractedText": string}'
+                  },
+                  {
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:image/jpeg;base64,${base64Image}`
+                    }
+                  }
+                ]
+              }
+            ],
+            max_tokens: 500
+          })
+        })
+        
+        if (response.ok) {
+          const aiResult = await response.json()
+          const analysis = JSON.parse(aiResult.choices[0].message.content)
+          
+          if (analysis.hasContactInfo) {
+            violations.push(`Contact information detected in image: ${analysis.contactInfoFound.join(', ')}`)
+          }
+          
+          if (analysis.inappropriate) {
+            violations.push('Inappropriate or offensive content detected')
+          }
+          
+          if (analysis.watermarked) {
+            violations.push('Image contains watermarks suggesting unauthorized use')
+          }
+          
+          return {
+            safe: violations.length === 0,
+            violations,
+            detectedText: analysis.extractedText
+          }
+        }
+      } catch (aiError) {
+        console.error('AI analysis error:', aiError)
+        // Continue with basic checks if AI fails
+      }
+    }
+    
+    return {
+      safe: violations.length === 0,
+      violations,
+      detectedText: undefined
+    }
+    
+  } catch (error) {
+    console.error('Security analysis error:', error)
+    return {
+      safe: true, // Allow upload if analysis fails
+      violations: [],
+      detectedText: undefined
+    }
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -72,6 +203,22 @@ serve(async (req) => {
       if (!allowedTypes.includes(file.type)) {
         return new Response(
           JSON.stringify({ error: `File ${file.name} has unsupported type. Only JPEG, PNG, WebP, and GIF are allowed` }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+        )
+      }
+
+      // Security validation: Check image for contact information and inappropriate content
+      const fileBytes = new Uint8Array(await file.arrayBuffer())
+      const securityCheck = await analyzeImageSecurity(fileBytes, file.name)
+      
+      if (!securityCheck.safe) {
+        console.log(`Security violation in ${file.name}:`, securityCheck.violations)
+        return new Response(
+          JSON.stringify({ 
+            error: `Security check failed for ${file.name}`,
+            violations: securityCheck.violations,
+            message: 'Image contains prohibited content (contact information, inappropriate content, or unauthorized watermarks)'
+          }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
         )
       }
