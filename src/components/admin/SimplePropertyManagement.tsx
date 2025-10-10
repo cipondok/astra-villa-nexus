@@ -95,13 +95,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       
       let query = supabase
         .from('properties')
-        .select(`
-          *,
-          posted_by:profiles!owner_id (
-            phone,
-            full_name
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       // Apply filters
@@ -125,15 +119,33 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         query = query.ilike('city', `%${cityFilter}%`);
       }
 
-      const { data, error } = await query;
+      const { data: properties, error } = await query;
       
       if (error) {
         console.error('❌ Query error:', error);
         throw error;
       }
+
+      // Fetch profiles for owner information
+      if (properties && properties.length > 0) {
+        const ownerIds = [...new Set(properties.map(p => p.owner_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, phone, full_name')
+          .in('id', ownerIds);
+
+        // Map profile data to properties
+        const propertiesWithProfiles = properties.map(property => ({
+          ...property,
+          posted_by: profiles?.filter(p => p.id === property.owner_id) || []
+        }));
+
+        console.log('✅ Properties loaded:', propertiesWithProfiles.length);
+        return propertiesWithProfiles;
+      }
       
-      console.log('✅ Properties loaded:', data?.length);
-      return data || [];
+      console.log('✅ Properties loaded:', 0);
+      return [];
     },
     enabled: !!user && isAdmin,
   });
