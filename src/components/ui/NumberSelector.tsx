@@ -82,30 +82,30 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
   return (
     <div className={`space-y-2 ${className}`}>
       {/* Plus/Minus Control */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={handleDecrement}
           disabled={currentValue <= minValue}
-          className="w-12 h-12 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+          className="w-10 h-10 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
         >
-          <Minus className="w-5 h-5" />
+          <Minus className="w-4 h-4" />
         </button>
 
         <div 
           onClick={() => setShowPresets(!showPresets)}
-          className="flex-1 h-14 rounded-xl bg-background border-2 border-muted flex items-center justify-center cursor-pointer hover:border-primary transition-all"
+          className="flex-1 h-11 rounded-lg bg-background border-2 border-muted flex items-center justify-center cursor-pointer hover:border-primary transition-all"
         >
-          <span className="text-3xl font-bold text-foreground">{currentValue}</span>
+          <span className="text-2xl font-bold text-foreground">{currentValue}</span>
         </div>
 
         <button
           type="button"
           onClick={handleIncrement}
           disabled={currentValue >= maxValue}
-          className="w-12 h-12 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+          className="w-10 h-10 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
         </button>
       </div>
 
