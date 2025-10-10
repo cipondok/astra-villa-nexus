@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { MapPin, ChevronRight, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import PillSelector from "@/components/ui/PillSelector";
 
 interface LocationSelectorProps {
   selectedState: string;
@@ -140,79 +140,49 @@ const LocationSelector = ({
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
-          <Label htmlFor="state" className="text-gray-700 font-medium">{t.province} *</Label>
-          <Select value={selectedState} onValueChange={handleStateChange}>
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-              <SelectValue placeholder={t.selectProvince} />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
-              {provinces.map((province) => (
-                <SelectItem key={province} value={province} className="text-gray-900 hover:bg-blue-50">
-                  {province}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label htmlFor="state">{t.province} *</Label>
+          <PillSelector
+            options={provinces.map(p => ({ value: p, label: p }))}
+            value={selectedState}
+            onChange={handleStateChange}
+            placeholder={t.selectProvince}
+            className="mt-1"
+          />
         </div>
 
         <div>
-          <Label htmlFor="city" className="text-gray-700 font-medium">{t.city} *</Label>
-          <Select value={selectedCity} onValueChange={handleCityChange} disabled={!selectedState}>
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-              <SelectValue placeholder={t.selectCity} />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
-              {cities.map((city) => (
-                <SelectItem key={city} value={city} className="text-gray-900 hover:bg-blue-50">
-                  {city}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label htmlFor="city">{t.city} *</Label>
+          <PillSelector
+            options={cities.map(c => ({ value: c, label: c }))}
+            value={selectedCity}
+            onChange={handleCityChange}
+            placeholder={!selectedState ? t.selectProvince : t.selectCity}
+            className="mt-1"
+          />
         </div>
 
         <div>
-          <Label htmlFor="district" className="text-gray-700 font-medium">{t.district} *</Label>
-          <Select value={selectedDistrict} onValueChange={handleDistrictChange} disabled={!selectedCity}>
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-              <SelectValue placeholder={t.selectDistrict} />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
-              {districts.map((district) => (
-                <SelectItem key={district} value={district} className="text-gray-900 hover:bg-blue-50">
-                  {district}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label htmlFor="district">{t.district} *</Label>
+          <PillSelector
+            options={districts.map(d => ({ value: d, label: d }))}
+            value={selectedDistrict}
+            onChange={handleDistrictChange}
+            placeholder={!selectedCity ? t.selectCity : t.selectDistrict}
+            className="mt-1"
+          />
         </div>
 
         <div>
-          <Label htmlFor="subdistrict" className="text-gray-700 font-medium">
+          <Label htmlFor="subdistrict">
             {t.subdistrict} {subdistricts.length === 0 && selectedDistrict ? t.optional : '*'}
           </Label>
-          <Select 
-            value={selectedSubdistrict} 
-            onValueChange={onSubdistrictChange} 
-            disabled={!selectedDistrict || subdistricts.length === 0}
-          >
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-              <SelectValue placeholder={t.selectSubdistrict} />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
-              {subdistricts.length > 0 ? (
-                subdistricts.map((subdistrict) => (
-                  <SelectItem key={subdistrict} value={subdistrict} className="text-gray-900 hover:bg-blue-50">
-                    {subdistrict}
-                  </SelectItem>
-                ))
-              ) : (
-                <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                  {t.noSubdistrictsAvailable}
-                </div>
-              )}
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={subdistricts.map(s => ({ value: s, label: s }))}
+            value={selectedSubdistrict}
+            onChange={onSubdistrictChange}
+            placeholder={!selectedDistrict ? t.selectDistrict : t.selectSubdistrict}
+            className="mt-1"
+          />
         </div>
       </div>
 
