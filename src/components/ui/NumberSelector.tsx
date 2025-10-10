@@ -40,38 +40,40 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
   // Show compact version when value is selected
   if (hasValue && !showPresets) {
     return (
-      <div className={`flex items-center gap-2 ${className}`}>
+      <div className={`flex items-center gap-1.5 ${className}`}>
         <button
           type="button"
           onClick={handleDecrement}
           disabled={currentValue <= minValue}
-          className="w-9 h-9 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+          className="w-8 h-8 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
         >
-          <Minus className="w-4 h-4" />
+          <Minus className="w-3.5 h-3.5" />
         </button>
 
         <div 
           onClick={() => setShowPresets(true)}
-          className="flex-1 flex items-center justify-center h-10 px-3 rounded-lg bg-primary/10 border border-primary/30 cursor-pointer hover:bg-primary/20 transition-all"
+          className="relative flex items-center justify-center h-9 px-3 rounded-lg bg-primary/10 border border-primary/30 cursor-pointer hover:bg-primary/20 transition-all min-w-[60px]"
         >
-          <span className="text-xl font-bold text-primary">{currentValue}</span>
+          <span className="text-lg font-bold text-primary">{currentValue}</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClear();
+            }}
+            className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground hover:scale-110 flex items-center justify-center transition-all shadow-sm"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
         </div>
 
         <button
           type="button"
           onClick={handleIncrement}
           disabled={currentValue >= maxValue}
-          className="w-9 h-9 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+          className="w-8 h-8 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
         >
-          <Plus className="w-4 h-4" />
-        </button>
-
-        <button
-          type="button"
-          onClick={handleClear}
-          className="w-7 h-7 rounded-full bg-destructive/80 text-destructive-foreground hover:bg-destructive flex items-center justify-center transition-all"
-        >
-          <X className="w-3 h-3" />
+          <Plus className="w-3.5 h-3.5" />
         </button>
       </div>
     );
@@ -80,37 +82,37 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
   return (
     <div className={`space-y-2 ${className}`}>
       {/* Plus/Minus Control */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         <button
           type="button"
           onClick={handleDecrement}
           disabled={currentValue <= minValue}
-          className="w-9 h-9 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+          className="w-8 h-8 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
         >
-          <Minus className="w-4 h-4" />
+          <Minus className="w-3.5 h-3.5" />
         </button>
 
         <div 
           onClick={() => setShowPresets(!showPresets)}
-          className="flex-1 h-10 rounded-lg bg-background border-2 border-muted flex items-center justify-center cursor-pointer hover:border-primary transition-all"
+          className="flex-1 h-9 rounded-lg bg-background border-2 border-muted flex items-center justify-center cursor-pointer hover:border-primary transition-all min-w-[60px]"
         >
-          <span className="text-xl font-bold text-foreground">{currentValue}</span>
+          <span className="text-lg font-bold text-foreground">{currentValue}</span>
         </div>
 
         <button
           type="button"
           onClick={handleIncrement}
           disabled={currentValue >= maxValue}
-          className="w-9 h-9 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+          className="w-8 h-8 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
         </button>
 
         {hasValue && (
           <button
             type="button"
             onClick={handleClear}
-            className="w-7 h-7 rounded-full bg-destructive/80 text-destructive-foreground hover:bg-destructive flex items-center justify-center transition-all"
+            className="w-6 h-6 rounded-full bg-destructive/80 text-destructive-foreground hover:bg-destructive flex items-center justify-center transition-all"
           >
             <X className="w-3 h-3" />
           </button>
