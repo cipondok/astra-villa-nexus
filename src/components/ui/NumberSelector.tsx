@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 
 interface NumberSelectorProps {
   options: number[];
@@ -15,6 +15,7 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
   const currentValue = parseInt(value) || 0;
   const minValue = Math.min(...options, 0);
   const maxValue = Math.max(...options);
+  const hasValue = value && value !== '0';
 
   const handleIncrement = () => {
     onChange(String(currentValue + 1));
@@ -30,6 +31,53 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
     onChange(String(num));
     setShowPresets(false);
   };
+
+  const handleClear = () => {
+    onChange('');
+    setShowPresets(false);
+  };
+
+  // Show compact version when value is selected
+  if (hasValue && !showPresets) {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <button
+          type="button"
+          onClick={handleDecrement}
+          disabled={currentValue <= minValue}
+          className="w-9 h-9 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+        >
+          <Minus className="w-4 h-4" />
+        </button>
+
+        <div 
+          onClick={() => setShowPresets(true)}
+          className="relative flex items-center justify-center h-10 px-4 rounded-lg bg-primary/10 border border-primary/30 cursor-pointer hover:bg-primary/20 transition-all"
+        >
+          <span className="text-xl font-bold text-primary">{currentValue}</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClear();
+            }}
+            className="ml-2 w-5 h-5 rounded-full bg-destructive/80 text-destructive-foreground hover:bg-destructive flex items-center justify-center transition-all"
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleIncrement}
+          disabled={currentValue >= maxValue}
+          className="w-9 h-9 rounded-full bg-muted hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all active:scale-95"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={`space-y-2 ${className}`}>
