@@ -157,7 +157,8 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
         formData.append('property_id', propertyId);
       }
 
-      const response = await fetch('/functions/v1/upload-property-images', {
+      const functionUrl = 'https://zymrajuuyyfkzdmptebl.supabase.co/functions/v1/upload-property-images';
+      const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -165,12 +166,23 @@ const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
         body: formData,
       });
 
+      let result: any;
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Upload failed');
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.error || errorData.message || `Upload failed (${response.status})`);
+        } catch {
+          const text = await response.text();
+          throw new Error(text || `Upload failed (${response.status})`);
+        }
+      } else {
+        try {
+          result = await response.json();
+        } catch {
+          throw new Error('Upload failed: invalid response from server');
+        }
       }
 
-      const result = await response.json();
       const newImageUrls = result.files.map((file: any) => file.publicUrl);
       const updatedImages = [...uploadedImages, ...newImageUrls];
       
