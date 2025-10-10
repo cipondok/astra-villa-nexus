@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getFeaturesByListingType } from "@/config/propertyFilters";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
 import {
   Wifi,
   Car,
@@ -32,11 +33,58 @@ import {
 interface FeaturesStepProps {
   features: any;
   listingType: 'sale' | 'rent' | 'lease';
+  propertyType: string;
   onUpdate: (feature: string, value: boolean) => void;
 }
 
-const FeaturesStep = ({ features, listingType, onUpdate }: FeaturesStepProps) => {
+// Auto-select features based on property type
+const getDefaultFeaturesByPropertyType = (propertyType: string, listingType: 'sale' | 'rent' | 'lease'): string[] => {
+  const defaults: Record<string, string[]> = {
+    apartment: ['airconditioner', 'elevator', 'security', 'cctv', 'parking', 'nearpublictransport'],
+    condo: ['airconditioner', 'elevator', 'security', 'cctv', 'parking', 'swimmingpool', 'gym'],
+    villa: ['airconditioner', 'parking', 'garden', 'swimmingpool', 'security'],
+    house: ['airconditioner', 'parking', 'garden'],
+    townhouse: ['airconditioner', 'parking', 'security'],
+    penthouse: ['airconditioner', 'elevator', 'balcony', 'security', 'cctv', 'parking'],
+    studio: ['airconditioner', 'wifi'],
+    duplex: ['airconditioner', 'parking'],
+    hotel: ['airconditioner', 'wifi', 'elevator', 'security', 'cctv', 'swimmingpool', 'gym'],
+    resort: ['airconditioner', 'wifi', 'swimmingpool', 'gym', 'security', 'beachaccess'],
+    office: ['airconditioner', 'elevator', 'security', 'cctv', 'parking', 'wifi'],
+    virtual_office: ['wifi', 'security'],
+    warehouse: ['security', 'cctv', 'parking'],
+    retail: ['airconditioner', 'security', 'cctv', 'nearmall', 'parking'],
+    shophouse: ['airconditioner', 'parking', 'security'],
+    commercial: ['airconditioner', 'parking', 'security', 'cctv'],
+    land: []
+  };
+
+  // Add rental-specific features
+  if (listingType === 'rent' || listingType === 'lease') {
+    const rentalExtras = ['wifi', 'furnished'];
+    return [...(defaults[propertyType] || []), ...rentalExtras];
+  }
+
+  return defaults[propertyType] || [];
+};
+
+const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: FeaturesStepProps) => {
   const { language } = useLanguage();
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
+
+  // Auto-select features when property type is first selected
+  useEffect(() => {
+    if (propertyType && !hasAutoSelected) {
+      const defaultFeatures = getDefaultFeaturesByPropertyType(propertyType, listingType);
+      defaultFeatures.forEach(featureKey => {
+        // Only auto-select if not already set
+        if (features[featureKey] === undefined || features[featureKey] === false) {
+          onUpdate(featureKey, true);
+        }
+      });
+      setHasAutoSelected(true);
+    }
+  }, [propertyType, listingType]);
 
   const t = {
     en: {
