@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getFeaturesByListingType } from "@/config/propertyFilters";
 
 interface PropertyFeature {
   key: string;
@@ -22,10 +23,25 @@ export const usePropertyFeatures = (listingType: 'sale' | 'rent' | 'lease') => {
         .eq('is_active', true)
         .order('display_order', { ascending: true });
 
-      if (error) throw error;
+      // If database query fails or returns empty, fall back to hardcoded config
+      if (error || !data || data.length === 0) {
+        console.log('Using fallback features from config file');
+        const fallbackFeatures = getFeaturesByListingType(listingType);
+        
+        // Group features by category
+        const grouped = fallbackFeatures.reduce((acc, feature) => {
+          if (!acc[feature.category]) {
+            acc[feature.category] = [];
+          }
+          acc[feature.category].push(feature);
+          return acc;
+        }, {} as Record<string, PropertyFeature[]>);
+
+        return { features: fallbackFeatures, grouped };
+      }
 
       // Transform database data to match our feature interface
-      const features: PropertyFeature[] = (data || []).map(item => {
+      const features: PropertyFeature[] = data.map(item => {
         // Parse filter_options to get feature details
         const options = item.filter_options as any;
         
@@ -34,7 +50,7 @@ export const usePropertyFeatures = (listingType: 'sale' | 'rent' | 'lease') => {
           labelEn: options?.labelEn || item.filter_name,
           labelId: options?.labelId || item.filter_name,
           icon: options?.icon || '🏠',
-          applicableFor: [listingType], // Current listing type
+          applicableFor: [listingType],
           category: (options?.category || 'basic') as PropertyFeature['category']
         };
       });
