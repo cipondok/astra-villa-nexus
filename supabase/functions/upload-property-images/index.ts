@@ -77,10 +77,12 @@ serve(async (req) => {
       }
 
       // Create file path: user_id/property_type/property_id/timestamp_filename
+      // Sanitize property type for storage path (remove spaces, special chars)
+      const sanitizedPropertyType = propertyType.toLowerCase().replace(/[^a-z0-9_-]/g, '-')
       const timestamp = Date.now()
       const fileExtension = file.name.split('.').pop()
       const fileName = `${timestamp}_${i + 1}.${fileExtension}`
-      const filePath = `${user.id}/${propertyType}/${propertyId}/${fileName}`
+      const filePath = `${user.id}/${sanitizedPropertyType}/${propertyId}/${fileName}`
 
       // Upload to Supabase Storage
       const { data, error } = await supabaseClient.storage
