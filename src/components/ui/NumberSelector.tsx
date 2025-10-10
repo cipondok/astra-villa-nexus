@@ -14,7 +14,7 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
   
   const currentValue = parseInt(value) || 0;
   const minValue = Math.min(...options, 0);
-  const maxValue = Math.max(...options);
+  const maxValue = 25; // Allow up to 25
   const hasValue = value && value !== '0';
 
   const handleIncrement = () => {
