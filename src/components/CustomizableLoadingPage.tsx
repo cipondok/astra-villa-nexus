@@ -68,7 +68,14 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Add a safety timeout to prevent infinite loading
+    const loadTimeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    
     loadSettings();
+    
+    return () => clearTimeout(loadTimeout);
   }, []);
 
   const loadSettings = async () => {
@@ -99,9 +106,9 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         }, {} as any);
         setSettings(prev => ({ ...prev, ...settingsObj }));
       }
+      setIsLoading(false);
     } catch (error) {
       console.error('Error loading settings:', error);
-    } finally {
       setIsLoading(false);
     }
   };
