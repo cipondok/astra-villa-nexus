@@ -3,6 +3,7 @@ import React from "react";
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
+import AdminPropertyManagement from "./AdminPropertyManagement";
 import SystemSettings from "./SystemSettings";
 import WebTrafficAnalytics from "./WebTrafficAnalytics";
 import AIBotManagement from "./AIBotManagement";
@@ -71,6 +72,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "user-management":
         return <EnhancedUserManagement />;
       case "property-management-hub":
+        return <AdminPropertyManagement />;
+      case "property-management-advanced":
         return <PropertyManagementAdvanced />;
       case "system-settings":
       case "settings":
