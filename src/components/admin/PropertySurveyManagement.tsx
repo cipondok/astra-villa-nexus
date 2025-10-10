@@ -23,11 +23,6 @@ const PropertySurveyManagement = () => {
 
   // Fetch survey bookings using the secure function
   const { data: surveys, isLoading, error } = useSurveyBookings();
-  
-  // Show error message if access is denied
-  if (error) {
-    showError("Access Denied", "You don't have permission to view survey bookings or the feature is loading.");
-  }
 
   const updateSurveyMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
@@ -198,6 +193,12 @@ const PropertySurveyManagement = () => {
                     <TableRow>
                       <TableCell colSpan={6} className="text-center py-8 text-gray-300">
                         Loading surveys...
+                      </TableCell>
+                    </TableRow>
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-red-400">
+                        Error loading bookings: {error?.message || "Please check database functions"}
                       </TableCell>
                     </TableRow>
                   ) : filteredSurveys.length === 0 ? (
