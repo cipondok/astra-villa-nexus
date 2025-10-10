@@ -119,33 +119,62 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <Label htmlFor="bedrooms">{t.bedrooms}</Label>
-          <Input
-            id="bedrooms"
-            type="number"
-            min="0"
-            value={formData.bedrooms}
-            onChange={(e) => onUpdate('bedrooms', e.target.value)}
-            placeholder="3"
-            className="mt-2"
-          />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+              <button
+                key={`bed-${num}`}
+                type="button"
+                onClick={() => onUpdate('bedrooms', String(num))}
+                className={`w-10 h-10 rounded-lg border text-sm font-medium transition-all ${
+                  formData.bedrooms === String(num)
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                    : 'bg-background hover:bg-accent hover:border-primary'
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
           <Label htmlFor="bathrooms">{t.bathrooms}</Label>
-          <Input
-            id="bathrooms"
-            type="number"
-            min="0"
-            step="0.5"
-            value={formData.bathrooms}
-            onChange={(e) => onUpdate('bathrooms', e.target.value)}
-            placeholder="2"
-            className="mt-2"
-          />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {[0, 1, 2, 3, 4, 5, 6].map(num => (
+              <button
+                key={`bath-${num}`}
+                type="button"
+                onClick={() => onUpdate('bathrooms', String(num))}
+                className={`w-10 h-10 rounded-lg border text-sm font-medium transition-all ${
+                  formData.bathrooms === String(num)
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                    : 'bg-background hover:bg-accent hover:border-primary'
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
           <Label htmlFor="area_sqm">{t.area} *</Label>
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {[50, 100, 150, 200, 300, 500, 1000].map(num => (
+              <button
+                key={`area-${num}`}
+                type="button"
+                onClick={() => onUpdate('area_sqm', String(num))}
+                className={`px-3 h-10 rounded-lg border text-sm font-medium transition-all ${
+                  formData.area_sqm === String(num)
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                    : 'bg-background hover:bg-accent hover:border-primary'
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
           <Input
             id="area_sqm"
             type="number"
@@ -161,32 +190,62 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <Label htmlFor="floors">{t.floors}</Label>
-          <Input
-            id="floors"
-            type="number"
-            min="1"
-            value={formData.floors}
-            onChange={(e) => onUpdate('floors', e.target.value)}
-            placeholder="2"
-            className="mt-2"
-          />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {[1, 2, 3, 4, 5].map(num => (
+              <button
+                key={`floor-${num}`}
+                type="button"
+                onClick={() => onUpdate('floors', String(num))}
+                className={`w-10 h-10 rounded-lg border text-sm font-medium transition-all ${
+                  formData.floors === String(num)
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                    : 'bg-background hover:bg-accent hover:border-primary'
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
           <Label htmlFor="garages">{t.garages}</Label>
-          <Input
-            id="garages"
-            type="number"
-            min="0"
-            value={formData.garages}
-            onChange={(e) => onUpdate('garages', e.target.value)}
-            placeholder="1"
-            className="mt-2"
-          />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {[0, 1, 2, 3, 4, 5].map(num => (
+              <button
+                key={`garage-${num}`}
+                type="button"
+                onClick={() => onUpdate('garages', String(num))}
+                className={`w-10 h-10 rounded-lg border text-sm font-medium transition-all ${
+                  formData.garages === String(num)
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                    : 'bg-background hover:bg-accent hover:border-primary'
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
           <Label htmlFor="year_built">{t.yearBuilt}</Label>
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2015, 2010, 2000].map(num => (
+              <button
+                key={`year-${num}`}
+                type="button"
+                onClick={() => onUpdate('year_built', String(num))}
+                className={`px-2 h-10 rounded-lg border text-xs font-medium transition-all ${
+                  formData.year_built === String(num)
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                    : 'bg-background hover:bg-accent hover:border-primary'
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
           <Input
             id="year_built"
             type="number"
@@ -351,6 +410,22 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
 
           <div>
             <Label htmlFor="minimum_rental_days">{t.minimumRentalDays}</Label>
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {[1, 7, 14, 30, 90, 180, 365].map(num => (
+                <button
+                  key={`rental-${num}`}
+                  type="button"
+                  onClick={() => onUpdate('minimum_rental_days', String(num))}
+                  className={`px-3 h-10 rounded-lg border text-sm font-medium transition-all ${
+                    formData.minimum_rental_days === String(num)
+                      ? 'bg-primary text-primary-foreground shadow-sm scale-105'
+                      : 'bg-background hover:bg-accent hover:border-primary'
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
             <Input
               id="minimum_rental_days"
               type="number"
