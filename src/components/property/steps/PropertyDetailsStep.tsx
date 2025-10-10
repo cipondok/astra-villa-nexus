@@ -1,8 +1,8 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import NumberSelector from "@/components/ui/NumberSelector";
+import PillSelector from "@/components/ui/PillSelector";
 
 interface PropertyDetailsStepProps {
   formData: any;
@@ -188,114 +188,102 @@ const PropertyDetailsStep = ({ formData, onUpdate }: PropertyDetailsStepProps) =
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="development_status">{t.developmentStatus}</Label>
-          <Select 
-            value={formData.development_status} 
-            onValueChange={(value) => onUpdate('development_status', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectStatus} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="completed">{t.completed}</SelectItem>
-              <SelectItem value="under_construction">{t.underConstruction}</SelectItem>
-              <SelectItem value="planned">{t.planned}</SelectItem>
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={[
+              { value: 'completed', label: t.completed },
+              { value: 'under_construction', label: t.underConstruction },
+              { value: 'planned', label: t.planned }
+            ]}
+            value={formData.development_status}
+            onChange={(value) => onUpdate('development_status', value)}
+            placeholder={t.selectStatus}
+            className="mt-2"
+          />
         </div>
 
         <div>
           <Label htmlFor="owner_type">{t.ownerType}</Label>
-          <Select 
-            value={formData.owner_type} 
-            onValueChange={(value) => onUpdate('owner_type', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectOwnerType} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="individual">{t.individual}</SelectItem>
-              <SelectItem value="developer">{t.developer}</SelectItem>
-              <SelectItem value="company">{t.company}</SelectItem>
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={[
+              { value: 'individual', label: t.individual },
+              { value: 'developer', label: t.developer },
+              { value: 'company', label: t.company }
+            ]}
+            value={formData.owner_type}
+            onChange={(value) => onUpdate('owner_type', value)}
+            placeholder={t.selectOwnerType}
+            className="mt-2"
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="furnished">{t.furnished}</Label>
-          <Select 
-            value={formData.furnished} 
-            onValueChange={(value) => onUpdate('furnished', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectFurnished} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="unfurnished">{t.unfurnished}</SelectItem>
-              <SelectItem value="semi_furnished">{t.semiFurnished}</SelectItem>
-              <SelectItem value="fully_furnished">{t.fullyFurnished}</SelectItem>
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={[
+              { value: 'unfurnished', label: t.unfurnished },
+              { value: 'semi_furnished', label: t.semiFurnished },
+              { value: 'fully_furnished', label: t.fullyFurnished }
+            ]}
+            value={formData.furnished}
+            onChange={(value) => onUpdate('furnished', value)}
+            placeholder={t.selectFurnished}
+            className="mt-2"
+          />
         </div>
 
         <div>
           <Label htmlFor="condition">{t.condition}</Label>
-          <Select 
-            value={formData.condition} 
-            onValueChange={(value) => onUpdate('condition', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectCondition} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="new_construction">{t.newConstruction}</SelectItem>
-              <SelectItem value="excellent">{t.excellent}</SelectItem>
-              <SelectItem value="good">{t.good}</SelectItem>
-              <SelectItem value="fair">{t.fair}</SelectItem>
-              <SelectItem value="needs_renovation">{t.needsRenovation}</SelectItem>
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={[
+              { value: 'new_construction', label: t.newConstruction },
+              { value: 'excellent', label: t.excellent },
+              { value: 'good', label: t.good },
+              { value: 'fair', label: t.fair },
+              { value: 'needs_renovation', label: t.needsRenovation }
+            ]}
+            value={formData.condition}
+            onChange={(value) => onUpdate('condition', value)}
+            placeholder={t.selectCondition}
+            className="mt-2"
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="certificate_type">{t.certificateType}</Label>
-          <Select 
-            value={formData.certificate_type} 
-            onValueChange={(value) => onUpdate('certificate_type', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectCertificate} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="shm">{t.shm}</SelectItem>
-              <SelectItem value="hgb">{t.hgb}</SelectItem>
-              <SelectItem value="hgu">{t.hgu}</SelectItem>
-              <SelectItem value="girik">{t.girik}</SelectItem>
-              <SelectItem value="adat">{t.adat}</SelectItem>
-              <SelectItem value="other">{t.other}</SelectItem>
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={[
+              { value: 'shm', label: t.shm },
+              { value: 'hgb', label: t.hgb },
+              { value: 'hgu', label: t.hgu },
+              { value: 'girik', label: t.girik },
+              { value: 'adat', label: t.adat },
+              { value: 'other', label: t.other }
+            ]}
+            value={formData.certificate_type}
+            onChange={(value) => onUpdate('certificate_type', value)}
+            placeholder={t.selectCertificate}
+            className="mt-2"
+          />
         </div>
 
         <div>
           <Label htmlFor="building_orientation">{t.buildingOrientation}</Label>
-          <Select 
-            value={formData.building_orientation} 
-            onValueChange={(value) => onUpdate('building_orientation', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.buildingOrientation} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="north">{t.north}</SelectItem>
-              <SelectItem value="south">{t.south}</SelectItem>
-              <SelectItem value="east">{t.east}</SelectItem>
-              <SelectItem value="west">{t.west}</SelectItem>
-            </SelectContent>
-          </Select>
+          <PillSelector
+            options={[
+              { value: 'north', label: t.north },
+              { value: 'south', label: t.south },
+              { value: 'east', label: t.east },
+              { value: 'west', label: t.west }
+            ]}
+            value={formData.building_orientation}
+            onChange={(value) => onUpdate('building_orientation', value)}
+            placeholder={t.buildingOrientation}
+            className="mt-2"
+          />
         </div>
       </div>
 
