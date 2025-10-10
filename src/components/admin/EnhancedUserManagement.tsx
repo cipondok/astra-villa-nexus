@@ -279,14 +279,6 @@ const EnhancedUserManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">Enhanced User Management</h3>
-          <p className="text-sm text-muted-foreground">
-            Comprehensive user management with security tracking and suspension controls
-          </p>
-        </div>
-      </div>
 
       {/* Filters */}
       <Card>
