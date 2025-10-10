@@ -13,7 +13,7 @@ export function AdminNotificationsCenter() {
   const queryClient = useQueryClient();
 
   // Fetch all notifications
-  const { data: notifications = [], isLoading } = useQuery({
+  const { data: notifications = [], isLoading, error } = useQuery({
     queryKey: ['admin-all-notifications', filter],
     queryFn: async () => {
       let query = supabase
@@ -28,7 +28,13 @@ export function AdminNotificationsCenter() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Error fetching notifications:', error);
+        throw error;
+      }
+      
+      console.log('Fetched notifications:', data?.length, 'records');
       return data || [];
     },
     refetchInterval: 30000,
@@ -157,9 +163,17 @@ export function AdminNotificationsCenter() {
                 <div className="text-center py-12 text-muted-foreground">
                   Loading notifications...
                 </div>
+              ) : error ? (
+                <div className="text-center py-12">
+                  <div className="text-red-500 mb-2">Error loading notifications</div>
+                  <div className="text-sm text-muted-foreground">
+                    {error.message || 'Please check your permissions'}
+                  </div>
+                </div>
               ) : notifications.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
-                  No notifications found
+                  <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No {filter !== 'all' ? filter : ''} notifications found</p>
                 </div>
               ) : (
                 notifications.map((notification) => (
