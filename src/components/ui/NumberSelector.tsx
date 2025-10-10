@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Delete } from "lucide-react";
 
 interface NumberSelectorProps {
   options: number[];
@@ -10,50 +10,65 @@ interface NumberSelectorProps {
 }
 
 const NumberSelector = ({ options, value, onChange, className = "", compact = false }: NumberSelectorProps) => {
-  const [showOptions, setShowOptions] = useState(!value);
+  const [editMode, setEditMode] = useState(!value);
   const [lastClicked, setLastClicked] = useState<number | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    setShowOptions(!value);
+    setEditMode(!value);
   }, [value]);
 
   const handleNumberClick = (num: number) => {
     clearTimeout(timeoutRef.current);
 
-    if (lastClicked === num) {
-      // Multi-click: concatenate digits
+    if (editMode) {
+      // In edit mode: append digit
       const newValue = (value || '') + String(num);
       onChange(newValue);
     } else {
-      // First click: set value
+      // First click after preset: set value directly
       onChange(String(num));
-      setShowOptions(false);
+      setEditMode(true);
     }
 
     setLastClicked(num);
     
-    // Reset last clicked after 800ms
+    // Reset last clicked after 500ms
     timeoutRef.current = setTimeout(() => {
       setLastClicked(null);
-    }, 800);
+    }, 500);
+  };
+
+  const handleBackspace = () => {
+    if (value && value.length > 0) {
+      const newValue = value.slice(0, -1);
+      onChange(newValue);
+      if (newValue === '') {
+        setEditMode(true);
+      }
+    }
   };
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
     onChange('');
-    setShowOptions(true);
+    setEditMode(true);
     setLastClicked(null);
   };
 
-  const handleShowOptions = () => {
-    setShowOptions(true);
+  const handleShowEdit = () => {
+    setEditMode(true);
   };
 
-  if (!showOptions && value) {
+  // Extract unique digits from options for the numpad
+  const digits = Array.from(new Set(
+    options.flatMap(opt => String(opt).split('').map(Number))
+  )).sort((a, b) => a - b);
+
+  if (!editMode && value) {
     return (
       <div
-        onClick={handleShowOptions}
+        onClick={handleShowEdit}
         className={`relative flex items-center justify-center h-12 px-4 rounded-lg border-2 border-primary bg-primary/10 cursor-pointer hover:bg-primary/20 transition-all ${className}`}
       >
         <span className="text-2xl font-bold text-primary">{value}</span>
@@ -69,21 +84,63 @@ const NumberSelector = ({ options, value, onChange, className = "", compact = fa
   }
 
   return (
-    <div className={`flex flex-wrap gap-1.5 ${className}`}>
-      {options.map(num => (
-        <button
-          key={`num-${num}`}
-          type="button"
-          onClick={() => handleNumberClick(num)}
-          className={`${compact ? 'w-10 h-10 text-sm' : 'px-3 h-10 text-sm'} rounded-lg border font-medium transition-all ${
-            value === String(num)
-              ? 'bg-primary text-primary-foreground shadow-sm scale-105'
-              : 'bg-background hover:bg-accent hover:border-primary'
-          } ${lastClicked === num ? 'ring-2 ring-primary ring-offset-2' : ''}`}
-        >
-          {num}
-        </button>
-      ))}
+    <div className={`space-y-2 ${className}`}>
+      {/* Current value display with edit controls */}
+      {value && (
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-12 px-4 rounded-lg border-2 border-primary bg-primary/5 flex items-center justify-center">
+            <span className="text-2xl font-bold text-primary">{value}</span>
+          </div>
+          <button
+            type="button"
+            onClick={handleBackspace}
+            className="w-12 h-12 rounded-lg border-2 border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/20 flex items-center justify-center transition-all"
+          >
+            <Delete className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+      
+      {/* Quick preset options */}
+      <div className="flex flex-wrap gap-1.5">
+        {options.map(num => (
+          <button
+            key={`preset-${num}`}
+            type="button"
+            onClick={() => {
+              onChange(String(num));
+              setEditMode(false);
+            }}
+            className={`${compact ? 'px-2 h-9 text-xs' : 'px-3 h-10 text-sm'} rounded-lg border font-medium transition-all ${
+              value === String(num)
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'bg-muted/50 hover:bg-accent hover:border-primary'
+            }`}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
+
+      {/* Custom number pad for digit entry */}
+      <div className="pt-2 border-t">
+        <div className="flex flex-wrap gap-1.5">
+          {digits.map(digit => (
+            <button
+              key={`digit-${digit}`}
+              type="button"
+              onClick={() => handleNumberClick(digit)}
+              className={`w-10 h-10 rounded-lg border-2 font-bold transition-all ${
+                lastClicked === digit
+                  ? 'bg-primary text-primary-foreground scale-95 border-primary'
+                  : 'bg-background hover:bg-accent hover:border-primary'
+              }`}
+            >
+              {digit}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
