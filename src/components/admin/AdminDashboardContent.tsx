@@ -71,6 +71,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ProjectProgressReport />;
       case "user-management":
         return <EnhancedUserManagement />;
+      case "property-management":
       case "property-management-hub":
         return <AdminPropertyManagement />;
       case "property-management-advanced":
