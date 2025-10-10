@@ -178,32 +178,30 @@ const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: Feature
         if (!categoryFeatures || categoryFeatures.length === 0) return null;
 
         return (
-          <div key={category} className="space-y-4">
-            <h4 className="text-md font-semibold text-primary">
+          <div key={category} className="space-y-2">
+            <h4 className="text-sm font-semibold text-primary">
               {t[category as keyof typeof t] as string}
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-1.5">
               {categoryFeatures.map((feature) => {
                 const Icon = getIcon(feature.icon);
                 const label = language === 'en' ? feature.labelEn : feature.labelId;
+                const isChecked = features[feature.key] || false;
 
                 return (
-                  <div
+                  <button
                     key={feature.key}
-                    className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                    type="button"
+                    onClick={() => onUpdate(feature.key, !isChecked)}
+                    className={`flex items-center gap-1.5 px-2.5 h-7 rounded-md border text-xs font-medium transition-all active:scale-95 ${
+                      isChecked
+                        ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                        : 'bg-background hover:bg-accent hover:border-primary'
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className="h-5 w-5 text-primary" />
-                      <Label htmlFor={feature.key} className="cursor-pointer">
-                        {label}
-                      </Label>
-                    </div>
-                    <Switch
-                      id={feature.key}
-                      checked={features[feature.key] || false}
-                      onCheckedChange={(checked) => onUpdate(feature.key, checked)}
-                    />
-                  </div>
+                    <Icon className="h-3 w-3" />
+                    <span>{label}</span>
+                  </button>
                 );
               })}
             </div>
