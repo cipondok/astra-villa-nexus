@@ -162,11 +162,44 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
 
       <div>
         <Label htmlFor="price">{t.price} *</Label>
+        
+        {/* Quick price selection */}
+        <div className="mt-2 space-y-2">
+          <p className="text-xs text-muted-foreground">{language === 'id' ? 'Pilihan Cepat:' : 'Quick Selection:'}</p>
+          <div className="flex flex-wrap gap-2">
+            {[1, 5, 10, 25, 50, 100].map(num => (
+              <button
+                key={`jt-${num}`}
+                type="button"
+                onClick={() => onUpdate('price', String(num * 1000000))}
+                className="px-3 py-1.5 text-xs rounded-full border bg-background hover:bg-accent transition-colors"
+              >
+                {num} Jt
+              </button>
+            ))}
+            {[1, 5, 10, 25, 50, 100].map(num => (
+              <button
+                key={`m-${num}`}
+                type="button"
+                onClick={() => onUpdate('price', String(num * 1000000000))}
+                className="px-3 py-1.5 text-xs rounded-full border bg-background hover:bg-accent transition-colors"
+              >
+                {num} M
+              </button>
+            ))}
+          </div>
+        </div>
+
         <Input
           id="price"
-          type="number"
-          value={formData.price}
-          onChange={(e) => onUpdate('price', e.target.value)}
+          type="text"
+          value={formData.price ? new Intl.NumberFormat('id-ID').format(Number(formData.price)) : ''}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\./g, '');
+            if (value === '' || /^\d+$/.test(value)) {
+              onUpdate('price', value);
+            }
+          }}
           placeholder={t.pricePlaceholder}
           className="mt-2"
         />
