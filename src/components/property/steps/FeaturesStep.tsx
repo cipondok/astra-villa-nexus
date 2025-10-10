@@ -1,9 +1,8 @@
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { getFeaturesByListingType } from "@/config/propertyFilters";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { usePropertyFeatures, getDefaultFeaturesForPropertyType } from "@/hooks/usePropertyFeatures";
+import { Loader2 } from "lucide-react";
 import {
   Wifi,
   Car,
@@ -12,7 +11,6 @@ import {
   Wind,
   ShieldCheck,
   Camera,
-  DoorOpen,
   Home,
   Waves,
   School,
@@ -37,46 +35,18 @@ interface FeaturesStepProps {
   onUpdate: (feature: string, value: boolean) => void;
 }
 
-// Auto-select features based on property type
-const getDefaultFeaturesByPropertyType = (propertyType: string, listingType: 'sale' | 'rent' | 'lease'): string[] => {
-  const defaults: Record<string, string[]> = {
-    apartment: ['airconditioner', 'elevator', 'security', 'cctv', 'parking', 'nearpublictransport'],
-    condo: ['airconditioner', 'elevator', 'security', 'cctv', 'parking', 'swimmingpool', 'gym'],
-    villa: ['airconditioner', 'parking', 'garden', 'swimmingpool', 'security'],
-    house: ['airconditioner', 'parking', 'garden'],
-    townhouse: ['airconditioner', 'parking', 'security'],
-    penthouse: ['airconditioner', 'elevator', 'balcony', 'security', 'cctv', 'parking'],
-    studio: ['airconditioner', 'wifi'],
-    duplex: ['airconditioner', 'parking'],
-    hotel: ['airconditioner', 'wifi', 'elevator', 'security', 'cctv', 'swimmingpool', 'gym'],
-    resort: ['airconditioner', 'wifi', 'swimmingpool', 'gym', 'security', 'beachaccess'],
-    office: ['airconditioner', 'elevator', 'security', 'cctv', 'parking', 'wifi'],
-    virtual_office: ['wifi', 'security'],
-    warehouse: ['security', 'cctv', 'parking'],
-    retail: ['airconditioner', 'security', 'cctv', 'nearmall', 'parking'],
-    shophouse: ['airconditioner', 'parking', 'security'],
-    commercial: ['airconditioner', 'parking', 'security', 'cctv'],
-    land: []
-  };
-
-  // Add rental-specific features
-  if (listingType === 'rent' || listingType === 'lease') {
-    const rentalExtras = ['wifi', 'furnished'];
-    return [...(defaults[propertyType] || []), ...rentalExtras];
-  }
-
-  return defaults[propertyType] || [];
-};
-
 const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: FeaturesStepProps) => {
   const { language } = useLanguage();
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  
+  // Fetch features from database
+  const { data, isLoading, error } = usePropertyFeatures(listingType);
 
   // Auto-select features when property type is first selected
   useEffect(() => {
-    if (propertyType && !hasAutoSelected) {
-      const defaultFeatures = getDefaultFeaturesByPropertyType(propertyType, listingType);
+    if (propertyType && !hasAutoSelected && data?.features) {
+      const defaultFeatures = getDefaultFeaturesForPropertyType(propertyType, listingType, data.features);
       defaultFeatures.forEach(featureKey => {
         // Only auto-select if not already set
         if (features[featureKey] === undefined || features[featureKey] === false) {
@@ -85,7 +55,7 @@ const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: Feature
       });
       setHasAutoSelected(true);
     }
-  }, [propertyType, listingType]);
+  }, [propertyType, listingType, data?.features, hasAutoSelected]);
 
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => ({
@@ -103,7 +73,9 @@ const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: Feature
       security: "Security",
       environment: "Location & Environment",
       accessibility: "Accessibility",
-      forType: "Available for"
+      forType: "Available for",
+      loading: "Loading features...",
+      error: "Failed to load features"
     },
     id: {
       title: "Fitur Properti",
@@ -113,21 +85,32 @@ const FeaturesStep = ({ features, listingType, propertyType, onUpdate }: Feature
       security: "Keamanan",
       environment: "Lokasi & Lingkungan",
       accessibility: "Aksesibilitas",
-      forType: "Tersedia untuk"
+      forType: "Tersedia untuk",
+      loading: "Memuat fitur...",
+      error: "Gagal memuat fitur"
     }
   }[language];
 
-  // Get features based on listing type
-  const availableFeatures = getFeaturesByListingType(listingType);
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">{t.loading}</span>
+      </div>
+    );
+  }
 
-  // Group features by category
-  const groupedFeatures = availableFeatures.reduce((acc, feature) => {
-    if (!acc[feature.category]) {
-      acc[feature.category] = [];
-    }
-    acc[feature.category].push(feature);
-    return acc;
-  }, {} as Record<string, typeof availableFeatures>);
+  // Show error state
+  if (error || !data) {
+    return (
+      <div className="text-center py-12 text-destructive">
+        <p>{t.error}</p>
+      </div>
+    );
+  }
+
+  const groupedFeatures = data.grouped;
 
   const getIcon = (iconName: string) => {
     const iconMap: Record<string, any> = {
