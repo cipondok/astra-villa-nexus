@@ -379,7 +379,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="house">House</SelectItem>
                   <SelectItem value="apartment">Apartment</SelectItem>
                   <SelectItem value="villa">Villa</SelectItem>
@@ -397,7 +397,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="sold">Sold</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
@@ -413,7 +413,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                   <SelectValue placeholder="All Listings" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Listings</SelectItem>
+                  <SelectItem value="all">All Listings</SelectItem>
                   <SelectItem value="sale">For Sale</SelectItem>
                   <SelectItem value="rent">For Rent</SelectItem>
                   <SelectItem value="lease">For Lease</SelectItem>

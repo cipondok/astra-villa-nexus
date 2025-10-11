@@ -605,7 +605,7 @@ const UserDirectoryWithCategories = () => {
                   <SelectValue placeholder="Select main category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No Category</SelectItem>
+                  <SelectItem value="none">No Category</SelectItem>
                   {mainCategories?.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
                       <div className="flex items-center gap-2">
