@@ -352,6 +352,23 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                       </DropdownMenuItem>
                     </div>
                     
+                    {/* Core Management */}
+                    <div className="bg-orange-50 dark:bg-orange-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-orange-700 dark:text-orange-300 uppercase tracking-wide">🎯 Core Management</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('property-filters')} className="flex items-center gap-2 text-sm hover:bg-orange-100 dark:hover:bg-orange-900/50 rounded">
+                        🔧 Property Filters
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('rent-filters')} className="flex items-center gap-2 text-sm hover:bg-orange-100 dark:hover:bg-orange-900/50 rounded">
+                        🏠 Rent Property Filters
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('sale-filters')} className="flex items-center gap-2 text-sm hover:bg-orange-100 dark:hover:bg-orange-900/50 rounded">
+                        💰 Sale Property Filters
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('new-project-filters')} className="flex items-center gap-2 text-sm hover:bg-orange-100 dark:hover:bg-orange-900/50 rounded">
+                        🏗️ New Project Filters
+                      </DropdownMenuItem>
+                    </div>
+                    
                     {/* System Configuration */}
                     <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded-lg">
                       <div className="px-2 py-1 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">⚙️ System Configuration</div>

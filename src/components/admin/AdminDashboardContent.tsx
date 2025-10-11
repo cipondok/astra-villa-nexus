@@ -173,6 +173,11 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <CaptchaSettings />;
       case "cloudflare-settings":
         return <CloudflareSettings />;
+      case "property-filters":
+      case "rent-filters":
+      case "sale-filters":
+      case "new-project-filters":
+        return <SearchFiltersManagement />;
       default:
         return <AdminOverview />;
     }
