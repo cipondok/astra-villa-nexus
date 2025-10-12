@@ -73,19 +73,38 @@ const DiagnosticDashboard = () => {
 
   // Authentication health check
   const { data: authHealth, isLoading: authLoading } = useQuery({
-    queryKey: ['auth-health'],
+    queryKey: ['auth-health', user?.id],
     queryFn: async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user?.id || '')
+          .eq('is_active', true);
+        
         return { 
           status: session ? 'healthy' : 'warning', 
-          message: session ? 'Authentication active' : 'No active session'
+          message: session ? 'Authentication active' : 'No active session',
+          details: {
+            authenticated: !!session,
+            userId: user?.id || null,
+            email: user?.email || null,
+            roles: userRoles?.map(r => r.role) || [],
+            sessionExpiry: session?.expires_at ? new Date(session.expires_at * 1000) : null,
+            provider: session?.user?.app_metadata?.provider || 'email'
+          }
         };
       } catch (error) {
-        return { status: 'critical', message: 'Authentication service error' };
+        return { 
+          status: 'critical', 
+          message: 'Authentication service error',
+          details: null
+        };
       }
     },
     refetchInterval: 60000, // Refresh every minute
+    enabled: true
   });
 
   // System performance metrics
@@ -390,6 +409,85 @@ const DiagnosticDashboard = () => {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Authentication Status Card */}
+            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                  <Shield className="h-5 w-5" />
+                  User Authentication
+                </CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-400">
+                  Current authentication status and session details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Status</span>
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(authHealth?.status || 'checking')}
+                    <Badge variant={authHealth?.details?.authenticated ? 'default' : 'outline'}>
+                      {authHealth?.details?.authenticated ? 'Authenticated' : 'Not Authenticated'}
+                    </Badge>
+                  </div>
+                </div>
+                
+                {authHealth?.details?.authenticated && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">User ID</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                        {authHealth.details.userId?.slice(0, 8)}...
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Email</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        {authHealth.details.email}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Provider</span>
+                      <Badge variant="outline" className="text-xs">
+                        {authHealth.details.provider}
+                      </Badge>
+                    </div>
+                    
+                    {authHealth.details.roles && authHealth.details.roles.length > 0 && (
+                      <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <span className="text-sm text-gray-700 dark:text-gray-300 mb-2 block">User Roles</span>
+                        <div className="flex flex-wrap gap-1">
+                          {authHealth.details.roles.map((role: string, idx: number) => (
+                            <Badge key={idx} variant="secondary" className="text-xs">
+                              {role}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {authHealth.details.sessionExpiry && (
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Session Expires</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          {authHealth.details.sessionExpiry.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
+                
+                {!authHealth?.details?.authenticated && (
+                  <Alert>
+                    <AlertDescription className="text-sm">
+                      No active session detected. Please ensure you are logged in.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+            
             <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <CardHeader>
                 <CardTitle className="text-gray-900 dark:text-gray-100">System Health</CardTitle>
