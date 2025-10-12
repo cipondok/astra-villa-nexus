@@ -135,30 +135,48 @@ const PropertySlideshow = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  {property.title}
-                </h3>
-                <div className="flex items-center text-primary mb-3 text-sm font-medium">
-                  <i className="fas fa-map-marker-alt mr-2"></i>
-                  {property.city}, {property.state}
-                </div>
-                <div className="text-2xl font-bold macos-text-gradient mb-4">
+              <div className="slide-content">
+                <div className="slide-price">
                   {formatPrice(property.price)}
                 </div>
-                <div className="flex gap-3 flex-wrap">
-                  <div className="flex items-center gap-2 bg-secondary/80 text-secondary-foreground px-3 py-1 rounded-lg text-sm transition-all hover:bg-secondary">
-                    <i className="fas fa-bed text-primary"></i>
+                <div className="slide-price-subtitle">
+                  Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
+                </div>
+                <h3 className="slide-title">
+                  {property.title}
+                </h3>
+                <div className="slide-location">
+                  <i className="fas fa-map-marker-alt"></i>
+                  {property.city}, {property.state}
+                </div>
+                <div className="slide-features">
+                  <div className="feature">
+                    <i className="fas fa-bed"></i>
                     <span>{property.bedrooms}</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-secondary/80 text-secondary-foreground px-3 py-1 rounded-lg text-sm transition-all hover:bg-secondary">
-                    <i className="fas fa-bath text-primary"></i>
+                  <div className="feature">
+                    <i className="fas fa-bath"></i>
                     <span>{property.bathrooms}</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-secondary/80 text-secondary-foreground px-3 py-1 rounded-lg text-sm transition-all hover:bg-secondary">
-                    <i className="fas fa-ruler-combined text-primary"></i>
-                    <span>{property.area_sqm}m²</span>
+                  <div className="feature">
+                    <i className="fas fa-car"></i>
+                    <span>1</span>
                   </div>
+                  <div className="feature">
+                    <span>LT : {property.area_sqm}</span>
+                  </div>
+                  <div className="feature">
+                    <span>LB : {Math.round(property.area_sqm * 0.7)}</span>
+                  </div>
+                </div>
+                <div className="slide-actions">
+                  <button className="btn-share" aria-label="Share property">
+                    <i className="fas fa-share-nodes"></i>
+                  </button>
+                  <button className="btn-whatsapp">
+                    <i className="fab fa-whatsapp"></i>
+                    WhatsApp
+                  </button>
                 </div>
               </div>
             </div>
