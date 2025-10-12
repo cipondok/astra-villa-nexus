@@ -42,8 +42,8 @@ const AdminPropertyManagement = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-2">
-          <TabsList className="grid w-full grid-cols-10 bg-transparent gap-1">
+        <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-2 shadow-sm">
+          <TabsList className="grid w-full grid-cols-10 bg-muted/30 gap-1">
             <TabsTrigger 
               value="diagnostic" 
               className="flex items-center gap-2"
