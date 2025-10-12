@@ -10,7 +10,17 @@ import { usePropertyFilters, FilterOption } from '@/hooks/usePropertyFilters';
 import { useToast } from '@/hooks/use-toast';
 import { FilterDialog } from './filters/FilterDialog';
 
-const PropertyFiltersManagement = () => {
+interface PropertyFiltersManagementProps {
+  filterType?: 'sale' | 'rent' | 'all';
+  title?: string;
+  description?: string;
+}
+
+const PropertyFiltersManagement = ({ 
+  filterType = 'all',
+  title = 'Property Filters Management',
+  description = 'Configure rental property filters and facilities'
+}: PropertyFiltersManagementProps) => {
   const { filters, loading, updateFilter, deleteFilter, addFilter } = usePropertyFilters();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,9 +70,11 @@ const PropertyFiltersManagement = () => {
   };
 
   const filteredFilters = filters.flatMap(category => 
-    category.options.filter(option => 
-      option.filter_name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    category.options.filter(option => {
+      const matchesSearch = option.filter_name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType = filterType === 'all' || option.listing_type === filterType;
+      return matchesSearch && matchesType;
+    })
   );
 
   if (loading) {
@@ -73,8 +85,8 @@ const PropertyFiltersManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Property Filters Management</h2>
-          <p className="text-muted-foreground">Configure rental property filters and facilities</p>
+          <h2 className="text-2xl font-bold">{title}</h2>
+          <p className="text-muted-foreground">{description}</p>
         </div>
         <Button onClick={() => setIsDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />

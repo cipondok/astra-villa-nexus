@@ -54,6 +54,7 @@ import ProjectMapVisualization from "./ProjectMapVisualization";
 import CookieConsentSettings from "./CookieConsentSettings";
 import CaptchaSettings from "./CaptchaSettings";
 import CloudflareSettings from "./CloudflareSettings";
+import PropertyFiltersManagement from "./PropertyFiltersManagement";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -174,10 +175,13 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "cloudflare-settings":
         return <CloudflareSettings />;
       case "property-filters":
+        return <PropertyFiltersManagement filterType="all" title="All Property Filters" />;
       case "rent-filters":
+        return <PropertyFiltersManagement filterType="rent" title="Rent Property Filters" description="Manage filters for rental properties" />;
       case "sale-filters":
+        return <PropertyFiltersManagement filterType="sale" title="Sale Property Filters" description="Manage filters for properties for sale" />;
       case "new-project-filters":
-        return <SearchFiltersManagement />;
+        return <PropertyFiltersManagement filterType="all" title="New Project Filters" description="Manage filters for new development projects" />;
       default:
         return <AdminOverview />;
     }
