@@ -817,13 +817,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700 relative">
+            <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5 border border-gray-200 dark:border-gray-700 relative">
               {/* Sliding background indicator */}
               <div 
-                className="absolute inset-y-1 bg-white dark:bg-gray-700 rounded-lg shadow-sm transition-all duration-300 ease-out"
+                className="absolute inset-y-0.5 bg-white dark:bg-gray-700 rounded-md shadow-sm transition-all duration-300 ease-out"
                 style={{
-                  width: 'calc(25% - 4px)',
-                  left: activeTab === 'all' ? '4px' : 
+                  width: 'calc(25% - 2px)',
+                  left: activeTab === 'all' ? '2px' : 
                         activeTab === 'sale' ? '25%' : 
                         activeTab === 'rent' ? '50%' : 
                         '75%',
@@ -832,7 +832,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               
               <button
                 onClick={() => setActiveTab('all')}
-                className={`relative z-10 px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex-1 min-w-[80px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-medium text-xs transition-colors duration-200 flex-1 min-w-[65px] ${
                   activeTab === 'all' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
@@ -842,7 +842,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`relative z-10 px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex-1 min-w-[80px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-medium text-xs transition-colors duration-200 flex-1 min-w-[65px] ${
                   activeTab === 'sale' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
@@ -852,7 +852,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`relative z-10 px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex-1 min-w-[80px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-medium text-xs transition-colors duration-200 flex-1 min-w-[65px] ${
                   activeTab === 'rent' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
@@ -862,7 +862,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('new_project')}
-                className={`relative z-10 px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex-1 min-w-[80px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-medium text-xs transition-colors duration-200 flex-1 min-w-[65px] ${
                   activeTab === 'new_project' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
