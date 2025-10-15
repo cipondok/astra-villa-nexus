@@ -293,7 +293,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       radius: "Radius",
       gettingLocation: "Getting location...",
       locationError: "Location access denied",
-      within: "Within"
+      within: "Within",
+      selectProvince: "Select Province",
+      selectCity: "Select City",
+      selectArea: "Select Area"
     },
     id: {
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
@@ -382,7 +385,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       radius: "Radius",
       gettingLocation: "Mendapatkan lokasi...",
       locationError: "Akses lokasi ditolak",
-      within: "Dalam"
+      within: "Dalam",
+      selectProvince: "Pilih Provinsi",
+      selectCity: "Pilih Kota",
+      selectArea: "Pilih Area"
     }
   };
 
@@ -981,7 +987,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-blue-500" />
-                    <SelectValue placeholder="State" />
+                    <SelectValue placeholder={currentText.selectProvince}>
+                      {filters.state && filters.state !== 'all' 
+                        ? provinces.find(p => p.code === filters.state)?.name 
+                        : currentText.any}
+                    </SelectValue>
                   </div>
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
@@ -1001,7 +1011,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 disabled={!filters.state || filters.state === 'all'}
               >
                 <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                  <SelectValue placeholder="City" />
+                  <SelectValue placeholder={currentText.selectCity}>
+                    {filters.city && filters.city !== 'all' 
+                      ? (() => {
+                          const city = cities.find(c => c.code === filters.city);
+                          return city ? `${city.type} ${city.name}` : currentText.any;
+                        })()
+                      : currentText.any}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
                   <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
@@ -1020,7 +1037,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 disabled={!filters.city || filters.city === 'all'}
               >
                 <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                  <SelectValue placeholder="Area" />
+                  <SelectValue placeholder={currentText.selectArea}>
+                    {filters.area && filters.area !== 'all' 
+                      ? areas.find(a => a.code === filters.area)?.name 
+                      : currentText.any}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
                   <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
