@@ -158,19 +158,19 @@ const Navigation = () => {
   return (
     <>
       <nav className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform animate-fade-in">
-        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-2">
+        <div className="w-full mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-12 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation */}
             <div 
               className="flex items-center space-x-2 cursor-pointer group flex-shrink-0" 
               onClick={() => navigate('/')}
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <Brain className="h-5 w-5 text-white animate-pulse" />
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <Brain className="h-4 w-4 text-white animate-pulse" />
               </div>
               <div className="hidden sm:flex items-center space-x-1">
-                <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
+                <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
+                <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
               </div>
             </div>
 
@@ -182,7 +182,7 @@ const Navigation = () => {
                 className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
                 onClick={() => navigate('/')}
               >
-                <HomeIcon className="h-4 w-4 xl:mr-1.5" />
+                <HomeIcon className="h-3.5 w-3.5 xl:mr-1.5" />
                 <span className="hidden xl:inline text-xs">{currentText.home}</span>
               </Button>
 
@@ -195,7 +195,7 @@ const Navigation = () => {
                     className="h-10 w-10 p-0 hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 text-gray-900 dark:text-white/90"
                     onClick={() => navigate(item.path)}
                   >
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className="h-3.5 w-3.5" />
                   </Button>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
                     {item.label}
