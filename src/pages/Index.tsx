@@ -427,8 +427,26 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={(property) => console.log('Share property:', property.id)}
-                      onContact={(property) => console.log('Contact for property:', property.id)}
+                      onShare={(property) => {
+                        console.log('Share property:', property.id);
+                        const url = `${window.location.origin}/property/${property.id}`;
+                        if (navigator.share) {
+                          navigator.share({
+                            title: property.title,
+                            text: `Check out this property: ${property.title}`,
+                            url: url,
+                          });
+                        } else {
+                          navigator.clipboard.writeText(url);
+                          alert('Property link copied to clipboard!');
+                        }
+                      }}
+                      onContact={(property) => {
+                        console.log('Contact for property:', property.id);
+                        const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
+                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                      }}
                     />
                   )}
 
@@ -438,8 +456,24 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={(property) => console.log('Share property:', property.id)}
-                      onContact={(property) => console.log('Contact for property:', property.id)}
+                      onShare={(property) => {
+                        const url = `${window.location.origin}/property/${property.id}`;
+                        if (navigator.share) {
+                          navigator.share({
+                            title: property.title,
+                            text: `Check out this property: ${property.title}`,
+                            url: url,
+                          });
+                        } else {
+                          navigator.clipboard.writeText(url);
+                          alert('Property link copied to clipboard!');
+                        }
+                      }}
+                      onContact={(property) => {
+                        const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
+                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                      }}
                     />
                   )}
 
@@ -492,8 +526,24 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={(property) => console.log('Share property:', property.id)}
-                      onContact={(property) => console.log('Contact for property:', property.id)}
+                      onShare={(property) => {
+                        const url = `${window.location.origin}/property/${property.id}`;
+                        if (navigator.share) {
+                          navigator.share({
+                            title: property.title,
+                            text: `Check out this property: ${property.title}`,
+                            url: url,
+                          });
+                        } else {
+                          navigator.clipboard.writeText(url);
+                          alert('Property link copied to clipboard!');
+                        }
+                      }}
+                      onContact={(property) => {
+                        const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
+                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                      }}
                     />
                   </div>
                 </section>
