@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -31,9 +31,25 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [nearbyRadius, setNearbyRadius] = useState(5); // Default 5km
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
+  
+  // Trending and smart suggestions
+  const trendingSearches = [
+    "Apartment Jakarta Selatan",
+    "Villa Bali",
+    "Rumah Bandung",
+    "Office Space Sudirman"
+  ];
+  
+  const smartSuggestions = [
+    "🏠 Houses under 1B",
+    "🏢 Apartments near MRT",
+    "🏖️ Beach Villas",
+    "💼 Commercial Properties"
+  ];
   
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
@@ -744,16 +760,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       ) {
         setShowFilters(false);
       }
+      
+      // Close suggestions when clicking outside
+      if (showSuggestions && !target.closest('.relative')) {
+        setShowSuggestions(false);
+      }
     };
 
-    if (showFilters) {
+    if (showFilters || showSuggestions) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showFilters]);
+  }, [showFilters, showSuggestions]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) return `${price / 1000} M`;
@@ -960,8 +981,55 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={() => setShowSuggestions(true)}
                 className="pl-10 h-11 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
+              
+              {/* Smart Suggestions Dropdown */}
+              {showSuggestions && searchQuery.length === 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
+                  <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      <Sparkles className="h-3 w-3 text-yellow-500" />
+                      Smart Selection
+                    </div>
+                    <div className="space-y-1">
+                      {smartSuggestions.map((suggestion, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            setSearchQuery(suggestion.replace(/[🏠🏢🏖️💼]\s/, ''));
+                            setShowSuggestions(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      <TrendingUp className="h-3 w-3 text-green-500" />
+                      Trending
+                    </div>
+                    <div className="space-y-1">
+                      {trendingSearches.map((trend, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            setSearchQuery(trend);
+                            setShowSuggestions(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                        >
+                          {trend}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-1">
               <Button
