@@ -86,7 +86,12 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
         el.style.display = 'flex';
         el.style.alignItems = 'center';
         el.style.justifyContent = 'center';
-        el.innerHTML = `<span style="color: white; font-weight: bold; font-size: 12px;">${formatPrice(property.price)}</span>`;
+        
+        // Safely add price text without XSS risk
+        const priceSpan = document.createElement('span');
+        priceSpan.style.cssText = 'color: white; font-weight: bold; font-size: 12px;';
+        priceSpan.textContent = formatPrice(property.price);
+        el.appendChild(priceSpan);
 
         // Create marker
         const marker = new mapboxgl.Marker(el)

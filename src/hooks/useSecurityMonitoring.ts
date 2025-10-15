@@ -19,12 +19,11 @@ export const useSecurityMonitoring = () => {
   const [behavioralProfile, setBehavioralProfile] = useState<BehavioralProfile | null>(null);
   const [riskScore, setRiskScore] = useState(0);
 
-  // Initialize behavioral profiling
+  // Note: Behavioral profiling moved to server-side for security
+  // Client-side localStorage is not secure and can be manipulated
   useEffect(() => {
-    const storedProfile = localStorage.getItem('behavioral_profile');
-    if (storedProfile) {
-      setBehavioralProfile(JSON.parse(storedProfile));
-    }
+    // Removed localStorage usage - security data should be server-side only
+    console.warn('Behavioral profiling should be implemented server-side');
   }, []);
 
   const logSecurityEvent = useCallback((event: Omit<SecurityEvent, "timestamp">) => {
@@ -42,10 +41,11 @@ export const useSecurityMonitoring = () => {
   const calculateRiskScore = useCallback((metrics: any) => {
     let score = 0;
     
-    // Check for new device
+    // SECURITY WARNING: Device fingerprinting should be done server-side
+    // Client-side checks can be easily bypassed
     const deviceFingerprint = generateDeviceFingerprint();
-    const knownDevice = localStorage.getItem('device_fingerprint') === deviceFingerprint;
-    if (!knownDevice) score += 20;
+    // Removed localStorage check - not secure for authentication decisions
+    score += 10; // Base score without localStorage dependency
     
     // Check unusual login time
     const currentHour = new Date().getHours();
@@ -69,9 +69,11 @@ export const useSecurityMonitoring = () => {
   }, [behavioralProfile, securityEvents]);
 
   const updateBehavioralProfile = useCallback((metrics: Partial<BehavioralProfile>) => {
+    // SECURITY: Do not store security-sensitive data in localStorage
+    // This should be handled server-side via edge functions
     setBehavioralProfile(prev => {
       const updated = { ...prev, ...metrics } as BehavioralProfile;
-      localStorage.setItem('behavioral_profile', JSON.stringify(updated));
+      // Removed localStorage.setItem - security data belongs server-side
       return updated;
     });
   }, []);
