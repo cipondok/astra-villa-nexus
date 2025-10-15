@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -1154,30 +1155,28 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </div>
 
 
-              {/* Property Specifications Category */}
-              <Collapsible open={openSections.propertySpecs} onOpenChange={() => toggleSection('propertySpecs')}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="ghost" 
-                    className="w-full justify-between p-0 h-auto hover:bg-transparent"
-                  >
-                    <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-4 w-full">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 flex items-center justify-center">
-                            <Home className="h-3 w-3 text-white" />
-                          </div>
-                          <h4 className="font-medium text-sm text-blue-700 dark:text-blue-300">Property Specifications</h4>
-                        </div>
-                        {openSections.propertySpecs ? 
-                          <ChevronUp className="h-4 w-4 text-blue-600" /> : 
-                          <ChevronDown className="h-4 w-4 text-blue-600" />
-                        }
-                      </div>
-                    </div>
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-4 mt-2 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-4">
+              {/* Filter Categories in Tabs */}
+              <Tabs defaultValue="propertySpecs" className="w-full">
+                <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/50 p-1">
+                  <TabsTrigger value="propertySpecs" className="text-[10px] px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Home className="h-3 w-3 mr-1" />
+                    Property
+                  </TabsTrigger>
+                  <TabsTrigger value="pricing" className="text-[10px] px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <DollarSign className="h-3 w-3 mr-1" />
+                    Price
+                  </TabsTrigger>
+                  <TabsTrigger value="location" className="text-[10px] px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <MapPin className="h-3 w-3 mr-1" />
+                    Location
+                  </TabsTrigger>
+                  <TabsTrigger value="amenities" className="text-[10px] px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Building className="h-3 w-3 mr-1" />
+                    Amenities
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="propertySpecs" className="space-y-4 mt-3 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-4">
                 
                 {/* Room Configuration */}
                 <div>
@@ -1349,33 +1348,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
                   </div>
                 </div>
-              </CollapsibleContent>
-              </Collapsible>
+                </TabsContent>
 
-              {/* Price & Area Category */}
-              <Collapsible open={openSections.priceRange} onOpenChange={() => toggleSection('priceRange')}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="ghost" 
-                    className="w-full justify-between p-0 h-auto hover:bg-transparent"
-                  >
-                    <div className="bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-lg p-4 w-full">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-emerald-400 flex items-center justify-center">
-                            <DollarSign className="h-3 w-3 text-white" />
-                          </div>
-                          <h4 className="font-medium text-sm text-green-700 dark:text-green-300">Price & Area Range</h4>
-                        </div>
-                        {openSections.priceRange ? 
-                          <ChevronUp className="h-4 w-4 text-green-600" /> : 
-                          <ChevronDown className="h-4 w-4 text-green-600" />
-                        }
-                      </div>
-                    </div>
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-4 mt-2 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-lg p-4">
+                <TabsContent value="pricing" className="space-y-4 mt-3 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-lg p-4">
 
                 {/* Price Range Slider */}
                 <div>
@@ -1428,33 +1403,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
                   </div>
                 </div>
-              </CollapsibleContent>
-              </Collapsible>
+                </TabsContent>
 
-              {/* Property Features Category */}
-              <Collapsible open={openSections.amenities} onOpenChange={() => toggleSection('amenities')}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="ghost" 
-                    className="w-full justify-between p-0 h-auto hover:bg-transparent"
-                  >
-                    <div className="bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg p-4 w-full">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                            <Star className="h-3 w-3 text-white" />
-                          </div>
-                          <h4 className="font-medium text-sm text-purple-700 dark:text-purple-300">{currentText.features}</h4>
-                        </div>
-                        {openSections.amenities ? 
-                          <ChevronUp className="h-4 w-4 text-purple-600" /> : 
-                          <ChevronDown className="h-4 w-4 text-purple-600" />
-                        }
-                      </div>
-                    </div>
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-4 mt-2 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg p-4">
+                <TabsContent value="amenities" className="space-y-4 mt-3 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg p-4">
                 
                 <div className="grid grid-cols-2 gap-3">
                   {currentFilters.features.map((feature) => (
@@ -1472,37 +1423,15 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <span>{feature.icon}</span>
                         {feature.label}
                       </Label>
-                    </div>
+                     </div>
                   ))}
                  </div>
-              </CollapsibleContent>
-              </Collapsible>
+                </TabsContent>
+              </Tabs>
 
               {/* Rental Details Category - Only show for rent tab */}
               {activeTab === 'rent' && (
-                <Collapsible open={openSections.rentalDetails} onOpenChange={() => toggleSection('rentalDetails')}>
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant="ghost" 
-                      className="w-full justify-between p-0 h-auto hover:bg-transparent"
-                    >
-                      <div className="bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg p-4 w-full">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 flex items-center justify-center">
-                              <CalendarIcon className="h-3 w-3 text-white" />
-                            </div>
-                            <h4 className="font-medium text-sm text-orange-700 dark:text-orange-300">{currentText.rentalDetails}</h4>
-                          </div>
-                          {openSections.rentalDetails ? 
-                            <ChevronUp className="h-4 w-4 text-orange-600" /> : 
-                            <ChevronDown className="h-4 w-4 text-orange-600" />
-                          }
-                        </div>
-                      </div>
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-4 mt-2 bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg p-4">
+                <div className="bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg p-4 space-y-4 mt-3">
                     
                     {/* Date Selection */}
                     <div>
@@ -1612,8 +1541,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         ))}
                       </div>
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                </div>
               )}
 
               {/* Sort By Category */}
