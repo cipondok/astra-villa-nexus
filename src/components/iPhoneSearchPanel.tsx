@@ -832,7 +832,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               
               <button
                 onClick={() => setActiveTab('all')}
-                className={`relative z-10 px-2 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[50px] ${
+                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
                   activeTab === 'all' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
@@ -842,7 +842,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`relative z-10 px-2 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[50px] ${
+                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
                   activeTab === 'sale' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
@@ -852,7 +852,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`relative z-10 px-2 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[50px] ${
+                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
                   activeTab === 'rent' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
@@ -862,7 +862,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('new_project')}
-                className={`relative z-10 px-2 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[50px] ${
+                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
                   activeTab === 'new_project' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
