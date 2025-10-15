@@ -4,6 +4,10 @@ import PropertyGridView from "@/components/search/PropertyGridView";
 import { BaseProperty } from "@/types/property";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { shareProperty } from "@/utils/shareUtils";
+import { useState } from "react";
+import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
+import { toast } from "sonner";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -12,6 +16,8 @@ interface PropertiesForRentSectionProps {
 
 const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRentSectionProps) => {
   const { isMobile } = useIsMobile();
+  const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const { data: rentProperties = [], isLoading } = useQuery({
     queryKey: ['properties-for-rent'],
     queryFn: async () => {
@@ -156,26 +162,32 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
           onPropertyClick={onPropertyClick}
           onView3D={onPropertyClick}
           onSave={(property) => console.log('Save property:', property.id)}
-          onShare={(property) => {
-            const url = `${window.location.origin}/property/${property.id}`;
-            if (navigator.share) {
-              navigator.share({
-                title: property.title,
-                text: `Check out this property: ${property.title}`,
-                url: url,
-              });
-            } else {
-              navigator.clipboard.writeText(url);
-              alert('Property link copied to clipboard!');
+          onShare={async (property) => {
+            const success = await shareProperty({
+              id: property.id,
+              title: property.title,
+              price: property.price || 0,
+              location: property.location || property.city || '',
+              images: property.images
+            });
+            if (success) {
+              toast.success("Property link shared!");
             }
           }}
           onContact={(property) => {
-            const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            setSelectedProperty(property);
+            setWhatsappDialogOpen(true);
           }}
         />
       </div>
+      
+      {selectedProperty && (
+        <WhatsAppInquiryDialog
+          open={whatsappDialogOpen}
+          onOpenChange={setWhatsappDialogOpen}
+          property={selectedProperty}
+        />
+      )}
     </section>
   );
 };
