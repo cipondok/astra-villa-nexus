@@ -929,69 +929,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           </div>
           
-          {/* Location Toggle Button */}
-          <div className="flex justify-center">
-            <Button
-              onClick={() => setShowLocationButtons(!showLocationButtons)}
-              variant="ghost"
-              size="sm"
-              className="text-[9px] h-6 px-2 rounded-lg font-medium hover:bg-white/50 dark:hover:bg-gray-800/50"
-            >
-              <MapPin className="h-2 w-2 mr-1" />
-              {showLocationButtons ? 'Hide' : 'Show'} Location Options
-            </Button>
-          </div>
-
-          {/* Nearby Search Toggle & Radius Selection - Shown when toggled */}
-          {showLocationButtons && (
-            <div className="flex gap-1.5 items-center justify-center animate-fade-in">
-              <Button
-                onClick={() => toggleSearchType('location')}
-                variant={!useNearbyLocation ? "default" : "outline"}
-                size="sm"
-                className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
-              >
-                <MapPin className="h-2 w-2 mr-1" />
-                {currentText.location}
-              </Button>
-              <Button
-                onClick={() => toggleSearchType('nearby')}
-                variant={useNearbyLocation ? "default" : "outline"}
-                size="sm"
-                className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
-                disabled={isGettingLocation}
-              >
-                <MapPin className="h-2 w-2 mr-1" />
-                {isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
-              </Button>
-              
-              {useNearbyLocation && userLocation && (
-                <div className="flex items-center gap-1.5">
-                  <Select
-                    value={nearbyRadius.toString()}
-                    onValueChange={(value) => setNearbyRadius(parseInt(value))}
-                  >
-                    <SelectTrigger className="w-20 h-7 text-[9px] rounded-lg">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1" className="text-[9px]">{currentText.within} 1 km</SelectItem>
-                      <SelectItem value="3" className="text-[9px]">{currentText.within} 3 km</SelectItem>
-                      <SelectItem value="5" className="text-[9px]">{currentText.within} 5 km</SelectItem>
-                      <SelectItem value="10" className="text-[9px]">{currentText.within} 10 km</SelectItem>
-                      <SelectItem value="20" className="text-[9px]">{currentText.within} 20 km</SelectItem>
-                      <SelectItem value="50" className="text-[9px]">{currentText.within} 50 km</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <span className="text-[9px] text-amber-600 dark:text-amber-400">
-                    ⚠️ GPS
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
           
-          {/* Compact Search Row */}
+          {/* Compact Search Row with Location Options */}
           <div className="flex gap-2 lg:gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />
@@ -1000,8 +939,31 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
-                className="pl-10 h-11 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="pl-10 pr-20 h-11 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
+              
+              {/* Location Options Inside Input */}
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                <Button
+                  onClick={() => toggleSearchType('location')}
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 w-7 p-0 rounded-md ${!useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  title={currentText.location}
+                >
+                  <MapPin className="h-3 w-3" />
+                </Button>
+                <Button
+                  onClick={() => toggleSearchType('nearby')}
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 w-7 p-0 rounded-md ${useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  disabled={isGettingLocation}
+                  title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
+                >
+                  <MapPin className="h-3 w-3" fill={useNearbyLocation ? "currentColor" : "none"} />
+                </Button>
+              </div>
               
               {/* Smart Suggestions Dropdown */}
               {showSuggestions && searchQuery.length === 0 && (
@@ -1106,6 +1068,30 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <span className="hidden sm:inline">{currentText.search}</span>
             </Button>
           </div>
+          
+          {/* Radius Selector - Shows when Near Me is active */}
+          {useNearbyLocation && userLocation && (
+            <div className="flex items-center justify-center gap-2 animate-fade-in">
+              <Select
+                value={nearbyRadius.toString()}
+                onValueChange={(value) => setNearbyRadius(parseInt(value))}
+              >
+                <SelectTrigger className="w-32 h-7 text-[9px] rounded-lg border-blue-300 dark:border-blue-700">
+                  <MapPin className="h-2 w-2 mr-1 text-blue-500" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1" className="text-[9px]">{currentText.within} 1 km</SelectItem>
+                  <SelectItem value="3" className="text-[9px]">{currentText.within} 3 km</SelectItem>
+                  <SelectItem value="5" className="text-[9px]">{currentText.within} 5 km</SelectItem>
+                  <SelectItem value="10" className="text-[9px]">{currentText.within} 10 km</SelectItem>
+                  <SelectItem value="20" className="text-[9px]">{currentText.within} 20 km</SelectItem>
+                  <SelectItem value="50" className="text-[9px]">{currentText.within} 50 km</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-[9px] text-amber-600 dark:text-amber-400">⚠️ GPS Required</span>
+            </div>
+          )}
 
           {/* Results Count */}
           {resultsCount !== undefined && (
