@@ -960,64 +960,66 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           )}
 
-          {/* Location Selection Row - 3 separate dropdowns */}
-          <div className="grid grid-cols-3 gap-2 mb-2">
-            {/* State/Province Selection */}
-            <Select value={filters.state || "all"} onValueChange={handleStateChange}>
-              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-blue-500" />
-                  <SelectValue placeholder="State" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
-                {provinces.map((province) => (
-                  <SelectItem key={province.code} value={province.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
-                    {province.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Location Selection Row - 3 separate dropdowns - Only show when not using nearby search */}
+          {!useNearbyLocation && (
+            <div className="grid grid-cols-3 gap-2 mb-2">
+              {/* State/Province Selection */}
+              <Select value={filters.state || "all"} onValueChange={handleStateChange}>
+                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-blue-500" />
+                    <SelectValue placeholder="State" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
+                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                  {provinces.map((province) => (
+                    <SelectItem key={province.code} value={province.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                      {province.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            {/* City Selection */}
-            <Select 
-              value={filters.city || "all"} 
-              onValueChange={handleCityChange}
-              disabled={!filters.state || filters.state === 'all'}
-            >
-              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                <SelectValue placeholder="City" />
-              </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
-                {cities.map((city) => (
-                  <SelectItem key={city.code} value={city.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
-                    {city.type} {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {/* City Selection */}
+              <Select 
+                value={filters.city || "all"} 
+                onValueChange={handleCityChange}
+                disabled={!filters.state || filters.state === 'all'}
+              >
+                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  <SelectValue placeholder="City" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
+                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                  {cities.map((city) => (
+                    <SelectItem key={city.code} value={city.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                      {city.type} {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            {/* Area Selection */}
-            <Select 
-              value={filters.area || "all"} 
-              onValueChange={handleAreaChange}
-              disabled={!filters.city || filters.city === 'all'}
-            >
-              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                <SelectValue placeholder="Area" />
-              </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
-                {areas.map((area) => (
-                  <SelectItem key={area.code} value={area.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
-                    {area.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              {/* Area Selection */}
+              <Select 
+                value={filters.area || "all"} 
+                onValueChange={handleAreaChange}
+                disabled={!filters.city || filters.city === 'all'}
+              >
+                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  <SelectValue placeholder="Area" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
+                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                  {areas.map((area) => (
+                    <SelectItem key={area.code} value={area.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                      {area.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Property Type and Other Filters Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
