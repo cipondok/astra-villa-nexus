@@ -55,6 +55,7 @@ import CookieConsentSettings from "./CookieConsentSettings";
 import CaptchaSettings from "./CaptchaSettings";
 import CloudflareSettings from "./CloudflareSettings";
 import PropertyFiltersManagement from "./PropertyFiltersManagement";
+import SocialMediaSettings from "./SocialMediaSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -98,6 +99,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <VendorsHubContent />;
       case "homepage-slider":
         return <HomepageSliderSettings />;
+      case "social-media-settings":
+        return <SocialMediaSettings />;
       case "content-management":
         return <ContentManagement />;
       case "search-filters":

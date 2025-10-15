@@ -232,6 +232,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "social-media-settings",
+      label: "Social Media Settings",
+      icon: Globe,
+      description: "Configure social media accounts and sharing settings",
+      badge: "New"
+    },
+    {
       key: "content-management",
       label: "Content Management",
       icon: FileText,
