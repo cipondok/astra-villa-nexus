@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "sonner";
 
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
@@ -21,12 +21,14 @@ import PropertiesForRentSection from "@/components/property/PropertiesForRentSec
 import IPhoneSearchPanel from "@/components/iPhoneSearchPanel";
 import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
 import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
+import WhatsAppInquiryDialog from "@/components/property/WhatsAppInquiryDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import AstraVillaFeatures from "@/components/home/AstraVillaFeatures";
+import { shareProperty } from "@/utils/shareUtils";
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -79,6 +81,8 @@ const Index = () => {
     listingType: "all",
     sortBy: "newest"
   });
+  const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
 
   // Redirect authenticated users to their dashboard (only on initial load, not on navigation)
   // TEMPORARILY DISABLED - Redirect logic commented out to debug 404 issue
@@ -427,25 +431,21 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={(property) => {
-                        console.log('Share property:', property.id);
-                        const url = `${window.location.origin}/property/${property.id}`;
-                        if (navigator.share) {
-                          navigator.share({
-                            title: property.title,
-                            text: `Check out this property: ${property.title}`,
-                            url: url,
-                          });
-                        } else {
-                          navigator.clipboard.writeText(url);
-                          alert('Property link copied to clipboard!');
+                      onShare={async (property) => {
+                        const success = await shareProperty({
+                          id: property.id,
+                          title: property.title,
+                          price: property.price || 0,
+                          location: property.location || property.city || '',
+                          images: property.images
+                        });
+                        if (success) {
+                          toast.success("Property link shared!");
                         }
                       }}
                       onContact={(property) => {
-                        console.log('Contact for property:', property.id);
-                        const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
-                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
+                        setSelectedProperty(property);
+                        setWhatsappDialogOpen(true);
                       }}
                     />
                   )}
@@ -456,23 +456,21 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={(property) => {
-                        const url = `${window.location.origin}/property/${property.id}`;
-                        if (navigator.share) {
-                          navigator.share({
-                            title: property.title,
-                            text: `Check out this property: ${property.title}`,
-                            url: url,
-                          });
-                        } else {
-                          navigator.clipboard.writeText(url);
-                          alert('Property link copied to clipboard!');
+                      onShare={async (property) => {
+                        const success = await shareProperty({
+                          id: property.id,
+                          title: property.title,
+                          price: property.price || 0,
+                          location: property.location || property.city || '',
+                          images: property.images
+                        });
+                        if (success) {
+                          toast.success("Property link shared!");
                         }
                       }}
                       onContact={(property) => {
-                        const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
-                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
+                        setSelectedProperty(property);
+                        setWhatsappDialogOpen(true);
                       }}
                     />
                   )}
@@ -526,23 +524,21 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={(property) => {
-                        const url = `${window.location.origin}/property/${property.id}`;
-                        if (navigator.share) {
-                          navigator.share({
-                            title: property.title,
-                            text: `Check out this property: ${property.title}`,
-                            url: url,
-                          });
-                        } else {
-                          navigator.clipboard.writeText(url);
-                          alert('Property link copied to clipboard!');
+                      onShare={async (property) => {
+                        const success = await shareProperty({
+                          id: property.id,
+                          title: property.title,
+                          price: property.price || 0,
+                          location: property.location || property.city || '',
+                          images: property.images
+                        });
+                        if (success) {
+                          toast.success("Property link shared!");
                         }
                       }}
                       onContact={(property) => {
-                        const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
-                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
+                        setSelectedProperty(property);
+                        setWhatsappDialogOpen(true);
                       }}
                     />
                   </div>
@@ -575,6 +571,15 @@ const Index = () => {
         
         {/* Customer AI Chat Widget - Fixed position on right */}
         <ResponsiveAIChatWidget />
+        
+        {/* WhatsApp Inquiry Dialog */}
+        {selectedProperty && (
+          <WhatsAppInquiryDialog
+            open={whatsappDialogOpen}
+            onOpenChange={setWhatsappDialogOpen}
+            property={selectedProperty}
+          />
+        )}
       </div>
     </div>
   );

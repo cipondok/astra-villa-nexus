@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Filter, Search, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BaseProperty } from "@/types/property";
+import { shareProperty } from "@/utils/shareUtils";
+import { toast } from "sonner";
 
 import PropertyViewModeToggle from "./PropertyViewModeToggle";
 import AdvancedPropertyFilters, { PropertyFilters } from "./AdvancedPropertyFilters";
@@ -16,6 +18,7 @@ import PropertyMapView from "./PropertyMapView";
 import PropertyDetailModal from "../property/PropertyDetailModal";
 import Property3DViewModal from "../property/Property3DViewModal";
 import SearchPagination from "./SearchPagination";
+import WhatsAppInquiryDialog from "../property/WhatsAppInquiryDialog";
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -53,6 +56,8 @@ const EnhancedPropertySearch = ({
   const [page, setPage] = useState(1);
   const [pageSize] = useState(20);
   const [totalCount, setTotalCount] = useState(0);
+  const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
+  const [contactProperty, setContactProperty] = useState<BaseProperty | null>(null);
 
   // Fetch properties with filtering using optimized RPC function
   const { data: properties = [], isLoading, error } = useQuery({
@@ -158,8 +163,8 @@ const EnhancedPropertySearch = ({
   };
 
   const handleContact = (property: BaseProperty) => {
-    // In a real app, this would open a contact form or start a chat
-    console.log('Contact for property:', property.title);
+    setContactProperty(property);
+    setWhatsappDialogOpen(true);
   };
 
   const handleSave = (property: BaseProperty) => {
@@ -167,9 +172,17 @@ const EnhancedPropertySearch = ({
     console.log('Save property:', property.title);
   };
 
-  const handleShare = (property: BaseProperty) => {
-    // In a real app, this would open a share dialog
-    console.log('Share property:', property.title);
+  const handleShare = async (property: BaseProperty) => {
+    const success = await shareProperty({
+      id: property.id,
+      title: property.title,
+      price: property.price || 0,
+      location: property.location || property.city || '',
+      images: property.images
+    });
+    if (success) {
+      toast.success("Property link shared!");
+    }
   };
 
   const getActiveFiltersCount = () => {
@@ -365,6 +378,15 @@ const EnhancedPropertySearch = ({
             setSelectedProperty(null);
           }}
           language="en"
+        />
+      )}
+
+      {/* WhatsApp Inquiry Dialog */}
+      {contactProperty && (
+        <WhatsAppInquiryDialog
+          open={whatsappDialogOpen}
+          onOpenChange={setWhatsappDialogOpen}
+          property={contactProperty}
         />
       )}
     </div>

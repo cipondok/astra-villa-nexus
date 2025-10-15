@@ -9,6 +9,9 @@ import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { shareProperty } from '@/utils/shareUtils';
+import { toast as sonnerToast } from 'sonner';
+import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 
 interface AIRecommendedPropertiesProps {
   onPropertyClick: (property: BaseProperty) => void;
@@ -20,6 +23,8 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [recommendations, setRecommendations] = useState<BaseProperty[]>([]);
+  const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
 
   // Fetch user preferences and property data
   const { data: userPreferences } = useQuery({
@@ -187,27 +192,33 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             onPropertyClick={onPropertyClick}
             onView3D={onPropertyClick}
             onSave={(property) => console.log('Save property:', property.id)}
-            onShare={(property) => {
-              const url = `${window.location.origin}/property/${property.id}`;
-              if (navigator.share) {
-                navigator.share({
-                  title: property.title,
-                  text: `Check out this property: ${property.title}`,
-                  url: url,
-                });
-              } else {
-                navigator.clipboard.writeText(url);
-                alert('Property link copied to clipboard!');
+            onShare={async (property) => {
+              const success = await shareProperty({
+                id: property.id,
+                title: property.title,
+                price: property.price || 0,
+                location: property.location || property.city || '',
+                images: property.images
+              });
+              if (success) {
+                sonnerToast.success("Property link shared!");
               }
             }}
             onContact={(property) => {
-              const message = `Hi, I'm interested in this property: ${property.title} - ${window.location.origin}/property/${property.id}`;
-              const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-              window.open(whatsappUrl, '_blank');
+              setSelectedProperty(property);
+              setWhatsappDialogOpen(true);
             }}
           />
         )}
       </CardContent>
+      
+      {selectedProperty && (
+        <WhatsAppInquiryDialog
+          open={whatsappDialogOpen}
+          onOpenChange={setWhatsappDialogOpen}
+          property={selectedProperty}
+        />
+      )}
     </Card>
   );
 };
