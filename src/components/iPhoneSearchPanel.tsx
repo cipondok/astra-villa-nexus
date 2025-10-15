@@ -32,6 +32,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showLocationButtons, setShowLocationButtons] = useState(false);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -868,7 +869,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     <div className="w-full max-w-7xl mx-auto">
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div className="p-2 lg:p-3 space-y-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
+        <div className="p-2 lg:p-3 space-y-2 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
@@ -928,52 +929,67 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           </div>
           
-          {/* Nearby Search Toggle & Radius Selection - Micro Buttons */}
-          <div className="flex gap-1.5 items-center justify-center">
+          {/* Location Toggle Button */}
+          <div className="flex justify-center">
             <Button
-              onClick={() => toggleSearchType('location')}
-              variant={!useNearbyLocation ? "default" : "outline"}
+              onClick={() => setShowLocationButtons(!showLocationButtons)}
+              variant="ghost"
               size="sm"
-              className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
+              className="text-[9px] h-6 px-2 rounded-lg font-medium hover:bg-white/50 dark:hover:bg-gray-800/50"
             >
-              <MapPin className="h-2.5 w-2.5 mr-1" />
-              {currentText.location}
+              <MapPin className="h-2 w-2 mr-1" />
+              {showLocationButtons ? 'Hide' : 'Show'} Location Options
             </Button>
-            <Button
-              onClick={() => toggleSearchType('nearby')}
-              variant={useNearbyLocation ? "default" : "outline"}
-              size="sm"
-              className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
-              disabled={isGettingLocation}
-            >
-              <MapPin className="h-2.5 w-2.5 mr-1" />
-              {isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
-            </Button>
-            
-            {useNearbyLocation && userLocation && (
-              <div className="flex items-center gap-1.5">
-                <Select
-                  value={nearbyRadius.toString()}
-                  onValueChange={(value) => setNearbyRadius(parseInt(value))}
-                >
-                  <SelectTrigger className="w-20 h-7 text-[9px] rounded-lg">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1" className="text-[9px]">{currentText.within} 1 km</SelectItem>
-                    <SelectItem value="3" className="text-[9px]">{currentText.within} 3 km</SelectItem>
-                    <SelectItem value="5" className="text-[9px]">{currentText.within} 5 km</SelectItem>
-                    <SelectItem value="10" className="text-[9px]">{currentText.within} 10 km</SelectItem>
-                    <SelectItem value="20" className="text-[9px]">{currentText.within} 20 km</SelectItem>
-                    <SelectItem value="50" className="text-[9px]">{currentText.within} 50 km</SelectItem>
-                  </SelectContent>
-                </Select>
-                <span className="text-[9px] text-amber-600 dark:text-amber-400">
-                  ⚠️ GPS
-                </span>
-              </div>
-            )}
           </div>
+
+          {/* Nearby Search Toggle & Radius Selection - Shown when toggled */}
+          {showLocationButtons && (
+            <div className="flex gap-1.5 items-center justify-center animate-fade-in">
+              <Button
+                onClick={() => toggleSearchType('location')}
+                variant={!useNearbyLocation ? "default" : "outline"}
+                size="sm"
+                className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
+              >
+                <MapPin className="h-2 w-2 mr-1" />
+                {currentText.location}
+              </Button>
+              <Button
+                onClick={() => toggleSearchType('nearby')}
+                variant={useNearbyLocation ? "default" : "outline"}
+                size="sm"
+                className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
+                disabled={isGettingLocation}
+              >
+                <MapPin className="h-2 w-2 mr-1" />
+                {isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
+              </Button>
+              
+              {useNearbyLocation && userLocation && (
+                <div className="flex items-center gap-1.5">
+                  <Select
+                    value={nearbyRadius.toString()}
+                    onValueChange={(value) => setNearbyRadius(parseInt(value))}
+                  >
+                    <SelectTrigger className="w-20 h-7 text-[9px] rounded-lg">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1" className="text-[9px]">{currentText.within} 1 km</SelectItem>
+                      <SelectItem value="3" className="text-[9px]">{currentText.within} 3 km</SelectItem>
+                      <SelectItem value="5" className="text-[9px]">{currentText.within} 5 km</SelectItem>
+                      <SelectItem value="10" className="text-[9px]">{currentText.within} 10 km</SelectItem>
+                      <SelectItem value="20" className="text-[9px]">{currentText.within} 20 km</SelectItem>
+                      <SelectItem value="50" className="text-[9px]">{currentText.within} 50 km</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <span className="text-[9px] text-amber-600 dark:text-amber-400">
+                    ⚠️ GPS
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           
           {/* Compact Search Row */}
           <div className="flex gap-2 lg:gap-3">
