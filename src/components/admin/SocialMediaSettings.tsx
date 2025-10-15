@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Music, Loader2, Save, Plus, Trash2 } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Music, Loader2, Save, Plus, Trash2, RefreshCw } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const platformIcons = {
   facebook: Facebook,
@@ -72,6 +73,42 @@ const SocialMediaSettings = () => {
         api_credentials: item.api_credentials as { api_key?: string; api_secret?: string; access_token?: string; } | null,
         posting_settings: item.posting_settings as { auto_post: boolean; post_template?: string; post_frequency?: string; hashtags?: string[]; } | null,
       })) as SocialMediaSetting[];
+    },
+  });
+
+  const initializePlatformsMutation = useMutation({
+    mutationFn: async () => {
+      const defaultPlatforms = [
+        { platform: 'facebook', account_name: null, profile_url: null, is_active: true },
+        { platform: 'twitter', account_name: null, profile_url: null, is_active: true },
+        { platform: 'instagram', account_name: null, profile_url: null, is_active: false },
+        { platform: 'linkedin', account_name: null, profile_url: null, is_active: true },
+        { platform: 'youtube', account_name: null, profile_url: null, is_active: false },
+        { platform: 'whatsapp', account_name: null, profile_url: null, is_active: true },
+        { platform: 'telegram', account_name: null, profile_url: null, is_active: true },
+        { platform: 'tiktok', account_name: null, profile_url: null, is_active: false },
+      ];
+
+      const { error } = await supabase
+        .from('social_media_settings')
+        .insert(defaultPlatforms);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social-media-settings'] });
+      toast({
+        title: "Success",
+        description: "Default social media platforms initialized",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to initialize platforms",
+        variant: "destructive",
+      });
+      console.error(error);
     },
   });
 
@@ -207,7 +244,32 @@ const SocialMediaSettings = () => {
             </TabsList>
 
             <TabsContent value="accounts" className="space-y-4 mt-6">
-              <div className="grid gap-4 md:grid-cols-2">
+              {!settings || settings.length === 0 ? (
+                <Alert>
+                  <AlertDescription className="flex flex-col items-center gap-4 py-8">
+                    <p className="text-center text-muted-foreground">
+                      No social media platforms found. Initialize default platforms to get started.
+                    </p>
+                    <Button 
+                      onClick={() => initializePlatformsMutation.mutate()}
+                      disabled={initializePlatformsMutation.isPending}
+                    >
+                      {initializePlatformsMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Initializing...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Initialize Default Platforms
+                        </>
+                      )}
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2">
                 {settings?.map((setting) => {
                   const Icon = platformIcons[setting.platform as keyof typeof platformIcons] || MessageCircle;
                   const color = platformColors[setting.platform as keyof typeof platformColors] || "#000000";
@@ -310,6 +372,7 @@ const SocialMediaSettings = () => {
                   );
                 })}
               </div>
+              )}
             </TabsContent>
 
             <TabsContent value="posting" className="space-y-4 mt-6">
@@ -429,30 +492,60 @@ const SocialMediaSettings = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-3 md:grid-cols-3">
-                      {settings?.filter(s => s.is_active).map((setting) => {
-                        const Icon = platformIcons[setting.platform as keyof typeof platformIcons] || MessageCircle;
-                        const color = platformColors[setting.platform as keyof typeof platformColors] || "#000000";
-                        
-                        return (
-                          <Button
-                            key={setting.id}
+                    {!settings || settings.length === 0 ? (
+                      <Alert>
+                        <AlertDescription className="flex flex-col items-center gap-4 py-8">
+                          <p className="text-center text-muted-foreground">
+                            No platforms available. Please add platforms in the Account Settings tab first.
+                          </p>
+                          <Button 
                             variant="outline"
-                            className="h-auto py-4 flex flex-col gap-2"
-                            onClick={() => {
-                              handleEdit(setting);
-                              setActiveTab("posting");
-                            }}
+                            onClick={() => setActiveTab("accounts")}
                           >
-                            <Icon className="h-6 w-6" style={{ color }} />
-                            <span className="capitalize text-sm font-medium">{setting.platform}</span>
-                            {setting.posting_settings?.auto_post && (
-                              <span className="text-xs text-green-600">Auto-post enabled</span>
-                            )}
+                            Go to Account Settings
                           </Button>
-                        );
-                      })}
-                    </div>
+                        </AlertDescription>
+                      </Alert>
+                    ) : settings.filter(s => s.is_active).length === 0 ? (
+                      <Alert>
+                        <AlertDescription className="flex flex-col items-center gap-4 py-8">
+                          <p className="text-center text-muted-foreground">
+                            No active platforms. Please enable at least one platform in Account Settings.
+                          </p>
+                          <Button 
+                            variant="outline"
+                            onClick={() => setActiveTab("accounts")}
+                          >
+                            Go to Account Settings
+                          </Button>
+                        </AlertDescription>
+                      </Alert>
+                    ) : (
+                      <div className="grid gap-3 md:grid-cols-3">
+                        {settings?.filter(s => s.is_active).map((setting) => {
+                          const Icon = platformIcons[setting.platform as keyof typeof platformIcons] || MessageCircle;
+                          const color = platformColors[setting.platform as keyof typeof platformColors] || "#000000";
+                          
+                          return (
+                            <Button
+                              key={setting.id}
+                              variant="outline"
+                              className="h-auto py-4 flex flex-col gap-2"
+                              onClick={() => {
+                                handleEdit(setting);
+                                setActiveTab("posting");
+                              }}
+                            >
+                              <Icon className="h-6 w-6" style={{ color }} />
+                              <span className="capitalize text-sm font-medium">{setting.platform}</span>
+                              {setting.posting_settings?.auto_post && (
+                                <span className="text-xs text-green-600">Auto-post enabled</span>
+                              )}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}
