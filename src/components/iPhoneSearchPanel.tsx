@@ -730,7 +730,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   // Close filters when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(event.target as Node) && showFilters) {
+      const target = event.target as HTMLElement;
+      
+      // Don't close if clicking on filter content, popovers, dialogs, or select dropdowns
+      if (
+        filterRef.current && 
+        !filterRef.current.contains(target) && 
+        showFilters &&
+        !target.closest('[role="dialog"]') &&
+        !target.closest('[role="listbox"]') &&
+        !target.closest('[role="presentation"]') &&
+        !target.closest('.pointer-events-auto')
+      ) {
         setShowFilters(false);
       }
     };
