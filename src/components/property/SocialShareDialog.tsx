@@ -142,62 +142,86 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border border-border/50">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            <Share2 className="h-5 w-5 text-primary" />
-            Share Property
-          </DialogTitle>
-          <DialogDescription>
-            Share this property with your network
-          </DialogDescription>
-        </DialogHeader>
-
-        {/* Property Preview Card */}
-        <div className="rounded-lg overflow-hidden border border-border/50 bg-muted/30">
-          <div className="aspect-video relative overflow-hidden">
-            <img 
-              src={getImageUrl()} 
-              alt={property.title}
-              className="w-full h-full object-cover"
-            />
+      <DialogContent className="sm:max-w-lg border-border/50 overflow-hidden p-0">
+        <div className="relative">
+          {/* Gradient Header */}
+          <div className="bg-gradient-to-br from-primary via-primary/90 to-accent p-6 pb-8">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-2xl font-bold text-white">
+                <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <Share2 className="h-6 w-6" />
+                </div>
+                Share Property
+              </DialogTitle>
+              <DialogDescription className="text-white/90 mt-2 text-sm">
+                Share this amazing property with your network
+              </DialogDescription>
+            </DialogHeader>
           </div>
-          <div className="p-3">
-            <h4 className="font-semibold text-sm line-clamp-1">{property.title}</h4>
-            <p className="text-xs text-muted-foreground line-clamp-1">{property.city || property.location}</p>
-            <p className="text-sm font-bold text-primary mt-1">{formatPrice(property.price)}</p>
+
+          {/* Content Section */}
+          <div className="px-6 pb-6 -mt-4">
+            {/* Property Preview Card - Elevated */}
+            <div className="glass-card shadow-xl mb-6 overflow-hidden transform transition-all hover:scale-[1.02] duration-300">
+              <div className="aspect-video relative overflow-hidden bg-muted">
+                <img 
+                  src={getImageUrl()} 
+                  alt={property.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h4 className="font-bold text-lg line-clamp-1 drop-shadow-lg">{property.title}</h4>
+                  <p className="text-sm text-white/90 line-clamp-1 drop-shadow-lg flex items-center gap-1 mt-1">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                    {property.city || property.location}
+                  </p>
+                </div>
+                <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  <p className="text-sm font-bold text-primary">{formatPrice(property.price)}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Media Grid */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Share via</h3>
+              <div className="grid grid-cols-3 gap-3">
+                {socialPlatforms.map((platform: any) => (
+                  <Button
+                    key={platform.name}
+                    variant="outline"
+                    className={`group flex flex-col items-center gap-2 h-auto py-5 border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${platform.color} text-white hover:text-white active:scale-95 relative overflow-hidden`}
+                    onClick={platform.action}
+                  >
+                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <platform.icon className="h-7 w-7 relative z-10 drop-shadow-md" />
+                    <span className="text-xs font-semibold relative z-10">{platform.name}</span>
+                    {platform.accountName && (
+                      <span className="text-[10px] opacity-90 relative z-10 line-clamp-1 max-w-full px-1">{platform.accountName}</span>
+                    )}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Native Share Button */}
+            {navigator.share && window.parent === window && (
+              <div className="mt-6 pt-4 border-t border-border">
+                <Button
+                  variant="outline"
+                  className="w-full bg-gradient-to-r from-primary/5 to-accent/5 hover:from-primary/10 hover:to-accent/10 border-primary/20 hover:border-primary/40 transition-all duration-300 py-6 group"
+                  onClick={handleNativeShare}
+                >
+                  <Share2 className="h-5 w-5 mr-2 text-primary group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold text-foreground">More Sharing Options</span>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Social Media Grid */}
-        <div className="grid grid-cols-3 gap-3 mt-2">
-          {socialPlatforms.map((platform: any) => (
-            <Button
-              key={platform.name}
-              variant="outline"
-              className={`flex flex-col items-center gap-2 h-auto py-4 border border-border/50 hover:scale-105 transition-all duration-200 ${platform.color} text-white hover:text-white`}
-              onClick={platform.action}
-            >
-              <platform.icon className="h-6 w-6" />
-              <span className="text-xs font-medium">{platform.name}</span>
-              {platform.accountName && (
-                <span className="text-[10px] opacity-80">{platform.accountName}</span>
-              )}
-            </Button>
-          ))}
-        </div>
-
-        {/* Native Share Button */}
-        {navigator.share && window.parent === window && (
-          <Button
-            variant="outline"
-            className="w-full mt-2"
-            onClick={handleNativeShare}
-          >
-            <Share2 className="h-4 w-4 mr-2" />
-            More Options
-          </Button>
-        )}
       </DialogContent>
     </Dialog>
   );
