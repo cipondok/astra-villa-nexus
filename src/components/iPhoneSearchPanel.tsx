@@ -1168,10 +1168,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="relative z-50 bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-xl p-4 space-y-5 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <h3 className="text-foreground font-semibold text-sm flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-primary" />
+            <div ref={filterRef} className="relative z-50 bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-xl p-3 space-y-3 shadow-2xl max-h-[60vh] overflow-y-auto">
+              <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10 pb-2 border-b border-border/30">
+                <h3 className="text-foreground font-semibold text-xs flex items-center gap-2">
+                  <Filter className="h-3 w-3 text-primary" />
                   {currentText.advancedFilters}
                 </h3>
                 <div className="flex items-center gap-2">
@@ -1181,7 +1181,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     size="sm"
                     className="h-8 px-3 text-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
                   >
-                    <X className="h-3 w-3 mr-1" />
+                    <X className="h-3 w-3 mr-0.5" />
                     {currentText.clearFilters}
                   </Button>
                   <Button
@@ -1190,7 +1190,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     size="sm"
                     className="h-8 w-8 p-0 hover:bg-muted"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-3.5 w-3.5" />
                   </Button>
                 </div>
               </div>
