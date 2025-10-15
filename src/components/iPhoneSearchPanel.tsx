@@ -913,21 +913,34 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 className="pl-10 h-11 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
-            <Button
-              onClick={() => setShowFilters(!showFilters)}
-              variant="outline"
-              className="h-11 px-4 relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all"
-            >
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                <span className="hidden sm:inline text-sm">Filters</span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                variant="outline"
+                className="h-11 px-4 relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all"
+              >
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  <span className="hidden sm:inline text-sm">Filters</span>
+                  {getActiveFiltersCount() > 0 && (
+                    <span className="ml-1 bg-blue-600 dark:bg-blue-500 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+                      {getActiveFiltersCount()}
+                    </span>
+                  )}
+                </div>
+              </Button>
               {getActiveFiltersCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {getActiveFiltersCount()}
-                </span>
+                <Button
+                  onClick={clearAllFilters}
+                  variant="ghost"
+                  size="sm"
+                  className="h-11 px-3 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl"
+                  title="Clear all filters"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               )}
-            </Button>
+            </div>
             <Button
               onClick={handleSearch}
               className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
