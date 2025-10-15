@@ -32,6 +32,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   
+  // Ref for click outside detection
+  const filterRef = useRef<HTMLDivElement>(null);
+  
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
     location: false,
@@ -724,6 +727,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     setAreaRange([0, 1000]);
   };
 
+  // Close filters when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node) && showFilters) {
+        setShowFilters(false);
+      }
+    };
+
+    if (showFilters) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFilters]);
+
   const formatPrice = (price: number) => {
     if (price >= 1000) return `${price / 1000} M`;
     return `${price} Jt`;
@@ -1137,21 +1157,31 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div className="bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-xl p-4 space-y-5 shadow-2xl">
+            <div ref={filterRef} className="bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-xl p-4 space-y-5 shadow-2xl">
               <div className="flex items-center justify-between">
                 <h3 className="text-foreground font-semibold text-sm flex items-center gap-2">
                   <Filter className="h-4 w-4 text-primary" />
                   {currentText.advancedFilters}
                 </h3>
-                <Button
-                  onClick={clearAllFilters}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-3 text-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
-                >
-                  <X className="h-3 w-3 mr-1" />
-                  {currentText.clearFilters}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={clearAllFilters}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    {currentText.clearFilters}
+                  </Button>
+                  <Button
+                    onClick={() => setShowFilters(false)}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:bg-muted"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
 
