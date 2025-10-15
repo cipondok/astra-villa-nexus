@@ -60,7 +60,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Use AI to analyze and recommend
       const { data: aiResponse, error } = await supabase.functions.invoke('ai-assistant', {
         body: {
-          message: `Based on ${userPreferences ? 'user preferences and browsing history' : 'popular trends'}, recommend 6 properties that would be most suitable. Consider location, price range, property type, and amenities. Return property IDs only in format: "propertyId1,propertyId2,..."`,
+          message: `Based on ${userPreferences ? 'user preferences and browsing history' : 'popular trends'}, recommend 8 properties that would be most suitable. Consider location, price range, property type, and amenities. Return property IDs only in format: "propertyId1,propertyId2,..."`,
           userId: user?.id,
           conversationId: 'recommendations_' + Date.now(),
         }
@@ -76,7 +76,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       if (propertyIds.length === 0) {
         // Fallback to recent properties
         const recommended = recentProperties
-          ?.slice(0, 6)
+          ?.slice(0, 8)
           .map(p => ({
             ...p,
             listing_type: p.listing_type as "sale" | "rent" | "lease",
@@ -88,7 +88,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         const { data: recommendedProps } = await supabase
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
-          .in('id', propertyIds.slice(0, 6))
+          .in('id', propertyIds.slice(0, 8))
           .eq('status', 'active')
           .eq('approval_status', 'approved');
 
@@ -116,7 +116,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
-        .limit(6);
+        .limit(8);
 
       const transformed = fallbackProps?.map(p => ({
         ...p,
@@ -178,7 +178,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       <CardContent>
         {isGenerating ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-2" />
                 <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4 mb-2" />
