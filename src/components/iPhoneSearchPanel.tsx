@@ -35,6 +35,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
   
   // Trending and smart suggestions
   const trendingSearches = [
@@ -743,12 +744,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     setAreaRange([0, 1000]);
   };
 
-  // Close filters when clicking outside
+  // Close filters and suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       
-      // Don't close if clicking on filter content, popovers, dialogs, or select dropdowns
+      // Close filters if clicking outside
       if (
         filterRef.current && 
         !filterRef.current.contains(target) && 
@@ -761,16 +762,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
         setShowFilters(false);
       }
       
-      // Close suggestions when clicking outside
-      if (showSuggestions && !target.closest('.relative')) {
+      // Close suggestions if clicking outside the suggestions dropdown
+      if (
+        suggestionsRef.current && 
+        !suggestionsRef.current.contains(target) &&
+        showSuggestions
+      ) {
         setShowSuggestions(false);
       }
     };
 
-    if (showFilters || showSuggestions) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -987,21 +989,39 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               
               {/* Smart Suggestions Dropdown */}
               {showSuggestions && searchQuery.length === 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
+                <div 
+                  ref={suggestionsRef}
+                  className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[100] max-h-64 overflow-y-auto"
+                >
                   <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      <Sparkles className="h-3 w-3 text-yellow-500" />
-                      Smart Selection
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                        <Sparkles className="h-3 w-3 text-yellow-500" />
+                        Smart Selection
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowSuggestions(false);
+                        }}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
                     </div>
                     <div className="space-y-1">
                       {smartSuggestions.map((suggestion, i) => (
                         <button
                           key={i}
-                          onClick={() => {
-                            setSearchQuery(suggestion.replace(/[🏠🏢🏖️💼]\s/, ''));
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
+                            setSearchQuery(cleanText);
                             setShowSuggestions(false);
+                            handleSearch();
                           }}
-                          className="w-full text-left px-3 py-2 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                          className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                         >
                           {suggestion}
                         </button>
@@ -1017,11 +1037,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       {trendingSearches.map((trend, i) => (
                         <button
                           key={i}
-                          onClick={() => {
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setSearchQuery(trend);
                             setShowSuggestions(false);
+                            handleSearch();
                           }}
-                          className="w-full text-left px-3 py-2 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                          className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                         >
                           {trend}
                         </button>
