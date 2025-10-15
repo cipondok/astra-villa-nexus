@@ -868,59 +868,59 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     <div className="w-full max-w-7xl mx-auto">
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div className="p-2 lg:p-3 space-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl">
+        <div className="p-2 lg:p-3 space-y-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-md p-0.5 border border-gray-200/50 dark:border-gray-700/50 relative">
+            <div className="inline-flex bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg p-1 border border-gray-300/50 dark:border-gray-600/50 shadow-sm relative">
               {/* Sliding background indicator */}
               <div 
-                className="absolute inset-y-0.5 bg-white dark:bg-gray-700 rounded shadow-sm transition-all duration-300 ease-out"
+                className="absolute inset-y-1 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-md shadow-md transition-all duration-300 ease-out"
                 style={{
-                  width: 'calc(25% - 2px)',
-                  left: activeTab === 'all' ? '2px' : 
-                        activeTab === 'sale' ? '25%' : 
-                        activeTab === 'rent' ? '50%' : 
-                        '75%',
+                  width: 'calc(25% - 4px)',
+                  left: activeTab === 'all' ? '4px' : 
+                        activeTab === 'sale' ? 'calc(25% + 0px)' : 
+                        activeTab === 'rent' ? 'calc(50% - 0px)' : 
+                        'calc(75% - 4px)',
                 }}
               />
               
               <button
                 onClick={() => setActiveTab('all')}
-                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
                   activeTab === 'all' 
-                    ? 'text-blue-600 dark:text-blue-400' 
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'text-white shadow-sm' 
+                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {currentText.all}
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
                   activeTab === 'sale' 
-                    ? 'text-blue-600 dark:text-blue-400' 
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'text-white shadow-sm' 
+                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {currentText.forSale}
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
                   activeTab === 'rent' 
-                    ? 'text-blue-600 dark:text-blue-400' 
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'text-white shadow-sm' 
+                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {currentText.forRent}
               </button>
               <button
                 onClick={() => setActiveTab('new_project')}
-                className={`relative z-10 px-4 py-1 rounded font-medium text-[10px] transition-colors duration-200 flex-1 min-w-[70px] ${
+                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
                   activeTab === 'new_project' 
-                    ? 'text-blue-600 dark:text-blue-400' 
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'text-white shadow-sm' 
+                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {currentText.newProject}
@@ -928,48 +928,48 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           </div>
           
-          {/* Nearby Search Toggle & Radius Selection */}
-          <div className="flex gap-2 items-center justify-center">
+          {/* Nearby Search Toggle & Radius Selection - Micro Buttons */}
+          <div className="flex gap-1.5 items-center justify-center">
             <Button
               onClick={() => toggleSearchType('location')}
               variant={!useNearbyLocation ? "default" : "outline"}
               size="sm"
-              className="text-xs h-8"
+              className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
             >
-              <MapPin className="h-3 w-3 mr-1" />
+              <MapPin className="h-2.5 w-2.5 mr-1" />
               {currentText.location}
             </Button>
             <Button
               onClick={() => toggleSearchType('nearby')}
               variant={useNearbyLocation ? "default" : "outline"}
               size="sm"
-              className="text-xs h-8"
+              className="text-[9px] h-7 px-2.5 rounded-lg font-medium"
               disabled={isGettingLocation}
             >
-              <MapPin className="h-3 w-3 mr-1" />
+              <MapPin className="h-2.5 w-2.5 mr-1" />
               {isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
             </Button>
             
             {useNearbyLocation && userLocation && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <Select
                   value={nearbyRadius.toString()}
                   onValueChange={(value) => setNearbyRadius(parseInt(value))}
                 >
-                  <SelectTrigger className="w-28 h-8 text-xs">
+                  <SelectTrigger className="w-20 h-7 text-[9px] rounded-lg">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">{currentText.within} 1 km</SelectItem>
-                    <SelectItem value="3">{currentText.within} 3 km</SelectItem>
-                    <SelectItem value="5">{currentText.within} 5 km</SelectItem>
-                    <SelectItem value="10">{currentText.within} 10 km</SelectItem>
-                    <SelectItem value="20">{currentText.within} 20 km</SelectItem>
-                    <SelectItem value="50">{currentText.within} 50 km</SelectItem>
+                    <SelectItem value="1" className="text-[9px]">{currentText.within} 1 km</SelectItem>
+                    <SelectItem value="3" className="text-[9px]">{currentText.within} 3 km</SelectItem>
+                    <SelectItem value="5" className="text-[9px]">{currentText.within} 5 km</SelectItem>
+                    <SelectItem value="10" className="text-[9px]">{currentText.within} 10 km</SelectItem>
+                    <SelectItem value="20" className="text-[9px]">{currentText.within} 20 km</SelectItem>
+                    <SelectItem value="50" className="text-[9px]">{currentText.within} 50 km</SelectItem>
                   </SelectContent>
                 </Select>
-                <span className="text-xs text-amber-600 dark:text-amber-400">
-                  ⚠️ Requires property GPS data
+                <span className="text-[9px] text-amber-600 dark:text-amber-400">
+                  ⚠️ GPS
                 </span>
               </div>
             )}
