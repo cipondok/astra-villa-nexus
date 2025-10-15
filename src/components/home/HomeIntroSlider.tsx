@@ -217,14 +217,14 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
       <div className="absolute inset-y-0 left-0 right-0 z-10 hidden md:flex items-center justify-between px-2 md:px-4">
         <button
           onClick={prev}
-          className="rounded-full bg-background/60 backdrop-blur border px-3 py-2 text-sm hover:bg-background"
+          className="rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 px-4 py-1 text-xs font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-sm hover:shadow-md"
           aria-label="Prev slide"
         >
           Prev
         </button>
         <button
           onClick={next}
-          className="rounded-full bg-background/60 backdrop-blur border px-3 py-2 text-sm hover:bg-background"
+          className="rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 px-4 py-1 text-xs font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-sm hover:shadow-md"
           aria-label="Next slide"
         >
           Next
