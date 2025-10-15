@@ -137,7 +137,12 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   };
 
   useEffect(() => {
-    generateRecommendations();
+    // Delay AI recommendations to improve initial page load
+    const timer = setTimeout(() => {
+      generateRecommendations();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   if (recommendations.length === 0 && !isGenerating) return null;

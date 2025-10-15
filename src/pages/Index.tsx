@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -20,7 +20,6 @@ import PropertiesForSaleSection from "@/components/property/PropertiesForSaleSec
 import PropertiesForRentSection from "@/components/property/PropertiesForRentSection";
 import IPhoneSearchPanel from "@/components/iPhoneSearchPanel";
 import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
-import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
 import WhatsAppInquiryDialog from "@/components/property/WhatsAppInquiryDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +28,9 @@ import { cn } from "@/lib/utils";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import AstraVillaFeatures from "@/components/home/AstraVillaFeatures";
 import { shareProperty } from "@/utils/shareUtils";
+
+// Lazy load AI Recommendations for better performance
+const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -119,7 +121,7 @@ const Index = () => {
     backgroundAttachment: 'fixed',
   };
 
-  // Simplified featured properties query
+  // Simplified featured properties query with better caching
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-simple'],
     queryFn: async () => {
@@ -155,7 +157,8 @@ const Index = () => {
     },
     retry: 1,
     refetchOnWindowFocus: false,
-    staleTime: 60000,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
   const handleQuickSearch = async (searchData?: any) => {
@@ -485,9 +488,30 @@ const Index = () => {
               </section>
             ) : (
               <>
-                {/* AI Recommended Properties */}
+                {/* AI Recommended Properties - Lazy Loaded */}
                 <div className="section-compact mb-6">
-                  <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
+                  <Suspense fallback={
+                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20 p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg animate-pulse" />
+                        <div className="flex-1">
+                          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2 animate-pulse" />
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-64 animate-pulse" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {[...Array(3)].map((_, i) => (
+                          <div key={i} className="animate-pulse">
+                            <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-2" />
+                            <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4 mb-2" />
+                            <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-1/2" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  }>
+                    <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
+                  </Suspense>
                 </div>
 
                 {/* ASTRA Villa Features Section */}

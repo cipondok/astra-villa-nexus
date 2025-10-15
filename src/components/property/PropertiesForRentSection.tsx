@@ -58,7 +58,8 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
     },
     retry: 1,
     refetchOnWindowFocus: false,
-    staleTime: 60000,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
   if (isLoading) {
