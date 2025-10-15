@@ -142,50 +142,63 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md border-0 overflow-hidden p-0 bg-white dark:bg-gray-900">
-        {/* WhatsApp-Style Header */}
-        <div className="bg-[#128C7E] dark:bg-[#075E54] px-5 py-4">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-              <Share2 className="h-5 w-5" />
-              Share Property
-            </DialogTitle>
+      <DialogContent className="sm:max-w-[380px] bg-background/60 backdrop-blur-xl border-primary/20 shadow-2xl p-0 gap-0 overflow-hidden">
+        {/* Modern Gradient Header */}
+        <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-primary-foreground">
+          <DialogHeader className="space-y-0">
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm">
+                <Share2 className="h-5 w-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-base font-bold">Share Property</DialogTitle>
+                <DialogDescription className="text-primary-foreground/80 text-xs">
+                  Share with your network
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-3 bg-white dark:bg-gray-900">
-          {/* Property Preview - Compact */}
-          <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-gray-800">
+        <div className="p-3.5 space-y-3">
+          {/* Property Preview - Ultra Compact */}
+          <div className="rounded-lg overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-accent/30 to-accent/50 shadow-sm">
+            <div className="aspect-video relative overflow-hidden bg-muted/50">
               <img 
                 src={getImageUrl()} 
                 alt={property.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-2 left-2 bg-[#25D366] text-white px-2 py-1 rounded text-xs font-bold shadow-lg">
+              <div className="absolute bottom-1.5 left-1.5 bg-primary text-primary-foreground px-2 py-0.5 rounded text-xs font-bold shadow-lg">
                 {formatPrice(property.price)}
               </div>
             </div>
-            <div className="p-2.5 bg-white dark:bg-gray-800">
-              <h4 className="font-semibold text-sm line-clamp-1 text-gray-900 dark:text-white">{property.title}</h4>
-              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">{property.city || property.location}</p>
+            <div className="p-2 bg-background/80 backdrop-blur-sm">
+              <h4 className="font-bold text-xs line-clamp-1 text-foreground">{property.title}</h4>
+              <p className="text-[10px] text-muted-foreground line-clamp-1 flex items-center gap-1">
+                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {property.city || property.location}
+              </p>
             </div>
           </div>
 
           {/* Social Buttons - Compact Grid */}
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-1.5">
             {socialPlatforms.map((platform: any) => (
               <Button
                 key={platform.name}
                 variant="ghost"
-                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 active:scale-95 border-0`}
+                className="flex flex-col items-center gap-1 h-auto py-2.5 rounded-lg hover:bg-accent/50 transition-all duration-200 hover:scale-105 active:scale-95 border-0"
                 onClick={platform.action}
               >
-                <div className={`p-2 rounded-full ${platform.color}`}>
-                  <platform.icon className="h-4 w-4 text-white" />
+                <div className={`p-1.5 rounded-full ${platform.color}`}>
+                  <platform.icon className="h-3.5 w-3.5 text-white" />
                 </div>
-                <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300 line-clamp-1">{platform.name}</span>
+                <span className="text-[9px] font-medium text-foreground/80 line-clamp-1">{platform.name}</span>
               </Button>
             ))}
           </div>
@@ -193,11 +206,11 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
           {/* Native Share */}
           {navigator.share && window.parent === window && (
             <Button
-              variant="ghost"
-              className="w-full bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 py-2.5 text-sm"
+              variant="outline"
+              className="w-full border-2 hover:bg-accent py-2 text-xs"
               onClick={handleNativeShare}
             >
-              <Share2 className="h-4 w-4 mr-2" />
+              <Share2 className="h-3 w-3 mr-1.5" />
               More Options
             </Button>
           )}
