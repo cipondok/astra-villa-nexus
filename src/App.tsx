@@ -147,10 +147,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate initial app loading
+    // Single loading screen
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2500); // Show loading screen for 2.5 seconds
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -169,9 +169,7 @@ function App() {
                     <AuthProvider>
                       <NotificationProvider>
                         <PropertyComparisonProvider>
-                          <AppInitializer>
-                            <AppContent />
-                          </AppInitializer>
+                          <AppContent />
                           <Toaster />
                           <Sonner />
                           <CookieSystem />
