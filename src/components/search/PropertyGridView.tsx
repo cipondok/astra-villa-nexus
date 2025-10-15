@@ -75,41 +75,28 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="flex flex-wrap gap-2 justify-start">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group cursor-pointer h-[320px] flex flex-col min-w-[240px] max-w-[280px] flex-1 bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in hover-scale"
+          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-xl overflow-hidden border border-border/50"
           onClick={() => onPropertyClick(property)}
-          style={{ flexBasis: 'calc(25% - 0.5rem)' }}
         >
           {/* Image Section */}
-          <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0 rounded-lg">
+          <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0">
             <img
               src={getImageUrl(property)}
               alt={property.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             
-            {/* Top Left Badges */}
-            <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+            {/* Top Badge */}
+            <div className="absolute top-3 right-3 z-10">
               <Badge 
-                variant={property.listing_type === 'sale' ? 'default' : 'secondary'}
-                className="badge-primary text-xs"
+                className="bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm px-3 py-1"
               >
-                {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
+                {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
               </Badge>
-              {property.property_type && (
-                <Badge variant="outline" className="badge-secondary capitalize text-xs">
-                  {property.property_type}
-                </Badge>
-              )}
-              {(property.city || property.location) && (
-                <Badge variant="outline" className="glass-effect text-xs">
-                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
-                  {property.city || property.location.split(',')[0]}
-                </Badge>
-              )}
             </div>
 
             {/* Top Right Compare Icon */}
@@ -195,46 +182,81 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-2 space-y-1 flex-1 flex flex-col bg-transparent">
-            <div className="space-y-1.5">
-              {/* Title */}
-              <h3 className="font-semibold text-foreground line-clamp-2 text-sm leading-tight group-hover:text-primary transition-colors">
-                {property.title}
-              </h3>
-
-              {/* Location */}
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <MapPin className="h-3 w-3 flex-shrink-0" />
-                <span className="text-xs truncate">{property.location}</span>
+          <CardContent className="p-4 flex flex-col flex-1">
+            {/* Price */}
+            <div className="mb-2">
+              <div className="text-xl font-bold text-primary">
+                {formatPrice(property.price)}
               </div>
+              <div className="text-xs text-muted-foreground">
+                Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
+              </div>
+            </div>
+            
+            {/* Title */}
+            <h3 className="font-semibold text-foreground line-clamp-2 text-base mb-2 group-hover:text-primary transition-colors">
+              {property.title}
+            </h3>
 
-              {/* Property Details */}
-              {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-                  <div className="flex items-center gap-2">
-                    {property.bedrooms && (
-                      <div className="flex items-center gap-1">
-                        <Bed className="h-3 w-3" />
-                        <span>{property.bedrooms}</span>
-                      </div>
-                    )}
-                    {property.bathrooms && (
-                      <div className="flex items-center gap-1">
-                        <Bath className="h-3 w-3" />
-                        <span>{property.bathrooms}</span>
-                      </div>
-                    )}
-                  </div>
-                  {property.area_sqm && (
-                    <div className="flex items-center gap-1">
-                      <Square className="h-3 w-3" />
-                      <span>{property.area_sqm}m²</span>
-                    </div>
-                  )}
+            {/* Location */}
+            <div className="flex items-center gap-1 text-muted-foreground mb-3">
+              <MapPin className="h-4 w-4 flex-shrink-0" />
+              <span className="text-sm truncate">{property.city || property.location}</span>
+            </div>
+
+            {/* Property Details */}
+            <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
+              {property.bedrooms && (
+                <div className="flex items-center gap-1">
+                  <Bed className="h-4 w-4" />
+                  <span>{property.bedrooms}</span>
                 </div>
+              )}
+              {property.bathrooms && (
+                <div className="flex items-center gap-1">
+                  <Bath className="h-4 w-4" />
+                  <span>{property.bathrooms}</span>
+                </div>
+              )}
+              {property.area_sqm && (
+                <>
+                  <div className="flex items-center gap-1">
+                    <Scale className="h-4 w-4" />
+                    <span>LT: {property.area_sqm}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Square className="h-4 w-4" />
+                    <span>LB: {Math.round(property.area_sqm * 0.7)}</span>
+                  </div>
+                </>
               )}
             </div>
 
+            {/* Action Buttons */}
+            <div className="flex gap-2 mt-auto">
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-shrink-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onShare?.(property);
+                }}
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+              <Button
+                size="sm"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onContact?.(property);
+                }}
+              >
+                <Phone className="h-4 w-4 mr-1" />
+                WhatsApp
+              </Button>
+            </div>
           </CardContent>
         </Card>
       ))}

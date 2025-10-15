@@ -55,34 +55,25 @@ const PropertyListView = ({
   return (
     <div className="flex flex-col gap-6">
       {properties.map((property) => (
-        <Card key={property.id} className="overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 animate-fade-in hover-scale">
+        <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-background rounded-xl border border-border/50">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
               {/* Image Section */}
-              <div className="relative md:w-64 h-48 md:h-36 overflow-hidden">
+              <div className="relative md:w-80 h-56 md:h-full overflow-hidden">
                 <img
                   src={getImageUrl(property)}
                   alt={property.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 
                 {/* Property Type Badge */}
-                <div className="absolute top-2 left-2">
+                <div className="absolute top-4 right-4">
                   <Badge 
-                    className="bg-primary text-primary-foreground backdrop-blur-sm text-xs px-2 py-0.5"
+                    className="bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs font-semibold rounded-full px-3 py-1"
                   >
-                    {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
+                    {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
                   </Badge>
                 </div>
-
-                {/* 3D Badge */}
-                {(property.three_d_model_url || property.virtual_tour_url) && (
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-secondary text-secondary-foreground backdrop-blur-sm text-xs px-2 py-0.5">
-                      3D View
-                    </Badge>
-                  </div>
-                )}
 
                 {/* Quick Actions Overlay */}
                 <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 hover:opacity-100 transition-opacity">
@@ -112,87 +103,74 @@ const PropertyListView = ({
               </div>
 
               {/* Content Section */}
-              <div className="flex-1 p-4 flex flex-col justify-between">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="text-base font-semibold text-foreground mb-1 line-clamp-2">
-                      {property.title}
-                    </h3>
-                    <div className="flex items-center text-muted-foreground mb-2">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      <span className="text-sm">{property.location}</span>
-                    </div>
+              <div className="flex-1 p-6 flex flex-col justify-between">
+                {/* Price */}
+                <div className="mb-3">
+                  <div className="text-2xl font-bold text-primary">
+                    {formatPrice(property.price)}
                   </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                      {formatPrice(property.price)}
-                    </div>
-                    {property.listing_type === 'rent' && (
-                      <div className="text-xs text-muted-foreground">/month</div>
-                    )}
+                  <div className="text-sm text-muted-foreground">
+                    Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
                   </div>
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
+                  {property.title}
+                </h3>
+                
+                {/* Location */}
+                <div className="flex items-center text-muted-foreground mb-4">
+                  <MapPin className="h-4 w-4 mr-1" />
+                  <span className="text-sm">{property.location}</span>
                 </div>
 
                 {/* Property Details */}
-                <div className="flex items-center gap-4 mb-3 text-xs text-muted-foreground">
+                <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
                   {property.bedrooms && (
                     <div className="flex items-center gap-1">
-                      <Bed className="h-3 w-3" />
-                      <span>{property.bedrooms} bed</span>
+                      <Bed className="h-4 w-4" />
+                      <span>{property.bedrooms}</span>
                     </div>
                   )}
                   {property.bathrooms && (
                     <div className="flex items-center gap-1">
-                      <Bath className="h-3 w-3" />
-                      <span>{property.bathrooms} bath</span>
+                      <Bath className="h-4 w-4" />
+                      <span>{property.bathrooms}</span>
                     </div>
                   )}
                   {property.area_sqm && (
                     <div className="flex items-center gap-1">
-                      <Square className="h-3 w-3" />
-                      <span>{property.area_sqm} sqm</span>
+                      <Square className="h-4 w-4" />
+                      <span>LT: {property.area_sqm}</span>
                     </div>
                   )}
-                  {property.property_type && (
-                    <Badge variant="outline" className="capitalize text-xs px-2 py-0.5">
-                      {property.property_type}
-                    </Badge>
+                  {property.area_sqm && (
+                    <div className="flex items-center gap-1">
+                      <Square className="h-4 w-4" />
+                      <span>LB: {Math.round(property.area_sqm * 0.7)}</span>
+                    </div>
                   )}
                 </div>
 
-                {/* Description */}
-                {property.description && (
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                    {property.description}
-                  </p>
-                )}
-
                 {/* Action Buttons */}
-                <div className="flex flex-wrap gap-2 mt-auto">
+                <div className="flex gap-2 mt-auto">
                   <Button 
-                    variant="default"
-                    onClick={() => onPropertyClick(property)}
-                    className="flex-1 min-w-[80px] h-8 text-xs inline-flex items-center justify-center"
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onShare?.(property);
+                    }}
+                    className="flex-shrink-0"
                   >
-                    <Eye className="h-3 w-3 mr-1" />
-                    View Details
+                    <Share2 className="h-4 w-4" />
                   </Button>
-                  {(property.three_d_model_url || property.virtual_tour_url) && (
-                    <Button 
-                      variant="outline"
-                      onClick={() => onView3D?.(property)}
-                      className="flex-1 min-w-[70px] h-8 text-xs inline-flex items-center justify-center"
-                    >
-                      3D View
-                    </Button>
-                  )}
                   <Button 
-                    variant="secondary"
                     onClick={() => onContact?.(property)}
-                    className="flex-1 min-w-[70px] h-8 text-xs inline-flex items-center justify-center"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                   >
-                    <Phone className="h-3 w-3 mr-1" />
-                    Contact
+                    <Phone className="h-4 w-4 mr-2" />
+                    WhatsApp
                   </Button>
                 </div>
               </div>
