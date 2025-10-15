@@ -152,8 +152,8 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
         />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex items-center justify-center px-6">
+      {/* Content - Hidden temporarily */}
+      <div className="relative z-10 h-full flex items-center justify-center px-6 hidden">
         <article key={index} className="max-w-5xl mx-auto text-center animate-fade-in motion-reduce:animate-none">
           <h1
             className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight animate-fade-in motion-reduce:animate-none"
