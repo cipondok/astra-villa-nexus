@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/contexts/LanguageContext';
@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
+import { AnimatePresence } from 'framer-motion';
 
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
@@ -15,6 +16,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import AppInitializer from '@/components/AppInitializer';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
+import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
@@ -142,30 +144,47 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial app loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500); // Show loading screen for 2.5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ErrorBoundary>
-      <Router>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-            <LanguageProvider>
-              <AlertProvider>
-                <AuthProvider>
-                  <NotificationProvider>
-                    <PropertyComparisonProvider>
-                      <AppInitializer>
-                        <AppContent />
-                      </AppInitializer>
-                      <Toaster />
-                      <Sonner />
-                      <CookieSystem />
-                    </PropertyComparisonProvider>
-                  </NotificationProvider>
-                </AuthProvider>
-              </AlertProvider>
-            </LanguageProvider>
-          </ThemeProvider>
-        </QueryClientProvider>
-      </Router>
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <InitialLoadingScreen key="loading" />
+        ) : (
+          <Router key="app">
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+                <LanguageProvider>
+                  <AlertProvider>
+                    <AuthProvider>
+                      <NotificationProvider>
+                        <PropertyComparisonProvider>
+                          <AppInitializer>
+                            <AppContent />
+                          </AppInitializer>
+                          <Toaster />
+                          <Sonner />
+                          <CookieSystem />
+                        </PropertyComparisonProvider>
+                      </NotificationProvider>
+                    </AuthProvider>
+                  </AlertProvider>
+                </LanguageProvider>
+              </ThemeProvider>
+            </QueryClientProvider>
+          </Router>
+        )}
+      </AnimatePresence>
     </ErrorBoundary>
   );
 }
