@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale } from "lucide-react";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
+import SocialShareDialog from "@/components/property/SocialShareDialog";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
 
@@ -24,6 +25,8 @@ const PropertyGridView = ({
   onContact 
 }: PropertyGridViewProps) => {
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
@@ -62,6 +65,12 @@ const PropertyGridView = ({
     }
     setSavedProperties(newSaved);
     onSave?.(property);
+  };
+
+  const handleShare = (property: BaseProperty) => {
+    setSelectedProperty(property);
+    setShareDialogOpen(true);
+    onShare?.(property);
   };
 
 
@@ -173,7 +182,7 @@ const PropertyGridView = ({
                 className="h-7 w-7 p-0 glass-ios rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onShare?.(property);
+                  handleShare(property);
                 }}
               >
                 <Share2 className="h-3 w-3 text-muted-foreground" />
@@ -240,7 +249,7 @@ const PropertyGridView = ({
                 className="flex-shrink-0"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onShare?.(property);
+                  handleShare(property);
                 }}
               >
                 <Share2 className="h-4 w-4" />
@@ -260,6 +269,15 @@ const PropertyGridView = ({
           </CardContent>
         </Card>
       ))}
+      
+      {/* Social Share Dialog */}
+      {selectedProperty && (
+        <SocialShareDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          property={selectedProperty}
+        />
+      )}
     </div>
   );
 };
