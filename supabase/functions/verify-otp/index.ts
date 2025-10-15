@@ -1,15 +1,23 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface VerifyOTPRequest {
-  code: string;
-  purpose: 'mfa' | 'email_verification' | 'password_reset';
-}
+// Input validation schema
+const verifyOTPSchema = z.object({
+  code: z.string()
+    .length(6, { message: "OTP code must be exactly 6 characters" })
+    .regex(/^\d{6}$/, { message: "OTP code must contain only digits" }),
+  purpose: z.enum(['mfa', 'email_verification', 'password_reset'], {
+    errorMap: () => ({ message: "Invalid OTP purpose" })
+  }),
+});
+
+type VerifyOTPRequest = z.infer<typeof verifyOTPSchema>;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -40,14 +48,19 @@ serve(async (req) => {
       );
     }
 
-    const { code, purpose }: VerifyOTPRequest = await req.json();
-
-    if (!code || code.length !== 6) {
+    // Parse and validate request body
+    const requestBody = await req.json();
+    const validationResult = verifyOTPSchema.safeParse(requestBody);
+    
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
       return new Response(
-        JSON.stringify({ error: 'Invalid OTP code format' }),
+        JSON.stringify({ error: `Validation failed: ${errors}` }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    
+    const { code, purpose } = validationResult.data;
 
     // Find the OTP code
     const { data: otpData, error: otpError } = await supabase

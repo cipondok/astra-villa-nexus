@@ -1,20 +1,27 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface PaymentRequest {
-  bookingId: string;
-  amount: number;
-  currency?: string;
-  bookingType: 'rental' | 'service';
-  successUrl?: string;
-  cancelUrl?: string;
-}
+// Input validation schema
+const paymentRequestSchema = z.object({
+  bookingId: z.string().uuid({ message: "Invalid booking ID format" }),
+  amount: z.number()
+    .positive({ message: "Amount must be positive" })
+    .max(100000000, { message: "Amount exceeds maximum allowed" })
+    .finite({ message: "Amount must be a valid number" }),
+  currency: z.enum(['idr', 'usd', 'eur', 'IDR', 'USD', 'EUR']).optional().default('idr'),
+  bookingType: z.enum(['rental', 'service'], { errorMap: () => ({ message: "Invalid booking type" }) }),
+  successUrl: z.string().url().optional().or(z.literal('')).optional(),
+  cancelUrl: z.string().url().optional().or(z.literal('')).optional(),
+});
+
+type PaymentRequest = z.infer<typeof paymentRequestSchema>;
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -48,14 +55,18 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Parse request body
-    const { bookingId, amount, currency = 'idr', bookingType, successUrl, cancelUrl }: PaymentRequest = await req.json();
+    // Parse and validate request body
+    const requestBody = await req.json();
+    const validationResult = paymentRequestSchema.safeParse(requestBody);
     
-    if (!bookingId || !amount || !bookingType) {
-      throw new Error("Missing required fields: bookingId, amount, bookingType");
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      throw new Error(`Validation failed: ${errors}`);
     }
+    
+    const { bookingId, amount, currency, bookingType, successUrl, cancelUrl } = validationResult.data;
 
-    logStep("Payment request details", { bookingId, amount, currency, bookingType });
+    logStep("Payment request validated", { bookingId, amount, currency, bookingType });
 
     // Verify booking exists and user has access
     const bookingTable = bookingType === 'rental' ? 'rental_bookings' : 'vendor_bookings';

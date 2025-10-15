@@ -1,18 +1,27 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface RefundRequest {
-  bookingId: string;
-  amount?: number; // Optional partial refund
-  reason?: string;
-  bookingType: 'rental' | 'service';
-}
+// Input validation schema
+const refundRequestSchema = z.object({
+  bookingId: z.string().uuid({ message: "Invalid booking ID format" }),
+  amount: z.number()
+    .positive({ message: "Refund amount must be positive" })
+    .max(100000000, { message: "Refund amount exceeds maximum" })
+    .optional(),
+  reason: z.string()
+    .max(500, { message: "Reason must be less than 500 characters" })
+    .optional(),
+  bookingType: z.enum(['rental', 'service'], { errorMap: () => ({ message: "Invalid booking type" }) }),
+});
+
+type RefundRequest = z.infer<typeof refundRequestSchema>;
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -58,13 +67,18 @@ serve(async (req) => {
 
     logStep("Admin user verified", { userId: user.id, role: profile.role });
 
-    const { bookingId, amount, reason = 'Requested by admin', bookingType }: RefundRequest = await req.json();
+    // Parse and validate request body
+    const requestBody = await req.json();
+    const validationResult = refundRequestSchema.safeParse(requestBody);
     
-    if (!bookingId || !bookingType) {
-      throw new Error("Missing required fields: bookingId, bookingType");
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      throw new Error(`Validation failed: ${errors}`);
     }
+    
+    const { bookingId, amount, reason = 'Requested by admin', bookingType } = validationResult.data;
 
-    logStep("Refund request details", { bookingId, amount, reason, bookingType });
+    logStep("Refund request validated", { bookingId, amount, reason, bookingType });
 
     // Get payment information
     const { data: payment, error: paymentError } = await supabaseClient
