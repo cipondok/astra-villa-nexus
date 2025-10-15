@@ -817,12 +817,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
+            <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700 relative">
+              {/* Sliding background indicator */}
+              <div 
+                className="absolute top-1 bottom-1 bg-white dark:bg-gray-700 rounded-lg shadow-sm transition-all duration-300 ease-out"
+                style={{
+                  width: 'calc(25% - 4px)',
+                  left: activeTab === 'all' ? '4px' : 
+                        activeTab === 'sale' ? 'calc(25% + 2px)' : 
+                        activeTab === 'rent' ? 'calc(50% + 0px)' : 
+                        'calc(75% - 2px)',
+                }}
+              />
+              
               <button
                 onClick={() => setActiveTab('all')}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                className={`relative z-10 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                   activeTab === 'all' 
-                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
@@ -830,9 +842,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                className={`relative z-10 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                   activeTab === 'sale' 
-                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
@@ -840,9 +852,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                className={`relative z-10 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                   activeTab === 'rent' 
-                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
@@ -850,9 +862,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('new_project')}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                className={`relative z-10 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                   activeTab === 'new_project' 
-                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
