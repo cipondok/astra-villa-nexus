@@ -996,20 +996,22 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             <div className="grid grid-cols-3 gap-2 mb-2">
               {/* State/Province Selection */}
               <Select value={filters.state || "all"} onValueChange={handleStateChange}>
-                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-blue-500" />
+                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3 w-3 text-blue-500" />
                     <SelectValue placeholder={currentText.selectProvince}>
-                      {filters.state && filters.state !== 'all' 
-                        ? provinces.find(p => p.code === filters.state)?.name 
-                        : currentText.any}
+                      <span className="truncate">
+                        {filters.state && filters.state !== 'all' 
+                          ? provinces.find(p => p.code === filters.state)?.name 
+                          : currentText.any}
+                      </span>
                     </SelectValue>
                   </div>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
-                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100] animate-in fade-in-80">
+                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                   {provinces.map((province) => (
-                    <SelectItem key={province.code} value={province.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
                       {province.name}
                     </SelectItem>
                   ))}
@@ -1022,20 +1024,22 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onValueChange={handleCityChange}
                 disabled={!filters.state || filters.state === 'all'}
               >
-                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                   <SelectValue placeholder={currentText.selectCity}>
-                    {filters.city && filters.city !== 'all' 
-                      ? (() => {
-                          const city = cities.find(c => c.code === filters.city);
-                          return city ? `${city.type} ${city.name}` : currentText.any;
-                        })()
-                      : currentText.any}
+                    <span className="truncate">
+                      {filters.city && filters.city !== 'all' 
+                        ? (() => {
+                            const city = cities.find(c => c.code === filters.city);
+                            return city ? `${city.type} ${city.name}` : currentText.any;
+                          })()
+                        : currentText.any}
+                    </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
-                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100] animate-in fade-in-80">
+                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                   {cities.map((city) => (
-                    <SelectItem key={city.code} value={city.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
                       {city.type} {city.name}
                     </SelectItem>
                   ))}
@@ -1048,17 +1052,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onValueChange={handleAreaChange}
                 disabled={!filters.city || filters.city === 'all'}
               >
-                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                   <SelectValue placeholder={currentText.selectArea}>
-                    {filters.area && filters.area !== 'all' 
-                      ? areas.find(a => a.code === filters.area)?.name 
-                      : currentText.any}
+                    <span className="truncate">
+                      {filters.area && filters.area !== 'all' 
+                        ? areas.find(a => a.code === filters.area)?.name 
+                        : currentText.any}
+                    </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50">
-                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100] animate-in fade-in-80">
+                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                   {areas.map((area) => (
-                    <SelectItem key={area.code} value={area.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
                       {area.name}
                     </SelectItem>
                   ))}
@@ -1071,16 +1077,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
             {/* Property Type Selection */}
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-blue-500" />
+              <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
+                <div className="flex items-center gap-1.5">
+                  <Home className="h-3 w-3 text-blue-500" />
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
-                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[100] animate-in fade-in-80">
+                <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                 {currentFilters.propertyTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                  <SelectItem key={type.value} value={type.value} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
                     {type.label}
                   </SelectItem>
                 ))}
@@ -1090,16 +1096,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Bedrooms Filter - Only show on larger screens */}
             <div className="hidden lg:block">
               <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Bed className="h-4 w-4 text-blue-500" />
+                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
+                  <div className="flex items-center gap-1.5">
+                    <Bed className="h-3 w-3 text-blue-500" />
                     <SelectValue placeholder={currentText.bedrooms} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
-                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[100] animate-in fade-in-80">
+                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                   {bedroomOptions.map((option) => (
-                    <SelectItem key={option} value={option} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    <SelectItem key={option} value={option} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
                       {option}
                     </SelectItem>
                   ))}
@@ -1110,16 +1116,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Bathrooms Filter - Only show on larger screens */}
             <div className="hidden lg:block">
               <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Bath className="h-4 w-4 text-blue-500" />
+                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
+                  <div className="flex items-center gap-1.5">
+                    <Bath className="h-3 w-3 text-blue-500" />
                     <SelectValue placeholder={currentText.bathrooms} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
-                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[100] animate-in fade-in-80">
+                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                   {bathroomOptions.map((option) => (
-                    <SelectItem key={option} value={option} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    <SelectItem key={option} value={option} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
                       {option}
                     </SelectItem>
                   ))}
