@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, MessageCircle, Send, Link, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BaseProperty } from "@/types/property";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SocialShareDialogProps {
   open: boolean;
@@ -10,7 +12,28 @@ interface SocialShareDialogProps {
   property: BaseProperty;
 }
 
+interface SocialMediaSetting {
+  id: string;
+  platform: string;
+  account_name: string | null;
+  profile_url: string | null;
+  is_active: boolean;
+}
+
 const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogProps) => {
+  const { data: socialSettings } = useQuery({
+    queryKey: ['social-media-settings-public'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('social_media_settings')
+        .select('id, platform, account_name, profile_url, is_active')
+        .eq('is_active', true);
+      
+      if (error) throw error;
+      return data as SocialMediaSetting[];
+    },
+  });
+
   const shareUrl = `${window.location.origin}/properties/${property.id}`;
   const shareTitle = property.title;
   const shareDescription = `Check out this property: ${property.title} in ${property.city || property.location}`;
@@ -23,69 +46,77 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
 
   const shareMessage = `${shareTitle}\n${formatPrice(property.price)}\n${property.bedrooms}BR | ${property.bathrooms}BA | ${property.area_sqm}m²\n${shareUrl}`;
 
-  const socialPlatforms = [
-    {
-      name: "WhatsApp",
-      icon: MessageCircle,
-      color: "bg-[#25D366] hover:bg-[#20BD5A]",
-      action: () => {
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, '_blank');
-      }
+  // Build social platforms from database settings
+  const activePlatforms = socialSettings?.filter(s => s.is_active) || [];
+  
+  const getPlatformConfig = (platform: string) => {
+    const configs = {
+      facebook: {
+        name: "Facebook",
+        icon: Facebook,
+        color: "bg-[#1877F2] hover:bg-[#0C63D4]",
+        action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank')
+      },
+      twitter: {
+        name: "Twitter",
+        icon: Twitter,
+        color: "bg-[#1DA1F2] hover:bg-[#0C8BD9]",
+        action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareDescription)}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+      },
+      linkedin: {
+        name: "LinkedIn",
+        icon: Linkedin,
+        color: "bg-[#0A66C2] hover:bg-[#084F94]",
+        action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')
+      },
+      whatsapp: {
+        name: "WhatsApp",
+        icon: MessageCircle,
+        color: "bg-[#25D366] hover:bg-[#20BD5A]",
+        action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, '_blank')
+      },
+      telegram: {
+        name: "Telegram",
+        icon: Send,
+        color: "bg-[#0088cc] hover:bg-[#006DA8]",
+        action: () => window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareDescription)}`, '_blank')
+      },
+    };
+    
+    return configs[platform as keyof typeof configs];
+  };
+
+  const socialPlatforms = activePlatforms
+    .map(setting => {
+      const config = getPlatformConfig(setting.platform);
+      return config ? { ...config, accountName: setting.account_name } : null;
+    })
+    .filter(Boolean);
+
+  // Always include Copy Link
+  const copyLinkAction = {
+    name: "Copy Link",
+    icon: Link,
+    color: "bg-primary hover:bg-primary/90",
+    action: () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        toast({
+          title: "Link Copied!",
+          description: "Property link has been copied to clipboard",
+        });
+        onOpenChange(false);
+      }).catch(() => {
+        toast({
+          title: "Failed",
+          description: "Could not copy link",
+          variant: "destructive",
+        });
+      });
     },
-    {
-      name: "Facebook",
-      icon: Facebook,
-      color: "bg-[#1877F2] hover:bg-[#0C63D4]",
-      action: () => {
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-      }
-    },
-    {
-      name: "Twitter",
-      icon: Twitter,
-      color: "bg-[#1DA1F2] hover:bg-[#0C8BD9]",
-      action: () => {
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareDescription)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
-      }
-    },
-    {
-      name: "LinkedIn",
-      icon: Linkedin,
-      color: "bg-[#0A66C2] hover:bg-[#084F94]",
-      action: () => {
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
-      }
-    },
-    {
-      name: "Telegram",
-      icon: Send,
-      color: "bg-[#0088cc] hover:bg-[#006DA8]",
-      action: () => {
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareDescription)}`, '_blank');
-      }
-    },
-    {
-      name: "Copy Link",
-      icon: Link,
-      color: "bg-primary hover:bg-primary/90",
-      action: async () => {
-        try {
-          await navigator.clipboard.writeText(shareUrl);
-          toast({
-            title: "Link Copied!",
-            description: "Property link has been copied to clipboard",
-          });
-          onOpenChange(false);
-        } catch (error) {
-          toast({
-            title: "Failed",
-            description: "Could not copy link",
-            variant: "destructive",
-          });
-        }
-      }
-    }
-  ];
+    accountName: null,
+  };
+  
+  socialPlatforms.push(copyLinkAction as any);
 
   const handleNativeShare = async () => {
     if (navigator.share && window.parent === window) {
@@ -140,7 +171,7 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
 
         {/* Social Media Grid */}
         <div className="grid grid-cols-3 gap-3 mt-2">
-          {socialPlatforms.map((platform) => (
+          {socialPlatforms.map((platform: any) => (
             <Button
               key={platform.name}
               variant="outline"
@@ -149,6 +180,9 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
             >
               <platform.icon className="h-6 w-6" />
               <span className="text-xs font-medium">{platform.name}</span>
+              {platform.accountName && (
+                <span className="text-[10px] opacity-80">{platform.accountName}</span>
+              )}
             </Button>
           ))}
         </div>

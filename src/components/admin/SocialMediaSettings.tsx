@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Music, Loader2, Save } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Youtube, MessageCircle, Send, Music, Loader2, Save, Plus, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const platformIcons = {
@@ -37,8 +38,17 @@ interface SocialMediaSetting {
   platform: string;
   account_name: string | null;
   profile_url: string | null;
-  api_credentials: any;
-  posting_settings: any;
+  api_credentials: {
+    api_key?: string;
+    api_secret?: string;
+    access_token?: string;
+  } | null;
+  posting_settings: {
+    auto_post: boolean;
+    post_template?: string;
+    post_frequency?: string;
+    hashtags?: string[];
+  } | null;
   is_active: boolean;
 }
 
@@ -46,6 +56,7 @@ const SocialMediaSettings = () => {
   const queryClient = useQueryClient();
   const [editingPlatform, setEditingPlatform] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<SocialMediaSetting>>({});
+  const [activeTab, setActiveTab] = useState("accounts");
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['social-media-settings'],
@@ -56,7 +67,11 @@ const SocialMediaSettings = () => {
         .order('platform');
       
       if (error) throw error;
-      return data as SocialMediaSetting[];
+      return (data || []).map(item => ({
+        ...item,
+        api_credentials: item.api_credentials as { api_key?: string; api_secret?: string; access_token?: string; } | null,
+        posting_settings: item.posting_settings as { auto_post: boolean; post_template?: string; post_frequency?: string; hashtags?: string[]; } | null,
+      })) as SocialMediaSetting[];
     },
   });
 
@@ -95,7 +110,11 @@ const SocialMediaSettings = () => {
 
   const handleEdit = (setting: SocialMediaSetting) => {
     setEditingPlatform(setting.platform);
-    setFormData(setting);
+    setFormData({
+      ...setting,
+      posting_settings: setting.posting_settings || { auto_post: false, hashtags: [] },
+      api_credentials: setting.api_credentials || {},
+    });
   };
 
   const handleSave = () => {
@@ -125,6 +144,44 @@ const SocialMediaSettings = () => {
     }
   };
 
+  const handleAddHashtag = () => {
+    const currentHashtags = formData.posting_settings?.hashtags || [];
+    setFormData({
+      ...formData,
+      posting_settings: {
+        ...formData.posting_settings,
+        auto_post: formData.posting_settings?.auto_post || false,
+        hashtags: [...currentHashtags, ''],
+      }
+    });
+  };
+
+  const handleHashtagChange = (index: number, value: string) => {
+    const hashtags = [...(formData.posting_settings?.hashtags || [])];
+    hashtags[index] = value;
+    setFormData({
+      ...formData,
+      posting_settings: {
+        ...formData.posting_settings,
+        auto_post: formData.posting_settings?.auto_post || false,
+        hashtags,
+      }
+    });
+  };
+
+  const handleRemoveHashtag = (index: number) => {
+    const hashtags = [...(formData.posting_settings?.hashtags || [])];
+    hashtags.splice(index, 1);
+    setFormData({
+      ...formData,
+      posting_settings: {
+        ...formData.posting_settings,
+        auto_post: formData.posting_settings?.auto_post || false,
+        hashtags,
+      }
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -139,14 +196,14 @@ const SocialMediaSettings = () => {
         <CardHeader>
           <CardTitle className="text-2xl">Social Media Configuration</CardTitle>
           <CardDescription>
-            Manage your social media accounts and sharing settings
+            Manage your social media accounts and automated posting settings
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="accounts" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="accounts">Account Settings</TabsTrigger>
-              <TabsTrigger value="posting">Posting Settings</TabsTrigger>
+              <TabsTrigger value="posting">Posting Configuration</TabsTrigger>
             </TabsList>
 
             <TabsContent value="accounts" className="space-y-4 mt-6">
@@ -256,31 +313,149 @@ const SocialMediaSettings = () => {
             </TabsContent>
 
             <TabsContent value="posting" className="space-y-4 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Auto-Posting Settings</CardTitle>
-                  <CardDescription>
-                    Configure automatic posting to social media platforms
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                      Auto-posting features can be configured here. Connect your API credentials
-                      to enable automatic property sharing to social media platforms.
-                    </p>
-                    <div className="p-4 bg-muted/50 rounded-lg border border-border/50">
-                      <p className="text-sm font-medium mb-2">Coming Soon:</p>
-                      <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                        <li>Automatic property listing posts</li>
-                        <li>Scheduled social media campaigns</li>
-                        <li>Custom post templates</li>
-                        <li>Analytics and engagement tracking</li>
-                      </ul>
+              {editingPlatform ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg capitalize">
+                      {editingPlatform} Posting Settings
+                    </CardTitle>
+                    <CardDescription>
+                      Configure automated posting for {editingPlatform}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Auto-Post New Properties</Label>
+                        <p className="text-sm text-muted-foreground">
+                          Automatically share new properties to {editingPlatform}
+                        </p>
+                      </div>
+                      <Switch
+                        checked={formData.posting_settings?.auto_post || false}
+                        onCheckedChange={(checked) => setFormData({
+                          ...formData,
+                          posting_settings: {
+                            ...formData.posting_settings,
+                            auto_post: checked,
+                            hashtags: formData.posting_settings?.hashtags || [],
+                          }
+                        })}
+                      />
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+
+                    <div className="space-y-2">
+                      <Label>Post Template</Label>
+                      <Textarea
+                        placeholder="New property available! {title} - {price} 🏠&#10;Location: {location}&#10;{bedrooms}BR | {bathrooms}BA"
+                        value={formData.posting_settings?.post_template || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          posting_settings: {
+                            ...formData.posting_settings,
+                            auto_post: formData.posting_settings?.auto_post || false,
+                            post_template: e.target.value,
+                          }
+                        })}
+                        rows={4}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Use variables: {'{'}title{'}'}, {'{'}price{'}'}, {'{'}location{'}'}, {'{'}bedrooms{'}'}, {'{'}bathrooms{'}'}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>Hashtags</Label>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleAddHashtag}
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Add
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        {formData.posting_settings?.hashtags?.map((tag, index) => (
+                          <div key={index} className="flex gap-2">
+                            <Input
+                              placeholder="#property"
+                              value={tag}
+                              onChange={(e) => handleHashtagChange(index, e.target.value)}
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRemoveHashtag(index)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSave}
+                        disabled={updateMutation.isPending}
+                        className="flex-1"
+                      >
+                        {updateMutation.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="h-4 w-4 mr-2" />
+                            Save Posting Settings
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setEditingPlatform(null)}
+                      >
+                        Back
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Select Platform to Configure</CardTitle>
+                    <CardDescription>
+                      Choose a social media platform to configure posting settings
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3 md:grid-cols-3">
+                      {settings?.filter(s => s.is_active).map((setting) => {
+                        const Icon = platformIcons[setting.platform as keyof typeof platformIcons] || MessageCircle;
+                        const color = platformColors[setting.platform as keyof typeof platformColors] || "#000000";
+                        
+                        return (
+                          <Button
+                            key={setting.id}
+                            variant="outline"
+                            className="h-auto py-4 flex flex-col gap-2"
+                            onClick={() => {
+                              handleEdit(setting);
+                              setActiveTab("posting");
+                            }}
+                          >
+                            <Icon className="h-6 w-6" style={{ color }} />
+                            <span className="capitalize text-sm font-medium">{setting.platform}</span>
+                            {setting.posting_settings?.auto_post && (
+                              <span className="text-xs text-green-600">Auto-post enabled</span>
+                            )}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>
