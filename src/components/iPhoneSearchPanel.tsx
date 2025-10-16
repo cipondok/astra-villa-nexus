@@ -1133,7 +1133,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </SelectValue>
                   </div>
                 </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[9999] backdrop-blur-sm">
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999] backdrop-blur-sm">
                   <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {provinces.map((province) => (
                     <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer">
@@ -1161,7 +1161,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[9999] backdrop-blur-sm">
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999] backdrop-blur-sm">
                   <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {cities.map((city) => (
                     <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer">
@@ -1186,7 +1186,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[9999] backdrop-blur-sm">
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999] backdrop-blur-sm">
                   <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {areas.map((area) => (
                     <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer">

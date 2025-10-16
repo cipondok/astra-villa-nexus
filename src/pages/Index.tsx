@@ -213,36 +213,39 @@ const Index = () => {
       }
 
       // Apply listing type filter
-      if (searchData?.listingType && searchData.listingType !== 'all') {
+      if (searchData?.listingType && searchData.listingType !== 'all' && searchData.listingType !== '') {
         console.log('Applying listing type filter:', searchData.listingType);
         query = query.eq('listing_type', searchData.listingType);
       }
 
       // Apply price range filter
       if (searchData?.priceRange && searchData.priceRange !== 'all') {
-        const [min, max] = searchData.priceRange.split('-');
-        if (searchData.priceRange.includes('+')) {
+        const priceRangeStr = searchData.priceRange.toString();
+        const [min, max] = priceRangeStr.split('-');
+        if (priceRangeStr.includes('+')) {
           query = query.gte('price', parseInt(min));
-        } else {
+        } else if (min && max) {
           query = query.gte('price', parseInt(min)).lte('price', parseInt(max));
         }
       }
 
       // Apply bedroom filter
-      if (searchData?.bedrooms && searchData.bedrooms !== 'all') {
-        if (searchData.bedrooms.includes('+')) {
-          query = query.gte('bedrooms', parseInt(searchData.bedrooms));
+      if (searchData?.bedrooms && searchData.bedrooms !== 'all' && searchData.bedrooms !== '') {
+        const bedroomsStr = searchData.bedrooms.toString();
+        if (bedroomsStr.includes('+')) {
+          query = query.gte('bedrooms', parseInt(bedroomsStr));
         } else {
-          query = query.eq('bedrooms', parseInt(searchData.bedrooms));
+          query = query.eq('bedrooms', parseInt(bedroomsStr));
         }
       }
 
       // Apply bathroom filter
-      if (searchData?.bathrooms && searchData.bathrooms !== 'all') {
-        if (searchData.bathrooms.includes('+')) {
-          query = query.gte('bathrooms', parseInt(searchData.bathrooms));
+      if (searchData?.bathrooms && searchData.bathrooms !== 'all' && searchData.bathrooms !== '') {
+        const bathroomsStr = searchData.bathrooms.toString();
+        if (bathroomsStr.includes('+')) {
+          query = query.gte('bathrooms', parseInt(bathroomsStr));
         } else {
-          query = query.eq('bathrooms', parseInt(searchData.bathrooms));
+          query = query.eq('bathrooms', parseInt(bathroomsStr));
         }
       }
 
@@ -259,11 +262,12 @@ const Index = () => {
         .limit(20);
 
       if (error) {
-        console.error('Search error:', error);
-        setSearchError('Search failed. Please try again.');
+        console.error('❌ Search error:', error);
+        toast.error('Search failed. Please try again.');
+        setSearchError(error.message || 'Search failed. Please try again.');
         setSearchResults([]);
       } else {
-        console.log('Search results:', data?.length || 0);
+        console.log('✅ Search results:', data?.length || 0);
         // Transform data to match BaseProperty interface
         const transformedResults = data?.map(property => ({
           ...property,
@@ -272,10 +276,18 @@ const Index = () => {
         })) || [];
         setSearchResults(transformedResults);
         setSearchError(null);
+        
+        if (transformedResults.length === 0) {
+          toast.info('No properties found matching your criteria');
+        } else {
+          toast.success(`Found ${transformedResults.length} properties`);
+        }
       }
     } catch (error) {
-      console.error('Search error:', error);
-      setSearchError('Search failed. Please check your connection and try again.');
+      console.error('❌ Search error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Search failed. Please check your connection and try again.';
+      toast.error(errorMessage);
+      setSearchError(errorMessage);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
