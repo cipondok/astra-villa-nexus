@@ -6,30 +6,31 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
-import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
-import PropertyListView from "@/components/search/PropertyListView";
-import PropertyMapView from "@/components/search/PropertyMapView";
-import PropertyGridView from "@/components/search/PropertyGridView";
-import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
-import PropertySlideSection from "@/components/property/PropertySlideSection";
-import PropertiesForSaleSection from "@/components/property/PropertiesForSaleSection";
-import PropertiesForRentSection from "@/components/property/PropertiesForRentSection";
-import IPhoneSearchPanel from "@/components/iPhoneSearchPanel";
-import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
-import WhatsAppInquiryDialog from "@/components/property/WhatsAppInquiryDialog";
+import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
-import AstraVillaFeatures from "@/components/home/AstraVillaFeatures";
 import { shareProperty } from "@/utils/shareUtils";
 
-// Lazy load AI Recommendations for better performance
+// Lazy load heavy components for better performance
+const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
+const PropertyViewModeToggle = lazy(() => import("@/components/search/PropertyViewModeToggle"));
+const PropertyListView = lazy(() => import("@/components/search/PropertyListView"));
+const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
+const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
+const AdvancedPropertyFilters = lazy(() => import("@/components/search/AdvancedPropertyFilters"));
+const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
+const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
+const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
+const IPhoneSearchPanel = lazy(() => import("@/components/iPhoneSearchPanel"));
+const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
+const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
+const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 
 type ViewMode = 'list' | 'grid' | 'map';
