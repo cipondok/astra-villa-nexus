@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BaseProperty } from "@/types/property";
 import { shareProperty } from "@/utils/shareUtils";
 import { toast } from "sonner";
+import { logSearchError } from "@/utils/errorLogger";
 
 import PropertyViewModeToggle from "./PropertyViewModeToggle";
 import AdvancedPropertyFilters, { PropertyFilters } from "./AdvancedPropertyFilters";
@@ -108,6 +109,7 @@ const EnhancedPropertySearch = ({
 
       if (error) {
         console.error('Error fetching properties:', error);
+        await logSearchError(error, { filters, page, pageSize });
         throw error;
       }
 

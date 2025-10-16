@@ -3,6 +3,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { BaseProperty } from '@/types/property';
+import { logSearchError } from '@/utils/errorLogger';
 
 interface SearchFilters {
   query?: string;
@@ -47,30 +48,30 @@ export const usePropertySearch = () => {
       const offset = (page - 1) * pageSize;
       
       const { data, error } = await supabase.rpc('search_properties_advanced', {
-        p_search_text: filters.query || null,
-        p_property_type: filters.propertyType !== 'all' ? filters.propertyType : null,
-        p_listing_type: filters.listingType !== 'all' ? filters.listingType : null,
-        p_development_status: filters.developmentStatus !== 'all' ? filters.developmentStatus : null,
-        p_state: filters.state || null,
-        p_city: filters.city || null,
-        p_location: filters.location || null,
+        p_search_text: (filters.query && filters.query.trim() !== '') ? filters.query : null,
+        p_property_type: (filters.propertyType && filters.propertyType !== 'all') ? filters.propertyType : null,
+        p_listing_type: (filters.listingType && filters.listingType !== 'all') ? filters.listingType : null,
+        p_development_status: (filters.developmentStatus && filters.developmentStatus !== 'all') ? filters.developmentStatus : null,
+        p_state: (filters.state && filters.state !== 'all') ? filters.state : null,
+        p_city: (filters.city && filters.city !== 'all') ? filters.city : null,
+        p_location: (filters.location && filters.location !== 'all') ? filters.location : null,
         p_min_price: filters.priceRange?.[0] && filters.priceRange[0] > 0 ? filters.priceRange[0] : null,
         p_max_price: filters.priceRange?.[1] && filters.priceRange[1] < 20000000000 ? filters.priceRange[1] : null,
-        p_min_bedrooms: filters.bedrooms && filters.bedrooms !== 'all' ? parseInt(filters.bedrooms) : null,
+        p_min_bedrooms: (filters.bedrooms && filters.bedrooms !== 'all' && filters.bedrooms !== '') ? parseInt(filters.bedrooms) : null,
         p_max_bedrooms: null,
-        p_min_bathrooms: filters.bathrooms && filters.bathrooms !== 'all' ? parseInt(filters.bathrooms) : null,
+        p_min_bathrooms: (filters.bathrooms && filters.bathrooms !== 'all' && filters.bathrooms !== '') ? parseInt(filters.bathrooms) : null,
         p_max_bathrooms: null,
         p_min_area: filters.areaRange?.[0] && filters.areaRange[0] > 0 ? filters.areaRange[0] : null,
         p_max_area: filters.areaRange?.[1] && filters.areaRange[1] < 2000 ? filters.areaRange[1] : null,
-        p_furnishing: filters.furnishing && filters.furnishing !== 'all' ? filters.furnishing : null,
-        p_parking: filters.parking && filters.parking !== 'all' ? filters.parking : null,
-        p_floor_level: filters.floorLevel && filters.floorLevel !== 'all' ? filters.floorLevel : null,
-        p_building_age: filters.buildingAge && filters.buildingAge !== 'all' ? filters.buildingAge : null,
-        p_amenities: filters.amenities && filters.amenities.length > 0 ? filters.amenities : null,
-        p_certifications: filters.certification && filters.certification.length > 0 ? filters.certification : null,
-        p_features: filters.features && filters.features.length > 0 ? filters.features : null,
-        p_has_3d: filters.has3D || null,
-        p_has_virtual_tour: filters.hasVirtualTour || null,
+        p_furnishing: (filters.furnishing && filters.furnishing !== 'all') ? filters.furnishing : null,
+        p_parking: (filters.parking && filters.parking !== 'all') ? filters.parking : null,
+        p_floor_level: (filters.floorLevel && filters.floorLevel !== 'all') ? filters.floorLevel : null,
+        p_building_age: (filters.buildingAge && filters.buildingAge !== 'all') ? filters.buildingAge : null,
+        p_amenities: (filters.amenities && filters.amenities.length > 0) ? filters.amenities : null,
+        p_certifications: (filters.certification && filters.certification.length > 0) ? filters.certification : null,
+        p_features: (filters.features && filters.features.length > 0) ? filters.features : null,
+        p_has_3d: typeof filters.has3D === 'boolean' ? filters.has3D : null,
+        p_has_virtual_tour: typeof filters.hasVirtualTour === 'boolean' ? filters.hasVirtualTour : null,
         p_sort_by: filters.sortBy || 'newest',
         p_limit: pageSize,
         p_offset: offset
@@ -90,7 +91,10 @@ export const usePropertySearch = () => {
         console.log(`Property search completed in ${duration.toFixed(0)}ms`);
       }
       
-      if (error) throw error;
+      if (error) {
+        await logSearchError(error, { filters, page, pageSize });
+        throw error;
+      }
       
       const results = data || [];
       const total = results.length > 0 ? Number(results[0].total_count) : 0;

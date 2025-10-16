@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@/hooks/useDebounce';
+import { logSearchError } from '@/utils/errorLogger';
 
 interface SearchFilters {
   searchText?: string;
@@ -172,9 +173,9 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
       const offset = (currentPage - 1) * pageSize;
       
       const { data, error: searchError } = await supabase.rpc('search_properties_advanced', {
-        p_search_text: debouncedSearchText || null,
+        p_search_text: debouncedSearchText && debouncedSearchText.trim() !== '' ? debouncedSearchText : null,
         p_property_type: currentFilters.propertyType || null,
-        p_listing_type: currentFilters.listingType || null,
+        p_listing_type: (currentFilters.listingType && currentFilters.listingType !== 'all') ? currentFilters.listingType : null,
         p_development_status: null,
         p_state: null,
         p_city: currentFilters.city || null,
@@ -247,6 +248,8 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
       setResponseTime(duration);
       
       console.error('Property search failed:', err);
+      // Log error to admin panel
+      await logSearchError(err, { filters: currentFilters, page: currentPage, pageSize });
       
       if (duration > 5000) {
         toast({
