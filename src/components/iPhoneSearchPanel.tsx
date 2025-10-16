@@ -23,7 +23,7 @@ interface IPhoneSearchPanelProps {
 
 const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: IPhoneSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project' | 'foreign_investor'>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
@@ -878,11 +878,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <div 
                 className="absolute inset-y-1 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-md shadow-md transition-all duration-300 ease-out"
                 style={{
-                  width: 'calc(25% - 4px)',
+                  width: 'calc(20% - 4px)',
                   left: activeTab === 'all' ? '4px' : 
-                        activeTab === 'sale' ? 'calc(25% + 0px)' : 
-                        activeTab === 'rent' ? 'calc(50% - 0px)' : 
-                        'calc(75% - 4px)',
+                        activeTab === 'sale' ? 'calc(20% + 0px)' : 
+                        activeTab === 'rent' ? 'calc(40% - 0px)' : 
+                        activeTab === 'new_project' ? 'calc(60% - 0px)' :
+                        'calc(80% - 4px)',
                 }}
               />
               
@@ -925,6 +926,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 }`}
               >
                 {currentText.newProject}
+              </button>
+              <button
+                onClick={() => setActiveTab('foreign_investor')}
+                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
+                  activeTab === 'foreign_investor' 
+                    ? 'text-white shadow-sm' 
+                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                {language === 'en' ? 'INVESTOR' : 'INVESTOR'}
               </button>
             </div>
           </div>
