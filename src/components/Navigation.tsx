@@ -175,7 +175,7 @@ const Navigation = () => {
             </div>
 
             {/* Enhanced Desktop Navigation - Main Menu */}
-            <div className="hidden xl:flex items-center gap-1 flex-1 justify-center max-w-5xl">
+            <div className={`hidden xl:flex items-center gap-1 flex-1 justify-center max-w-5xl ${isMenuOpen ? 'xl:hidden' : ''}`}>
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -296,7 +296,7 @@ const Navigation = () => {
             </div>
 
             {/* Enhanced Right Section - Compact Controls */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className={`flex items-center gap-2 flex-shrink-0 ${isMenuOpen ? 'hidden' : ''}`}>
               {/* Enhanced Dark Mode Toggle */}
               <Button
                 variant="ghost"
