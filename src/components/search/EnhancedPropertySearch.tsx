@@ -82,22 +82,30 @@ const EnhancedPropertySearch = ({
          return Number.isFinite(n) ? n : null;
        })();
        
-       const { data, error } = await supabase.rpc('search_properties_advanced', {
+       // Additional sanitization for price/area/location/property type
+       const safeMinPrice = (Array.isArray(filters.priceRange) && Number.isFinite(filters.priceRange[0]) && filters.priceRange[0] > 0) ? filters.priceRange[0] : null;
+       const safeMaxPrice = (Array.isArray(filters.priceRange) && Number.isFinite(filters.priceRange[1]) && filters.priceRange[1] < 50000000000) ? filters.priceRange[1] : null;
+       const safeMinArea = (typeof filters.minArea === 'number' && Number.isFinite(filters.minArea)) ? filters.minArea : null;
+       const safeMaxArea = (typeof filters.maxArea === 'number' && Number.isFinite(filters.maxArea)) ? filters.maxArea : null;
+       const safeLocation = (filters.location && filters.location.trim() !== '') ? filters.location.trim() : null;
+       const safePropertyType = (filters.propertyTypes.length > 0 && filters.propertyTypes[0] && filters.propertyTypes[0] !== 'all') ? filters.propertyTypes[0] : null;
+
+       const payload = {
         p_search_text: (filters.searchQuery && filters.searchQuery.trim() !== '') ? filters.searchQuery.trim() : null,
-        p_property_type: filters.propertyTypes.length > 0 ? filters.propertyTypes[0] : null,
+        p_property_type: safePropertyType,
         p_listing_type: filters.listingType !== 'all' ? filters.listingType : null,
         p_development_status: null,
         p_state: null,
         p_city: null,
-        p_location: filters.location || null,
-        p_min_price: filters.priceRange[0] > 0 ? filters.priceRange[0] : null,
-        p_max_price: filters.priceRange[1] < 50000000000 ? filters.priceRange[1] : null,
+        p_location: safeLocation,
+        p_min_price: safeMinPrice,
+        p_max_price: safeMaxPrice,
         p_min_bedrooms: minBedrooms,
         p_max_bedrooms: null,
         p_min_bathrooms: minBathrooms,
         p_max_bathrooms: null,
-        p_min_area: filters.minArea || null,
-        p_max_area: filters.maxArea || null,
+        p_min_area: safeMinArea,
+        p_max_area: safeMaxArea,
         p_furnishing: null,
         p_parking: null,
         p_floor_level: null,
@@ -110,7 +118,11 @@ const EnhancedPropertySearch = ({
         p_sort_by: filters.sortBy || 'newest',
         p_limit: pageSize,
         p_offset: offset
-      });
+      };
+
+      console.log('search_properties_advanced payload', payload);
+
+      const { data, error } = await supabase.rpc('search_properties_advanced', payload);
 
       const endTime = performance.now();
       const duration = endTime - startTime;

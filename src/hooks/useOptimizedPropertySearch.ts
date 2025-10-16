@@ -171,23 +171,39 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
     
     try {
       const offset = (currentPage - 1) * pageSize;
-      
-      const { data, error: searchError } = await supabase.rpc('search_properties_advanced', {
-        p_search_text: debouncedSearchText && debouncedSearchText.trim() !== '' ? debouncedSearchText : null,
-        p_property_type: currentFilters.propertyType || null,
-        p_listing_type: (currentFilters.listingType && currentFilters.listingType !== 'all') ? currentFilters.listingType : null,
+
+      // Sanitize all inputs to prevent RPC 500s from invalid types/NaN
+      const safe = {
+        searchText: debouncedSearchText && debouncedSearchText.trim() !== '' ? debouncedSearchText.trim() : null,
+        propertyType: currentFilters.propertyType && currentFilters.propertyType !== 'all' ? currentFilters.propertyType : null,
+        listingType: currentFilters.listingType && currentFilters.listingType !== 'all' ? currentFilters.listingType : null,
+        city: currentFilters.city && currentFilters.city.trim() !== '' ? currentFilters.city.trim() : null,
+        minPrice: (typeof currentFilters.minPrice === 'number' && Number.isFinite(currentFilters.minPrice) && currentFilters.minPrice > 0) ? currentFilters.minPrice : null,
+        maxPrice: (typeof currentFilters.maxPrice === 'number' && Number.isFinite(currentFilters.maxPrice) && currentFilters.maxPrice > 0) ? currentFilters.maxPrice : null,
+        minBedrooms: (typeof currentFilters.minBedrooms === 'number' && Number.isFinite(currentFilters.minBedrooms)) ? currentFilters.minBedrooms : null,
+        maxBedrooms: (typeof currentFilters.maxBedrooms === 'number' && Number.isFinite(currentFilters.maxBedrooms)) ? currentFilters.maxBedrooms : null,
+        minBathrooms: (typeof currentFilters.minBathrooms === 'number' && Number.isFinite(currentFilters.minBathrooms)) ? currentFilters.minBathrooms : null,
+        maxBathrooms: (typeof currentFilters.maxBathrooms === 'number' && Number.isFinite(currentFilters.maxBathrooms)) ? currentFilters.maxBathrooms : null,
+        minArea: (typeof currentFilters.minArea === 'number' && Number.isFinite(currentFilters.minArea)) ? currentFilters.minArea : null,
+        maxArea: (typeof currentFilters.maxArea === 'number' && Number.isFinite(currentFilters.maxArea)) ? currentFilters.maxArea : null,
+      };
+
+      const payload = {
+        p_search_text: safe.searchText,
+        p_property_type: safe.propertyType,
+        p_listing_type: safe.listingType,
         p_development_status: null,
         p_state: null,
-        p_city: currentFilters.city || null,
+        p_city: safe.city,
         p_location: null,
-        p_min_price: currentFilters.minPrice || null,
-        p_max_price: currentFilters.maxPrice || null,
-        p_min_bedrooms: currentFilters.minBedrooms || null,
-        p_max_bedrooms: currentFilters.maxBedrooms || null,
-        p_min_bathrooms: currentFilters.minBathrooms || null,
-        p_max_bathrooms: currentFilters.maxBathrooms || null,
-        p_min_area: currentFilters.minArea || null,
-        p_max_area: currentFilters.maxArea || null,
+        p_min_price: safe.minPrice,
+        p_max_price: safe.maxPrice,
+        p_min_bedrooms: safe.minBedrooms,
+        p_max_bedrooms: safe.maxBedrooms,
+        p_min_bathrooms: safe.minBathrooms,
+        p_max_bathrooms: safe.maxBathrooms,
+        p_min_area: safe.minArea,
+        p_max_area: safe.maxArea,
         p_furnishing: null,
         p_parking: null,
         p_floor_level: null,
@@ -200,7 +216,12 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
         p_sort_by: 'newest',
         p_limit: pageSize,
         p_offset: offset
-      });
+      };
+
+      // Helpful when debugging
+      console.log('search_properties_advanced payload', payload);
+      
+      const { data, error: searchError } = await supabase.rpc('search_properties_advanced', payload);
 
       const endTime = Date.now();
       const duration = endTime - startTime;
