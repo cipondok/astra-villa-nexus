@@ -58,12 +58,14 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         .limit(50);
 
       // Use AI to analyze and recommend
+      const body: any = {
+        message: `Based on ${userPreferences ? 'user preferences and browsing history' : 'popular trends'}, recommend 8 properties that would be most suitable. Consider location, price range, property type, and amenities. Return property IDs only in format: "propertyId1,propertyId2,..."`,
+        conversationId: 'recommendations_' + Date.now(),
+      };
+      if (user?.id) body.userId = user.id;
+
       const { data: aiResponse, error } = await supabase.functions.invoke('ai-assistant', {
-        body: {
-          message: `Based on ${userPreferences ? 'user preferences and browsing history' : 'popular trends'}, recommend 8 properties that would be most suitable. Consider location, price range, property type, and amenities. Return property IDs only in format: "propertyId1,propertyId2,..."`,
-          userId: user?.id,
-          conversationId: 'recommendations_' + Date.now(),
-        }
+        body
       });
 
       if (error) throw error;

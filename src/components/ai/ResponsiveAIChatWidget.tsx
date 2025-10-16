@@ -86,12 +86,13 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       const isNegotiationQuery = /negotiate|lower the price|deposit|rent|deal|offer|lease/i.test(currentMessage);
       
       let functionName: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const body: { [key: string]: any } = {
         message: currentMessage,
-        userId: user?.id,
-        propertyId,
         conversationId
       };
+      if (user?.id) body.userId = user.id;
+      if (propertyId) body.propertyId = propertyId;
 
       if (isNegotiationQuery && propertyId) {
         functionName = 'rental-negotiator';

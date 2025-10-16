@@ -26,12 +26,14 @@ const AIFooterBot = () => {
   const aiChatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
       // Use the new AI assistant function
+      const body: any = {
+        message: userMessage,
+        conversationId: sessionId
+      };
+      if (user?.id) body.userId = user.id;
+
       const { data, error } = await supabase.functions.invoke('ai-assistant', {
-        body: {
-          message: userMessage,
-          userId: user?.id,
-          conversationId: sessionId
-        }
+        body
       });
 
       if (error) throw error;
