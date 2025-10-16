@@ -88,7 +88,7 @@ const PropertyGridView = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-xl overflow-hidden border border-border/50"
+          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-lg md:rounded-xl overflow-hidden border border-border/50"
           onClick={() => onPropertyClick(property)}
         >
           {/* Image Section */}
@@ -102,9 +102,9 @@ const PropertyGridView = ({
             />
             
             {/* Top Badge */}
-            <div className="absolute top-3 right-3 z-10">
+            <div className="absolute top-1 right-1 md:top-3 md:right-3 z-10">
               <Badge 
-                className="bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm px-3 py-1"
+                className="bg-primary/90 text-primary-foreground text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-2 py-0.5 md:px-3 md:py-1"
               >
                 {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
               </Badge>
@@ -148,23 +148,23 @@ const PropertyGridView = ({
             </div>
 
             {/* Bottom Left Price Overlay */}
-            <div className="absolute bottom-2 left-2 z-10">
-              <div className="glass-effect rounded-md px-2 py-1">
-                <div className="font-bold text-sm gradient-text leading-tight">
+            <div className="absolute bottom-1 left-1 md:bottom-2 md:left-2 z-10">
+              <div className="glass-effect rounded-md px-1.5 py-0.5 md:px-2 md:py-1">
+                <div className="font-bold text-[10px] md:text-sm gradient-text leading-tight">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-xs text-muted-foreground leading-tight">/month</div>
+                  <div className="text-[8px] md:text-xs text-muted-foreground leading-tight">/month</div>
                 )}
               </div>
             </div>
 
             {/* Bottom Right Quick Actions - Only on Hover */}
-            <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 flex gap-0.5 md:gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
               <Button
                 size="sm"
                 variant="secondary"
-                className={`h-7 w-7 p-0 glass-ios rounded-full ${
+                className={`h-6 w-6 md:h-7 md:w-7 p-0 glass-ios rounded-full ${
                   savedProperties.has(property.id) ? "ring-1 ring-destructive" : ""
                 }`}
                 onClick={(e) => {
@@ -173,7 +173,7 @@ const PropertyGridView = ({
                 }}
               >
                 <Heart 
-                  className={`h-3 w-3 ${
+                  className={`h-2.5 w-2.5 md:h-3 md:w-3 ${
                     savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'
                   }`} 
                 />
@@ -181,13 +181,13 @@ const PropertyGridView = ({
               <Button
                 size="sm"
                 variant="secondary"
-                className="h-7 w-7 p-0 glass-ios rounded-full"
+                className="h-6 w-6 md:h-7 md:w-7 p-0 glass-ios rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleShare(property);
                 }}
               >
-                <Share2 className="h-3 w-3 text-muted-foreground" />
+                <Share2 className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground" />
               </Button>
             </div>
           </div>
