@@ -80,10 +80,10 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-ios">
-      <div className="max-w-screen-2xl mx-auto px-3 md:px-6 lg:px-12 xl:px-16">
-        <div className="flex justify-between items-center h-12 md:h-14">
+      <div className="max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-12 xl:px-16">
+        <div className="flex justify-between items-center h-14 md:h-16">
           {/* Animated Logo */}
-          <Link to="/" className="scale-75 md:scale-100 origin-left">
+          <Link to="/" className="scale-90 md:scale-100 origin-left">
             <AnimatedLogo />
           </Link>
 
@@ -102,9 +102,9 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-1 md:space-x-2">
+          <div className="flex items-center space-x-2">
             {/* Theme Toggle */}
-            <div className="scale-75 md:scale-100">
+            <div className="scale-90 md:scale-100">
               <ThemeToggleSwitch language={language} />
             </div>
 
@@ -113,23 +113,23 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
-              className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-7 px-2 text-[10px] md:h-9 md:px-3 md:text-sm"
+              className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 px-2.5 text-xs md:h-9 md:px-3 md:text-sm"
             >
               {currentText.language}
             </Button>
 
             {/* User Actions */}
             {user ? (
-              <div className="flex items-center space-x-1 md:space-x-3">
+              <div className="flex items-center space-x-2">
                 {adminData && (
                   <Button
                     onClick={handleAdminClick}
                     variant="ghost"
                     size="sm"
-                    className="bg-ios-red/10 hover:bg-ios-red/20 text-ios-red hover:text-ios-red border-ios-red/30 hover:border-ios-red/50 transition-all duration-300 h-7 px-2 md:h-9 md:px-3"
+                    className="bg-ios-red/10 hover:bg-ios-red/20 text-ios-red hover:text-ios-red border-ios-red/30 hover:border-ios-red/50 transition-all duration-300 h-8 px-2.5 md:h-9 md:px-3"
                   >
-                    <Shield className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
-                    <span className="hidden md:inline text-xs md:text-sm">{currentText.admin}</span>
+                    <Shield className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
+                    <span className="hidden sm:inline text-xs md:text-sm">{currentText.admin}</span>
                   </Button>
                 )}
                 
@@ -138,10 +138,11 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     onClick={() => navigate('/dashboard/customer-service')}
                     variant="default"
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm h-7 px-2 text-[10px] md:h-9 md:px-4 md:text-sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm h-8 px-2.5 text-xs md:h-9 md:px-4 md:text-sm"
                   >
-                    <Headphones className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
-                    <span className="hidden md:inline">CS Dashboard</span>
+                    <Headphones className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
+                    <span className="hidden sm:inline">CS</span>
+                    <span className="hidden md:inline ml-1">Dashboard</span>
                   </Button>
                 )}
                 
@@ -149,10 +150,10 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   onClick={handleSignOut}
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-7 px-2 md:h-9 md:px-3"
+                  className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 px-2.5 md:h-9 md:px-3"
                 >
-                  <LogOut className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
-                  <span className="hidden md:inline text-xs md:text-sm">{currentText.signOut}</span>
+                  <LogOut className="h-3.5 w-3.5 md:h-4 md:w-4 md:mr-2" />
+                  <span className="hidden sm:inline text-xs md:text-sm">{currentText.signOut}</span>
                 </Button>
               </div>
             ) : (
@@ -160,7 +161,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   <Button
                     onClick={onLoginClick}
                     size="sm"
-                    className="btn-primary-ios h-7 px-3 text-[10px] md:h-9 md:px-4 md:text-xs"
+                    className="btn-primary-ios h-8 px-3 text-xs md:h-9 md:px-4"
                   >
                     {currentText.signIn}
                   </Button>
@@ -173,9 +174,9 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 h-7 w-7 p-0 md:h-9 md:w-9"
+                className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 h-8 w-8 p-0 md:h-9 md:w-9"
               >
-                {isOpen ? <X className="h-4 w-4 md:h-5 md:w-5" /> : <Menu className="h-4 w-4 md:h-5 md:w-5" />}
+                {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </Button>
             </div>
           </div>
@@ -184,13 +185,13 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="lg:hidden dropdown-ios border-t border-border/30 mt-1 mx-2 mb-2">
-          <div className="p-3 space-y-2">
+        <div className="lg:hidden dropdown-ios border-t border-border/30 mt-2 mx-3 mb-3">
+          <div className="p-4 space-y-3">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-1"
+                className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
@@ -198,15 +199,15 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
             ))}
             
             {user ? (
-              <div className="space-y-2 pt-2 border-t border-border/30">
+              <div className="space-y-2 pt-3 border-t border-border/30">
                 {adminData && (
                   <Button
                     onClick={handleAdminClick}
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start bg-ios-red/10 hover:bg-ios-red/20 text-ios-red h-8 text-xs"
+                    className="w-full justify-start bg-ios-red/10 hover:bg-ios-red/20 text-ios-red h-9 text-sm"
                   >
-                    <Shield className="h-3 w-3 mr-2" />
+                    <Shield className="h-4 w-4 mr-2" />
                     {currentText.admin}
                   </Button>
                 )}
@@ -219,9 +220,9 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     }}
                     variant="default"
                     size="sm"
-                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white font-medium h-8 text-xs"
+                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white font-medium h-9 text-sm"
                   >
-                    <Headphones className="h-3 w-3 mr-2" />
+                    <Headphones className="h-4 w-4 mr-2" />
                     CS Dashboard
                   </Button>
                 )}
@@ -230,22 +231,22 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   onClick={handleSignOut}
                   variant="ghost"
                   size="sm"
-                  className="w-full justify-start text-muted-foreground hover:text-foreground h-8 text-xs"
+                  className="w-full justify-start text-muted-foreground hover:text-foreground h-9 text-sm"
                 >
-                  <LogOut className="h-3 w-3 mr-2" />
+                  <LogOut className="h-4 w-4 mr-2" />
                   {currentText.signOut}
                 </Button>
               </div>
             ) : (
               onLoginClick && (
-                <div className="pt-2 border-t border-border/30">
+                <div className="pt-3 border-t border-border/30">
                   <Button
                     onClick={() => {
                       onLoginClick();
                       setIsOpen(false);
                     }}
                     size="sm"
-                    className="w-full btn-primary-ios h-8 text-xs"
+                    className="w-full btn-primary-ios h-9 text-sm"
                   >
                     {currentText.signIn}
                   </Button>
