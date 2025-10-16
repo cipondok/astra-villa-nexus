@@ -66,10 +66,24 @@ const EnhancedPropertySearch = ({
     queryFn: async () => {
       const startTime = performance.now();
       console.log('Fetching properties with filters:', filters);
-      const offset = (page - 1) * pageSize;
-      
-      const { data, error } = await supabase.rpc('search_properties_advanced', {
-        p_search_text: filters.searchQuery || null,
+       const offset = (page - 1) * pageSize;
+       
+       // Sanitize numeric filters to avoid NaN going to RPC (prevents 500s)
+       const minBedrooms = (() => {
+         const v: any = (filters as any).bedrooms;
+         if (!v || v === 'all' || v === '') return null;
+         const n = typeof v === 'number' ? v : parseInt(String(v).replace(/[^0-9]/g, ''), 10);
+         return Number.isFinite(n) ? n : null;
+       })();
+       const minBathrooms = (() => {
+         const v: any = (filters as any).bathrooms;
+         if (!v || v === 'all' || v === '') return null;
+         const n = typeof v === 'number' ? v : parseInt(String(v).replace(/[^0-9]/g, ''), 10);
+         return Number.isFinite(n) ? n : null;
+       })();
+       
+       const { data, error } = await supabase.rpc('search_properties_advanced', {
+        p_search_text: (filters.searchQuery && filters.searchQuery.trim() !== '') ? filters.searchQuery.trim() : null,
         p_property_type: filters.propertyTypes.length > 0 ? filters.propertyTypes[0] : null,
         p_listing_type: filters.listingType !== 'all' ? filters.listingType : null,
         p_development_status: null,
@@ -78,9 +92,9 @@ const EnhancedPropertySearch = ({
         p_location: filters.location || null,
         p_min_price: filters.priceRange[0] > 0 ? filters.priceRange[0] : null,
         p_max_price: filters.priceRange[1] < 50000000000 ? filters.priceRange[1] : null,
-        p_min_bedrooms: filters.bedrooms ? parseInt(filters.bedrooms) : null,
+        p_min_bedrooms: minBedrooms,
         p_max_bedrooms: null,
-        p_min_bathrooms: filters.bathrooms ? parseInt(filters.bathrooms) : null,
+        p_min_bathrooms: minBathrooms,
         p_max_bathrooms: null,
         p_min_area: filters.minArea || null,
         p_max_area: filters.maxArea || null,
@@ -107,11 +121,12 @@ const EnhancedPropertySearch = ({
         console.log(`Search completed in ${duration.toFixed(0)}ms`);
       }
 
-      if (error) {
-        console.error('Error fetching properties:', error);
-        await logSearchError(error, { filters, page, pageSize });
-        throw error;
-      }
+       if (error) {
+         console.error('Error fetching properties:', error);
+         await logSearchError(error, { filters, page, pageSize });
+         toast.error(`Search failed: ${error.message || 'Unexpected error'}`);
+         throw error;
+       }
 
       const results = data || [];
       const total = results.length > 0 ? Number(results[0].total_count) : 0;

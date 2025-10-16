@@ -57,9 +57,19 @@ export const usePropertySearch = () => {
         p_location: (filters.location && filters.location !== 'all') ? filters.location : null,
         p_min_price: filters.priceRange?.[0] && filters.priceRange[0] > 0 ? filters.priceRange[0] : null,
         p_max_price: filters.priceRange?.[1] && filters.priceRange[1] < 20000000000 ? filters.priceRange[1] : null,
-        p_min_bedrooms: (filters.bedrooms && filters.bedrooms !== 'all' && filters.bedrooms !== '') ? parseInt(filters.bedrooms) : null,
+        p_min_bedrooms: (() => {
+          const v = filters.bedrooms;
+          if (!v || v === 'all' || v === '') return null;
+          const n = parseInt(String(v).replace(/[^0-9]/g, ''), 10);
+          return Number.isNaN(n) ? null : n;
+        })(),
         p_max_bedrooms: null,
-        p_min_bathrooms: (filters.bathrooms && filters.bathrooms !== 'all' && filters.bathrooms !== '') ? parseInt(filters.bathrooms) : null,
+        p_min_bathrooms: (() => {
+          const v = filters.bathrooms;
+          if (!v || v === 'all' || v === '') return null;
+          const n = parseInt(String(v).replace(/[^0-9]/g, ''), 10);
+          return Number.isNaN(n) ? null : n;
+        })(),
         p_max_bathrooms: null,
         p_min_area: filters.areaRange?.[0] && filters.areaRange[0] > 0 ? filters.areaRange[0] : null,
         p_max_area: filters.areaRange?.[1] && filters.areaRange[1] < 2000 ? filters.areaRange[1] : null,
