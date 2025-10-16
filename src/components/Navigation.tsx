@@ -293,18 +293,6 @@ const Navigation = () => {
                 </Button>
               )}
 
-              {/* Admin Panel - only show for admin users */}
-              {isAdmin && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-10 px-2.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
-                  onClick={() => navigate('/admin-dashboard')}
-                >
-                  <Crown className="h-4 w-4 xl:mr-1" />
-                  <span className="hidden xl:inline">Admin</span>
-                </Button>
-              )}
             </div>
 
             {/* Enhanced Right Section - Compact Controls */}
@@ -438,12 +426,6 @@ const Navigation = () => {
                   </Button>
                 )}
                 
-                {/* Admin Panel - only show for admin users */}
-                {isAdmin && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/admin-dashboard'); toggleMenu(); }}>
-                    {currentText.adminPanel}
-                  </Button>
-                )}
                 
                 <div className="flex items-center justify-between pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
                   <Button
