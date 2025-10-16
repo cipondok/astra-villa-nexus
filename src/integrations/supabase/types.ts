@@ -2024,35 +2024,62 @@ export type Database = {
       }
       error_logs: {
         Row: {
+          component_name: string | null
           created_at: string | null
+          error_message: string | null
           error_page: string
+          error_stack: string | null
           error_type: string
           id: string
           metadata: Json | null
+          page_url: string | null
           referrer_url: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string | null
+          status: string | null
           user_agent: string | null
+          user_email: string | null
           user_id: string | null
           user_ip: unknown | null
         }
         Insert: {
+          component_name?: string | null
           created_at?: string | null
+          error_message?: string | null
           error_page: string
+          error_stack?: string | null
           error_type?: string
           id?: string
           metadata?: Json | null
+          page_url?: string | null
           referrer_url?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          status?: string | null
           user_agent?: string | null
+          user_email?: string | null
           user_id?: string | null
           user_ip?: unknown | null
         }
         Update: {
+          component_name?: string | null
           created_at?: string | null
+          error_message?: string | null
           error_page?: string
+          error_stack?: string | null
           error_type?: string
           id?: string
           metadata?: Json | null
+          page_url?: string | null
           referrer_url?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          status?: string | null
           user_agent?: string | null
+          user_email?: string | null
           user_id?: string | null
           user_ip?: unknown | null
         }

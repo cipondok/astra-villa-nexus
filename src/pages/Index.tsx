@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { logSearchError } from "@/utils/errorLogger";
 
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -266,6 +267,9 @@ const Index = () => {
         toast.error('Search failed. Please try again.');
         setSearchError(error.message || 'Search failed. Please try again.');
         setSearchResults([]);
+        
+        // Log error to admin panel
+        await logSearchError(error, searchData);
       } else {
         console.log('✅ Search results:', data?.length || 0);
         // Transform data to match BaseProperty interface
@@ -289,6 +293,9 @@ const Index = () => {
       toast.error(errorMessage);
       setSearchError(errorMessage);
       setSearchResults([]);
+      
+      // Log error to admin panel
+      await logSearchError(error, searchData);
     } finally {
       setIsSearching(false);
     }

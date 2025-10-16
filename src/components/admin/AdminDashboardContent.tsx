@@ -45,6 +45,7 @@ import { KYCAnalyticsDashboard } from "./KYCAnalyticsDashboard";
 import { BulkKYCOperations } from "./BulkKYCOperations";
 import { DocumentOCR } from "./DocumentOCR";
 import ErrorLogsTable from "./ErrorLogsTable";
+import ErrorMonitoringDashboard from "./ErrorMonitoringDashboard";
 import UserExperienceTips from "./UserExperienceTips";
 import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
@@ -185,6 +186,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <PropertyFiltersManagement filterType="sale" title="Sale Property Filters" description="Manage filters for properties for sale" />;
       case "new-project-filters":
         return <PropertyFiltersManagement filterType="all" title="New Project Filters" description="Manage filters for new development projects" />;
+      case "error-monitoring":
+        return <ErrorMonitoringDashboard />;
       default:
         return <AdminOverview />;
     }
