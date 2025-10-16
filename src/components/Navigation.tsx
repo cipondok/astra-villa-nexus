@@ -253,18 +253,6 @@ const Navigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-               {/* ASTRA Tokens - show for authenticated users */}
-               {user && (
-                 <Button 
-                   variant="ghost" 
-                   size="sm"
-                   className="h-10 px-2.5 text-xs font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-all"
-                   onClick={() => navigate('/astra-tokens')}
-                 >
-                   <Coins className="h-4 w-4 xl:mr-1" />
-                   <span className="hidden xl:inline">Tokens</span>
-                 </Button>
-               )}
 
                {/* Dashboard link - show role-appropriate dashboard */}
                {user && !isAdmin && !isAgent && (
@@ -425,13 +413,6 @@ const Navigation = () => {
                   </Button>
                 </div>
 
-                {/* ASTRA Tokens - show for authenticated users */}
-                {user && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20" onClick={() => { navigate('/astra-tokens'); toggleMenu(); }}>
-                    <Coins className="h-4 w-4 mr-2" />
-                    ASTRA Tokens
-                  </Button>
-                )}
                 
                 {/* Dashboard link - show for authenticated users */}
                 {user && !isAdmin && !isAgent && (

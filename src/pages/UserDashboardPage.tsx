@@ -14,7 +14,8 @@ import {
   Activity,
   TrendingUp,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  Coins
 } from 'lucide-react';
 
 const UserDashboardPage = () => {
@@ -155,19 +156,19 @@ const UserDashboardPage = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2" onClick={() => navigate('/profile/edit')}>
                 <User className="h-5 w-5" />
                 <span className="text-sm">Edit Profile</span>
               </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-                <Bell className="h-5 w-5" />
-                <span className="text-sm">Notifications</span>
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800" onClick={() => navigate('/astra-tokens')}>
+                <Coins className="h-5 w-5" />
+                <span className="text-sm">ASTRA Tokens</span>
               </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2" onClick={() => navigate('/')}>
                 <Home className="h-5 w-5" />
                 <span className="text-sm">Browse Properties</span>
               </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2" onClick={() => navigate('/contact')}>
                 <MessageSquare className="h-5 w-5" />
                 <span className="text-sm">Contact Support</span>
               </Button>
