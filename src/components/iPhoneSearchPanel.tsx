@@ -1133,10 +1133,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </SelectValue>
                   </div>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100] animate-in fade-in-80">
-                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[9999] backdrop-blur-sm">
+                  <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {provinces.map((province) => (
-                    <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
+                    <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer">
                       {province.name}
                     </SelectItem>
                   ))}
@@ -1161,10 +1161,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100] animate-in fade-in-80">
-                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[9999] backdrop-blur-sm">
+                  <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {cities.map((city) => (
-                    <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
+                    <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer">
                       {city.type} {city.name}
                     </SelectItem>
                   ))}
@@ -1186,10 +1186,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100] animate-in fade-in-80">
-                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[9999] backdrop-blur-sm">
+                  <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {areas.map((area) => (
-                    <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
+                    <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer">
                       {area.name}
                     </SelectItem>
                   ))}
