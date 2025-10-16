@@ -144,28 +144,45 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Short loading screen for brand experience
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); // 1 second only
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ErrorBoundary>
-      <Router>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-            <LanguageProvider>
-              <AlertProvider>
-                <AuthProvider>
-                  <NotificationProvider>
-                    <PropertyComparisonProvider>
-                      <AppContent />
-                      <Toaster />
-                      <Sonner />
-                      <CookieSystem />
-                    </PropertyComparisonProvider>
-                  </NotificationProvider>
-                </AuthProvider>
-              </AlertProvider>
-            </LanguageProvider>
-          </ThemeProvider>
-        </QueryClientProvider>
-      </Router>
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <InitialLoadingScreen key="loading" />
+        ) : (
+          <Router key="app">
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+                <LanguageProvider>
+                  <AlertProvider>
+                    <AuthProvider>
+                      <NotificationProvider>
+                        <PropertyComparisonProvider>
+                          <AppContent />
+                          <Toaster />
+                          <Sonner />
+                          <CookieSystem />
+                        </PropertyComparisonProvider>
+                      </NotificationProvider>
+                    </AuthProvider>
+                  </AlertProvider>
+                </LanguageProvider>
+              </ThemeProvider>
+            </QueryClientProvider>
+          </Router>
+        )}
+      </AnimatePresence>
     </ErrorBoundary>
   );
 }
