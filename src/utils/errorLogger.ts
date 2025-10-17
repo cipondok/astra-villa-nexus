@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { safeUUID } from '@/utils/uuid-validation';
 
 export interface ErrorLogData {
   error_type: string;
@@ -22,11 +23,11 @@ export async function logError(errorData: ErrorLogData) {
     
     const logEntry = {
       ...errorData,
-      user_id: errorData.user_id || user?.id,
-      user_email: errorData.user_email || user?.email,
-      page_url: errorData.page_url || window.location.href,
-      error_page: errorData.page_url || window.location.href, // Map to existing column
-      user_agent: errorData.user_agent || navigator.userAgent,
+      user_id: safeUUID(errorData.user_id ?? user?.id) ?? null,
+      user_email: errorData.user_email || (user && (user as any).email ? (user as any).email : null),
+      page_url: errorData.page_url || (typeof window !== 'undefined' ? window.location.href : null),
+      error_page: errorData.page_url || (typeof window !== 'undefined' ? window.location.href : null), // Map to existing column
+      user_agent: errorData.user_agent || (typeof navigator !== 'undefined' ? navigator.userAgent : null),
       severity: errorData.severity || 'medium',
       status: 'new'
     };

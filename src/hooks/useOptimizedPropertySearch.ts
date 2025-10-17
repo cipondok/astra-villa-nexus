@@ -221,14 +221,39 @@ export const useOptimizedPropertySearch = (initialFilters: SearchFilters = {}) =
       // Helpful when debugging
       console.log('search_properties_advanced payload', payload);
       
-      const { data, error: searchError } = await supabase.rpc('search_properties_advanced', payload);
-
+      let data: any[] = [];
+      try {
+        const res = await supabase.rpc('search_properties_advanced', payload);
+        if (res.error) throw res.error;
+        data = res.data || [];
+      } catch (primaryError) {
+        console.warn('Advanced search failed, attempting fallback to search_properties_optimized', primaryError);
+        const fallbackPayload = {
+          p_search_text: payload.p_search_text,
+          p_property_type: payload.p_property_type,
+          p_listing_type: payload.p_listing_type,
+          p_city: payload.p_city,
+          p_min_price: payload.p_min_price,
+          p_max_price: payload.p_max_price,
+          p_min_bedrooms: payload.p_min_bedrooms,
+          p_max_bedrooms: payload.p_max_bedrooms,
+          p_min_bathrooms: payload.p_min_bathrooms,
+          p_max_bathrooms: payload.p_max_bathrooms,
+          p_min_area: payload.p_min_area,
+          p_max_area: payload.p_max_area,
+          p_limit: payload.p_limit,
+          p_offset: payload.p_offset
+        };
+        const fallbackRes = await supabase.rpc('search_properties_optimized', fallbackPayload);
+        if (fallbackRes.error) {
+          await logSearchError(fallbackRes.error, { primaryError, payload, fallbackPayload });
+          throw fallbackRes.error;
+        }
+        data = fallbackRes.data || [];
+      }
+      
       const endTime = Date.now();
       const duration = endTime - startTime;
-      
-      if (searchError) {
-        throw searchError;
-      }
 
       const searchResults = data || [];
       const total = searchResults.length > 0 ? Number(searchResults[0].total_count) : 0;

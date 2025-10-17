@@ -122,7 +122,37 @@ const EnhancedPropertySearch = ({
 
       console.log('search_properties_advanced payload', payload);
 
-      const { data, error } = await supabase.rpc('search_properties_advanced', payload);
+      let data: any[] = [];
+      try {
+        const res = await supabase.rpc('search_properties_advanced', payload);
+        if (res.error) throw res.error;
+        data = res.data || [];
+      } catch (primaryError) {
+        console.warn('Advanced search failed, attempting fallback to search_properties_optimized', primaryError);
+        const fallbackPayload = {
+          p_search_text: payload.p_search_text,
+          p_property_type: payload.p_property_type,
+          p_listing_type: payload.p_listing_type,
+          p_city: payload.p_city,
+          p_min_price: payload.p_min_price,
+          p_max_price: payload.p_max_price,
+          p_min_bedrooms: payload.p_min_bedrooms,
+          p_max_bedrooms: payload.p_max_bedrooms,
+          p_min_bathrooms: payload.p_min_bathrooms,
+          p_max_bathrooms: payload.p_max_bathrooms,
+          p_min_area: payload.p_min_area,
+          p_max_area: payload.p_max_area,
+          p_limit: payload.p_limit,
+          p_offset: payload.p_offset
+        };
+        const fallbackRes = await supabase.rpc('search_properties_optimized', fallbackPayload);
+        if (fallbackRes.error) {
+          await logSearchError(fallbackRes.error, { primaryError, payload, fallbackPayload });
+          toast.error(`Search failed: ${fallbackRes.error.message || 'Unexpected error'}`);
+          throw fallbackRes.error;
+        }
+        data = fallbackRes.data || [];
+      }
 
       const endTime = performance.now();
       const duration = endTime - startTime;
@@ -132,13 +162,6 @@ const EnhancedPropertySearch = ({
       } else {
         console.log(`Search completed in ${duration.toFixed(0)}ms`);
       }
-
-       if (error) {
-         console.error('Error fetching properties:', error);
-         await logSearchError(error, { filters, page, pageSize });
-         toast.error(`Search failed: ${error.message || 'Unexpected error'}`);
-         throw error;
-       }
 
       const results = data || [];
       const total = results.length > 0 ? Number(results[0].total_count) : 0;
