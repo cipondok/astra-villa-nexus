@@ -164,10 +164,18 @@ const Index = () => {
   });
 
   const handleQuickSearch = async (searchData?: any) => {
-    const searchTerm = searchData?.searchQuery || quickSearch;
-    
+    const rawTerm = searchData?.searchQuery ?? quickSearch ?? '';
+    const sanitize = (s: string) =>
+      String(s)
+        .replace(/[(),;]/g, ' ') // prevent PostgREST or() parsing issues
+        .replace(/%/g, '') // avoid wildcard injection
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 100);
+    const searchTerm = sanitize(rawTerm);
+
     // Check if we have active filters
-    const hasFilters = searchData && (
+    const hasFilters = !!searchData && (
       (searchData.location && searchData.location !== 'all') ||
       (searchData.propertyType && searchData.propertyType !== 'all') ||
       (searchData.listingType && searchData.listingType !== 'all') ||
@@ -175,20 +183,20 @@ const Index = () => {
       (searchData.bedrooms && searchData.bedrooms !== 'all') ||
       (searchData.bathrooms && searchData.bathrooms !== 'all')
     );
-    
+
     // Empty search term means show all results (no early return)
-    
+
     console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
     console.log('Active filters:', {
       location: searchData?.location !== 'all' ? searchData?.location : null,
       propertyType: searchData?.propertyType !== 'all' ? searchData?.propertyType : null,
       listingType: searchData?.listingType !== 'all' ? searchData?.listingType : null
     });
-    
+
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
-    
+
     try {
       let query = supabase
         .from('properties')
@@ -197,14 +205,19 @@ const Index = () => {
         .eq('approval_status', 'approved')
         .not('title', 'is', null);
 
-      // Apply text search if present
-      if (searchTerm?.trim()) {
-        query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`);
+      // Apply text search if present (sanitized)
+      if (searchTerm) {
+        query = query.or(
+          `title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`
+        );
       }
 
-      // Apply location filter if present
+      // Apply location filter if present (sanitized)
       if (searchData?.location && searchData.location !== 'all') {
-        query = query.or(`location.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%`);
+        const safeLoc = sanitize(searchData.location);
+        if (safeLoc) {
+          query = query.or(`location.ilike.%${safeLoc}%,city.ilike.%${safeLoc}%,state.ilike.%${safeLoc}%`);
+        }
       }
 
       // Apply property type filter
