@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, CheckCircle, Users, Star, Clock, Shield } from 'lucide-react';
+import { ArrowRight, CheckCircle, Users, Star, Clock, Shield, MapPin, DollarSign } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import AgentTools from '@/components/agent/AgentTools';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Services = () => {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // If user is an agent, show agent tools instead of general services
   if (profile?.role === 'agent') {
@@ -31,8 +33,9 @@ const Services = () => {
         </div>
     );
   }
-  // Fetch main categories and subcategories from database
-  const { data: mainCategories, isLoading } = useQuery({
+
+  // Fetch main categories
+  const { data: mainCategories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['vendor-main-categories'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -50,6 +53,39 @@ const Services = () => {
         .eq('is_active', true)
         .order('display_order');
       
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  // Fetch vendor services
+  const { data: vendorServices, isLoading: servicesLoading } = useQuery({
+    queryKey: ['vendor-services', selectedCategory],
+    queryFn: async () => {
+      let query = supabase
+        .from('vendor_services')
+        .select(`
+          *,
+          vendor_business_profiles!inner (
+            business_name,
+            business_type,
+            rating,
+            logo_url
+          ),
+          vendor_main_categories (
+            name
+          )
+        `)
+        .eq('is_active', true)
+        .eq('admin_approval_status', 'approved')
+        .order('created_at', { ascending: false })
+        .limit(12);
+
+      if (selectedCategory) {
+        query = query.eq('main_category_id', selectedCategory);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     }
@@ -84,9 +120,19 @@ const Services = () => {
     { icon: Clock, title: "24/7 Support", description: "Round-the-clock customer support available" }
   ];
 
+  const formatPrice = (priceRange: any) => {
+    if (!priceRange) return 'Contact for pricing';
+    if (priceRange.min && priceRange.max) {
+      return `Rp ${priceRange.min.toLocaleString()} - Rp ${priceRange.max.toLocaleString()}`;
+    }
+    if (priceRange.fixed) {
+      return `Rp ${priceRange.fixed.toLocaleString()}`;
+    }
+    return 'Contact for pricing';
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -99,7 +145,7 @@ const Services = () => {
         </div>
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {features.map((feature, index) => (
             <Card key={index} className="text-center">
               <CardContent className="pt-6">
@@ -111,67 +157,163 @@ const Services = () => {
           ))}
         </div>
 
-        {/* Services Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {[...Array(4)].map((_, index) => (
-              <Card key={index} className="overflow-hidden animate-pulse">
-                <CardHeader className="pb-4">
-                  <div className="h-20 bg-muted rounded"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="h-16 bg-muted rounded"></div>
-                    ))}
+        {/* Category Filter */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={selectedCategory === null ? "default" : "outline"}
+              onClick={() => setSelectedCategory(null)}
+              size="sm"
+            >
+              All Services
+            </Button>
+            {mainCategories?.map((category) => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                onClick={() => setSelectedCategory(category.id)}
+                size="sm"
+              >
+                {category.icon} {category.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Vendor Services Grid */}
+        {servicesLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {[...Array(6)].map((_, index) => (
+              <Card key={index} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-4 space-y-3">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : vendorServices && vendorServices.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {vendorServices.map((service) => (
+              <Card 
+                key={service.id} 
+                className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200 group"
+                onClick={() => navigate(`/services/${service.id}`)}
+              >
+                <CardContent className="p-0">
+                  {/* Service Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-primary/10 to-primary/5 overflow-hidden">
+                    {service.service_images && service.service_images[0] ? (
+                      <img 
+                        src={service.service_images[0]} 
+                        alt={service.service_name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Shield className="h-16 w-16 text-primary/20" />
+                      </div>
+                    )}
+                    {service.featured && (
+                      <Badge className="absolute top-3 right-3 bg-primary">
+                        <Star className="h-3 w-3 mr-1" />
+                        Featured
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Service Details */}
+                  <div className="p-4">
+                    <div className="mb-3">
+                      <h3 className="font-semibold text-lg text-foreground mb-1 line-clamp-1">
+                        {service.service_name}
+                      </h3>
+                      {service.vendor_main_categories && (
+                        <Badge variant="outline" className="text-xs">
+                          {service.vendor_main_categories.name}
+                        </Badge>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {service.service_description || 'Professional service provider'}
+                    </p>
+
+                    {/* Vendor Info */}
+                    <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border">
+                      {service.vendor_business_profiles?.logo_url ? (
+                        <img 
+                          src={service.vendor_business_profiles.logo_url} 
+                          alt={service.vendor_business_profiles.business_name}
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Users className="h-4 w-4 text-primary" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {service.vendor_business_profiles?.business_name}
+                        </p>
+                        {service.vendor_business_profiles?.rating && (
+                          <div className="flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs text-muted-foreground">
+                              {service.vendor_business_profiles.rating.toFixed(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Price & Location */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-semibold text-primary">
+                          {formatPrice(service.price_range)}
+                        </span>
+                      </div>
+                      {(service.service_location_city || service.service_location_state) && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="h-4 w-4" />
+                          <span className="truncate">
+                            {[service.service_location_city, service.service_location_state]
+                              .filter(Boolean)
+                              .join(', ')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <Button className="w-full mt-4" variant="outline">
+                      View Details
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {mainCategories?.map((category, index) => {
-              const IconComponent = getIconForCategory(category.name);
-              return (
-                <Card key={category.id} className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200" 
-                      onClick={() => navigate(`/services/category/${category.id}`)}>
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`p-2 rounded-lg ${getColorForCategory(index)} text-white`}>
-                        <IconComponent className="h-6 w-6" />
-                      </div>
-                      <div className="flex-1">
-                        <CardTitle className="text-xl">{category.name}</CardTitle>
-                        <CardDescription>{category.description}</CardDescription>
-                      </div>
-                      <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {category.vendor_subcategories?.slice(0, 3).map((subcategory) => (
-                        <div key={subcategory.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                          <span className="text-lg">{subcategory.icon || '🔧'}</span>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-foreground text-sm">{subcategory.name}</h4>
-                            <p className="text-xs text-muted-foreground line-clamp-1">{subcategory.description}</p>
-                          </div>
-                        </div>
-                      ))}
-                      {(category.vendor_subcategories?.length || 0) > 3 && (
-                        <div className="text-center pt-2">
-                          <Button variant="ghost" size="sm" className="text-primary w-full">
-                            View {(category.vendor_subcategories?.length || 0) - 3} more services →
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+          <Card className="text-center p-12 mb-16">
+            <CardContent>
+              <Shield className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                No services available
+              </h3>
+              <p className="text-muted-foreground">
+                {selectedCategory 
+                  ? 'No services found in this category. Try selecting a different category.'
+                  : 'No services are currently available. Check back soon!'}
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {/* CTA Section */}
@@ -192,8 +334,7 @@ const Services = () => {
           </CardContent>
         </Card>
       </div>
-
-      </div>
+    </div>
   );
 };
 
