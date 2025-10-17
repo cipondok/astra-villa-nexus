@@ -22,8 +22,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { useUserRoles } from "@/hooks/useUserRoles";
 
 interface UserIconWithBadgeProps {
   onNavigate?: (path: string) => void;
@@ -32,6 +33,7 @@ interface UserIconWithBadgeProps {
 const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate: undefined }) => {
   const { user, profile, signOut } = useAuth();
   const { unreadCount } = useNotifications();
+  const { data: roles = [] } = useUserRoles();
   
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -42,9 +44,9 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
     navigate('/');
   };
 
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
-  const isAgent = profile?.role === 'agent';
-  const isVendor = profile?.role === 'vendor';
+  const isAdmin = roles.includes('admin') || roles.includes('super_admin');
+  const isAgent = roles.includes('agent');
+  const isVendor = roles.includes('vendor');
 
   const getUserInitials = () => {
     if (profile?.full_name) {
@@ -95,7 +97,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 {profile?.full_name || user?.email}
               </p>
               <p className="text-sm text-muted-foreground capitalize">
-                {profile?.role?.replace('_', ' ') || 'User'}
+                {roles[0]?.replace('_', ' ') || 'User'}
               </p>
             </div>
           </div>

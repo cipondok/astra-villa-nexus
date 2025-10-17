@@ -18,7 +18,20 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, userId, propertyId, conversationId: initialConversationId } = await req.json();
+    const rawBody = await req.json();
+    
+    // Sanitize UUIDs to prevent "undefined" string errors
+    const sanitizeUuid = (val: any): string | null => {
+      if (!val || val === 'undefined' || typeof val !== 'string') return null;
+      // Basic UUID format check
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)) return null;
+      return val;
+    };
+    
+    const message = rawBody.message;
+    const userId = sanitizeUuid(rawBody.userId);
+    const propertyId = sanitizeUuid(rawBody.propertyId);
+    const conversationId = rawBody.conversationId;
 
     console.log('AI Assistant request:', { message, userId, propertyId });
 

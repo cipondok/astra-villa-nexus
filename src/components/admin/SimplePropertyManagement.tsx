@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useUserRoles";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
 import { 
@@ -78,12 +79,11 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   const [editingWhatsApp, setEditingWhatsApp] = useState<string | null>(null);
   const [whatsappValue, setWhatsappValue] = useState("");
 
-  // Check if user is admin
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+  // Check if user is admin (server-validated via RLS)
+  const { isAdmin } = useIsAdmin();
 
   console.log('🔐 Auth Check:', { 
     userEmail: user?.email, 
-    profileRole: profile?.role, 
     isAdmin 
   });
 

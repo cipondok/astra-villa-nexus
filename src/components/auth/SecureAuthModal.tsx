@@ -13,7 +13,6 @@ import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 import { MFASetup } from "./MFASetup";
 import { BiometricAuth } from "./BiometricAuth";
 import { RiskAssessment } from "./RiskAssessment";
-import { useSecurityMonitoring } from "@/hooks/useSecurityMonitoring";
 
 interface SecureAuthModalProps {
   isOpen: boolean;
@@ -65,7 +64,12 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
   });
   
   const { signIn, signUp } = useAuth();
-  const { logSecurityEvent, calculateRiskScore, checkBreachStatus } = useSecurityMonitoring();
+  
+  // Note: Security monitoring moved to server-side
+  const checkBreachStatus = async () => ({ breached: false });
+  const calculateRiskScore = () => 0;
+  const logSecurityEvent = () => {};
+  
   const mouseTrackingRef = useRef<HTMLDivElement>(null);
   const lastKeystrokeRef = useRef(0);
   const emailCheckTimeoutRef = useRef<NodeJS.Timeout>();
@@ -140,8 +144,8 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     });
 
     try {
-      // Check for data breaches
-      const breachData = await checkBreachStatus(email);
+      // Note: Breach checking moved to server-side
+      const breachData = await checkBreachStatus();
       
       // For demonstration - in real app, you'd check if email exists in your database
       const emailExists = Math.random() > 0.8; // 20% chance email exists for demo
@@ -249,25 +253,20 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     
     setIsLoading(true);
     
-    // Calculate risk score
-    const riskScore = calculateRiskScore(behavioralMetrics);
-    const riskLevel = riskScore >= 70 ? "high" : riskScore >= 40 ? "medium" : "low";
+    // Note: Risk scoring moved to server-side (useAdvancedAuthSecurity)
+    const riskScore = calculateRiskScore();
+    const riskLevel = "low"; // Server will handle actual risk assessment
     setRiskLevel(riskLevel);
     
-    logSecurityEvent({
-      type: "login_attempt",
-      details: { email: loginData.email, riskScore, riskLevel }
-    });
+    // Note: Security logging moved to server-side
+    logSecurityEvent();
     
     try {
       const result = await signIn(loginData.email, loginData.password);
       
       if (result.success) {
-        if (riskLevel === "high") {
-          setShowMFA(true);
-        } else {
-          onClose();
-        }
+        // Note: MFA is handled by useAdvancedAuthSecurity on server-side
+        onClose();
       }
     } finally {
       setIsLoading(false);

@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useUserRoles";
 
 const PropertyTestPanel = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
+  const { isAdmin } = useIsAdmin();
   const [testResults, setTestResults] = useState<any[]>([]);
   const [isTestingAuth, setIsTestingAuth] = useState(false);
   const [isTestingDB, setIsTestingDB] = useState(false);
@@ -30,15 +32,14 @@ const PropertyTestPanel = () => {
       results.push({
         test: "Profile Data",
         status: profile ? "success" : "error", 
-        message: profile ? `Role: ${profile.role}` : "No profile found"
+        message: profile ? `Profile loaded for ${profile.email}` : "No profile found"
       });
 
-      // Test admin status
-      const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+      // Test admin status (server-validated)
       results.push({
         test: "Admin Status",
         status: isAdmin ? "success" : "warning",
-        message: isAdmin ? "User has admin privileges" : "User does not have admin privileges"
+        message: isAdmin ? "User has admin privileges (verified via RLS)" : "User does not have admin privileges"
       });
 
     } catch (error) {

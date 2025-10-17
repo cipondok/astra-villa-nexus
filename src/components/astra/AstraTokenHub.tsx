@@ -26,6 +26,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAlert } from '@/contexts/AlertContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useIsAdmin } from '@/hooks/useUserRoles';
 import AstraTokenTransfer from './AstraTokenTransfer';
 import AstraTransferHistory from './AstraTransferHistory';
 import { useNavigate } from 'react-router-dom';
@@ -61,8 +62,8 @@ const AstraTokenHub = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { isAdmin } = useIsAdmin();
   const [referralCode, setReferralCode] = useState('');
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   // Fetch token balance
   const { data: balance, isLoading: loadingBalance } = useQuery({
