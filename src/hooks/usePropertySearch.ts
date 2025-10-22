@@ -111,10 +111,67 @@ export const usePropertySearch = () => {
         };
         const fallbackRes = await supabase.rpc('search_properties_optimized', fallbackPayload);
         if (fallbackRes.error) {
+          // Log both errors and attempt a final safe client-side query to avoid 500 page
           await logSearchError(fallbackRes.error, { primaryError, payload, fallbackPayload });
-          throw fallbackRes.error;
+          console.warn('Both advanced and optimized searches failed. Falling back to basic query.');
+
+          // Final fallback: direct table query (safe subset of filters)
+          try {
+            let query = supabase
+              .from('properties')
+              .select(
+                'id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url',
+                { count: 'exact' }
+              )
+              .eq('status', 'active')
+              .eq('approval_status', 'approved');
+
+            if (payload.p_search_text) {
+              const term = String(payload.p_search_text).replace(/[(),;%]/g, ' ').trim().slice(0, 100);
+              if (term) {
+                query = query.or(
+                  `title.ilike.%${term}%,location.ilike.%${term}%,city.ilike.%${term}%,state.ilike.%${term}%`
+                );
+              }
+            }
+            if (payload.p_city) query = query.ilike('city', `%${payload.p_city}%`);
+            if (payload.p_property_type) query = query.eq('property_type', payload.p_property_type);
+            if (payload.p_listing_type) query = query.eq('listing_type', payload.p_listing_type);
+            if (payload.p_min_price) query = query.gte('price', payload.p_min_price);
+            if (payload.p_max_price) query = query.lte('price', payload.p_max_price);
+            if (payload.p_min_bedrooms) query = query.gte('bedrooms', payload.p_min_bedrooms);
+            if (payload.p_min_bathrooms) query = query.gte('bathrooms', payload.p_min_bathrooms);
+            if (payload.p_min_area) query = query.gte('area_sqm', payload.p_min_area);
+            if (payload.p_max_area) query = query.lte('area_sqm', payload.p_max_area);
+
+            // Pagination
+            const from = offset;
+            const to = offset + pageSize - 1;
+            const { data: basicData, error: basicError, count } = await query
+              .order('created_at', { ascending: false })
+              .range(from, to);
+
+            if (basicError) throw basicError;
+
+            const mapped = (basicData || []).map((p: any) => ({
+              ...p,
+              listing_type: p.listing_type as 'sale' | 'rent' | 'lease',
+              image_urls: p.images || []
+            }));
+
+            // Ensure total_count is present for downstream pagination logic
+            if (mapped.length > 0) {
+              (mapped[0] as any).total_count = count ?? mapped.length;
+            }
+
+            data = mapped;
+          } catch (basicError) {
+            await logSearchError(basicError, { note: 'basic_query_failed', payload });
+            throw basicError;
+          }
+        } else {
+          data = fallbackRes.data || [];
         }
-        data = fallbackRes.data || [];
       }
       
       const endTime = performance.now();
