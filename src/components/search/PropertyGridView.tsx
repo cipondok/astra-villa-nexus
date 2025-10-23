@@ -84,11 +84,11 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-lg md:rounded-xl overflow-hidden border border-border/50"
+          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-md md:rounded-xl overflow-hidden border border-border/50"
           onClick={() => onPropertyClick(property)}
         >
           {/* Image Section */}
@@ -102,9 +102,9 @@ const PropertyGridView = ({
             />
             
             {/* Top Badge */}
-            <div className="absolute top-2 right-2 md:top-3 md:right-3 z-10">
+            <div className="absolute top-1.5 right-1.5 md:top-3 md:right-3 z-10">
               <Badge 
-                className="bg-primary/90 text-primary-foreground text-[10px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-2 py-0.5 md:px-3 md:py-1"
+                className="bg-primary/90 text-primary-foreground text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-1.5 py-0.5 md:px-3 md:py-1"
               >
                 {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
               </Badge>
@@ -150,11 +150,11 @@ const PropertyGridView = ({
             {/* Bottom Left Price Overlay */}
             <div className="absolute bottom-1 left-1 md:bottom-2 md:left-2 z-10">
               <div className="glass-effect rounded-md px-1.5 py-0.5 md:px-2 md:py-1">
-                <div className="font-bold text-[10px] md:text-sm gradient-text leading-tight">
+                <div className="font-bold text-[9px] md:text-sm gradient-text leading-tight">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-[8px] md:text-xs text-muted-foreground leading-tight">/month</div>
+                  <div className="text-[7px] md:text-xs text-muted-foreground leading-tight">/month</div>
                 )}
               </div>
             </div>
@@ -193,46 +193,46 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-3 md:p-4 flex flex-col flex-1">
+          <CardContent className="p-2.5 md:p-4 flex flex-col flex-1">
             {/* Price */}
-            <div className="mb-2">
-              <div className="text-base md:text-xl font-bold text-primary">
+            <div className="mb-1.5 md:mb-2">
+              <div className="text-sm md:text-xl font-bold text-primary">
                 {formatPrice(property.price)}
               </div>
-              <div className="text-xs text-muted-foreground hidden md:block">
+              <div className="text-[10px] md:text-xs text-muted-foreground hidden md:block">
                 Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
               </div>
             </div>
             
             {/* Title */}
-            <h3 className="font-semibold text-foreground line-clamp-2 text-sm md:text-base mb-2 group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-foreground line-clamp-2 text-xs md:text-base mb-1.5 md:mb-2 group-hover:text-primary transition-colors">
               {property.title}
             </h3>
 
             {/* Location */}
-            <div className="flex items-center gap-1 text-muted-foreground mb-2 md:mb-3">
-              <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="text-xs md:text-sm truncate">{property.city || property.location}</span>
+            <div className="flex items-center gap-1 text-muted-foreground mb-1.5 md:mb-3">
+              <MapPin className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="text-[10px] md:text-sm truncate">{property.city || property.location}</span>
             </div>
 
             {/* Property Details */}
-            <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
+            <div className="flex items-center gap-1.5 md:gap-3 text-[10px] md:text-sm text-muted-foreground mb-2 md:mb-4">
               {property.bedrooms && (
-                <div className="flex items-center gap-1">
-                  <Bed className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                <div className="flex items-center gap-0.5 md:gap-1">
+                  <Bed className="h-3 w-3 md:h-4 md:w-4" />
                   <span>{property.bedrooms}</span>
                 </div>
               )}
               {property.bathrooms && (
-                <div className="flex items-center gap-1">
-                  <Bath className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                <div className="flex items-center gap-0.5 md:gap-1">
+                  <Bath className="h-3 w-3 md:h-4 md:w-4" />
                   <span>{property.bathrooms}</span>
                 </div>
               )}
               {property.area_sqm && (
                 <>
-                  <div className="flex items-center gap-1">
-                    <Scale className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  <div className="flex items-center gap-0.5 md:gap-1">
+                    <Scale className="h-3 w-3 md:h-4 md:w-4" />
                     <span className="hidden md:inline">LT: {property.area_sqm}</span>
                     <span className="md:hidden">{property.area_sqm}m²</span>
                   </div>
@@ -249,23 +249,23 @@ const PropertyGridView = ({
               <Button
                 size="sm"
                 variant="outline"
-                className="flex-shrink-0 h-7 w-7 p-0 md:h-9 md:w-auto md:px-3"
+                className="flex-shrink-0 h-6 w-6 p-0 md:h-9 md:w-auto md:px-3"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleShare(property);
                 }}
               >
-                <Share2 className="h-3 w-3 md:h-4 md:w-4" />
+                <Share2 className="h-2.5 w-2.5 md:h-4 md:w-4" />
               </Button>
               <Button
                 size="sm"
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white h-7 text-[10px] md:h-9 md:text-sm"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white h-6 text-[9px] md:h-9 md:text-sm"
                 onClick={(e) => {
                   e.stopPropagation();
                   onContact?.(property);
                 }}
               >
-                <Phone className="h-3 w-3 md:h-4 md:w-4 md:mr-1" />
+                <Phone className="h-2.5 w-2.5 md:h-4 md:w-4 md:mr-1" />
                 <span className="hidden md:inline">WhatsApp</span>
               </Button>
             </div>
