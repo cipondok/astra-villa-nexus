@@ -194,16 +194,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Chat trigger - Fixed position on right side */}
+      {/* Chat trigger - Fixed position at bottom right corner */}
       {!isOpen && (
         <div 
-          style={{ 
-            position: 'fixed',
-            top: '50%',
-            right: isMobile ? '8px' : '20px',
-            transform: 'translateY(-50%)',
-            zIndex: 999999
-          }}
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] transition-all duration-300 ease-in-out hover:scale-105"
           onClick={() => {
             console.log('Chat trigger clicked');
             setIsOpen(true);
@@ -214,20 +208,17 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       )}
 
-      {/* Chat window - Fixed position on right side */}
+      {/* Chat window - Fixed position at bottom right corner */}
       {isOpen && (
         <div 
-          style={{
-            position: 'fixed',
-            top: '50%',
-            right: isMobile ? '8px' : '20px',
-            transform: 'translateY(-50%)',
-            width: isMinimized ? '280px' : isMobile ? 'calc(100vw - 16px)' : '420px',
-            height: isMinimized ? 'auto' : isMobile ? 'calc(100vh - 60px)' : '680px',
-            maxHeight: isMinimized ? 'auto' : '85vh',
-            zIndex: 999999,
-            transition: 'all 0.3s ease-in-out'
-          }}
+          className={cn(
+            "fixed z-[9999] transition-all duration-300 ease-in-out",
+            isMobile 
+              ? "bottom-0 left-0 right-0 top-auto" 
+              : "bottom-4 right-4 md:bottom-6 md:right-6",
+            isMinimized ? "w-[280px]" : isMobile ? "w-full" : "w-[420px]",
+            isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]"
+          )}
         >
           <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
             {/* Header with Close and Minimize */}

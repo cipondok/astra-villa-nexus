@@ -176,10 +176,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {!isOpen && <AIChatTrigger onOpen={() => setIsOpen(true)} />}
+      {!isOpen && (
+        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] transition-all duration-300 ease-in-out hover:scale-105">
+          <AIChatTrigger onOpen={() => setIsOpen(true)} />
+        </div>
+      )}
 
       {isOpen && (
-        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-[calc(100vw-2rem)] max-w-md h-[70vh] max-h-[650px] animate-fade-in">
+        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] w-[calc(100vw-2rem)] max-w-md h-[70vh] max-h-[calc(100vh-100px)] animate-fade-in">
           <Card className="h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/80 backdrop-blur-xl overflow-hidden rounded-2xl">
             <AIChatHeader onClose={() => setIsOpen(false)} />
             <CardContent className="p-0 flex-1 flex flex-col min-h-0">
