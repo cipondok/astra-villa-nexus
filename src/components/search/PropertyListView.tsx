@@ -75,6 +75,18 @@ const PropertyListView = ({
                   </Badge>
                 </div>
 
+                {/* Price Overlay - Bottom Left */}
+                <div className="absolute bottom-3 left-3 z-10">
+                  <div className="glass-effect rounded-lg px-3 py-2 md:px-4 md:py-2.5">
+                    <div className="font-bold text-base md:text-2xl gradient-text leading-tight">
+                      {formatPrice(property.price)}
+                    </div>
+                    {property.listing_type === 'rent' && (
+                      <div className="text-xs md:text-sm text-muted-foreground leading-tight font-medium">/month</div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Quick Actions Overlay */}
                 <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 hover:opacity-100 transition-opacity">
                   <Button
@@ -104,17 +116,7 @@ const PropertyListView = ({
 
               {/* Content Section */}
               <div className="flex-1 p-6 flex flex-col justify-between">
-                {/* Price */}
-                <div className="mb-3">
-                  <div className="text-2xl font-bold text-primary">
-                    {formatPrice(property.price)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
-                  </div>
-                </div>
-                
-                {/* Title */}
+                {/* Title - Now at top */}
                 <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
                   {property.title}
                 </h3>

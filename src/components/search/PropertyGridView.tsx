@@ -147,14 +147,14 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Bottom Left Price Overlay */}
-            <div className="absolute bottom-1 left-1 md:bottom-2 md:left-2 z-10">
-              <div className="glass-effect rounded-md px-1.5 py-0.5 md:px-2 md:py-1">
-                <div className="font-bold text-[9px] md:text-sm gradient-text leading-tight">
+            {/* Bottom Left Price Overlay - Enhanced & Bigger */}
+            <div className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10">
+              <div className="glass-effect rounded-lg px-2.5 py-1.5 md:px-4 md:py-2.5">
+                <div className="font-bold text-sm md:text-2xl gradient-text leading-tight">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-[7px] md:text-xs text-muted-foreground leading-tight">/month</div>
+                  <div className="text-[9px] md:text-sm text-muted-foreground leading-tight font-medium">/month</div>
                 )}
               </div>
             </div>
@@ -194,17 +194,7 @@ const PropertyGridView = ({
 
           {/* Content Section */}
           <CardContent className="p-2.5 md:p-4 flex flex-col flex-1">
-            {/* Price */}
-            <div className="mb-1.5 md:mb-2">
-              <div className="text-sm md:text-xl font-bold text-primary">
-                {formatPrice(property.price)}
-              </div>
-              <div className="text-[10px] md:text-xs text-muted-foreground hidden md:block">
-                Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
-              </div>
-            </div>
-            
-            {/* Title */}
+            {/* Title - Now at top */}
             <h3 className="font-semibold text-foreground line-clamp-2 text-xs md:text-base mb-1.5 md:mb-2 group-hover:text-primary transition-colors">
               {property.title}
             </h3>
