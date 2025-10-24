@@ -136,7 +136,7 @@ const Index = () => {
           .eq('status', 'active')
           .eq('approval_status', 'approved')
           .not('title', 'is', null)
-          .limit(6);
+          .limit(8);
 
         if (error) {
           console.error('Properties query error:', error);

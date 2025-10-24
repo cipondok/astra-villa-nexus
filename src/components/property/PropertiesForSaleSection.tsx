@@ -35,7 +35,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           .not('title', 'eq', '')
           .gt('price', 0)
           .order('created_at', { ascending: false })
-          .limit(6);
+          .limit(8);
 
         if (error) {
           console.error('Properties for sale query error:', error);
@@ -86,7 +86,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           </p>
         </div>
         <div className="responsive-grid-properties">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div key={i} className="animate-pulse">
               <div className="h-48 bg-muted rounded-t-lg"></div>
               <div className={cn(isMobile ? "p-2 space-y-2" : "p-4 space-y-3")}>
