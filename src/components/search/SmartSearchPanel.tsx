@@ -380,8 +380,27 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               />
             </div>
 
-            {/* Quick Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
+            {/* Mobile Filters Toggle Only */}
+            <div className="flex md:hidden justify-end">
+              <Button
+                onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
+                variant="outline"
+                className="h-9 px-3 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                disabled={isClosing}
+              >
+                <Filter className="h-4 w-4 mr-1" />
+                {currentText.advancedFilters}
+                {activeFiltersCount > 0 && (
+                  <span className="ml-2 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                    {activeFiltersCount}
+                  </span>
+                )}
+                <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-300 ${showAdvanced ? 'rotate-180' : ''}`} />
+              </Button>
+            </div>
+
+            {/* Quick Filters (hidden on mobile) */}
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
               {/* State Selection */}
               <Select value={filters.state || "all"} onValueChange={(value) => handleFilterChange('state', value)}>
                 <SelectTrigger className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200">
