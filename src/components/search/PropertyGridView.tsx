@@ -103,6 +103,19 @@ const PropertyGridView = ({
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             
+            {/* Top Left - Sewa/Jual Badge */}
+            <div className="absolute top-1.5 left-1.5 md:top-3 md:left-3 z-10">
+              <Badge 
+                className={`${
+                  property.listing_type === 'rent' 
+                    ? 'bg-blue-500 hover:bg-blue-600' 
+                    : 'bg-green-500 hover:bg-green-600'
+                } text-white text-[9px] md:text-xs font-semibold rounded-md backdrop-blur-sm px-1.5 py-0.5 md:px-3 md:py-1 shadow-lg`}
+              >
+                {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
+              </Badge>
+            </div>
+
             {/* Top Badge */}
             <div className="absolute top-1.5 right-1.5 md:top-3 md:right-3 z-10">
               <Badge 

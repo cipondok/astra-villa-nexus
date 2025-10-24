@@ -74,6 +74,19 @@ const PropertyListView = ({
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 
+                {/* Top Left - Sewa/Jual Badge */}
+                <div className="absolute top-4 left-4">
+                  <Badge 
+                    className={`${
+                      property.listing_type === 'rent' 
+                        ? 'bg-blue-500 hover:bg-blue-600' 
+                        : 'bg-green-500 hover:bg-green-600'
+                    } text-white backdrop-blur-sm text-xs font-semibold rounded-md px-3 py-1 shadow-lg`}
+                  >
+                    {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
+                  </Badge>
+                </div>
+
                 {/* Property Type Badge */}
                 <div className="absolute top-4 right-4">
                   <Badge 
