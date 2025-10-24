@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { shareProperty } from '@/utils/shareUtils';
 import { toast as sonnerToast } from 'sonner';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
+import ProgressPopup from '@/components/ui/ProgressPopup';
 
 interface AIRecommendedPropertiesProps {
   onPropertyClick: (property: BaseProperty) => void;
@@ -25,6 +26,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const [recommendations, setRecommendations] = useState<BaseProperty[]>([]);
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
+  const [showProgressPopup, setShowProgressPopup] = useState(false);
 
   // Fetch user preferences and property data
   const { data: userPreferences } = useQuery({
@@ -46,6 +48,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
   const generateRecommendations = async () => {
     setIsGenerating(true);
+    setShowProgressPopup(true);
     
     try {
       // Get recent properties for context
@@ -135,6 +138,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       });
     } finally {
       setIsGenerating(false);
+      setTimeout(() => setShowProgressPopup(false), 500);
     }
   };
 
@@ -227,6 +231,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           property={selectedProperty}
         />
       )}
+      
+      <ProgressPopup
+        isVisible={showProgressPopup}
+        title={isGenerating ? "🔍 Finding Best Properties" : "✨ Properties Loaded"}
+        description={isGenerating ? "AI is analyzing trending properties..." : "Showing popular properties"}
+        duration={2000}
+      />
     </Card>
   );
 };
