@@ -47,7 +47,7 @@ const ProgressPopup = ({
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-1/2 -translate-x-1/2 z-[9998] w-[calc(100%-2rem)] max-w-md",
+        "fixed bottom-4 left-1/2 -translate-x-1/2 z-[10000] w-[calc(100%-2rem)] max-w-md",
         "transition-all duration-300 ease-out",
         isVisible ? "animate-fade-in translate-y-0" : "animate-fade-out translate-y-4"
       )}
