@@ -54,11 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = React.useState(false);
   const [session, setSession] = React.useState<Session | null>(null);
 
-  console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
-
   const fetchProfile = async (userId: string) => {
     try {
-      console.log('Fetching profile for user:', userId);
       
       // Fetch user auth data for default profile fallback
       const { data: authUser } = await supabase.auth.getUser();
@@ -79,7 +76,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (error) {
           if (error.code === 'PGRST116') {
-            console.log('Profile not found, creating default profile');
             // Fetch primary role from user_roles
             const { data: rolesData } = await supabase
               .from('user_roles')
@@ -102,8 +98,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
           throw error;
         }
-
-        console.log('Profile fetched successfully:', data);
         
         // Fetch primary role from user_roles table (READ-ONLY, prevents privilege escalation)
         const { data: rolesData } = await supabase
@@ -119,9 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
       } catch (fetchError) {
         clearTimeout(timeoutId);
-        if (fetchError.name === 'AbortError') {
-          console.log('Profile fetch timed out, using default profile');
-        } else {
+        if (fetchError.name !== 'AbortError') {
           console.error('Profile fetch error:', fetchError);
         }
         

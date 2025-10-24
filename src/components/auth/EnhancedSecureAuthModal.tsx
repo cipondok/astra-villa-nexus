@@ -132,8 +132,6 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
   // Check email availability and format
   const checkEmailAvailability = async (email: string) => {
-    console.log("🔍 Checking email:", email);
-    
     if (!email) {
       setEmailValidation({ 
         isValid: false, 
@@ -147,7 +145,6 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
     // First check format
     if (!validateEmail(email)) {
-      console.log("❌ Invalid email format");
       setEmailValidation({
         isValid: false,
         isChecking: false,
@@ -159,7 +156,6 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
     }
 
     // Show checking state
-    console.log("🔄 Checking email availability...");
     setEmailValidation({
       isValid: true,
       isChecking: true,
@@ -182,7 +178,6 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
       const emailExists = existingProfiles && existingProfiles.length > 0;
       
       if (emailExists && activeTab === "register") {
-        console.log("⚠️ Email already registered");
         setEmailValidation({
           isValid: true,
           isChecking: false,
@@ -199,7 +194,6 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
           type = "warning";
         }
         
-        console.log("✅ Email is available");
         setEmailValidation({
           isValid: true,
           isChecking: false,
@@ -246,7 +240,6 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
     if (registerData.confirmPassword) {
       const matches = registerData.password === registerData.confirmPassword;
       setPasswordsMatch(matches);
-      console.log("🔒 Password match check:", matches ? "✅ Match" : "❌ No match");
     } else {
       setPasswordsMatch(true);
     }

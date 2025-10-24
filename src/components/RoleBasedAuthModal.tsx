@@ -49,7 +49,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
     try {
       if (isLogin) {
         setAuthAction('login');
-        console.log('Attempting login for:', email);
         const result = await signIn(email, password);
         
         if (result.error) {
@@ -62,7 +61,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
             setError(result.error.message || 'Login failed. Please try again.');
           }
         } else if (result.success) {
-          console.log('Login successful, closing modal');
           onClose();
           setEmail("");
           setPassword("");
@@ -70,7 +68,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
         }
       } else {
         setAuthAction('register');
-        console.log('Attempting sign up for:', email);
         
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -93,7 +90,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
             setError(error.message || 'Registration failed. Please try again.');
           }
         } else {
-          console.log('Sign up successful for:', email);
           setError(null);
           onClose();
           setEmail("");

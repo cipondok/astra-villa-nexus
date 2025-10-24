@@ -55,7 +55,6 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     }
 
     setIsLoading(true);
-    console.log("Attempting secure login with:", loginData.email);
     
     try {
       const result = await secureLogin(loginData.email, loginData.password, captchaToken);
@@ -74,7 +73,6 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
           setError(result.error.message || "Login failed. Please try again.");
         }
       } else if (result.success) {
-        console.log("Login successful with enhanced security");
         onClose();
         setLoginData({ email: "", password: "" });
         setError("");
@@ -125,7 +123,6 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     }
 
     setIsLoading(true);
-    console.log("Attempting registration with:", registerData.email);
     
     try {
       const result = await signUp(registerData.email, registerData.password, registerData.fullName);
