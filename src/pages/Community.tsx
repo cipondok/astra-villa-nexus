@@ -149,56 +149,61 @@ const Community = () => {
         {/* Post Article */}
         <section className="mb-6">
           <div className="bg-card border border-border rounded-xl p-4 md:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold">Post an Article</h2>
-              {!user?.id && (
-                <a href="/auth" className="text-sm text-primary hover:underline">Sign in</a>
-              )}
-            </div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit((v) => createArticle.mutate(v))}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Tips for evaluating property value" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <h2 className="text-lg font-semibold mb-3">Post an Article</h2>
+            
+            {!user?.id ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">Sign in to post articles and engage with the community</p>
+                <Button asChild>
+                  <a href="/auth">Sign In</a>
+                </Button>
+              </div>
+            ) : (
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit((v) => createArticle.mutate(v))}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Tips for evaluating property value" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Content</FormLabel>
-                      <FormControl>
-                        <Textarea rows={6} placeholder="Write your article..." {...field} />
-                      </FormControl>
-                      <FormDescription>Keep it helpful and respectful.</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Content</FormLabel>
+                        <FormControl>
+                          <Textarea rows={6} placeholder="Write your article..." {...field} />
+                        </FormControl>
+                        <FormDescription>Keep it helpful and respectful.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <div className="flex items-center gap-3">
-                  <Button type="submit" disabled={!user?.id || createArticle.isPending}>
-                    {createArticle.isPending ? "Posting..." : "Post Article"}
-                  </Button>
-                  <span className="text-xs text-muted-foreground">
-                    Articles are public. Your profile will be shown.
-                  </span>
-                </div>
-              </form>
-            </Form>
+                  <div className="flex items-center gap-3">
+                    <Button type="submit" disabled={createArticle.isPending}>
+                      {createArticle.isPending ? "Posting..." : "Post Article"}
+                    </Button>
+                    <span className="text-xs text-muted-foreground">
+                      Articles are public. Your profile will be shown.
+                    </span>
+                  </div>
+                </form>
+              </Form>
+            )}
           </div>
         </section>
 
