@@ -94,87 +94,75 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       {/* Backdrop blur effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-accent/5 pointer-events-none" />
       
-      <div className="container relative mx-auto px-3 md:px-4 py-6 md:py-12">
+      <div className="container relative mx-auto px-3 md:px-4 py-4 md:py-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-8 md:mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-8">
           {/* Company Info */}
-          <div className="space-y-3 md:space-y-4">
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <div className="p-1.5 md:p-2 bg-gradient-to-br from-primary to-accent rounded-lg md:rounded-xl shadow-lg">
-                <Rocket className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
+          <div className="space-y-2 md:space-y-3">
+            <div className="flex items-center space-x-2">
+              <div className="p-1 md:p-1.5 bg-gradient-to-br from-primary to-accent rounded-lg shadow-md">
+                <Rocket className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
               </div>
-              <span className="text-lg md:text-xl font-bold gradient-text">
+              <span className="text-base md:text-lg font-bold gradient-text">
                 {currentText.company}
               </span>
             </div>
-            <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">
+            <p className="text-muted-foreground text-[10px] md:text-xs leading-snug">
               {currentText.tagline}
             </p>
             
-            {/* Contact Info */}
-            <div className="space-y-2 md:space-y-3 text-xs md:text-sm">
-              <a href="tel:+622112345678" className="flex items-center space-x-2 md:space-x-3 text-muted-foreground hover:text-primary transition-colors group">
-                <div className="p-1.5 md:p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
-                  <Phone className="w-3.5 h-3.5 md:w-4 md:h-4" />
+            {/* Contact Info - Hidden on mobile, shown on tablet+ */}
+            <div className="hidden md:flex flex-col space-y-2 text-xs">
+              <a href="tel:+622112345678" className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group">
+                <div className="p-1.5 bg-muted rounded-md group-hover:bg-primary/10 transition-colors">
+                  <Phone className="w-3 h-3" />
                 </div>
-                <span className="truncate">+62 21 1234 5678</span>
+                <span className="truncate text-[11px]">+62 21 1234 5678</span>
               </a>
-              <a href="mailto:info@astravilla.com" className="flex items-center space-x-2 md:space-x-3 text-muted-foreground hover:text-primary transition-colors group">
-                <div className="p-1.5 md:p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
-                  <Mail className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <a href="mailto:info@astravilla.com" className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group">
+                <div className="p-1.5 bg-muted rounded-md group-hover:bg-primary/10 transition-colors">
+                  <Mail className="w-3 h-3" />
                 </div>
-                <span className="truncate">info@astravilla.com</span>
+                <span className="truncate text-[11px]">info@astravilla.com</span>
               </a>
-              <div className="flex items-center space-x-2 md:space-x-3 text-muted-foreground">
-                <div className="p-1.5 md:p-2 bg-muted rounded-lg">
-                  <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                </div>
-                <span>Jakarta, Indonesia</span>
-              </div>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-3 md:space-y-4">
-            <h3 className="text-sm md:text-base font-bold text-foreground">{currentText.quickLinks}</h3>
-            <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
+          <div className="space-y-2 md:space-y-3">
+            <h3 className="text-xs md:text-sm font-bold text-foreground">{currentText.quickLinks}</h3>
+            <ul className="space-y-1 md:space-y-2 text-[10px] md:text-xs">
               <li>
                 <Link to="/" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
-                  <ArrowUpRight className="w-3 h-3 mr-1.5 md:mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {currentText.home}
                 </Link>
               </li>
               <li>
                 <Link to="/dijual" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
-                  <ArrowUpRight className="w-3 h-3 mr-1.5 md:mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {currentText.properties}
                 </Link>
               </li>
               <li>
                 <Link to="/dijual" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
-                  <ArrowUpRight className="w-3 h-3 mr-1.5 md:mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {currentText.buy}
                 </Link>
               </li>
               <li>
                 <Link to="/disewa" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
-                  <ArrowUpRight className="w-3 h-3 mr-1.5 md:mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {currentText.rent}
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
-                  <ArrowUpRight className="w-3 h-3 mr-1.5 md:mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  {currentText.about}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Services */}
-          <div className="space-y-3 md:space-y-4">
-            <h3 className="text-sm md:text-base font-bold text-foreground">{currentText.services}</h3>
-            <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
+          {/* Services - Hidden on mobile */}
+          <div className="hidden md:block space-y-2 md:space-y-3">
+            <h3 className="text-xs md:text-sm font-bold text-foreground">{currentText.services}</h3>
+            <ul className="space-y-1 md:space-y-2 text-[10px] md:text-xs">
               <li><span className="text-muted-foreground">{currentText.propertySearch}</span></li>
               <li><span className="text-muted-foreground">{currentText.consultation}</span></li>
               <li><span className="text-muted-foreground">{currentText.valuation}</span></li>
@@ -182,126 +170,114 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div className="space-y-3 md:space-y-4">
-            <h3 className="text-sm md:text-base font-bold text-foreground">{currentText.newsletter}</h3>
-            <p className="text-muted-foreground text-xs md:text-sm">{currentText.newsletterText}</p>
-            <div className="space-y-2 md:space-y-3">
+          {/* Newsletter - Compact on mobile */}
+          <div className="space-y-2 md:space-y-3 col-span-1 md:col-span-1">
+            <h3 className="text-xs md:text-sm font-bold text-foreground">{currentText.newsletter}</h3>
+            <p className="text-muted-foreground text-[10px] md:text-xs leading-snug hidden md:block">{currentText.newsletterText}</p>
+            <div className="space-y-1.5 md:space-y-2">
               <input
                 type="email"
                 placeholder={currentText.emailPlaceholder}
-                className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-background border border-border rounded-lg md:rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs md:text-sm"
+                className="w-full px-2.5 md:px-3 py-1.5 md:py-2 bg-background border border-border rounded-md md:rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-[10px] md:text-xs"
               />
-              <button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground py-2 md:py-2.5 px-3 md:px-4 rounded-lg md:rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-300 text-xs md:text-sm font-semibold">
+              <button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground py-1.5 md:py-2 px-2.5 md:px-3 rounded-md md:rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 text-[10px] md:text-xs font-semibold">
                 {currentText.subscribe}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Business Partners Section */}
-        <div className="border-t border-border/50 pt-6 md:pt-12 pb-4 md:pb-8">
-          <div className="text-center mb-4 md:mb-8">
-            <h2 className="text-lg md:text-2xl font-bold text-foreground mb-2 flex items-center justify-center space-x-2 md:space-x-3">
-              <div className="p-1.5 md:p-2 bg-gradient-to-br from-primary to-accent rounded-lg">
-                <Handshake className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
+        {/* Business Partners Section - Compact */}
+        <div className="border-t border-border/50 pt-3 md:pt-6 pb-3 md:pb-6">
+          <div className="text-center mb-2 md:mb-4">
+            <h2 className="text-sm md:text-lg font-bold text-foreground flex items-center justify-center space-x-1.5 md:space-x-2">
+              <div className="p-1 md:p-1.5 bg-gradient-to-br from-primary to-accent rounded-md">
+                <Handshake className="w-3.5 h-3.5 md:w-5 md:h-5 text-primary-foreground" />
               </div>
               <span className="gradient-text">{currentText.businessPartners}</span>
             </h2>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             {/* Partner Network */}
             <Link 
               to="/partners/network"
-              className="group glass-card p-3 md:p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="group glass-card p-2 md:p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
             >
-              <div className="p-2 md:p-4 bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl md:rounded-2xl mb-2 md:mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
-                <Users className="w-6 h-6 md:w-10 md:h-10 text-primary" />
+              <div className="p-1.5 md:p-3 bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg md:rounded-xl mb-1 md:mb-2 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <Users className="w-5 h-5 md:w-8 md:h-8 text-primary" />
               </div>
-              <h3 className="text-xs md:text-base font-bold text-foreground mb-1 md:mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-[10px] md:text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
                 {currentText.partnerNetwork}
               </h3>
-              <p className="text-[10px] md:text-xs text-muted-foreground leading-relaxed hidden md:block">
-                Connect with our trusted network of real estate professionals
-              </p>
             </Link>
 
             {/* Become Partner */}
             <Link 
               to="/partners/become"
-              className="group glass-card p-3 md:p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="group glass-card p-2 md:p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
             >
-              <div className="p-2 md:p-4 bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl md:rounded-2xl mb-2 md:mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
-                <Building2 className="w-6 h-6 md:w-10 md:h-10 text-accent" />
+              <div className="p-1.5 md:p-3 bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-lg md:rounded-xl mb-1 md:mb-2 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <Building2 className="w-5 h-5 md:w-8 md:h-8 text-accent" />
               </div>
-              <h3 className="text-xs md:text-base font-bold text-foreground mb-1 md:mb-2 group-hover:text-accent transition-colors">
+              <h3 className="text-[10px] md:text-sm font-bold text-foreground group-hover:text-accent transition-colors leading-tight">
                 {currentText.becomePartner}
               </h3>
-              <p className="text-[10px] md:text-xs text-muted-foreground leading-relaxed hidden md:block">
-                Join our partner program and grow your business with us
-              </p>
             </Link>
 
             {/* Partner Benefits */}
             <Link 
               to="/partners/benefits"
-              className="group glass-card p-3 md:p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="group glass-card p-2 md:p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
             >
-              <div className="p-2 md:p-4 bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-xl md:rounded-2xl mb-2 md:mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6 md:w-10 md:h-10 text-purple-500" />
+              <div className="p-1.5 md:p-3 bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-lg md:rounded-xl mb-1 md:mb-2 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-5 h-5 md:w-8 md:h-8 text-purple-500" />
               </div>
-              <h3 className="text-xs md:text-base font-bold text-foreground mb-1 md:mb-2 group-hover:text-purple-500 transition-colors">
+              <h3 className="text-[10px] md:text-sm font-bold text-foreground group-hover:text-purple-500 transition-colors leading-tight">
                 {currentText.partnerBenefits}
               </h3>
-              <p className="text-[10px] md:text-xs text-muted-foreground leading-relaxed hidden md:block">
-                Exclusive benefits and rewards for our valued partners
-              </p>
             </Link>
 
             {/* Joint Ventures */}
             <Link 
               to="/partners/ventures"
-              className="group glass-card p-3 md:p-6 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="group glass-card p-2 md:p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
             >
-              <div className="p-2 md:p-4 bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-xl md:rounded-2xl mb-2 md:mb-4 mx-auto w-fit group-hover:scale-110 transition-transform">
-                <Handshake className="w-6 h-6 md:w-10 md:h-10 text-orange-500" />
+              <div className="p-1.5 md:p-3 bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-lg md:rounded-xl mb-1 md:mb-2 mx-auto w-fit group-hover:scale-110 transition-transform">
+                <Handshake className="w-5 h-5 md:w-8 md:h-8 text-orange-500" />
               </div>
-              <h3 className="text-xs md:text-base font-bold text-foreground mb-1 md:mb-2 group-hover:text-orange-500 transition-colors">
+              <h3 className="text-[10px] md:text-sm font-bold text-foreground group-hover:text-orange-500 transition-colors leading-tight">
                 {currentText.jointVentures}
               </h3>
-              <p className="text-[10px] md:text-xs text-muted-foreground leading-relaxed hidden md:block">
-                Explore joint venture opportunities in real estate
-              </p>
             </Link>
           </div>
         </div>
 
         {/* Social Media & Bottom Bar */}
-        <div className="border-t border-border/50 pt-4 md:pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+        <div className="border-t border-border/50 pt-2.5 md:pt-4">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             {/* Social Media */}
-            <div className="flex space-x-2 md:space-x-3">
-              <a href="#" className="p-2 md:p-2.5 bg-muted hover:bg-primary/10 rounded-lg md:rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
-                <Facebook className="w-4 h-4 md:w-5 md:h-5" />
+            <div className="flex space-x-1.5 md:space-x-2">
+              <a href="#" className="p-1.5 md:p-2 bg-muted hover:bg-primary/10 rounded-md md:rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Facebook className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </a>
-              <a href="#" className="p-2 md:p-2.5 bg-muted hover:bg-primary/10 rounded-lg md:rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
-                <Twitter className="w-4 h-4 md:w-5 md:h-5" />
+              <a href="#" className="p-1.5 md:p-2 bg-muted hover:bg-primary/10 rounded-md md:rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Twitter className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </a>
-              <a href="#" className="p-2 md:p-2.5 bg-muted hover:bg-primary/10 rounded-lg md:rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
-                <Instagram className="w-4 h-4 md:w-5 md:h-5" />
+              <a href="#" className="p-1.5 md:p-2 bg-muted hover:bg-primary/10 rounded-md md:rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Instagram className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </a>
-              <a href="#" className="p-2 md:p-2.5 bg-muted hover:bg-primary/10 rounded-lg md:rounded-xl text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
-                <Youtube className="w-4 h-4 md:w-5 md:h-5" />
+              <a href="#" className="p-1.5 md:p-2 bg-muted hover:bg-primary/10 rounded-md md:rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110">
+                <Youtube className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </a>
             </div>
 
             {/* Copyright */}
             <div className="text-center md:text-right">
-              <p className="text-muted-foreground text-xs md:text-sm font-medium">
-                © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
+              <p className="text-muted-foreground text-[10px] md:text-xs font-medium">
+                © {new Date().getFullYear()} {currentText.company}
               </p>
-              <div className="flex flex-wrap justify-center md:justify-end gap-2 md:gap-4 mt-1.5 md:mt-2 text-xs md:text-sm">
+              <div className="flex flex-wrap justify-center md:justify-end gap-1.5 md:gap-3 mt-0.5 md:mt-1 text-[9px] md:text-[10px]">
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">{currentText.privacy}</a>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">{currentText.terms}</a>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">{currentText.cookies}</a>
