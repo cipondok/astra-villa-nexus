@@ -14,6 +14,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { shareProperty } from '@/utils/shareUtils';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useIsAdmin } from '@/hooks/useUserRoles';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { 
   MapPin, 
@@ -42,8 +43,13 @@ import {
   Plus,
   Shield,
   Crown,
-  Medal
+  Medal,
+  Edit,
+  Trash2
 } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProtectedContactInfo from '@/components/ProtectedContactInfo';
 
 interface PropertyData {
@@ -97,6 +103,7 @@ const PropertyDetail: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const [property, setProperty] = useState<PropertyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -105,6 +112,7 @@ const PropertyDetail: React.FC = () => {
   const [relatedProperties, setRelatedProperties] = useState<PropertyData[]>([]);
   const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
@@ -414,6 +422,53 @@ const PropertyDetail: React.FC = () => {
             </div>
             
             <div className="flex items-center gap-2">
+              {/* Admin Edit Controls */}
+              {isAdmin && !adminLoading && (
+                <div className="flex items-center gap-2 mr-2 border-r border-border pr-2">
+                  <Button 
+                    variant="default" 
+                    size="sm"
+                    onClick={() => setIsEditMode(!isEditMode)}
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    {isEditMode ? 'Cancel Edit' : 'Edit Property'}
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={async () => {
+                      if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+                        try {
+                          const { error } = await supabase
+                            .from('properties')
+                            .delete()
+                            .eq('id', id);
+                          
+                          if (error) throw error;
+                          
+                          toast.success({
+                            title: "Property deleted",
+                            description: "The property has been successfully deleted."
+                          });
+                          navigate('/admin');
+                        } catch (error) {
+                          console.error('Delete error:', error);
+                          toast.error({
+                            title: "Delete failed",
+                            description: "Unable to delete property. Please try again."
+                          });
+                        }
+                      }
+                    }}
+                    className="shadow-md"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </div>
+              )}
+              
               <PropertyComparisonButton 
                 property={{
                   ...property,
@@ -446,6 +501,151 @@ const PropertyDetail: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        {/* Admin Edit Form */}
+        {isAdmin && isEditMode && (
+          <Card className="mb-6 border-2 border-primary/50 shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10">
+              <CardTitle className="flex items-center gap-2">
+                <Edit className="h-5 w-5" />
+                Edit Property Details
+              </CardTitle>
+              <CardDescription>Update property information (Admin Access)</CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                
+                try {
+                  const { error } = await supabase
+                    .from('properties')
+                    .update({
+                      title: formData.get('title') as string,
+                      description: formData.get('description') as string,
+                      price: parseFloat(formData.get('price') as string),
+                      location: formData.get('location') as string,
+                      bedrooms: parseInt(formData.get('bedrooms') as string) || null,
+                      bathrooms: parseInt(formData.get('bathrooms') as string) || null,
+                      area_sqm: parseFloat(formData.get('area_sqm') as string) || null,
+                      property_type: formData.get('property_type') as string,
+                      listing_type: formData.get('listing_type') as string,
+                      status: formData.get('status') as string,
+                    })
+                    .eq('id', id);
+                  
+                  if (error) throw error;
+                  
+                  toast.success({
+                    title: "Property updated",
+                    description: "Changes have been saved successfully."
+                  });
+                  
+                  setIsEditMode(false);
+                  loadProperty(); // Reload to show updated data
+                } catch (error) {
+                  console.error('Update error:', error);
+                  toast.error({
+                    title: "Update failed",
+                    description: "Unable to update property. Please try again."
+                  });
+                }
+              }} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Title</label>
+                    <Input name="title" defaultValue={property.title} required />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Location</label>
+                    <Input name="location" defaultValue={property.location} required />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Price (IDR)</label>
+                    <Input name="price" type="number" defaultValue={property.price} required />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Area (sqm)</label>
+                    <Input name="area_sqm" type="number" step="0.01" defaultValue={property.area_sqm || ''} />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Bedrooms</label>
+                    <Input name="bedrooms" type="number" defaultValue={property.bedrooms || ''} />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Bathrooms</label>
+                    <Input name="bathrooms" type="number" defaultValue={property.bathrooms || ''} />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Property Type</label>
+                    <Select name="property_type" defaultValue={property.property_type}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="apartment">Apartment</SelectItem>
+                        <SelectItem value="villa">Villa</SelectItem>
+                        <SelectItem value="land">Land</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Listing Type</label>
+                    <Select name="listing_type" defaultValue={property.listing_type}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sale">Sale</SelectItem>
+                        <SelectItem value="rent">Rent</SelectItem>
+                        <SelectItem value="lease">Lease</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Status</label>
+                    <Select name="status" defaultValue={property.status}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="sold">Sold</SelectItem>
+                        <SelectItem value="rented">Rented</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Description</label>
+                  <Textarea name="description" rows={6} defaultValue={property.description} required />
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="bg-gradient-to-r from-primary to-accent">
+                    Save Changes
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsEditMode(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        )}
         
         {/* Enhanced Image Gallery */}
         <div className="mb-8">
