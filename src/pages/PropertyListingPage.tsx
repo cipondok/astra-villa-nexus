@@ -178,13 +178,13 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="w-full py-6">
-        <h1 className="text-4xl font-bold mb-2 px-4">{title}</h1>
-        <p className="text-muted-foreground mb-6 px-4">{subtitle}</p>
+    <div className="min-h-screen bg-background text-foreground pt-12 md:pt-14 lg:pt-16">
+      <main className="w-full py-4 md:py-6">
+        <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 px-4">{title}</h1>
+        <p className="text-xs md:text-base text-muted-foreground mb-4 md:mb-6 px-4">{subtitle}</p>
         
         {/* Search Filters */}
-        <div className="mb-8">
+        <div className="mb-4 md:mb-8">
           <SmartSearchPanel
             language={language}
             onSearch={handleSearch}
@@ -192,7 +192,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         </div>
 
         {/* Property Listings */}
-        <div className="mt-6">
+        <div className="mt-4 md:mt-6">
           <PropertyListingsSection
             language={language}
             searchResults={hasSearched ? searchResults : properties}

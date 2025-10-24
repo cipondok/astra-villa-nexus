@@ -352,19 +352,19 @@ const Index = () => {
       />
       
       {/* Content Layer with mobile-first responsive backdrop */}
-      <div className="relative z-10 min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile"
-      >
+      <div className="relative z-10 min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile pt-12 md:pt-14 lg:pt-16">
+        
         
         {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
-        <section className="relative w-full">
-          <HomeIntroSlider language={language} className="h-[40vh] md:h-[45vh] lg:h-[50vh] model-container-mobile">
+        <section className="relative w-full pt-2 md:pt-0">
+          <HomeIntroSlider language={language} className="h-[35vh] md:h-[45vh] lg:h-[50vh] model-container-mobile">
             {/* Search Panel - No Background */}
-            <div className="p-2 md:p-3 w-full">
-              <div className="mb-2 text-center">
-                <h2 className="text-base md:text-xl font-bold text-foreground mb-1">
+            <div className="p-1.5 md:p-3 w-full">
+              <div className="mb-1.5 md:mb-2 text-center">
+                <h2 className="text-sm md:text-xl font-bold text-foreground mb-0.5 md:mb-1">
                   {t.findYour}
                 </h2>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <p className="text-[10px] md:text-sm text-muted-foreground">
                   🔍 {t.searchPowered}
                 </p>
               </div>

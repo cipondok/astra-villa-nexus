@@ -25,6 +25,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
   const [showFilters, setShowFilters] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [useNearbyLocation, setUseNearbyLocation] = useState(false);
@@ -33,10 +34,43 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showLocationButtons, setShowLocationButtons] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  
+  // Detect mobile and scroll behavior
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (window.innerWidth < 768) { // Only on mobile
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setIsMinimized(true);
+        } else if (currentScrollY < lastScrollY || currentScrollY < 50) {
+          setIsMinimized(false);
+        }
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
   
   // Trending and smart suggestions
   const trendingSearches = [
@@ -865,15 +899,75 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     onSearch(searchData);
   };
 
+  // Minimized mobile view
+  if (isMobile && isMinimized) {
+    return (
+      <div className="w-full sticky top-12 z-40 transition-all duration-300">
+        <div className="backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 border-b border-gray-200/50 dark:border-gray-700/50 shadow-md">
+          <div className="flex items-center gap-2 p-2">
+            <Button
+              onClick={() => setIsMinimized(false)}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+            <div className="flex-1 relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+              <Input
+                placeholder={currentText.searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onClick={() => setIsMinimized(false)}
+                className="pl-8 pr-2 h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
+              />
+            </div>
+            <Button
+              onClick={handleSearch}
+              size="sm"
+              className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700"
+            >
+              <Search className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className={cn(
+      "w-full transition-all duration-300",
+      isMobile ? "sticky top-12 z-40" : "max-w-7xl mx-auto"
+    )}>
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div className="p-2 lg:p-3 space-y-2 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
+        <div className={cn(
+          "space-y-2 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50",
+          isMobile ? "p-1.5" : "p-2 lg:p-3"
+        )}>
+          
+          {/* Mobile collapse button */}
+          {isMobile && (
+            <div className="flex justify-center">
+              <Button
+                onClick={() => setIsMinimized(true)}
+                variant="ghost"
+                size="sm"
+                className="h-6 w-12 p-0"
+              >
+                <ChevronUp className="h-3 w-3 text-muted-foreground" />
+              </Button>
+            </div>
+          )}
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className="inline-flex bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg p-1 border border-gray-300/50 dark:border-gray-600/50 shadow-sm relative">
+            <div className={cn(
+              "inline-flex bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg border border-gray-300/50 dark:border-gray-600/50 shadow-sm relative",
+              isMobile ? "p-0.5" : "p-1"
+            )}>
               {/* Sliding background indicator */}
               <div 
                 className="absolute inset-y-1 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-md shadow-md transition-all duration-300 ease-out"
@@ -888,41 +982,49 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               
               <button
                 onClick={() => setActiveTab('all')}
-                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
                   activeTab === 'all' 
                     ? 'text-white shadow-sm' 
                     : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                )}
               >
                 {currentText.all}
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
                   activeTab === 'sale' 
                     ? 'text-white shadow-sm' 
                     : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                )}
               >
                 {currentText.forSale}
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
                   activeTab === 'rent' 
                     ? 'text-white shadow-sm' 
                     : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                )}
               >
                 {currentText.forRent}
               </button>
               <button
                 onClick={() => setActiveTab('new_project')}
-                className={`relative z-10 px-3 py-1.5 rounded-md font-semibold text-[9px] uppercase tracking-wide transition-all duration-200 flex-1 min-w-[60px] ${
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
                   activeTab === 'new_project' 
                     ? 'text-white shadow-sm' 
                     : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                )}
               >
                 {currentText.newProject}
               </button>
@@ -931,37 +1033,54 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           
           
           {/* Compact Search Row with Location Options */}
-          <div className="flex gap-2 lg:gap-3">
+          <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />
+              <Search className={cn(
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500",
+                isMobile ? "h-3 w-3 left-2" : "h-4 w-4"
+              )} />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
-                className="pl-10 pr-20 h-11 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className={cn(
+                  "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all",
+                  isMobile ? "pl-8 pr-16 h-9 text-xs" : "pl-10 pr-20 h-11 text-sm"
+                )}
               />
               
               {/* Location Options Inside Input */}
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+              <div className={cn(
+                "absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center",
+                isMobile ? "gap-0.5" : "gap-1"
+              )}>
                 <Button
                   onClick={() => toggleSearchType('location')}
                   variant="ghost"
                   size="sm"
-                  className={`h-7 w-7 p-0 rounded-md ${!useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={cn(
+                    "p-0 rounded-md",
+                    isMobile ? "h-6 w-6" : "h-7 w-7",
+                    !useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                  )}
                   title={currentText.location}
                 >
-                  <MapPin className="h-3 w-3" />
+                  <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 </Button>
                 <Button
                   onClick={() => toggleSearchType('nearby')}
                   variant="ghost"
                   size="sm"
-                  className={`h-7 w-7 p-0 rounded-md ${useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={cn(
+                    "p-0 rounded-md",
+                    isMobile ? "h-6 w-6" : "h-7 w-7",
+                    useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                  )}
                   disabled={isGettingLocation}
                   title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
                 >
-                  <MapPin className="h-3 w-3" fill={useNearbyLocation ? "currentColor" : "none"} />
+                  <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />
                 </Button>
               </div>
               
@@ -1032,23 +1151,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-1">
+            <div className={cn("flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
               <Button
                 onClick={() => setShowFilters(!showFilters)}
                 variant="outline"
-                className="h-11 px-4 relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all"
+                className={cn(
+                  "relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all",
+                  isMobile ? "h-9 px-2" : "h-11 px-4"
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  <span className="hidden sm:inline text-sm">Filters</span>
+                <div className={cn("flex items-center", isMobile ? "gap-1" : "gap-2")}>
+                  <Filter className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
+                  {!isMobile && <span className="hidden sm:inline text-sm">Filters</span>}
                   {getActiveFiltersCount() > 0 && (
-                    <span className="ml-1 bg-blue-600 dark:bg-blue-500 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+                    <span className={cn(
+                      "bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-full",
+                      isMobile ? "text-[9px] px-1.5 py-0.5" : "ml-1 text-xs px-2 py-0.5"
+                    )}>
                       {getActiveFiltersCount()}
                     </span>
                   )}
                 </div>
               </Button>
-              {getActiveFiltersCount() > 0 && (
+              {getActiveFiltersCount() > 0 && !isMobile && (
                 <Button
                   onClick={clearAllFilters}
                   variant="ghost"
@@ -1062,10 +1187,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
             <Button
               onClick={handleSearch}
-              className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+              className={cn(
+                "bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center",
+                isMobile ? "h-9 px-3 text-xs gap-1" : "h-11 px-6 text-sm gap-2"
+              )}
             >
-              <Search className="h-4 w-4" />
-              <span className="hidden sm:inline">{currentText.search}</span>
+              <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
+              {!isMobile && <span className="hidden sm:inline">{currentText.search}</span>}
             </Button>
           </div>
           
@@ -1096,7 +1224,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Results Count */}
           {resultsCount !== undefined && (
             <div className="text-center">
-              <p className="text-xs text-muted-foreground bg-muted/30 px-3 py-1 rounded-md backdrop-blur-sm inline-block">
+              <p className={cn(
+                "text-muted-foreground bg-muted/30 rounded-md backdrop-blur-sm inline-block",
+                isMobile ? "text-[10px] px-2 py-0.5" : "text-xs px-3 py-1"
+              )}>
                 {resultsCount} {currentText.resultsFound}
               </p>
             </div>
