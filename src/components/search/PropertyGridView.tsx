@@ -147,14 +147,14 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Bottom Left Price Overlay - Enhanced & Bigger */}
-            <div className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10">
-              <div className="glass-effect rounded-lg px-2.5 py-1.5 md:px-4 md:py-2.5">
-                <div className="font-bold text-sm md:text-2xl gradient-text leading-tight">
+            {/* Bottom Left Price Overlay - Responsive */}
+            <div className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 md:bottom-3 md:left-3 lg:bottom-4 lg:left-4 z-10">
+              <div className="glass-effect rounded-md sm:rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2.5">
+                <div className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl xl:text-2xl gradient-text leading-tight whitespace-nowrap">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-[9px] md:text-sm text-muted-foreground leading-tight font-medium">/month</div>
+                  <div className="text-[8px] sm:text-[9px] md:text-xs lg:text-sm text-muted-foreground leading-tight font-medium">/month</div>
                 )}
               </div>
             </div>

@@ -75,14 +75,14 @@ const PropertyListView = ({
                   </Badge>
                 </div>
 
-                {/* Price Overlay - Bottom Left */}
-                <div className="absolute bottom-3 left-3 z-10">
-                  <div className="glass-effect rounded-lg px-3 py-2 md:px-4 md:py-2.5">
-                    <div className="font-bold text-base md:text-2xl gradient-text leading-tight">
+                {/* Price Overlay - Bottom Left - Responsive */}
+                <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 md:bottom-4 md:left-4 z-10">
+                  <div className="glass-effect rounded-md sm:rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 lg:px-5 lg:py-3">
+                    <div className="font-bold text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl gradient-text leading-tight whitespace-nowrap">
                       {formatPrice(property.price)}
                     </div>
                     {property.listing_type === 'rent' && (
-                      <div className="text-xs md:text-sm text-muted-foreground leading-tight font-medium">/month</div>
+                      <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-muted-foreground leading-tight font-medium">/month</div>
                     )}
                   </div>
                 </div>
