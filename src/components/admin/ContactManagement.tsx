@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Phone, Mail, MessageCircle, Eye, Reply, Clock, User, Building2 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRoles } from "@/hooks/useUserRoles";
 
 const ContactManagement = () => {
   const [selectedContact, setSelectedContact] = useState(null);
@@ -24,6 +25,7 @@ const ContactManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   const { profile } = useAuth();
+  const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
 
   const { data: contacts, isLoading } = useQuery({
     queryKey: ['contact-inquiries'],
@@ -128,8 +130,13 @@ const ContactManagement = () => {
     return matchesSearch && matchesTab;
   }) || [];
 
-  const authorizedRoles = ['admin', 'agent', 'customer_service'];
-  if (!profile || !authorizedRoles.includes(profile.role)) {
+  const hasAccess = userRoles.some(role => ['admin', 'agent', 'customer_service'].includes(role));
+  
+  if (rolesLoading) {
+    return <div className="p-4">Loading...</div>;
+  }
+  
+  if (!profile || !hasAccess) {
     return (
       <Card className="bg-white/10 backdrop-blur-md border-white/20">
         <CardHeader>

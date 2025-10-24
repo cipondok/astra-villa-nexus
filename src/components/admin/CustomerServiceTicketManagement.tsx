@@ -13,11 +13,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LifeBuoy, Eye, CheckCircle, XCircle, Clock, User, Mail, MessageSquare } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LiveChatManagement from "./LiveChatManagement";
 
 const CustomerServiceTicketManagement = () => {
   const { profile } = useAuth();
+  const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [resolution, setResolution] = useState("");
@@ -137,8 +139,13 @@ const CustomerServiceTicketManagement = () => {
     return <Badge variant="outline" className={`${className} text-xs`}>{text}</Badge>;
   };
   
-  const authorizedRoles = ['admin', 'customer_service'];
-  if (!profile || !authorizedRoles.includes(profile.role)) {
+  const hasAccess = userRoles.some(role => ['admin', 'customer_service'].includes(role));
+  
+  if (rolesLoading) {
+    return <div className="p-4">Loading...</div>;
+  }
+  
+  if (!profile || !hasAccess) {
     return (
       <Card>
         <CardHeader><CardTitle>Access Denied</CardTitle></CardHeader>

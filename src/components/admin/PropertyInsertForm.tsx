@@ -64,10 +64,8 @@ const PropertyInsertForm = () => {
 
   // Check if user is authorized to create restricted development statuses
   const isAuthorizedForRestrictedTypes = () => {
-    if (!profile) return false;
-    
-    // Use admin check hook  
-    return isAdmin || ['agent', 'property_owner'].includes(profile.role);
+    // Only admins can create restricted property types
+    return isAdmin;
   };
 
   // Get available development status options based on user authorization
