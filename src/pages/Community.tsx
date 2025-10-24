@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Star, ThumbsUp, MessageSquarePlus } from "lucide-react";
 
@@ -130,11 +130,11 @@ const Community = () => {
     },
     onSuccess: () => {
       form.reset();
-      toast.success("Article posted");
+      toast.success({ title: "Success!", description: "Your article has been posted" });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
     },
     onError: (err: any) => {
-      toast.error(err.message || "Failed to post article");
+      toast.error({ title: "Error", description: err.message || "Failed to post article" });
     },
   });
 
@@ -282,7 +282,7 @@ function ArticleCard({ article }: { article: any }) {
       queryClient.invalidateQueries({ queryKey: ["article-likes-count", article.id] });
       queryClient.invalidateQueries({ queryKey: ["article-liked", article.id, user?.id] });
     },
-    onError: (e: any) => toast.error(e.message || "Failed"),
+    onError: (e: any) => toast.error({ title: "Error", description: e.message || "Failed" }),
   });
 
   // Ratings
@@ -325,7 +325,7 @@ function ArticleCard({ article }: { article: any }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["article-rating", article.id, user?.id] });
     },
-    onError: (e: any) => toast.error(e.message || "Failed"),
+    onError: (e: any) => toast.error({ title: "Error", description: e.message || "Failed" }),
   });
 
   return (
@@ -411,7 +411,7 @@ function CommentsSection({ articleId }: { articleId: string }) {
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["article-comments", articleId] });
     },
-    onError: (e: any) => toast.error(e.message || "Failed"),
+    onError: (e: any) => toast.error({ title: "Error", description: e.message || "Failed to post comment" }),
   });
 
   return (
@@ -497,7 +497,7 @@ function ReplyForm({ parentId, articleId, onAdded }: { parentId: string; article
       form.reset();
       onAdded();
     },
-    onError: (e: any) => toast.error(e.message || "Failed"),
+    onError: (e: any) => toast.error({ title: "Error", description: e.message || "Failed to post reply" }),
   });
 
   return (

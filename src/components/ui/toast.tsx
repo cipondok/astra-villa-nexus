@@ -23,13 +23,15 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border p-6 pr-8 shadow-xl transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
   {
     variants: {
       variant: {
-        default: "border bg-background text-foreground",
-        destructive:
-          "destructive group border-destructive bg-destructive text-destructive-foreground",
+        default: "border-border bg-gradient-to-r from-background to-muted/30 text-foreground backdrop-blur-sm",
+        destructive: "destructive group border-red-500/50 bg-gradient-to-r from-red-500 to-red-600 text-white",
+        success: "border-green-500/50 bg-gradient-to-r from-green-500 to-emerald-600 text-white",
+        warning: "border-yellow-500/50 bg-gradient-to-r from-yellow-500 to-orange-500 text-white",
+        info: "border-blue-500/50 bg-gradient-to-r from-blue-500 to-cyan-600 text-white",
       },
     },
     defaultVariants: {
@@ -41,14 +43,37 @@ const toastVariants = cva(
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+    VariantProps<typeof toastVariants> & { duration?: number }
+>(({ className, variant, duration = 5000, ...props }, ref) => {
+  const [progress, setProgress] = React.useState(100);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const decrement = (100 / duration) * 50;
+        return Math.max(0, prev - decrement);
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [duration]);
+
   return (
     <ToastPrimitives.Root
       ref={ref}
-      className={cn(toastVariants({ variant }), className)}
+      className={cn(toastVariants({ variant }), "relative", className)}
+      duration={duration}
       {...props}
-    />
+    >
+      {props.children}
+      {/* Progress Bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 backdrop-blur-sm">
+        <div
+          className="h-full bg-gradient-to-r from-white/80 to-white/60 transition-all duration-50 ease-linear"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </ToastPrimitives.Root>
   )
 })
 Toast.displayName = ToastPrimitives.Root.displayName
@@ -75,7 +100,11 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
+      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-all hover:text-foreground hover:bg-white/20 focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100",
+      "group-[.destructive]:text-white/80 group-[.destructive]:hover:text-white group-[.destructive]:hover:bg-white/20",
+      "group-[.success]:text-white/80 group-[.success]:hover:text-white group-[.success]:hover:bg-white/20",
+      "group-[.warning]:text-white/80 group-[.warning]:hover:text-white group-[.warning]:hover:bg-white/20",
+      "group-[.info]:text-white/80 group-[.info]:hover:text-white group-[.info]:hover:bg-white/20",
       className
     )}
     toast-close=""
