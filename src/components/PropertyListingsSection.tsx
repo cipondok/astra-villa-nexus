@@ -109,7 +109,7 @@ const PropertyListingsSection = ({
   if (isSearching) {
     return (
       <section className="py-3 sm:py-4 min-h-[300px]">
-        <div className="container mx-auto px-2 sm:px-4">
+        <div className="w-full px-2 sm:px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
             <p className="text-sm sm:text-base text-gray-600">{currentText.loadingProperties}</p>
@@ -126,7 +126,7 @@ const PropertyListingsSection = ({
   return (
     <>
       <section className="py-3 sm:py-4 min-h-[400px]">
-        <div className="container mx-auto px-2 sm:px-4">
+        <div className="w-full px-2 sm:px-4">
           {!hideTitle && (
             <div className="text-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">{sectionData.sectionTitle}</h2>

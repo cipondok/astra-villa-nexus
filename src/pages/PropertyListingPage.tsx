@@ -179,9 +179,9 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto px-4 py-6">
-        <h1 className="text-4xl font-bold mb-2">{title}</h1>
-        <p className="text-muted-foreground mb-6">{subtitle}</p>
+      <main className="w-full py-6">
+        <h1 className="text-4xl font-bold mb-2 px-4">{title}</h1>
+        <p className="text-muted-foreground mb-6 px-4">{subtitle}</p>
         
         {/* Search Filters */}
         <div className="mb-8">
