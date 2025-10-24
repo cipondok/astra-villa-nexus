@@ -177,14 +177,22 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   return (
     <>
       {!isOpen && (
-        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] transition-all duration-300 ease-in-out hover:scale-105">
-          <AIChatTrigger onOpen={() => setIsOpen(true)} />
+        <div
+          className="fixed z-[9999] pointer-events-none transition-all duration-300 ease-in-out"
+          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
+        >
+          <div className="pointer-events-auto hover:scale-105">
+            <AIChatTrigger onOpen={() => setIsOpen(true)} />
+          </div>
         </div>
       )}
 
       {isOpen && (
-        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] w-[calc(100vw-2rem)] max-w-md h-[70vh] max-h-[calc(100vh-100px)] animate-fade-in">
-          <Card className="h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/80 backdrop-blur-xl overflow-hidden rounded-2xl">
+        <div
+          className="fixed z-[9999] w-[calc(100vw-2rem)] max-w-md h-[70vh] max-h-[calc(100vh-100px)] animate-fade-in pointer-events-none"
+          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
+        >
+          <Card className="pointer-events-auto h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/80 backdrop-blur-xl overflow-hidden rounded-2xl">
             <AIChatHeader onClose={() => setIsOpen(false)} />
             <CardContent className="p-0 flex-1 flex flex-col min-h-0">
               <ScrollArea className="flex-1">

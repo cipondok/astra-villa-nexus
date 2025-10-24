@@ -197,14 +197,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* Chat trigger - Fixed position at bottom right corner */}
       {!isOpen && (
         <div 
-          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] transition-all duration-300 ease-in-out hover:scale-105"
-          onClick={() => {
-            console.log('Chat trigger clicked');
-            setIsOpen(true);
-            setIsMinimized(false);
-          }}
+          className="fixed z-[9999] pointer-events-none transition-all duration-300 ease-in-out"
+          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
         >
-          <AIChatTrigger onOpen={() => setIsOpen(true)} />
+          <div className="pointer-events-auto hover:scale-105">
+            <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); }} />
+          </div>
         </div>
       )}
 
@@ -212,15 +210,18 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {isOpen && (
         <div 
           className={cn(
-            "fixed z-[9999] transition-all duration-300 ease-in-out",
-            isMobile 
-              ? "bottom-0 left-0 right-0 top-auto" 
-              : "bottom-4 right-4 md:bottom-6 md:right-6",
+            "fixed z-[9999] transition-all duration-300 ease-in-out pointer-events-none",
             isMinimized ? "w-[280px]" : isMobile ? "w-full" : "w-[420px]",
-            isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]"
+            isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]",
+            isMobile ? "left-0 right-0" : ""
           )}
+          style={
+            isMobile
+              ? { bottom: 0 }
+              : { bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }
+          }
         >
-          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
+          <Card className="pointer-events-auto h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
             {/* Header with Close and Minimize */}
             <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <div className="flex items-center gap-2">
