@@ -47,10 +47,11 @@ const ProgressPopup = ({
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-1/2 -translate-x-1/2 z-[10000] w-[calc(100%-2rem)] max-w-md",
+        "fixed z-[100000] w-[calc(100%-2rem)] max-w-md",
         "transition-all duration-300 ease-out",
         isVisible ? "animate-fade-in translate-y-0" : "animate-fade-out translate-y-4"
       )}
+      style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
     >
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-2xl border border-white/20 overflow-hidden backdrop-blur-xl">
         <div className="p-4">
