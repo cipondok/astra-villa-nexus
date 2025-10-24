@@ -16,6 +16,22 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, TrendingUp } from "lucide-react";
+import { z } from "zod";
+
+const investmentSchema = z.object({
+  property_type: z.enum(['residential', 'commercial', 'industrial', 'mixed-use', 'land'], {
+    required_error: "Property type is required"
+  }),
+  investment_amount: z.number({
+    required_error: "Investment amount is required",
+    invalid_type_error: "Investment amount must be a number"
+  }).min(1000000, "Minimum investment is IDR 1,000,000").max(100000000000, "Maximum investment is IDR 100,000,000,000"),
+  location_preference: z.string().trim().max(200, "Location must be less than 200 characters").optional(),
+  investment_timeline: z.enum(['immediate', 'short-term', 'medium-term', 'long-term'], {
+    required_error: "Investment timeline is required"
+  }),
+  notes: z.string().trim().max(2000, "Notes must be less than 2000 characters").optional()
+});
 
 export const InvestmentOrderForm = () => {
   const { user } = useAuth();
@@ -43,13 +59,22 @@ export const InvestmentOrderForm = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("foreign_investment_orders").insert({
-        user_id: user.id,
+      // Validate form data
+      const validatedData = investmentSchema.parse({
         property_type: formData.property_type,
         investment_amount: parseFloat(formData.investment_amount),
-        location_preference: formData.location_preference,
+        location_preference: formData.location_preference || undefined,
         investment_timeline: formData.investment_timeline,
-        notes: formData.notes,
+        notes: formData.notes || undefined,
+      });
+
+      const { error } = await supabase.from("foreign_investment_orders").insert({
+        user_id: user.id,
+        property_type: validatedData.property_type,
+        investment_amount: validatedData.investment_amount,
+        location_preference: validatedData.location_preference,
+        investment_timeline: validatedData.investment_timeline,
+        notes: validatedData.notes,
         status: "pending",
       });
 
@@ -68,11 +93,19 @@ export const InvestmentOrderForm = () => {
         notes: "",
       });
     } catch (error: any) {
-      toast({
-        title: "Submission Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }

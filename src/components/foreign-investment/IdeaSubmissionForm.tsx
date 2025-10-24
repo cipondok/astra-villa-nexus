@@ -15,6 +15,15 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Lightbulb } from "lucide-react";
+import { z } from "zod";
+
+const ideaSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(200, "Title must be less than 200 characters"),
+  description: z.string().trim().min(10, "Description must be at least 10 characters").max(2000, "Description must be less than 2000 characters"),
+  category: z.enum(['new-feature', 'improvement', 'service', 'documentation', 'other'], {
+    required_error: "Category is required"
+  })
+});
 
 export const IdeaSubmissionForm = () => {
   const { user } = useAuth();
@@ -39,11 +48,18 @@ export const IdeaSubmissionForm = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("user_ideas").insert({
-        user_id: user.id,
+      // Validate form data
+      const validatedData = ideaSchema.parse({
         title: formData.title,
         description: formData.description,
         category: formData.category,
+      });
+
+      const { error } = await supabase.from("user_ideas").insert({
+        user_id: user.id,
+        title: validatedData.title,
+        description: validatedData.description,
+        category: validatedData.category,
         status: "submitted",
       });
 
@@ -60,11 +76,19 @@ export const IdeaSubmissionForm = () => {
         category: "",
       });
     } catch (error: any) {
-      toast({
-        title: "Submission Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }

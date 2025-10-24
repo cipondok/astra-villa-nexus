@@ -15,6 +15,15 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, MessageSquare } from "lucide-react";
+import { z } from "zod";
+
+const inquirySchema = z.object({
+  subject: z.string().trim().min(1, "Subject is required").max(200, "Subject must be less than 200 characters"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000, "Message must be less than 2000 characters"),
+  inquiry_type: z.enum(['legal', 'financial', 'process', 'property', 'taxation', 'other'], {
+    required_error: "Inquiry type is required"
+  })
+});
 
 export const InquiryForm = () => {
   const { user } = useAuth();
@@ -39,11 +48,18 @@ export const InquiryForm = () => {
 
     setLoading(true);
     try {
-      const { data: inquiry, error } = await supabase.from("foreign_investment_inquiries").insert({
-        user_id: user.id,
+      // Validate form data
+      const validatedData = inquirySchema.parse({
         subject: formData.subject,
         message: formData.message,
         inquiry_type: formData.inquiry_type,
+      });
+
+      const { data: inquiry, error } = await supabase.from("foreign_investment_inquiries").insert({
+        user_id: user.id,
+        subject: validatedData.subject,
+        message: validatedData.message,
+        inquiry_type: validatedData.inquiry_type,
         status: "new",
       }).select().single();
 
@@ -63,8 +79,8 @@ export const InquiryForm = () => {
             inquiry_id: inquiry.id,
             customer_email: profile.email,
             customer_name: profile.full_name || 'Valued Customer',
-            inquiry_type: formData.inquiry_type,
-            message: formData.message
+            inquiry_type: validatedData.inquiry_type,
+            message: validatedData.message
           }
         });
       }
@@ -80,11 +96,19 @@ export const InquiryForm = () => {
         inquiry_type: "",
       });
     } catch (error: any) {
-      toast({
-        title: "Submission Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }
