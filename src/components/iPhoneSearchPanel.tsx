@@ -902,27 +902,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   // Simple mobile view - only input and button by default
   if (isMobile && !showFilters) {
     return (
-      <div className="w-full sticky top-12 z-40 transition-all duration-300 px-0">
-        <div className="backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 border-b border-gray-200/50 dark:border-gray-700/50 shadow-md">
-          <div className="flex items-center gap-1.5 p-1.5">
+      <div className="w-full sticky top-12 z-40 transition-all duration-300 px-1">
+        <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
+          <div className="flex items-center gap-1.5 p-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-9 pr-2 h-9 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
+                className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm"
               />
             </div>
             <Button
               onClick={() => setShowFilters(true)}
               variant="outline"
               size="sm"
-              className="h-9 px-2.5 border-gray-200 dark:border-gray-700"
+              className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl relative"
             >
               <Filter className="h-3.5 w-3.5" />
               {getActiveFiltersCount() > 0 && (
-                <span className="ml-1 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded-full">
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full font-bold shadow-md">
                   {getActiveFiltersCount()}
                 </span>
               )}
@@ -930,7 +930,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             <Button
               onClick={handleSearch}
               size="sm"
-              className="h-9 px-3 text-xs bg-blue-600 hover:bg-blue-700"
+              className="h-9 px-3 text-xs btn-primary-ios shadow-md rounded-xl"
             >
               <Search className="h-3.5 w-3.5" />
             </Button>
@@ -943,24 +943,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   return (
     <div className={cn(
       "w-full transition-all duration-300",
-      isMobile ? "sticky top-12 z-40 px-0" : "max-w-7xl mx-auto"
+      isMobile ? "sticky top-12 z-40 px-1" : "max-w-7xl mx-auto"
     )}>
       {/* Modern Slim Glass Container */}
-      <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
         <div className={cn(
-          "space-y-2 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50",
-          isMobile ? "p-1.5" : "p-2 lg:p-3"
+          "space-y-2 bg-background/40 backdrop-blur-md rounded-2xl shadow-lg border border-border/30",
+          isMobile ? "p-2" : "p-3 lg:p-4"
         )}>
           
           {/* Mobile close button when filters are open */}
           {isMobile && (
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-semibold text-foreground">Search Filters</span>
+            <div className="flex justify-between items-center pb-1 border-b border-border/30">
+              <span className="text-xs font-bold text-foreground">Search Filters</span>
               <Button
                 onClick={() => setShowFilters(false)}
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0"
+                className="h-7 w-7 p-0 rounded-lg hover:bg-destructive/10"
               >
                 <X className="h-4 w-4 text-muted-foreground" />
               </Button>
@@ -970,12 +970,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
             <div className={cn(
-              "inline-flex bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg border border-gray-300/50 dark:border-gray-600/50 shadow-sm relative",
+              "inline-flex bg-background/60 rounded-xl border-0 shadow-sm relative",
               isMobile ? "p-0.5" : "p-1"
             )}>
               {/* Sliding background indicator */}
               <div 
-                className="absolute inset-y-1 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-md shadow-md transition-all duration-300 ease-out"
+                className="absolute inset-y-1 bg-primary rounded-lg shadow-md transition-all duration-300 ease-out"
                 style={{
                   width: 'calc(25% - 4px)',
                   left: activeTab === 'all' ? '4px' : 
@@ -988,11 +988,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <button
                 onClick={() => setActiveTab('all')}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
+                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
                   activeTab === 'all' 
-                    ? 'text-white shadow-sm' 
-                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {currentText.all}
@@ -1000,11 +1000,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <button
                 onClick={() => setActiveTab('sale')}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
+                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
                   activeTab === 'sale' 
-                    ? 'text-white shadow-sm' 
-                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {currentText.forSale}
@@ -1012,11 +1012,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <button
                 onClick={() => setActiveTab('rent')}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
+                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
                   activeTab === 'rent' 
-                    ? 'text-white shadow-sm' 
-                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {currentText.forRent}
@@ -1024,14 +1024,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <button
                 onClick={() => setActiveTab('new_project')}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[8px] min-w-[50px]" : "px-3 py-1.5 text-[9px] min-w-[60px]",
+                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
+                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
                   activeTab === 'new_project' 
-                    ? 'text-white shadow-sm' 
-                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                {currentText.newProject}
+                {isMobile ? "New" : currentText.newProject}
               </button>
             </div>
           </div>
@@ -1041,7 +1041,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div className="flex-1 relative">
               <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500",
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none",
                 isMobile ? "h-3 w-3 left-2" : "h-4 w-4"
               )} />
               <Input
@@ -1050,7 +1050,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 className={cn(
-                  "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all",
+                  "bg-background/60 border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium",
                   isMobile ? "pl-8 pr-16 h-9 text-xs" : "pl-10 pr-20 h-11 text-sm"
                 )}
               />

@@ -248,17 +248,18 @@
   }
   
   .slideshow-track {
-    gap: 24px;
+    gap: 16px;
   }
 }
 
 @media (max-width: 768px) {
   .property-slide {
-    min-width: 280px;
+    min-width: 85vw;
+    max-width: 320px;
   }
   
   .slide-image {
-    height: 200px;
+    height: 160px;
   }
   
   .slideshow-nav {
@@ -266,33 +267,76 @@
   }
   
   .slideshow-track {
-    gap: 20px;
+    gap: 12px;
   }
   
   .slide-content {
-    padding: 24px;
+    padding: 12px;
   }
   
   .slide-title {
-    font-size: 1.25rem;
+    font-size: 0.95rem;
+    -webkit-line-clamp: 1;
   }
   
   .slide-price {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .slide-price-subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+  
+  .slide-location {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+  
+  .slide-features {
+    gap: 6px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+  
+  .feature {
+    font-size: 0.7rem;
+  }
+  
+  .btn-whatsapp {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .btn-share {
+    padding: 8px 10px;
   }
 }
 
 @media (max-width: 480px) {
   .property-slideshow {
-    padding: 20px 16px;
+    padding: 16px 8px;
   }
   
   .property-slide {
-    min-width: 260px;
+    min-width: 90vw;
+    max-width: 340px;
+  }
+  
+  .slide-image {
+    height: 140px;
   }
   
   .slide-content {
-    padding: 20px;
+    padding: 10px;
+  }
+  
+  .slide-price {
+    font-size: 1rem;
+  }
+  
+  .slide-title {
+    font-size: 0.9rem;
   }
 }
 
