@@ -411,23 +411,36 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       console.log('Updating property with data:', updates);
       console.log('Current images state:', images);
       
-      // Prepare the update payload
-      const updatePayload = {
-        ...updates,
+      // Only include columns that actually exist in the properties table
+      const updatePayload: any = {
+        title: updates.title,
+        description: updates.description,
+        property_type: updates.property_type,
+        listing_type: updates.listing_type,
         price: updates.price ? parseFloat(updates.price) : null,
+        location: updates.location,
         bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
         bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
         area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
-        // Additional numeric fields
-        parking_spaces: updates.parking_spaces ? parseInt(updates.parking_spaces) : null,
-        year_built: updates.year_built ? parseInt(updates.year_built) : null,
-        lot_size: updates.lot_size ? parseFloat(updates.lot_size) : null,
-        property_tax: updates.property_tax ? parseFloat(updates.property_tax) : null,
-        maintenance_fee: updates.maintenance_fee ? parseFloat(updates.maintenance_fee) : null,
-        // Boolean fields
-        featured: Boolean(updates.featured),
+        status: updates.status,
+        state: updates.state,
+        city: updates.city,
+        area: updates.area,
+        three_d_model_url: updates.three_d_model_url || null,
+        virtual_tour_url: updates.virtual_tour_url || null,
+        development_status: updates.development_status,
+        seo_title: updates.seo_title || null,
+        seo_description: updates.seo_description || null,
+        approval_status: updates.approval_status,
+        thumbnail_url: updates.thumbnail_url || null,
         updated_at: new Date().toISOString(),
       };
+
+      // Add optional fields if they exist in updates
+      if (updates.agent_id) updatePayload.agent_id = updates.agent_id;
+      if (updates.image_urls) updatePayload.image_urls = updates.image_urls;
+      if (updates.property_features) updatePayload.property_features = updates.property_features;
+      if (updates.owner_type) updatePayload.owner_type = updates.owner_type;
 
       // Handle images - save as PostgreSQL array
       if (images && images.length > 0) {
