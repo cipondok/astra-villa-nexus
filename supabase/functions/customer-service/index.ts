@@ -1,9 +1,29 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// Validation schemas
+const createTicketSchema = z.object({
+  customer_name: z.string().trim().min(1).max(100),
+  customer_email: z.string().trim().email().max(255),
+  subject: z.string().trim().min(1).max(200),
+  message: z.string().trim().min(1).max(5000),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']),
+  category: z.string().trim().min(1).max(100),
+  customer_id: z.string().uuid().optional()
+});
+
+const updateTicketSchema = z.object({
+  ticket_id: z.string().uuid(),
+  status: z.enum(['open', 'in_progress', 'resolved', 'closed']).optional(),
+  assigned_to: z.string().uuid().optional(),
+  internal_notes: z.string().max(2000).optional(),
+  customer_response: z.string().max(5000).optional()
+});
 
 interface CreateTicketRequest {
   customer_name: string
@@ -71,6 +91,15 @@ Deno.serve(async (req) => {
     
   } catch (error) {
     console.error('❌ Customer Service error:', error)
+    
+    // Handle validation errors
+    if (error.name === 'ZodError') {
+      return new Response(JSON.stringify({ error: 'Validation failed', details: error.errors }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+    
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -79,7 +108,8 @@ Deno.serve(async (req) => {
 })
 
 async function createSupportTicket(req: Request, supabase: any) {
-  const ticketData: CreateTicketRequest = await req.json()
+  const rawData = await req.json();
+  const ticketData = createTicketSchema.parse(rawData);
   
   console.log('🎫 Creating support ticket:', ticketData.subject)
   
@@ -158,7 +188,8 @@ async function createSupportTicket(req: Request, supabase: any) {
 }
 
 async function updateSupportTicket(req: Request, supabase: any) {
-  const updateData: UpdateTicketRequest = await req.json()
+  const rawData = await req.json();
+  const updateData = updateTicketSchema.parse(rawData);
   
   console.log('🔄 Updating ticket:', updateData.ticket_id)
   

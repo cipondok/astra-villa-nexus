@@ -1,7 +1,15 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
+
+const deepseekRequestSchema = z.object({
+  prompt: z.string().trim().min(1).max(2000),
+  type: z.enum(['chat', 'diagnostics', 'code-analysis']).optional().default('chat'),
+  model: z.string().max(100).optional().default('deepseek-coder'),
+  temperature: z.number().min(0).max(2).optional().default(0.3)
+});
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,7 +27,8 @@ serve(async (req) => {
       throw new Error('DeepSeek API key not configured');
     }
 
-    const { prompt, type = 'chat', model = 'deepseek-coder', temperature = 0.3 } = await req.json();
+    const rawData = await req.json();
+    const { prompt, type, model, temperature } = deepseekRequestSchema.parse(rawData);
 
     if (!prompt) {
       throw new Error('Prompt is required');
@@ -83,6 +92,19 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in deepseek-ai function:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ZodError') {
+      return new Response(JSON.stringify({ 
+        error: 'Validation failed',
+        details: error.errors,
+        timestamp: new Date().toISOString()
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
     return new Response(JSON.stringify({ 
       error: error.message,
       timestamp: new Date().toISOString()

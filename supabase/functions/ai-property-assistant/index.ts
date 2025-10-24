@@ -1,6 +1,15 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+
+const aiRequestSchema = z.object({
+  message: z.string().trim().min(1).max(2000),
+  conversation_history: z.array(z.object({
+    role: z.enum(['user', 'assistant', 'system']),
+    content: z.string().max(2000)
+  })).max(10).optional().default([])
+});
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,7 +33,8 @@ serve(async (req) => {
   }
 
   try {
-    const { message, conversation_history = [] } = await req.json();
+    const rawData = await req.json();
+    const { message, conversation_history } = aiRequestSchema.parse(rawData);
     
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -182,6 +192,18 @@ Current search context: ${JSON.stringify(context, null, 2)}`
 
   } catch (error) {
     console.error('Error in AI property assistant:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ZodError') {
+      return new Response(JSON.stringify({ 
+        error: 'Validation failed',
+        details: error.errors
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
     return new Response(JSON.stringify({ 
       error: 'Sorry, I encountered an error. Please try again.',
       details: error.message 

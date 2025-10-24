@@ -1,9 +1,31 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// Validation schemas
+const chatMessageSchema = z.object({
+  session_id: z.string().uuid(),
+  sender_type: z.enum(['customer', 'agent', 'system']),
+  sender_id: z.string().uuid().optional(),
+  sender_name: z.string().trim().min(1).max(100),
+  message: z.string().trim().min(1).max(5000),
+  message_type: z.enum(['text', 'file', 'image']).optional().default('text'),
+  metadata: z.any().optional()
+});
+
+const chatSessionSchema = z.object({
+  customer_name: z.string().trim().min(1).max(100),
+  customer_email: z.string().trim().email().max(255).optional(),
+  subject: z.string().trim().max(200).optional(),
+  priority: z.enum(['low', 'medium', 'high']).optional().default('medium'),
+  customer_ip: z.string().max(45).optional(),
+  user_agent: z.string().max(500).optional(),
+  referrer_url: z.string().url().max(500).optional()
+});
 
 interface ChatMessage {
   session_id: string
@@ -76,6 +98,15 @@ Deno.serve(async (req) => {
     
   } catch (error) {
     console.error('❌ Live chat error:', error)
+    
+    // Handle validation errors
+    if (error.name === 'ZodError') {
+      return new Response(JSON.stringify({ error: 'Validation failed', details: error.errors }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+    
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -84,7 +115,8 @@ Deno.serve(async (req) => {
 })
 
 async function startChatSession(req: Request, supabase: any) {
-  const sessionData: ChatSession = await req.json()
+  const rawData = await req.json();
+  const sessionData = chatSessionSchema.parse(rawData);
   
   console.log('🚀 Starting new chat session for:', sessionData.customer_name)
   
@@ -157,7 +189,8 @@ async function startChatSession(req: Request, supabase: any) {
 }
 
 async function sendChatMessage(req: Request, supabase: any) {
-  const messageData: ChatMessage = await req.json()
+  const rawData = await req.json();
+  const messageData = chatMessageSchema.parse(rawData);
   
   console.log('💌 Sending chat message in session:', messageData.session_id)
   

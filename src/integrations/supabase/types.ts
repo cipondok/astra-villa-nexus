@@ -22,7 +22,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           locked_at: string
-          locked_by_ip: unknown | null
+          locked_by_ip: unknown
           unlock_at: string
           user_id: string | null
         }
@@ -33,7 +33,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           locked_at?: string
-          locked_by_ip?: unknown | null
+          locked_by_ip?: unknown
           unlock_at: string
           user_id?: string | null
         }
@@ -44,7 +44,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           locked_at?: string
-          locked_by_ip?: unknown | null
+          locked_by_ip?: unknown
           unlock_at?: string
           user_id?: string | null
         }
@@ -2041,7 +2041,7 @@ export type Database = {
           user_agent: string | null
           user_email: string | null
           user_id: string | null
-          user_ip: unknown | null
+          user_ip: unknown
         }
         Insert: {
           component_name?: string | null
@@ -2061,7 +2061,7 @@ export type Database = {
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
-          user_ip?: unknown | null
+          user_ip?: unknown
         }
         Update: {
           component_name?: string | null
@@ -2081,7 +2081,7 @@ export type Database = {
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
-          user_ip?: unknown | null
+          user_ip?: unknown
         }
         Relationships: []
       }
@@ -2172,7 +2172,7 @@ export type Database = {
         Row: {
           accessed_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           operation: string
           table_name: string
@@ -2181,7 +2181,7 @@ export type Database = {
         Insert: {
           accessed_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           operation: string
           table_name: string
@@ -2190,7 +2190,7 @@ export type Database = {
         Update: {
           accessed_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           operation?: string
           table_name?: string
@@ -2984,7 +2984,7 @@ export type Database = {
           agent_user_id: string | null
           created_at: string
           customer_email: string | null
-          customer_ip: unknown | null
+          customer_ip: unknown
           customer_name: string
           customer_user_id: string | null
           ended_at: string | null
@@ -3002,7 +3002,7 @@ export type Database = {
           agent_user_id?: string | null
           created_at?: string
           customer_email?: string | null
-          customer_ip?: unknown | null
+          customer_ip?: unknown
           customer_name?: string
           customer_user_id?: string | null
           ended_at?: string | null
@@ -3020,7 +3020,7 @@ export type Database = {
           agent_user_id?: string | null
           created_at?: string
           customer_email?: string | null
-          customer_ip?: unknown | null
+          customer_ip?: unknown
           customer_name?: string
           customer_user_id?: string | null
           ended_at?: string | null
@@ -3145,7 +3145,7 @@ export type Database = {
           city_code: string
           city_name: string
           city_type: string
-          coordinates: unknown | null
+          coordinates: unknown
           created_at: string | null
           district_code: string | null
           district_name: string | null
@@ -3166,7 +3166,7 @@ export type Database = {
           city_code: string
           city_name: string
           city_type?: string
-          coordinates?: unknown | null
+          coordinates?: unknown
           created_at?: string | null
           district_code?: string | null
           district_name?: string | null
@@ -3187,7 +3187,7 @@ export type Database = {
           city_code?: string
           city_name?: string
           city_type?: string
-          coordinates?: unknown | null
+          coordinates?: unknown
           created_at?: string | null
           district_code?: string | null
           district_name?: string | null
@@ -3434,7 +3434,7 @@ export type Database = {
           created_at: string | null
           expires_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_used: boolean | null
           max_attempts: number | null
           purpose: string
@@ -3448,7 +3448,7 @@ export type Database = {
           created_at?: string | null
           expires_at: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_used?: boolean | null
           max_attempts?: number | null
           purpose: string
@@ -3462,7 +3462,7 @@ export type Database = {
           created_at?: string | null
           expires_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_used?: boolean | null
           max_attempts?: number | null
           purpose?: string
@@ -5347,7 +5347,7 @@ export type Database = {
           description: string | null
           device_info: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           location_data: Json | null
           user_agent: string | null
           user_id: string | null
@@ -5358,7 +5358,7 @@ export type Database = {
           description?: string | null
           device_info?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           location_data?: Json | null
           user_agent?: string | null
           user_id?: string | null
@@ -5369,7 +5369,7 @@ export type Database = {
           description?: string | null
           device_info?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           location_data?: Json | null
           user_agent?: string | null
           user_id?: string | null
@@ -5430,7 +5430,7 @@ export type Database = {
           device_info: Json | null
           expires_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_active: boolean | null
           last_activity: string | null
           location_data: Json | null
@@ -5445,7 +5445,7 @@ export type Database = {
           device_info?: Json | null
           expires_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           last_activity?: string | null
           location_data?: Json | null
@@ -5460,7 +5460,7 @@ export type Database = {
           device_info?: Json | null
           expires_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           last_activity?: string | null
           location_data?: Json | null
@@ -5609,7 +5609,7 @@ export type Database = {
           created_at: string | null
           device_info: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_read: boolean | null
           location_data: Json | null
           message: string
@@ -5620,7 +5620,7 @@ export type Database = {
           created_at?: string | null
           device_info?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_read?: boolean | null
           location_data?: Json | null
           message: string
@@ -5631,7 +5631,7 @@ export type Database = {
           created_at?: string | null
           device_info?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_read?: boolean | null
           location_data?: Json | null
           message?: string
@@ -5738,7 +5738,7 @@ export type Database = {
           device_fingerprint: string | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_flagged: boolean | null
           location_data: Json | null
           risk_score: number | null
@@ -5750,7 +5750,7 @@ export type Database = {
           device_fingerprint?: string | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_flagged?: boolean | null
           location_data?: Json | null
           risk_score?: number | null
@@ -5762,7 +5762,7 @@ export type Database = {
           device_fingerprint?: string | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_flagged?: boolean | null
           location_data?: Json | null
           risk_score?: number | null
@@ -5775,7 +5775,7 @@ export type Database = {
         Row: {
           device_info: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_active: boolean | null
           last_activity: string | null
           login_time: string | null
@@ -5787,7 +5787,7 @@ export type Database = {
         Insert: {
           device_info?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           last_activity?: string | null
           login_time?: string | null
@@ -5799,7 +5799,7 @@ export type Database = {
         Update: {
           device_info?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           last_activity?: string | null
           login_time?: string | null
@@ -5816,7 +5816,7 @@ export type Database = {
           device_fingerprint: string | null
           expires_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_active: boolean | null
           location_data: Json | null
           session_token: string
@@ -5828,7 +5828,7 @@ export type Database = {
           device_fingerprint?: string | null
           expires_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           location_data?: Json | null
           session_token: string
@@ -5840,7 +5840,7 @@ export type Database = {
           device_fingerprint?: string | null
           expires_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           location_data?: Json | null
           session_token?: string
@@ -8618,7 +8618,7 @@ export type Database = {
           created_at: string
           device_type: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           os: string | null
           page_path: string
           referrer: string | null
@@ -8634,7 +8634,7 @@ export type Database = {
           created_at?: string
           device_type?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           os?: string | null
           page_path: string
           referrer?: string | null
@@ -8650,7 +8650,7 @@ export type Database = {
           created_at?: string
           device_type?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           os?: string | null
           page_path?: string
           referrer?: string | null
@@ -8803,10 +8803,7 @@ export type Database = {
         Args: { operation?: string; profile_vendor_id: string }
         Returns: boolean
       }
-      can_access_vendor_categories_strict: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      can_access_vendor_categories_strict: { Args: never; Returns: boolean }
       can_change_business_nature: {
         Args: { vendor_id: string }
         Returns: boolean
@@ -8815,34 +8812,13 @@ export type Database = {
         Args: { dev_status: string; user_id: string }
         Returns: boolean
       }
-      check_account_lockout: {
-        Args: { p_email: string }
-        Returns: boolean
-      }
-      check_admin_access: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      check_financial_admin_access: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      check_ip_rate_limit: {
-        Args: { p_ip_address: unknown }
-        Returns: boolean
-      }
-      check_is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      check_super_admin_access: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      check_super_admin_email: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      check_account_lockout: { Args: { p_email: string }; Returns: boolean }
+      check_admin_access: { Args: never; Returns: boolean }
+      check_financial_admin_access: { Args: never; Returns: boolean }
+      check_ip_rate_limit: { Args: { p_ip_address: unknown }; Returns: boolean }
+      check_is_admin: { Args: never; Returns: boolean }
+      check_super_admin_access: { Args: never; Returns: boolean }
+      check_super_admin_email: { Args: never; Returns: boolean }
       check_user_reward_eligibility: {
         Args: { reward_type_param: string; user_id_param: string }
         Returns: {
@@ -8853,14 +8829,8 @@ export type Database = {
           valid_until: string
         }[]
       }
-      clean_expired_otp_codes: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_expired_sessions: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      clean_expired_otp_codes: { Args: never; Returns: undefined }
+      cleanup_expired_sessions: { Args: never; Returns: undefined }
       create_account_lockout: {
         Args: {
           p_duration_minutes?: number
@@ -8953,12 +8923,9 @@ export type Database = {
         Args: { error_message: string; table_name?: string }
         Returns: string
       }
-      generate_otp: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_otp: { Args: never; Returns: string }
       get_admin_profile_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           active_today: number
           admins: number
@@ -9021,7 +8988,7 @@ export type Database = {
         }[]
       }
       get_customer_own_survey_bookings: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           customer_email: string
@@ -9070,7 +9037,7 @@ export type Database = {
         }[]
       }
       get_masked_api_settings: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           api_endpoint: string
           api_key_masked: string
@@ -9082,12 +9049,9 @@ export type Database = {
           updated_at: string
         }[]
       }
-      get_my_property_booking_count: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      get_my_property_booking_count: { Args: never; Returns: number }
       get_own_vendor_profile_secure: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           banner_url: string
           bpjs_kesehatan_status: string
@@ -9127,7 +9091,7 @@ export type Database = {
         }[]
       }
       get_profiles_with_roles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           availability_status: string
           avatar_url: string
@@ -9192,10 +9156,7 @@ export type Database = {
           virtual_tour_url: string
         }[]
       }
-      get_property_statistics_secure: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      get_property_statistics_secure: { Args: never; Returns: Json }
       get_property_survey_bookings_for_owner: {
         Args: { p_property_id: string }
         Returns: {
@@ -9214,7 +9175,7 @@ export type Database = {
         }[]
       }
       get_public_category_names: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           category_description: string
           category_name: string
@@ -9327,7 +9288,7 @@ export type Database = {
         }[]
       }
       get_public_reward_tiers: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           required_points: number
           tier_description: string
@@ -9335,7 +9296,7 @@ export type Database = {
         }[]
       }
       get_public_vendor_directory: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           banner_url: string
           business_description: string
@@ -9352,7 +9313,7 @@ export type Database = {
         }[]
       }
       get_public_vendor_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           business_description: string
           business_name: string
@@ -9367,7 +9328,7 @@ export type Database = {
         }[]
       }
       get_public_vendor_profiles_safe: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           banner_url: string
           business_description: string
@@ -9385,7 +9346,7 @@ export type Database = {
         }[]
       }
       get_public_vendor_profiles_secure: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           banner_url: string
           business_description: string
@@ -9425,7 +9386,7 @@ export type Database = {
         }[]
       }
       get_safe_vendor_categories: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           category_code: string
           display_order: number
@@ -9440,7 +9401,7 @@ export type Database = {
         }[]
       }
       get_safe_vendor_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           business_description: string
           business_name: string
@@ -9491,14 +9452,8 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
-      get_user_security_status: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      get_vendor_balance_admin: {
-        Args: { p_vendor_id: string }
-        Returns: Json
-      }
+      get_user_security_status: { Args: never; Returns: Json }
+      get_vendor_balance_admin: { Args: { p_vendor_id: string }; Returns: Json }
       get_vendor_bpjs_summary: {
         Args: { p_vendor_id?: string }
         Returns: {
@@ -9527,10 +9482,7 @@ export type Database = {
           business_phone: string
         }[]
       }
-      get_vendor_financial_summary_secure: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      get_vendor_financial_summary_secure: { Args: never; Returns: Json }
       get_vendor_pricing_data: {
         Args: { category_id: string }
         Returns: {
@@ -9554,7 +9506,7 @@ export type Database = {
         }[]
       }
       get_vendor_public_directory: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           banner_url: string
           business_description: string
@@ -9610,30 +9562,12 @@ export type Database = {
         }
         Returns: string
       }
-      is_admin_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_authorized_support_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_current_user_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_super_admin_by_email: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_super_admin_direct: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_super_admin_safe: {
-        Args: { user_email?: string }
-        Returns: boolean
-      }
+      is_admin_user: { Args: never; Returns: boolean }
+      is_authorized_support_user: { Args: never; Returns: boolean }
+      is_current_user_admin: { Args: never; Returns: boolean }
+      is_super_admin_by_email: { Args: never; Returns: boolean }
+      is_super_admin_direct: { Args: never; Returns: boolean }
+      is_super_admin_safe: { Args: { user_email?: string }; Returns: boolean }
       is_valid_indonesian_phone: {
         Args: { phone_number: string }
         Returns: boolean
@@ -9706,22 +9640,13 @@ export type Database = {
         }
         Returns: string
       }
-      mark_security_alerts_read: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      mask_bpjs_number: {
-        Args: { bpjs_number: string }
-        Returns: string
-      }
+      mark_security_alerts_read: { Args: never; Returns: boolean }
+      mask_bpjs_number: { Args: { bpjs_number: string }; Returns: string }
       mask_bpjs_number_secure: {
         Args: { bpjs_number: string }
         Returns: string
       }
-      mask_document_number: {
-        Args: { doc_number: string }
-        Returns: string
-      }
+      mask_document_number: { Args: { doc_number: string }; Returns: string }
       mask_financial_reward_data: {
         Args: { amount: number; data_type: string }
         Returns: string
@@ -9730,10 +9655,7 @@ export type Database = {
         Args: { data_type: string; data_value: string }
         Returns: string
       }
-      reset_admin_password: {
-        Args: { new_password: string }
-        Returns: string
-      }
+      reset_admin_password: { Args: { new_password: string }; Returns: string }
       resolve_database_error: {
         Args: {
           p_error_signature: string
