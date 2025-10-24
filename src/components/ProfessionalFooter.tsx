@@ -69,6 +69,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       buy: "Beli",
       rent: "Sewa",
       about: "Tentang",
+      community: "Komunitas",
       // Services
       propertySearch: "Pencarian Properti",
       consultation: "Konsultasi",
@@ -155,6 +156,12 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 <Link to="/disewa" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
                   <ArrowUpRight className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {currentText.rent}
+                </Link>
+              </li>
+              <li>
+                <Link to="/community" className="text-muted-foreground hover:text-primary transition-colors flex items-center group">
+                  <ArrowUpRight className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {currentText.community}
                 </Link>
               </li>
             </ul>
