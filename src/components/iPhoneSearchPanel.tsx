@@ -939,13 +939,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   return (
     <div className={cn(
       "w-full transition-all duration-300",
-      isMobile ? "sticky top-12 z-40" : "max-w-7xl mx-auto"
+      isMobile ? "sticky top-12 z-40 px-1" : "max-w-7xl mx-auto"
     )}>
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
         <div className={cn(
           "space-y-2 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50",
-          isMobile ? "p-1.5" : "p-2 lg:p-3"
+          isMobile ? "p-1 px-1.5" : "p-2 lg:p-3"
         )}>
           
           {/* Mobile collapse button */}

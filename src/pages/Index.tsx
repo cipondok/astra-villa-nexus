@@ -359,7 +359,7 @@ const Index = () => {
         <section className="relative w-full pt-2 md:pt-0">
           <HomeIntroSlider language={language} className="h-[35vh] md:h-[45vh] lg:h-[50vh] model-container-mobile">
             {/* Search Panel - No Background */}
-            <div className="p-1.5 md:p-3 w-full">
+            <div className="p-1 md:p-3 w-full px-0.5 md:px-3">
               <div className="mb-1.5 md:mb-2 text-center">
                 <h2 className="text-sm md:text-xl font-bold text-foreground mb-0.5 md:mb-1">
                   {t.findYour}
