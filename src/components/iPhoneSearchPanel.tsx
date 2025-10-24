@@ -899,36 +899,40 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     onSearch(searchData);
   };
 
-  // Minimized mobile view
-  if (isMobile && isMinimized) {
+  // Simple mobile view - only input and button by default
+  if (isMobile && !showFilters) {
     return (
-      <div className="w-full sticky top-12 z-40 transition-all duration-300">
+      <div className="w-full sticky top-12 z-40 transition-all duration-300 px-0">
         <div className="backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 border-b border-gray-200/50 dark:border-gray-700/50 shadow-md">
-          <div className="flex items-center gap-2 p-2">
-            <Button
-              onClick={() => setIsMinimized(false)}
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+          <div className="flex items-center gap-1.5 p-1.5">
             <div className="flex-1 relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                onClick={() => setIsMinimized(false)}
-                className="pl-8 pr-2 h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
+                className="pl-9 pr-2 h-9 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
               />
             </div>
             <Button
+              onClick={() => setShowFilters(true)}
+              variant="outline"
+              size="sm"
+              className="h-9 px-2.5 border-gray-200 dark:border-gray-700"
+            >
+              <Filter className="h-3.5 w-3.5" />
+              {getActiveFiltersCount() > 0 && (
+                <span className="ml-1 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded-full">
+                  {getActiveFiltersCount()}
+                </span>
+              )}
+            </Button>
+            <Button
               onClick={handleSearch}
               size="sm"
-              className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700"
+              className="h-9 px-3 text-xs bg-blue-600 hover:bg-blue-700"
             >
-              <Search className="h-3 w-3" />
+              <Search className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
@@ -939,25 +943,26 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   return (
     <div className={cn(
       "w-full transition-all duration-300",
-      isMobile ? "sticky top-12 z-40 px-1" : "max-w-7xl mx-auto"
+      isMobile ? "sticky top-12 z-40 px-0" : "max-w-7xl mx-auto"
     )}>
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
         <div className={cn(
           "space-y-2 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50",
-          isMobile ? "p-1 px-1.5" : "p-2 lg:p-3"
+          isMobile ? "p-1.5" : "p-2 lg:p-3"
         )}>
           
-          {/* Mobile collapse button */}
+          {/* Mobile close button when filters are open */}
           {isMobile && (
-            <div className="flex justify-center">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-foreground">Search Filters</span>
               <Button
-                onClick={() => setIsMinimized(true)}
+                onClick={() => setShowFilters(false)}
                 variant="ghost"
                 size="sm"
-                className="h-6 w-12 p-0"
+                className="h-7 w-7 p-0"
               >
-                <ChevronUp className="h-3 w-3 text-muted-foreground" />
+                <X className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
           )}

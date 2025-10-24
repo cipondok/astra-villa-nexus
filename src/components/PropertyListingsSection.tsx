@@ -126,7 +126,7 @@ const PropertyListingsSection = ({
   return (
     <>
       <section className="py-3 sm:py-4 min-h-[400px]">
-        <div className="w-full px-2 sm:px-4">
+        <div className="w-full px-1 sm:px-2 md:px-4">
           {!hideTitle && (
             <div className="text-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">{sectionData.sectionTitle}</h2>
@@ -180,12 +180,12 @@ const PropertyListingsSection = ({
               customProperties={displayProperties}
             />
           ) : (
-            // Use responsive flex layout for less than 4 properties
-            <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 justify-start">
+            // Use responsive grid layout for less than 4 properties - full width on mobile
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
               {displayProperties.map((property, index) => {
                 console.log('Rendering CompactPropertyCard for property:', property.id);
                 return (
-                  <div key={`${property.id}-${index}`} className="flex-1 min-w-[280px] max-w-[320px]">
+                  <div key={`${property.id}-${index}`}>
                     <CompactPropertyCard
                       property={property}
                       language={language}

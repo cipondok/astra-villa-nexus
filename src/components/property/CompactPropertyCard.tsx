@@ -181,7 +181,7 @@ const CompactPropertyCard = ({
     <>
       <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col">
         {/* Image Section */}
-        <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+        <div className="relative aspect-[16/10] md:aspect-[4/3] overflow-hidden flex-shrink-0">
           <img
             src={getImageUrl()}
             alt={property.title}
@@ -241,21 +241,21 @@ const CompactPropertyCard = ({
         </div>
 
         {/* Content Section */}
-        <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
+        <CardContent className="p-2.5 md:p-4 space-y-2 md:space-y-3 flex-1 flex flex-col">
           {/* Price */}
           <div className="price-section">
-            <div className="text-lg font-bold gradient-text tracking-tight leading-none">
+            <div className="text-base md:text-lg font-bold gradient-text tracking-tight leading-none">
               {formatPrice(property.price)}
             </div>
             {property.listing_type === 'rent' && (
-              <div className="text-xs font-medium text-muted-foreground mt-0.5">
+              <div className="text-[10px] md:text-xs font-medium text-muted-foreground mt-0.5">
                 Per Month
               </div>
             )}
           </div>
 
           {/* Title */}
-          <h4 className="font-semibold text-sm text-foreground line-clamp-2 min-h-[2.5rem] flex-grow">
+          <h4 className="font-semibold text-xs md:text-sm text-foreground line-clamp-2 min-h-[2rem] md:min-h-[2.5rem] flex-grow">
             {property.title}
           </h4>
 
