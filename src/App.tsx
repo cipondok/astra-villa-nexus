@@ -60,6 +60,7 @@ import PartnerBenefits from '@/pages/partners/PartnerBenefits';
 import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
+import Community from '@/pages/Community';
 
 
 const AppContent = () => {
@@ -123,6 +124,7 @@ const AppContent = () => {
           <Route path="/partners/benefits" element={<PartnerBenefits />} />
           <Route path="/partners/ventures" element={<JointVentures />} />
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
+          <Route path="/community" element={<Community />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>

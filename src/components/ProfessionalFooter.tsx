@@ -30,6 +30,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       buy: "Buy",
       rent: "Rent",
       about: "About",
+      community: "Community",
       // Services
       propertySearch: "Property Search",
       consultation: "Consultation",
