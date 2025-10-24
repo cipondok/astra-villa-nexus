@@ -116,22 +116,18 @@ const PropertyGridView = ({
               </Badge>
             </div>
 
-            {/* Top Badge */}
-            <div className="absolute top-1.5 right-1.5 md:top-3 md:right-3 z-10">
-              <Badge 
-                className="bg-primary/90 text-primary-foreground text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-1.5 py-0.5 md:px-3 md:py-1"
-              >
-                {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
-              </Badge>
-            </div>
-
             {/* Top Right Compare Icon */}
-            <div className="absolute top-2 right-2 z-10">
+            <div className="absolute top-1.5 right-1.5 md:top-3 md:right-3 z-10 flex flex-col gap-1.5 md:gap-2 items-end">
               <PropertyComparisonButton 
                 property={property} 
                 variant="secondary"
                 size="sm"
               />
+              <Badge 
+                className="bg-primary/90 text-primary-foreground text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-1.5 py-0.5 md:px-3 md:py-1"
+              >
+                {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
+              </Badge>
             </div>
 
             {/* Center Action Icons - Only on Hover */}

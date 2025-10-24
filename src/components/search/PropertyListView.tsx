@@ -87,10 +87,10 @@ const PropertyListView = ({
                   </Badge>
                 </div>
 
-                {/* Property Type Badge */}
-                <div className="absolute top-4 right-4">
+                {/* Property Type Badge - Below Comparison Button */}
+                <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
                   <Badge 
-                    className="bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs font-semibold rounded-full px-3 py-1"
+                    className="bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs font-semibold rounded-full px-3 py-1 shadow-md"
                   >
                     {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
                   </Badge>
