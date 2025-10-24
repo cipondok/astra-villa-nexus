@@ -151,17 +151,17 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
   return (
     <Card className={cn("bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-2 border-primary/20", className)}>
-      <CardHeader>
+      <CardHeader className="p-3 md:p-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-              <Sparkles className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-1.5 md:gap-3">
+            <div className="p-1 md:p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md md:rounded-lg">
+              <Sparkles className="h-3.5 w-3.5 md:h-5 md:w-5 text-white" />
             </div>
             <div>
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+              <CardTitle className="text-xs md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                 AI Recommended For You
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-[10px] md:text-sm text-muted-foreground mt-0.5 md:mt-1 hidden sm:block">
                 {user ? 'Personalized based on your preferences' : 'Trending properties selected by AI'}
               </p>
             </div>
@@ -171,25 +171,26 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             disabled={isGenerating}
             size="sm"
             variant="outline"
-            className="gap-2"
+            className="gap-1 md:gap-2 h-7 md:h-9 px-2 md:px-3"
           >
-            <RefreshCw className={cn("h-4 w-4", isGenerating && "animate-spin")} />
-            Refresh
+            <RefreshCw className={cn("h-3 w-3 md:h-4 md:w-4", isGenerating && "animate-spin")} />
+            <span className="hidden sm:inline text-xs md:text-sm">Refresh</span>
           </Button>
         </div>
-        <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-          <TrendingUp className="h-3 w-3" />
-          <span>Powered by Lovable AI • Updated in real-time</span>
+        <div className="flex items-center gap-1 md:gap-2 mt-1 md:mt-2 text-[9px] md:text-xs text-muted-foreground">
+          <TrendingUp className="h-2.5 w-2.5 md:h-3 md:w-3" />
+          <span className="hidden sm:inline">Powered by Lovable AI • Updated in real-time</span>
+          <span className="sm:hidden">AI Powered • Real-time</span>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 md:p-6">
         {isGenerating ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-2" />
-                <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4 mb-2" />
-                <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-1/2" />
+                <div className="bg-gray-200 dark:bg-gray-700 h-32 md:h-48 rounded-lg mb-2" />
+                <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-3/4 mb-2" />
+                <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-1/2" />
               </div>
             ))}
           </div>
