@@ -22,6 +22,14 @@ const PropertyListView = ({
   onContact 
 }: PropertyListViewProps) => {
   const formatPrice = (price: number) => {
+    if (price >= 1000000000) {
+      const value = price / 1000000000;
+      return `IDR ${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)} Miliar`;
+    }
+    if (price >= 1000000) {
+      const value = price / 1000000;
+      return `IDR ${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)} Jt`;
+    }
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
