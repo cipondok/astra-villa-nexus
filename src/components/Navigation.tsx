@@ -157,7 +157,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform animate-fade-in">
+      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-background/90 supports-[backdrop-filter]:bg-background/70 backdrop-blur-xl border-b border-border shadow-lg h-12 md:h-14 lg:h-16">
         <div className="w-full mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-12 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation */}
