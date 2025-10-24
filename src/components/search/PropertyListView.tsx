@@ -90,7 +90,7 @@ const PropertyListView = ({
                       {formatPrice(property.price)}
                     </div>
                     {property.listing_type === 'rent' && (
-                      <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-primary-foreground/80 leading-tight font-medium">/month</div>
+                      <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-primary-foreground/80 leading-tight font-medium">/bln</div>
                     )}
                   </div>
                 </div>

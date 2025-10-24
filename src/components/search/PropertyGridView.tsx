@@ -156,7 +156,7 @@ const PropertyGridView = ({
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-[8px] sm:text-[9px] md:text-xs lg:text-sm text-primary-foreground/80 leading-tight font-medium">/month</div>
+                  <div className="text-[8px] sm:text-[9px] md:text-xs lg:text-sm text-primary-foreground/80 leading-tight font-medium">/bln</div>
                 )}
               </div>
             </div>
