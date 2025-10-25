@@ -326,65 +326,65 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/20">
-      {/* Agent/Developer Header - Ultra Modern Design */}
+      {/* Agent/Developer Header - Mobile Optimized */}
       {property?.posted_by && (
         <div className="relative bg-gradient-to-r from-primary/5 via-accent/3 to-secondary/5 backdrop-blur-sm border-b border-border/10 shadow-xl shadow-primary/5">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/2 to-accent/2"></div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
-              {/* Agent Profile Section */}
-              <div className="flex items-start gap-6 flex-1">
+          <div className="relative max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
+            <div className="flex flex-col lg:flex-row items-start justify-between gap-3 sm:gap-6">
+              {/* Agent Profile Section - Mobile Optimized */}
+              <div className="flex items-start gap-3 sm:gap-6 flex-1 w-full">
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                   <img
                     src={property.posted_by.avatar_url || "/placeholder.svg"}
                     alt={property.posted_by.name}
-                    className="relative w-16 h-16 rounded-full object-cover border-3 border-background shadow-lg"
+                    className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border-3 border-background shadow-lg"
                   />
                   {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full flex items-center justify-center border-2 border-background shadow-md">
-                      <Shield className="w-3 h-3 text-accent-foreground" />
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-accent rounded-full flex items-center justify-center border-2 border-background shadow-md">
+                      <Shield className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-accent-foreground" />
                     </div>
                   )}
                 </div>
                 
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="font-bold text-lg bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                <div className="flex-1 space-y-1 sm:space-y-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-bold text-sm sm:text-lg bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                       {property.posted_by.name}
                     </h3>
-                    <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+                    <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium">
                       {property.posted_by.position || 'Official Developer'}
                     </span>
                   </div>
                   
-                  <div className="flex items-center gap-3 text-sm flex-wrap">
-                    <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded-full">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-yellow-700 dark:text-yellow-300">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm flex-wrap">
+                    <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                      <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium text-yellow-700 dark:text-yellow-300 text-[10px] sm:text-xs">
                         {property.posted_by.customer_feedback_rating}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
-                      <Medal className="h-3 w-3 text-emerald-600" />
-                      <span className="text-emerald-700 dark:text-emerald-300 text-xs">
+                    <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                      <Medal className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-emerald-600" />
+                      <span className="text-emerald-700 dark:text-emerald-300 text-[10px] sm:text-xs">
                         {property.posted_by.experience_years}y Experience
                       </span>
                     </div>
                   </div>
                   
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                  <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+                    <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                     Updated {formatTimeAgo(property.created_at)} ago
                   </p>
                 </div>
               </div>
                 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md"
+                  className="flex-1 sm:flex-none bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md h-8 sm:h-9 text-xs sm:text-sm"
                   onClick={() => {
                     if (user && property.posted_by?.whatsapp_number) {
                       window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -405,11 +405,20 @@ const PropertyDetail: React.FC = () => {
         </div>
       )}
 
-      {/* Navigation Header - Mobile Optimized */}
+      {/* Navigation Header - Mobile Optimized with Close Button */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/50">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="flex items-center justify-between h-12 sm:h-14">
             <div className="flex items-center gap-1 sm:gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/')}
+                className="flex items-center gap-1 sm:gap-2 hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3"
+              >
+                <Home className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Home</span>
+              </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -884,90 +893,90 @@ const PropertyDetail: React.FC = () => {
                       <p className="text-xs text-muted-foreground">{property.posted_by.office_address}</p>
                     </div>
 
-                    {/* Contact Options */}
-                    <div className="space-y-3">
-                      <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 rounded-xl border border-border/20">
-                        <h4 className="font-semibold text-sm mb-3 flex items-center gap-2 text-foreground">
-                          <Shield className="h-4 w-4 text-primary" />
-                          Protected Contact Information
-                        </h4>
-                        <ProtectedContactInfo
-                          phone={property.posted_by.phone_number}
-                          email={ownerInfo?.email}
-                          whatsappNumber={property.posted_by.whatsapp_number}
-                          showButtons={true}
-                        />
-                      </div>
-                      
-                      <div className="grid grid-cols-1 gap-3">
-                        <Button 
-                          className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all"
-                          onClick={() => {
-                            if (user && property.posted_by?.whatsapp_number) {
-                              window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hello, I'm interested in ${property.title}`, '_blank');
-                            } else if (!user) {
-                              setShowAuthModal(true);
-                            } else {
-                              toast({
-                                title: "Contact not available",
-                                description: "WhatsApp number not provided for this property.",
-                                variant: "destructive",
-                              });
-                            }
-                          }}
-                        >
-                          📱 Contact via WhatsApp
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full hover:bg-primary/5 border-border/50"
-                          onClick={() => {
-                            if (user && property.posted_by?.phone_number) {
-                              window.open(`tel:${property.posted_by.phone_number}`, '_self');
-                            } else {
-                              toast({
-                                title: "Sign in required",
-                                description: "Please sign in to make a call.",
-                                variant: "destructive",
-                              });
-                            }
-                          }}
-                        >
-                          <Phone className="h-4 w-4 mr-2" />
-                          Call Agent
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full hover:bg-primary/5 border-border/50"
-                          onClick={() => {
-                            if (user && ownerInfo?.email) {
-                              window.open(`mailto:${ownerInfo.email}?subject=Inquiry about ${property.title}`, '_self');
-                            } else {
-                              toast({
-                                title: "Sign in required",
-                                description: "Please sign in to send an email.",
-                                variant: "destructive",
-                              });
-                            }
-                          }}
-                        >
-                          <Mail className="h-4 w-4 mr-2" />
-                          Send Email
-                        </Button>
-                      </div>
-                    </div>
+                {/* Contact Options - Mobile Optimized */}
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-3 sm:p-4 rounded-xl border border-border/20">
+                    <h4 className="font-semibold text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2 text-foreground">
+                      <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                      Protected Contact Information
+                    </h4>
+                    <ProtectedContactInfo
+                      phone={property.posted_by.phone_number}
+                      email={ownerInfo?.email}
+                      whatsappNumber={property.posted_by.whatsapp_number}
+                      showButtons={true}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-2 sm:gap-3">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all h-9 sm:h-10 text-xs sm:text-sm"
+                      onClick={() => {
+                        if (user && property.posted_by?.whatsapp_number) {
+                          window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hello, I'm interested in ${property.title}`, '_blank');
+                        } else if (!user) {
+                          setShowAuthModal(true);
+                        } else {
+                          toast({
+                            title: "Contact not available",
+                            description: "WhatsApp number not provided for this property.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
+                      📱 Contact via WhatsApp
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full hover:bg-primary/5 border-border/50 h-9 sm:h-10 text-xs sm:text-sm"
+                      onClick={() => {
+                        if (user && property.posted_by?.phone_number) {
+                          window.open(`tel:${property.posted_by.phone_number}`, '_self');
+                        } else {
+                          toast({
+                            title: "Sign in required",
+                            description: "Please sign in to make a call.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
+                      <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                      Call Agent
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full hover:bg-primary/5 border-border/50 h-9 sm:h-10 text-xs sm:text-sm"
+                      onClick={() => {
+                        if (user && ownerInfo?.email) {
+                          window.open(`mailto:${ownerInfo.email}?subject=Inquiry about ${property.title}`, '_self');
+                        } else {
+                          toast({
+                            title: "Sign in required",
+                            description: "Please sign in to send an email.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
+                      <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                      Send Email
+                    </Button>
+                  </div>
+                </div>
 
-                    {/* Agent Stats */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/30">
-                      <div className="text-center">
-                        <div className="font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{property.posted_by.total_properties}+</div>
-                        <div className="text-xs text-muted-foreground">Properties Sold</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="font-bold text-lg bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">{property.posted_by.experience_years}</div>
-                        <div className="text-xs text-muted-foreground">Years Experience</div>
-                      </div>
-                    </div>
+                {/* Agent Stats - Mobile Optimized */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-border/30">
+                  <div className="text-center">
+                    <div className="font-bold text-base sm:text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{property.posted_by.total_properties}+</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">Properties Sold</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-base sm:text-lg bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">{property.posted_by.experience_years}</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">Years Experience</div>
+                  </div>
+                </div>
                   </div>
                 ) : (
                   <p className="text-muted-foreground">Agent information not available</p>
@@ -977,95 +986,119 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Related Properties Section */}
+        {/* Similar Properties Carousel - Horizontal Scroll */}
         {relatedProperties.length > 0 && (
-          <div className="mt-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Similar Properties</h2>
-              <Button variant="outline" className="text-primary hover:bg-primary/5">View All</Button>
+          <div className="mt-6 sm:mt-12">
+            <div className="flex items-center justify-between mb-3 sm:mb-6">
+              <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Similar Properties</h2>
+              <Button variant="outline" size="sm" className="text-primary hover:bg-primary/5 text-xs sm:text-sm">View All</Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {relatedProperties.slice(0, 2).map((relatedProperty) => (
-                <Card key={relatedProperty.id} className="group border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer hover-scale">
-                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
-                    <img
-                      src={relatedProperty.images?.[0] || "/placeholder.svg"}
-                      alt={relatedProperty.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onClick={() => navigate(`/properties/${relatedProperty.id}`)}
-                    />
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
+            
+            {/* Horizontal Scrolling Container */}
+            <div className="relative">
+              <div className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
+                {relatedProperties.map((relatedProperty) => (
+                  <Card 
+                    key={relatedProperty.id} 
+                    className="group flex-shrink-0 w-[280px] sm:w-[320px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
+                    onClick={() => navigate(`/properties/${relatedProperty.id}`)}
+                  >
+                    <div className="aspect-[16/10] overflow-hidden rounded-t-lg">
+                      <img
+                        src={relatedProperty.images?.[0] || "/placeholder.svg"}
+                        alt={relatedProperty.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <CardContent className="p-3 sm:p-4">
+                      <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2">
                         {formatPrice(relatedProperty.price)}
                       </h3>
-                      <h4 className="font-semibold mb-3 text-foreground">{relatedProperty.title}</h4>
-                      <div className="flex items-center justify-center gap-4 text-sm mb-4">
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Bed className="h-4 w-4" />
-                          <span>{relatedProperty.bedrooms || 5}</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Bath className="h-4 w-4" />
-                          <span>{relatedProperty.bathrooms || 5}</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Square className="h-4 w-4" />
-                          <span>{relatedProperty.area_sqm || 120}m²</span>
-                        </div>
+                      <h4 className="font-semibold mb-2 sm:mb-3 text-foreground text-sm sm:text-base line-clamp-1">{relatedProperty.title}</h4>
+                      <div className="flex items-center justify-between gap-2 text-xs sm:text-sm mb-2 sm:mb-3">
+                        {relatedProperty.bedrooms && (
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Bed className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span>{relatedProperty.bedrooms}</span>
+                          </div>
+                        )}
+                        {relatedProperty.bathrooms && (
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Bath className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span>{relatedProperty.bathrooms}</span>
+                          </div>
+                        )}
+                        {relatedProperty.area_sqm && (
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Square className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span>{relatedProperty.area_sqm}m²</span>
+                          </div>
+                        )}
                       </div>
                       <Button 
-                        className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                        onClick={() => navigate(`/properties/${relatedProperty.id}`)}
+                        className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 h-8 sm:h-9 text-xs sm:text-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/properties/${relatedProperty.id}`);
+                        }}
                       >
                         View Details
                       </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {/* More Properties from User Section */}
+        {/* More Properties from Agent Carousel - Horizontal Scroll */}
         {userMoreProperties.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <div className="mt-6 sm:mt-12">
+            <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
               More from {agentInfo ? agentInfo.full_name : ownerInfo?.full_name || 'this agent'}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {userMoreProperties.map((userProperty) => (
-                <Card key={userProperty.id} className="group border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer hover-scale">
-                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
-                    <img
-                      src={userProperty.images?.[0] || "/placeholder.svg"}
-                      alt={userProperty.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onClick={() => navigate(`/properties/${userProperty.id}`)}
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold line-clamp-2 mb-2 text-foreground">{userProperty.title}</h3>
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <MapPin className="h-4 w-4 mr-1 text-primary" />
-                      {userProperty.location}
+            
+            {/* Horizontal Scrolling Container */}
+            <div className="relative">
+              <div className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
+                {userMoreProperties.map((userProperty) => (
+                  <Card 
+                    key={userProperty.id} 
+                    className="group flex-shrink-0 w-[240px] sm:w-[260px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
+                    onClick={() => navigate(`/properties/${userProperty.id}`)}
+                  >
+                    <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                      <img
+                        src={userProperty.images?.[0] || "/placeholder.svg"}
+                        alt={userProperty.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
-                    <div className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
-                      {formatPrice(userProperty.price)}
-                    </div>
-                    <Button 
-                      className="w-full" 
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/properties/${userProperty.id}`)}
-                    >
-                      View Details
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                    <CardContent className="p-2.5 sm:p-3">
+                      <h3 className="font-semibold line-clamp-2 mb-1.5 sm:mb-2 text-foreground text-xs sm:text-sm">{userProperty.title}</h3>
+                      <div className="flex items-center text-xs text-muted-foreground mb-1.5 sm:mb-2">
+                        <MapPin className="h-3 w-3 mr-1 text-primary flex-shrink-0" />
+                        <span className="truncate">{userProperty.location}</span>
+                      </div>
+                      <div className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2 sm:mb-3 text-sm sm:text-base">
+                        {formatPrice(userProperty.price)}
+                      </div>
+                      <Button 
+                        className="w-full h-7 sm:h-8 text-xs sm:text-sm" 
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/properties/${userProperty.id}`);
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         )}
