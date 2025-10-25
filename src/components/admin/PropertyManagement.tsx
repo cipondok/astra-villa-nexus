@@ -206,14 +206,11 @@ const PropertyManagement = () => {
 
   const createPropertyMutation = useMutation({
     mutationFn: async (propertyData: any) => {
-      const { data: adminProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', 'mycode103@gmail.com')
-        .single();
+      // Get current authenticated user
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
 
-      if (!adminProfile) {
-        throw new Error('Admin profile not found');
+      if (!currentUser) {
+        throw new Error('User not authenticated');
       }
 
       const { error } = await supabase
@@ -224,7 +221,7 @@ const PropertyManagement = () => {
           bedrooms: propertyData.bedrooms ? parseInt(propertyData.bedrooms) : null,
           bathrooms: propertyData.bathrooms ? parseInt(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? parseInt(propertyData.area_sqm) : null,
-          owner_id: adminProfile.id,
+          owner_id: currentUser.id,
           status: 'approved'
         });
       if (error) throw error;

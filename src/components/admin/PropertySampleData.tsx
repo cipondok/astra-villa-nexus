@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
+import { useIsAdmin } from "@/hooks/useUserRoles";
 
 const PropertySampleData = () => {
   const { user } = useAuth();
   const { showSuccess, showError } = useAlert();
+  const { isAdmin, isLoading: adminCheckLoading } = useIsAdmin();
 
   const sampleProperties = [
     {
@@ -117,18 +119,24 @@ const PropertySampleData = () => {
 
   useEffect(() => {
     const addSampleProperties = async () => {
-      if (!user || user.email !== 'mycode103@gmail.com') {
-        console.log('User not admin, skipping sample data creation');
+      // Wait for admin check to complete
+      if (adminCheckLoading || !user) {
+        return;
+      }
+
+      // Only proceed if user is admin
+      if (!isAdmin) {
         return;
       }
 
       try {
         console.log('Checking for existing properties...');
         
-        // Check if properties already exist for this admin
+        // Check if properties already exist for this user
         const { data: existingProperties, error: checkError } = await supabase
           .from('properties')
           .select('id, owner_id')
+          .eq('owner_id', user.id)
           .limit(5);
 
         if (checkError) {
@@ -139,26 +147,9 @@ const PropertySampleData = () => {
 
         console.log('Existing properties:', existingProperties);
 
-        // Get the admin user ID
-        const { data: adminProfile, error: profileError } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', 'mycode103@gmail.com')
-          .single();
-
-        if (profileError || !adminProfile) {
-          console.error('Error getting admin profile:', profileError);
-          showError("Error", "Admin profile not found");
-          return;
-        }
-
-        console.log('Admin profile:', adminProfile);
-
-        // Check if this admin already has properties
-        const adminProperties = existingProperties?.filter(p => p.owner_id === adminProfile.id) || [];
-        
-        if (adminProperties.length > 0) {
-          console.log('Admin already has properties:', adminProperties.length);
+        // Check if this user already has properties
+        if (existingProperties && existingProperties.length > 0) {
+          console.log('Admin already has properties:', existingProperties.length);
           return;
         }
 
@@ -167,7 +158,7 @@ const PropertySampleData = () => {
         // Insert sample properties
         const propertiesToInsert = sampleProperties.map(property => ({
           ...property,
-          owner_id: adminProfile.id
+          owner_id: user.id
         }));
 
         const { error: insertError } = await supabase
@@ -190,7 +181,7 @@ const PropertySampleData = () => {
     // Add a small delay to ensure the component is mounted and user is loaded
     const timer = setTimeout(addSampleProperties, 1000);
     return () => clearTimeout(timer);
-  }, [user, showSuccess, showError]);
+  }, [user, isAdmin, adminCheckLoading, showSuccess, showError]);
 
   return null; // This component doesn't render anything
 };

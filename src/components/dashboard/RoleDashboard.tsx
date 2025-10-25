@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useIsAdmin } from "@/hooks/useUserRoles";
 import { 
   Home, 
   Building, 
@@ -28,6 +29,7 @@ interface RoleDashboardProps {
 const RoleDashboard = ({ language }: RoleDashboardProps) => {
   const { profile, user, refreshProfile } = useAuth();
   const navigate = useNavigate();
+  const { isAdmin } = useIsAdmin();
 
   // Redirect agents to their dedicated dashboard
   useEffect(() => {
@@ -39,9 +41,6 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
   const handleRefreshProfile = async () => {
     await refreshProfile();
   };
-
-  // Debug info for super admin email
-  const isSuperAdminEmail = user?.email === 'mycode103@gmail.com';
 
   const text = {
     en: {
@@ -265,16 +264,15 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Debug Info for Super Admin Email */}
-      {isSuperAdminEmail && (
+      {/* Debug Info for Admin Users */}
+      {isAdmin && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-yellow-800 mb-2">Debug Info for mycode103@gmail.com:</h3>
+          <h3 className="text-sm font-semibold text-yellow-800 mb-2">Debug Info (Admin):</h3>
           <div className="text-xs text-yellow-700 space-y-1">
             <div>Email: {user?.email}</div>
             <div>Profile Role: {profile?.role || 'Not loaded'}</div>
             <div>Verification Status: {profile?.verification_status || 'Not loaded'}</div>
             <div>Profile Updated: {profile?.updated_at || 'Not loaded'}</div>
-            <div>Is Super Admin Email: {isSuperAdminEmail ? 'Yes' : 'No'}</div>
           </div>
           <Button 
             onClick={handleRefreshProfile}
@@ -296,11 +294,6 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
               {currentText.welcome}, {displayName}!
             </h1>
             <p className="text-blue-100 mt-2">{roleConfig.description}</p>
-            {isSuperAdminEmail && (
-              <p className="text-yellow-200 text-sm mt-1">
-                Super Admin Email Detected
-              </p>
-            )}
           </div>
           <div className="flex items-center space-x-2">
             <RoleIcon className="h-8 w-8" />

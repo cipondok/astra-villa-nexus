@@ -59,34 +59,8 @@ const UserRolesManagement = () => {
         throw profilesError;
       }
       
-      // If we don't get many users from profiles, try auth.users (admin only)
-      if (!profilesData || profilesData.length === 0) {
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user?.email === 'mycode103@gmail.com') {
-            // For super admin, we can access more user data
-            const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-            
-            if (authError) {
-              console.error('Error fetching auth users:', authError);
-            } else {
-              // Transform auth users to our format
-              return authUsers.users.map(user => ({
-                id: user.id,
-                email: user.email || '',
-                full_name: user.user_metadata?.full_name || user.email || 'Unknown User',
-                role: 'general_user' as UserRole,
-                verification_status: 'pending',
-                created_at: user.created_at,
-                phone: user.phone || undefined,
-                last_seen_at: user.last_sign_in_at || undefined
-              }));
-            }
-          }
-        } catch (authError) {
-          console.error('Auth access error:', authError);
-        }
-      }
+      // Note: Removed hardcoded admin email check for security
+      // All users are now sourced from the profiles table with proper RLS
       
       return (profilesData || []).map(p => ({ ...p, role: 'general_user' as UserRole }));
     },

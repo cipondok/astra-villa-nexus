@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import ASTRATokenDisplay from "@/components/ASTRATokenDisplay";
 import ProfileUpgradeCard from "@/components/ProfileUpgradeCard";
+import { useIsAdmin } from "@/hooks/useUserRoles";
 import { 
   Home, 
   Building, 
@@ -33,6 +34,7 @@ const UserDashboard = () => {
   const { profile, user, loading, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { isAdmin } = useIsAdmin();
 
   const handleRefreshProfile = async () => {
     setIsRefreshing(true);
@@ -191,13 +193,13 @@ const UserDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Debug Info for Super Admin */}
-      {user?.email === 'mycode103@gmail.com' && (
+      {/* Debug Info for Admin Users */}
+      {isAdmin && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             <div className="space-y-1 text-sm">
-              <div><strong>Debug Info:</strong></div>
+              <div><strong>Debug Info (Admin):</strong></div>
               <div>User ID: {user?.id}</div>
               <div>Email: {user?.email}</div>
               <div>Profile Role: {profile?.role || 'Not loaded'}</div>
