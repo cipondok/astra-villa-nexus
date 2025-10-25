@@ -33,6 +33,7 @@ const PropertyBulkActions = ({ selectedProperties, onClearSelection, totalProper
     onSuccess: () => {
       showSuccess("Bulk Update Successful", `Updated ${selectedProperties.length} properties successfully.`);
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      queryClient.invalidateQueries({ queryKey: ['simple-properties'] });
       onClearSelection();
       setBulkStatus("");
       setBulkApprovalStatus("");
@@ -54,6 +55,7 @@ const PropertyBulkActions = ({ selectedProperties, onClearSelection, totalProper
     onSuccess: () => {
       showSuccess("Bulk Delete Successful", `Deleted ${selectedProperties.length} properties successfully.`);
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      queryClient.invalidateQueries({ queryKey: ['simple-properties'] });
       onClearSelection();
     },
     onError: (error: any) => {
@@ -80,10 +82,10 @@ const PropertyBulkActions = ({ selectedProperties, onClearSelection, totalProper
   if (selectedProperties.length === 0) return null;
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+          <Badge variant="secondary" className="bg-primary/10 text-primary">
             {selectedProperties.length} of {totalProperties} selected
           </Badge>
           <Button variant="outline" size="sm" onClick={onClearSelection}>
@@ -99,9 +101,12 @@ const PropertyBulkActions = ({ selectedProperties, onClearSelection, totalProper
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="suspending">Suspending</SelectItem>
+                <SelectItem value="hold">Hold</SelectItem>
                 <SelectItem value="pending_approval">Pending Approval</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
                 <SelectItem value="sold">Sold</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
               </SelectContent>
             </Select>
             <Button 

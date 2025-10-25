@@ -14,7 +14,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useUserRoles";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
-import { 
+import PropertyBulkActions from "./PropertyBulkActions";
+import {
   Search, 
   Plus, 
   Edit, 
@@ -74,6 +75,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   const [statusFilter, setStatusFilter] = useState("");
   const [listingTypeFilter, setListingTypeFilter] = useState("");
   const [cityFilter, setCityFilter] = useState("");
+  const [vendorIdFilter, setVendorIdFilter] = useState("");
   
   // Editable WhatsApp states
   const [editingWhatsApp, setEditingWhatsApp] = useState<string | null>(null);
@@ -89,7 +91,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   // Fetch properties with enhanced filtering
   const { data: allProperties = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['simple-properties', searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter],
+    queryKey: ['simple-properties', searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter, vendorIdFilter],
     queryFn: async () => {
       console.log('🔍 Fetching properties with filters...');
       
@@ -117,6 +119,10 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       
       if (cityFilter) {
         query = query.ilike('city', `%${cityFilter}%`);
+      }
+      
+      if (vendorIdFilter) {
+        query = query.eq('owner_id', vendorIdFilter);
       }
 
       const { data: properties, error } = await query;
@@ -159,7 +165,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter]);
+  }, [searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter, vendorIdFilter]);
 
   // Delete mutation
   const deleteMutation = useMutation({
@@ -277,6 +283,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
     setStatusFilter("");
     setListingTypeFilter("");
     setCityFilter("");
+    setVendorIdFilter("");
   };
 
   if (!user) {
@@ -371,7 +378,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
           </div>
           
           {/* Filter Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label className="text-sm font-medium mb-1 block">Property Type</label>
               <Select value={propertyTypeFilter} onValueChange={setPropertyTypeFilter}>
@@ -399,6 +406,8 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="suspending">Suspending</SelectItem>
+                  <SelectItem value="hold">Hold</SelectItem>
                   <SelectItem value="sold">Sold</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="available">Available</SelectItem>
@@ -429,27 +438,25 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                 onChange={(e) => setCityFilter(e.target.value)}
               />
             </div>
-          </div>
-          
-          {/* Bulk Actions */}
-          {selectedProperties.size > 0 && (
-            <div className="flex justify-end">
-              <Button 
-                variant="destructive" 
-                onClick={handleBulkDelete}
-                disabled={bulkDeleteMutation.isPending}
-              >
-                {bulkDeleteMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Trash2 className="h-4 w-4 mr-2" />
-                )}
-                Delete {selectedProperties.size} Selected
-              </Button>
+            
+            <div>
+              <label className="text-sm font-medium mb-1 block">Vendor ID</label>
+              <Input
+                placeholder="Filter by vendor..."
+                value={vendorIdFilter}
+                onChange={(e) => setVendorIdFilter(e.target.value)}
+              />
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
+
+      {/* Bulk Actions Bar */}
+      <PropertyBulkActions
+        selectedProperties={Array.from(selectedProperties)}
+        onClearSelection={() => setSelectedProperties(new Set())}
+        totalProperties={allProperties.length}
+      />
 
       {/* Properties Grid */}
       <Card>
@@ -501,7 +508,10 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           variant="outline"
                           className={`text-[9px] px-1 py-0 h-4 shrink-0 ${
                             property.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            property.status === 'suspending' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                            property.status === 'hold' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                             property.status === 'sold' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            property.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
                             'bg-gray-50 text-gray-700 border-gray-200'
                           }`}
                         >
