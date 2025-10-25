@@ -45,7 +45,8 @@ import {
   Crown,
   Medal,
   Edit,
-  Trash2
+  Trash2,
+  X
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -414,9 +415,9 @@ const PropertyDetail: React.FC = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/')}
-                className="flex items-center gap-1 sm:gap-2 hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3"
+                className="flex items-center gap-1 sm:gap-2 hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3 md:flex"
               >
-                <Home className="h-3 w-3 sm:h-4 sm:w-4" />
+                <Home className="h-4 w-4 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">Home</span>
               </Button>
               <Button 
@@ -425,7 +426,7 @@ const PropertyDetail: React.FC = () => {
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-1 sm:gap-2 hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3"
               >
-                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                <ArrowLeft className="h-4 w-4 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">Back</span>
               </Button>
             </div>
@@ -478,7 +479,7 @@ const PropertyDetail: React.FC = () => {
                 </div>
               )}
               
-              <PropertyComparisonButton 
+               <PropertyComparisonButton 
                 property={{
                   ...property,
                   image_urls: property.images || [],
@@ -503,6 +504,17 @@ const PropertyDetail: React.FC = () => {
                >
                  <Share2 className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
                  <span className="hidden sm:inline">Share</span>
+              </Button>
+              
+              {/* Close/Home Button - Prominent on Mobile */}
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/')}
+                className="md:hidden hover:bg-muted/50 h-8 w-8 p-0"
+                aria-label="Close and go home"
+              >
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
