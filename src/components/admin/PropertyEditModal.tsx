@@ -413,7 +413,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     } catch (e) {
       console.warn('Error while removing image from storage:', e);
     } finally {
-      setImages(prev => prev.filter((_, i) => i !== index));
+      setImages(prev => {
+        const newImages = prev.filter((_, i) => i !== index);
+        setEditData(ed => ({
+          ...ed,
+          thumbnail_url: ed.thumbnail_url === (images[index] || '') ? (newImages[0] || '') : ed.thumbnail_url
+        }));
+        return newImages;
+      });
     }
   };
   // Update property mutation
@@ -631,7 +638,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 {images.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {images.map((url, index) => (
-                      <div key={index} className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-700 shadow-lg">
+                      <div key={index} className={`group relative overflow-hidden rounded-xl bg-white dark:bg-slate-700 shadow-lg ${editData.thumbnail_url === url ? 'ring-2 ring-amber-500' : ''}`}>
                         <div className="aspect-square overflow-hidden">
                           <img
                             src={url}
@@ -643,6 +650,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                             }}
                           />
                         </div>
+                        {/* Delete button */}
                         <Button
                           type="button"
                           variant="destructive"
@@ -652,10 +660,24 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                        <div className="absolute bottom-2 left-2">
+                        {/* Set thumbnail button */}
+                        <Button
+                          type="button"
+                          variant={editData.thumbnail_url === url ? 'default' : 'outline'}
+                          size="sm"
+                          className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 px-2"
+                          onClick={() => setEditData(prev => ({ ...prev, thumbnail_url: url }))}
+                        >
+                          {editData.thumbnail_url === url ? 'Thumbnail' : 'Set thumbnail'}
+                        </Button>
+                        {/* Badges */}
+                        <div className="absolute bottom-2 left-2 flex items-center gap-2">
                           <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                             #{index + 1}
                           </div>
+                          {editData.thumbnail_url === url && (
+                            <div className="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-medium">Thumbnail</div>
+                          )}
                         </div>
                       </div>
                     ))}
