@@ -16,11 +16,12 @@ const RoleBasedPropertyManagement = () => {
   const { data: stats } = useQuery({
     queryKey: ['role-based-stats'],
     queryFn: async () => {
-      const [departmentsRes, categoriesRes, usersRes, accessRes] = await Promise.all([
+      const [departmentsRes, categoriesRes, usersRes, accessRes, rolesRes] = await Promise.all([
         supabase.from('user_departments').select('id').eq('is_active', true),
         supabase.from('property_categories').select('id').eq('is_active', true),
-        supabase.from('profiles').select('id, role'),
-        supabase.from('property_category_access').select('id')
+        supabase.from('profiles').select('id'),
+        supabase.from('property_category_access').select('id'),
+        supabase.from('user_roles').select('role').eq('is_active', true),
       ]);
 
       return {
@@ -28,8 +29,8 @@ const RoleBasedPropertyManagement = () => {
         categories: categoriesRes.data?.length || 0,
         users: usersRes.data?.length || 0,
         accessRules: accessRes.data?.length || 0,
-        usersByRole: usersRes.data?.reduce((acc: any, user: any) => {
-          acc[user.role] = (acc[user.role] || 0) + 1;
+        usersByRole: rolesRes.data?.reduce((acc: any, r: any) => {
+          acc[r.role] = (acc[r.role] || 0) + 1;
           return acc;
         }, {}) || {}
       };

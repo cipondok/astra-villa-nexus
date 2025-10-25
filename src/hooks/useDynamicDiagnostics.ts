@@ -234,10 +234,10 @@ export const useDynamicDiagnostics = () => {
       .select('count')
       .limit(1);
     
-    const { data: userRoles, error: rolesError } = await supabase
-      .from('profiles')
-      .select('role')
-      .limit(5);
+  const { data: userRoles, error: rolesError } = await supabase
+    .from('user_roles')
+    .select('role')
+    .limit(5);
 
     let progress = 0;
     let nextStep = '';

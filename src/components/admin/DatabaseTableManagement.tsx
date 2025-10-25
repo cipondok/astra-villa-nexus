@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import {
   Database, 
   Shield, 
@@ -60,9 +61,10 @@ const DatabaseTableManagement = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isAdmin } = useAdminCheck();
+  const { data: myRoles = [] } = useUserRoles();
 
-  // Use admin check hook instead of hardcoded email
-  const isSuperAdmin = isAdmin;
+  // Determine super admin precisely via user_roles
+  const isSuperAdmin = myRoles.includes('super_admin');
 
   console.log('DatabaseTableManagement render - isSuperAdmin:', isSuperAdmin, 'user email:', user?.email);
 

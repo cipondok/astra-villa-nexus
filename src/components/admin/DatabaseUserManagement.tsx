@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import {
   Database, 
   Users, 
@@ -76,9 +77,10 @@ const DatabaseUserManagement = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isAdmin } = useAdminCheck();
+  const { data: myRoles = [] } = useUserRoles();
 
-  // Use admin check hook instead of hardcoded email
-  const isSuperAdmin = isAdmin;
+  // Use precise super admin check via user_roles
+  const isSuperAdmin = myRoles.includes('super_admin');
 
   // Fetch all users with admin status
   const { data: databaseUsers, isLoading, refetch } = useQuery({
@@ -852,25 +854,6 @@ const DatabaseUserManagement = () => {
                     onChange={(e) => setEditingUser(prev => ({ ...prev, phone: e.target.value }))}
                     placeholder="Enter phone number"
                   />
-                </div>
-                <div>
-                  <Label>Role</Label>
-                  <Select 
-                    value={editingUser.role || ''} 
-                    onValueChange={(value: UserRole) => setEditingUser(prev => ({ ...prev, role: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="general_user">General User</SelectItem>
-                      <SelectItem value="property_owner">Property Owner</SelectItem>
-                      <SelectItem value="agent">Agent</SelectItem>
-                      <SelectItem value="customer_service">Customer Service</SelectItem>
-                      <SelectItem value="vendor">Vendor</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 <div>
                   <Label>Verification Status</Label>

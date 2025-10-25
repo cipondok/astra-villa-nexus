@@ -126,7 +126,7 @@ export const useAdminAlerts = () => {
         
         const { data: todayUsers } = await supabase
           .from('profiles')
-          .select('id, role')
+          .select('id')
           .gte('created_at', today);
 
         const propertiesCount = todayProperties?.length || 0;
