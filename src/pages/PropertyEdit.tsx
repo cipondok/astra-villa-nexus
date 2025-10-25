@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Save, Loader2, Home, MapPin, Ruler, CheckCircle } from "lucide-react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import { toast } from "sonner";
 
@@ -184,157 +185,217 @@ const PropertyEdit = () => {
             </Button>
           </div>
 
-          <Card className="bg-white/90 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-2xl">Edit Property</CardTitle>
-              <CardDescription>Update your property listing details</CardDescription>
+          <Card className="bg-card/95 backdrop-blur-md shadow-xl border-border/50">
+            <CardHeader className="space-y-1 pb-6">
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Edit Property
+              </CardTitle>
+              <CardDescription className="text-base">Update your property listing details across different categories</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="md:col-span-2">
-                    <Label htmlFor="title">Property Title *</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => handleInputChange('title', e.target.value)}
-                      required
-                    />
-                  </div>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <Tabs defaultValue="basic" className="w-full">
+                  <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-muted/50 rounded-xl">
+                    <TabsTrigger value="basic" className="flex items-center gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-md">
+                      <Home className="h-4 w-4" />
+                      <span className="hidden sm:inline">Basic Info</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="location" className="flex items-center gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-md">
+                      <MapPin className="h-4 w-4" />
+                      <span className="hidden sm:inline">Location</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="details" className="flex items-center gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-md">
+                      <Ruler className="h-4 w-4" />
+                      <span className="hidden sm:inline">Details</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="status" className="flex items-center gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-md">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="hidden sm:inline">Status</span>
+                    </TabsTrigger>
+                  </TabsList>
 
-                  <div className="md:col-span-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
-                      rows={4}
-                    />
-                  </div>
+                  {/* Basic Info Tab */}
+                  <TabsContent value="basic" className="space-y-6 mt-6">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="title" className="text-sm font-semibold">Property Title *</Label>
+                        <Input
+                          id="title"
+                          value={formData.title}
+                          onChange={(e) => handleInputChange('title', e.target.value)}
+                          required
+                          className="h-11"
+                          placeholder="e.g., Modern Luxury Villa in Seminyak"
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="property_type">Property Type *</Label>
-                    <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="apartment">Apartment</SelectItem>
-                        <SelectItem value="house">House</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="townhouse">Townhouse</SelectItem>
-                        <SelectItem value="land">Land</SelectItem>
-                        <SelectItem value="commercial">Commercial</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="description" className="text-sm font-semibold">Description</Label>
+                        <Textarea
+                          id="description"
+                          value={formData.description}
+                          onChange={(e) => handleInputChange('description', e.target.value)}
+                          rows={6}
+                          className="resize-none"
+                          placeholder="Describe your property in detail..."
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="listing_type">Listing Type *</Label>
-                    <Select value={formData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select listing type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sale">For Sale</SelectItem>
-                        <SelectItem value="rent">For Rent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="property_type" className="text-sm font-semibold">Property Type *</Label>
+                          <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover z-50">
+                              <SelectItem value="apartment">Apartment</SelectItem>
+                              <SelectItem value="house">House</SelectItem>
+                              <SelectItem value="villa">Villa</SelectItem>
+                              <SelectItem value="townhouse">Townhouse</SelectItem>
+                              <SelectItem value="land">Land</SelectItem>
+                              <SelectItem value="commercial">Commercial</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
-                  <div>
-                    <Label htmlFor="price">Price (IDR) *</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => handleInputChange('price', e.target.value)}
-                      placeholder="Enter price"
-                      required
-                    />
-                  </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="listing_type" className="text-sm font-semibold">Listing Type *</Label>
+                          <Select value={formData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select listing type" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover z-50">
+                              <SelectItem value="sale">For Sale</SelectItem>
+                              <SelectItem value="rent">For Rent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
 
-                  <div>
-                    <Label htmlFor="status">Status</Label>
-                    <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="price" className="text-sm font-semibold">Price (IDR) *</Label>
+                        <Input
+                          id="price"
+                          type="number"
+                          value={formData.price}
+                          onChange={(e) => handleInputChange('price', e.target.value)}
+                          placeholder="Enter price"
+                          required
+                          className="h-11"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
 
-                  <div className="md:col-span-2">
-                    <Label htmlFor="location">Location *</Label>
-                    <Input
-                      id="location"
-                      value={formData.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
-                      placeholder="Enter full address"
-                      required
-                    />
-                  </div>
+                  {/* Location Tab */}
+                  <TabsContent value="location" className="space-y-6 mt-6">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="location" className="text-sm font-semibold">Full Address *</Label>
+                        <Input
+                          id="location"
+                          value={formData.location}
+                          onChange={(e) => handleInputChange('location', e.target.value)}
+                          placeholder="Enter full address"
+                          required
+                          className="h-11"
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      value={formData.city}
-                      onChange={(e) => handleInputChange('city', e.target.value)}
-                      placeholder="Enter city"
-                    />
-                  </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="city" className="text-sm font-semibold">City</Label>
+                          <Input
+                            id="city"
+                            value={formData.city}
+                            onChange={(e) => handleInputChange('city', e.target.value)}
+                            placeholder="Enter city"
+                            className="h-11"
+                          />
+                        </div>
 
-                  <div>
-                    <Label htmlFor="state">State/Province</Label>
-                    <Input
-                      id="state"
-                      value={formData.state}
-                      onChange={(e) => handleInputChange('state', e.target.value)}
-                      placeholder="Enter state"
-                    />
-                  </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="state" className="text-sm font-semibold">State/Province</Label>
+                          <Input
+                            id="state"
+                            value={formData.state}
+                            onChange={(e) => handleInputChange('state', e.target.value)}
+                            placeholder="Enter state"
+                            className="h-11"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
 
-                  <div>
-                    <Label htmlFor="bedrooms">Bedrooms</Label>
-                    <Input
-                      id="bedrooms"
-                      type="number"
-                      value={formData.bedrooms}
-                      onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                      placeholder="Number of bedrooms"
-                    />
-                  </div>
+                  {/* Details Tab */}
+                  <TabsContent value="details" className="space-y-6 mt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="bedrooms" className="text-sm font-semibold">Bedrooms</Label>
+                        <Input
+                          id="bedrooms"
+                          type="number"
+                          value={formData.bedrooms}
+                          onChange={(e) => handleInputChange('bedrooms', e.target.value)}
+                          placeholder="0"
+                          className="h-11"
+                          min="0"
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="bathrooms">Bathrooms</Label>
-                    <Input
-                      id="bathrooms"
-                      type="number"
-                      value={formData.bathrooms}
-                      onChange={(e) => handleInputChange('bathrooms', e.target.value)}
-                      placeholder="Number of bathrooms"
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="bathrooms" className="text-sm font-semibold">Bathrooms</Label>
+                        <Input
+                          id="bathrooms"
+                          type="number"
+                          value={formData.bathrooms}
+                          onChange={(e) => handleInputChange('bathrooms', e.target.value)}
+                          placeholder="0"
+                          className="h-11"
+                          min="0"
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="area_sqm">Area (m²)</Label>
-                    <Input
-                      id="area_sqm"
-                      type="number"
-                      value={formData.area_sqm}
-                      onChange={(e) => handleInputChange('area_sqm', e.target.value)}
-                      placeholder="Area in square meters"
-                    />
-                  </div>
-                </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="area_sqm" className="text-sm font-semibold">Area (m²)</Label>
+                        <Input
+                          id="area_sqm"
+                          type="number"
+                          value={formData.area_sqm}
+                          onChange={(e) => handleInputChange('area_sqm', e.target.value)}
+                          placeholder="0"
+                          className="h-11"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
 
-                <div className="flex gap-4 pt-6">
-                  <Button type="submit" disabled={isSubmitting}>
+                  {/* Status Tab */}
+                  <TabsContent value="status" className="space-y-6 mt-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="status" className="text-sm font-semibold">Property Status</Label>
+                      <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                        <SelectTrigger className="h-11">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover z-50">
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Active properties are visible to the public. Inactive properties are hidden.
+                      </p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t">
+                  <Button type="submit" disabled={isSubmitting} className="flex-1 h-11">
                     {isSubmitting ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -347,7 +408,7 @@ const PropertyEdit = () => {
                       </>
                     )}
                   </Button>
-                  <Button type="button" variant="outline" onClick={() => navigate('/agent-dashboard')}>
+                  <Button type="button" variant="outline" onClick={() => navigate('/agent-dashboard')} className="flex-1 sm:flex-none h-11">
                     Cancel
                   </Button>
                 </div>
