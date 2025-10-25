@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Eye, MapPin, Home, DollarSign, User, Building, Calendar, Ruler } from "lucide-react";
+import { Eye, MapPin, Home, DollarSign, User, Building, Calendar, Ruler, X } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
+import { useNavigate } from 'react-router-dom';
 
 interface PropertyPreviewProps {
   isOpen: boolean;
@@ -15,14 +16,32 @@ interface PropertyPreviewProps {
 }
 
 const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmitting }: PropertyPreviewProps) => {
+  const navigate = useNavigate();
+
+  const handleCloseAndHome = () => {
+    onClose();
+    navigate('/');
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader className="border-b border-gray-200 pb-4">
-          <DialogTitle className="flex items-center gap-2 text-gray-900">
-            <Eye className="h-5 w-5 text-blue-600" />
-            Preview Properti
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2 text-gray-900">
+              <Eye className="h-5 w-5 text-blue-600" />
+              Preview Properti
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCloseAndHome}
+              className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
+              aria-label="Close and go home"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
@@ -203,7 +222,15 @@ const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmittin
           </Card>
         </div>
 
-        <DialogFooter className="border-t border-gray-200 pt-4 bg-gray-50">
+        <DialogFooter className="border-t border-gray-200 pt-4 bg-gray-50 flex-col sm:flex-row gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleCloseAndHome}
+            className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50 flex items-center gap-2"
+          >
+            <Home className="h-4 w-4" />
+            Close & Home
+          </Button>
           <Button 
             variant="outline" 
             onClick={onClose}
