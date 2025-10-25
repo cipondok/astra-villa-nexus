@@ -242,7 +242,7 @@ const ModernEnhancedAdminDashboard = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <main className="flex-1 p-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <AdminDashboardContent 
               activeSection={activeSection}
               onSectionChange={setActiveSection}
