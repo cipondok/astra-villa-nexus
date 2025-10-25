@@ -642,6 +642,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               <X className="h-3.5 w-3.5" />
             </Button>
           </div>
+          <DialogDescription className="sr-only">Edit property</DialogDescription>
           {!isAuthorizedForRestrictedTypes() && (
             <div className="mt-2 flex items-center gap-1.5 p-2 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
               <AlertTriangle className="h-3 w-3 text-amber-200" />
@@ -652,41 +653,41 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           )}
         </DialogHeader>
         
-        <div className="px-2 pt-2 sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
-          <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-slate-200 dark:bg-slate-800 p-0.5">
-            <TabsTrigger 
-              value="gallery" 
-              onClick={() => scrollToTab("gallery")}
-              className={`text-xs h-7 ${activeTab === "gallery" ? "bg-white dark:bg-slate-700" : ""}`}
-            >
-              Gallery
-            </TabsTrigger>
-            <TabsTrigger 
-              value="info" 
-              onClick={() => scrollToTab("info")}
-              className={`text-xs h-7 ${activeTab === "info" ? "bg-white dark:bg-slate-700" : ""}`}
-            >
-              Info
-            </TabsTrigger>
-            <TabsTrigger 
-              value="seo" 
-              onClick={() => scrollToTab("seo")}
-              className={`text-xs h-7 ${activeTab === "seo" ? "bg-white dark:bg-slate-700" : ""}`}
-            >
-              SEO
-            </TabsTrigger>
-            <TabsTrigger 
-              value="advanced" 
-              onClick={() => scrollToTab("advanced")}
-              className={`text-xs h-7 ${activeTab === "advanced" ? "bg-white dark:bg-slate-700" : ""}`}
-            >
-              Advanced
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v as "gallery" | "info" | "seo" | "advanced"); scrollToTab(v); }} className="w-full">
+          <div className="px-2 pt-2 sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
+            <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-slate-200 dark:bg-slate-800 p-0.5">
+              <TabsTrigger 
+                value="gallery" 
+                onClick={() => scrollToTab("gallery")}
+                className={`text-xs h-7 ${activeTab === "gallery" ? "bg-white dark:bg-slate-700" : ""}`}
+              >
+                Gallery
+              </TabsTrigger>
+              <TabsTrigger 
+                value="info" 
+                onClick={() => scrollToTab("info")}
+                className={`text-xs h-7 ${activeTab === "info" ? "bg-white dark:bg-slate-700" : ""}`}
+              >
+                Info
+              </TabsTrigger>
+              <TabsTrigger 
+                value="seo" 
+                onClick={() => scrollToTab("seo")}
+                className={`text-xs h-7 ${activeTab === "seo" ? "bg-white dark:bg-slate-700" : ""}`}
+              >
+                SEO
+              </TabsTrigger>
+              <TabsTrigger 
+                value="advanced" 
+                onClick={() => scrollToTab("advanced")}
+                className={`text-xs h-7 ${activeTab === "advanced" ? "bg-white dark:bg-slate-700" : ""}`}
+              >
+                Advanced
+              </TabsTrigger>
+            </TabsList>
+          </div>
         
-        <div ref={scrollContainerRef} className="overflow-y-auto max-h-[calc(95vh-180px)] px-1">
-          <Tabs value={activeTab} className="w-full">
+          <div ref={scrollContainerRef} className="overflow-y-auto max-h-[calc(95vh-180px)] px-1">
 
             <TabsContent value="gallery" className="mt-0">
               <div className="space-y-3 py-2" id="gallery-section">
@@ -1053,8 +1054,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 </div>
               </div>
             </TabsContent>
-          </Tabs>
-        </div>
+          </div>
+        </Tabs>
 
         <DialogFooter className="border-t border-slate-200 dark:border-slate-700 pt-2 pb-1 sm:pt-3 bg-white dark:bg-slate-800 flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex items-center gap-1.5 hidden sm:flex">
