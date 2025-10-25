@@ -48,8 +48,6 @@ const UserRolesManagement = () => {
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['all-user-roles'],
     queryFn: async (): Promise<User[]> => {
-      console.log('Fetching all users...');
-      
       // First try to get users from profiles table
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
@@ -60,8 +58,6 @@ const UserRolesManagement = () => {
         console.error('Error fetching profiles:', profilesError);
         throw profilesError;
       }
-
-      console.log('Profiles fetched:', profilesData?.length);
       
       // If we don't get many users from profiles, try auth.users (admin only)
       if (!profilesData || profilesData.length === 0) {
@@ -74,7 +70,6 @@ const UserRolesManagement = () => {
             if (authError) {
               console.error('Error fetching auth users:', authError);
             } else {
-              console.log('Auth users fetched:', authUsers?.users?.length);
               // Transform auth users to our format
               return authUsers.users.map(user => ({
                 id: user.id,
@@ -118,8 +113,6 @@ const UserRolesManagement = () => {
   // Update user role mutation
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
-      console.log('Updating role for user:', userId, 'to role:', role);
-      
       // First get the user's current data
       const { data: currentUser, error: fetchError } = await supabase
         .from('profiles')
@@ -159,8 +152,6 @@ const UserRolesManagement = () => {
   // Grant admin access mutation
   const grantAdminMutation = useMutation({
     mutationFn: async ({ userId, isSuperAdmin = false }: { userId: string; isSuperAdmin?: boolean }) => {
-      console.log('Granting admin access to user:', userId);
-      
       // Add to user_roles table
       const { error: roleError } = await supabase
         .from('user_roles')
@@ -201,8 +192,6 @@ const UserRolesManagement = () => {
   // Revoke admin access mutation
   const revokeAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
-      console.log('Revoking admin access for user:', userId);
-      
       // Remove from user_roles table
       const { error: roleError } = await supabase
         .from('user_roles')

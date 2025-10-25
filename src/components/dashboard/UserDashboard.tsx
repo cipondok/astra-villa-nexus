@@ -34,13 +34,8 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  console.log('UserDashboard - User:', user);
-  console.log('UserDashboard - Profile:', profile);
-  console.log('UserDashboard - Loading:', loading);
-
   const handleRefreshProfile = async () => {
     setIsRefreshing(true);
-    console.log('Manual profile refresh requested');
     await refreshProfile();
     setIsRefreshing(false);
   };

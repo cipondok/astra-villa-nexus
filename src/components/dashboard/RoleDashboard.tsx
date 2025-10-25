@@ -37,20 +37,11 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
   }, [profile?.role, navigate]);
 
   const handleRefreshProfile = async () => {
-    console.log('Manual profile refresh requested');
     await refreshProfile();
   };
 
   // Debug info for super admin email
   const isSuperAdminEmail = user?.email === 'mycode103@gmail.com';
-  
-  console.log('RoleDashboard Debug:', {
-    userEmail: user?.email,
-    isSuperAdminEmail,
-    profileRole: profile?.role,
-    verificationStatus: profile?.verification_status,
-    profileUpdatedAt: profile?.updated_at
-  });
 
   const text = {
     en: {

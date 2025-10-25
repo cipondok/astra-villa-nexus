@@ -43,8 +43,6 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
       companyName?: string;
       licenseNumber?: string;
     }) => {
-      console.log('Creating new user with enhanced admin process:', userData);
-      
       // Comprehensive validation
       if (!userData.email || !userData.password || !userData.fullName) {
         throw new Error('Email, password, and full name are required');
@@ -95,7 +93,6 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
           throw new Error('User creation failed - no user returned');
         }
 
-        console.log('User created in auth:', authData.user.id);
         return authData.user;
       } catch (error: any) {
         console.error('User creation process failed:', error);
@@ -103,7 +100,6 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
       }
     },
     onSuccess: (user) => {
-      console.log('Complete user creation successful:', user.id);
       showSuccess("User Created Successfully", "New user has been created and is ready to use the system.");
       
       // Refresh all related queries

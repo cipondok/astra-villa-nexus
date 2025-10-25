@@ -163,7 +163,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshProfile = async () => {
     if (user?.id) {
-      console.log('Manually refreshing profile for user:', user.email);
       setLoading(true);
       await fetchProfile(user.id);
     }
@@ -171,12 +170,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const extendSession = async () => {
     try {
-      console.log('Extending session...');
       const { data, error } = await supabase.auth.refreshSession();
       if (error) {
         console.error('Session refresh error:', error);
       } else {
-        console.log('Session extended successfully');
         localStorage.setItem('last_activity', Date.now().toString());
       }
     } catch (error) {
@@ -187,14 +184,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   React.useEffect(() => {
     let mounted = true;
     
-    console.log('Initializing auth state...');
-    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
-        
-        console.log('Auth state changed:', event, session?.user?.email || 'No user');
         
         setSession(session);
         setUser(session?.user ?? null);

@@ -84,8 +84,6 @@ const DatabaseUserManagement = () => {
   const { data: databaseUsers, isLoading, refetch } = useQuery({
     queryKey: ['database-users'],
     queryFn: async (): Promise<DatabaseUser[]> => {
-      console.log('Fetching database users with admin status');
-      
       // Get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
@@ -131,8 +129,6 @@ const DatabaseUserManagement = () => {
   // Update user profile mutation
   const updateUserMutation = useMutation({
     mutationFn: async (userData: Partial<DatabaseUser>) => {
-      console.log('Updating user profile:', userData.id, userData);
-      
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -150,7 +146,6 @@ const DatabaseUserManagement = () => {
         throw error;
       }
       
-      console.log('User profile updated successfully');
       return userData;
     },
     onSuccess: () => {
@@ -168,8 +163,6 @@ const DatabaseUserManagement = () => {
   // Quick verification status update mutation
   const updateVerificationMutation = useMutation({
     mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
-      console.log('Updating verification status:', userId, status);
-      
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -183,7 +176,6 @@ const DatabaseUserManagement = () => {
         throw error;
       }
       
-      console.log('Verification status updated successfully');
       return { userId, status };
     },
     onSuccess: (data) => {
@@ -232,7 +224,6 @@ const DatabaseUserManagement = () => {
   // Grant admin access mutation
   const grantAdminMutation = useMutation({
     mutationFn: async ({ userId, isSuperAdmin = false }: { userId: string; isSuperAdmin?: boolean }) => {
-      console.log('Granting admin access:', userId, isSuperAdmin);
       // Grant admin by inserting into admin_users only (roles managed via user_roles)
       // No direct profile role updates
       
@@ -267,8 +258,6 @@ const DatabaseUserManagement = () => {
   // Revoke admin access mutation
   const revokeAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
-      console.log('Revoking admin access:', userId);
-      
       // Remove from admin_users table
       const { error: adminError } = await supabase
         .from('admin_users')
