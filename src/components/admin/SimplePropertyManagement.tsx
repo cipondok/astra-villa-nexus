@@ -475,31 +475,31 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
               {properties.map((property) => (
-                <Card key={property.id} className="group relative overflow-hidden hover:shadow-lg transition-all">
-                  <CardContent className="p-3">
+                <Card key={property.id} className="group relative overflow-hidden hover:shadow-md transition-all">
+                  <CardContent className="p-2">
                     {/* Checkbox & Image */}
-                    <div className="relative mb-2">
-                      <div className="absolute top-2 left-2 z-10">
+                    <div className="relative mb-1.5">
+                      <div className="absolute top-1.5 left-1.5 z-10">
                         <Checkbox
                           checked={selectedProperties.has(property.id)}
                           onCheckedChange={(checked) => handleSelect(property.id, checked as boolean)}
-                          className="bg-white shadow-sm"
+                          className="bg-white shadow-sm h-3.5 w-3.5"
                         />
                       </div>
-                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 rounded-md overflow-hidden flex items-center justify-center">
-                        <Building2 className="h-8 w-8 text-primary/30" />
+                      <div className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-primary/5 rounded overflow-hidden flex items-center justify-center">
+                        <Building2 className="h-6 w-6 text-primary/30" />
                       </div>
                     </div>
 
                     {/* Property Info */}
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-semibold text-sm line-clamp-1 flex-1">{property.title}</h3>
+                    <div className="space-y-1.5">
+                      <div className="flex items-start justify-between gap-1.5">
+                        <h3 className="font-semibold text-xs line-clamp-1 flex-1">{property.title}</h3>
                         <Badge 
                           variant="outline"
-                          className={`text-[10px] px-1.5 py-0 h-5 ${
+                          className={`text-[9px] px-1 py-0 h-4 shrink-0 ${
                             property.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                             property.status === 'sold' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                             'bg-gray-50 text-gray-700 border-gray-200'
@@ -510,22 +510,22 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                       </div>
 
                       {/* Price & Type */}
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-bold text-sm text-primary">
+                      <div className="flex items-center justify-between gap-1.5">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-bold text-xs text-primary truncate">
                             {property.price ? formatIDR(property.price) : 'No price'}
                           </div>
-                          <div className="text-[10px] text-muted-foreground capitalize">
+                          <div className="text-[9px] text-muted-foreground capitalize">
                             {property.listing_type}
                           </div>
                         </div>
-                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 capitalize">
+                        <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4 capitalize shrink-0">
                           {property.property_type}
                         </Badge>
                       </div>
 
                       {/* Details */}
-                      <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                         <span>{property.bedrooms}BR</span>
                         <span>•</span>
                         <span>{property.bathrooms}BA</span>
@@ -534,25 +534,25 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                       </div>
 
                       {/* Location */}
-                      <div className="text-[11px] text-muted-foreground line-clamp-1">
+                      <div className="text-[10px] text-muted-foreground line-clamp-1">
                         {property.location}{property.city ? `, ${property.city}` : ''}
                       </div>
 
                       {/* WhatsApp */}
                       <div className="pt-1 border-t">
                         {editingWhatsApp === property.id ? (
-                          <div className="flex gap-1">
+                          <div className="flex gap-0.5">
                             <Input
                               value={whatsappValue}
                               onChange={(e) => setWhatsappValue(e.target.value)}
                               placeholder="+62..."
-                              className="text-xs h-7 flex-1"
+                              className="text-[10px] h-6 flex-1"
                             />
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => handleSaveWhatsApp(property.id)}
-                              className="h-7 w-7 p-0"
+                              className="h-6 w-6 p-0 text-xs"
                             >
                               ✓
                             </Button>
@@ -560,14 +560,14 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                               size="sm"
                               variant="outline"
                               onClick={handleCancelWhatsApp}
-                              className="h-7 w-7 p-0"
+                              className="h-6 w-6 p-0 text-xs"
                             >
                               ✕
                             </Button>
                           </div>
                         ) : (
                           <div 
-                            className="cursor-pointer hover:bg-accent/50 p-1.5 rounded text-[11px] transition-colors"
+                            className="cursor-pointer hover:bg-accent/50 p-1 rounded text-[10px] transition-colors truncate"
                             onClick={() => handleEditWhatsApp(property.id, property.posted_by?.[0]?.phone || "")}
                             title="Click to edit"
                           >
@@ -577,26 +577,24 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-1 pt-1">
+                      <div className="flex gap-0.5 pt-1">
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleViewProperty(property)}
                           title="View Property"
-                          className="h-7 flex-1 text-xs"
+                          className="h-6 flex-1 text-[10px] px-1"
                         >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
+                          <Eye className="h-3 w-3" />
                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleEditProperty(property)}
                           title="Edit Property"
-                          className="h-7 flex-1 text-xs"
+                          className="h-6 flex-1 text-[10px] px-1"
                         >
-                          <Edit className="h-3 w-3 mr-1" />
-                          Edit
+                          <Edit className="h-3 w-3" />
                         </Button>
                         <Button 
                           variant="outline" 
@@ -604,7 +602,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           onClick={() => handleDelete(property.id, property.title)}
                           disabled={deleteMutation.isPending}
                           title="Delete Property"
-                          className="h-7 w-7 p-0"
+                          className="h-6 w-6 p-0"
                         >
                           {deleteMutation.isPending ? (
                             <Loader2 className="h-3 w-3 animate-spin" />
