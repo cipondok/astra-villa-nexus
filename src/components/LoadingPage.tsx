@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useConnectionSpeed } from '@/hooks/useConnectionSpeed';
 
 interface LoadingPageProps {
   message?: string;
@@ -12,7 +13,16 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
   showConnectionStatus = false,
   connectionStatus = 'connecting'
 }) => {
+  const { speed, isSlowConnection } = useConnectionSpeed();
+
   const getConnectionMessage = () => {
+    if (speed === 'slow') {
+      return 'Slow internet detected - ISP issue';
+    }
+    if (speed === 'offline') {
+      return 'No internet - Check your connection';
+    }
+
     switch (connectionStatus) {
       case 'connecting':
         return 'Checking database...';
@@ -28,6 +38,13 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
   };
 
   const getConnectionColor = () => {
+    if (speed === 'slow') {
+      return 'text-orange-400';
+    }
+    if (speed === 'offline') {
+      return 'text-red-400';
+    }
+
     switch (connectionStatus) {
       case 'connecting':
         return 'text-yellow-400';
@@ -67,12 +84,19 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           <div className="flex flex-col items-center space-y-2">
             <div className={`text-xs ${getConnectionColor()} flex items-center space-x-2`}>
               <div className={`w-2 h-2 rounded-full ${
+                speed === 'slow' ? 'bg-orange-400 animate-pulse' :
+                speed === 'offline' ? 'bg-red-400 animate-pulse' :
                 connectionStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
                 connectionStatus === 'connected' ? 'bg-green-400' :
                 'bg-gray-400'
               }`}></div>
               <span>{getConnectionMessage()}</span>
             </div>
+            {isSlowConnection && (
+              <p className="text-xs text-gray-500 text-center max-w-xs">
+                Please wait... This may take longer due to your internet connection
+              </p>
+            )}
           </div>
         )}
       </div>
