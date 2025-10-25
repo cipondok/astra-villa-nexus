@@ -451,12 +451,12 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         </CardContent>
       </Card>
 
-      {/* Properties Table */}
+      {/* Properties Grid */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Properties ({allProperties.length} total, {properties.length} showing)</span>
-            <div className="text-sm text-gray-500">
+            <span className="text-base">Properties ({allProperties.length} total, {properties.length} showing)</span>
+            <div className="text-xs text-muted-foreground">
               Page {currentPage} of {totalPages}
             </div>
           </CardTitle>
@@ -464,9 +464,9 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         <CardContent>
           {properties.length === 0 ? (
             <div className="text-center py-8">
-              <Building2 className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <Building2 className="h-16 w-16 text-muted mx-auto mb-4" />
               <h3 className="text-xl font-medium mb-2">No Properties Found</h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 {searchTerm ? "No properties match your search." : "No properties in database."}
               </p>
               <Button onClick={onAddProperty}>
@@ -475,77 +475,84 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
               </Button>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedProperties.size === properties.length && properties.length > 0}
-                      onCheckedChange={handleSelectAll}
-                    />
-                  </TableHead>
-                  <TableHead>Property</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Phone/WhatsApp</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {properties.map((property) => (
-                  <TableRow key={property.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedProperties.has(property.id)}
-                        onCheckedChange={(checked) => handleSelect(property.id, checked as boolean)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{property.title}</div>
-                        <div className="text-sm text-gray-500">
-                          {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
-                        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              {properties.map((property) => (
+                <Card key={property.id} className="group relative overflow-hidden hover:shadow-lg transition-all">
+                  <CardContent className="p-3">
+                    {/* Checkbox & Image */}
+                    <div className="relative mb-2">
+                      <div className="absolute top-2 left-2 z-10">
+                        <Checkbox
+                          checked={selectedProperties.has(property.id)}
+                          onCheckedChange={(checked) => handleSelect(property.id, checked as boolean)}
+                          className="bg-white shadow-sm"
+                        />
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="capitalize">
-                        {property.property_type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <div>{property.location}</div>
-                        {property.city && <div className="text-gray-500">{property.city}</div>}
+                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 rounded-md overflow-hidden flex items-center justify-center">
+                        <Building2 className="h-8 w-8 text-primary/30" />
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">
-                          {property.price ? formatIDR(property.price) : 'No price'}
-                        </div>
-                        <div className="text-xs text-gray-500 capitalize">
-                          {property.listing_type}
-                        </div>
+                    </div>
+
+                    {/* Property Info */}
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-semibold text-sm line-clamp-1 flex-1">{property.title}</h3>
+                        <Badge 
+                          variant="outline"
+                          className={`text-[10px] px-1.5 py-0 h-5 ${
+                            property.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            property.status === 'sold' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            'bg-gray-50 text-gray-700 border-gray-200'
+                          }`}
+                        >
+                          {property.status}
+                        </Badge>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="max-w-32">
+
+                      {/* Price & Type */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-bold text-sm text-primary">
+                            {property.price ? formatIDR(property.price) : 'No price'}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground capitalize">
+                            {property.listing_type}
+                          </div>
+                        </div>
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 capitalize">
+                          {property.property_type}
+                        </Badge>
+                      </div>
+
+                      {/* Details */}
+                      <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                        <span>{property.bedrooms}BR</span>
+                        <span>•</span>
+                        <span>{property.bathrooms}BA</span>
+                        <span>•</span>
+                        <span>{property.area_sqm}m²</span>
+                      </div>
+
+                      {/* Location */}
+                      <div className="text-[11px] text-muted-foreground line-clamp-1">
+                        {property.location}{property.city ? `, ${property.city}` : ''}
+                      </div>
+
+                      {/* WhatsApp */}
+                      <div className="pt-1 border-t">
                         {editingWhatsApp === property.id ? (
                           <div className="flex gap-1">
                             <Input
                               value={whatsappValue}
                               onChange={(e) => setWhatsappValue(e.target.value)}
                               placeholder="+62..."
-                              className="text-xs h-8"
+                              className="text-xs h-7 flex-1"
                             />
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => handleSaveWhatsApp(property.id)}
-                              className="h-8 px-2"
+                              className="h-7 w-7 p-0"
                             >
                               ✓
                             </Button>
@@ -553,49 +560,43 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                               size="sm"
                               variant="outline"
                               onClick={handleCancelWhatsApp}
-                              className="h-8 px-2"
+                              className="h-7 w-7 p-0"
                             >
                               ✕
                             </Button>
                           </div>
                         ) : (
                           <div 
-                            className="cursor-pointer hover:bg-gray-100 p-1 rounded text-xs"
+                            className="cursor-pointer hover:bg-accent/50 p-1.5 rounded text-[11px] transition-colors"
                             onClick={() => handleEditWhatsApp(property.id, property.posted_by?.[0]?.phone || "")}
+                            title="Click to edit"
                           >
-                            {property.posted_by?.[0]?.phone || "Not set"}
+                            📱 {property.posted_by?.[0]?.phone || "Not set"}
                           </div>
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        className={
-                          property.status === 'active' ? 'bg-green-100 text-green-800' :
-                          property.status === 'sold' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                        }
-                      >
-                        {property.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
+
+                      {/* Actions */}
+                      <div className="flex gap-1 pt-1">
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleViewProperty(property)}
                           title="View Property"
+                          className="h-7 flex-1 text-xs"
                         >
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleEditProperty(property)}
                           title="Edit Property"
+                          className="h-7 flex-1 text-xs"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
                         </Button>
                         <Button 
                           variant="outline" 
@@ -603,19 +604,20 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           onClick={() => handleDelete(property.id, property.title)}
                           disabled={deleteMutation.isPending}
                           title="Delete Property"
+                          className="h-7 w-7 p-0"
                         >
                           {deleteMutation.isPending ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader2 className="h-3 w-3 animate-spin" />
                           ) : (
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3" />
                           )}
                         </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </CardContent>
         
