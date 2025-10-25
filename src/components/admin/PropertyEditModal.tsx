@@ -543,63 +543,63 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
-        <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-6 bg-gradient-to-r from-indigo-600 to-purple-600 -mx-6 -mt-6 px-6 pt-6 text-white">
+      <DialogContent className="max-w-3xl max-h-[95vh] overflow-hidden p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
+        <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-3 bg-gradient-to-r from-indigo-600 to-purple-600 -mx-3 sm:-mx-4 -mt-3 sm:-mt-4 px-3 sm:px-4 pt-3 sm:pt-4 text-white">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
-              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-                <Edit className="h-6 w-6" />
+            <DialogTitle className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <div className="p-1.5 bg-white/20 backdrop-blur-sm rounded-lg hidden sm:block">
+                <Edit className="h-4 w-4" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Edit Property</h1>
-                <p className="text-indigo-100 text-sm font-normal mt-1">Update property information and settings</p>
+                <h1 className="text-base sm:text-lg font-bold">Edit Property</h1>
+                <p className="text-indigo-100 text-xs font-normal mt-0.5 hidden sm:block">Update property info</p>
               </div>
             </DialogTitle>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="text-white hover:bg-white/10 h-8 w-8 p-0"
+              className="text-white hover:bg-white/10 h-7 w-7 p-0"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </Button>
           </div>
           {!isAuthorizedForRestrictedTypes() && (
-            <div className="mt-4 flex items-center gap-2 p-3 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
-              <AlertTriangle className="h-4 w-4 text-amber-200" />
-              <span className="text-xs text-amber-100">
-                Note: You cannot set development status to "New Project" or "Pre-Launching" - restricted to authorized users only.
+            <div className="mt-2 flex items-center gap-1.5 p-2 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
+              <AlertTriangle className="h-3 w-3 text-amber-200" />
+              <span className="text-[10px] sm:text-xs text-amber-100">
+                Note: Cannot set status to "New Project" or "Pre-Launching"
               </span>
             </div>
           )}
         </DialogHeader>
         
-        <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-1">
+        <div className="overflow-y-auto max-h-[calc(95vh-140px)] px-1">
           <Tabs defaultValue="gallery" className="w-full">
-            <div className="px-4 pt-4">
-              <TabsList>
-                <TabsTrigger value="gallery">Gallery</TabsTrigger>
-                <TabsTrigger value="info">Info</TabsTrigger>
-                <TabsTrigger value="seo">SEO</TabsTrigger>
-                <TabsTrigger value="advanced">Advanced</TabsTrigger>
+            <div className="px-2 pt-2">
+              <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-slate-200 dark:bg-slate-800 p-0.5">
+                <TabsTrigger value="gallery" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">Gallery</TabsTrigger>
+                <TabsTrigger value="info" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">Info</TabsTrigger>
+                <TabsTrigger value="seo" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">SEO</TabsTrigger>
+                <TabsTrigger value="advanced" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">Advanced</TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value="gallery">
-              <div className="space-y-6 py-4">
+              <div className="space-y-3 py-2">
                 {/* Image Management Section */}
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                      <ImageIcon className="h-5 w-5" />
-                      Property Gallery ({images.length} Images)
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 sm:p-3">
+                    <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
+                      <ImageIcon className="h-4 w-4" />
+                      Gallery ({images.length})
                     </h3>
                   </div>
-                  <div className="p-6 space-y-6">
+                  <div className="p-3 sm:p-4 space-y-3">
                     {/* Upload Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label htmlFor="image-upload" className="text-slate-700 dark:text-slate-300 font-medium">Upload New Images</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="image-upload" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Upload Images</Label>
                         <Input
                           id="image-upload"
                           type="file"
@@ -607,50 +607,50 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                           multiple
                           onChange={handleFileUpload}
                           disabled={uploading}
-                          className="border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-purple-500"
+                          className="border-slate-300 dark:border-slate-600 focus:border-purple-500 h-8 text-xs"
                         />
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                          Select multiple images (JPG, PNG, etc.) - Max 5MB per file
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                          JPG, PNG, max 5MB each
                         </p>
                         {uploading && (
-                          <div className="flex items-center gap-2 text-purple-600">
-                            <Upload className="h-4 w-4 animate-pulse" />
-                            Uploading images...
+                          <div className="flex items-center gap-1.5 text-purple-600 text-xs">
+                            <Upload className="h-3 w-3 animate-pulse" />
+                            Uploading...
                           </div>
                         )}
                       </div>
 
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Generate AI Image</Label>
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">AI Generate</Label>
                         <Button
                           type="button"
                           onClick={generateAIImage}
                           disabled={generatingImage}
-                          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                          className="w-full h-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-xs"
                         >
                           {generatingImage ? (
                             <>
-                              <Wand2 className="h-4 w-4 mr-2 animate-spin" />
-                              Generating Magic...
+                              <Wand2 className="h-3 w-3 mr-1.5 animate-spin" />
+                              Generating...
                             </>
                           ) : (
                             <>
-                              <Wand2 className="h-4 w-4 mr-2" />
-                              Generate AI Image
+                              <Wand2 className="h-3 w-3 mr-1.5" />
+                              Generate AI
                             </>
                           )}
                         </Button>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                          Generate a professional property image using AI
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                          AI-powered image generation
                         </p>
                       </div>
                     </div>
 
                     {/* Current Images */}
                     {images.length > 0 ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                         {images.map((url, index) => (
-                          <div key={index} className={`group relative overflow-hidden rounded-xl bg-white dark:bg-slate-700 shadow-lg ${editData.thumbnail_url === url ? 'ring-2 ring-amber-500' : ''}`}>
+                          <div key={index} className={`group relative overflow-hidden rounded-lg bg-white dark:bg-slate-700 shadow ${editData.thumbnail_url === url ? 'ring-1 ring-amber-500' : ''}`}>
                             <div className="aspect-square overflow-hidden">
                               <img
                                 src={url}
@@ -667,48 +667,48 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                               type="button"
                               variant="destructive"
                               size="sm"
-                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 bg-red-500 hover:bg-red-600"
+                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 bg-red-500 hover:bg-red-600"
                               onClick={() => removeImage(index)}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                             {/* Set thumbnail button */}
                             <Button
                               type="button"
                               variant={editData.thumbnail_url === url ? 'default' : 'outline'}
                               size="sm"
-                              className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 px-2"
+                              className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-5 px-1.5 text-[10px]"
                               onClick={() => setEditData(prev => ({ ...prev, thumbnail_url: url }))}
                             >
-                              {editData.thumbnail_url === url ? 'Thumbnail' : 'Set thumbnail'}
+                              {editData.thumbnail_url === url ? '★' : 'Set'}
                             </Button>
                             {/* Badges */}
-                            <div className="absolute bottom-2 left-2 flex items-center gap-2">
-                              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                            <div className="absolute bottom-1 left-1 flex items-center gap-1">
+                              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-1.5 py-0.5 rounded-full text-[10px] font-medium">
                                 #{index + 1}
                               </div>
                               {editData.thumbnail_url === url && (
-                                <div className="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-medium">Thumbnail</div>
+                                <div className="bg-amber-500 text-white px-1.5 py-0.5 rounded-full text-[10px] font-medium">★</div>
                               )}
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 bg-gradient-to-br from-slate-100 to-purple-100 dark:from-slate-800 dark:to-purple-900 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600">
-                        <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-fit mx-auto mb-4">
-                          <ImageIcon className="h-8 w-8 text-white" />
+                      <div className="text-center py-6 bg-gradient-to-br from-slate-100 to-purple-100 dark:from-slate-800 dark:to-purple-900 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600">
+                        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-fit mx-auto mb-2">
+                          <ImageIcon className="h-5 w-5 text-white" />
                         </div>
-                        <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">No Images Yet</h4>
-                        <p className="text-slate-500 dark:text-slate-400 mb-4">Upload images or generate one with AI</p>
+                        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">No Images</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Upload or generate</p>
                         <Button
                           type="button"
                           onClick={generateAIImage}
                           disabled={generatingImage}
-                          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                          className="h-8 text-xs bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                         >
-                          <Wand2 className="h-4 w-4 mr-2" />
-                          Generate Default Image
+                          <Wand2 className="h-3 w-3 mr-1.5" />
+                          Generate
                         </Button>
                       </div>
                     )}
@@ -718,64 +718,66 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             </TabsContent>
 
             <TabsContent value="info">
-              <div className="space-y-6 py-4">
+              <div className="space-y-3 py-2">
                 {/* Property Information */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-3">
                   {/* Basic Information */}
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4">
-                      <h3 className="text-lg font-bold text-white">Basic Information</h3>
+                  <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-2">
+                      <h3 className="text-sm font-bold text-white">Basic Information</h3>
                     </div>
-                    <div className="p-6 space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-title" className="text-slate-700 dark:text-slate-300 font-medium">Property Title</Label>
+                    <div className="p-3 space-y-2">
+                      <div className="space-y-1">
+                        <Label htmlFor="edit-title" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Property Title</Label>
                         <Input
                           id="edit-title"
                           value={editData.title}
                           onChange={(e) => handleInputChange('title', e.target.value)}
-                          placeholder="Enter property title"
-                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                          placeholder="Enter title"
+                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm"
                         />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-property-type" className="text-slate-700 dark:text-slate-300 font-medium">Property Type</Label>
-                        <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="house">House</SelectItem>
-                            <SelectItem value="apartment">Apartment</SelectItem>
-                            <SelectItem value="villa">Villa</SelectItem>
-                            <SelectItem value="townhouse">Townhouse</SelectItem>
-                            <SelectItem value="land">Land</SelectItem>
-                            <SelectItem value="commercial">Commercial</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="edit-property-type" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Property Type</Label>
+                          <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
+                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="house">House</SelectItem>
+                              <SelectItem value="apartment">Apartment</SelectItem>
+                              <SelectItem value="villa">Villa</SelectItem>
+                              <SelectItem value="townhouse">Townhouse</SelectItem>
+                              <SelectItem value="land">Land</SelectItem>
+                              <SelectItem value="commercial">Commercial</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label htmlFor="edit-listing-type" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Listing Type</Label>
+                          <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
+                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="sale">Sale</SelectItem>
+                              <SelectItem value="rent">Rent</SelectItem>
+                              <SelectItem value="lease">Lease</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-listing-type" className="text-slate-700 dark:text-slate-300 font-medium">Listing Type</Label>
-                        <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
-                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="sale">For Sale</SelectItem>
-                            <SelectItem value="rent">For Rent</SelectItem>
-                            <SelectItem value="lease">For Lease</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-development-status" className="text-slate-700 dark:text-slate-300 font-medium">Development Status</Label>
+                      <div className="space-y-1">
+                        <Label htmlFor="edit-development-status" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Development Status</Label>
                         <Select 
                           value={editData.development_status} 
                           onValueChange={(value) => handleInputChange('development_status', value)}
                         >
-                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -783,7 +785,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                               <SelectItem key={option.value} value={option.value}>
                                 {option.label}
                                 {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
-                                  <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
+                                  <span className="text-[10px] text-amber-600 ml-1">(Restricted)</span>
                                 )}
                               </SelectItem>
                             ))}
@@ -791,186 +793,41 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                         </Select>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-price" className="text-slate-700 dark:text-slate-300 font-medium">
-                          Price (IDR)
-                          {editData.price && (
-                            <Badge className="ml-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
-                              {formatPriceDisplay(editData.price)}
-                            </Badge>
-                          )}
-                        </Label>
-                        <Input
-                          id="edit-price"
-                          type="number"
-                          value={editData.price}
-                          onChange={(e) => handleInputChange('price', e.target.value)}
-                          placeholder="Enter price in IDR"
-                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-status" className="text-slate-700 dark:text-slate-300 font-medium">Status</Label>
-                        <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                            <SelectItem value="sold">Sold</SelectItem>
-                            <SelectItem value="rented">Rented</SelectItem>
-                            <SelectItem value="inactive">Inactive</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Property Details */}
-                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
-                      <h3 className="text-lg font-bold text-white">Property Specifications</h3>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-bedrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bedrooms</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="edit-price" className="text-slate-700 dark:text-slate-300 font-medium text-xs">
+                            Price (IDR)
+                            {editData.price && (
+                              <Badge className="ml-1 text-[10px] bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                                {formatPriceDisplay(editData.price)}
+                              </Badge>
+                            )}
+                          </Label>
                           <Input
-                            id="edit-bedrooms"
+                            id="edit-price"
                             type="number"
-                            value={editData.bedrooms}
-                            onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                            placeholder="BR"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                            value={editData.price}
+                            onChange={(e) => handleInputChange('price', e.target.value)}
+                            placeholder="Price"
+                            className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-bathrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bathrooms</Label>
-                          <Input
-                            id="edit-bathrooms"
-                            type="number"
-                            value={editData.bathrooms}
-                            onChange={(e) => handleInputChange('bathrooms', e.target.value)}
-                            placeholder="BA"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-area-sqm" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Area (m²)</Label>
-                          <Input
-                            id="edit-area-sqm"
-                            type="number"
-                            value={editData.area_sqm}
-                            onChange={(e) => handleInputChange('area_sqm', e.target.value)}
-                            placeholder="sqm"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                          />
-                        </div>
-                      </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-location" className="text-slate-700 dark:text-slate-300 font-medium">Location</Label>
-                          <Input
-                            id="edit-location"
-                            value={editData.location}
-                            onChange={(e) => handleInputChange('location', e.target.value)}
-                            placeholder="Area / Street / Complex"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                          />
+                        <div className="space-y-1">
+                          <Label htmlFor="edit-status" className="text-slate-700 dark:text-slate-300 font-medium text-xs">Status</Label>
+                          <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500 h-8 text-sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active">Active</SelectItem>
+                              <SelectItem value="pending_approval">Pending</SelectItem>
+                              <SelectItem value="sold">Sold</SelectItem>
+                              <SelectItem value="rented">Rented</SelectItem>
+                              <SelectItem value="inactive">Inactive</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-city" className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
-                          <Input
-                            id="edit-city"
-                            value={editData.city}
-                            onChange={(e) => handleInputChange('city', e.target.value)}
-                            placeholder="City"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-state" className="text-slate-700 dark:text-slate-300 font-medium">State / Province</Label>
-                          <Input
-                            id="edit-state"
-                            value={editData.state}
-                            onChange={(e) => handleInputChange('state', e.target.value)}
-                            placeholder="State"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-area" className="text-slate-700 dark:text-slate-300 font-medium">Area / District</Label>
-                          <Input
-                            id="edit-area"
-                            value={editData.area}
-                            onChange={(e) => handleInputChange('area', e.target.value)}
-                            placeholder="District / Area"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Parking Spaces</Label>
-                          <Input
-                            value={editData.parking_spaces}
-                            onChange={(e) => handleInputChange('parking_spaces', e.target.value)}
-                            placeholder="Number of parking spaces"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Year Built</Label>
-                          <Input
-                            value={editData.year_built}
-                            onChange={(e) => handleInputChange('year_built', e.target.value)}
-                            placeholder="e.g., 2020"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Lot Size</Label>
-                          <Input
-                            value={editData.lot_size}
-                            onChange={(e) => handleInputChange('lot_size', e.target.value)}
-                            placeholder="Total land area"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Property Tax</Label>
-                          <Input
-                            value={editData.property_tax}
-                            onChange={(e) => handleInputChange('property_tax', e.target.value)}
-                            placeholder="Annual property tax"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Maintenance Fee</Label>
-                          <Input
-                            value={editData.maintenance_fee}
-                            onChange={(e) => handleInputChange('maintenance_fee', e.target.value)}
-                            placeholder="Monthly maintenance fee"
-                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={editData.featured}
-                            onChange={(e) => setEditData(prev => ({ ...prev, featured: e.target.checked }))}
-                            className="rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
-                          />
-                          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Featured Property</span>
-                        </label>
                       </div>
                     </div>
                   </div>
@@ -1342,28 +1199,28 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </Tabs>
         </div>
 
-        <DialogFooter className="border-t border-slate-200 dark:border-slate-700 pt-6 bg-white dark:bg-slate-800 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+        <DialogFooter className="border-t border-slate-200 dark:border-slate-700 pt-2 pb-1 sm:pt-3 bg-white dark:bg-slate-800 flex-col sm:flex-row justify-between items-center gap-2">
+          <div className="flex items-center gap-1.5 hidden sm:flex">
+            <Badge variant="secondary" className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] px-1.5 py-0.5">
               ID: {property.id?.slice(0, 8)}...
             </Badge>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 w-full sm:w-auto">
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-600"
+              className="flex-1 sm:flex-none hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-600 h-8 text-xs"
             >
-              <X className="h-4 w-4 mr-2" />
+              <X className="h-3 w-3 mr-1.5" />
               Cancel
             </Button>
             <Button 
               onClick={handleUpdate} 
               disabled={updatePropertyMutation.isPending || uploading || generatingImage}
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg"
+              className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow h-8 text-xs"
             >
-              <Save className="h-4 w-4 mr-2" />
-              {updatePropertyMutation.isPending ? "Updating..." : "Save Changes"}
+              <Save className="h-3 w-3 mr-1.5" />
+              {updatePropertyMutation.isPending ? "Saving..." : "Save"}
             </Button>
           </div>
         </DialogFooter>
