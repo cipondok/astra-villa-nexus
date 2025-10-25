@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,6 +52,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProtectedContactInfo from '@/components/ProtectedContactInfo';
+import useAutoHorizontalScroll from '@/hooks/useAutoHorizontalScroll';
 
 interface PropertyData {
   id: string;
@@ -120,6 +121,13 @@ const PropertyDetail: React.FC = () => {
     title: property?.title,
     images: property?.images
   });
+
+  // Auto-scroll refs for mobile carousels
+  const similarScrollRef = useRef<HTMLDivElement>(null);
+  const moreFromAgentRef = useRef<HTMLDivElement>(null);
+
+  useAutoHorizontalScroll(similarScrollRef, { direction: 'rtl', speed: 1, pauseOnHover: true });
+  useAutoHorizontalScroll(moreFromAgentRef, { direction: 'rtl', speed: 1, pauseOnHover: true });
 
   useEffect(() => {
     console.log('PropertyDetail mounted with id:', id);
@@ -1008,26 +1016,26 @@ const PropertyDetail: React.FC = () => {
             
             {/* Horizontal Scrolling Container */}
             <div className="relative">
-              <div className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
+              <div ref={similarScrollRef} className="flex gap-2 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-3 sm:pb-4 -mx-2 px-2 sm:mx-0 sm:px-0 hover:pause-scroll">
                 {relatedProperties.map((relatedProperty) => (
                   <Card 
-                    key={relatedProperty.id} 
-                    className="group flex-shrink-0 w-[280px] sm:w-[320px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
+                    key={relatedProperty.id}
+                    className="group flex-shrink-0 w-[200px] sm:w-[280px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
                     onClick={() => navigate(`/properties/${relatedProperty.id}`)}
                   >
-                    <div className="aspect-[16/10] overflow-hidden rounded-t-lg">
+                    <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
                       <img
                         src={relatedProperty.images?.[0] || "/placeholder.svg"}
                         alt={relatedProperty.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <CardContent className="p-3 sm:p-4">
-                      <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2">
+                    <CardContent className="p-2.5 sm:p-4">
+                      <h3 className="text-sm sm:text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2">
                         {formatPrice(relatedProperty.price)}
                       </h3>
-                      <h4 className="font-semibold mb-2 sm:mb-3 text-foreground text-sm sm:text-base line-clamp-1">{relatedProperty.title}</h4>
-                      <div className="flex items-center justify-between gap-2 text-xs sm:text-sm mb-2 sm:mb-3">
+                      <h4 className="font-semibold mb-1.5 sm:mb-3 text-foreground text-xs sm:text-base line-clamp-1">{relatedProperty.title}</h4>
+                      <div className="flex items-center justify-between gap-2 text-[10px] sm:text-sm mb-2 sm:mb-3">
                         {relatedProperty.bedrooms && (
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <Bed className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -1048,7 +1056,7 @@ const PropertyDetail: React.FC = () => {
                         )}
                       </div>
                       <Button 
-                        className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 h-8 sm:h-9 text-xs sm:text-sm"
+                        className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 h-7 sm:h-9 text-xs sm:text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/properties/${relatedProperty.id}`);
@@ -1073,11 +1081,11 @@ const PropertyDetail: React.FC = () => {
             
             {/* Horizontal Scrolling Container */}
             <div className="relative">
-              <div className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
+              <div ref={moreFromAgentRef} className="flex gap-2 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-3 sm:pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
                 {userMoreProperties.map((userProperty) => (
                   <Card 
                     key={userProperty.id} 
-                    className="group flex-shrink-0 w-[240px] sm:w-[260px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
+                    className="group flex-shrink-0 w-[180px] sm:w-[240px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
                     onClick={() => navigate(`/properties/${userProperty.id}`)}
                   >
                     <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
@@ -1087,13 +1095,13 @@ const PropertyDetail: React.FC = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <CardContent className="p-2.5 sm:p-3">
-                      <h3 className="font-semibold line-clamp-2 mb-1.5 sm:mb-2 text-foreground text-xs sm:text-sm">{userProperty.title}</h3>
-                      <div className="flex items-center text-xs text-muted-foreground mb-1.5 sm:mb-2">
+                    <CardContent className="p-2 sm:p-3">
+                      <h3 className="font-semibold line-clamp-2 mb-1 sm:mb-2 text-foreground text-[11px] sm:text-sm">{userProperty.title}</h3>
+                      <div className="flex items-center text-[10px] text-muted-foreground mb-1 sm:mb-2">
                         <MapPin className="h-3 w-3 mr-1 text-primary flex-shrink-0" />
                         <span className="truncate">{userProperty.location}</span>
                       </div>
-                      <div className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2 sm:mb-3 text-sm sm:text-base">
+                      <div className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2 text-xs sm:text-base">
                         {formatPrice(userProperty.price)}
                       </div>
                       <Button 
