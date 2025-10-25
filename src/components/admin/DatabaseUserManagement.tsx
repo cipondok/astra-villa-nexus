@@ -198,18 +198,7 @@ const DatabaseUserManagement = () => {
         throw new Error("Only super admins can delete users");
       }
       
-      // First remove from admin_users if exists
-      await supabase
-        .from('admin_users')
-        .delete()
-        .eq('user_id', userId);
-      
-      // Then delete from profiles
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
-      
+      const { error } = await supabase.rpc('delete_user_admin', { p_user_id: userId });
       if (error) throw error;
       return userId;
     },

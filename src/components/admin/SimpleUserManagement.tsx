@@ -123,11 +123,7 @@ const SimpleUserManagement = () => {
   // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
-      
+      const { error } = await supabase.rpc('delete_user_admin', { p_user_id: userId });
       if (error) throw error;
       return userId;
     },
