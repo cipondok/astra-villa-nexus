@@ -384,16 +384,38 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     }
   };
 
-  // Remove image
-  const removeImage = (index: number) => {
-    console.log('Removing image at index:', index);
-    setImages(prev => {
-      const newImages = prev.filter((_, i) => i !== index);
-      console.log('Images after removal:', newImages);
-      return newImages;
-    });
+  // Remove image (also delete from storage if possible)
+  const removeImage = async (index: number) => {
+    try {
+      const url = images[index];
+      if (url) {
+        // Derive storage path from public URL
+        // Expected: .../storage/v1/object/public/property-images/<path>
+        let path = '';
+        const marker = '/object/public/property-images/';
+        const i = url.indexOf(marker);
+        if (i !== -1) {
+          path = url.substring(i + marker.length);
+        } else {
+          const altMarker = 'property-images/';
+          const j = url.indexOf(altMarker);
+          if (j !== -1) path = url.substring(j + altMarker.length);
+        }
+        if (path) {
+          const { error: rmError } = await supabase.storage
+            .from('property-images')
+            .remove([path]);
+          if (rmError) {
+            console.warn('Storage remove warning:', rmError.message);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Error while removing image from storage:', e);
+    } finally {
+      setImages(prev => prev.filter((_, i) => i !== index));
+    }
   };
-
   // Update property mutation
   const updatePropertyMutation = useMutation({
     mutationFn: async (updates: any) => {
@@ -440,15 +462,13 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       if (updates.property_features) updatePayload.property_features = updates.property_features;
       if (updates.owner_type) updatePayload.owner_type = updates.owner_type;
 
-      // Handle images - save as PostgreSQL array
-      if (images && images.length > 0) {
-        updatePayload.images = images; // Direct array assignment for PostgreSQL
-        console.log('Setting images as array:', updatePayload.images);
-      } else {
-        updatePayload.images = []; // Empty array
-        console.log('Setting empty images array');
+      // Handle images - save as PostgreSQL array and sync image_urls/thumbnail
+      updatePayload.images = images && images.length > 0 ? images : [];
+      updatePayload.image_urls = images && images.length > 0 ? images : [];
+      if (!updatePayload.thumbnail_url) {
+        updatePayload.thumbnail_url = images[0] || null;
       }
-
+      console.log('Setting images arrays and thumbnail:', { images: updatePayload.images, thumbnail: updatePayload.thumbnail_url });
       console.log('Final update payload:', updatePayload);
 
       const { error } = await supabase
