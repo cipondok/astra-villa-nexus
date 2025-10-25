@@ -13,6 +13,7 @@ import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface PropertyEditModalProps {
   property: any;
@@ -574,778 +575,771 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         </DialogHeader>
         
         <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-1">
-          <div className="space-y-6 py-4">
-            {/* Image Management Section */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
-                  Property Gallery ({images.length} Images)
-                </h3>
-              </div>
-              <div className="p-6 space-y-6">
-                {/* Upload Section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="image-upload" className="text-slate-700 dark:text-slate-300 font-medium">Upload New Images</Label>
-                    <Input
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleFileUpload}
-                      disabled={uploading}
-                      className="border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-purple-500"
-                    />
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Select multiple images (JPG, PNG, etc.) - Max 5MB per file
-                    </p>
-                    {uploading && (
-                      <div className="flex items-center gap-2 text-purple-600">
-                        <Upload className="h-4 w-4 animate-pulse" />
-                        Uploading images...
+          <Tabs defaultValue="gallery" className="w-full">
+            <div className="px-4 pt-4">
+              <TabsList>
+                <TabsTrigger value="gallery">Gallery</TabsTrigger>
+                <TabsTrigger value="info">Info</TabsTrigger>
+                <TabsTrigger value="seo">SEO</TabsTrigger>
+                <TabsTrigger value="advanced">Advanced</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="gallery">
+              <div className="space-y-6 py-4">
+                {/* Image Management Section */}
+                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <ImageIcon className="h-5 w-5" />
+                      Property Gallery ({images.length} Images)
+                    </h3>
+                  </div>
+                  <div className="p-6 space-y-6">
+                    {/* Upload Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label htmlFor="image-upload" className="text-slate-700 dark:text-slate-300 font-medium">Upload New Images</Label>
+                        <Input
+                          id="image-upload"
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileUpload}
+                          disabled={uploading}
+                          className="border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-purple-500"
+                        />
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          Select multiple images (JPG, PNG, etc.) - Max 5MB per file
+                        </p>
+                        {uploading && (
+                          <div className="flex items-center gap-2 text-purple-600">
+                            <Upload className="h-4 w-4 animate-pulse" />
+                            Uploading images...
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Generate AI Image</Label>
+                        <Button
+                          type="button"
+                          onClick={generateAIImage}
+                          disabled={generatingImage}
+                          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                        >
+                          {generatingImage ? (
+                            <>
+                              <Wand2 className="h-4 w-4 mr-2 animate-spin" />
+                              Generating Magic...
+                            </>
+                          ) : (
+                            <>
+                              <Wand2 className="h-4 w-4 mr-2" />
+                              Generate AI Image
+                            </>
+                          )}
+                        </Button>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          Generate a professional property image using AI
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Current Images */}
+                    {images.length > 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {images.map((url, index) => (
+                          <div key={index} className={`group relative overflow-hidden rounded-xl bg-white dark:bg-slate-700 shadow-lg ${editData.thumbnail_url === url ? 'ring-2 ring-amber-500' : ''}`}>
+                            <div className="aspect-square overflow-hidden">
+                              <img
+                                src={url}
+                                alt={`Property ${index + 1}`}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop';
+                                }}
+                              />
+                            </div>
+                            {/* Delete button */}
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 bg-red-500 hover:bg-red-600"
+                              onClick={() => removeImage(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                            {/* Set thumbnail button */}
+                            <Button
+                              type="button"
+                              variant={editData.thumbnail_url === url ? 'default' : 'outline'}
+                              size="sm"
+                              className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 px-2"
+                              onClick={() => setEditData(prev => ({ ...prev, thumbnail_url: url }))}
+                            >
+                              {editData.thumbnail_url === url ? 'Thumbnail' : 'Set thumbnail'}
+                            </Button>
+                            {/* Badges */}
+                            <div className="absolute bottom-2 left-2 flex items-center gap-2">
+                              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                #{index + 1}
+                              </div>
+                              {editData.thumbnail_url === url && (
+                                <div className="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-medium">Thumbnail</div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12 bg-gradient-to-br from-slate-100 to-purple-100 dark:from-slate-800 dark:to-purple-900 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600">
+                        <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-fit mx-auto mb-4">
+                          <ImageIcon className="h-8 w-8 text-white" />
+                        </div>
+                        <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">No Images Yet</h4>
+                        <p className="text-slate-500 dark:text-slate-400 mb-4">Upload images or generate one with AI</p>
+                        <Button
+                          type="button"
+                          onClick={generateAIImage}
+                          disabled={generatingImage}
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                        >
+                          <Wand2 className="h-4 w-4 mr-2" />
+                          Generate Default Image
+                        </Button>
                       </div>
                     )}
                   </div>
-
-                  <div className="space-y-3">
-                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Generate AI Image</Label>
-                    <Button
-                      type="button"
-                      onClick={generateAIImage}
-                      disabled={generatingImage}
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                    >
-                      {generatingImage ? (
-                        <>
-                          <Wand2 className="h-4 w-4 mr-2 animate-spin" />
-                          Generating Magic...
-                        </>
-                      ) : (
-                        <>
-                          <Wand2 className="h-4 w-4 mr-2" />
-                          Generate AI Image
-                        </>
-                      )}
-                    </Button>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Generate a professional property image using AI
-                    </p>
-                  </div>
-                </div>
-
-                {/* Current Images */}
-                {images.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {images.map((url, index) => (
-                      <div key={index} className={`group relative overflow-hidden rounded-xl bg-white dark:bg-slate-700 shadow-lg ${editData.thumbnail_url === url ? 'ring-2 ring-amber-500' : ''}`}>
-                        <div className="aspect-square overflow-hidden">
-                          <img
-                            src={url}
-                            alt={`Property ${index + 1}`}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop';
-                            }}
-                          />
-                        </div>
-                        {/* Delete button */}
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="sm"
-                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 bg-red-500 hover:bg-red-600"
-                          onClick={() => removeImage(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                        {/* Set thumbnail button */}
-                        <Button
-                          type="button"
-                          variant={editData.thumbnail_url === url ? 'default' : 'outline'}
-                          size="sm"
-                          className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 px-2"
-                          onClick={() => setEditData(prev => ({ ...prev, thumbnail_url: url }))}
-                        >
-                          {editData.thumbnail_url === url ? 'Thumbnail' : 'Set thumbnail'}
-                        </Button>
-                        {/* Badges */}
-                        <div className="absolute bottom-2 left-2 flex items-center gap-2">
-                          <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                            #{index + 1}
-                          </div>
-                          {editData.thumbnail_url === url && (
-                            <div className="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-medium">Thumbnail</div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12 bg-gradient-to-br from-slate-100 to-purple-100 dark:from-slate-800 dark:to-purple-900 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600">
-                    <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-fit mx-auto mb-4">
-                      <ImageIcon className="h-8 w-8 text-white" />
-                    </div>
-                    <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">No Images Yet</h4>
-                    <p className="text-slate-500 dark:text-slate-400 mb-4">Upload images or generate one with AI</p>
-                    <Button
-                      type="button"
-                      onClick={generateAIImage}
-                      disabled={generatingImage}
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                    >
-                      <Wand2 className="h-4 w-4 mr-2" />
-                      Generate Default Image
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Property Information */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Basic Information */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4">
-                  <h3 className="text-lg font-bold text-white">Basic Information</h3>
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-title" className="text-slate-700 dark:text-slate-300 font-medium">Property Title</Label>
-                    <Input
-                      id="edit-title"
-                      value={editData.title}
-                      onChange={(e) => handleInputChange('title', e.target.value)}
-                      placeholder="Enter property title"
-                      className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-property-type" className="text-slate-700 dark:text-slate-300 font-medium">Property Type</Label>
-                    <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="house">House</SelectItem>
-                        <SelectItem value="apartment">Apartment</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="townhouse">Townhouse</SelectItem>
-                        <SelectItem value="land">Land</SelectItem>
-                        <SelectItem value="commercial">Commercial</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-listing-type" className="text-slate-700 dark:text-slate-300 font-medium">Listing Type</Label>
-                    <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
-                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sale">For Sale</SelectItem>
-                        <SelectItem value="rent">For Rent</SelectItem>
-                        <SelectItem value="lease">For Lease</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-development-status" className="text-slate-700 dark:text-slate-300 font-medium">Development Status</Label>
-                    <Select 
-                      value={editData.development_status} 
-                      onValueChange={(value) => handleInputChange('development_status', value)}
-                    >
-                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getAvailableDevelopmentStatuses().map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                            {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
-                              <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
-                            )}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-price" className="text-slate-700 dark:text-slate-300 font-medium">
-                      Price (IDR)
-                      {editData.price && (
-                        <Badge className="ml-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
-                          {formatPriceDisplay(editData.price)}
-                        </Badge>
-                      )}
-                    </Label>
-                    <Input
-                      id="edit-price"
-                      type="number"
-                      value={editData.price}
-                      onChange={(e) => handleInputChange('price', e.target.value)}
-                      placeholder="Enter price in IDR"
-                      className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-status" className="text-slate-700 dark:text-slate-300 font-medium">Status</Label>
-                    <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                        <SelectItem value="sold">Sold</SelectItem>
-                        <SelectItem value="rented">Rented</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </div>
+            </TabsContent>
 
-              {/* Property Details */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
-                  <h3 className="text-lg font-bold text-white">Property Specifications</h3>
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-bedrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bedrooms</Label>
-                      <Input
-                        id="edit-bedrooms"
-                        type="number"
-                        value={editData.bedrooms}
-                        onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                        placeholder="BR"
-                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                      />
+            <TabsContent value="info">
+              <div className="space-y-6 py-4">
+                {/* Property Information */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Basic Information */}
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4">
+                      <h3 className="text-lg font-bold text-white">Basic Information</h3>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-bathrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bathrooms</Label>
-                      <Input
-                        id="edit-bathrooms"
-                        type="number"
-                        value={editData.bathrooms}
-                        onChange={(e) => handleInputChange('bathrooms', e.target.value)}
-                        placeholder="BA"
-                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-area-sqm" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Area (m²)</Label>
-                      <Input
-                        id="edit-area-sqm"
-                        type="number"
-                        value={editData.area_sqm}
-                        onChange={(e) => handleInputChange('area_sqm', e.target.value)}
-                        placeholder="sqm"
-                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-location" className="text-slate-700 dark:text-slate-300 font-medium">Full Address</Label>
-                    <Input
-                      id="edit-location"
-                      value={editData.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
-                      placeholder="Enter full address"
-                      className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-city" className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
-                      <Input
-                        id="edit-city"
-                        value={editData.city}
-                        onChange={(e) => handleInputChange('city', e.target.value)}
-                        placeholder="City"
-                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-state" className="text-slate-700 dark:text-slate-300 font-medium">State/Province</Label>
-                      <Input
-                        id="edit-state"
-                        value={editData.state}
-                        onChange={(e) => handleInputChange('state', e.target.value)}
-                        placeholder="State"
-                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-area" className="text-slate-700 dark:text-slate-300 font-medium">Area/District</Label>
-                    <Input
-                      id="edit-area"
-                      value={editData.area}
-                      onChange={(e) => handleInputChange('area', e.target.value)}
-                      placeholder="Area or District"
-                      className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-description" className="text-slate-700 dark:text-slate-300 font-medium">Description</Label>
-                    <Textarea
-                      id="edit-description"
-                      value={editData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
-                      placeholder="Property description"
-                      rows={4}
-                      className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Property Details */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-4">
-                <h3 className="text-lg font-bold text-white">Additional Details</h3>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Parking Spaces</Label>
-                    <Input
-                      type="number"
-                      value={editData.parking_spaces}
-                      onChange={(e) => handleInputChange('parking_spaces', e.target.value)}
-                      placeholder="Number of parking spaces"
-                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Year Built</Label>
-                    <Input
-                      type="number"
-                      value={editData.year_built}
-                      onChange={(e) => handleInputChange('year_built', e.target.value)}
-                      placeholder="e.g., 2020"
-                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Lot Size (m²)</Label>
-                    <Input
-                      type="number"
-                      value={editData.lot_size}
-                      onChange={(e) => handleInputChange('lot_size', e.target.value)}
-                      placeholder="Lot size in square meters"
-                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Property Tax (IDR/year)</Label>
-                    <Input
-                      type="number"
-                      value={editData.property_tax}
-                      onChange={(e) => handleInputChange('property_tax', e.target.value)}
-                      placeholder="Annual property tax"
-                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Maintenance Fee (IDR/month)</Label>
-                    <Input
-                      type="number"
-                      value={editData.maintenance_fee}
-                      onChange={(e) => handleInputChange('maintenance_fee', e.target.value)}
-                      placeholder="Monthly maintenance fee"
-                      className="border-slate-300 dark:border-slate-600 focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={editData.featured}
-                        onChange={(e) => setEditData(prev => ({ ...prev, featured: e.target.checked }))}
-                        className="rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
-                      />
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Featured Property</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* SEO & Marketing */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4">
-                <h3 className="text-lg font-bold text-white">SEO & Marketing</h3>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-slate-700 dark:text-slate-300 font-medium">SEO Keywords</Label>
-                  <Textarea
-                    value={editData.seo_keywords}
-                    onChange={(e) => handleInputChange('seo_keywords', e.target.value)}
-                    placeholder="luxury apartment, modern design, city center, investment property..."
-                    rows={3}
-                    className="border-slate-300 dark:border-slate-600 focus:border-pink-500"
-                  />
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Comma-separated keywords for better search visibility
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Advanced Features Tabs */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
-                <h3 className="text-lg font-bold text-white">Advanced Features</h3>
-              </div>
-              <div className="p-6">
-                {/* Tab Navigation */}
-                <div className="flex flex-wrap gap-2 mb-6 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("basic")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      activeTab === "basic" 
-                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                    }`}
-                  >
-                    <Edit className="h-4 w-4" />
-                    Basic Info
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("3d")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      activeTab === "3d" 
-                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                    }`}
-                  >
-                    <Box className="h-4 w-4" />
-                    3D Settings
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("filters")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      activeTab === "filters" 
-                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                    }`}
-                  >
-                    <Filter className="h-4 w-4" />
-                    Display Filters
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("advanced")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      activeTab === "advanced" 
-                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                    }`}
-                  >
-                    <BarChart3 className="h-4 w-4" />
-                    Analytics
-                  </button>
-                </div>
-
-                {/* Tab Content */}
-                {activeTab === "3d" && (
-                  <div className="space-y-6">
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">3D & Virtual Content</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">3D Model URL</Label>
-                          <Input
-                            value={editData.three_d_model_url}
-                            onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
-                            placeholder="https://example.com/model.glb"
-                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Virtual Tour URL</Label>
-                          <Input
-                            value={editData.virtual_tour_url}
-                            onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
-                            placeholder="https://example.com/virtual-tour"
-                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Floor Plan URL</Label>
-                          <Input
-                            value={editData.floor_plan_url}
-                            onChange={(e) => handleInputChange('floor_plan_url', e.target.value)}
-                            placeholder="https://example.com/floor-plan.pdf"
-                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Video Tour URL</Label>
-                          <Input
-                            value={editData.video_tour_url}
-                            onChange={(e) => handleInputChange('video_tour_url', e.target.value)}
-                            placeholder="https://youtube.com/watch?v=..."
-                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-slate-700 dark:text-slate-300 font-medium">Thumbnail Image URL</Label>
-                      <Input
-                        value={editData.thumbnail_url}
-                        onChange={(e) => handleInputChange('thumbnail_url', e.target.value)}
-                        placeholder="https://example.com/thumbnail.jpg"
-                        className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "filters" && (
-                  <div className="space-y-6">
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Location & Search Filters</h4>
-                    
-                    {/* Location Selection from Database */}
-                    <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 p-6 rounded-xl border border-teal-200 dark:border-teal-700">
-                      <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-                        <MapPin className="h-5 w-5 text-teal-600" />
-                        Database Location Selection
-                      </h5>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Province</Label>
-                          <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
-                              <SelectValue placeholder="Select Province" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                              {provinces.map((province: any) => (
-                                <SelectItem key={province.province_code} value={province.province_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                                  {province.province_name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
-                          <Select value={selectedCity} onValueChange={setSelectedCity} disabled={!selectedProvince}>
-                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
-                              <SelectValue placeholder="Select City" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                              {cities.map((city: any) => (
-                                <SelectItem key={city.city_code} value={city.city_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                                  {city.city_type} {city.city_name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">District</Label>
-                          <Select value={selectedDistrict} onValueChange={setSelectedDistrict} disabled={!selectedCity}>
-                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
-                              <SelectValue placeholder="Select District" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                              {districts.map((district: any) => (
-                                <SelectItem key={district.district_code} value={district.district_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                                  {district.district_name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Property Filter Settings */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
-                        <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Property Visibility</h5>
-                        <div className="space-y-3">
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
-                            <span className="text-sm font-medium">Show on main listings</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
-                            <span className="text-sm font-medium">Featured property</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
-                            <span className="text-sm font-medium">Premium highlight</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
-                            <span className="text-sm font-medium">Urgent sale</span>
-                          </label>
-                        </div>
+                    <div className="p-6 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-title" className="text-slate-700 dark:text-slate-300 font-medium">Property Title</Label>
+                        <Input
+                          id="edit-title"
+                          value={editData.title}
+                          onChange={(e) => handleInputChange('title', e.target.value)}
+                          placeholder="Enter property title"
+                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                        />
                       </div>
                       
-                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-6 rounded-xl border border-emerald-200 dark:border-emerald-700">
-                        <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Search Filters</h5>
-                        <div className="space-y-3">
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
-                            <span className="text-sm font-medium">Include in price filters</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
-                            <span className="text-sm font-medium">Show in location search</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" />
-                            <span className="text-sm font-medium">Exclude from bulk searches</span>
-                          </label>
-                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
-                            <span className="text-sm font-medium">Available for comparison</span>
-                          </label>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-property-type" className="text-slate-700 dark:text-slate-300 font-medium">Property Type</Label>
+                        <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
+                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="house">House</SelectItem>
+                            <SelectItem value="apartment">Apartment</SelectItem>
+                            <SelectItem value="villa">Villa</SelectItem>
+                            <SelectItem value="townhouse">Townhouse</SelectItem>
+                            <SelectItem value="land">Land</SelectItem>
+                            <SelectItem value="commercial">Commercial</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-listing-type" className="text-slate-700 dark:text-slate-300 font-medium">Listing Type</Label>
+                        <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
+                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="sale">For Sale</SelectItem>
+                            <SelectItem value="rent">For Rent</SelectItem>
+                            <SelectItem value="lease">For Lease</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-development-status" className="text-slate-700 dark:text-slate-300 font-medium">Development Status</Label>
+                        <Select 
+                          value={editData.development_status} 
+                          onValueChange={(value) => handleInputChange('development_status', value)}
+                        >
+                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getAvailableDevelopmentStatuses().map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                                {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
+                                  <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
+                                )}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-price" className="text-slate-700 dark:text-slate-300 font-medium">
+                          Price (IDR)
+                          {editData.price && (
+                            <Badge className="ml-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                              {formatPriceDisplay(editData.price)}
+                            </Badge>
+                          )}
+                        </Label>
+                        <Input
+                          id="edit-price"
+                          type="number"
+                          value={editData.price}
+                          onChange={(e) => handleInputChange('price', e.target.value)}
+                          placeholder="Enter price in IDR"
+                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-status" className="text-slate-700 dark:text-slate-300 font-medium">Status</Label>
+                        <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                          <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                            <SelectItem value="sold">Sold</SelectItem>
+                            <SelectItem value="rented">Rented</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Price & Criteria Filters */}
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-6 rounded-xl border border-amber-200 dark:border-amber-700">
-                      <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Price & Criteria Filters</h5>
+                  {/* Property Details */}
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
+                      <h3 className="text-lg font-bold text-white">Property Specifications</h3>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-bedrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bedrooms</Label>
+                          <Input
+                            id="edit-bedrooms"
+                            type="number"
+                            value={editData.bedrooms}
+                            onChange={(e) => handleInputChange('bedrooms', e.target.value)}
+                            placeholder="BR"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-bathrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bathrooms</Label>
+                          <Input
+                            id="edit-bathrooms"
+                            type="number"
+                            value={editData.bathrooms}
+                            onChange={(e) => handleInputChange('bathrooms', e.target.value)}
+                            placeholder="BA"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-area-sqm" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Area (m²)</Label>
+                          <Input
+                            id="edit-area-sqm"
+                            type="number"
+                            value={editData.area_sqm}
+                            onChange={(e) => handleInputChange('area_sqm', e.target.value)}
+                            placeholder="sqm"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                          />
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Price Range Category</Label>
-                          <Select defaultValue="mid-range">
-                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                              <SelectItem value="budget">Budget (under 500M IDR)</SelectItem>
-                              <SelectItem value="mid-range">Mid-Range (500M - 2B IDR)</SelectItem>
-                              <SelectItem value="luxury">Luxury (2B - 10B IDR)</SelectItem>
-                              <SelectItem value="ultra-luxury">Ultra Luxury (over 10B IDR)</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Target Audience</Label>
-                          <Select defaultValue="general">
-                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                              <SelectItem value="general">General Public</SelectItem>
-                              <SelectItem value="first-time">First-time Buyers</SelectItem>
-                              <SelectItem value="investors">Investors</SelectItem>
-                              <SelectItem value="families">Families</SelectItem>
-                              <SelectItem value="professionals">Young Professionals</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "advanced" && (
-                  <div className="space-y-6">
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Advanced Settings & Analytics</h4>
-                    
-                    {/* Property Performance */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
-                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Property Views</h5>
-                        <p className="text-2xl font-bold text-blue-600">1,234</p>
-                        <p className="text-xs text-slate-500">This month</p>
-                      </div>
-                      <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-lg">
-                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Inquiries</h5>
-                        <p className="text-2xl font-bold text-emerald-600">45</p>
-                        <p className="text-xs text-slate-500">Total received</p>
-                      </div>
-                      <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg">
-                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Favorites</h5>
-                        <p className="text-2xl font-bold text-amber-600">89</p>
-                        <p className="text-xs text-slate-500">User saves</p>
-                      </div>
-                    </div>
-
-                    {/* Advanced Options */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <h5 className="font-semibold text-slate-800 dark:text-slate-200">Assignment</h5>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Agent ID</Label>
+                          <Label htmlFor="edit-location" className="text-slate-700 dark:text-slate-300 font-medium">Location</Label>
                           <Input
-                            value={editData.agent_id}
-                            onChange={(e) => handleInputChange('agent_id', e.target.value)}
-                            placeholder="Assigned agent ID"
-                            className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                            id="edit-location"
+                            value={editData.location}
+                            onChange={(e) => handleInputChange('location', e.target.value)}
+                            placeholder="Area / Street / Complex"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Owner ID</Label>
+                          <Label htmlFor="edit-city" className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
                           <Input
-                            value={editData.owner_id}
-                            onChange={(e) => handleInputChange('owner_id', e.target.value)}
-                            placeholder="Property owner ID"
-                            className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                            id="edit-city"
+                            value={editData.city}
+                            onChange={(e) => handleInputChange('city', e.target.value)}
+                            placeholder="City"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-state" className="text-slate-700 dark:text-slate-300 font-medium">State / Province</Label>
+                          <Input
+                            id="edit-state"
+                            value={editData.state}
+                            onChange={(e) => handleInputChange('state', e.target.value)}
+                            placeholder="State"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-area" className="text-slate-700 dark:text-slate-300 font-medium">Area / District</Label>
+                          <Input
+                            id="edit-area"
+                            value={editData.area}
+                            onChange={(e) => handleInputChange('area', e.target.value)}
+                            placeholder="District / Area"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
                           />
                         </div>
                       </div>
-                      
-                      <div className="space-y-4">
-                        <h5 className="font-semibold text-slate-800 dark:text-slate-200">Approval Status</h5>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Approval Status</Label>
-                          <Select value={editData.approval_status} onValueChange={(value) => handleInputChange('approval_status', value)}>
-                            <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                              <SelectValue placeholder="Select approval status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">Pending Review</SelectItem>
-                              <SelectItem value="approved">Approved</SelectItem>
-                              <SelectItem value="rejected">Rejected</SelectItem>
-                              <SelectItem value="needs_revision">Needs Revision</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Parking Spaces</Label>
+                          <Input
+                            value={editData.parking_spaces}
+                            onChange={(e) => handleInputChange('parking_spaces', e.target.value)}
+                            placeholder="Number of parking spaces"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
+                          />
                         </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Year Built</Label>
+                          <Input
+                            value={editData.year_built}
+                            onChange={(e) => handleInputChange('year_built', e.target.value)}
+                            placeholder="e.g., 2020"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Lot Size</Label>
+                          <Input
+                            value={editData.lot_size}
+                            onChange={(e) => handleInputChange('lot_size', e.target.value)}
+                            placeholder="Total land area"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Property Tax</Label>
+                          <Input
+                            value={editData.property_tax}
+                            onChange={(e) => handleInputChange('property_tax', e.target.value)}
+                            placeholder="Annual property tax"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Maintenance Fee</Label>
+                          <Input
+                            value={editData.maintenance_fee}
+                            onChange={(e) => handleInputChange('maintenance_fee', e.target.value)}
+                            placeholder="Monthly maintenance fee"
+                            className="border-slate-300 dark:border-slate-600 focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={editData.featured}
+                            onChange={(e) => setEditData(prev => ({ ...prev, featured: e.target.checked }))}
+                            className="rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
+                          />
+                          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Featured Property</span>
+                        </label>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </div>
+            </TabsContent>
+
+            <TabsContent value="seo">
+              <div className="space-y-6 py-4">
+                {/* SEO & Marketing */}
+                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4">
+                    <h3 className="text-lg font-bold text-white">SEO & Marketing</h3>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-slate-700 dark:text-slate-300 font-medium">SEO Keywords</Label>
+                      <Textarea
+                        value={editData.seo_keywords}
+                        onChange={(e) => handleInputChange('seo_keywords', e.target.value)}
+                        placeholder="luxury apartment, modern design, city center, investment property..."
+                        rows={3}
+                        className="border-slate-300 dark:border-slate-600 focus:border-pink-500"
+                      />
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Comma-separated keywords for better search visibility
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="advanced">
+              <div className="space-y-6 py-4">
+                {/* Advanced Features Tabs */}
+                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
+                    <h3 className="text-lg font-bold text-white">Advanced Features</h3>
+                  </div>
+                  <div className="p-6">
+                    {/* Tab Navigation */}
+                    <div className="flex flex-wrap gap-2 mb-6 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("basic")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeTab === "basic" 
+                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                        }`}
+                      >
+                        <Edit className="h-4 w-4" />
+                        Basic Info
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("3d")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeTab === "3d" 
+                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                        }`}
+                      >
+                        <Box className="h-4 w-4" />
+                        3D Settings
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("filters")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeTab === "filters" 
+                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                        }`}
+                      >
+                        <Filter className="h-4 w-4" />
+                        Display Filters
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("advanced")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeTab === "advanced" 
+                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                        }`}
+                      >
+                        <BarChart3 className="h-4 w-4" />
+                        Analytics
+                      </button>
+                    </div>
+
+                    {/* Tab Content */}
+                    {activeTab === "3d" && (
+                      <div className="space-y-6">
+                        <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">3D & Virtual Content</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">3D Model URL</Label>
+                              <Input
+                                value={editData.three_d_model_url}
+                                onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
+                                placeholder="https://example.com/model.glb"
+                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Virtual Tour URL</Label>
+                              <Input
+                                value={editData.virtual_tour_url}
+                                onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
+                                placeholder="https://example.com/virtual-tour"
+                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Floor Plan URL</Label>
+                              <Input
+                                value={editData.floor_plan_url}
+                                onChange={(e) => handleInputChange('floor_plan_url', e.target.value)}
+                                placeholder="https://example.com/floor-plan.pdf"
+                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Video Tour URL</Label>
+                              <Input
+                                value={editData.video_tour_url}
+                                onChange={(e) => handleInputChange('video_tour_url', e.target.value)}
+                                placeholder="https://youtube.com/watch?v=..."
+                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Thumbnail Image URL</Label>
+                          <Input
+                            value={editData.thumbnail_url}
+                            onChange={(e) => handleInputChange('thumbnail_url', e.target.value)}
+                            placeholder="https://example.com/thumbnail.jpg"
+                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === "filters" && (
+                      <div className="space-y-6">
+                        <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Location & Search Filters</h4>
+                        
+                        {/* Location Selection from Database */}
+                        <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 p-6 rounded-xl border border-teal-200 dark:border-teal-700">
+                          <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+                            <MapPin className="h-5 w-5 text-teal-600" />
+                            Database Location Selection
+                          </h5>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Province</Label>
+                              <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
+                                  <SelectValue placeholder="Select Province" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                                  {provinces.map((province: any) => (
+                                    <SelectItem key={province.province_code} value={province.province_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                                      {province.province_name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
+                              <Select value={selectedCity} onValueChange={setSelectedCity} disabled={!selectedProvince}>
+                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
+                                  <SelectValue placeholder="Select City" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                                  {cities.map((city: any) => (
+                                    <SelectItem key={city.city_code} value={city.city_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                                      {city.city_type} {city.city_name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">District</Label>
+                              <Select value={selectedDistrict} onValueChange={setSelectedDistrict} disabled={!selectedCity}>
+                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
+                                  <SelectValue placeholder="Select District" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                                  {districts.map((district: any) => (
+                                    <SelectItem key={district.district_code} value={district.district_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                                      {district.district_name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Property Filter Settings */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
+                            <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Property Visibility</h5>
+                            <div className="space-y-3">
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
+                                <span className="text-sm font-medium">Show on main listings</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
+                                <span className="text-sm font-medium">Featured property</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
+                                <span className="text-sm font-medium">Premium highlight</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
+                                <span className="text-sm font-medium">Urgent sale</span>
+                              </label>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-6 rounded-xl border border-emerald-200 dark:border-emerald-700">
+                            <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Search Filters</h5>
+                            <div className="space-y-3">
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
+                                <span className="text-sm font-medium">Include in price filters</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
+                                <span className="text-sm font-medium">Show in location search</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" />
+                                <span className="text-sm font-medium">Exclude from bulk searches</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
+                                <span className="text-sm font-medium">Available for comparison</span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Price & Criteria Filters */}
+                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-6 rounded-xl border border-amber-200 dark:border-amber-700">
+                          <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Price & Criteria Filters</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Price Range Category</Label>
+                              <Select defaultValue="mid-range">
+                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                                  <SelectItem value="budget">Budget (under 500M IDR)</SelectItem>
+                                  <SelectItem value="mid-range">Mid-Range (500M - 2B IDR)</SelectItem>
+                                  <SelectItem value="luxury">Luxury (2B - 10B IDR)</SelectItem>
+                                  <SelectItem value="ultra-luxury">Ultra Luxury (over 10B IDR)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Target Audience</Label>
+                              <Select defaultValue="general">
+                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                                  <SelectItem value="general">General Public</SelectItem>
+                                  <SelectItem value="first-time">First-time Buyers</SelectItem>
+                                  <SelectItem value="investors">Investors</SelectItem>
+                                  <SelectItem value="families">Families</SelectItem>
+                                  <SelectItem value="professionals">Young Professionals</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === "advanced" && (
+                      <div className="space-y-6">
+                        <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Advanced Settings & Analytics</h4>
+                        
+                        {/* Property Performance */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
+                            <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Property Views</h5>
+                            <p className="text-2xl font-bold text-blue-600">1,234</p>
+                            <p className="text-xs text-slate-500">This month</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-lg">
+                            <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Inquiries</h5>
+                            <p className="text-2xl font-bold text-emerald-600">45</p>
+                            <p className="text-xs text-slate-500">Total received</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg">
+                            <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Favorites</h5>
+                            <p className="text-2xl font-bold text-amber-600">89</p>
+                            <p className="text-xs text-slate-500">User saves</p>
+                          </div>
+                        </div>
+
+                        {/* Advanced Options */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <h5 className="font-semibold text-slate-800 dark:text-slate-200">Assignment</h5>
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Agent ID</Label>
+                              <Input
+                                value={editData.agent_id}
+                                onChange={(e) => handleInputChange('agent_id', e.target.value)}
+                                placeholder="Assigned agent ID"
+                                className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Owner ID</Label>
+                              <Input
+                                value={editData.owner_id}
+                                onChange={(e) => handleInputChange('owner_id', e.target.value)}
+                                placeholder="Property owner ID"
+                                className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-4">
+                            <h5 className="font-semibold text-slate-800 dark:text-slate-200">Approval Status</h5>
+                            <div className="space-y-2">
+                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Approval Status</Label>
+                              <Select value={editData.approval_status} onValueChange={(value) => handleInputChange('approval_status', value)}>
+                                <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                                  <SelectValue placeholder="Select approval status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">Pending Review</SelectItem>
+                                  <SelectItem value="approved">Approved</SelectItem>
+                                  <SelectItem value="rejected">Rejected</SelectItem>
+                                  <SelectItem value="needs_revision">Needs Revision</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
         <DialogFooter className="border-t border-slate-200 dark:border-slate-700 pt-6 bg-white dark:bg-slate-800 flex justify-between items-center">
