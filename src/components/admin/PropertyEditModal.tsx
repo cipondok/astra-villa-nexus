@@ -543,13 +543,15 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       if (updates.property_features) updatePayload.property_features = updates.property_features;
       if (updates.owner_type) updatePayload.owner_type = updates.owner_type;
 
-      // Handle images - save as PostgreSQL array and sync image_urls/thumbnail
-      updatePayload.images = images && images.length > 0 ? images : [];
-      updatePayload.image_urls = images && images.length > 0 ? images : [];
-      if (!updatePayload.thumbnail_url) {
-        updatePayload.thumbnail_url = images[0] || null;
-      }
-      console.log('Setting images arrays and thumbnail:', { images: updatePayload.images, thumbnail: updatePayload.thumbnail_url });
+      // Handle images - save as PostgreSQL array and sync image_urls/thumbnail (thumbnail first)
+      const tn = updates.thumbnail_url || (images[0] || null);
+      const orderedImages = (images && images.length > 0)
+        ? [tn, ...images.filter((u) => u !== tn)]
+        : [];
+      updatePayload.images = orderedImages;
+      updatePayload.image_urls = orderedImages;
+      updatePayload.thumbnail_url = tn;
+      console.log('Setting images arrays and thumbnail (ordered):', { images: orderedImages, thumbnail: tn });
       console.log('Final update payload:', updatePayload);
 
       const { error } = await supabase
@@ -577,6 +579,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       // Invalidate queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
       queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['property', property.id] });
+      queryClient.invalidateQueries({ queryKey: ['property-by-id', property.id] });
+      queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
       
       // Close modal
       onClose();
@@ -813,7 +818,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                                   ? 'bg-amber-500 hover:bg-amber-600 text-white' 
                                   : 'bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500'
                               }`}
-                              onClick={() => setEditData(prev => ({ ...prev, thumbnail_url: url }))}
+                              onClick={() => {
+                                setEditData(prev => ({ ...prev, thumbnail_url: url }));
+                                setImages(prev => [url, ...prev.filter((i) => i !== url)]);
+                              }}
                             >
                               {editData.thumbnail_url === url ? (
                                 <>
