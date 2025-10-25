@@ -181,13 +181,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   // Delete property mutation with better error handling
   const deletePropertyMutation = useMutation({
     mutationFn: async (propertyId: string) => {
-      console.log('Deleting property:', propertyId);
-      
-      const { error } = await supabase
-        .from('properties')
-        .delete()
-        .eq('id', propertyId);
-      
+      console.log('Deleting property via RPC:', propertyId);
+      const { error } = await supabase.rpc('delete_property_admin_property', { p_property_id: propertyId });
       if (error) {
         console.error('Delete error:', error);
         throw new Error(`Failed to delete property: ${error.message}`);

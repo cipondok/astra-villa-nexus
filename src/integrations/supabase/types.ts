@@ -9055,6 +9055,10 @@ export type Database = {
         Args: { data_type: string; encrypted_data: string }
         Returns: string
       }
+      delete_property_admin_property: {
+        Args: { p_property_id: string }
+        Returns: undefined
+      }
       delete_user_admin: { Args: { p_user_id: string }; Returns: undefined }
       encrypt_api_key: {
         Args: { api_key: string; key_name: string }

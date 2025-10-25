@@ -329,7 +329,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       
       const { data, error } = await supabase.storage
         .from('property-images')
-        .upload(fileName, file);
+        .upload(fileName, file, { contentType: file.type, upsert: true });
 
       if (error) {
         console.error('Storage upload error:', error);
