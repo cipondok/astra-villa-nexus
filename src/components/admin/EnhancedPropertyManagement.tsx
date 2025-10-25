@@ -188,8 +188,6 @@ const EnhancedPropertyManagement = () => {
   // Enhanced delete property mutation
   const deletePropertyMutation = useMutation({
     mutationFn: async (propertyId: string) => {
-      console.log('Deleting property:', propertyId);
-      
       const { error } = await supabase
         .from('properties')
         .delete()
@@ -216,8 +214,6 @@ const EnhancedPropertyManagement = () => {
   // Enhanced status update mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ propertyId, newStatus }: { propertyId: string; newStatus: string }) => {
-      console.log('Updating property status:', propertyId, newStatus);
-      
       const { error } = await supabase
         .from('properties')
         .update({ status: newStatus, updated_at: new Date().toISOString() })

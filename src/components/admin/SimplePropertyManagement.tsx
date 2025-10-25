@@ -84,17 +84,10 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   // Check if user is admin (server-validated via RLS)
   const { isAdmin } = useIsAdmin();
 
-  console.log('🔐 Auth Check:', { 
-    userEmail: user?.email, 
-    isAdmin 
-  });
-
   // Fetch properties with enhanced filtering
   const { data: allProperties = [], isLoading, error, refetch } = useQuery({
     queryKey: ['simple-properties', searchTerm, propertyTypeFilter, statusFilter, listingTypeFilter, cityFilter, vendorIdFilter],
     queryFn: async () => {
-      console.log('🔍 Fetching properties with filters...');
-      
       let query = supabase
         .from('properties')
         .select('*')
@@ -128,7 +121,6 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       const { data: properties, error } = await query;
       
       if (error) {
-        console.error('❌ Query error:', error);
         throw error;
       }
 
@@ -146,11 +138,9 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
           posted_by: profiles?.filter(p => p.id === property.owner_id) || []
         }));
 
-        console.log('✅ Properties loaded:', propertiesWithProfiles.length);
         return propertiesWithProfiles;
       }
       
-      console.log('✅ Properties loaded:', 0);
       return [];
     },
     enabled: !!user && isAdmin,
@@ -170,7 +160,6 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (propertyId: string) => {
-      console.log('🗑️ Deleting property:', propertyId);
       const { error } = await supabase
         .from('properties')
         .delete()
@@ -183,7 +172,6 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       refetch();
     },
     onError: (error: any) => {
-      console.error('❌ Delete error:', error);
       showError("Error", `Delete failed: ${error.message}`);
     },
   });
@@ -191,7 +179,6 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   // Bulk delete mutation
   const bulkDeleteMutation = useMutation({
     mutationFn: async (propertyIds: string[]) => {
-      console.log('🗑️ Bulk deleting:', propertyIds);
       const { error } = await supabase
         .from('properties')
         .delete()
@@ -205,7 +192,6 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
       refetch();
     },
     onError: (error: any) => {
-      console.error('❌ Bulk delete error:', error);
       showError("Error", `Bulk delete failed: ${error.message}`);
     },
   });

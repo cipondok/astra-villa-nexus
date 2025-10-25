@@ -32,17 +32,6 @@ const RoleBasedNavigation = ({
   const { user, profile, signOut, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Debug logging
-  useEffect(() => {
-    console.log('RoleBasedNavigation - Auth state changed:', { 
-      isAuthenticated,
-      user: !!user, 
-      profile: !!profile, 
-      userEmail: user?.email,
-      profileRole: profile?.role 
-    });
-  }, [isAuthenticated, user, profile]);
-
   const text = {
     en: {
       loginRegister: "Login / Register",
@@ -78,7 +67,6 @@ const RoleBasedNavigation = ({
 
   const handleSignOut = async () => {
     try {
-      console.log('RoleBasedNavigation: Fast sign out initiated...');
       setIsMenuOpen(false);
       await signOut();
     } catch (error) {
@@ -87,7 +75,6 @@ const RoleBasedNavigation = ({
   };
 
   const handleHomeClick = () => {
-    console.log('Navigating to home page');
     navigate('/');
   };
 

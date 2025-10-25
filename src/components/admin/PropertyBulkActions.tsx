@@ -23,7 +23,6 @@ const PropertyBulkActions = ({ selectedProperties, onClearSelection, totalProper
 
   const bulkUpdateMutation = useMutation({
     mutationFn: async ({ updates }: { updates: any }) => {
-      console.log('Bulk updating properties:', selectedProperties, updates);
       const { error } = await supabase
         .from('properties')
         .update(updates)
@@ -45,7 +44,6 @@ const PropertyBulkActions = ({ selectedProperties, onClearSelection, totalProper
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async () => {
-      console.log('Bulk deleting properties:', selectedProperties);
       const { error } = await supabase
         .from('properties')
         .delete()

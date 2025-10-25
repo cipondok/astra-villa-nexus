@@ -82,15 +82,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [selectedProperties, setSelectedProperties] = useState<Set<string>>(new Set());
   const [showBulkActions, setShowBulkActions] = useState(false);
 
-  // Debug authentication
-  useEffect(() => {
-    console.log('🔐 Authentication Debug:', {
-      user: user ? { id: user.id, email: user.email } : null,
-      profile: profile ? { id: profile.id, role: profile.role } : null,
-      timestamp: new Date().toISOString()
-    });
-  }, [user, profile]);
-
   // Don't render if not authenticated or not admin
   if (!user) {
     return (
@@ -181,7 +172,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   // Delete property mutation with better error handling
   const deletePropertyMutation = useMutation({
     mutationFn: async (propertyId: string) => {
-      console.log('Deleting property via RPC:', propertyId);
       const { error } = await supabase.rpc('delete_property_admin_property', { p_property_id: propertyId });
       if (error) {
         console.error('Delete error:', error);
@@ -276,8 +266,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   // Bulk operations
   const bulkDeleteMutation = useMutation({
     mutationFn: async (propertyIds: string[]) => {
-      console.log('Bulk deleting properties:', propertyIds);
-      
       const { error } = await supabase
         .from('properties')
         .delete()
@@ -303,8 +291,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
   const bulkStatusUpdateMutation = useMutation({
     mutationFn: async ({ propertyIds, status }: { propertyIds: string[], status: string }) => {
-      console.log('Bulk updating status:', propertyIds, status);
-      
       const { error } = await supabase
         .from('properties')
         .update({ status })

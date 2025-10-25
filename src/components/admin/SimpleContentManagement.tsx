@@ -82,7 +82,6 @@ const SimpleContentManagement = () => {
 
   const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this content?')) {
-      console.log('Deleting content:', id);
       toast.success('Content deleted successfully!');
     }
   };

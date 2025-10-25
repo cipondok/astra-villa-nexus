@@ -167,7 +167,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
 
   const handleSignOut = async () => {
     try {
-      console.log('AdminDashboardHeader: Fast sign out initiated...');
       setShowProfile(false);
       await signOut();
     } catch (error) {

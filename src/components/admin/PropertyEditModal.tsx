@@ -508,9 +508,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       if (['new_project', 'pre_launching'].includes(updates.development_status) && !isAuthorizedForRestrictedTypes()) {
         throw new Error('You are not authorized to set this property to New Project or Pre-Launching status. Please contact an administrator.');
       }
-
-      console.log('Updating property with data:', updates);
-      console.log('Current images state:', images);
       
       // Only include columns that actually exist in the properties table
       const updatePayload: any = {

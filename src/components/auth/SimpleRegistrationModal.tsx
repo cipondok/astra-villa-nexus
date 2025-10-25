@@ -86,7 +86,6 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           throw new Error('User creation failed - no user data returned');
         }
 
-        console.log('User created successfully:', authData.user.id);
         return authData.user;
       } catch (error: any) {
         console.error('User creation process failed:', error);
@@ -94,7 +93,6 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
       }
     },
     onSuccess: (user) => {
-      console.log('User creation completed successfully:', user.id);
       showSuccess("User Created Successfully", "The new user has been created and can now login to the system.");
       
       // Invalidate and refetch all user-related queries

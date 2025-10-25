@@ -168,11 +168,9 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
     setAuthSuccess(false);
 
     try {
-      console.log('Attempting login for:', loginData.email);
       const result = await signIn(loginData.email, loginData.password);
       
       if (result.success) {
-        console.log('Login successful');
         setAuthSuccess(true);
         toast.success(currentText.loginSuccess);
         

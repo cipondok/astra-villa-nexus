@@ -233,8 +233,6 @@ const PropertyInsertForm = () => {
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     
-    console.log('Submit clicked, checking authentication...');
-    
     if (!isAuthenticated || !user) {
       alert("Silakan login terlebih dahulu untuk menambahkan properti");
       navigate('/');
