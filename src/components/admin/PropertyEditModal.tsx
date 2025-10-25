@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
-import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle, Box, Filter, BarChart3, MapPin, Calendar } from "lucide-react";
+import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle, Box, Filter, BarChart3, MapPin, Calendar, Star, Home, Tag, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
@@ -57,16 +58,19 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     nearby_facilities: [] as string[],
     transportation: [] as string[],
     seo_keywords: "",
+    seo_title: "",
+    seo_description: "",
     custom_fields: {} as Record<string, any>,
   });
   
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
-  const [activeTab, setActiveTab] = useState<"basic" | "advanced" | "3d" | "filters">("basic");
+  const [activeTab, setActiveTab] = useState<"gallery" | "info" | "seo" | "advanced">("gallery");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -215,6 +219,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         nearby_facilities: Array.isArray(property.nearby_facilities) ? property.nearby_facilities : [],
         transportation: Array.isArray(property.transportation) ? property.transportation : [],
         seo_keywords: property.seo_keywords || "",
+        seo_title: property.seo_title || "",
+        seo_description: property.seo_description || "",
         custom_fields: property.custom_fields || {},
       });
 
@@ -264,6 +270,60 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       setImages(initialImages);
     }
   }, [property, isOpen]);
+
+  // Auto-switch tabs based on scroll position
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop;
+      const containerHeight = container.clientHeight;
+      const scrollHeight = container.scrollHeight;
+      
+      // Calculate which section is most visible
+      const scrollPercent = scrollTop / (scrollHeight - containerHeight);
+      
+      if (scrollPercent < 0.25) {
+        setActiveTab("gallery");
+      } else if (scrollPercent < 0.5) {
+        setActiveTab("info");
+      } else if (scrollPercent < 0.75) {
+        setActiveTab("seo");
+      } else {
+        setActiveTab("advanced");
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to tab content when tab is clicked
+  const scrollToTab = (tab: string) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const scrollHeight = container.scrollHeight - container.clientHeight;
+    let targetScroll = 0;
+
+    switch (tab) {
+      case "gallery":
+        targetScroll = 0;
+        break;
+      case "info":
+        targetScroll = scrollHeight * 0.25;
+        break;
+      case "seo":
+        targetScroll = scrollHeight * 0.5;
+        break;
+      case "advanced":
+        targetScroll = scrollHeight * 0.75;
+        break;
+    }
+
+    container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  };
 
   // Generate AI image for property
   const generateAIImage = async () => {
@@ -424,6 +484,19 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       });
     }
   };
+
+  // Remove thumbnail (set to next available image)
+  const removeThumbnail = () => {
+    if (images.length > 0) {
+      // Find the next image that's not the current thumbnail
+      const currentIndex = images.findIndex(img => img === editData.thumbnail_url);
+      const nextImage = currentIndex === images.length - 1 ? images[0] : images[currentIndex + 1];
+      setEditData(prev => ({ ...prev, thumbnail_url: nextImage }));
+    } else {
+      setEditData(prev => ({ ...prev, thumbnail_url: '' }));
+    }
+  };
+
   // Update property mutation
   const updatePropertyMutation = useMutation({
     mutationFn: async (updates: any) => {
@@ -574,19 +647,77 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           )}
         </DialogHeader>
         
-        <div className="overflow-y-auto max-h-[calc(95vh-140px)] px-1">
-          <Tabs defaultValue="gallery" className="w-full">
-            <div className="px-2 pt-2">
-              <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-slate-200 dark:bg-slate-800 p-0.5">
-                <TabsTrigger value="gallery" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">Gallery</TabsTrigger>
-                <TabsTrigger value="info" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">Info</TabsTrigger>
-                <TabsTrigger value="seo" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">SEO</TabsTrigger>
-                <TabsTrigger value="advanced" className="text-xs h-7 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">Advanced</TabsTrigger>
-              </TabsList>
-            </div>
+        <div className="px-2 pt-2 sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
+          <TabsList className="h-8 grid w-full grid-cols-4 gap-1 bg-slate-200 dark:bg-slate-800 p-0.5">
+            <TabsTrigger 
+              value="gallery" 
+              onClick={() => scrollToTab("gallery")}
+              className={`text-xs h-7 ${activeTab === "gallery" ? "bg-white dark:bg-slate-700" : ""}`}
+            >
+              Gallery
+            </TabsTrigger>
+            <TabsTrigger 
+              value="info" 
+              onClick={() => scrollToTab("info")}
+              className={`text-xs h-7 ${activeTab === "info" ? "bg-white dark:bg-slate-700" : ""}`}
+            >
+              Info
+            </TabsTrigger>
+            <TabsTrigger 
+              value="seo" 
+              onClick={() => scrollToTab("seo")}
+              className={`text-xs h-7 ${activeTab === "seo" ? "bg-white dark:bg-slate-700" : ""}`}
+            >
+              SEO
+            </TabsTrigger>
+            <TabsTrigger 
+              value="advanced" 
+              onClick={() => scrollToTab("advanced")}
+              className={`text-xs h-7 ${activeTab === "advanced" ? "bg-white dark:bg-slate-700" : ""}`}
+            >
+              Advanced
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        
+        <div ref={scrollContainerRef} className="overflow-y-auto max-h-[calc(95vh-180px)] px-1">
+          <Tabs value={activeTab} className="w-full">
 
-            <TabsContent value="gallery">
-              <div className="space-y-3 py-2">
+            <TabsContent value="gallery" className="mt-0">
+              <div className="space-y-3 py-2" id="gallery-section">
+                {/* Current Thumbnail Display */}
+                {editData.thumbnail_url && (
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg p-3 border border-amber-200 dark:border-amber-700">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-xs font-semibold text-amber-800 dark:text-amber-200 flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                        Current Thumbnail
+                      </h4>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={removeThumbnail}
+                        className="h-6 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Remove
+                      </Button>
+                    </div>
+                    <div className="relative rounded-lg overflow-hidden w-full h-32">
+                      <img
+                        src={editData.thumbnail_url}
+                        alt="Thumbnail"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop';
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {/* Image Management Section */}
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
                   <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 sm:p-3">
@@ -672,15 +803,29 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                             >
                               <Trash2 className="h-3 w-3" />
                             </Button>
-                            {/* Set thumbnail button */}
+                            {/* Set/Update thumbnail button */}
                             <Button
                               type="button"
-                              variant={editData.thumbnail_url === url ? 'default' : 'outline'}
+                              variant={editData.thumbnail_url === url ? 'default' : 'secondary'}
                               size="sm"
-                              className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-5 px-1.5 text-[10px]"
+                              className={`absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-5 px-1.5 text-[10px] ${
+                                editData.thumbnail_url === url 
+                                  ? 'bg-amber-500 hover:bg-amber-600 text-white' 
+                                  : 'bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500'
+                              }`}
                               onClick={() => setEditData(prev => ({ ...prev, thumbnail_url: url }))}
                             >
-                              {editData.thumbnail_url === url ? '★' : 'Set'}
+                              {editData.thumbnail_url === url ? (
+                                <>
+                                  <Star className="h-3 w-3 mr-0.5 fill-current" />
+                                  Active
+                                </>
+                              ) : (
+                                <>
+                                  <ImageIcon className="h-3 w-3 mr-0.5" />
+                                  Set
+                                </>
+                              )}
                             </Button>
                             {/* Badges */}
                             <div className="absolute bottom-1 left-1 flex items-center gap-1">
@@ -717,7 +862,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               </div>
             </TabsContent>
 
-            <TabsContent value="info">
+            <TabsContent value="info" className="mt-0" id="info-section">
               <div className="space-y-3 py-2">
                 {/* Property Information */}
                 <div className="grid grid-cols-1 gap-3">
@@ -835,7 +980,47 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               </div>
             </TabsContent>
 
-            <TabsContent value="seo">
+            <TabsContent value="seo" className="mt-0" id="seo-section">
+              <div className="space-y-3 py-2">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div className="bg-gradient-to-r from-green-500 to-teal-500 p-2">
+                    <h3 className="text-sm font-bold text-white">SEO Settings</h3>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    <div className="space-y-1">
+                      <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">Meta Title</Label>
+                      <Input
+                        value={editData.seo_title || ''}
+                        onChange={(e) => handleInputChange('seo_title', e.target.value)}
+                        placeholder="SEO title"
+                        className="border-slate-300 dark:border-slate-600 h-8 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">Meta Description</Label>
+                      <Textarea
+                        rows={2}
+                        value={editData.seo_description || ''}
+                        onChange={(e) => handleInputChange('seo_description', e.target.value)}
+                        placeholder="SEO description"
+                        className="border-slate-300 dark:border-slate-600 text-sm resize-none"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-slate-700 dark:text-slate-300 font-medium text-xs">Keywords</Label>
+                      <Input
+                        value={editData.seo_keywords || ''}
+                        onChange={(e) => handleInputChange('seo_keywords', e.target.value)}
+                        placeholder="keyword1, keyword2"
+                        className="border-slate-300 dark:border-slate-600 h-8 text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="advanced" className="mt-0" id="advanced-section">
               <div className="space-y-6 py-4">
                 {/* SEO & Marketing */}
                 <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -856,342 +1041,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                         Comma-separated keywords for better search visibility
                       </p>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="advanced">
-              <div className="space-y-6 py-4">
-                {/* Advanced Features Tabs */}
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
-                    <h3 className="text-lg font-bold text-white">Advanced Features</h3>
-                  </div>
-                  <div className="p-6">
-                    {/* Tab Navigation */}
-                    <div className="flex flex-wrap gap-2 mb-6 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("basic")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                          activeTab === "basic" 
-                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                        }`}
-                      >
-                        <Edit className="h-4 w-4" />
-                        Basic Info
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("3d")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                          activeTab === "3d" 
-                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                        }`}
-                      >
-                        <Box className="h-4 w-4" />
-                        3D Settings
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("filters")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                          activeTab === "filters" 
-                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                        }`}
-                      >
-                        <Filter className="h-4 w-4" />
-                        Display Filters
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("advanced")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                          activeTab === "advanced" 
-                            ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
-                            : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
-                        }`}
-                      >
-                        <BarChart3 className="h-4 w-4" />
-                        Analytics
-                      </button>
-                    </div>
-
-                    {/* Tab Content */}
-                    {activeTab === "3d" && (
-                      <div className="space-y-6">
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">3D & Virtual Content</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">3D Model URL</Label>
-                              <Input
-                                value={editData.three_d_model_url}
-                                onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
-                                placeholder="https://example.com/model.glb"
-                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Virtual Tour URL</Label>
-                              <Input
-                                value={editData.virtual_tour_url}
-                                onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
-                                placeholder="https://example.com/virtual-tour"
-                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Floor Plan URL</Label>
-                              <Input
-                                value={editData.floor_plan_url}
-                                onChange={(e) => handleInputChange('floor_plan_url', e.target.value)}
-                                placeholder="https://example.com/floor-plan.pdf"
-                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Video Tour URL</Label>
-                              <Input
-                                value={editData.video_tour_url}
-                                onChange={(e) => handleInputChange('video_tour_url', e.target.value)}
-                                placeholder="https://youtube.com/watch?v=..."
-                                className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Thumbnail Image URL</Label>
-                          <Input
-                            value={editData.thumbnail_url}
-                            onChange={(e) => handleInputChange('thumbnail_url', e.target.value)}
-                            placeholder="https://example.com/thumbnail.jpg"
-                            className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTab === "filters" && (
-                      <div className="space-y-6">
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Location & Search Filters</h4>
-                        
-                        {/* Location Selection from Database */}
-                        <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 p-6 rounded-xl border border-teal-200 dark:border-teal-700">
-                          <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-                            <MapPin className="h-5 w-5 text-teal-600" />
-                            Database Location Selection
-                          </h5>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Province</Label>
-                              <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
-                                  <SelectValue placeholder="Select Province" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                                  {provinces.map((province: any) => (
-                                    <SelectItem key={province.province_code} value={province.province_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                                      {province.province_name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
-                              <Select value={selectedCity} onValueChange={setSelectedCity} disabled={!selectedProvince}>
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
-                                  <SelectValue placeholder="Select City" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                                  {cities.map((city: any) => (
-                                    <SelectItem key={city.city_code} value={city.city_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                                      {city.city_type} {city.city_name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">District</Label>
-                              <Select value={selectedDistrict} onValueChange={setSelectedDistrict} disabled={!selectedCity}>
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
-                                  <SelectValue placeholder="Select District" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                                  {districts.map((district: any) => (
-                                    <SelectItem key={district.district_code} value={district.district_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                                      {district.district_name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Property Filter Settings */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
-                            <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Property Visibility</h5>
-                            <div className="space-y-3">
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
-                                <span className="text-sm font-medium">Show on main listings</span>
-                              </label>
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
-                                <span className="text-sm font-medium">Featured property</span>
-                              </label>
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
-                                <span className="text-sm font-medium">Premium highlight</span>
-                              </label>
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
-                                <span className="text-sm font-medium">Urgent sale</span>
-                              </label>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-6 rounded-xl border border-emerald-200 dark:border-emerald-700">
-                            <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Search Filters</h5>
-                            <div className="space-y-3">
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
-                                <span className="text-sm font-medium">Include in price filters</span>
-                              </label>
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
-                                <span className="text-sm font-medium">Show in location search</span>
-                              </label>
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" />
-                                <span className="text-sm font-medium">Exclude from bulk searches</span>
-                              </label>
-                              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
-                                <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
-                                <span className="text-sm font-medium">Available for comparison</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Price & Criteria Filters */}
-                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-6 rounded-xl border border-amber-200 dark:border-amber-700">
-                          <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Price & Criteria Filters</h5>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Price Range Category</Label>
-                              <Select defaultValue="mid-range">
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                                  <SelectItem value="budget">Budget (under 500M IDR)</SelectItem>
-                                  <SelectItem value="mid-range">Mid-Range (500M - 2B IDR)</SelectItem>
-                                  <SelectItem value="luxury">Luxury (2B - 10B IDR)</SelectItem>
-                                  <SelectItem value="ultra-luxury">Ultra Luxury (over 10B IDR)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Target Audience</Label>
-                              <Select defaultValue="general">
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
-                                  <SelectItem value="general">General Public</SelectItem>
-                                  <SelectItem value="first-time">First-time Buyers</SelectItem>
-                                  <SelectItem value="investors">Investors</SelectItem>
-                                  <SelectItem value="families">Families</SelectItem>
-                                  <SelectItem value="professionals">Young Professionals</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTab === "advanced" && (
-                      <div className="space-y-6">
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Advanced Settings & Analytics</h4>
-                        
-                        {/* Property Performance */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
-                            <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Property Views</h5>
-                            <p className="text-2xl font-bold text-blue-600">1,234</p>
-                            <p className="text-xs text-slate-500">This month</p>
-                          </div>
-                          <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-lg">
-                            <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Inquiries</h5>
-                            <p className="text-2xl font-bold text-emerald-600">45</p>
-                            <p className="text-xs text-slate-500">Total received</p>
-                          </div>
-                          <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg">
-                            <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Favorites</h5>
-                            <p className="text-2xl font-bold text-amber-600">89</p>
-                            <p className="text-xs text-slate-500">User saves</p>
-                          </div>
-                        </div>
-
-                        {/* Advanced Options */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="space-y-4">
-                            <h5 className="font-semibold text-slate-800 dark:text-slate-200">Assignment</h5>
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Agent ID</Label>
-                              <Input
-                                value={editData.agent_id}
-                                onChange={(e) => handleInputChange('agent_id', e.target.value)}
-                                placeholder="Assigned agent ID"
-                                className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Owner ID</Label>
-                              <Input
-                                value={editData.owner_id}
-                                onChange={(e) => handleInputChange('owner_id', e.target.value)}
-                                placeholder="Property owner ID"
-                                className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
-                              />
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-4">
-                            <h5 className="font-semibold text-slate-800 dark:text-slate-200">Approval Status</h5>
-                            <div className="space-y-2">
-                              <Label className="text-slate-700 dark:text-slate-300 font-medium">Approval Status</Label>
-                              <Select value={editData.approval_status} onValueChange={(value) => handleInputChange('approval_status', value)}>
-                                <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
-                                  <SelectValue placeholder="Select approval status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="pending">Pending Review</SelectItem>
-                                  <SelectItem value="approved">Approved</SelectItem>
-                                  <SelectItem value="rejected">Rejected</SelectItem>
-                                  <SelectItem value="needs_revision">Needs Revision</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
