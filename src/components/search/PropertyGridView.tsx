@@ -158,17 +158,15 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Bottom Left Price Overlay - Responsive with Full Color */}
-            <div className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 md:bottom-3 md:left-3 lg:bottom-4 lg:left-4 z-10">
-              <div className="bg-primary rounded-md sm:rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2.5 shadow-lg">
-                <div className="flex items-center gap-1.5 md:gap-2">
-                  <div className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl xl:text-2xl text-primary-foreground leading-tight whitespace-nowrap">
-                    {formatPrice(property.price)}
-                  </div>
-                  {property.listing_type === 'rent' && (
-                    <span className="bg-primary-foreground/20 text-primary-foreground text-[7px] sm:text-[8px] md:text-[10px] lg:text-xs font-semibold px-1 sm:px-1.5 py-0.5 rounded">/bln</span>
-                  )}
+            {/* Bottom Left Price Overlay - Enhanced Design */}
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-3 md:p-4">
+              <div className="flex items-baseline gap-1.5 md:gap-2">
+                <div className="font-bold text-sm sm:text-base md:text-xl lg:text-2xl text-white leading-tight">
+                  {formatPrice(property.price)}
                 </div>
+                {property.listing_type === 'rent' && (
+                  <span className="text-white/90 text-xs md:text-sm font-medium">/bulan</span>
+                )}
               </div>
             </div>
 
