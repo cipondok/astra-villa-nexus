@@ -1451,209 +1451,177 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 {/* Room Configuration */}
                 <div>
                   <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Room Configuration</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                        <Bed className="h-2.5 w-2.5 text-blue-500" />
-                        {currentText.bedrooms}
-                      </Label>
-                      <div className="flex items-center gap-1 bg-white/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-md p-1">
+                  
+                  {/* Bedrooms */}
+                  <div className="mb-2">
+                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
+                      <Bed className="h-2.5 w-2.5 text-blue-500" />
+                      {currentText.bedrooms}
+                    </Label>
+                    <div className="flex flex-wrap gap-1">
+                      <Button
+                        type="button"
+                        variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('bedrooms', 'all')}
+                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      >
+                        Any
+                      </Button>
+                      {['1', '2', '3', '4', '5', '5+'].map((num) => (
                         <Button
+                          key={num}
                           type="button"
-                          variant="ghost"
+                          variant={filters.bedrooms === num ? "default" : "outline"}
                           size="sm"
-                          className="h-6 w-6 p-0 hover:bg-blue-100 dark:hover:bg-blue-900"
-                          onClick={() => {
-                            const current = filters.bedrooms === 'all' || !filters.bedrooms ? 0 : parseInt(filters.bedrooms.replace('+', ''));
-                            if (current > 0) {
-                              handleFilterChange('bedrooms', current === 1 ? 'all' : String(current - 1));
-                            }
-                          }}
+                          onClick={() => handleFilterChange('bedrooms', num)}
+                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
                         >
-                          <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400">-</span>
+                          {num}
                         </Button>
-                        <div className="flex-1 text-center text-[10px] font-medium text-blue-700 dark:text-blue-300">
-                          {filters.bedrooms === 'all' || !filters.bedrooms ? 'Any' : filters.bedrooms}
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0 hover:bg-blue-100 dark:hover:bg-blue-900"
-                          onClick={() => {
-                            const current = filters.bedrooms === 'all' || !filters.bedrooms ? 0 : parseInt(filters.bedrooms.replace('+', ''));
-                            const next = current >= 5 ? '5+' : String(current + 1);
-                            handleFilterChange('bedrooms', next);
-                          }}
-                        >
-                          <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400">+</span>
-                        </Button>
-                      </div>
+                      ))}
                     </div>
+                  </div>
 
-                    <div>
-                      <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                        <Bath className="h-2.5 w-2.5 text-blue-500" />
-                        {currentText.bathrooms}
-                      </Label>
-                      <div className="flex items-center gap-1 bg-white/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-md p-1">
+                  {/* Bathrooms */}
+                  <div>
+                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
+                      <Bath className="h-2.5 w-2.5 text-blue-500" />
+                      {currentText.bathrooms}
+                    </Label>
+                    <div className="flex flex-wrap gap-1">
+                      <Button
+                        type="button"
+                        variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('bathrooms', 'all')}
+                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      >
+                        Any
+                      </Button>
+                      {['1', '2', '3', '4', '5+'].map((num) => (
                         <Button
+                          key={num}
                           type="button"
-                          variant="ghost"
+                          variant={filters.bathrooms === num ? "default" : "outline"}
                           size="sm"
-                          className="h-6 w-6 p-0 hover:bg-blue-100 dark:hover:bg-blue-900"
-                          onClick={() => {
-                            const current = filters.bathrooms === 'all' || !filters.bathrooms ? 0 : parseInt(filters.bathrooms.replace('+', ''));
-                            if (current > 0) {
-                              handleFilterChange('bathrooms', current === 1 ? 'all' : String(current - 1));
-                            }
-                          }}
+                          onClick={() => handleFilterChange('bathrooms', num)}
+                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
                         >
-                          <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400">-</span>
+                          {num}
                         </Button>
-                        <div className="flex-1 text-center text-[10px] font-medium text-blue-700 dark:text-blue-300">
-                          {filters.bathrooms === 'all' || !filters.bathrooms ? 'Any' : filters.bathrooms}
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0 hover:bg-blue-100 dark:hover:bg-blue-900"
-                          onClick={() => {
-                            const current = filters.bathrooms === 'all' || !filters.bathrooms ? 0 : parseInt(filters.bathrooms.replace('+', ''));
-                            const next = current >= 5 ? '5+' : String(current + 1);
-                            handleFilterChange('bathrooms', next);
-                          }}
-                        >
-                          <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400">+</span>
-                        </Button>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
 
                 {/* Property Age & Condition */}
                 <div>
-                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Property Age & Condition</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 block">{currentText.yearBuilt}</Label>
-                      <Select value={filters.yearBuilt || "all"} onValueChange={(value) => handleFilterChange('yearBuilt', value)}>
-                         <SelectTrigger className="h-7 text-[9px] border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                           <div className="flex items-center gap-0.5">
-                             <Settings className="h-2.5 w-2.5 text-blue-500" />
-                             <SelectValue placeholder={currentText.yearBuilt} />
-                           </div>
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                          <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
-                          {yearOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value} className="text-[9px]">
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Property Details</Label>
+                  
+                  {/* Year Built */}
+                  <div className="mb-2">
+                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
+                      <Settings className="h-2.5 w-2.5 text-blue-500" />
+                      {currentText.yearBuilt}
+                    </Label>
+                    <div className="flex flex-wrap gap-1">
+                      <Button
+                        type="button"
+                        variant={(!filters.yearBuilt || filters.yearBuilt === 'all') ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('yearBuilt', 'all')}
+                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      >
+                        Any
+                      </Button>
+                      {yearOptions.map((option) => (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          variant={filters.yearBuilt === option.value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('yearBuilt', option.value)}
+                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
                     </div>
+                  </div>
 
-                    <div>
-                      <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 block">{currentText.condition}</Label>
-                      <Select value={filters.condition || "all"} onValueChange={(value) => handleFilterChange('condition', value)}>
-                        <SelectTrigger className="h-7 text-[9px] border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                          <div className="flex items-center gap-0.5">
-                            <Settings className="h-2.5 w-2.5 text-blue-500" />
-                            <SelectValue placeholder={currentText.condition} />
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                          <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
-                          {conditionOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value} className="text-[9px]">
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                  {/* Condition */}
+                  <div>
+                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
+                      <Settings className="h-2.5 w-2.5 text-blue-500" />
+                      {currentText.condition}
+                    </Label>
+                    <div className="flex flex-wrap gap-1">
+                      <Button
+                        type="button"
+                        variant={(!filters.condition || filters.condition === 'all') ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('condition', 'all')}
+                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      >
+                        Any
+                      </Button>
+                      {conditionOptions.map((option) => (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          variant={filters.condition === option.value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('condition', option.value)}
+                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Property Type Specific Features */}
+                {/* Furnishing Level */}
                 <div>
-                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Type-Specific Features</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {/* Floor Level (for apartments/condos) */}
-                    {(['apartment', 'condo'].includes(filters.propertyType)) && (
-                      <div>
-                        <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 block">Floor Level</Label>
-                        <Select value={filters.floorLevel || "all"} onValueChange={(value) => handleFilterChange('floorLevel', value)}>
-                          <SelectTrigger className="h-7 text-[9px] border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                            <SelectValue placeholder="Floor Level" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                            <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
-                            <SelectItem value="low" className="text-[9px]">Low Floor (1-5)</SelectItem>
-                            <SelectItem value="mid" className="text-[9px]">Mid Floor (6-15)</SelectItem>
-                            <SelectItem value="high" className="text-[9px]">High Floor (16+)</SelectItem>
-                            <SelectItem value="penthouse" className="text-[9px]">Penthouse</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
-                    {/* Land Size (for houses/villas) */}
-                    {(['house', 'villa', 'townhouse'].includes(filters.propertyType)) && (
-                      <div>
-                        <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 block">Land Size</Label>
-                        <Select value={filters.landSize || "all"} onValueChange={(value) => handleFilterChange('landSize', value)}>
-                          <SelectTrigger className="h-7 text-[9px] border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                            <SelectValue placeholder="Land Size" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                            <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
-                            <SelectItem value="small" className="text-[9px]">Small (&lt;100m²)</SelectItem>
-                            <SelectItem value="medium" className="text-[9px]">Medium (100-300m²)</SelectItem>
-                            <SelectItem value="large" className="text-[9px]">Large (300-500m²)</SelectItem>
-                            <SelectItem value="xlarge" className="text-[9px]">Extra Large (500m²+)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
-                    {/* Stories (for houses) */}
-                    {(['house', 'villa', 'townhouse'].includes(filters.propertyType)) && (
-                      <div>
-                        <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 block">Stories</Label>
-                        <Select value={filters.stories || "all"} onValueChange={(value) => handleFilterChange('stories', value)}>
-                          <SelectTrigger className="h-7 text-[9px] border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                            <SelectValue placeholder="Stories" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                            <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
-                            <SelectItem value="1" className="text-[9px]">1 Story</SelectItem>
-                            <SelectItem value="2" className="text-[9px]">2 Stories</SelectItem>
-                            <SelectItem value="3" className="text-[9px]">3 Stories</SelectItem>
-                            <SelectItem value="3+" className="text-[9px]">3+ Stories</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
-                    {/* Furnishing Level */}
-                    <div>
-                      <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 block">Furnishing</Label>
-                      <Select value={filters.furnishing || "all"} onValueChange={(value) => handleFilterChange('furnishing', value)}>
-                        <SelectTrigger className="h-7 text-[9px] border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                          <SelectValue placeholder="Furnishing" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                          <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
-                          <SelectItem value="unfurnished" className="text-[9px]">Unfurnished</SelectItem>
-                          <SelectItem value="semi_furnished" className="text-[9px]">Semi-Furnished</SelectItem>
-                          <SelectItem value="fully_furnished" className="text-[9px]">Fully Furnished</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Furnishing</Label>
+                  <div className="flex flex-wrap gap-1">
+                    <Button
+                      type="button"
+                      variant={(!filters.furnishing || filters.furnishing === 'all') ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleFilterChange('furnishing', 'all')}
+                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                    >
+                      Any
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={filters.furnishing === 'unfurnished' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleFilterChange('furnishing', 'unfurnished')}
+                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                    >
+                      Unfurnished
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={filters.furnishing === 'semi_furnished' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleFilterChange('furnishing', 'semi_furnished')}
+                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                    >
+                      Semi-Furnished
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={filters.furnishing === 'fully_furnished' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleFilterChange('furnishing', 'fully_furnished')}
+                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                    >
+                      Fully Furnished
+                    </Button>
                   </div>
                 </div>
                 </TabsContent>
