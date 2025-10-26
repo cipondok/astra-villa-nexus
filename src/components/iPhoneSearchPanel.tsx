@@ -1390,38 +1390,40 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   ))}
 
                   {/* Stepper */}
-                  <div className="ml-1 inline-flex items-center gap-0.5 border border-blue-200 dark:border-blue-800 rounded-md px-1">
+                  <div className="ml-1 inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="h-5 w-5 p-0"
+                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
                       onClick={() => {
                         const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                        if (current <= 1) {
-                          handleFilterChange('bedrooms', 'all');
-                        } else {
-                          handleFilterChange('bedrooms', String(current - 1));
+                        if (current > 0) {
+                          const next = current - 1;
+                          handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
                         }
                       }}
                     >
-                      −
+                      <span className="text-sm font-bold">−</span>
                     </Button>
-                    <span className="min-w-[18px] text-center text-[9px]">
-                      {(!filters.bedrooms || filters.bedrooms === 'all') ? 'Any' : String(filters.bedrooms)}
-                    </span>
+                    <div className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5">
+                      <span className="text-[10px] font-semibold">
+                        {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
+                      </span>
+                    </div>
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="h-5 w-5 p-0"
+                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
                       onClick={() => {
                         const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                        const next = current >= 5 ? '5+' : String(current + 1);
-                        handleFilterChange('bedrooms', next);
+                        if (current < 1000) {
+                          handleFilterChange('bedrooms', String(current + 1));
+                        }
                       }}
                     >
-                      +
+                      <span className="text-sm font-bold">+</span>
                     </Button>
                   </div>
                 </div>
@@ -1464,38 +1466,40 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   ))}
 
                   {/* Stepper */}
-                  <div className="ml-1 inline-flex items-center gap-0.5 border border-blue-200 dark:border-blue-800 rounded-md px-1">
+                  <div className="ml-1 inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="h-5 w-5 p-0"
+                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
                       onClick={() => {
                         const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                        if (current <= 1) {
-                          handleFilterChange('bathrooms', 'all');
-                        } else {
-                          handleFilterChange('bathrooms', String(current - 1));
+                        if (current > 0) {
+                          const next = current - 1;
+                          handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
                         }
                       }}
                     >
-                      −
+                      <span className="text-sm font-bold">−</span>
                     </Button>
-                    <span className="min-w-[18px] text-center text-[9px]">
-                      {(!filters.bathrooms || filters.bathrooms === 'all') ? 'Any' : String(filters.bathrooms)}
-                    </span>
+                    <div className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5">
+                      <span className="text-[10px] font-semibold">
+                        {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
+                      </span>
+                    </div>
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="h-5 w-5 p-0"
+                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
                       onClick={() => {
                         const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                        const next = current >= 5 ? '5+' : String(current + 1);
-                        handleFilterChange('bathrooms', next);
+                        if (current < 1000) {
+                          handleFilterChange('bathrooms', String(current + 1));
+                        }
                       }}
                     >
-                      +
+                      <span className="text-sm font-bold">+</span>
                     </Button>
                   </div>
                 </div>
