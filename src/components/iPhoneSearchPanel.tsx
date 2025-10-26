@@ -1367,6 +1367,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Label>
                 <div className="flex items-center gap-1">
+                  {/* Any button */}
+                  <Button
+                    type="button"
+                    variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleFilterChange('bedrooms', 'all')}
+                    className="h-5 px-2 text-[10px] rounded-md"
+                  >
+                    Any
+                  </Button>
+                  
                   {/* Stepper only */}
                   <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
@@ -1419,6 +1430,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Label>
                 <div className="flex items-center gap-1">
+                  {/* Any button */}
+                  <Button
+                    type="button"
+                    variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleFilterChange('bathrooms', 'all')}
+                    className="h-5 px-2 text-[10px] rounded-md"
+                  >
+                    Any
+                  </Button>
+                  
                   {/* Stepper only */}
                   <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
