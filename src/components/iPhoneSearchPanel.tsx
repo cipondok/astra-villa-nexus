@@ -1354,44 +1354,80 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </SelectContent>
             </Select>
 
-            {/* Bedrooms Filter - Only show on larger screens */}
+            {/* Bedrooms Filter - Button style with value display */}
             <div className="hidden lg:block">
-              <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
-                  <div className="flex items-center gap-1.5">
-                    <Bed className="h-3 w-3 text-blue-500" />
-                    <SelectValue placeholder={currentText.bedrooms} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[100] animate-in fade-in-80">
-                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
-                  {bedroomOptions.map((option) => (
-                    <SelectItem key={option} value={option} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
+              <div className="flex flex-col gap-1">
+                <Label className="text-[9px] text-muted-foreground flex items-center gap-1">
+                  <Bed className="h-2.5 w-2.5 text-blue-500" />
+                  {currentText.bedrooms}
+                  {filters.bedrooms && filters.bedrooms !== 'all' && (
+                    <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px]">
+                      {filters.bedrooms}
+                    </span>
+                  )}
+                </Label>
+                <div className="flex flex-wrap gap-0.5">
+                  <Button
+                    type="button"
+                    variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleFilterChange('bedrooms', 'all')}
+                    className="h-5 px-1.5 text-[9px] rounded-md"
+                  >
+                    Any
+                  </Button>
+                  {bedroomOptions.filter(opt => opt !== 'all').map((option) => (
+                    <Button
+                      key={option}
+                      type="button"
+                      variant={filters.bedrooms === option ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleFilterChange('bedrooms', option)}
+                      className="h-5 px-1.5 text-[9px] rounded-md"
+                    >
                       {option}
-                    </SelectItem>
+                    </Button>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              </div>
             </div>
 
-            {/* Bathrooms Filter - Only show on larger screens */}
+            {/* Bathrooms Filter - Button style with value display */}
             <div className="hidden lg:block">
-              <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
-                  <div className="flex items-center gap-1.5">
-                    <Bath className="h-3 w-3 text-blue-500" />
-                    <SelectValue placeholder={currentText.bathrooms} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[100] animate-in fade-in-80">
-                  <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
-                  {bathroomOptions.map((option) => (
-                    <SelectItem key={option} value={option} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
+              <div className="flex flex-col gap-1">
+                <Label className="text-[9px] text-muted-foreground flex items-center gap-1">
+                  <Bath className="h-2.5 w-2.5 text-blue-500" />
+                  {currentText.bathrooms}
+                  {filters.bathrooms && filters.bathrooms !== 'all' && (
+                    <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px]">
+                      {filters.bathrooms}
+                    </span>
+                  )}
+                </Label>
+                <div className="flex flex-wrap gap-0.5">
+                  <Button
+                    type="button"
+                    variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleFilterChange('bathrooms', 'all')}
+                    className="h-5 px-1.5 text-[9px] rounded-md"
+                  >
+                    Any
+                  </Button>
+                  {bathroomOptions.filter(opt => opt !== 'all').map((option) => (
+                    <Button
+                      key={option}
+                      type="button"
+                      variant={filters.bathrooms === option ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleFilterChange('bathrooms', option)}
+                      className="h-5 px-1.5 text-[9px] rounded-md"
+                    >
                       {option}
-                    </SelectItem>
+                    </Button>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              </div>
             </div>
           </div>
 
