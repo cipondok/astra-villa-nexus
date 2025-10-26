@@ -1366,31 +1366,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   )}
                 </Label>
-                <div className="flex flex-wrap items-center gap-0.5">
+                <div className="flex flex-wrap items-center gap-1">
+                  {/* Any button */}
                   <Button
                     type="button"
                     variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
                     size="sm"
                     onClick={() => handleFilterChange('bedrooms', 'all')}
-                    className="h-5 px-1.5 text-[9px] rounded-md"
+                    className="h-5 px-2 text-[10px] rounded-md"
                   >
                     Any
                   </Button>
-                  {bedroomOptions.filter(opt => opt !== 'all').map((option) => (
-                    <Button
-                      key={option}
-                      type="button"
-                      variant={filters.bedrooms === option ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleFilterChange('bedrooms', option)}
-                      className="h-5 px-1.5 text-[9px] rounded-md"
-                    >
-                      {option}
-                    </Button>
-                  ))}
 
-                  {/* Stepper */}
-                  <div className="ml-1 inline-flex items-center border border-border rounded-md overflow-hidden">
+                  {/* Stepper with editable input */}
+                  <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
                       type="button"
                       variant="ghost"
@@ -1455,31 +1444,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   )}
                 </Label>
-                <div className="flex flex-wrap items-center gap-0.5">
+                <div className="flex flex-wrap items-center gap-1">
+                  {/* Any button */}
                   <Button
                     type="button"
                     variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
                     size="sm"
                     onClick={() => handleFilterChange('bathrooms', 'all')}
-                    className="h-5 px-1.5 text-[9px] rounded-md"
+                    className="h-5 px-2 text-[10px] rounded-md"
                   >
                     Any
                   </Button>
-                  {bathroomOptions.filter(opt => opt !== 'all').map((option) => (
-                    <Button
-                      key={option}
-                      type="button"
-                      variant={filters.bathrooms === option ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleFilterChange('bathrooms', option)}
-                      className="h-5 px-1.5 text-[9px] rounded-md"
-                    >
-                      {option}
-                    </Button>
-                  ))}
 
-                  {/* Stepper */}
-                  <div className="ml-1 inline-flex items-center border border-border rounded-md overflow-hidden">
+                  {/* Stepper with editable input */}
+                  <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
                       type="button"
                       variant="ghost"
