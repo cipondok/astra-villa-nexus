@@ -1366,7 +1366,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   )}
                 </Label>
-                <div className="flex flex-wrap gap-0.5">
+                <div className="flex flex-wrap items-center gap-0.5">
                   <Button
                     type="button"
                     variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
@@ -1388,6 +1388,42 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       {option}
                     </Button>
                   ))}
+
+                  {/* Stepper */}
+                  <div className="ml-1 inline-flex items-center gap-0.5 border border-blue-200 dark:border-blue-800 rounded-md px-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 p-0"
+                      onClick={() => {
+                        const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
+                        if (current <= 1) {
+                          handleFilterChange('bedrooms', 'all');
+                        } else {
+                          handleFilterChange('bedrooms', String(current - 1));
+                        }
+                      }}
+                    >
+                      −
+                    </Button>
+                    <span className="min-w-[18px] text-center text-[9px]">
+                      {(!filters.bedrooms || filters.bedrooms === 'all') ? 'Any' : String(filters.bedrooms)}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 p-0"
+                      onClick={() => {
+                        const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
+                        const next = current >= 5 ? '5+' : String(current + 1);
+                        handleFilterChange('bedrooms', next);
+                      }}
+                    >
+                      +
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1404,7 +1440,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   )}
                 </Label>
-                <div className="flex flex-wrap gap-0.5">
+                <div className="flex flex-wrap items-center gap-0.5">
                   <Button
                     type="button"
                     variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
@@ -1426,6 +1462,42 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       {option}
                     </Button>
                   ))}
+
+                  {/* Stepper */}
+                  <div className="ml-1 inline-flex items-center gap-0.5 border border-blue-200 dark:border-blue-800 rounded-md px-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 p-0"
+                      onClick={() => {
+                        const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
+                        if (current <= 1) {
+                          handleFilterChange('bathrooms', 'all');
+                        } else {
+                          handleFilterChange('bathrooms', String(current - 1));
+                        }
+                      }}
+                    >
+                      −
+                    </Button>
+                    <span className="min-w-[18px] text-center text-[9px]">
+                      {(!filters.bathrooms || filters.bathrooms === 'all') ? 'Any' : String(filters.bathrooms)}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 p-0"
+                      onClick={() => {
+                        const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
+                        const next = current >= 5 ? '5+' : String(current + 1);
+                        handleFilterChange('bathrooms', next);
+                      }}
+                    >
+                      +
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
