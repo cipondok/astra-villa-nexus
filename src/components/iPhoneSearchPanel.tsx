@@ -1366,19 +1366,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   )}
                 </Label>
-                <div className="flex flex-wrap items-center gap-1">
-                  {/* Any button */}
-                  <Button
-                    type="button"
-                    variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleFilterChange('bedrooms', 'all')}
-                    className="h-5 px-2 text-[10px] rounded-md"
-                  >
-                    Any
-                  </Button>
-
-                  {/* Stepper with editable input */}
+                <div className="flex items-center gap-1">
+                  {/* Stepper only */}
                   <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
                       type="button"
@@ -1395,24 +1384,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     >
                       <span className="text-sm font-bold">−</span>
                     </Button>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={1000}
-                      step={1}
-                      value={(!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''))}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value || '0');
-                        if (isNaN(val) || val <= 0) {
-                          handleFilterChange('bedrooms', 'all');
-                        } else if (val >= 1000) {
-                          handleFilterChange('bedrooms', '1000');
-                        } else {
-                          handleFilterChange('bedrooms', String(val));
-                        }
-                      }}
-                      className="h-5 w-12 text-center text-[10px] px-1 border-0 bg-muted/30 focus-visible:ring-0"
-                    />
+                    <span className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5 text-[10px] font-semibold">
+                      {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
+                    </span>
                     <Button
                       type="button"
                       variant="ghost"
@@ -1444,19 +1418,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   )}
                 </Label>
-                <div className="flex flex-wrap items-center gap-1">
-                  {/* Any button */}
-                  <Button
-                    type="button"
-                    variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleFilterChange('bathrooms', 'all')}
-                    className="h-5 px-2 text-[10px] rounded-md"
-                  >
-                    Any
-                  </Button>
-
-                  {/* Stepper with editable input */}
+                <div className="flex items-center gap-1">
+                  {/* Stepper only */}
                   <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
                     <Button
                       type="button"
@@ -1473,24 +1436,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     >
                       <span className="text-sm font-bold">−</span>
                     </Button>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={1000}
-                      step={1}
-                      value={(!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''))}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value || '0');
-                        if (isNaN(val) || val <= 0) {
-                          handleFilterChange('bathrooms', 'all');
-                        } else if (val >= 1000) {
-                          handleFilterChange('bathrooms', '1000');
-                        } else {
-                          handleFilterChange('bathrooms', String(val));
-                        }
-                      }}
-                      className="h-5 w-12 text-center text-[10px] px-1 border-0 bg-muted/30 focus-visible:ring-0"
-                    />
+                    <span className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5 text-[10px] font-semibold">
+                      {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
+                    </span>
                     <Button
                       type="button"
                       variant="ghost"
