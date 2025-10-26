@@ -16,10 +16,17 @@ const NotificationPopup = ({ show, onClose }: NotificationPopupProps) => {
   useEffect(() => {
     if (show) {
       setTimeout(() => setIsVisible(true), 100);
+      
+      // Auto-close after 8 seconds
+      const autoCloseTimer = setTimeout(() => {
+        onClose();
+      }, 8000);
+
+      return () => clearTimeout(autoCloseTimer);
     } else {
       setIsVisible(false);
     }
-  }, [show]);
+  }, [show, onClose]);
 
   const handleNavigateToOffers = () => {
     navigate('/offers');
