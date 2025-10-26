@@ -1457,6 +1457,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
                       <Bed className="h-2.5 w-2.5 text-blue-500" />
                       {currentText.bedrooms}
+                      <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px]">
+                        {(!filters.bedrooms || filters.bedrooms === 'all') ? 'Any' : filters.bedrooms}
+                      </span>
                     </Label>
                     <div className="flex flex-wrap gap-1">
                       <Button
@@ -1464,7 +1467,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('bedrooms', 'all')}
-                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                        className="h-5 px-1.5 text-[10px] rounded-md border-blue-200 dark:border-blue-800"
                       >
                         Any
                       </Button>
@@ -1475,7 +1478,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           variant={filters.bedrooms === num ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('bedrooms', num)}
-                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                          className="h-5 px-1.5 text-[10px] rounded-md border-blue-200 dark:border-blue-800"
                         >
                           {num}
                         </Button>
@@ -1488,6 +1491,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
                       <Bath className="h-2.5 w-2.5 text-blue-500" />
                       {currentText.bathrooms}
+                      <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px]">
+                        {(!filters.bathrooms || filters.bathrooms === 'all') ? 'Any' : filters.bathrooms}
+                      </span>
                     </Label>
                     <div className="flex flex-wrap gap-1">
                       <Button
@@ -1495,7 +1501,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('bathrooms', 'all')}
-                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                        className="h-5 px-1.5 text-[10px] rounded-md border-blue-200 dark:border-blue-800"
                       >
                         Any
                       </Button>
@@ -1506,7 +1512,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           variant={filters.bathrooms === num ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('bathrooms', num)}
-                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                          className="h-5 px-1.5 text-[10px] rounded-md border-blue-200 dark:border-blue-800"
                         >
                           {num}
                         </Button>
