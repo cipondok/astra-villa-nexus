@@ -354,10 +354,10 @@ const Navigation = () => {
 
           {/* Enhanced Mobile Navigation - Improved with Better Animations */}
           {isMenuOpen && (
-            <div className="lg:hidden absolute top-full right-0 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-l border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] transform-gpu will-change-transform rounded-bl-2xl animate-slide-in-right">
-              <div className="px-4 py-3 space-y-2">
-                <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/'); toggleMenu(); }}>
-                  <HomeIcon className="h-4 w-4 mr-2" />
+            <div className="lg:hidden absolute top-full right-0 w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-l border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] transform-gpu will-change-transform rounded-bl-2xl animate-slide-in-right">
+              <div className="px-2.5 py-2 space-y-1">
+                <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/'); toggleMenu(); }}>
+                  <HomeIcon className="h-3.5 w-3.5 mr-2" />
                   {currentText.home}
                 </Button>
 
@@ -366,37 +366,37 @@ const Navigation = () => {
                   <Button 
                     key={item.path}
                     variant="ghost" 
-                    className={`w-full justify-start text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 ${item.color}`} 
+                    className={`w-full justify-start h-9 text-xs font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg ${item.color}`} 
                     onClick={() => { navigate(item.path); toggleMenu(); }}
                   >
-                    <item.icon className="h-4 w-4 mr-2" />
+                    <item.icon className="h-3.5 w-3.5 mr-2" />
                     {item.label}
                   </Button>
                 ))}
 
-                <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/services'); toggleMenu(); }}>
-                  <Settings2 className="h-4 w-4 mr-2" />
+                <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/services'); toggleMenu(); }}>
+                  <Settings2 className="h-3.5 w-3.5 mr-2" />
                   {currentText.services}
                 </Button>
 
                 {/* Properties Navigation */}
-                <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/buy'); toggleMenu(); }}>
-                  <Building className="h-4 w-4 mr-2" />
+                <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/buy'); toggleMenu(); }}>
+                  <Building className="h-3.5 w-3.5 mr-2" />
                   Properties
                 </Button>
                 
-                <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/add-property'); toggleMenu(); }}>
-                  <Plus className="h-4 w-4 mr-2" />
+                <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/add-property'); toggleMenu(); }}>
+                  <Plus className="h-3.5 w-3.5 mr-2" />
                   Add Property
                 </Button>
 
                 {/* Investment Section */}
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
-                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-1.5 mt-1.5">
+                  <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Investment
                   </div>
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 pl-6" onClick={() => { navigate('/foreign-investment'); toggleMenu(); }}>
-                    <Building className="h-4 w-4 mr-2" />
+                  <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg pl-5" onClick={() => { navigate('/foreign-investment'); toggleMenu(); }}>
+                    <Building className="h-3.5 w-3.5 mr-2" />
                     Foreign Investment
                   </Button>
                 </div>
@@ -404,43 +404,43 @@ const Navigation = () => {
                 
                 {/* Dashboard link - show for authenticated users */}
                 {user && !isAdmin && !isAgent && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/dashboard/user'); toggleMenu(); }}>
-                    <BarChart3 className="h-4 w-4 mr-2" />
+                  <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/dashboard/user'); toggleMenu(); }}>
+                    <BarChart3 className="h-3.5 w-3.5 mr-2" />
                     {currentText.dashboard}
                   </Button>
                 )}
 
                 {/* Agent Dashboard for mobile */}
                 {isAgent && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20" onClick={() => { navigate('/agent'); toggleMenu(); }}>
-                    <User className="h-4 w-4 mr-2" />
+                  <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg" onClick={() => { navigate('/agent'); toggleMenu(); }}>
+                    <User className="h-3.5 w-3.5 mr-2" />
                     Agent Dashboard
                   </Button>
                 )}
 
                 {/* Vendor Dashboard for mobile */}
                 {profile?.role === 'vendor' && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20" onClick={() => { navigate('/vendor'); toggleMenu(); }}>
-                    <Settings className="h-4 w-4 mr-2" />
+                  <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg" onClick={() => { navigate('/vendor'); toggleMenu(); }}>
+                    <Settings className="h-3.5 w-3.5 mr-2" />
                     Vendor Dashboard
                   </Button>
                 )}
                 
                 
-                <div className="flex items-center justify-between pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between pt-1.5 border-t border-gray-200/50 dark:border-gray-700/50">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={toggleTheme}
-                    className="text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                    className="h-8 text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
                   >
-                    {theme === "light" ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
+                    {theme === "light" ? <Moon className="h-3.5 w-3.5 mr-1.5" /> : <Sun className="h-3.5 w-3.5 mr-1.5" />}
                     {theme === "light" ? "Dark" : "Light"}
                   </Button>
                   <LanguageToggleSwitch />
                 </div>
                 {user && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleSignOut}>
+                  <Button variant="ghost" className="w-full justify-start h-9 text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" onClick={handleSignOut}>
                     {currentText.signOut}
                   </Button>
                 )}
