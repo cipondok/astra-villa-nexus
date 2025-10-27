@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState, Suspense, lazy } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import slide1 from "@/assets/home/slide-1.webp";
 import slide2 from "@/assets/home/slide-2.webp";
 import slide3 from "@/assets/home/slide-3.webp";
-
-const PropertyTour3D = lazy(() => import("@/components/home/PropertyTour3D"));
+import jakartaSkyline from "@/assets/jakarta-skyline-3d.jpg";
 
 interface HomeIntroSliderProps {
   className?: string;
@@ -196,19 +195,14 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     >
       {/* 3D Background Animation */}
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/10 to-background flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading 3D Tour...</p>
-            </div>
-          </div>
-        }>
-          <PropertyTour3D />
-        </Suspense>
-        {/* Lighter gradient overlays for better 3D visibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" style={{ transform: 'translateZ(0)' }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20 pointer-events-none" style={{ transform: 'translateZ(0)' }} />
+        <img 
+          src={jakartaSkyline} 
+          alt="Jakarta City Skyline at Night" 
+          className="w-full h-full object-cover"
+        />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/30 via-transparent to-background/30 pointer-events-none" />
       </div>
 
       {/* Content - Hidden temporarily */}
