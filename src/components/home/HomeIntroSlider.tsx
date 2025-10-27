@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import slide1 from "@/assets/home/slide-1.webp";
 import slide2 from "@/assets/home/slide-2.webp";
 import slide3 from "@/assets/home/slide-3.webp";
-import jakartaSkyline from "@/assets/jakarta-skyline-3d.jpg";
+import jakartaSkyline from "@/assets/jakarta-skyline-real.jpg";
 
 interface HomeIntroSliderProps {
   className?: string;
