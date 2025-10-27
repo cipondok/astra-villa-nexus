@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, Float, Text3D, MeshReflectorMaterial } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Environment, Float, MeshReflectorMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Animated Building Component - Improved Design
+// Advanced Indonesian Building Component
 function Building({ position, color, delay = 0 }: { position: [number, number, number]; color: string; delay?: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
@@ -17,43 +17,151 @@ function Building({ position, color, delay = 0 }: { position: [number, number, n
 
   return (
     <group ref={groupRef} position={position}>
-      {/* Base/Foundation */}
-      <mesh position={[0, -1.6, 0]} castShadow>
-        <boxGeometry args={[2, 0.3, 2]} />
+      {/* Modern Indonesian Tower Base - Wider */}
+      <mesh position={[0, -1.5, 0]} castShadow>
+        <boxGeometry args={[2.5, 0.4, 2.5]} />
         <meshStandardMaterial 
           color="#1a1a1a" 
-          metalness={0.8}
-          roughness={0.2}
+          metalness={0.9}
+          roughness={0.1}
         />
       </mesh>
       
-      {/* Main Building - Multi-level */}
-      <mesh ref={meshRef} castShadow position={[0, -0.2, 0]}>
-        <boxGeometry args={[1.8, 2.5, 1.8]} />
+      {/* Podium Level - Shopping/Retail */}
+      <mesh position={[0, -1, 0]} castShadow>
+        <boxGeometry args={[2.3, 0.8, 2.3]} />
         <meshStandardMaterial 
-          color={color} 
+          color="#2a2a2a" 
           metalness={0.7}
           roughness={0.2}
-          emissive={color}
-          emissiveIntensity={0.6}
         />
       </mesh>
       
-      {/* Top Floor - Smaller */}
-      <mesh position={[0, 1.5, 0]} castShadow>
-        <boxGeometry args={[1.4, 0.8, 1.4]} />
+      {/* Main Tower - Sleek Modern Indonesian Style */}
+      <mesh ref={meshRef} castShadow position={[0, 0.5, 0]}>
+        <boxGeometry args={[2, 3.5, 2]} />
         <meshStandardMaterial 
           color={color} 
           metalness={0.8}
-          roughness={0.1}
+          roughness={0.15}
           emissive={color}
-          emissiveIntensity={0.8}
+          emissiveIntensity={0.7}
         />
       </mesh>
       
-      {/* Roof - Gold */}
-      <mesh position={[0, 2.2, 0]} castShadow>
-        <coneGeometry args={[1.1, 0.6, 4]} />
+      {/* Upper Levels - Tapering Design */}
+      <mesh position={[0, 2.5, 0]} castShadow>
+        <boxGeometry args={[1.8, 0.8, 1.8]} />
+        <meshStandardMaterial 
+          color={color} 
+          metalness={0.85}
+          roughness={0.1}
+          emissive={color}
+          emissiveIntensity={0.9}
+        />
+      </mesh>
+      
+      {/* Penthouse Level */}
+      <mesh position={[0, 3.2, 0]} castShadow>
+        <boxGeometry args={[1.5, 0.5, 1.5]} />
+        <meshStandardMaterial 
+          color="#FFD700" 
+          metalness={0.95}
+          roughness={0.05}
+          emissive="#FFD700"
+          emissiveIntensity={1.2}
+        />
+      </mesh>
+      
+      {/* Modern Indonesian Roof Feature - Stylized Traditional Shape */}
+      <mesh position={[0, 3.7, 0]} castShadow>
+        <coneGeometry args={[1.3, 0.5, 4]} />
+        <meshStandardMaterial 
+          color="#FFD700" 
+          metalness={0.95}
+          roughness={0.05}
+          emissive="#FFD700"
+          emissiveIntensity={1}
+        />
+      </mesh>
+      
+      {/* Decorative Spire - Traditional Indonesian Touch */}
+      <mesh position={[0, 4.1, 0]} castShadow>
+        <cylinderGeometry args={[0.08, 0.08, 0.6, 8]} />
+        <meshStandardMaterial 
+          color="#FFD700" 
+          metalness={1}
+          roughness={0}
+          emissive="#FFD700"
+          emissiveIntensity={2}
+        />
+      </mesh>
+      
+      {/* Glass Facade - Floor by Floor Windows */}
+      {[...Array(6)].map((_, floor) => (
+        <group key={floor}>
+          {/* Front Face Windows */}
+          {[...Array(3)].map((_, col) => (
+            <mesh 
+              key={`front-${col}`}
+              position={[-0.7 + col * 0.7, -1.3 + floor * 0.65, 1.01]} 
+              castShadow
+            >
+              <boxGeometry args={[0.5, 0.5, 0.02]} />
+              <meshStandardMaterial 
+                color="#4FC3F7" 
+                emissive="#FFD700"
+                emissiveIntensity={1.5 + Math.random() * 0.5}
+                metalness={0.95}
+                roughness={0.05}
+                transparent
+                opacity={0.9}
+              />
+            </mesh>
+          ))}
+          
+          {/* Side Windows */}
+          {[-1, 1].map((side) => (
+            <group key={side}>
+              {[...Array(3)].map((_, col) => (
+                <mesh 
+                  key={`side-${col}`}
+                  position={[side * 1.01, -1.3 + floor * 0.65, -0.7 + col * 0.7]} 
+                  rotation={[0, side * Math.PI / 2, 0]}
+                  castShadow
+                >
+                  <boxGeometry args={[0.5, 0.5, 0.02]} />
+                  <meshStandardMaterial 
+                    color="#4FC3F7" 
+                    emissive="#FFD700"
+                    emissiveIntensity={1.5 + Math.random() * 0.5}
+                    metalness={0.95}
+                    roughness={0.05}
+                    transparent
+                    opacity={0.9}
+                  />
+                </mesh>
+              ))}
+            </group>
+          ))}
+        </group>
+      ))}
+      
+      {/* Balcony Accents - Indonesian Modern Style */}
+      {[...Array(3)].map((_, i) => (
+        <mesh key={`balcony-${i}`} position={[0, -0.5 + i * 1.2, 1.15]} castShadow>
+          <boxGeometry args={[2.1, 0.08, 0.25]} />
+          <meshStandardMaterial 
+            color="#cccccc" 
+            metalness={0.7}
+            roughness={0.2}
+          />
+        </mesh>
+      ))}
+      
+      {/* Entrance Canopy */}
+      <mesh position={[0, -1.1, 1.3]} castShadow>
+        <boxGeometry args={[1.5, 0.05, 0.4]} />
         <meshStandardMaterial 
           color="#FFD700" 
           metalness={0.9}
@@ -63,54 +171,18 @@ function Building({ position, color, delay = 0 }: { position: [number, number, n
         />
       </mesh>
       
-      {/* Windows - Grid Pattern */}
-      {[...Array(4)].map((_, floor) => (
-        <group key={floor}>
-          {[...Array(2)].map((_, col) => (
-            <group key={col}>
-              <mesh position={[col === 0 ? -0.6 : 0.6, -1 + floor * 0.6, 0.91]} castShadow>
-                <boxGeometry args={[0.35, 0.4, 0.03]} />
-                <meshStandardMaterial 
-                  color="#FFD700" 
-                  emissive="#FFD700"
-                  emissiveIntensity={2}
-                  metalness={0.9}
-                  roughness={0.1}
-                />
-              </mesh>
-              {/* Window frame */}
-              <mesh position={[col === 0 ? -0.6 : 0.6, -1 + floor * 0.6, 0.92]} castShadow>
-                <boxGeometry args={[0.4, 0.45, 0.02]} />
-                <meshStandardMaterial 
-                  color="#333333" 
-                  metalness={0.5}
-                  roughness={0.5}
-                />
-              </mesh>
-            </group>
-          ))}
-        </group>
-      ))}
-      
-      {/* Door */}
-      <mesh position={[0, -1.1, 0.91]} castShadow>
-        <boxGeometry args={[0.4, 0.7, 0.03]} />
+      {/* Building Name Sign */}
+      <mesh position={[0, 3.5, 1.52]}>
+        <boxGeometry args={[1.2, 0.3, 0.05]} />
         <meshStandardMaterial 
-          color="#8B4513" 
-          metalness={0.3}
-          roughness={0.7}
+          color="#000000" 
+          emissive="#FFD700"
+          emissiveIntensity={1.5}
         />
       </mesh>
       
-      {/* Balconies */}
-      <mesh position={[0, 0.8, 1]} castShadow>
-        <boxGeometry args={[1.8, 0.05, 0.3]} />
-        <meshStandardMaterial 
-          color="#cccccc" 
-          metalness={0.6}
-          roughness={0.3}
-        />
-      </mesh>
+      {/* Rooftop Lighting */}
+      <pointLight position={[0, 4.2, 0]} intensity={4} distance={8} color="#FFD700" />
     </group>
   );
 }
@@ -256,17 +328,23 @@ function Scene() {
       {/* Environment */}
       <Environment preset="city" />
       
-      {/* Buildings - Property Tour - More Detailed */}
-      <Building position={[-4.5, 0, 0]} color="#3B82F6" delay={0} />
+      {/* Modern Indonesian Buildings - Advanced Architecture */}
+      <Building position={[-5, 0, 0]} color="#3B82F6" delay={0} />
       <Building position={[0, 0, -2]} color="#10B981" delay={0.5} />
-      <Building position={[4.5, 0, 0]} color="#F59E0B" delay={1} />
+      <Building position={[5, 0, 0]} color="#F59E0B" delay={1} />
       
-      {/* Additional smaller buildings for depth */}
-      <group position={[-7, 0, -4]} scale={0.6}>
+      {/* Additional Indonesian towers for cityscape depth */}
+      <group position={[-8, 0, -5]} scale={0.7}>
         <Building position={[0, 0, 0]} color="#8B5CF6" delay={1.5} />
       </group>
-      <group position={[7, 0, -4]} scale={0.6}>
+      <group position={[8, 0, -5]} scale={0.7}>
         <Building position={[0, 0, 0]} color="#EC4899" delay={2} />
+      </group>
+      <group position={[-3, 0, -6]} scale={0.5}>
+        <Building position={[0, 0, 0]} color="#06B6D4" delay={2.5} />
+      </group>
+      <group position={[3, 0, -6]} scale={0.5}>
+        <Building position={[0, 0, 0]} color="#F97316" delay={3} />
       </group>
       
       {/* Floating Icons - Improved Home Icons */}
