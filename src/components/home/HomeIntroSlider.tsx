@@ -116,8 +116,10 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     <section
       className={cn(
         "relative w-full overflow-hidden bg-background",
+        "min-h-[300px]", // Prevent collapse during load
         className
       )}
+      style={{ contain: 'layout' }} // Optimize layout containment
       aria-label={t.sectionAria}
     >
       {/* Background image layer with crossfade */}
@@ -129,10 +131,13 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
             alt={s.alt}
             decoding="async"
             loading={i === 0 ? "eager" : "lazy"}
+            width="1920"
+            height="1080"
             className={cn(
               "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
               i === index ? "opacity-100" : "opacity-0"
             )}
+            style={{ willChange: i === index ? 'opacity' : 'auto' }}
           />
         ))}
         {/* Gradient overlays for readability */}
