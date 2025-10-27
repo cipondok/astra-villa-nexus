@@ -183,13 +183,13 @@ const config: Config = {
         "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
       },
       backgroundImage: {
-        'macos-gradient': 'linear-gradient(135deg, hsl(213, 100%, 50%) 0%, hsl(195, 100%, 69%) 100%)',
-        'macos-card': 'linear-gradient(135deg, hsl(0, 0%, 96%) 0%, hsla(213, 100%, 50%, 0.03) 100%)',
+        'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
+        'macos-card': 'linear-gradient(135deg, hsl(0, 0%, 96%) 0%, hsla(48, 100%, 50%, 0.03) 100%)',
       },
       boxShadow: {
         'macos': '0 4px 20px rgba(0, 0, 0, 0.08)',
-        'macos-hover': '0 8px 30px rgba(0, 122, 255, 0.15)',
-        'macos-active': '0 2px 8px rgba(0, 0, 0, 0.12)',
+        'macos-hover': '0 8px 30px rgba(255, 215, 0, 0.20)',
+        'macos-active': '0 2px 8px rgba(255, 215, 0, 0.15)',
       }
     },
   },

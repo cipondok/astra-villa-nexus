@@ -124,26 +124,26 @@ body {
   }
 
   .dark {
-    /* Dark Mode Colors - Proper HSL Values */
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 222 84% 4.9%;
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 142 76% 36%;
-    --accent-foreground: 210 40% 98%;
+    /* Dark Mode Colors - Gold, Silver, Black Luxury Theme */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 92%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 92%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 92%;
+    --primary: 48 100% 50%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 0 0% 92%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 45 90% 60%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 221 83% 53%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 25%;
+    --input: 0 0% 18%;
+    --ring: 48 100% 50%;
   }
 
   * {
@@ -179,9 +179,9 @@ body {
   }
 
   .dark .glass-effect {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
   }
 
   .glass-card {
@@ -194,9 +194,9 @@ body {
   }
 
   .dark .glass-card {
-    background: rgba(30, 41, 59, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    background: rgba(25, 25, 25, 0.8);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 4px 24px rgba(255, 215, 0, 0.15);
   }
 
   .card-hover {
@@ -363,9 +363,10 @@ body {
   }
 
   .tab-trigger-ios[data-state="active"] {
-    @apply text-white bg-gradient-to-r from-blue-500 to-purple-600;
-    @apply shadow-lg shadow-blue-500/25;
-    @apply scale-105 font-semibold;
+    @apply text-black font-semibold;
+    background: linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 95%, 60%) 100%);
+    @apply shadow-lg shadow-yellow-500/40;
+    @apply scale-105;
     transform: scale(1.05) translateZ(0);
   }
 
@@ -399,13 +400,13 @@ body {
     @apply shadow-gray-900/10 border-gray-400/40;
   }
 
-  /* Dark Mode Header - 50% Transparent */
+  /* Dark Mode Header - Gold Silver Black Gradient */
   .dark .header-ios {
     background: linear-gradient(135deg, 
-      hsla(220, 100%, 60%, 0.5) 0%, 
-      hsla(240, 100%, 65%, 0.5) 50%, 
-      hsla(260, 100%, 70%, 0.5) 100%);
-    @apply shadow-blue-500/20 border-white/10;
+      hsla(0, 0%, 10%, 0.9) 0%, 
+      hsla(48, 80%, 30%, 0.6) 50%, 
+      hsla(0, 0%, 15%, 0.9) 100%);
+    @apply shadow-yellow-500/20 border-yellow-500/20;
   }
 
   .header-button-ios {
@@ -425,22 +426,22 @@ body {
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
   }
 
-  /* Dark Mode Header Button */
+  /* Dark Mode Header Button - Gold Accent */
   .dark .header-button-ios {
-    @apply bg-white/15 border-white/20 text-white;
-    @apply hover:bg-white/25 hover:border-white/30 hover:shadow-lg;
-    @apply active:bg-white/20;
+    @apply bg-yellow-500/20 border-yellow-500/40 text-yellow-50;
+    @apply hover:bg-yellow-500/30 hover:border-yellow-500/60 hover:shadow-lg;
+    @apply active:bg-yellow-500/25;
   }
 
   .dark .header-button-ios:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(255,255,255,0.15);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.25);
   }
 
-  /* Smooth Tab List */
+  /* Smooth Tab List - Gold/Silver Theme for Dark Mode */
   .tab-list-ios {
     @apply bg-white/90 backdrop-blur-xl border border-white/20 shadow-lg rounded-2xl p-1.5;
-    @apply dark:bg-gray-900/90 dark:border-gray-700/30;
+    @apply dark:bg-black/80 dark:border-yellow-500/30;
   }
 
   /* Content Animation */
