@@ -88,6 +88,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(true);
   const [isDesktop, setIsDesktop] = useState<boolean>(() => typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : false);
+  const [fixedHeight, setFixedHeight] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   const copy = {
@@ -108,6 +109,27 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     onChange();
     return () => mq.removeEventListener('change', onChange);
   }, []);
+
+  // Lock initial height on mobile to prevent URL bar resize jumping
+  useEffect(() => {
+    const applyHeight = () => {
+      if (!isDesktop) {
+        const h = window.visualViewport?.height ?? window.innerHeight;
+        setFixedHeight(h);
+      } else {
+        setFixedHeight(null);
+      }
+    };
+    applyHeight();
+    const onOrientation = () => applyHeight();
+    const onResize = () => applyHeight();
+    window.addEventListener('orientationchange', onOrientation);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('orientationchange', onOrientation);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [isDesktop]);
 
   // Auto-rotate only on desktop, when visible, and not scrolling
   useEffect(() => {
@@ -166,7 +188,8 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
       style={{ 
         contain: 'layout',
         transform: 'translateZ(0)',
-        backfaceVisibility: 'hidden'
+        backfaceVisibility: 'hidden',
+        height: fixedHeight ? `${fixedHeight}px` : undefined
       }} // Optimize layout and prevent repaints
       aria-label={t.sectionAria}
     >

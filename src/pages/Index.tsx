@@ -363,10 +363,10 @@ const Index = () => {
           <section className={cn(
             isMobile ? "px-2 py-1" : "px-4 py-1"
           )}>
-            <div className={cn(
-              "mx-auto",
-              isMobile ? "max-w-sm" : "max-w-[1800px]"
-            )}>
+              <div className={cn(
+                "mx-auto",
+                isMobile ? "max-w-full" : "max-w-[1800px]"
+              )}>
               <AdvancedPropertyFilters
                 filters={filters}
                 onFiltersChange={handleFiltersChange}

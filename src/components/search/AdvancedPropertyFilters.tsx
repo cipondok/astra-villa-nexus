@@ -122,7 +122,7 @@ const AdvancedPropertyFilters = ({
           </CardHeader>
         </CollapsibleTrigger>
 
-        <CollapsibleContent>
+        <CollapsibleContent className="max-h-[75dvh] md:max-h-[70vh] overflow-y-auto overscroll-contain">
           <CardContent className="space-y-6">
             {/* Search Query */}
             <div className="space-y-2">
