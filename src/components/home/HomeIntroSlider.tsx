@@ -87,6 +87,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(true);
+  const [isDesktop, setIsDesktop] = useState<boolean>(() => typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : false);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   const copy = {
@@ -99,12 +100,21 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   const next = () => setIndex((i) => (i + 1) % total);
   const prev = () => setIndex((i) => (i - 1 + total) % total);
 
-  // Auto-rotate only when visible and not scrolling
+  // Track desktop breakpoint for auto-rotate enabling
   useEffect(() => {
-    if (paused || !inView) return;
+    const mq = window.matchMedia('(min-width: 768px)');
+    const onChange = () => setIsDesktop(mq.matches);
+    mq.addEventListener('change', onChange);
+    onChange();
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Auto-rotate only on desktop, when visible, and not scrolling
+  useEffect(() => {
+    if (paused || !inView || !isDesktop) return;
     const id = window.setInterval(next, 5000);
     return () => window.clearInterval(id);
-  }, [paused, inView]);
+  }, [paused, inView, isDesktop]);
 
   // Observe visibility within viewport
   useEffect(() => {
@@ -149,7 +159,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
         window.setTimeout(() => setPaused(false), 6000);
       }}
       className={cn(
-        "relative w-full overflow-hidden bg-background",
+        "relative w-full overflow-hidden bg-background overscroll-none touch-pan-y",
         "min-h-[300px]", // Prevent collapse during load
         className
       )}
