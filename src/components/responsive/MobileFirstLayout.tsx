@@ -34,7 +34,7 @@ const MobileFirstLayout: React.FC<MobileFirstLayoutProps> = ({
 
   return (
     <div className={cn(
-      'min-h-screen w-full overflow-x-hidden',
+      'min-h-stable md:min-h-screen w-full overflow-x-hidden',
       'bg-background text-foreground',
       className
     )}>

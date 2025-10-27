@@ -21,8 +21,9 @@
     line-height: 1.6;
     overflow-x: hidden; /* Prevent horizontal scroll */
     -webkit-overflow-scrolling: touch;
-    width: 100vw;
+    width: 100%;
     max-width: 100vw;
+    min-height: 100svh;
   }
 
   /* Ensure all images are responsive by default */
@@ -230,6 +231,17 @@
   .text-center-mobile { text-align: center; }
   .full-width-mobile { width: 100% !important; }
   .no-scroll-mobile { overflow: hidden; }
+
+  /* Stable viewport min-height to avoid iOS address bar jumps */
+  .min-h-stable {
+    min-height: 100vh; /* fallback */
+    min-height: 100svh; /* small viewport height for mobile */
+  }
+}
+
+/* Prefer dynamic viewport when supported */
+@supports (min-height: 100dvh) {
+  .min-h-stable { min-height: 100dvh; }
 }
 
 /* =================================

@@ -105,9 +105,9 @@ export function useIsMobile() {
           
           // Apply styles only once
           if (!bodyEl.style.width) {
-            bodyEl.style.width = '100vw'
+            bodyEl.style.width = '100%'
             bodyEl.style.overflowX = 'hidden'
-            bodyEl.style.minHeight = '100vh'
+            ;(bodyEl.style as any).minHeight = '100svh'
             ;(bodyEl.style as any).webkitOverflowScrolling = 'touch'
             ;(bodyEl.style as any).webkitTextSizeAdjust = '100%'
             ;(bodyEl.style as any).webkitTapHighlightColor = 'transparent'
