@@ -1483,7 +1483,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="fixed inset-x-2 top-16 md:top-20 bottom-2 z-[200] isolate bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-lg p-2 space-y-2 shadow-2xl overflow-y-auto pointer-events-auto">
+            <div ref={filterRef} className="fixed z-[200] isolate pointer-events-auto left-0 right-0 top-14 bottom-0 md:top-24 md:bottom-auto md:h-[80vh] md:left-1/2 md:-translate-x-1/2 md:w-[min(92vw,1100px)] bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-t-xl md:rounded-2xl p-3 md:p-4 space-y-2 shadow-2xl overflow-y-auto">
               <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10 pb-1.5 border-b border-border/30">
                 <h3 className="text-foreground font-semibold text-[10px] flex items-center gap-1.5">
                   <Filter className="h-2.5 w-2.5 text-primary" />
