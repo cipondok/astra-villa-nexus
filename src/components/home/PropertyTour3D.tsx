@@ -299,17 +299,17 @@ function Particles() {
 function Scene() {
   return (
     <>
-      {/* Camera - Closer and better angle */}
-      <PerspectiveCamera makeDefault position={[0, 3, 10]} fov={60} />
+      {/* Camera - Jakarta Skyline View */}
+      <PerspectiveCamera makeDefault position={[2, 4, 12]} fov={65} />
       
       {/* Controls */}
       <OrbitControls 
         enableZoom={false}
         enablePan={false}
         autoRotate
-        autoRotateSpeed={1.2}
-        maxPolarAngle={Math.PI / 2}
-        minPolarAngle={Math.PI / 4}
+        autoRotateSpeed={0.8}
+        maxPolarAngle={Math.PI / 2.2}
+        minPolarAngle={Math.PI / 5}
       />
       
       {/* Lighting - Brighter */}
@@ -328,34 +328,79 @@ function Scene() {
       {/* Environment */}
       <Environment preset="city" />
       
-      {/* Modern Indonesian Buildings - Advanced Architecture */}
-      <Building position={[-5, 0, 0]} color="#3B82F6" delay={0} />
-      <Building position={[0, 0, -2]} color="#10B981" delay={0.5} />
-      <Building position={[5, 0, 0]} color="#F59E0B" delay={1} />
+      {/* Jakarta Skyline - Front Row (Tallest) */}
+      <group position={[-6, 0, 2]} scale={1.2}>
+        <Building position={[0, 0, 0]} color="#3B82F6" delay={0} />
+      </group>
+      <group position={[-2, 0, 1]} scale={1.1}>
+        <Building position={[0, 0, 0]} color="#10B981" delay={0.3} />
+      </group>
+      <Building position={[0, 0, 0]} color="#FFD700" delay={0.6} />
+      <group position={[2, 0, 1]} scale={1.15}>
+        <Building position={[0, 0, 0]} color="#F59E0B" delay={0.9} />
+      </group>
+      <group position={[6, 0, 2]} scale={1.1}>
+        <Building position={[0, 0, 0]} color="#06B6D4" delay={1.2} />
+      </group>
       
-      {/* Additional Indonesian towers for cityscape depth */}
-      <group position={[-8, 0, -5]} scale={0.7}>
+      {/* Jakarta Skyline - Second Row (Medium Height) */}
+      <group position={[-9, 0, -2]} scale={0.9}>
         <Building position={[0, 0, 0]} color="#8B5CF6" delay={1.5} />
       </group>
-      <group position={[8, 0, -5]} scale={0.7}>
-        <Building position={[0, 0, 0]} color="#EC4899" delay={2} />
+      <group position={[-5, 0, -3]} scale={0.85}>
+        <Building position={[0, 0, 0]} color="#EC4899" delay={1.8} />
       </group>
-      <group position={[-3, 0, -6]} scale={0.5}>
-        <Building position={[0, 0, 0]} color="#06B6D4" delay={2.5} />
+      <group position={[-1, 0, -2.5]} scale={0.8}>
+        <Building position={[0, 0, 0]} color="#3B82F6" delay={2.1} />
       </group>
-      <group position={[3, 0, -6]} scale={0.5}>
-        <Building position={[0, 0, 0]} color="#F97316" delay={3} />
+      <group position={[3, 0, -2.5]} scale={0.9}>
+        <Building position={[0, 0, 0]} color="#10B981" delay={2.4} />
+      </group>
+      <group position={[7, 0, -3]} scale={0.85}>
+        <Building position={[0, 0, 0]} color="#F97316" delay={2.7} />
+      </group>
+      <group position={[10, 0, -2]} scale={0.8}>
+        <Building position={[0, 0, 0]} color="#06B6D4" delay={3} />
       </group>
       
-      {/* Floating Icons - Improved Home Icons */}
-      <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1}>
-        <PropertyIcon position={[-3, 4, 1]} delay={0} />
+      {/* Jakarta Skyline - Background Row (Smaller) */}
+      <group position={[-11, 0, -7]} scale={0.6}>
+        <Building position={[0, 0, 0]} color="#8B5CF6" delay={3.3} />
+      </group>
+      <group position={[-7, 0, -8]} scale={0.55}>
+        <Building position={[0, 0, 0]} color="#F59E0B" delay={3.6} />
+      </group>
+      <group position={[-3, 0, -7.5]} scale={0.5}>
+        <Building position={[0, 0, 0]} color="#3B82F6" delay={3.9} />
+      </group>
+      <group position={[0, 0, -9]} scale={0.6}>
+        <Building position={[0, 0, 0]} color="#EC4899" delay={4.2} />
+      </group>
+      <group position={[4, 0, -7.5]} scale={0.55}>
+        <Building position={[0, 0, 0]} color="#10B981" delay={4.5} />
+      </group>
+      <group position={[8, 0, -8]} scale={0.5}>
+        <Building position={[0, 0, 0]} color="#F97316" delay={4.8} />
+      </group>
+      <group position={[12, 0, -7]} scale={0.6}>
+        <Building position={[0, 0, 0]} color="#06B6D4" delay={5.1} />
+      </group>
+      
+      {/* Floating Property Icons Above Jakarta Skyline */}
+      <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1.2}>
+        <PropertyIcon position={[-4, 5, 3]} delay={0} />
       </Float>
-      <Float speed={3} rotationIntensity={0.5} floatIntensity={1}>
-        <PropertyIcon position={[3, 4, 1]} delay={1} />
+      <Float speed={3} rotationIntensity={0.5} floatIntensity={1.2}>
+        <PropertyIcon position={[4, 5, 3]} delay={1} />
       </Float>
-      <Float speed={2.8} rotationIntensity={0.5} floatIntensity={1}>
-        <PropertyIcon position={[0, 5, -1]} delay={0.5} />
+      <Float speed={2.8} rotationIntensity={0.5} floatIntensity={1.2}>
+        <PropertyIcon position={[0, 6, 1]} delay={0.5} />
+      </Float>
+      <Float speed={2.6} rotationIntensity={0.5} floatIntensity={1.2}>
+        <PropertyIcon position={[-6, 4.5, 0]} delay={0.8} />
+      </Float>
+      <Float speed={3.2} rotationIntensity={0.5} floatIntensity={1.2}>
+        <PropertyIcon position={[6, 4.5, 0]} delay={1.3} />
       </Float>
       
       {/* Particles */}
@@ -396,8 +441,8 @@ export default function PropertyTour3D() {
           powerPreference: "high-performance"
         }}
       >
-        <color attach="background" args={['#000000']} />
-        <fog attach="fog" args={['#000000', 10, 50]} />
+        <color attach="background" args={['#0a0a0a']} />
+        <fog attach="fog" args={['#0a0a0a', 15, 60]} />
         <Scene />
       </Canvas>
     </div>
