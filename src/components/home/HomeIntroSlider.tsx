@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import jakartaSkyline from "@/assets/jakarta-premium-skyline.jpg";
+import jakartaSkyline from "@/assets/jakarta-aerial-bundaran.jpg";
 
 interface HomeIntroSliderProps {
   className?: string;
