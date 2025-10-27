@@ -85,7 +85,6 @@ const slidesEn: SlideItem[] = [
 
 const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en', children }) => {
   const [index, setIndex] = useState(0);
-  const [flash, setFlash] = useState(false);
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(true);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -140,13 +139,6 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
-  // Flash effect when slide changes
-  useEffect(() => {
-    setFlash(true);
-    const t = setTimeout(() => setFlash(false), 250);
-    return () => clearTimeout(t);
-  }, [index]);
-
   const current = useMemo(() => slides[index], [index]);
 
   return (
@@ -161,10 +153,14 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
         "min-h-[300px]", // Prevent collapse during load
         className
       )}
-      style={{ contain: 'layout' }} // Optimize layout containment
+      style={{ 
+        contain: 'layout',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden'
+      }} // Optimize layout and prevent repaints
       aria-label={t.sectionAria}
     >
-      {/* Background image layer with crossfade */}
+      {/* Background image layer - no animation */}
       <div className="absolute inset-0 z-0">
         {slides.map((s, i) => (
           <img
@@ -176,27 +172,19 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
             width="1920"
             height="1080"
             className={cn(
-              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
+              "absolute inset-0 h-full w-full object-cover",
               i === index ? "opacity-100" : "opacity-0"
             )}
-            style={{ willChange: i === index ? 'opacity' : 'auto' }}
+            style={{ 
+              transition: 'none',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden'
+            }}
           />
         ))}
-        {/* Gradient overlays for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/20 to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/60" />
-        {/* Light streak accent */}
-        <div className="pointer-events-none absolute -inset-x-1/2 -top-1/2 h-[150%] rotate-12 opacity-30 mix-blend-screen">
-          <div className="h-full w-[40%] bg-gradient-to-r from-primary/30 via-white/40 to-transparent blur-2xl pulse" />
-        </div>
-        {/* Flash overlay */}
-        <div
-          className={cn(
-            "absolute inset-0 bg-white/60 transition-opacity duration-200",
-            flash ? "opacity-60" : "opacity-0"
-          )}
-          aria-hidden
-        />
+        {/* Gradient overlays for readability - static */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/20 to-background/40" style={{ transform: 'translateZ(0)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/60" style={{ transform: 'translateZ(0)' }} />
       </div>
 
       {/* Content - Hidden temporarily */}
