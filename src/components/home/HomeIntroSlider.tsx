@@ -25,7 +25,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   useEffect(() => {
     const applyHeight = () => {
       if (!isDesktop) {
-        setFixedHeight(280);
+        setFixedHeight(200);
       } else {
         setFixedHeight(null);
       }
@@ -45,7 +45,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     <section
       className={cn(
         "relative w-full overflow-hidden bg-background",
-        "min-h-[300px]",
+        "min-h-[200px]",
         className
       )}
       style={{ 
