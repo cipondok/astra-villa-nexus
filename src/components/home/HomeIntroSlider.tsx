@@ -116,7 +116,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   useEffect(() => {
     const applyHeight = () => {
       if (!isDesktop) {
-        setFixedHeight(320); // Fixed 320px height on mobile (reduced)
+        setFixedHeight(280); // Fixed 280px height on mobile (smaller)
       } else {
         setFixedHeight(null);
       }
@@ -206,9 +206,9 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
         }>
           <PropertyTour3D />
         </Suspense>
-        {/* Gradient overlays for readability over 3D scene */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/40 pointer-events-none" style={{ transform: 'translateZ(0)' }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/60 pointer-events-none" style={{ transform: 'translateZ(0)' }} />
+        {/* Lighter gradient overlays for better 3D visibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" style={{ transform: 'translateZ(0)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20 pointer-events-none" style={{ transform: 'translateZ(0)' }} />
       </div>
 
       {/* Content - Hidden temporarily */}
