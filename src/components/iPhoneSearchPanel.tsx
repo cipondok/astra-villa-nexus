@@ -1532,152 +1532,136 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="propertySpecs" className="space-y-2.5 mt-2 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-2.5">
+                <TabsContent value="propertySpecs" className="space-y-1.5 mt-2 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-2">
                 
-                {/* Room Configuration */}
+                {/* Room Configuration - Compact Row Layout */}
                 <div>
-                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Room Configuration</Label>
+                  <Label className="text-[9px] font-medium text-blue-700 dark:text-blue-300 mb-1 block">Rooms</Label>
                   
-                  {/* Bedrooms */}
-                  <div className="mb-2">
-                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                      <Bed className="h-2.5 w-2.5 text-blue-500" />
-                      {currentText.bedrooms}
-                      {filters.bedrooms && filters.bedrooms !== 'all' && (
-                        <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px] font-semibold">
-                          {filters.bedrooms}
-                        </span>
-                      )}
-                    </Label>
-                    <div className="flex items-center gap-1">
-                      {/* Any button */}
-                      <Button
-                        type="button"
-                        variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleFilterChange('bedrooms', 'all')}
-                        className="h-5 px-2 text-[10px] rounded-md"
-                      >
-                        Any
-                      </Button>
-                      
-                      {/* Stepper */}
-                      <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {/* Bedrooms - Compact */}
+                    <div>
+                      <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 flex items-center gap-0.5">
+                        <Bed className="h-2 w-2 text-blue-500" />
+                        {currentText.bedrooms}
+                      </Label>
+                      <div className="flex items-center gap-0.5">
                         <Button
                           type="button"
-                          variant="ghost"
+                          variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
                           size="sm"
-                          className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                          onClick={() => {
-                            const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                            if (current > 0) {
-                              const next = current - 1;
-                              handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
-                            }
-                          }}
+                          onClick={() => handleFilterChange('bedrooms', 'all')}
+                          className="h-5 px-1.5 text-[9px] rounded-md flex-1"
                         >
-                          <span className="text-sm font-bold">−</span>
+                          Any
                         </Button>
-                        <span className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5 text-[10px] font-semibold">
-                          {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                          onClick={() => {
-                            const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                            if (current < 1000) {
-                              handleFilterChange('bedrooms', String(current + 1));
-                            }
-                          }}
-                        >
-                          <span className="text-sm font-bold">+</span>
-                        </Button>
+                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            onClick={() => {
+                              const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
+                              if (current > 0) {
+                                const next = current - 1;
+                                handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
+                              }
+                            }}
+                          >
+                            <span className="text-xs font-bold">−</span>
+                          </Button>
+                          <span className="min-w-[24px] h-5 flex items-center justify-center bg-muted/30 px-1 text-[9px] font-semibold">
+                            {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            onClick={() => {
+                              const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
+                              if (current < 1000) {
+                                handleFilterChange('bedrooms', String(current + 1));
+                              }
+                            }}
+                          >
+                            <span className="text-xs font-bold">+</span>
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Bathrooms */}
-                  <div>
-                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                      <Bath className="h-2.5 w-2.5 text-blue-500" />
-                      {currentText.bathrooms}
-                      {filters.bathrooms && filters.bathrooms !== 'all' && (
-                        <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px] font-semibold">
-                          {filters.bathrooms}
-                        </span>
-                      )}
-                    </Label>
-                    <div className="flex items-center gap-1">
-                      {/* Any button */}
-                      <Button
-                        type="button"
-                        variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleFilterChange('bathrooms', 'all')}
-                        className="h-5 px-2 text-[10px] rounded-md"
-                      >
-                        Any
-                      </Button>
-                      
-                      {/* Stepper */}
-                      <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
+                    {/* Bathrooms - Compact */}
+                    <div>
+                      <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 flex items-center gap-0.5">
+                        <Bath className="h-2 w-2 text-blue-500" />
+                        {currentText.bathrooms}
+                      </Label>
+                      <div className="flex items-center gap-0.5">
                         <Button
                           type="button"
-                          variant="ghost"
+                          variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
                           size="sm"
-                          className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                          onClick={() => {
-                            const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                            if (current > 0) {
-                              const next = current - 1;
-                              handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
-                            }
-                          }}
+                          onClick={() => handleFilterChange('bathrooms', 'all')}
+                          className="h-5 px-1.5 text-[9px] rounded-md flex-1"
                         >
-                          <span className="text-sm font-bold">−</span>
+                          Any
                         </Button>
-                        <span className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5 text-[10px] font-semibold">
-                          {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                          onClick={() => {
-                            const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                            if (current < 1000) {
-                              handleFilterChange('bathrooms', String(current + 1));
-                            }
-                          }}
-                        >
-                          <span className="text-sm font-bold">+</span>
-                        </Button>
+                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            onClick={() => {
+                              const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
+                              if (current > 0) {
+                                const next = current - 1;
+                                handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
+                              }
+                            }}
+                          >
+                            <span className="text-xs font-bold">−</span>
+                          </Button>
+                          <span className="min-w-[24px] h-5 flex items-center justify-center bg-muted/30 px-1 text-[9px] font-semibold">
+                            {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            onClick={() => {
+                              const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
+                              if (current < 1000) {
+                                handleFilterChange('bathrooms', String(current + 1));
+                              }
+                            }}
+                          >
+                            <span className="text-xs font-bold">+</span>
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Property Age & Condition */}
-                <div>
-                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Property Details</Label>
-                  
+                {/* Property Details - Compact Grid Layout */}
+                <div className="grid grid-cols-2 gap-1.5">
                   {/* Year Built */}
-                  <div className="mb-2">
-                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                      <Settings className="h-2.5 w-2.5 text-blue-500" />
+                  <div>
+                    <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 flex items-center gap-0.5">
+                      <Settings className="h-2 w-2 text-blue-500" />
                       {currentText.yearBuilt}
                     </Label>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-0.5">
                       <Button
                         type="button"
                         variant={(!filters.yearBuilt || filters.yearBuilt === 'all') ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('yearBuilt', 'all')}
-                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                        className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                       >
                         Any
                       </Button>
@@ -1688,7 +1672,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           variant={filters.yearBuilt === option.value ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('yearBuilt', option.value)}
-                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                          className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                         >
                           {option.label}
                         </Button>
@@ -1698,17 +1682,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                   {/* Condition */}
                   <div>
-                    <Label className="text-[9px] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                      <Settings className="h-2.5 w-2.5 text-blue-500" />
+                    <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 flex items-center gap-0.5">
+                      <Settings className="h-2 w-2 text-blue-500" />
                       {currentText.condition}
                     </Label>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-0.5">
                       <Button
                         type="button"
                         variant={(!filters.condition || filters.condition === 'all') ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('condition', 'all')}
-                        className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                        className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                       >
                         Any
                       </Button>
@@ -1719,7 +1703,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           variant={filters.condition === option.value ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('condition', option.value)}
-                          className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                          className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                         >
                           {option.label}
                         </Button>
@@ -1728,16 +1712,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
 
-                {/* Furnishing Level */}
+                {/* Furnishing - Compact */}
                 <div>
-                  <Label className="text-[10px] font-medium text-blue-700 dark:text-blue-300 mb-2 block">Furnishing</Label>
-                  <div className="flex flex-wrap gap-1">
+                  <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 block">Furnishing</Label>
+                  <div className="grid grid-cols-2 gap-0.5">
                     <Button
                       type="button"
                       variant={(!filters.furnishing || filters.furnishing === 'all') ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleFilterChange('furnishing', 'all')}
-                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                     >
                       Any
                     </Button>
@@ -1746,7 +1730,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       variant={filters.furnishing === 'unfurnished' ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleFilterChange('furnishing', 'unfurnished')}
-                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                     >
                       Unfurnished
                     </Button>
@@ -1755,18 +1739,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       variant={filters.furnishing === 'semi_furnished' ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleFilterChange('furnishing', 'semi_furnished')}
-                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                     >
-                      Semi-Furnished
+                      Semi
                     </Button>
                     <Button
                       type="button"
                       variant={filters.furnishing === 'fully_furnished' ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleFilterChange('furnishing', 'fully_furnished')}
-                      className="h-6 px-2 text-[9px] border-blue-200 dark:border-blue-800"
+                      className="h-5 px-1.5 text-[8px] border-blue-200 dark:border-blue-800"
                     >
-                      Fully Furnished
+                      Fully
                     </Button>
                   </div>
                 </div>
