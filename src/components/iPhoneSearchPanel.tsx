@@ -1483,7 +1483,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="relative z-50 bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-lg p-2 space-y-2 shadow-2xl max-h-[65vh] overflow-y-auto">
+            <div ref={filterRef} className="fixed inset-x-2 top-16 md:top-20 bottom-2 z-[200] isolate bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-lg p-2 space-y-2 shadow-2xl overflow-y-auto pointer-events-auto">
               <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10 pb-1.5 border-b border-border/30">
                 <h3 className="text-foreground font-semibold text-[10px] flex items-center gap-1.5">
                   <Filter className="h-2.5 w-2.5 text-primary" />
@@ -1855,7 +1855,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800" align="start">
+                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" align="start">
                               <Calendar
                                 mode="single"
                                 selected={filters.checkInDate}
@@ -1880,7 +1880,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800" align="start">
+                              <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" align="start">
                               <Calendar
                                 mode="single"
                                 selected={filters.checkOutDate}
@@ -1913,7 +1913,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <SelectTrigger className="h-7 text-[9px] border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30">
                             <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
                           </SelectTrigger>
-                          <SelectContent className="bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800">
+                          <SelectContent className="bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]">
                             <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
                             {rentalDurationOptions.map((option) => (
                               <SelectItem key={option.value} value={option.value} className="text-[9px]">
@@ -1963,7 +1963,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectTrigger className="h-9 text-xs border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/30">
                     <SelectValue placeholder={currentText.sortBy} />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                  <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 z-[210]">
                     {sortOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value} className="text-xs">
                         {option.label}
