@@ -9,8 +9,8 @@ function TallGlassTower({ position, color, delay = 0 }: { position: [number, num
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3 + delay) * 0.08;
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.8 + delay) * 0.2;
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2 + delay) * 0.03;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5 + delay) * 0.1;
     }
   });
 
@@ -77,8 +77,8 @@ function ModernOfficeTower({ position, color, delay = 0 }: { position: [number, 
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3 + delay) * 0.08;
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.8 + delay) * 0.2;
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2 + delay) * 0.03;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5 + delay) * 0.1;
     }
   });
 
@@ -163,8 +163,8 @@ function TriangularTower({ position, color, delay = 0 }: { position: [number, nu
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3 + delay) * 0.08;
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.8 + delay) * 0.2;
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2 + delay) * 0.03;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5 + delay) * 0.1;
     }
   });
 
@@ -226,14 +226,14 @@ function TriangularTower({ position, color, delay = 0 }: { position: [number, nu
   );
 }
 
-// Floating Property Icon - Improved with Home Icon
+// Floating Property Icon - Professional with Home Icon
 function PropertyIcon({ position, delay = 0 }: { position: [number, number, number]; delay?: number }) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.8;
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.5 + delay) * 0.5;
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.5;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.2 + delay) * 0.3;
     }
   });
 
@@ -324,11 +324,13 @@ function Particles() {
     <points ref={particlesRef}>
       <bufferGeometry />
       <pointsMaterial 
-        size={0.08} 
+        size={0.05} 
         color="#FFD700" 
         transparent 
-        opacity={0.9}
+        opacity={0.6}
         sizeAttenuation
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
       />
     </points>
   );
@@ -338,34 +340,73 @@ function Particles() {
 function Scene() {
   return (
     <>
-      {/* Camera - Jakarta Skyline View */}
-      <PerspectiveCamera makeDefault position={[2, 4, 12]} fov={65} />
+      {/* Camera - Professional Cinematic View */}
+      <PerspectiveCamera makeDefault position={[1, 5, 14]} fov={50} />
       
-      {/* Controls */}
+      {/* Controls - Smooth Professional Movement */}
       <OrbitControls 
         enableZoom={false}
         enablePan={false}
         autoRotate
-        autoRotateSpeed={0.8}
-        maxPolarAngle={Math.PI / 2.2}
-        minPolarAngle={Math.PI / 5}
+        autoRotateSpeed={0.4}
+        maxPolarAngle={Math.PI / 2.1}
+        minPolarAngle={Math.PI / 6}
+        enableDamping
+        dampingFactor={0.05}
       />
       
-      {/* Lighting - Brighter */}
-      <ambientLight intensity={0.8} />
+      {/* Professional Studio Lighting Setup */}
+      <ambientLight intensity={0.4} color="#1a1a2e" />
+      
+      {/* Key Light - Main illumination */}
       <directionalLight 
-        position={[10, 10, 5]} 
-        intensity={2.5} 
+        position={[15, 20, 10]} 
+        intensity={1.8} 
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={4096}
+        shadow-mapSize-height={4096}
+        shadow-camera-far={50}
+        shadow-camera-left={-20}
+        shadow-camera-right={20}
+        shadow-camera-top={20}
+        shadow-camera-bottom={-20}
+        color="#ffffff"
       />
-      <pointLight position={[-10, 10, -10]} intensity={1.5} color="#FFD700" />
-      <pointLight position={[10, 5, 10]} intensity={1.5} color="#FFD700" />
-      <spotLight position={[0, 15, 0]} intensity={2} angle={0.6} penumbra={0.5} color="#FFD700" />
       
-      {/* Environment */}
-      <Environment preset="city" />
+      {/* Fill Light - Soften shadows */}
+      <directionalLight 
+        position={[-10, 15, -5]} 
+        intensity={0.6} 
+        color="#4FC3F7"
+      />
+      
+      {/* Rim Light - Edge highlighting */}
+      <directionalLight 
+        position={[0, 5, -15]} 
+        intensity={0.8} 
+        color="#FFD700"
+      />
+      
+      {/* Atmospheric Point Lights */}
+      <pointLight position={[-15, 8, -5]} intensity={2} distance={25} color="#8B5CF6" decay={2} />
+      <pointLight position={[15, 8, -5]} intensity={2} distance={25} color="#F59E0B" decay={2} />
+      <pointLight position={[0, 12, 5]} intensity={1.5} distance={20} color="#FFD700" decay={2} />
+      
+      {/* Spotlight for dramatic effect */}
+      <spotLight 
+        position={[0, 25, 0]} 
+        intensity={1.2} 
+        angle={0.5} 
+        penumbra={0.8} 
+        color="#FFD700"
+        castShadow
+      />
+      
+      {/* Professional Environment */}
+      <Environment preset="night" background={false} />
+      
+      {/* Volumetric Fog for Depth */}
+      <fog attach="fog" args={['#0a0a14', 18, 65]} />
       
       {/* Jakarta Skyline - Front Row (Tallest) */}
       <group position={[-6, 0, 2]} scale={1.2}>
@@ -442,27 +483,30 @@ function Scene() {
         <PropertyIcon position={[6, 4.5, 0]} delay={1.3} />
       </Float>
       
-      {/* Particles */}
+      {/* Atmospheric Particles */}
       <Particles />
+      
+      {/* Additional City Ambience Lights */}
+      <group position={[0, -1.5, 0]}>
+        {[...Array(12)].map((_, i) => (
+          <pointLight 
+            key={i}
+            position={[
+              Math.cos(i * Math.PI / 6) * 8,
+              0.5,
+              Math.sin(i * Math.PI / 6) * 8
+            ]} 
+            intensity={0.8} 
+            distance={10} 
+            color="#FFD700"
+            decay={2}
+          />
+        ))}
+      </group>
       
       {/* Ground with Reflection */}
       <Ground />
       
-      {/* Additional Lighting for Glow */}
-      <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
-        <group position={[0, 5, -3]}>
-          <mesh>
-            <sphereGeometry args={[0.15, 16, 16]} />
-            <meshStandardMaterial 
-              color="#FFD700" 
-              emissive="#FFD700"
-              emissiveIntensity={2}
-              toneMapped={false}
-            />
-          </mesh>
-          <pointLight intensity={2} distance={10} color="#FFD700" />
-        </group>
-      </Float>
     </>
   );
 }
@@ -472,16 +516,17 @@ export default function PropertyTour3D() {
   return (
     <div className="w-full h-full">
       <Canvas 
-        shadows 
+        shadows="soft"
         dpr={[1, 2]}
         gl={{ 
           antialias: true,
           alpha: true,
-          powerPreference: "high-performance"
+          powerPreference: "high-performance",
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.2
         }}
       >
-        <color attach="background" args={['#0a0a0a']} />
-        <fog attach="fog" args={['#0a0a0a', 15, 60]} />
+        <color attach="background" args={['#0a0a14']} />
         <Scene />
       </Canvas>
     </div>
