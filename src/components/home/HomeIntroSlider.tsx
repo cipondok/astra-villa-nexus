@@ -114,7 +114,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   useEffect(() => {
     const applyHeight = () => {
       if (!isDesktop) {
-        setFixedHeight(400); // Fixed 400px height on mobile
+        setFixedHeight(320); // Fixed 320px height on mobile (reduced)
       } else {
         setFixedHeight(null);
       }
