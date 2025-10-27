@@ -297,17 +297,17 @@ const Navigation = () => {
 
             {/* Enhanced Right Section - Compact Controls */}
             <div className="flex items-center gap-2 flex-shrink-0">
-              {/* Enhanced Dark Mode Toggle */}
+              {/* Enhanced Dark Mode Toggle - Binance Style */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-9 h-9 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg"
+                className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-yellow-500/30 hover:bg-white/20 dark:hover:bg-yellow-500/10 hover:border-white/30 dark:hover:border-yellow-500/40 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 {theme === "light" ? (
-                  <Moon className="h-4 w-4" />
+                  <Moon className="h-4 w-4 text-blue-500 dark:text-yellow-500" />
                 ) : (
-                  <Sun className="h-4 w-4" />
+                  <Sun className="h-4 w-4 text-yellow-500" />
                 )}
               </Button>
 
