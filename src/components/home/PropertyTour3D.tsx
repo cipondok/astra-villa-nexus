@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, Float, Text3D, MeshReflectorMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Animated Building Component
+// Animated Building Component - Improved Design
 function Building({ position, color, delay = 0 }: { position: [number, number, number]; color: string; delay?: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
@@ -17,82 +17,151 @@ function Building({ position, color, delay = 0 }: { position: [number, number, n
 
   return (
     <group ref={groupRef} position={position}>
-      {/* Main Building */}
-      <mesh ref={meshRef} castShadow>
-        <boxGeometry args={[1.5, 3, 1.5]} />
+      {/* Base/Foundation */}
+      <mesh position={[0, -1.6, 0]} castShadow>
+        <boxGeometry args={[2, 0.3, 2]} />
         <meshStandardMaterial 
-          color={color} 
-          metalness={0.6}
-          roughness={0.2}
-          emissive={color}
-          emissiveIntensity={0.5}
-        />
-      </mesh>
-      
-      {/* Roof */}
-      <mesh position={[0, 1.8, 0]} castShadow>
-        <coneGeometry args={[1.2, 0.8, 4]} />
-        <meshStandardMaterial 
-          color="#FFD700" 
+          color="#1a1a1a" 
           metalness={0.8}
           roughness={0.2}
-          emissive="#FFD700"
-          emissiveIntensity={0.3}
         />
       </mesh>
       
-      {/* Windows - Brighter */}
-      {[...Array(3)].map((_, i) => (
-        <group key={i}>
-          <mesh position={[-0.5, -0.5 + i, 0.76]} castShadow>
-            <boxGeometry args={[0.3, 0.3, 0.02]} />
-            <meshStandardMaterial 
-              color="#FFD700" 
-              emissive="#FFD700"
-              emissiveIntensity={1.5}
-              metalness={0.9}
-              roughness={0.1}
-            />
-          </mesh>
-          <mesh position={[0.5, -0.5 + i, 0.76]} castShadow>
-            <boxGeometry args={[0.3, 0.3, 0.02]} />
-            <meshStandardMaterial 
-              color="#FFD700" 
-              emissive="#FFD700"
-              emissiveIntensity={1.5}
-              metalness={0.9}
-              roughness={0.1}
-            />
-          </mesh>
+      {/* Main Building - Multi-level */}
+      <mesh ref={meshRef} castShadow position={[0, -0.2, 0]}>
+        <boxGeometry args={[1.8, 2.5, 1.8]} />
+        <meshStandardMaterial 
+          color={color} 
+          metalness={0.7}
+          roughness={0.2}
+          emissive={color}
+          emissiveIntensity={0.6}
+        />
+      </mesh>
+      
+      {/* Top Floor - Smaller */}
+      <mesh position={[0, 1.5, 0]} castShadow>
+        <boxGeometry args={[1.4, 0.8, 1.4]} />
+        <meshStandardMaterial 
+          color={color} 
+          metalness={0.8}
+          roughness={0.1}
+          emissive={color}
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+      
+      {/* Roof - Gold */}
+      <mesh position={[0, 2.2, 0]} castShadow>
+        <coneGeometry args={[1.1, 0.6, 4]} />
+        <meshStandardMaterial 
+          color="#FFD700" 
+          metalness={0.9}
+          roughness={0.1}
+          emissive="#FFD700"
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+      
+      {/* Windows - Grid Pattern */}
+      {[...Array(4)].map((_, floor) => (
+        <group key={floor}>
+          {[...Array(2)].map((_, col) => (
+            <group key={col}>
+              <mesh position={[col === 0 ? -0.6 : 0.6, -1 + floor * 0.6, 0.91]} castShadow>
+                <boxGeometry args={[0.35, 0.4, 0.03]} />
+                <meshStandardMaterial 
+                  color="#FFD700" 
+                  emissive="#FFD700"
+                  emissiveIntensity={2}
+                  metalness={0.9}
+                  roughness={0.1}
+                />
+              </mesh>
+              {/* Window frame */}
+              <mesh position={[col === 0 ? -0.6 : 0.6, -1 + floor * 0.6, 0.92]} castShadow>
+                <boxGeometry args={[0.4, 0.45, 0.02]} />
+                <meshStandardMaterial 
+                  color="#333333" 
+                  metalness={0.5}
+                  roughness={0.5}
+                />
+              </mesh>
+            </group>
+          ))}
         </group>
       ))}
+      
+      {/* Door */}
+      <mesh position={[0, -1.1, 0.91]} castShadow>
+        <boxGeometry args={[0.4, 0.7, 0.03]} />
+        <meshStandardMaterial 
+          color="#8B4513" 
+          metalness={0.3}
+          roughness={0.7}
+        />
+      </mesh>
+      
+      {/* Balconies */}
+      <mesh position={[0, 0.8, 1]} castShadow>
+        <boxGeometry args={[1.8, 0.05, 0.3]} />
+        <meshStandardMaterial 
+          color="#cccccc" 
+          metalness={0.6}
+          roughness={0.3}
+        />
+      </mesh>
     </group>
   );
 }
 
-// Floating Property Icon
+// Floating Property Icon - Improved with Home Icon
 function PropertyIcon({ position, delay = 0 }: { position: [number, number, number]; delay?: number }) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 1.2;
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.5 + delay) * 0.5;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.8;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.5 + delay) * 0.5;
     }
   });
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <torusGeometry args={[0.6, 0.2, 16, 32]} />
-      <meshStandardMaterial 
-        color="#FFD700" 
-        metalness={0.9}
-        roughness={0.1}
-        emissive="#FFD700"
-        emissiveIntensity={1.2}
-      />
-    </mesh>
+    <group ref={groupRef} position={position}>
+      {/* House Base */}
+      <mesh>
+        <boxGeometry args={[0.8, 0.6, 0.8]} />
+        <meshStandardMaterial 
+          color="#FFD700" 
+          metalness={0.9}
+          roughness={0.1}
+          emissive="#FFD700"
+          emissiveIntensity={1.5}
+        />
+      </mesh>
+      {/* Roof */}
+      <mesh position={[0, 0.5, 0]}>
+        <coneGeometry args={[0.6, 0.5, 4]} />
+        <meshStandardMaterial 
+          color="#FFA500" 
+          metalness={0.9}
+          roughness={0.1}
+          emissive="#FFA500"
+          emissiveIntensity={1.2}
+        />
+      </mesh>
+      {/* Glow sphere at top */}
+      <mesh position={[0, 0.8, 0]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial 
+          color="#FFFFFF" 
+          emissive="#FFFFFF"
+          emissiveIntensity={3}
+          toneMapped={false}
+        />
+      </mesh>
+      <pointLight position={[0, 0.8, 0]} intensity={3} distance={5} color="#FFD700" />
+    </group>
   );
 }
 
@@ -187,17 +256,28 @@ function Scene() {
       {/* Environment */}
       <Environment preset="city" />
       
-      {/* Buildings - Property Tour */}
-      <Building position={[-4, 0, 0]} color="#3B82F6" delay={0} />
+      {/* Buildings - Property Tour - More Detailed */}
+      <Building position={[-4.5, 0, 0]} color="#3B82F6" delay={0} />
       <Building position={[0, 0, -2]} color="#10B981" delay={0.5} />
-      <Building position={[4, 0, 0]} color="#F59E0B" delay={1} />
+      <Building position={[4.5, 0, 0]} color="#F59E0B" delay={1} />
       
-      {/* Floating Icons - Brighter */}
-      <Float speed={2.5} rotationIntensity={0.8} floatIntensity={1}>
-        <PropertyIcon position={[-2, 4, 2]} delay={0} />
+      {/* Additional smaller buildings for depth */}
+      <group position={[-7, 0, -4]} scale={0.6}>
+        <Building position={[0, 0, 0]} color="#8B5CF6" delay={1.5} />
+      </group>
+      <group position={[7, 0, -4]} scale={0.6}>
+        <Building position={[0, 0, 0]} color="#EC4899" delay={2} />
+      </group>
+      
+      {/* Floating Icons - Improved Home Icons */}
+      <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1}>
+        <PropertyIcon position={[-3, 4, 1]} delay={0} />
       </Float>
-      <Float speed={3} rotationIntensity={0.8} floatIntensity={1}>
-        <PropertyIcon position={[2, 4, 2]} delay={1} />
+      <Float speed={3} rotationIntensity={0.5} floatIntensity={1}>
+        <PropertyIcon position={[3, 4, 1]} delay={1} />
+      </Float>
+      <Float speed={2.8} rotationIntensity={0.5} floatIntensity={1}>
+        <PropertyIcon position={[0, 5, -1]} delay={0.5} />
       </Float>
       
       {/* Particles */}
