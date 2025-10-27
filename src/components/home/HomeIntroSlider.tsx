@@ -114,8 +114,10 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   useEffect(() => {
     const applyHeight = () => {
       if (!isDesktop) {
-        const h = window.visualViewport?.height ?? window.innerHeight;
-        setFixedHeight(h);
+        const vh = window.visualViewport?.height ?? window.innerHeight;
+        const target = Math.round(vh * 0.62); // use ~62% of initial viewport height on mobile
+        const clamped = Math.max(360, Math.min(target, 560)); // keep within sensible bounds
+        setFixedHeight(clamped);
       } else {
         setFixedHeight(null);
       }
