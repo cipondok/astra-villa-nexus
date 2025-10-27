@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, Suspense, lazy } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import slide1 from "@/assets/home/slide-1.webp";
 import slide2 from "@/assets/home/slide-2.webp";
 import slide3 from "@/assets/home/slide-3.webp";
+
+const PropertyTour3D = lazy(() => import("@/components/home/PropertyTour3D"));
 
 interface HomeIntroSliderProps {
   className?: string;
@@ -192,31 +194,21 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
       }} // Optimize layout and prevent repaints
       aria-label={t.sectionAria}
     >
-      {/* Background image layer - no animation */}
+      {/* 3D Background Animation */}
       <div className="absolute inset-0 z-0">
-        {slides.map((s, i) => (
-          <img
-            key={i}
-            src={s.bg}
-            alt={s.alt}
-            decoding="async"
-            loading={i === 0 ? "eager" : "lazy"}
-            width="1920"
-            height="1080"
-            className={cn(
-              "absolute inset-0 h-full w-full object-cover",
-              i === index ? "opacity-100" : "opacity-0"
-            )}
-            style={{ 
-              transition: 'none',
-              transform: 'translateZ(0)',
-              backfaceVisibility: 'hidden'
-            }}
-          />
-        ))}
-        {/* Gradient overlays for readability - static */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/20 to-background/40" style={{ transform: 'translateZ(0)' }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/60" style={{ transform: 'translateZ(0)' }} />
+        <Suspense fallback={
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/10 to-background flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading 3D Tour...</p>
+            </div>
+          </div>
+        }>
+          <PropertyTour3D />
+        </Suspense>
+        {/* Gradient overlays for readability over 3D scene */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/40 pointer-events-none" style={{ transform: 'translateZ(0)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/60 pointer-events-none" style={{ transform: 'translateZ(0)' }} />
       </div>
 
       {/* Content - Hidden temporarily */}
