@@ -74,21 +74,18 @@ export function useIsMobile() {
         
         // Optimize DOM manipulation - only when needed
         if (newIsMobile || newIsTablet) {
-          // Set proper viewport meta tag once
-          let metaViewport = document.querySelector('meta[name="viewport"]')
-          if (!metaViewport) {
-            metaViewport = document.createElement('meta')
-            metaViewport.setAttribute('name', 'viewport')
-            document.head.appendChild(metaViewport)
-          }
-          
-          const viewportContent = newIsMobile 
-            ? 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
-            : 'width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover'
-          
-          if (metaViewport.getAttribute('content') !== viewportContent) {
-            metaViewport.setAttribute('content', viewportContent)
-          }
+          // Skip modifying viewport dynamically to prevent layout jumps on mobile Safari
+          // (We rely on the static meta tag in index.html)
+          // let metaViewport = document.querySelector('meta[name="viewport"]')
+          // if (!metaViewport) {
+          //   metaViewport = document.createElement('meta')
+          //   metaViewport.setAttribute('name', 'viewport')
+          //   document.head.appendChild(metaViewport)
+          // }
+          // const viewportContent = 'width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover'
+          // if (metaViewport.getAttribute('content') !== viewportContent) {
+          //   metaViewport.setAttribute('content', viewportContent)
+          // }
           
           // Apply classes efficiently
           const htmlEl = document.documentElement

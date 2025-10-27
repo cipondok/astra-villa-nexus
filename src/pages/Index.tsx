@@ -91,13 +91,12 @@ const Index = () => {
   // Note: Removed hardcoded admin email check for security
   // Users are redirected based on their role stored in the user_roles table
 
-  // Background wallpaper - optimized for performance
   const backgroundStyle = {
     backgroundImage: `url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    backgroundAttachment: 'fixed',
+    backgroundAttachment: isMobile ? 'scroll' : 'fixed',
   };
 
   // Simplified featured properties query with better caching
@@ -323,10 +322,10 @@ const Index = () => {
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative container-responsive"
     >
       {/* Background Wallpaper Layer */}
-      <div 
-        className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
-        style={backgroundStyle}
-      />
+      	<div 
+      	  className={cn(isMobile ? "absolute" : "fixed", "inset-0 z-0 opacity-30 dark:opacity-20 pointer-events-none")}
+      	  style={backgroundStyle}
+      	/>
       
       {/* Content Layer with mobile-first responsive backdrop */}
       <div className="relative z-10 min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile pt-12 md:pt-14 lg:pt-16 px-0 md:px-2">
@@ -334,7 +333,7 @@ const Index = () => {
         
         {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
         <section className="relative w-full pt-2 md:pt-0">
-          <HomeIntroSlider language={language} className="h-[400px] sm:h-[450px] md:h-[500px] lg:h-[550px] model-container-mobile">
+          <HomeIntroSlider language={language} className="h-[400px] sm:h-[450px] md:h-[500px] lg:h-[550px]">
             {/* Search Panel - No Background */}
             <div className="p-1 md:p-3 w-full px-0 md:px-3">
               <div className="mb-1.5 md:mb-2 text-center">
