@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import slide1 from "@/assets/home/slide-1.webp";
@@ -86,6 +86,9 @@ const slidesEn: SlideItem[] = [
 const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en', children }) => {
   const [index, setIndex] = useState(0);
   const [flash, setFlash] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(true);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const copy = {
     en: { sectionAria: "Intro 3D Virtual Tour", prev: "Prev", next: "Next" },
@@ -97,10 +100,44 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
   const next = () => setIndex((i) => (i + 1) % total);
   const prev = () => setIndex((i) => (i - 1 + total) % total);
 
-  // Auto-rotate
+  // Auto-rotate only when visible and not scrolling
   useEffect(() => {
-    const id = setInterval(next, 5000);
-    return () => clearInterval(id);
+    if (paused || !inView) return;
+    const id = window.setInterval(next, 5000);
+    return () => window.clearInterval(id);
+  }, [paused, inView]);
+
+  // Observe visibility within viewport
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting);
+    }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Pause while user scrolls
+  useEffect(() => {
+    let timeout: number | undefined;
+    const onScroll = () => {
+      setPaused(true);
+      window.clearTimeout(timeout);
+      timeout = window.setTimeout(() => setPaused(false), 800);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
+  // Pause when tab hidden
+  useEffect(() => {
+    const onVis = () => setPaused(document.hidden);
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
   // Flash effect when slide changes
@@ -114,6 +151,11 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
 
   return (
     <section
+      ref={sectionRef as any}
+      onPointerDown={() => {
+        setPaused(true);
+        window.setTimeout(() => setPaused(false), 6000);
+      }}
       className={cn(
         "relative w-full overflow-hidden bg-background",
         "min-h-[300px]", // Prevent collapse during load

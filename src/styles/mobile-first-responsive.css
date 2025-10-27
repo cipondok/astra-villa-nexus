@@ -232,16 +232,39 @@
   .full-width-mobile { width: 100% !important; }
   .no-scroll-mobile { overflow: hidden; }
 
-  /* Stable viewport min-height to avoid iOS address bar jumps */
+  /* Stable viewport min-height to avoid browser UI bar jumps */
   .min-h-stable {
     min-height: 100vh; /* fallback */
     min-height: 100svh; /* small viewport height for mobile */
+  }
+
+  /* Stable viewport height utility */
+  .h-stable {
+    height: 100vh; /* fallback */
+    height: 100svh;
+  }
+
+  /* Use largest viewport height on mobile (prevents jump when URL bar hides) */
+  .h-lvh-stable {
+    height: 100vh; /* fallback */
+    height: 100svh;
   }
 }
 
 /* Prefer dynamic viewport when supported */
 @supports (min-height: 100dvh) {
   .min-h-stable { min-height: 100dvh; }
+}
+
+/* Prefer dynamic viewport for height when supported */
+@supports (height: 100dvh) {
+  .h-stable { height: 100dvh; }
+  .h-lvh-stable { height: 100dvh; }
+}
+
+/* Prefer largest viewport height when supported (Chrome/Android) */
+@supports (height: 100lvh) {
+  .h-lvh-stable { height: 100lvh; }
 }
 
 /* =================================
