@@ -977,11 +977,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <div 
                 className="absolute inset-y-1 bg-primary rounded-lg shadow-md transition-all duration-300 ease-out"
                 style={{
-                  width: 'calc(25% - 4px)',
-                  left: activeTab === 'all' ? '4px' : 
-                        activeTab === 'sale' ? 'calc(25% + 0px)' : 
-                        activeTab === 'rent' ? 'calc(50% - 0px)' : 
-                        'calc(75% - 4px)',
+                  width: 'calc(25% - 2px)',
+                  left: activeTab === 'all' ? '2px' : 
+                        activeTab === 'sale' ? 'calc(25% + 1px)' : 
+                        activeTab === 'rent' ? 'calc(50%)' : 
+                        'calc(75% - 1px)',
                 }}
               />
               
