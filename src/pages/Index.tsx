@@ -345,15 +345,17 @@ const Index = () => {
                 </p>
               </div>
               
-              <IPhoneSearchPanel
-                language={language}
-                onSearch={(searchData) => {
-                  setQuickSearch(searchData.searchQuery || "");
-                  handleQuickSearch(searchData);
-                }}
-                onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                resultsCount={hasSearched ? searchResults.length : undefined}
-              />
+              <Suspense fallback={<div className="animate-pulse h-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                <IPhoneSearchPanel
+                  language={language}
+                  onSearch={(searchData) => {
+                    setQuickSearch(searchData.searchQuery || "");
+                    handleQuickSearch(searchData);
+                  }}
+                  onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                  resultsCount={hasSearched ? searchResults.length : undefined}
+                />
+              </Suspense>
             </div>
           </HomeIntroSlider>
         </section>
@@ -367,13 +369,15 @@ const Index = () => {
                 "mx-auto",
                 isMobile ? "max-w-full" : "max-w-[1800px]"
               )}>
-              <AdvancedPropertyFilters
-                filters={filters}
-                onFiltersChange={handleFiltersChange}
-                onClearFilters={handleClearFilters}
-                isOpen={filtersOpen}
-                onToggle={() => setFiltersOpen(!filtersOpen)}
-              />
+              <Suspense fallback={<div className="animate-pulse h-24 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                <AdvancedPropertyFilters
+                  filters={filters}
+                  onFiltersChange={handleFiltersChange}
+                  onClearFilters={handleClearFilters}
+                  isOpen={filtersOpen}
+                  onToggle={() => setFiltersOpen(!filtersOpen)}
+                />
+              </Suspense>
             </div>
           </section>
         )}
@@ -431,16 +435,19 @@ const Index = () => {
                         )}
                       </p>
                     </div>
-                    <PropertyViewModeToggle 
-                      viewMode={viewMode} 
-                      onViewModeChange={(mode) => setViewMode(mode)} 
-                    />
+                    <Suspense fallback={<div className="animate-pulse h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                      <PropertyViewModeToggle 
+                        viewMode={viewMode} 
+                        onViewModeChange={(mode) => setViewMode(mode)} 
+                      />
+                    </Suspense>
                   </div>
                   
                   {viewMode === 'grid' && (
-                    <PropertyGridView
-                      properties={searchResults}
-                      onPropertyClick={handlePropertyClick}
+                    <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />)}</div>}>
+                      <PropertyGridView
+                        properties={searchResults}
+                        onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
                       onShare={async (property) => {
@@ -460,12 +467,14 @@ const Index = () => {
                         setWhatsappDialogOpen(true);
                       }}
                     />
+                    </Suspense>
                   )}
 
                   {viewMode === 'list' && (
-                    <PropertyListView
-                      properties={searchResults}
-                      onPropertyClick={handlePropertyClick}
+                    <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg" />)}</div>}>
+                      <PropertyListView
+                        properties={searchResults}
+                        onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
                       onShare={async (property) => {
@@ -485,13 +494,16 @@ const Index = () => {
                         setWhatsappDialogOpen(true);
                       }}
                     />
+                    </Suspense>
                   )}
 
                   {viewMode === 'map' && (
-                    <PropertyMapView
-                      properties={searchResults}
-                      onPropertyClick={handlePropertyClick}
-                    />
+                    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                      <PropertyMapView
+                        properties={searchResults}
+                        onPropertyClick={handlePropertyClick}
+                      />
+                    </Suspense>
                   )}
                 </div>
               </section>
@@ -525,7 +537,9 @@ const Index = () => {
 
                 {/* ASTRA Villa Features Section */}
                 <div className="section-compact mb-6">
-                  <AstraVillaFeatures />
+                  <Suspense fallback={<div className="animate-pulse h-40 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <AstraVillaFeatures />
+                  </Suspense>
                 </div>
 
                 {/* Featured Properties - Zero-waste Compact Layout */}
@@ -552,39 +566,45 @@ const Index = () => {
                   </div>
                   
                   <div className="container-compact">
-                    <PropertyGridView
-                      properties={featuredProperties}
-                      onPropertyClick={handlePropertyClick}
-                      onView3D={handlePropertyClick}
-                      onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={async (property) => {
-                        const success = await shareProperty({
-                          id: property.id,
-                          title: property.title,
-                          price: property.price || 0,
-                          location: property.location || property.city || '',
-                          images: property.images
-                        });
-                        if (success) {
-                          toast.success("Property link shared!");
-                        }
-                      }}
-                      onContact={(property) => {
-                        setSelectedProperty(property);
-                        setWhatsappDialogOpen(true);
-                      }}
-                    />
+                    <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />)}</div>}>
+                      <PropertyGridView
+                        properties={featuredProperties}
+                        onPropertyClick={handlePropertyClick}
+                        onView3D={handlePropertyClick}
+                        onSave={(property) => console.log('Save property:', property.id)}
+                        onShare={async (property) => {
+                          const success = await shareProperty({
+                            id: property.id,
+                            title: property.title,
+                            price: property.price || 0,
+                            location: property.location || property.city || '',
+                            images: property.images
+                          });
+                          if (success) {
+                            toast.success("Property link shared!");
+                          }
+                        }}
+                        onContact={(property) => {
+                          setSelectedProperty(property);
+                          setWhatsappDialogOpen(true);
+                        }}
+                      />
+                    </Suspense>
                   </div>
                 </section>
 
                 {/* Properties for Sale Section - Compact */}
                 <div className="section-compact">
-                  <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                  </Suspense>
                 </div>
 
                 {/* Properties for Rent Section - Compact */}
                 <div className="section-compact">
-                  <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                  </Suspense>
                 </div>
               </>
             )}
@@ -596,22 +616,28 @@ const Index = () => {
 
         
         {/* AI Search Loading Dialog */}
-        <SearchLoadingDialog 
-          open={isSearching} 
+        <Suspense fallback={null}>
+          <SearchLoadingDialog 
+            open={isSearching}
           onOpenChange={setIsSearching}
           searchQuery={quickSearch}
         />
+        </Suspense>
         
         {/* Customer AI Chat Widget - Fixed position on right */}
-        <ResponsiveAIChatWidget />
+        <Suspense fallback={null}>
+          <ResponsiveAIChatWidget />
+        </Suspense>
         
         {/* WhatsApp Inquiry Dialog */}
         {selectedProperty && (
-          <WhatsAppInquiryDialog
-            open={whatsappDialogOpen}
-            onOpenChange={setWhatsappDialogOpen}
-            property={selectedProperty}
-          />
+          <Suspense fallback={null}>
+            <WhatsAppInquiryDialog
+              open={whatsappDialogOpen}
+              onOpenChange={setWhatsappDialogOpen}
+              property={selectedProperty}
+            />
+          </Suspense>
         )}
       </div>
     </div>
