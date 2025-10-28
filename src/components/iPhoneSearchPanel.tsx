@@ -1272,7 +1272,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </SelectValue>
                   </div>
                 </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999] backdrop-blur-sm">
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999]">
                   <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {provinces.map((province) => (
                     <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer">
@@ -1303,7 +1303,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999] backdrop-blur-sm">
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999]">
                   <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {cities.map((city) => (
                     <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer">
@@ -1331,7 +1331,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999] backdrop-blur-sm">
+                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999]">
                   <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                   {areas.map((area) => (
                     <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer">
@@ -1353,7 +1353,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[100] animate-in fade-in-80">
+              <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl z-[99999]">
                 <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
                 {currentFilters.propertyTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
@@ -1492,10 +1492,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="fixed z-[200] isolate pointer-events-auto left-0 right-0 top-0 bottom-0 md:top-24 md:bottom-auto md:h-[80vh] md:left-1/2 md:-translate-x-1/2 md:w-[min(92vw,1100px)] bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-t-xl md:rounded-2xl p-4 md:p-6 space-y-3 shadow-2xl overflow-y-auto">
-              <div className="flex items-center justify-between sticky top-0 bg-background/90 backdrop-blur-sm z-10 py-2 border-b border-border/30">
-                <h3 className="text-foreground font-semibold text-sm flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-primary" />
+            <div ref={filterRef} className="fixed z-[9999] isolate pointer-events-auto inset-0 md:inset-auto md:top-24 md:left-1/2 md:-translate-x-1/2 md:w-[min(95vw,1200px)] md:max-h-[85vh] bg-background backdrop-blur-xl border-2 border-border shadow-2xl rounded-none md:rounded-2xl overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm border-b border-border px-4 md:px-6 py-3">
+                <h3 className="text-foreground font-semibold text-base md:text-lg flex items-center gap-2">
+                  <Filter className="h-5 w-5 text-primary" />
                   {currentText.advancedFilters}
                 </h3>
                 <div className="flex items-center gap-2">
@@ -1503,64 +1503,66 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     onClick={clearAllFilters}
                     variant="outline"
                     size="sm"
-                    className="h-8 px-3 text-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
+                    className="h-9 px-4 text-sm hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
                   >
-                    <X className="h-3.5 w-3.5 mr-1" />
+                    <X className="h-4 w-4 mr-1.5" />
                     {currentText.clearFilters}
                   </Button>
                   <Button
                     onClick={() => setShowFilters(false)}
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-8 p-0 hover:bg-muted"
+                    className="h-9 w-9 p-0 hover:bg-muted"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
 
+              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3">
+
 
               {/* Filter Categories in Tabs */}
               <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 h-10 bg-muted/60 p-1 rounded-lg">
-                  <TabsTrigger value="propertySpecs" className="text-xs px-2.5 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Home className="h-3.5 w-3.5 mr-1" />
+                <TabsList className="grid w-full grid-cols-4 h-11 md:h-12 bg-muted/80 p-1 rounded-lg">
+                  <TabsTrigger value="propertySpecs" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Home className="h-4 w-4 mr-1.5" />
                     Property
                   </TabsTrigger>
-                  <TabsTrigger value="pricing" className="text-xs px-2.5 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <DollarSign className="h-3.5 w-3.5 mr-1" />
+                  <TabsTrigger value="pricing" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <DollarSign className="h-4 w-4 mr-1.5" />
                     Price
                   </TabsTrigger>
-                  <TabsTrigger value="location" className="text-xs px-2.5 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <MapPin className="h-3.5 w-3.5 mr-1" />
+                  <TabsTrigger value="location" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <MapPin className="h-4 w-4 mr-1.5" />
                     Location
                   </TabsTrigger>
-                  <TabsTrigger value="amenities" className="text-xs px-2.5 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Building className="h-3.5 w-3.5 mr-1" />
+                  <TabsTrigger value="amenities" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Building className="h-4 w-4 mr-1.5" />
                     Amenities
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="propertySpecs" className="space-y-1.5 mt-2 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-2">
+                <TabsContent value="propertySpecs" className="space-y-3 mt-3 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-4">
                 
                 {/* Room Configuration - Compact Row Layout */}
                 <div>
-                  <Label className="text-[9px] font-medium text-blue-700 dark:text-blue-300 mb-1 block">Rooms</Label>
+                  <Label className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-2 block">Rooms</Label>
                   
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 gap-3 md:gap-4">
                     {/* Bedrooms - Compact */}
                     <div>
-                      <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 flex items-center gap-0.5">
-                        <Bed className="h-2 w-2 text-blue-500" />
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1.5 flex items-center gap-1">
+                        <Bed className="h-3.5 w-3.5 text-blue-500" />
                         {currentText.bedrooms}
                       </Label>
-                      <div className="flex items-center gap-0.5">
+                      <div className="flex items-center gap-1.5">
                         <Button
                           type="button"
                           variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('bedrooms', 'all')}
-                          className="h-5 px-1.5 text-[9px] rounded-md flex-1"
+                          className="h-8 px-3 text-xs rounded-md flex-1"
                         >
                           Any
                         </Button>
@@ -1569,7 +1571,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            className="h-8 w-8 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
                               if (current > 0) {
@@ -1578,16 +1580,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-xs font-bold">−</span>
+                            <span className="text-sm font-bold">−</span>
                           </Button>
-                          <span className="min-w-[24px] h-5 flex items-center justify-center bg-muted/30 px-1 text-[9px] font-semibold">
+                          <span className="min-w-[32px] h-8 flex items-center justify-center bg-muted/30 px-2 text-xs font-semibold">
                             {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
                           </span>
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            className="h-8 w-8 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
                               if (current < 1000) {
@@ -1595,7 +1597,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-xs font-bold">+</span>
+                            <span className="text-sm font-bold">+</span>
                           </Button>
                         </div>
                       </div>
@@ -1603,17 +1605,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                     {/* Bathrooms - Compact */}
                     <div>
-                      <Label className="text-[8px] text-blue-600 dark:text-blue-400 mb-0.5 flex items-center gap-0.5">
-                        <Bath className="h-2 w-2 text-blue-500" />
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1.5 flex items-center gap-1">
+                        <Bath className="h-3.5 w-3.5 text-blue-500" />
                         {currentText.bathrooms}
                       </Label>
-                      <div className="flex items-center gap-0.5">
+                      <div className="flex items-center gap-1.5">
                         <Button
                           type="button"
                           variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('bathrooms', 'all')}
-                          className="h-5 px-1.5 text-[9px] rounded-md flex-1"
+                          className="h-8 px-3 text-xs rounded-md flex-1"
                         >
                           Any
                         </Button>
@@ -1622,7 +1624,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            className="h-8 w-8 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
                               if (current > 0) {
@@ -1631,16 +1633,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-xs font-bold">−</span>
+                            <span className="text-sm font-bold">−</span>
                           </Button>
-                          <span className="min-w-[24px] h-5 flex items-center justify-center bg-muted/30 px-1 text-[9px] font-semibold">
+                          <span className="min-w-[32px] h-8 flex items-center justify-center bg-muted/30 px-2 text-xs font-semibold">
                             {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
                           </span>
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-5 w-5 p-0 rounded-none hover:bg-muted"
+                            className="h-8 w-8 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
                               if (current < 1000) {
@@ -1648,7 +1650,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-xs font-bold">+</span>
+                            <span className="text-sm font-bold">+</span>
                           </Button>
                         </div>
                       </div>
@@ -1922,7 +1924,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <SelectTrigger className="h-7 text-[9px] border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30">
                             <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
                           </SelectTrigger>
-                          <SelectContent className="bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]">
+                          <SelectContent className="bg-background dark:bg-gray-900 border-border z-[99999]">
                             <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
                             {rentalDurationOptions.map((option) => (
                               <SelectItem key={option.value} value={option.value} className="text-[9px]">
@@ -1972,7 +1974,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectTrigger className="h-9 text-xs border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/30">
                     <SelectValue placeholder={currentText.sortBy} />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 z-[210]">
+                  <SelectContent className="bg-background dark:bg-gray-900 border-border z-[99999]">
                     {sortOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value} className="text-xs">
                         {option.label}
@@ -1981,6 +1983,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </SelectContent>
                 </Select>
               </div>
+            </div>
             </div>
           )}
         </div>
