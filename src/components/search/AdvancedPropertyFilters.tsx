@@ -83,16 +83,16 @@ const AdvancedPropertyFilters = ({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full shadow-lg">
       <Collapsible open={isOpen} onOpenChange={onToggle}>
         <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Filter className="h-5 w-5" />
-                Advanced Filters
+          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors py-4 md:py-6">
+            <CardTitle className="flex items-center justify-between text-lg md:text-xl">
+              <div className="flex items-center gap-3">
+                <Filter className="h-6 w-6" />
+                <span>Advanced Filters</span>
                 {getActiveFiltersCount() > 0 && (
-                  <Badge variant="secondary">{getActiveFiltersCount()}</Badge>
+                  <Badge variant="secondary" className="text-sm px-2 py-1">{getActiveFiltersCount()}</Badge>
                 )}
               </div>
               <Button
@@ -114,31 +114,32 @@ const AdvancedPropertyFilters = ({
                     sortBy: "newest"
                   });
                 }}
-                className="h-8 w-8 p-0"
+                className="h-10 w-10 p-0"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-5 w-5" />
               </Button>
             </CardTitle>
           </CardHeader>
         </CollapsibleTrigger>
 
-        <CollapsibleContent className="max-h-[75dvh] md:max-h-[70vh] overflow-y-auto overscroll-contain">
-          <CardContent className="space-y-6">
+        <CollapsibleContent className="max-h-[80vh] overflow-y-auto overscroll-contain">
+          <CardContent className="space-y-8 p-6 md:p-8">
             {/* Search Query */}
-            <div className="space-y-2">
-              <Label htmlFor="search">Search Properties</Label>
+            <div className="space-y-3">
+              <Label htmlFor="search" className="text-base font-medium">Search Properties</Label>
               <Input
                 id="search"
                 placeholder="Search by title, description, or location..."
                 value={localFilters.searchQuery}
                 onChange={(e) => updateFilter('searchQuery', e.target.value)}
+                className="h-12 text-base"
               />
             </div>
 
             {/* Price Range */}
-            <div className="space-y-3">
-              <Label>Price Range (IDR)</Label>
-              <div className="px-3">
+            <div className="space-y-4">
+              <Label className="text-base font-medium">Price Range (IDR)</Label>
+              <div className="px-4 py-2">
                 <Slider
                   value={localFilters.priceRange}
                   onValueChange={(value) => updateFilter('priceRange', value)}
@@ -147,58 +148,59 @@ const AdvancedPropertyFilters = ({
                   className="w-full"
                 />
               </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
+              <div className="flex justify-between text-base text-muted-foreground font-medium px-2">
                 <span>IDR {(localFilters.priceRange[0] / 1000000000).toFixed(1)}B</span>
                 <span>IDR {(localFilters.priceRange[1] / 1000000000).toFixed(1)}B</span>
               </div>
             </div>
 
             {/* Location and Listing Type */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Location</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label className="text-base font-medium">Location</Label>
                 <Select value={localFilters.location} onValueChange={(value) => updateFilter('location', value)}>
-                  <SelectTrigger className="bg-background">
+                  <SelectTrigger className="bg-background h-12 text-base">
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="all">All Locations</SelectItem>
+                    <SelectItem value="all" className="text-base py-3">All Locations</SelectItem>
                     {locations.map((location) => (
-                      <SelectItem key={location} value={location}>{location}</SelectItem>
+                      <SelectItem key={location} value={location} className="text-base py-3">{location}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label>Listing Type</Label>
+              <div className="space-y-3">
+                <Label className="text-base font-medium">Listing Type</Label>
                 <Select value={localFilters.listingType} onValueChange={(value) => updateFilter('listingType', value)}>
-                  <SelectTrigger className="bg-background">
+                  <SelectTrigger className="bg-background h-12 text-base">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="sale">For Sale</SelectItem>
-                    <SelectItem value="rent">For Rent</SelectItem>
+                    <SelectItem value="all" className="text-base py-3">All Types</SelectItem>
+                    <SelectItem value="sale" className="text-base py-3">For Sale</SelectItem>
+                    <SelectItem value="rent" className="text-base py-3">For Rent</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             {/* Property Types */}
-            <div className="space-y-3">
-              <Label>Property Types</Label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="space-y-4">
+              <Label className="text-base font-medium">Property Types</Label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {propertyTypes.map((type) => (
-                  <div key={type} className="flex items-center space-x-2">
+                  <div key={type} className="flex items-center space-x-3 p-2 rounded-md hover:bg-muted/50 transition-colors">
                     <Checkbox
                       id={type}
                       checked={localFilters.propertyTypes.includes(type)}
                       onCheckedChange={() => togglePropertyType(type)}
+                      className="h-5 w-5"
                     />
                     <Label 
                       htmlFor={type} 
-                      className="text-sm font-normal capitalize cursor-pointer"
+                      className="text-base font-normal capitalize cursor-pointer"
                     >
                       {type}
                     </Label>
@@ -208,38 +210,38 @@ const AdvancedPropertyFilters = ({
             </div>
 
             {/* Bedrooms and Bathrooms */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Bedrooms</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label className="text-base font-medium">Bedrooms</Label>
                 <Select 
                   value={localFilters.bedrooms || ""} 
                   onValueChange={(value) => updateFilter('bedrooms', value === 'any' ? null : value)}
                 >
-                  <SelectTrigger className="bg-background">
+                  <SelectTrigger className="bg-background h-12 text-base">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="any" className="text-base py-3">Any</SelectItem>
                     {[1, 2, 3, 4, 5, 6].map((num) => (
-                      <SelectItem key={num} value={num.toString()}>{num}+ Bedrooms</SelectItem>
+                      <SelectItem key={num} value={num.toString()} className="text-base py-3">{num}+ Bedrooms</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label>Bathrooms</Label>
+              <div className="space-y-3">
+                <Label className="text-base font-medium">Bathrooms</Label>
                 <Select 
                   value={localFilters.bathrooms || ""} 
                   onValueChange={(value) => updateFilter('bathrooms', value === 'any' ? null : value)}
                 >
-                  <SelectTrigger className="bg-background">
+                  <SelectTrigger className="bg-background h-12 text-base">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="any" className="text-base py-3">Any</SelectItem>
                     {[1, 2, 3, 4, 5, 6].map((num) => (
-                      <SelectItem key={num} value={num.toString()}>{num}+ Bathrooms</SelectItem>
+                      <SelectItem key={num} value={num.toString()} className="text-base py-3">{num}+ Bathrooms</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -247,40 +249,42 @@ const AdvancedPropertyFilters = ({
             </div>
 
             {/* Area Range */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="minArea">Min Area (sqm)</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label htmlFor="minArea" className="text-base font-medium">Min Area (sqm)</Label>
                 <Input
                   id="minArea"
                   type="number"
                   placeholder="0"
                   value={localFilters.minArea || ""}
                   onChange={(e) => updateFilter('minArea', e.target.value ? parseInt(e.target.value) : null)}
+                  className="h-12 text-base"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="maxArea">Max Area (sqm)</Label>
+              <div className="space-y-3">
+                <Label htmlFor="maxArea" className="text-base font-medium">Max Area (sqm)</Label>
                 <Input
                   id="maxArea"
                   type="number"
                   placeholder="No limit"
                   value={localFilters.maxArea || ""}
                   onChange={(e) => updateFilter('maxArea', e.target.value ? parseInt(e.target.value) : null)}
+                  className="h-12 text-base"
                 />
               </div>
             </div>
 
             {/* Sort Options */}
-            <div className="space-y-2">
-              <Label>Sort By</Label>
+            <div className="space-y-3">
+              <Label className="text-base font-medium">Sort By</Label>
               <Select value={localFilters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
-                <SelectTrigger className="bg-background">
+                <SelectTrigger className="bg-background h-12 text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border">
                   {sortOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
+                    <SelectItem key={option.value} value={option.value} className="text-base py-3">
                       {option.label}
                     </SelectItem>
                   ))}
