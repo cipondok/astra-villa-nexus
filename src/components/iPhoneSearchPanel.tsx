@@ -1509,86 +1509,95 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="fixed z-[9999] isolate pointer-events-auto inset-0 bg-background/95 backdrop-blur-md border border-border shadow-2xl overflow-hidden flex flex-col">
-              <div className="flex items-center justify-between bg-background border-b border-border px-4 py-3 min-h-[60px]">
-                <h3 className="text-foreground font-semibold text-lg flex items-center gap-2">
-                  <Filter className="h-5 w-5 text-primary" />
-                  Advanced Filters
-                </h3>
+            <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="bg-background w-full max-w-5xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
+              {/* Header */}
+              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Filter className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">Advanced Filters</h3>
+                    <p className="text-xs text-muted-foreground">Refine your property search</p>
+                  </div>
+                </div>
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={clearAllFilters}
                     variant="outline"
                     size="sm"
-                    className="h-9 px-4 text-sm hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
+                    className="h-9 px-4 text-sm"
                   >
-                    <X className="h-4 w-4 mr-1.5" />
+                    <X className="h-4 w-4 mr-2" />
                     Clear All
                   </Button>
                   <Button
                     onClick={() => setShowFilters(false)}
                     variant="ghost"
                     size="sm"
-                    className="h-9 w-9 p-0 hover:bg-muted"
+                    className="h-9 w-9 p-0"
                   >
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-6">
 
 
               {/* Filter Categories in Tabs */}
               <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 h-12 bg-muted p-1 rounded-lg mb-4">
-                  <TabsTrigger value="propertySpecs" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Home className="h-4 w-4 mr-1.5" />
+                <TabsList className="w-full bg-muted/50 p-1 rounded-lg mb-6">
+                  <TabsTrigger value="propertySpecs" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                    <Home className="h-4 w-4 mr-2" />
                     Property
                   </TabsTrigger>
-                  <TabsTrigger value="pricing" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <DollarSign className="h-4 w-4 mr-1.5" />
-                    Price
+                  <TabsTrigger value="pricing" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                    <DollarSign className="h-4 w-4 mr-2" />
+                    Pricing
                   </TabsTrigger>
-                  <TabsTrigger value="location" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <MapPin className="h-4 w-4 mr-1.5" />
+                  <TabsTrigger value="location" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                    <MapPin className="h-4 w-4 mr-2" />
                     Location
                   </TabsTrigger>
-                  <TabsTrigger value="amenities" className="text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Building className="h-4 w-4 mr-1.5" />
+                  <TabsTrigger value="amenities" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                    <Building className="h-4 w-4 mr-2" />
                     Amenities
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="propertySpecs" className="space-y-6 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-6">
+                <TabsContent value="propertySpecs" className="space-y-6 bg-card border border-border rounded-xl p-6 shadow-sm">
                 
-                {/* Room Configuration - Compact Row Layout */}
+                {/* Room Configuration */}
                 <div>
-                  <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 block">Room Configuration</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-4 block">Room Configuration</Label>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Bedrooms */}
-                    <div>
-                      <Label className="text-sm text-blue-600 dark:text-blue-400 mb-3 flex items-center gap-2">
-                        <Bed className="h-4 w-4 text-blue-500" />
+                    <div className="bg-muted/30 rounded-lg p-4">
+                      <Label className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                        <Bed className="h-4 w-4" />
                         Bedrooms
                       </Label>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <Button
                           type="button"
                           variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
-                          size="default"
+                          size="sm"
                           onClick={() => handleFilterChange('bedrooms', 'all')}
-                          className="h-10 px-4 text-sm rounded-md flex-1"
+                          className="h-9 px-4 text-sm flex-1"
                         >
                           Any
                         </Button>
-                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
+                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden bg-background">
                           <Button
                             type="button"
                             variant="ghost"
-                            size="default"
-                            className="h-10 w-10 p-0 rounded-none hover:bg-muted"
+                            size="sm"
+                            className="h-9 w-9 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
                               if (current > 0) {
@@ -1597,16 +1606,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-base font-bold">−</span>
+                            <span className="text-sm font-bold">−</span>
                           </Button>
-                          <span className="min-w-[40px] h-10 flex items-center justify-center bg-muted/30 px-3 text-sm font-semibold">
+                          <span className="min-w-[36px] h-9 flex items-center justify-center bg-muted/50 px-2 text-sm font-semibold">
                             {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
                           </span>
                           <Button
                             type="button"
                             variant="ghost"
-                            size="default"
-                            className="h-10 w-10 p-0 rounded-none hover:bg-muted"
+                            size="sm"
+                            className="h-9 w-9 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
                               if (current < 1000) {
@@ -1614,34 +1623,34 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-base font-bold">+</span>
+                            <span className="text-sm font-bold">+</span>
                           </Button>
                         </div>
                       </div>
                     </div>
 
                     {/* Bathrooms */}
-                    <div>
-                      <Label className="text-sm text-blue-600 dark:text-blue-400 mb-3 flex items-center gap-2">
-                        <Bath className="h-4 w-4 text-blue-500" />
+                    <div className="bg-muted/30 rounded-lg p-4">
+                      <Label className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                        <Bath className="h-4 w-4" />
                         Bathrooms
                       </Label>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <Button
                           type="button"
                           variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
-                          size="default"
+                          size="sm"
                           onClick={() => handleFilterChange('bathrooms', 'all')}
-                          className="h-10 px-4 text-sm rounded-md flex-1"
+                          className="h-9 px-4 text-sm flex-1"
                         >
                           Any
                         </Button>
-                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
+                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden bg-background">
                           <Button
                             type="button"
                             variant="ghost"
-                            size="default"
-                            className="h-10 w-10 p-0 rounded-none hover:bg-muted"
+                            size="sm"
+                            className="h-9 w-9 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
                               if (current > 0) {
@@ -1650,16 +1659,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-base font-bold">−</span>
+                            <span className="text-sm font-bold">−</span>
                           </Button>
-                          <span className="min-w-[40px] h-10 flex items-center justify-center bg-muted/30 px-3 text-sm font-semibold">
+                          <span className="min-w-[36px] h-9 flex items-center justify-center bg-muted/50 px-2 text-sm font-semibold">
                             {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
                           </span>
                           <Button
                             type="button"
                             variant="ghost"
-                            size="default"
-                            className="h-10 w-10 p-0 rounded-none hover:bg-muted"
+                            size="sm"
+                            className="h-9 w-9 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
                               if (current < 1000) {
@@ -1667,7 +1676,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className="text-base font-bold">+</span>
+                            <span className="text-sm font-bold">+</span>
                           </Button>
                         </div>
                       </div>
@@ -2001,7 +2010,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </Select>
               </div>
             </div>
+              </div>
             </div>
+            
+            {/* Footer with Apply Button */}
+            <div className="border-t border-border bg-muted/30 px-6 py-4">
+              <Button 
+                onClick={() => {
+                  handleSearch();
+                  setShowFilters(false);
+                }}
+                className="w-full h-11 text-base font-medium"
+                size="lg"
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Apply Filters & Search
+              </Button>
+            </div>
+          </div>
           )}
         </div>
       </div>
