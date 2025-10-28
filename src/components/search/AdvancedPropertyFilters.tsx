@@ -5,10 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { X, Filter, RotateCcw } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export interface PropertyFilters {
   searchQuery: string;
@@ -83,47 +82,59 @@ const AdvancedPropertyFilters = ({
   };
 
   return (
-    <Card className="w-full shadow-lg">
-      <Collapsible open={isOpen} onOpenChange={onToggle}>
-        <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors py-4 md:py-6">
-            <CardTitle className="flex items-center justify-between text-lg md:text-xl">
-              <div className="flex items-center gap-3">
-                <Filter className="h-6 w-6" />
-                <span>Advanced Filters</span>
-                {getActiveFiltersCount() > 0 && (
-                  <Badge variant="secondary" className="text-sm px-2 py-1">{getActiveFiltersCount()}</Badge>
-                )}
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClearFilters();
-                  setLocalFilters({
-                    searchQuery: "",
-                    priceRange: [0, 50000000000],
-                    location: "all",
-                    propertyTypes: [],
-                    bedrooms: null,
-                    bathrooms: null,
-                    minArea: null,
-                    maxArea: null,
-                    listingType: "all",
-                    sortBy: "newest"
-                  });
-                }}
-                className="h-10 w-10 p-0"
-              >
-                <RotateCcw className="h-5 w-5" />
-              </Button>
-            </CardTitle>
-          </CardHeader>
-        </CollapsibleTrigger>
+    <Dialog open={isOpen} onOpenChange={onToggle}>
+      <DialogTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="lg"
+          className="w-full h-14 text-base font-medium"
+        >
+          <Filter className="h-5 w-5 mr-2" />
+          <span>Filters</span>
+          {getActiveFiltersCount() > 0 && (
+            <Badge variant="secondary" className="ml-2 text-sm px-2 py-1">{getActiveFiltersCount()}</Badge>
+          )}
+        </Button>
+      </DialogTrigger>
+      
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="p-6 pb-4 sticky top-0 bg-background z-10 border-b">
+          <DialogTitle className="flex items-center justify-between text-xl">
+            <div className="flex items-center gap-3">
+              <Filter className="h-6 w-6" />
+              <span>Advanced Filters</span>
+              {getActiveFiltersCount() > 0 && (
+                <Badge variant="secondary" className="text-sm px-2 py-1">{getActiveFiltersCount()}</Badge>
+              )}
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClearFilters();
+                setLocalFilters({
+                  searchQuery: "",
+                  priceRange: [0, 50000000000],
+                  location: "all",
+                  propertyTypes: [],
+                  bedrooms: null,
+                  bathrooms: null,
+                  minArea: null,
+                  maxArea: null,
+                  listingType: "all",
+                  sortBy: "newest"
+                });
+              }}
+              className="h-10 px-4"
+            >
+              <RotateCcw className="h-5 w-5 mr-2" />
+              Clear All
+            </Button>
+          </DialogTitle>
+        </DialogHeader>
 
-        <CollapsibleContent className="max-h-[80vh] overflow-y-auto overscroll-contain">
-          <CardContent className="space-y-8 p-6 md:p-8">
+        <div className="space-y-8 p-6">
             {/* Search Query */}
             <div className="space-y-3">
               <Label htmlFor="search" className="text-base font-medium">Search Properties</Label>
@@ -291,10 +302,27 @@ const AdvancedPropertyFilters = ({
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
-    </Card>
+          </div>
+          
+          <div className="sticky bottom-0 bg-background p-6 border-t flex gap-4">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => onToggle()}
+              className="flex-1 h-12"
+            >
+              Cancel
+            </Button>
+            <Button 
+              size="lg"
+              onClick={() => onToggle()}
+              className="flex-1 h-12"
+            >
+              Apply Filters
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
   );
 };
 

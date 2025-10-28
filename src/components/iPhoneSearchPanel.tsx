@@ -1257,7 +1257,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             <div className="grid grid-cols-3 gap-2 mb-2">
               {/* State/Province Selection */}
               <Select value={filters.state || "all"} onValueChange={handleStateChange}>
-                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
+                <SelectTrigger 
+                  className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm"
+                  onPointerDown={(e) => e.preventDefault()}
+                >
                   <div className="flex items-center gap-1.5">
                     <MapPin className="h-3 w-3 text-blue-500" />
                     <SelectValue placeholder={currentText.selectProvince}>
@@ -1285,7 +1288,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onValueChange={handleCityChange}
                 disabled={!filters.state || filters.state === 'all'}
               >
-                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                <SelectTrigger 
+                  className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  onPointerDown={(e) => e.preventDefault()}
+                >
                   <SelectValue placeholder={currentText.selectCity}>
                     <span className="truncate">
                       {filters.city && filters.city !== 'all' 
@@ -1313,7 +1319,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onValueChange={handleAreaChange}
                 disabled={!filters.city || filters.city === 'all'}
               >
-                <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                <SelectTrigger 
+                  className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  onPointerDown={(e) => e.preventDefault()}
+                >
                   <SelectValue placeholder={currentText.selectArea}>
                     <span className="truncate">
                       {filters.area && filters.area !== 'all' 

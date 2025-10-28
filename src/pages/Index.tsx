@@ -360,27 +360,21 @@ const Index = () => {
           </HomeIntroSlider>
         </section>
 
-        {/* Advanced Filters - Minimal Space */}
-        {filtersOpen && (
-          <section className={cn(
-            isMobile ? "px-2 py-1" : "px-4 py-1"
-          )}>
-              <div className={cn(
-                "mx-auto",
-                isMobile ? "max-w-full" : "max-w-[1800px]"
-              )}>
-              <Suspense fallback={<div className="animate-pulse h-24 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
-                <AdvancedPropertyFilters
-                  filters={filters}
-                  onFiltersChange={handleFiltersChange}
-                  onClearFilters={handleClearFilters}
-                  isOpen={filtersOpen}
-                  onToggle={() => setFiltersOpen(!filtersOpen)}
-                />
-              </Suspense>
-            </div>
-          </section>
-        )}
+        {/* Advanced Filters - Now opens in Dialog */}
+        <div className={cn(
+          "container mx-auto",
+          isMobile ? "px-2 py-2" : "px-4 py-3"
+        )}>
+          <Suspense fallback={<div className="animate-pulse h-14 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+            <AdvancedPropertyFilters
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              onClearFilters={handleClearFilters}
+              isOpen={filtersOpen}
+              onToggle={() => setFiltersOpen(!filtersOpen)}
+            />
+          </Suspense>
+        </div>
 
         {/* Error Message - Compact */}
         {searchError && (
