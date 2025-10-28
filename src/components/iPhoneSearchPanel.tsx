@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
 import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -1543,27 +1544,26 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </div>
               </div>
 
-              {/* Content */}
-              <div className="flex-1 overflow-y-auto">
+              {/* Content with ScrollArea */}
+              <ScrollArea className="flex-1 h-[calc(90vh-180px)]">
                 <div className="p-6">
-
 
               {/* Filter Categories in Tabs */}
               <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className="w-full bg-muted/50 p-1 rounded-lg mb-6">
-                  <TabsTrigger value="propertySpecs" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <TabsList className="w-full bg-muted/50 p-1 rounded-lg mb-4 sticky top-0 z-10">
+                  <TabsTrigger value="propertySpecs" className="flex-1 text-sm py-2.5">
                     <Home className="h-4 w-4 mr-2" />
                     Property
                   </TabsTrigger>
-                  <TabsTrigger value="pricing" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <TabsTrigger value="pricing" className="flex-1 text-sm py-2.5">
                     <DollarSign className="h-4 w-4 mr-2" />
                     Pricing
                   </TabsTrigger>
-                  <TabsTrigger value="location" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <TabsTrigger value="location" className="flex-1 text-sm py-2.5">
                     <MapPin className="h-4 w-4 mr-2" />
                     Location
                   </TabsTrigger>
-                  <TabsTrigger value="amenities" className="flex-1 text-sm py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <TabsTrigger value="amenities" className="flex-1 text-sm py-2.5">
                     <Building className="h-4 w-4 mr-2" />
                     Amenities
                   </TabsTrigger>
@@ -1793,7 +1793,105 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </div>
                 </TabsContent>
 
-                <TabsContent value="pricing" className="space-y-4 mt-3 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-lg p-4">
+                <TabsContent value="location" className="space-y-4 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-xl p-6 shadow-sm">
+                  <div className="space-y-4">
+                    <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      Location Selection
+                    </Label>
+                    
+                    {/* State/Province Selection */}
+                    <div>
+                      <Label className="text-sm text-muted-foreground mb-2 block">{currentText.selectProvince}</Label>
+                      <Select value={filters.state || "all"} onValueChange={handleStateChange}>
+                        <SelectTrigger className="w-full h-10 text-sm bg-background">
+                          <SelectValue placeholder={currentText.selectProvince} />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-[300px] overflow-y-auto z-[99999]">
+                          <SelectItem value="all" className="text-sm hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          {provinces.map((province) => (
+                            <SelectItem key={province.code} value={province.code} className="text-sm hover:bg-accent rounded cursor-pointer">
+                              {province.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* City Selection */}
+                    <div>
+                      <Label className="text-sm text-muted-foreground mb-2 block">{currentText.selectCity}</Label>
+                      <Select 
+                        value={filters.city || "all"} 
+                        onValueChange={handleCityChange}
+                        disabled={!filters.state || filters.state === 'all'}
+                      >
+                        <SelectTrigger className="w-full h-10 text-sm bg-background disabled:opacity-50">
+                          <SelectValue placeholder={currentText.selectCity} />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-[300px] overflow-y-auto z-[99999]">
+                          <SelectItem value="all" className="text-sm hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          {cities.map((city) => (
+                            <SelectItem key={city.code} value={city.code} className="text-sm hover:bg-accent rounded cursor-pointer">
+                              {city.type} {city.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Area Selection */}
+                    <div>
+                      <Label className="text-sm text-muted-foreground mb-2 block">{currentText.selectArea}</Label>
+                      <Select 
+                        value={filters.area || "all"} 
+                        onValueChange={handleAreaChange}
+                        disabled={!filters.city || filters.city === 'all'}
+                      >
+                        <SelectTrigger className="w-full h-10 text-sm bg-background disabled:opacity-50">
+                          <SelectValue placeholder={currentText.selectArea} />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-[300px] overflow-y-auto z-[99999]">
+                          <SelectItem value="all" className="text-sm hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          {areas.map((area) => (
+                            <SelectItem key={area.code} value={area.code} className="text-sm hover:bg-accent rounded cursor-pointer">
+                              {area.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Nearby Search */}
+                    {useNearbyLocation && userLocation && (
+                      <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
+                        <Label className="text-sm font-medium text-primary mb-3 flex items-center gap-2">
+                          <MapPin className="h-4 w-4" fill="currentColor" />
+                          Nearby Search Active
+                        </Label>
+                        <div className="space-y-2">
+                          <p className="text-xs text-muted-foreground">
+                            Searching within {nearbyRadius}km radius
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Label className="text-xs">{currentText.radius}:</Label>
+                            <Slider
+                              value={[nearbyRadius]}
+                              onValueChange={(value) => setNearbyRadius(value[0])}
+                              max={50}
+                              min={1}
+                              step={1}
+                              className="flex-1"
+                            />
+                            <span className="text-xs font-semibold min-w-[40px]">{nearbyRadius}km</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="pricing" className="space-y-4 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-xl p-6 shadow-sm">
 
                 {/* Price Range Slider */}
                 <div>
@@ -1848,11 +1946,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </div>
                 </TabsContent>
 
-                <TabsContent value="amenities" className="space-y-2.5 mt-2 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg p-2.5">
+                <TabsContent value="amenities" className="space-y-4 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-xl p-6 shadow-sm">
+                <Label className="text-sm font-semibold text-foreground mb-3 block">Select Amenities & Features</Label>
                 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {currentFilters.features.map((feature) => (
-                    <div key={feature.id} className="flex items-center space-x-1.5 p-1.5 bg-white/50 dark:bg-purple-950/20 rounded-lg">
+                    <div key={feature.id} className="flex items-center space-x-2 p-3 bg-white/50 dark:bg-purple-950/20 rounded-lg hover:bg-white/80 dark:hover:bg-purple-950/30 transition-colors">
                       <Checkbox
                         id={feature.id}
                         checked={filters.features.includes(feature.id)}
@@ -1861,9 +1960,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       />
                       <Label
                         htmlFor={feature.id}
-                        className="text-[9px] font-normal cursor-pointer flex items-center gap-0.5 text-purple-700 dark:text-purple-300"
+                        className="text-sm font-normal cursor-pointer flex items-center gap-1.5 text-purple-700 dark:text-purple-300"
                       >
-                        <span className="text-[10px]">{feature.icon}</span>
+                        <span className="text-base">{feature.icon}</span>
                         <span>{feature.label}</span>
                       </Label>
                      </div>
@@ -2009,9 +2108,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </SelectContent>
                 </Select>
               </div>
-            </div>
               </div>
-            </div>
+              </ScrollArea>
             
             {/* Footer with Apply Button */}
             <div className="border-t border-border bg-muted/30 px-6 py-4">
@@ -2028,7 +2126,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </Button>
             </div>
           </div>
-          )}
+        </div>
+        )}
         </div>
       </div>
     </div>
