@@ -38,6 +38,7 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  scrollbar-gutter: stable both-edges;
 }
 
 body {
@@ -46,6 +47,14 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lock scroll when modal is open */
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: contain;
 }
 
 #root {

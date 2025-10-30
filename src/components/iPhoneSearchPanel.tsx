@@ -47,13 +47,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     const handleScroll = () => {
+      // Pause header minimize logic while filters modal is open to prevent layout jumps
+      if (showFilters) return;
+
       const currentScrollY = window.scrollY;
-      
+
       if (window.innerWidth < 768) { // Only on mobile
         if (currentScrollY > lastScrollY && currentScrollY > 100) {
           setIsMinimized(true);
@@ -61,17 +64,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           setIsMinimized(false);
         }
       }
-      
+
       setLastScrollY(currentScrollY);
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, showFilters]);
   
   // Trending and smart suggestions
   const trendingSearches = [
@@ -816,17 +819,28 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   // Lock background scroll when filters are open (prevents page jump and keeps modal fixed)
   useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+
     if (showFilters) {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      const prevOverflow = document.body.style.overflow;
-      const prevPaddingRight = document.body.style.paddingRight;
-      document.body.style.overflow = 'hidden';
+      const prevOverflow = body.style.overflow;
+      const prevPaddingRight = body.style.paddingRight;
+
+      // Add class to html/body for robust locking across devices
+      root.classList.add('modal-open');
+      body.classList.add('modal-open');
+
+      body.style.overflow = 'hidden';
       if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
+        body.style.paddingRight = `${scrollbarWidth}px`;
       }
+
       return () => {
-        document.body.style.overflow = prevOverflow;
-        document.body.style.paddingRight = prevPaddingRight;
+        root.classList.remove('modal-open');
+        body.classList.remove('modal-open');
+        body.style.overflow = prevOverflow;
+        body.style.paddingRight = prevPaddingRight;
       };
     }
   }, [showFilters]);
@@ -1511,7 +1525,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
            {/* Advanced Filters Modal */}
           {showFilters && (
             <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-background w-full max-w-5xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
+              <div className="bg-background w-full max-w-5xl max-h-[94dvh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
               {/* Header */}
               <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-6 py-4">
                 <div className="flex items-center gap-3">
@@ -1545,12 +1559,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </div>
 
               {/* Content with ScrollArea */}
-              <ScrollArea className="flex-1 h-[calc(90vh-180px)]">
+              <ScrollArea className="flex-1 h-[calc(94dvh-140px)] overscroll-contain">
                 <div className="p-6">
 
               {/* Filter Categories in Tabs */}
               <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className="w-full bg-muted/50 p-1 rounded-lg mb-4 sticky top-0 z-10">
+                <TabsList className="w-full sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-1 rounded-lg mb-4">
                   <TabsTrigger value="propertySpecs" className="flex-1 text-sm py-2.5">
                     <Home className="h-4 w-4 mr-2" />
                     Property
@@ -1807,7 +1821,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className="w-full h-10 text-sm bg-background">
                           <SelectValue placeholder={currentText.selectProvince} />
                         </SelectTrigger>
-                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-[300px] overflow-y-auto z-[99999]">
+                        <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
                           <SelectItem value="all" className="text-sm hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                           {provinces.map((province) => (
                             <SelectItem key={province.code} value={province.code} className="text-sm hover:bg-accent rounded cursor-pointer">
@@ -1829,7 +1843,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className="w-full h-10 text-sm bg-background disabled:opacity-50">
                           <SelectValue placeholder={currentText.selectCity} />
                         </SelectTrigger>
-                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-[300px] overflow-y-auto z-[99999]">
+                        <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
                           <SelectItem value="all" className="text-sm hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                           {cities.map((city) => (
                             <SelectItem key={city.code} value={city.code} className="text-sm hover:bg-accent rounded cursor-pointer">
@@ -1851,7 +1865,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className="w-full h-10 text-sm bg-background disabled:opacity-50">
                           <SelectValue placeholder={currentText.selectArea} />
                         </SelectTrigger>
-                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-[300px] overflow-y-auto z-[99999]">
+                        <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
                           <SelectItem value="all" className="text-sm hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
                           {areas.map((area) => (
                             <SelectItem key={area.code} value={area.code} className="text-sm hover:bg-accent rounded cursor-pointer">
@@ -2049,7 +2063,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <SelectTrigger className="h-7 text-[9px] border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30">
                             <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
                           </SelectTrigger>
-                          <SelectContent className="bg-background dark:bg-gray-900 border-border z-[99999]">
+                          <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
                             <SelectItem value="all" className="text-[9px]">{currentText.any}</SelectItem>
                             {rentalDurationOptions.map((option) => (
                               <SelectItem key={option.value} value={option.value} className="text-[9px]">
@@ -2099,7 +2113,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectTrigger className="h-9 text-xs border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/30">
                     <SelectValue placeholder={currentText.sortBy} />
                   </SelectTrigger>
-                  <SelectContent className="bg-background dark:bg-gray-900 border-border z-[99999]">
+                  <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
                     {sortOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value} className="text-xs">
                         {option.label}
