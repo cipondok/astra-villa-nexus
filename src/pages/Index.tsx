@@ -502,7 +502,7 @@ const Index = () => {
             ) : (
               <>
                 {/* Featured Ads Carousel - Auto-sliding */}
-                <div className="w-full max-w-full mx-auto px-2 py-4">
+                <div className="w-full max-w-full mx-auto px-2 py-2">
                   <Suspense fallback={
                     <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
                       <div className="animate-pulse">
