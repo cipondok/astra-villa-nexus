@@ -90,7 +90,7 @@ const PropertyGridView = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-md md:rounded-xl overflow-hidden border border-border/50"
+          className="group cursor-pointer flex flex-col bg-background hover:shadow-lg transition-all duration-300 rounded-md md:rounded-xl overflow-hidden border-0 md:border md:border-transparent"
           onClick={() => onPropertyClick(property)}
         >
           {/* Image Section */}

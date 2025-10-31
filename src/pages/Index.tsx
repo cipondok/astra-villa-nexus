@@ -410,11 +410,11 @@ const Index = () => {
         )}
 
         {/* Property Display Section - Space Optimized */}
-        <div className="px-2 md:px-4 lg:px-6 py-4 space-y-4">
-          <div className="w-full max-w-[2000px] mx-auto space-y-4">
+        <div className="px-2 py-4 space-y-4">
+          <div className="w-full max-w-full mx-auto space-y-4">
             {hasSearched ? (
-              <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">
-                <div className="p-6">
+              <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+                <div className="p-3 md:p-4 lg:p-6">
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
@@ -538,7 +538,7 @@ const Index = () => {
 
                 {/* Featured Properties - Zero-waste Compact Layout */}
                 <section className={cn(
-                  "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
+                  "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0",
                   isMobile ? "p-3" : "p-4 lg:p-6"
                 )}>
                   <div className={cn(
