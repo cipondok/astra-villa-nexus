@@ -54,18 +54,29 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("User not authenticated");
 
-    // Verify user has admin role or is authorized
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+    // Verify user has admin or customer_service role using the has_role function
+    const { data: isAdmin, error: adminCheckError } = await supabaseClient
+      .rpc('has_role', { 
+        _user_id: user.id, 
+        _role: 'admin' 
+      });
 
-    if (!profile || !['admin', 'customer_service'].includes(profile.role)) {
-      throw new Error("Unauthorized: Only admins can process refunds");
+    const { data: isCustomerService, error: csCheckError } = await supabaseClient
+      .rpc('has_role', { 
+        _user_id: user.id, 
+        _role: 'customer_service' 
+      });
+
+    if (adminCheckError || csCheckError) {
+      logStep("Error checking user roles", { adminCheckError, csCheckError });
+      throw new Error("Failed to verify user permissions");
     }
 
-    logStep("Admin user verified", { userId: user.id, role: profile.role });
+    if (!isAdmin && !isCustomerService) {
+      throw new Error("Unauthorized: Only admins or customer service can process refunds");
+    }
+
+    logStep("Authorized user verified", { userId: user.id, isAdmin, isCustomerService });
 
     // Parse and validate request body
     const requestBody = await req.json();
