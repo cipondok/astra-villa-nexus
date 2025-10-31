@@ -980,8 +980,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
         <div className={cn(
-          "space-y-2 bg-background/40 backdrop-blur-md rounded-2xl shadow-lg border border-border/30",
-          isMobile ? "p-2" : "p-3 lg:p-4"
+          "space-y-1.5 bg-background/40 backdrop-blur-md rounded-2xl shadow-lg border border-border/30",
+          isMobile ? "p-1.5" : "p-2 lg:p-3"
         )}>
           
           {/* Mobile close button when filters are open */}
@@ -1083,7 +1083,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onFocus={() => setShowSuggestions(true)}
                 className={cn(
                   "bg-background/60 border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium",
-                  isMobile ? "pl-8 pr-16 h-9 text-xs" : "pl-10 pr-20 h-11 text-sm"
+                  isMobile ? "pl-8 pr-16 h-8 text-xs" : "pl-10 pr-20 h-9 text-sm"
                 )}
               />
               
@@ -1194,7 +1194,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 variant="outline"
                 className={cn(
                   "relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all",
-                  isMobile ? "h-10 px-3" : "h-11 px-4"
+                  isMobile ? "h-8 px-2.5" : "h-9 px-3"
                 )}
               >
                 <div className={cn("flex items-center", isMobile ? "gap-1.5" : "gap-2")}>
@@ -1226,7 +1226,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               onClick={handleSearch}
               className={cn(
                 "bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center",
-                isMobile ? "h-9 px-3 text-xs gap-1" : "h-11 px-6 text-sm gap-2"
+                isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5"
               )}
             >
               <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
@@ -1284,104 +1284,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           )}
 
-          {/* Location Selection Row - 3 separate dropdowns - Only show when not using nearby search */}
-          {!useNearbyLocation && (
-            <div className="grid grid-cols-3 gap-2 mb-2">
-              {/* State/Province Selection */}
-              <Select value={filters.state || "all"} onValueChange={handleStateChange}>
-                <SelectTrigger 
-                  className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm"
-                  onPointerDown={(e) => e.preventDefault()}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3 w-3 text-blue-500" />
-                    <SelectValue placeholder={currentText.selectProvince}>
-                      <span className="truncate">
-                        {filters.state && filters.state !== 'all' 
-                          ? provinces.find(p => p.code === filters.state)?.name 
-                          : currentText.any}
-                      </span>
-                    </SelectValue>
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999]">
-                  <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
-                  {provinces.map((province) => (
-                    <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer">
-                      {province.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* City Selection */}
-              <Select 
-                value={filters.city || "all"} 
-                onValueChange={handleCityChange}
-                disabled={!filters.state || filters.state === 'all'}
-              >
-                <SelectTrigger 
-                  className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  onPointerDown={(e) => e.preventDefault()}
-                >
-                  <SelectValue placeholder={currentText.selectCity}>
-                    <span className="truncate">
-                      {filters.city && filters.city !== 'all' 
-                        ? (() => {
-                            const city = cities.find(c => c.code === filters.city);
-                            return city ? `${city.type} ${city.name}` : currentText.any;
-                          })()
-                        : currentText.any}
-                    </span>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999]">
-                  <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
-                  {cities.map((city) => (
-                    <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer">
-                      {city.type} {city.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Area Selection */}
-              <Select 
-                value={filters.area || "all"} 
-                onValueChange={handleAreaChange}
-                disabled={!filters.city || filters.city === 'all'}
-              >
-                <SelectTrigger 
-                  className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  onPointerDown={(e) => e.preventDefault()}
-                >
-                  <SelectValue placeholder={currentText.selectArea}>
-                    <span className="truncate">
-                      {filters.area && filters.area !== 'all' 
-                        ? areas.find(a => a.code === filters.area)?.name 
-                        : currentText.any}
-                    </span>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[99999]">
-                  <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
-                  {areas.map((area) => (
-                    <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer">
-                      {area.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Property Type and Other Filters Row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
+          {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
+          <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Selection */}
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm">
-                <div className="flex items-center gap-1.5">
-                  <Home className="h-3 w-3 text-blue-500" />
+              <SelectTrigger className={cn(
+                "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                isMobile ? "h-7 text-[10px] min-w-[80px]" : "h-8 text-xs min-w-[100px]"
+              )}>
+                <div className="flex items-center gap-1">
+                  <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-blue-500")} />
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
@@ -1395,132 +1307,201 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </SelectContent>
             </Select>
 
-            {/* Bedrooms Filter - Button style with value display */}
-            <div className="hidden lg:block">
-              <div className="flex flex-col gap-1">
-                <Label className="text-[9px] text-muted-foreground flex items-center gap-1">
-                  <Bed className="h-2.5 w-2.5 text-blue-500" />
-                  {currentText.bedrooms}
-                  {filters.bedrooms && filters.bedrooms !== 'all' && (
-                    <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px]">
-                      {filters.bedrooms}
-                    </span>
-                  )}
-                </Label>
-                <div className="flex items-center gap-1">
-                  {/* Any button */}
-                  <Button
-                    type="button"
-                    variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleFilterChange('bedrooms', 'all')}
-                    className="h-5 px-2 text-[10px] rounded-md"
-                  >
-                    Any
-                  </Button>
-                  
-                  {/* Stepper only */}
-                  <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                      onClick={() => {
-                        const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                        if (current > 0) {
-                          const next = current - 1;
-                          handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
-                        }
-                      }}
-                    >
-                      <span className="text-sm font-bold">−</span>
-                    </Button>
-                    <span className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5 text-[10px] font-semibold">
-                      {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                      onClick={() => {
-                        const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                        if (current < 1000) {
-                          handleFilterChange('bedrooms', String(current + 1));
-                        }
-                      }}
-                    >
-                      <span className="text-sm font-bold">+</span>
-                    </Button>
-                  </div>
-                </div>
+            {/* Bedrooms +/- */}
+            <div className="inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+              <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
+                <Bed className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-blue-500")} />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
+                  onClick={() => {
+                    const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
+                    if (current > 0) {
+                      const next = current - 1;
+                      handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
+                    }
+                  }}
+                >
+                  <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
+                </Button>
+                <span className={cn("min-w-[20px] flex items-center justify-center font-semibold text-foreground", isMobile ? "text-[10px] px-1" : "text-xs px-1.5")}>
+                  {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
+                  onClick={() => {
+                    const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
+                    if (current < 10) {
+                      handleFilterChange('bedrooms', String(current + 1));
+                    }
+                  }}
+                >
+                  <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
+                </Button>
               </div>
             </div>
 
-            {/* Bathrooms Filter - Button style with value display */}
-            <div className="hidden lg:block">
-              <div className="flex flex-col gap-1">
-                <Label className="text-[9px] text-muted-foreground flex items-center gap-1">
-                  <Bath className="h-2.5 w-2.5 text-blue-500" />
-                  {currentText.bathrooms}
-                  {filters.bathrooms && filters.bathrooms !== 'all' && (
-                    <span className="ml-1 inline-flex items-center rounded-full bg-primary/10 text-primary px-1.5 py-0.5 text-[9px]">
-                      {filters.bathrooms}
-                    </span>
-                  )}
-                </Label>
-                <div className="flex items-center gap-1">
-                  {/* Any button */}
-                  <Button
-                    type="button"
-                    variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleFilterChange('bathrooms', 'all')}
-                    className="h-5 px-2 text-[10px] rounded-md"
-                  >
-                    Any
-                  </Button>
-                  
-                  {/* Stepper only */}
-                  <div className="inline-flex items-center border border-border rounded-md overflow-hidden">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                      onClick={() => {
-                        const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                        if (current > 0) {
-                          const next = current - 1;
-                          handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
-                        }
-                      }}
-                    >
-                      <span className="text-sm font-bold">−</span>
-                    </Button>
-                    <span className="min-w-[28px] h-5 flex items-center justify-center bg-muted/30 px-1.5 text-[10px] font-semibold">
-                      {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-5 w-6 p-0 rounded-none hover:bg-muted"
-                      onClick={() => {
-                        const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                        if (current < 1000) {
-                          handleFilterChange('bathrooms', String(current + 1));
-                        }
-                      }}
-                    >
-                      <span className="text-sm font-bold">+</span>
-                    </Button>
-                  </div>
-                </div>
+            {/* Bathrooms +/- */}
+            <div className="inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+              <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
+                <Bath className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-blue-500")} />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
+                  onClick={() => {
+                    const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
+                    if (current > 0) {
+                      const next = current - 1;
+                      handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
+                    }
+                  }}
+                >
+                  <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
+                </Button>
+                <span className={cn("min-w-[20px] flex items-center justify-center font-semibold text-foreground", isMobile ? "text-[10px] px-1" : "text-xs px-1.5")}>
+                  {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
+                  onClick={() => {
+                    const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
+                    if (current < 10) {
+                      handleFilterChange('bathrooms', String(current + 1));
+                    }
+                  }}
+                >
+                  <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
+                </Button>
               </div>
             </div>
+
+            {/* Location Button - Opens Popover with 3 selects */}
+            {!useNearbyLocation && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                      isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
+                      ((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    )}
+                  >
+                    <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                    {currentText.location}
+                    {((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && (
+                      <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5 text-blue-500" />
+                        {currentText.location}
+                      </h4>
+                    </div>
+                    
+                    {/* State/Province Selection */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">{currentText.selectProvince}</Label>
+                      <Select value={filters.state || "all"} onValueChange={handleStateChange}>
+                        <SelectTrigger className="h-8 text-xs bg-background border-border rounded-lg">
+                          <SelectValue placeholder={currentText.selectProvince}>
+                            <span className="truncate">
+                              {filters.state && filters.state !== 'all' 
+                                ? provinces.find(p => p.code === filters.state)?.name 
+                                : currentText.any}
+                            </span>
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          {provinces.map((province) => (
+                            <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer">
+                              {province.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* City Selection */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">{currentText.selectCity}</Label>
+                      <Select 
+                        value={filters.city || "all"} 
+                        onValueChange={handleCityChange}
+                        disabled={!filters.state || filters.state === 'all'}
+                      >
+                        <SelectTrigger className="h-8 text-xs bg-background border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                          <SelectValue placeholder={currentText.selectCity}>
+                            <span className="truncate">
+                              {filters.city && filters.city !== 'all' 
+                                ? (() => {
+                                    const city = cities.find(c => c.code === filters.city);
+                                    return city ? `${city.type} ${city.name}` : currentText.any;
+                                  })()
+                                : currentText.any}
+                            </span>
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          {cities.map((city) => (
+                            <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer">
+                              {city.type} {city.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Area Selection */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">{currentText.selectArea}</Label>
+                      <Select 
+                        value={filters.area || "all"} 
+                        onValueChange={handleAreaChange}
+                        disabled={!filters.city || filters.city === 'all'}
+                      >
+                        <SelectTrigger className="h-8 text-xs bg-background border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                          <SelectValue placeholder={currentText.selectArea}>
+                            <span className="truncate">
+                              {filters.area && filters.area !== 'all' 
+                                ? areas.find(a => a.code === filters.area)?.name 
+                                : currentText.any}
+                            </span>
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          {areas.map((area) => (
+                            <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer">
+                              {area.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
+
 
            {/* Advanced Filters Modal */}
           {showFilters && (
