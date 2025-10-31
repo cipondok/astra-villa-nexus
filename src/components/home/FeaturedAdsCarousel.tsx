@@ -16,6 +16,17 @@ interface FeaturedAd {
   display_order: number;
 }
 
+interface FallbackProperty {
+  id: string;
+  title: string;
+  price: number;
+  property_type: string;
+  city: string | null;
+  state: string | null;
+  images: string[] | null;
+  thumbnail_url: string | null;
+}
+
 export default function FeaturedAdsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -34,6 +45,25 @@ export default function FeaturedAdsCarousel() {
       if (error) throw error;
       return data as FeaturedAd[];
     },
+  });
+
+  // Fallback: load recent approved properties when no featured ads
+  const { data: fallbackProperties = [] } = useQuery({
+    queryKey: ['featured-ads-fallback-properties'],
+    enabled: !!ads && ads.length === 0,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('id, title, price, property_type, city, state, images, thumbnail_url, created_at')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .not('title', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(16);
+      if (error) throw error;
+      return data as FallbackProperty[];
+    },
+    staleTime: 5 * 60 * 1000,
   });
 
   // Auto-scroll configuration
@@ -56,7 +86,7 @@ export default function FeaturedAdsCarousel() {
 
   const handleAdClick = (ad: FeaturedAd) => {
     if (ad.property_id) {
-      navigate(`/property/${ad.property_id}`);
+      navigate(`/properties/${ad.property_id}`);
     } else if (ad.link_url) {
       window.open(ad.link_url, '_blank');
     }
@@ -73,7 +103,9 @@ export default function FeaturedAdsCarousel() {
     );
   }
 
-  if (!ads || ads.length === 0) {
+  const showFallback = (!ads || ads.length === 0) && (fallbackProperties?.length ?? 0) > 0;
+
+  if ((!ads || ads.length === 0) && (!fallbackProperties || fallbackProperties.length === 0)) {
     return null;
   }
 
@@ -114,46 +146,69 @@ export default function FeaturedAdsCarousel() {
       {/* Carousel */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+        className="flex gap-3 overflow-x-auto scrollbar-hide px-2"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {ads.map((ad) => (
-          <div
-            key={ad.id}
-            onClick={() => handleAdClick(ad)}
-            className="flex-shrink-0 w-[85vw] md:w-[600px] lg:w-[700px] cursor-pointer group relative rounded-xl overflow-hidden"
-          >
-            {/* Image */}
-            <div className="relative h-64 md:h-80 overflow-hidden">
-              <img
-                src={ad.image_url}
-                alt={ad.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              />
-              
-              {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-              
-              {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl md:text-3xl font-bold mb-2 drop-shadow-lg">
-                  {ad.title}
-                </h3>
-                {ad.subtitle && (
-                  <p className="text-sm md:text-base text-white/90 drop-shadow-lg">
-                    {ad.subtitle}
-                  </p>
-                )}
-                
-                <div className="mt-4">
-                  <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-sm font-medium border border-white/30 group-hover:bg-white/30 transition-colors">
-                    View Details →
+        {showFallback ? (
+          fallbackProperties.map((p) => (
+            <div
+              key={p.id}
+              onClick={() => navigate(`/properties/${p.id}`)}
+              className="flex-shrink-0 w-[220px] md:w-[260px] cursor-pointer group"
+            >
+              <div className="relative overflow-hidden rounded-lg mb-2">
+                <img
+                  src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
+                  alt={p.title}
+                  loading="lazy"
+                  className="w-full h-36 object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute top-2 right-2">
+                  <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm">
+                    {p.property_type}
                   </span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <div className="px-1">
+                <h3 className="text-xs font-medium text-foreground/90 line-clamp-1 mb-1">
+                  {p.title}
+                </h3>
+                <div className="text-[10px] text-muted-foreground line-clamp-1">
+                  {(p.city || p.state) ? `${p.city ?? ''}${p.city && p.state ? ', ' : ''}${p.state ?? ''}` : ''}
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          ads.map((ad) => (
+            <div
+              key={ad.id}
+              onClick={() => handleAdClick(ad)}
+              className="flex-shrink-0 w-[220px] md:w-[260px] cursor-pointer group relative rounded-lg overflow-hidden"
+            >
+              <div className="relative h-36 overflow-hidden">
+                <img
+                  src={ad.image_url}
+                  alt={ad.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+                  <h3 className="text-sm font-bold mb-1 drop-shadow">
+                    {ad.title}
+                  </h3>
+                  {ad.subtitle && (
+                    <p className="text-[11px] text-white/90 line-clamp-1 drop-shadow">
+                      {ad.subtitle}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
