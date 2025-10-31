@@ -934,7 +934,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   // Simple mobile view - only input and button by default
   if (isMobile && !showFilters) {
     return (
-      <div className="w-full sticky top-12 z-40 transition-all duration-300 px-1">
+      <div className="w-full sticky top-10 md:top-11 lg:top-12 z-40 transition-all duration-300 px-1">
         <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
           <div className="flex items-center gap-1.5 p-2">
             <div className="flex-1 relative">
@@ -975,7 +975,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   return (
     <div className={cn(
       "w-full transition-all duration-300",
-      isMobile ? "sticky top-12 z-40 px-1" : "max-w-7xl mx-auto"
+      isMobile ? "sticky top-10 md:top-11 lg:top-12 z-40 px-1" : "max-w-7xl mx-auto"
     )}>
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
