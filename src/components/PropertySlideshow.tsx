@@ -1,8 +1,8 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 
 interface Property {
   id: number;
@@ -20,9 +20,7 @@ interface Property {
 }
 
 const PropertySlideshow = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const slideshowRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Fetch featured properties for slideshow
   const { data: properties = [] } = useQuery({
@@ -33,7 +31,7 @@ const PropertySlideshow = () => {
         .select('*')
         .eq('status', 'active')
         .order('created_at', { ascending: false })
-        .limit(12);
+        .limit(20);
 
       if (error) {
         console.error('Error fetching slideshow properties:', error);
@@ -43,6 +41,14 @@ const PropertySlideshow = () => {
       return data || [];
     },
     staleTime: 60000,
+  });
+
+  // Use auto-scroll hook
+  useAutoHorizontalScroll(containerRef, {
+    speed: 1,
+    intervalMs: 30,
+    direction: 'rtl',
+    pauseOnHover: true,
   });
 
   const formatPrice = (price: number) => {
@@ -55,43 +61,16 @@ const PropertySlideshow = () => {
     }
   };
 
-  const slidesToShow = 4;
-  const maxSlides = Math.max(1, properties.length - slidesToShow + 1);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % maxSlides);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + maxSlides) % maxSlides);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
-
-  // Auto-scroll functionality
-  useEffect(() => {
-    if (!isHovered && properties.length > slidesToShow) {
-      const interval = setInterval(() => {
-        nextSlide();
-      }, 5000);
-
-      return () => clearInterval(interval);
-    }
-  }, [isHovered, properties.length]);
-
   if (properties.length === 0) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="macos-card animate-pulse">
-              <div className="h-56 bg-muted rounded-xl mb-4"></div>
-              <div className="space-y-3">
-                <div className="h-4 bg-muted rounded w-3/4"></div>
-                <div className="h-3 bg-muted rounded w-1/2"></div>
-                <div className="h-6 bg-muted rounded w-2/3"></div>
+      <div className="w-full overflow-hidden">
+        <div className="flex gap-3 px-4">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="flex-shrink-0 w-[280px] animate-pulse">
+              <div className="h-40 bg-muted rounded-lg mb-2"></div>
+              <div className="space-y-2">
+                <div className="h-3 bg-muted rounded w-3/4"></div>
+                <div className="h-2 bg-muted rounded w-1/2"></div>
               </div>
             </div>
           ))}
@@ -100,127 +79,62 @@ const PropertySlideshow = () => {
     );
   }
 
+  // Duplicate items for seamless loop
+  const displayProperties = [...properties, ...properties];
+
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 md:px-4 py-6 md:py-12">
+    <div className="w-full overflow-hidden py-4">
       <div 
-        className="relative overflow-hidden"
-        ref={slideshowRef}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        ref={containerRef}
+        className="flex gap-3 overflow-x-auto scrollbar-hide px-4"
+        style={{ scrollBehavior: 'auto' }}
       >
-        {/* Slideshow Container */}
-        <div 
-          className="flex transition-transform duration-700 ease-in-out gap-3 md:gap-8"
-          style={{
-            transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
-          }}
-        >
-          {properties.map((property) => (
-            <div 
-              key={property.id} 
-              className="macos-card flex-shrink-0 group cursor-pointer"
-              style={{ width: `calc(${100 / slidesToShow}% - 2rem)` }}
-            >
-              <div className="relative overflow-hidden rounded-t-xl">
-                <img
-                  src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                  alt={property.title}
-                  className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm">
-                    {property.property_type}
-                  </span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {displayProperties.map((property, idx) => (
+          <div 
+            key={`${property.id}-${idx}`}
+            className="flex-shrink-0 w-[280px] group cursor-pointer"
+          >
+            <div className="relative overflow-hidden rounded-lg mb-2">
+              <img
+                src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                alt={property.title}
+                className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+              <div className="absolute top-2 right-2">
+                <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm">
+                  {property.property_type}
+                </span>
               </div>
-              
-              <div className="slide-content">
-                <div className="slide-price">
-                  {formatPrice(property.price)}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            
+            <div className="px-1">
+              <div className="text-sm font-bold text-foreground mb-0.5">
+                {formatPrice(property.price)}
+              </div>
+              <h3 className="text-xs font-medium text-foreground/90 line-clamp-1 mb-1">
+                {property.title}
+              </h3>
+              <div className="text-[10px] text-muted-foreground mb-2 line-clamp-1">
+                {property.city}, {property.state}
+              </div>
+              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <i className="fas fa-bed"></i>
+                  <span>{property.bedrooms}</span>
                 </div>
-                <div className="slide-price-subtitle">
-                  Sekitar {Math.round(property.price / 12000000)} Jutaan per bulan
+                <div className="flex items-center gap-1">
+                  <i className="fas fa-bath"></i>
+                  <span>{property.bathrooms}</span>
                 </div>
-                <h3 className="slide-title">
-                  {property.title}
-                </h3>
-                <div className="slide-location">
-                  <i className="fas fa-map-marker-alt"></i>
-                  {property.city}, {property.state}
-                </div>
-                <div className="slide-features">
-                  <div className="feature">
-                    <i className="fas fa-bed"></i>
-                    <span>{property.bedrooms}</span>
-                  </div>
-                  <div className="feature">
-                    <i className="fas fa-bath"></i>
-                    <span>{property.bathrooms}</span>
-                  </div>
-                  <div className="feature">
-                    <i className="fas fa-car"></i>
-                    <span>1</span>
-                  </div>
-                  <div className="feature">
-                    <span>LT : {property.area_sqm}</span>
-                  </div>
-                  <div className="feature">
-                    <span>LB : {Math.round(property.area_sqm * 0.7)}</span>
-                  </div>
-                </div>
-                <div className="slide-actions">
-                  <button className="btn-share" aria-label="Share property">
-                    <i className="fas fa-share-nodes"></i>
-                  </button>
-                  <button className="btn-whatsapp">
-                    <i className="fab fa-whatsapp"></i>
-                    WhatsApp
-                  </button>
+                <div className="flex items-center gap-1">
+                  <span>{property.area_sqm}m²</span>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Navigation Arrows */}
-        {properties.length > slidesToShow && (
-          <>
-            <button 
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full macos-glass flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-300"
-              onClick={prevSlide}
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button 
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full macos-glass flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-300"
-              onClick={nextSlide}
-              aria-label="Next slide"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          </>
-        )}
+          </div>
+        ))}
       </div>
-
-      {/* Pagination Dots */}
-      {properties.length > slidesToShow && (
-        <div className="flex justify-center items-center mt-10 gap-4">
-          {Array.from({ length: maxSlides }, (_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide 
-                  ? 'bg-primary scale-150 shadow-lg' 
-                  : 'bg-muted-foreground hover:bg-primary/60 hover:scale-125'
-              }`}
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 };
