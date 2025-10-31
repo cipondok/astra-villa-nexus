@@ -20,8 +20,14 @@ const debounce = (func: Function, wait: number) => {
 const userAgentCache = new Map<string, { isMobile: boolean; isTablet: boolean }>();
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean>(false)
-  const [isTablet, setIsTablet] = React.useState<boolean>(false)
+  const [isMobile, setIsMobile] = React.useState<boolean>(
+    typeof window !== 'undefined' ? window.innerWidth <= MOBILE_BREAKPOINT : false
+  )
+  const [isTablet, setIsTablet] = React.useState<boolean>(
+    typeof window !== 'undefined'
+      ? window.innerWidth > MOBILE_BREAKPOINT && window.innerWidth <= TABLET_BREAKPOINT
+      : false
+  )
   const [deviceInfo, setDeviceInfo] = React.useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
     height: typeof window !== 'undefined' ? window.innerHeight : 0,
