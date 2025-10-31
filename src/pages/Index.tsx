@@ -356,25 +356,22 @@ const Index = () => {
                   resultsCount={hasSearched ? searchResults.length : undefined}
                 />
               </Suspense>
+              
+              {/* Advanced Filters - Compact inline */}
+              <div className="mt-2 flex justify-end">
+                <Suspense fallback={<div className="animate-pulse h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                  <AdvancedPropertyFilters
+                    filters={filters}
+                    onFiltersChange={handleFiltersChange}
+                    onClearFilters={handleClearFilters}
+                    isOpen={filtersOpen}
+                    onToggle={() => setFiltersOpen(!filtersOpen)}
+                  />
+                </Suspense>
+              </div>
             </div>
           </HomeIntroSlider>
         </section>
-
-        {/* Advanced Filters - Now opens in Dialog */}
-        <div className={cn(
-          "container mx-auto",
-          isMobile ? "px-2 py-2" : "px-4 py-3"
-        )}>
-          <Suspense fallback={<div className="animate-pulse h-14 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
-            <AdvancedPropertyFilters
-              filters={filters}
-              onFiltersChange={handleFiltersChange}
-              onClearFilters={handleClearFilters}
-              isOpen={filtersOpen}
-              onToggle={() => setFiltersOpen(!filtersOpen)}
-            />
-          </Suspense>
-        </div>
 
         {/* Error Message - Compact */}
         {searchError && (

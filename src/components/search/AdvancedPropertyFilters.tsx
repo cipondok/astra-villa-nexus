@@ -86,13 +86,13 @@ const AdvancedPropertyFilters = ({
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
-          size="lg"
-          className="w-full h-14 text-base font-medium"
+          size="sm"
+          className="h-8 text-xs font-medium px-3"
         >
-          <Filter className="h-5 w-5 mr-2" />
+          <Filter className="h-3.5 w-3.5 mr-1.5" />
           <span>Filters</span>
           {getActiveFiltersCount() > 0 && (
-            <Badge variant="secondary" className="ml-2 text-sm px-2 py-1">{getActiveFiltersCount()}</Badge>
+            <Badge variant="secondary" className="ml-1.5 text-xs px-1.5 py-0.5">{getActiveFiltersCount()}</Badge>
           )}
         </Button>
       </DialogTrigger>
