@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -1002,12 +1002,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
             <div className={cn(
-              "inline-flex bg-background/60 rounded-xl border-0 shadow-sm relative",
-              isMobile ? "p-0.5" : "p-1"
+              "inline-flex bg-background/60 rounded-lg border-0 shadow-sm relative",
+              isMobile ? "p-0.5" : "p-0.5"
             )}>
               {/* Sliding background indicator */}
               <div 
-                className="absolute inset-y-1 bg-primary rounded-lg shadow-md transition-all duration-300 ease-out"
+                className="absolute inset-y-0.5 bg-primary rounded-md shadow-md transition-all duration-300 ease-out"
                 style={{
                   width: 'calc(25% - 2px)',
                   left: activeTab === 'all' ? '2px' : 
@@ -1020,50 +1020,54 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <button
                 onClick={() => setActiveTab('all')}
                 className={cn(
-                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
                   activeTab === 'all' 
                     ? 'text-primary-foreground' 
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                {currentText.all}
+                <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+                <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
                 className={cn(
-                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
                   activeTab === 'sale' 
                     ? 'text-primary-foreground' 
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                {currentText.forSale}
+                <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+                <span>{isMobile ? "Buy" : currentText.forSale}</span>
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
                 className={cn(
-                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
                   activeTab === 'rent' 
                     ? 'text-primary-foreground' 
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                {currentText.forRent}
+                <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+                <span>{isMobile ? "Rent" : currentText.forRent}</span>
               </button>
               <button
                 onClick={() => setActiveTab('new_project')}
                 className={cn(
-                  "relative z-10 rounded-lg font-bold uppercase tracking-wide transition-all duration-200 flex-1",
-                  isMobile ? "px-2 py-1 text-[9px] min-w-[50px]" : "px-3 py-1.5 text-[10px] min-w-[60px]",
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
                   activeTab === 'new_project' 
                     ? 'text-primary-foreground' 
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                {isMobile ? "New" : currentText.newProject}
+                <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+                <span>{isMobile ? "New" : currentText.newProject}</span>
               </button>
             </div>
           </div>
@@ -1286,26 +1290,65 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            {/* Property Type Selection */}
-            <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className={cn(
-                "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                isMobile ? "h-7 text-[10px] min-w-[80px]" : "h-8 text-xs min-w-[100px]"
-              )}>
-                <div className="flex items-center gap-1">
-                  <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-blue-500")} />
-                  <SelectValue placeholder={currentText.propertyType} />
+            {/* Property Type Button - Opens Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
+                    (filters.propertyType && filters.propertyType !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  )}
+                >
+                  <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  {(filters.propertyType && filters.propertyType !== 'all') 
+                    ? currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label || currentText.propertyType
+                    : currentText.propertyType}
+                  {(filters.propertyType && filters.propertyType !== 'all') && (
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                      <Home className="h-3.5 w-3.5 text-blue-500" />
+                      {currentText.propertyType}
+                    </h4>
+                  </div>
+                  
+                  {/* Property Type Grid */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      variant={(!filters.propertyType || filters.propertyType === 'all') ? "default" : "outline"}
+                      size="sm"
+                      className="h-8 text-xs justify-start"
+                      onClick={() => {
+                        handleFilterChange('propertyType', 'all');
+                      }}
+                    >
+                      {currentText.any}
+                    </Button>
+                    {currentFilters.propertyTypes.map((type) => (
+                      <Button
+                        key={type.value}
+                        variant={filters.propertyType === type.value ? "default" : "outline"}
+                        size="sm"
+                        className="h-8 text-xs justify-start"
+                        onClick={() => {
+                          handleFilterChange('propertyType', type.value);
+                        }}
+                      >
+                        {type.label}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </SelectTrigger>
-              <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl z-[99999]">
-                <SelectItem value="all" className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">{currentText.any}</SelectItem>
-                {currentFilters.propertyTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded m-0.5 cursor-pointer">
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              </PopoverContent>
+            </Popover>
 
             {/* Bedrooms +/- */}
             <div className="inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
