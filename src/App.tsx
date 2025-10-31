@@ -71,7 +71,7 @@ const AppContent = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {!isAdminRoute && <Navigation />}
-      <main>
+      <main className={isAdminRoute ? '' : 'pt-12 md:pt-14 lg:pt-16'}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/search" element={<Search />} />
