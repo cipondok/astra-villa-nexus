@@ -17,7 +17,42 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
-    const { requestType } = await req.json();
+    const body = await req.json();
+
+    // Input validation
+    if (!body.requestType || typeof body.requestType !== 'string') {
+      return new Response(JSON.stringify({ error: 'Invalid request type' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { requestType } = body;
+
+    // Rate limiting check
+    const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
+    const { data: recentRequests } = await supabaseClient
+      .from('api_rate_limits')
+      .select('request_count')
+      .eq('ip_address', clientIP)
+      .eq('endpoint', 'algorithm-analytics')
+      .gte('window_start', new Date(Date.now() - 60000).toISOString())
+      .single();
+
+    if (recentRequests && recentRequests.request_count >= 30) {
+      return new Response(JSON.stringify({ error: 'Rate limit exceeded. Try again later.' }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Log request for rate limiting
+    await supabaseClient.from('api_rate_limits').upsert({
+      ip_address: clientIP,
+      endpoint: 'algorithm-analytics',
+      window_start: new Date(Date.now() - (Date.now() % 60000)).toISOString(),
+      request_count: (recentRequests?.request_count || 0) + 1
+    }, { onConflict: 'ip_address,endpoint,window_start' });
 
     if (requestType === 'dashboard_metrics') {
       // Get search analytics

@@ -18,8 +18,50 @@ serve(async (req) => {
   }
 
   try {
-    const { message } = await req.json();
+    const body = await req.json();
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Input validation
+    if (!body.message || typeof body.message !== 'string') {
+      return new Response(JSON.stringify({ error: 'Invalid message' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (body.message.length > 2000) {
+      return new Response(JSON.stringify({ error: 'Message too long (max 2000 chars)' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { message } = body;
+
+    // Rate limiting check
+    const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
+    const { data: recentRequests } = await supabase
+      .from('api_rate_limits')
+      .select('request_count')
+      .eq('ip_address', clientIP)
+      .eq('endpoint', 'neighborhood-simulator')
+      .gte('window_start', new Date(Date.now() - 60000).toISOString())
+      .single();
+
+    if (recentRequests && recentRequests.request_count >= 15) {
+      return new Response(JSON.stringify({ error: 'Rate limit exceeded. Try again later.' }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Log request for rate limiting
+    await supabase.from('api_rate_limits').upsert({
+      ip_address: clientIP,
+      endpoint: 'neighborhood-simulator',
+      window_start: new Date(Date.now() - (Date.now() % 60000)).toISOString(),
+      request_count: (recentRequests?.request_count || 0) + 1
+    }, { onConflict: 'ip_address,endpoint,window_start' });
 
     console.log("Neighborhood simulator received query:", message);
 
