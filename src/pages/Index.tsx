@@ -410,8 +410,8 @@ const Index = () => {
         )}
 
         {/* Property Display Section - Space Optimized */}
-        <div className="px-4 py-4 space-y-4">
-          <div className="w-full mx-auto space-y-4">
+        <div className="px-2 md:px-4 lg:px-6 py-4 space-y-4">
+          <div className="w-full max-w-[2000px] mx-auto space-y-4">
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">
                 <div className="p-6">
