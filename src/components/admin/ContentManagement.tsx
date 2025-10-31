@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Plus, Edit, Trash2, Eye, Search, Filter, Globe, BookOpen, FileIcon, Tag } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import FeaturedAdsManagement from "./FeaturedAdsManagement";
 
 const ContentManagement = () => {
   const [showForm, setShowForm] = useState(false);
@@ -246,6 +247,9 @@ const ContentManagement = () => {
 
   return (
     <div className="space-y-6">
+      {/* Featured Ads Management */}
+      <FeaturedAdsManagement />
+      
       <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">

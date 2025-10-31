@@ -33,6 +33,7 @@ const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog"
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
+const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -500,6 +501,20 @@ const Index = () => {
               </section>
             ) : (
               <>
+                {/* Featured Ads Carousel - Auto-sliding */}
+                <div className="w-full max-w-full mx-auto px-2 py-4">
+                  <Suspense fallback={
+                    <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
+                      <div className="animate-pulse">
+                        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4" />
+                        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded" />
+                      </div>
+                    </div>
+                  }>
+                    <FeaturedAdsCarousel />
+                  </Suspense>
+                </div>
+
                 {/* AI Recommended Properties - Lazy Loaded */}
                 <div className="section-compact mb-6">
                   <Suspense fallback={
