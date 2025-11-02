@@ -83,20 +83,20 @@ const AstraVillaFeatures = () => {
   return (
     <div className="relative overflow-hidden">
       {/* Section Header */}
-      <div className="mb-6 text-center">
-        <div className="inline-flex items-center gap-2 mb-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/30 dark:border-blue-700/30">
-          <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+      <div className="mb-3 md:mb-6 text-center">
+        <div className="inline-flex items-center gap-1.5 md:gap-2 mb-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/30 dark:border-blue-700/30">
+          <Sparkles className="h-3.5 w-3.5 md:h-5 md:w-5 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-sm md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
             AI-Powered Tools & Features
           </h2>
         </div>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="text-[10px] md:text-sm text-muted-foreground mt-1 md:mt-2">
           Smart Property Solutions for Indonesia
         </p>
       </div>
 
-      {/* Features Grid - 4 per row, 2 rows */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      {/* Features Grid - 3 columns mobile/tablet, 4 on desktop */}
+      <div className="grid grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 lg:gap-6">
         {features.map((feature, index) => (
           <FeatureCard key={index} feature={feature} index={index} />
         ))}
@@ -137,28 +137,28 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
       onClick={handleClick}
       className="group cursor-pointer"
     >
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-5 h-full flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/30">
+      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-2 md:p-4 lg:p-5 h-full flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/30">
         {/* Icon Container */}
-        <div className="relative mb-4">
-          <div className={`relative w-16 h-16 rounded-2xl ${feature.bgGradient} flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300`}>
+        <div className="relative mb-2 md:mb-3 lg:mb-4">
+          <div className={`relative w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl md:rounded-2xl ${feature.bgGradient} flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300`}>
             <img 
               src={feature.icon} 
               alt={feature.title}
-              className="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300"
+              className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 object-contain group-hover:scale-110 transition-transform duration-300"
             />
           </div>
           {/* AI Badge */}
-          <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 shadow-md">
-            <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+          <div className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 shadow-md">
+            <Sparkles className="w-2 h-2 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5 text-white" strokeWidth={2.5} />
           </div>
         </div>
         
         {/* Content */}
         <div className="flex-1 flex flex-col">
-          <h3 className="text-sm md:text-base font-semibold text-foreground mb-2 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+          <h3 className="text-[10px] md:text-sm lg:text-base font-semibold text-foreground mb-1 md:mb-2 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
             {feature.title}
           </h3>
-          <p className="text-xs text-muted-foreground line-clamp-2">
+          <p className="text-[8px] md:text-xs text-muted-foreground line-clamp-2 hidden md:block">
             {feature.description}
           </p>
         </div>

@@ -98,25 +98,25 @@ const MarketplaceServices = () => {
   return (
     <div className="relative">
       {/* Section Header - Compact */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3 md:mb-4">
         <div>
-          <h2 className="text-lg md:text-xl font-bold text-foreground">
+          <h2 className="text-sm md:text-lg lg:text-xl font-bold text-foreground">
             Marketplace Services
           </h2>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] md:text-xs text-muted-foreground">
             Trusted vendors for your property needs
           </p>
         </div>
         <button
           onClick={() => navigate('/marketplace')}
-          className="text-xs md:text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+          className="text-[10px] md:text-xs lg:text-sm font-medium text-primary hover:text-primary/80 transition-colors"
         >
           View All →
         </button>
       </div>
 
-      {/* Services Grid - 4 columns, more compact */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Services Grid - 3 columns mobile/tablet, 4 on desktop */}
+      <div className="grid grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
         {services.map((service, index) => (
           <ServiceCard
             key={index}
@@ -160,27 +160,27 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
       onClick={onClick}
       className="group cursor-pointer"
     >
-      <div className="relative overflow-hidden rounded-lg bg-card border border-border p-3 h-full flex flex-col transition-all duration-300 hover:shadow-md hover:scale-105 hover:border-primary/30">
+      <div className="relative overflow-hidden rounded-lg bg-card border border-border p-2 md:p-3 h-full flex flex-col transition-all duration-300 hover:shadow-md hover:scale-105 hover:border-primary/30">
         {/* Icon Container - Smaller */}
-        <div className={`w-10 h-10 rounded-lg ${service.bgColor} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
+        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg ${service.bgColor} flex items-center justify-center mb-1.5 md:mb-2 group-hover:scale-110 transition-transform duration-300`}>
           <div className={service.iconColor}>
-            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-5 h-5' })}
+            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-4 h-4 md:w-5 md:h-5' })}
           </div>
         </div>
 
         {/* Content - Compact */}
         <div className="flex-1">
-          <h3 className="text-xs md:text-sm font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-[10px] md:text-xs lg:text-sm font-semibold text-foreground mb-0.5 md:mb-1 group-hover:text-primary transition-colors line-clamp-2">
             {service.title}
           </h3>
-          <p className="text-[10px] text-muted-foreground mb-2 line-clamp-1">
+          <p className="text-[8px] md:text-[10px] text-muted-foreground mb-1 md:mb-2 line-clamp-1 hidden md:block">
             {service.description}
           </p>
           
           {/* Vendor Count Badge - Smaller */}
-          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-primary/20">
-            <Store className="w-2.5 h-2.5 text-primary" />
-            <span className="text-[10px] font-medium text-primary">
+          <div className="inline-flex items-center gap-0.5 md:gap-1 px-1 md:px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-primary/20">
+            <Store className="w-2 h-2 md:w-2.5 md:h-2.5 text-primary" />
+            <span className="text-[8px] md:text-[10px] font-medium text-primary">
               {service.vendorCount}+
             </span>
           </div>

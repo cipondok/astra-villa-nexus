@@ -45,7 +45,8 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     <section
       className={cn(
         "relative w-full overflow-hidden bg-background",
-        "min-h-[200px]",
+        "min-h-[200px] md:min-h-[400px]",
+        "pt-16 md:pt-0",
         className
       )}
       style={{ 
@@ -67,7 +68,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
 
       {/* Search Panel Overlay - Centered */}
       {children && (
-        <div className="absolute top-1/2 left-0 right-0 z-20 px-4 -translate-y-1/2">
+        <div className="absolute top-1/2 left-0 right-0 z-30 px-4 -translate-y-1/2">
           <div className="w-full mx-auto">
             {children}
           </div>
