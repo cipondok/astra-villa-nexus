@@ -502,12 +502,12 @@ const Index = () => {
             ) : (
               <>
                 {/* Featured Ads Carousel - Auto-sliding */}
-                <div className="w-full max-w-full mx-auto my-8">
+                <div className="w-full max-w-full mx-auto">
                   <Suspense fallback={
-                    <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
+                    <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-6">
                       <div className="animate-pulse">
                         <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4" />
-                        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded" />
+                        <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded" />
                       </div>
                     </div>
                   }>

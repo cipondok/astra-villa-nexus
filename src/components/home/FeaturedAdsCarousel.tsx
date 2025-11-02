@@ -119,43 +119,39 @@ export default function FeaturedAdsCarousel() {
   const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties] : [];
 
   return (
-    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-4 md:p-6 my-8 overflow-hidden group">
+    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-3 md:p-4 overflow-hidden group">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
-            Featured Properties
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Exclusive opportunities you don't want to miss
-          </p>
-        </div>
-        
-        {/* Navigation Buttons - Always Visible */}
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => scroll('left')}
-            className="h-10 w-10 rounded-full bg-white dark:bg-gray-800 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all"
-          >
-            <ChevronLeft className="h-5 w-5 text-primary" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => scroll('right')}
-            className="h-10 w-10 rounded-full bg-white dark:bg-gray-800 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all"
-          >
-            <ChevronRight className="h-5 w-5 text-primary" />
-          </Button>
-        </div>
+      <div className="mb-3">
+        <h2 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+          Featured Properties
+        </h2>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          Exclusive opportunities you don't want to miss
+        </p>
       </div>
+
+      {/* Navigation Buttons - On Sides */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => scroll('left')}
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
+      >
+        <ChevronLeft className="h-5 w-5 text-primary" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => scroll('right')}
+        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
+      >
+        <ChevronRight className="h-5 w-5 text-primary" />
+      </Button>
 
       {/* Carousel */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide py-2"
+        className="flex gap-3 overflow-x-auto scrollbar-hide"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
       >
         {showFallback ? (
@@ -163,28 +159,38 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[240px] md:w-[280px] cursor-pointer group"
+              className="flex-shrink-0 w-[320px] md:w-[380px] cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg mb-2">
-                <img
-                  src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
-                  alt={p.title}
-                  loading="lazy"
-                  className="w-full h-36 object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute top-2 right-2">
-                  <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm">
-                    {p.property_type}
-                  </span>
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
+                {/* Image - Left Side */}
+                <div className="relative w-[140px] flex-shrink-0">
+                  <img
+                    src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
+                    alt={p.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute top-2 left-2">
+                    <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
+                      {p.property_type}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 group-hover:to-black/20 transition-all duration-300" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-              <div className="px-1">
-                <h3 className="text-xs font-medium text-foreground/90 line-clamp-1 mb-1">
-                  {p.title}
-                </h3>
-                <div className="text-[10px] text-muted-foreground line-clamp-1">
-                  {(p.city || p.state) ? `${p.city ?? ''}${p.city && p.state ? ', ' : ''}${p.state ?? ''}` : ''}
+                
+                {/* Content - Right Side */}
+                <div className="flex-1 p-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1">
+                      {p.title}
+                    </h3>
+                    <div className="text-[10px] text-muted-foreground line-clamp-1">
+                      {(p.city || p.state) ? `${p.city ?? ''}${p.city && p.state ? ', ' : ''}${p.state ?? ''}` : ''}
+                    </div>
+                  </div>
+                  <div className="text-sm font-bold text-primary">
+                    Rp {(p.price / 1000000).toFixed(1)}M
+                  </div>
                 </div>
               </div>
             </div>
@@ -194,22 +200,27 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${ad.id}-${idx}`}
               onClick={() => handleAdClick(ad)}
-              className="flex-shrink-0 w-[240px] md:w-[280px] cursor-pointer group relative rounded-lg overflow-hidden"
+              className="flex-shrink-0 w-[320px] md:w-[380px] cursor-pointer group"
             >
-              <div className="relative h-36 overflow-hidden">
-                <img
-                  src={ad.image_url}
-                  alt={ad.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                  <h3 className="text-sm font-bold mb-1 drop-shadow">
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
+                {/* Image - Left Side */}
+                <div className="relative w-[140px] flex-shrink-0">
+                  <img
+                    src={ad.image_url}
+                    alt={ad.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 group-hover:to-black/20 transition-all duration-300" />
+                </div>
+                
+                {/* Content - Right Side */}
+                <div className="flex-1 p-3 flex flex-col justify-center">
+                  <h3 className="text-sm font-bold text-foreground mb-1 line-clamp-2">
                     {ad.title}
                   </h3>
                   {ad.subtitle && (
-                    <p className="text-[11px] text-white/90 line-clamp-1 drop-shadow">
+                    <p className="text-[11px] text-muted-foreground line-clamp-2">
                       {ad.subtitle}
                     </p>
                   )}
