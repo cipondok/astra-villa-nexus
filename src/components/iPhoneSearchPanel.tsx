@@ -1548,85 +1548,85 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-2 md:p-4">
-              <div className="bg-background w-full max-w-3xl max-h-[90dvh] md:max-h-[92dvh] rounded-lg md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
+            <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 md:p-4">
+              <div className="bg-background w-full max-w-4xl max-h-[88dvh] md:max-h-[90dvh] rounded-xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
               {/* Header */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-3 py-2 md:px-4 md:py-3">
+              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-4 py-3 md:px-5 md:py-4">
                 <div className="flex items-center gap-2 md:gap-3">
-                  <div className={cn("rounded-lg bg-primary/10 flex items-center justify-center", isMobile ? "w-7 h-7" : "w-9 h-9")}>
-                    <Filter className={cn("text-primary", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
+                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Filter className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className={cn("font-semibold text-foreground", isMobile ? "text-sm" : "text-base")}>Advanced Filters</h3>
-                    <p className={cn("text-muted-foreground", isMobile ? "text-[10px]" : "text-xs")}>Refine your property search</p>
+                    <h3 className="text-base md:text-lg font-semibold text-foreground">Advanced Filters</h3>
+                    <p className="text-xs text-muted-foreground">Refine your search</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 md:gap-2">
+                <div className="flex items-center gap-2">
                   <Button
                     onClick={clearAllFilters}
                     variant="outline"
                     size="sm"
-                    className={cn(isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs")}
+                    className="h-9 px-3 text-xs"
                   >
-                    <X className={cn(isMobile ? "h-3 w-3 mr-1" : "h-3.5 w-3.5 mr-1.5")} />
+                    <X className="h-4 w-4 mr-1.5" />
                     Clear
                   </Button>
                   <Button
                     onClick={() => setShowFilters(false)}
                     variant="ghost"
                     size="sm"
-                    className={cn("p-0", isMobile ? "h-7 w-7" : "h-8 w-8")}
+                    className="h-9 w-9 p-0"
                   >
-                    <X className={cn(isMobile ? "h-4 w-4" : "h-4.5 w-4.5")} />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
 
               {/* Content with ScrollArea */}
-              <ScrollArea className="flex-1 h-[calc(90dvh-110px)] md:h-[calc(92dvh-120px)] overscroll-contain">
-                <div className={cn(isMobile ? "p-3" : "p-4 md:p-5")}>
+              <ScrollArea className="flex-1 h-[calc(88dvh-120px)] md:h-[calc(90dvh-130px)] overscroll-contain">
+                <div className="p-4 md:p-5">
 
               {/* Filter Categories in Tabs */}
               <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className={cn("w-full sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-lg mb-2 md:mb-3", isMobile ? "p-0.5" : "p-1")}>
-                  <TabsTrigger value="propertySpecs" className={cn("flex-1", isMobile ? "text-[10px] py-1.5 px-1" : "text-xs py-2 px-2")}>
-                    <Home className={cn(isMobile ? "h-3 w-3 mr-0.5" : "h-3.5 w-3.5 mr-1")} />
-                    <span className={isMobile ? "hidden sm:inline" : ""}>Property</span>
+                <TabsList className="w-full sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-1 rounded-lg mb-4">
+                  <TabsTrigger value="propertySpecs" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
+                    <Home className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Property
                   </TabsTrigger>
-                  <TabsTrigger value="pricing" className={cn("flex-1", isMobile ? "text-[10px] py-1.5 px-1" : "text-xs py-2 px-2")}>
-                    <DollarSign className={cn(isMobile ? "h-3 w-3 mr-0.5" : "h-3.5 w-3.5 mr-1")} />
-                    <span className={isMobile ? "hidden sm:inline" : ""}>Pricing</span>
+                  <TabsTrigger value="pricing" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
+                    <DollarSign className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Pricing
                   </TabsTrigger>
-                  <TabsTrigger value="location" className={cn("flex-1", isMobile ? "text-[10px] py-1.5 px-1" : "text-xs py-2 px-2")}>
-                    <MapPin className={cn(isMobile ? "h-3 w-3 mr-0.5" : "h-3.5 w-3.5 mr-1")} />
-                    <span className={isMobile ? "hidden sm:inline" : ""}>Location</span>
+                  <TabsTrigger value="location" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
+                    <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Location
                   </TabsTrigger>
-                  <TabsTrigger value="amenities" className={cn("flex-1", isMobile ? "text-[10px] py-1.5 px-1" : "text-xs py-2 px-2")}>
-                    <Building className={cn(isMobile ? "h-3 w-3 mr-0.5" : "h-3.5 w-3.5 mr-1")} />
-                    <span className={isMobile ? "hidden sm:inline" : ""}>Amenities</span>
+                  <TabsTrigger value="amenities" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
+                    <Building className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Amenities
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="propertySpecs" className={cn("bg-card border border-border rounded-lg shadow-sm", isMobile ? "space-y-3 p-3" : "space-y-4 p-4")}>
+                <TabsContent value="propertySpecs" className="space-y-4 md:space-y-5 bg-card border border-border rounded-lg shadow-sm p-4 md:p-5">
                 
                 {/* Room Configuration */}
                 <div>
-                  <Label className={cn("font-semibold text-foreground block", isMobile ? "text-xs mb-2" : "text-sm mb-3")}>Room Configuration</Label>
+                  <Label className="text-sm md:text-base font-semibold text-foreground mb-3 md:mb-4 block">Room Configuration</Label>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     {/* Bedrooms */}
-                    <div className={cn("bg-muted/30 rounded-lg", isMobile ? "p-2" : "p-3")}>
-                      <Label className={cn("text-muted-foreground flex items-center gap-1.5", isMobile ? "text-[10px] mb-2" : "text-xs mb-2.5")}>
-                        <Bed className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                    <div className="bg-muted/30 rounded-lg p-3 md:p-4">
+                      <Label className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3 flex items-center gap-2">
+                        <Bed className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         Bedrooms
                       </Label>
-                      <div className={cn("flex items-center", isMobile ? "gap-1" : "gap-2")}>
+                      <div className="flex items-center gap-2">
                         <Button
                           type="button"
                           variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('bedrooms', 'all')}
-                          className={cn("flex-1", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs")}
+                          className="h-9 md:h-10 px-3 md:px-4 text-xs md:text-sm flex-1"
                         >
                           Any
                         </Button>
@@ -1635,7 +1635,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className={cn("p-0 rounded-none hover:bg-muted", isMobile ? "h-7 w-7" : "h-8 w-8")}
+                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
                               if (current > 0) {
@@ -1644,16 +1644,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
+                            <span className="text-sm md:text-base font-bold">−</span>
                           </Button>
-                          <span className={cn("flex items-center justify-center bg-muted/50 font-semibold", isMobile ? "min-w-[28px] h-7 px-1 text-[10px]" : "min-w-[32px] h-8 px-1.5 text-xs")}>
+                          <span className="min-w-[32px] md:min-w-[36px] h-9 md:h-10 flex items-center justify-center bg-muted/50 px-2 text-xs md:text-sm font-semibold">
                             {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
                           </span>
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className={cn("p-0 rounded-none hover:bg-muted", isMobile ? "h-7 w-7" : "h-8 w-8")}
+                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
                               if (current < 1000) {
@@ -1661,25 +1661,25 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
+                            <span className="text-sm md:text-base font-bold">+</span>
                           </Button>
                         </div>
                       </div>
                     </div>
 
                     {/* Bathrooms */}
-                    <div className={cn("bg-muted/30 rounded-lg", isMobile ? "p-2" : "p-3")}>
-                      <Label className={cn("text-muted-foreground flex items-center gap-1.5", isMobile ? "text-[10px] mb-2" : "text-xs mb-2.5")}>
-                        <Bath className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                    <div className="bg-muted/30 rounded-lg p-3 md:p-4">
+                      <Label className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3 flex items-center gap-2">
+                        <Bath className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         Bathrooms
                       </Label>
-                      <div className={cn("flex items-center", isMobile ? "gap-1" : "gap-2")}>
+                      <div className="flex items-center gap-2">
                         <Button
                           type="button"
                           variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
                           size="sm"
                           onClick={() => handleFilterChange('bathrooms', 'all')}
-                          className={cn("flex-1", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs")}
+                          className="h-9 md:h-10 px-3 md:px-4 text-xs md:text-sm flex-1"
                         >
                           Any
                         </Button>
@@ -1688,7 +1688,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className={cn("p-0 rounded-none hover:bg-muted", isMobile ? "h-7 w-7" : "h-8 w-8")}
+                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
                               if (current > 0) {
@@ -1697,16 +1697,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
+                            <span className="text-sm md:text-base font-bold">−</span>
                           </Button>
-                          <span className={cn("flex items-center justify-center bg-muted/50 font-semibold", isMobile ? "min-w-[28px] h-7 px-1 text-[10px]" : "min-w-[32px] h-8 px-1.5 text-xs")}>
+                          <span className="min-w-[32px] md:min-w-[36px] h-9 md:h-10 flex items-center justify-center bg-muted/50 px-2 text-xs md:text-sm font-semibold">
                             {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
                           </span>
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className={cn("p-0 rounded-none hover:bg-muted", isMobile ? "h-7 w-7" : "h-8 w-8")}
+                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
                             onClick={() => {
                               const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
                               if (current < 1000) {
@@ -1714,7 +1714,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               }
                             }}
                           >
-                            <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
+                            <span className="text-sm md:text-base font-bold">+</span>
                           </Button>
                         </div>
                       </div>
@@ -2150,16 +2150,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </ScrollArea>
             
             {/* Footer with Apply Button */}
-            <div className={cn("border-t border-border bg-muted/30", isMobile ? "px-3 py-2.5" : "px-4 py-3")}>
+            <div className="border-t border-border bg-muted/30 px-4 py-3 md:px-5 md:py-4">
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowFilters(false);
                 }}
-                className={cn("w-full font-medium", isMobile ? "h-9 text-xs" : "h-10 text-sm")}
+                className="w-full h-11 md:h-12 text-sm md:text-base font-medium"
                 size="lg"
               >
-                <Search className={cn("mr-1.5", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
+                <Search className="h-4 w-4 md:h-5 md:w-5 mr-2" />
                 Apply Filters & Search
               </Button>
             </div>
