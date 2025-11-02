@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, RefreshCw, TrendingUp } from 'lucide-react';
-import PropertyGridView from '@/components/search/PropertyGridView';
 import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import { shareProperty } from '@/utils/shareUtils';
-import { toast as sonnerToast } from 'sonner';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 
@@ -154,18 +150,18 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <Card className={cn("bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-2 border-primary/20", className)}>
-      <CardHeader className="p-3 md:p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 md:gap-3">
-            <div className="p-1 md:p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md md:rounded-lg">
-              <Sparkles className="h-3.5 w-3.5 md:h-5 md:w-5 text-white" />
+    <div className={cn("bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-3 md:p-4", className)}>
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+              <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <CardTitle className="text-xs md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+              <h3 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                 AI Recommended For You
-              </CardTitle>
-              <p className="text-[10px] md:text-sm text-muted-foreground mt-0.5 md:mt-1 hidden sm:block">
+              </h3>
+              <p className="text-xs text-muted-foreground hidden sm:block">
                 {user ? 'Personalized based on your preferences' : 'Trending properties selected by AI'}
               </p>
             </div>
@@ -175,54 +171,72 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             disabled={isGenerating}
             size="sm"
             variant="outline"
-            className="gap-1 md:gap-2 h-7 md:h-9 px-2 md:px-3"
+            className="gap-1.5 h-8 px-3"
           >
-            <RefreshCw className={cn("h-3 w-3 md:h-4 md:w-4", isGenerating && "animate-spin")} />
-            <span className="hidden sm:inline text-xs md:text-sm">Refresh</span>
+            <RefreshCw className={cn("h-3.5 w-3.5", isGenerating && "animate-spin")} />
+            <span className="hidden sm:inline text-xs">Refresh</span>
           </Button>
         </div>
-        <div className="flex items-center gap-1 md:gap-2 mt-1 md:mt-2 text-[9px] md:text-xs text-muted-foreground">
-          <TrendingUp className="h-2.5 w-2.5 md:h-3 md:w-3" />
+        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          <TrendingUp className="h-3 w-3" />
           <span className="hidden sm:inline">Powered by Lovable AI • Updated in real-time</span>
-          <span className="sm:hidden">AI Powered • Real-time</span>
+          <span className="sm:hidden">AI Powered</span>
         </div>
-      </CardHeader>
-      <CardContent className="p-2 md:p-6">
-        {isGenerating ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-gray-200 dark:bg-gray-700 h-32 md:h-48 rounded-lg mb-2" />
-                <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-3/4 mb-2" />
-                <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-1/2" />
+      </div>
+
+      {isGenerating ? (
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="flex-shrink-0 w-[320px] md:w-[380px] h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
+          ))}
+        </div>
+      ) : (
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+          {recommendations.map((property) => (
+            <div
+              key={property.id}
+              onClick={() => onPropertyClick(property)}
+              className="flex-shrink-0 w-[320px] md:w-[380px] cursor-pointer group"
+            >
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
+                {/* Image - Left Side */}
+                <div className="relative w-[140px] flex-shrink-0">
+                  <img
+                    src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                    alt={property.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute top-2 left-2">
+                    <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
+                      {property.property_type}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 group-hover:to-black/20 transition-all duration-300" />
+                </div>
+                
+                {/* Content - Right Side */}
+                <div className="flex-1 p-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1">
+                      {property.title}
+                    </h3>
+                    <div className="text-[10px] text-muted-foreground line-clamp-1">
+                      {property.city || property.location}
+                    </div>
+                  </div>
+                  <div className="text-sm font-bold text-primary">
+                    {property.price && property.price >= 1000000 
+                      ? `Rp ${(property.price / 1000000).toFixed(1)}M`
+                      : `Rp ${property.price?.toLocaleString() || 'N/A'}`
+                    }
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <PropertyGridView
-            properties={recommendations}
-            onPropertyClick={onPropertyClick}
-            onView3D={onPropertyClick}
-            onSave={(property) => console.log('Save property:', property.id)}
-            onShare={async (property) => {
-              const success = await shareProperty({
-                id: property.id,
-                title: property.title,
-                price: property.price || 0,
-                location: property.location || property.city || '',
-                images: property.images
-              });
-              if (success) {
-                sonnerToast.success("Property link shared!");
-              }
-            }}
-            onContact={(property) => {
-              setSelectedProperty(property);
-              setWhatsappDialogOpen(true);
-            }}
-          />
-        )}
-      </CardContent>
+            </div>
+          ))}
+        </div>
+      )}
       
       {selectedProperty && (
         <WhatsAppInquiryDialog
@@ -238,7 +252,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         description={isGenerating ? "AI is analyzing trending properties..." : "Showing popular properties"}
         duration={2000}
       />
-    </Card>
+    </div>
   );
 };
 
