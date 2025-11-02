@@ -15,7 +15,7 @@ import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
-import { useAutoScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
+import { useScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
 
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
@@ -40,9 +40,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   
-  // 🔥 CRITICAL: Only lock scroll for full-screen filter modal, not small popovers
-  // Small popovers use Radix Portal and don't affect page scroll
-  useAutoScrollLock(showFilters);
+  // Track individual popover states for scroll lock
+  const [isLocationPopoverOpen, setIsLocationPopoverOpen] = useState(false);
+  const [isPropertyTypePopoverOpen, setIsPropertyTypePopoverOpen] = useState(false);
+  const [isFacilitiesPopoverOpen, setIsFacilitiesPopoverOpen] = useState(false);
+  const [isCheckInPopoverOpen, setIsCheckInPopoverOpen] = useState(false);
+  const [isCheckOutPopoverOpen, setIsCheckOutPopoverOpen] = useState(false);
+  
+  // 🔥 CRITICAL: Apply scroll lock when ANY overlay is open
+  // Reference-counted system handles multiple overlays gracefully
+  useScrollLock(showFilters);
+  useScrollLock(isLocationPopoverOpen);
+  useScrollLock(isPropertyTypePopoverOpen);
+  useScrollLock(isFacilitiesPopoverOpen);
+  useScrollLock(isCheckInPopoverOpen);
+  useScrollLock(isCheckOutPopoverOpen);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1410,7 +1422,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
-            <Popover>
+            <Popover onOpenChange={setIsPropertyTypePopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1430,7 +1442,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
+              <PopoverPrimitive.Portal>
+                <PopoverContent 
+                  className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
+                  align="start"
+                  onCloseAutoFocus={(e) => e.preventDefault()}
+                >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
@@ -1467,6 +1484,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
               </PopoverContent>
+            </PopoverPrimitive.Portal>
             </Popover>
 
             {/* Bedrooms +/- */}
@@ -1548,7 +1566,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Facilities Button - Opens Popover */}
-            <Popover>
+            <Popover onOpenChange={setIsFacilitiesPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1568,7 +1586,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onOpenAutoFocus={(e) => e.preventDefault()} onCloseAutoFocus={(e) => e.preventDefault()}>
+              <PopoverPrimitive.Portal>
+                <PopoverContent 
+                  className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
+                  align="start" 
+                  onOpenAutoFocus={(e) => e.preventDefault()} 
+                  onCloseAutoFocus={(e) => e.preventDefault()}
+                >
                 <div>
                   {/* Facilities Tabs */}
                   <Tabs defaultValue="outdoor" className="w-full">
@@ -1732,11 +1756,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </Tabs>
                 </div>
               </PopoverContent>
+            </PopoverPrimitive.Portal>
             </Popover>
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover modal={false}>
+              <Popover modal={false} onOpenChange={setIsLocationPopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -2467,7 +2492,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <div className={cn("grid grid-cols-2", isMobile ? "gap-1" : "gap-2")}>
                         <div>
                           <Label className={cn("text-orange-600 dark:text-orange-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>{currentText.checkIn}</Label>
-                          <Popover>
+                          <Popover onOpenChange={setIsCheckInPopoverOpen}>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
@@ -2477,7 +2502,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" align="start">
+                            <PopoverPrimitive.Portal>
+                              <PopoverContent 
+                                className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" 
+                                align="start"
+                                onCloseAutoFocus={(e) => e.preventDefault()}
+                              >
                               <Calendar
                                 mode="single"
                                 selected={filters.checkInDate}
@@ -2487,12 +2517,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 className="pointer-events-auto"
                               />
                             </PopoverContent>
+                          </PopoverPrimitive.Portal>
                           </Popover>
                         </div>
 
                         <div>
                           <Label className={cn("text-orange-600 dark:text-orange-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>{currentText.checkOut}</Label>
-                          <Popover>
+                          <Popover onOpenChange={setIsCheckOutPopoverOpen}>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
@@ -2502,7 +2533,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
                               </Button>
                             </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" align="start">
+                            <PopoverPrimitive.Portal>
+                              <PopoverContent 
+                                className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" 
+                                align="start"
+                                onCloseAutoFocus={(e) => e.preventDefault()}
+                              >
                               <Calendar
                                 mode="single"
                                 selected={filters.checkOutDate}
@@ -2512,6 +2548,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 className="pointer-events-auto"
                               />
                             </PopoverContent>
+                          </PopoverPrimitive.Portal>
                           </Popover>
                         </div>
                       </div>

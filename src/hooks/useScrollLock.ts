@@ -1,129 +1,79 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect } from 'react';
 
 /**
- * Custom hook to lock body scroll and prevent layout shift caused by scrollbar removal
+ * Reference-counted scroll lock system for handling multiple overlays
+ * Prevents layout shift when modals/popovers open by:
+ * 1. Calculating scrollbar width (typically 15px desktop, 0px mobile)
+ * 2. Setting overflow:hidden on body
+ * 3. Adding padding-right to compensate for removed scrollbar
  * 
- * This hook:
- * 1. Calculates the scrollbar width (typically 15px on desktop, 0 on mobile)
- * 2. When locked, sets overflow:hidden and adds padding-right to compensate
- * 3. Prevents the dreaded "page jump" when modals/popovers open
- * 
- * @returns {lockScroll, unlockScroll, isLocked}
+ * Uses reference counting so multiple overlays can be open simultaneously
+ * without interfering with each other.
  */
-export function useScrollLock() {
-  const isLockedRef = useRef(false);
-  const originalStyleRef = useRef<{
-    overflow: string;
-    paddingRight: string;
-  } | null>(null);
 
-  /**
-   * Calculate scrollbar width (desktop: ~15px, mobile: 0px)
-   */
-  const getScrollbarWidth = useCallback(() => {
-    // Create a temporary div to measure scrollbar
-    const outer = document.createElement('div');
-    outer.style.visibility = 'hidden';
-    outer.style.overflow = 'scroll';
-    outer.style.width = '100px';
-    document.body.appendChild(outer);
+let lockCount = 0;
+let scrollbarWidth = 0;
+let originalPaddingRight = '';
+let originalOverflow = '';
 
-    const inner = document.createElement('div');
-    inner.style.width = '100%';
-    outer.appendChild(inner);
+const calculateScrollbarWidth = () => {
+  const doc = document.documentElement;
+  const width = window.innerWidth - doc.clientWidth;
+  console.log('[useScrollLock] Scrollbar width:', width + 'px');
+  return width;
+};
 
-    const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
-    document.body.removeChild(outer);
-
-    console.log('[useScrollLock] Scrollbar width calculated:', scrollbarWidth + 'px');
-    return scrollbarWidth;
-  }, []);
-
-  /**
-   * Lock scroll and reserve space for removed scrollbar
-   */
-  const lockScroll = useCallback(() => {
-    if (isLockedRef.current) {
-      console.warn('[useScrollLock] Already locked, skipping');
-      return;
-    }
-
-    // Save original styles
-    originalStyleRef.current = {
-      overflow: document.body.style.overflow,
-      paddingRight: document.body.style.paddingRight,
-    };
-
-    // Calculate and apply
-    const scrollbarWidth = getScrollbarWidth();
-    const currentPadding = parseInt(
-      window.getComputedStyle(document.body).paddingRight || '0',
-      10
-    );
-
-    document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`;
+const lockScroll = () => {
+  if (lockCount === 0) {
+    // First lock - save original state and apply lock
+    scrollbarWidth = calculateScrollbarWidth();
+    originalPaddingRight = document.body.style.paddingRight;
+    originalOverflow = document.body.style.overflow;
     
-    // Set CSS variable for child components
-    document.documentElement.style.setProperty(
-      '--removed-body-scroll-bar-size',
-      `${scrollbarWidth}px`
-    );
-
-    isLockedRef.current = true;
-    console.log('[useScrollLock] 🔒 Scroll locked. Padding added:', scrollbarWidth + 'px');
-  }, [getScrollbarWidth]);
-
-  /**
-   * Unlock scroll and restore original styles
-   */
-  const unlockScroll = useCallback(() => {
-    if (!isLockedRef.current) {
-      console.warn('[useScrollLock] Not locked, skipping unlock');
-      return;
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      document.documentElement.style.setProperty(
+        '--removed-body-scroll-bar-size',
+        `${scrollbarWidth}px`
+      );
     }
+    console.log('[useScrollLock] 🔒 Scroll locked (count: 1, padding: ' + scrollbarWidth + 'px)');
+  }
+  lockCount++;
+  if (lockCount > 1) {
+    console.log('[useScrollLock] 🔒 Lock count increased:', lockCount);
+  }
+};
 
-    // Restore original styles
-    if (originalStyleRef.current) {
-      document.body.style.overflow = originalStyleRef.current.overflow;
-      document.body.style.paddingRight = originalStyleRef.current.paddingRight;
-    }
-
-    // Clean up CSS variable
+const unlockScroll = () => {
+  if (lockCount > 0) {
+    lockCount--;
+    console.log('[useScrollLock] 🔓 Lock count decreased:', lockCount);
+  }
+  
+  if (lockCount === 0) {
+    // Last unlock - restore original state
+    document.body.style.overflow = originalOverflow;
+    document.body.style.paddingRight = originalPaddingRight;
     document.documentElement.style.removeProperty('--removed-body-scroll-bar-size');
-
-    isLockedRef.current = false;
-    console.log('[useScrollLock] 🔓 Scroll unlocked. Styles restored.');
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (isLockedRef.current) {
-        unlockScroll();
-      }
-    };
-  }, [unlockScroll]);
-
-  return {
-    lockScroll,
-    unlockScroll,
-    isLocked: isLockedRef.current,
-  };
-}
+    console.log('[useScrollLock] 🔓 Scroll fully unlocked');
+  }
+};
 
 /**
- * Alternative: Auto-lock when condition is true
- * Usage: useAutoScrollLock(isModalOpen || isPopoverOpen);
+ * Hook to automatically lock/unlock scroll based on a boolean state
+ * Supports multiple instances - uses reference counting internally
+ * 
+ * @param isOpen - Whether the overlay is open
  */
-export function useAutoScrollLock(shouldLock: boolean) {
-  const { lockScroll, unlockScroll } = useScrollLock();
-
+export function useScrollLock(isOpen: boolean) {
   useEffect(() => {
-    if (shouldLock) {
+    if (isOpen) {
       lockScroll();
-    } else {
-      unlockScroll();
+      return () => {
+        unlockScroll();
+      };
     }
-  }, [shouldLock, lockScroll, unlockScroll]);
+  }, [isOpen]);
 }
