@@ -1905,17 +1905,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 md:p-4">
-              <div className="bg-background w-full max-w-4xl max-h-[88dvh] md:max-h-[90dvh] rounded-xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
+            <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-2 md:p-4">
+              <div className="bg-background w-full max-w-[95vw] md:max-w-6xl h-[95dvh] md:h-[92dvh] rounded-xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
               {/* Header */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-4 py-3 md:px-5 md:py-4">
+              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-3 py-2.5 md:px-5 md:py-4 shrink-0">
                 <div className="flex items-center gap-2 md:gap-3">
-                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Filter className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base md:text-lg font-semibold text-foreground">Advanced Filters</h3>
-                    <p className="text-xs text-muted-foreground">Refine your search</p>
+                    <h3 className="text-sm md:text-lg font-semibold text-foreground">Advanced Filters</h3>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">Refine your search</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
