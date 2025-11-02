@@ -1494,7 +1494,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <Building2 className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.facilities}
                   {(filters.facilities && filters.facilities.length > 0) && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-blue-500 text-white">
+                      {filters.facilities.length}
+                    </span>
                   )}
                 </Button>
               </PopoverTrigger>
