@@ -2207,77 +2207,69 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     {/* State/Province Selection */}
                     <div>
                       <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectProvince}</Label>
-                      <Select value={filters.state || "all"} onValueChange={handleStateChange} onOpenChange={setIsMenuOpen}>
-                        <SelectTrigger className={cn("w-full bg-background", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
-                          <SelectValue placeholder={currentText.selectProvince} />
-                        </SelectTrigger>
-                        <SelectContent 
-                          className="bg-background border rounded-lg shadow-2xl"
-                          position="popper"
-                          sideOffset={4}
-                        >
-                          <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
-                          {provinces.map((province) => (
-                            <SelectItem key={province.code} value={province.code} className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>
-                              {province.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={filters.state || "all"}
+                        onChange={(e) => handleStateChange(e.target.value)}
+                        className={cn(
+                          "w-full bg-background border border-border rounded-lg px-3 text-foreground",
+                          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
+                          "transition-all duration-200",
+                          isMobile ? "h-8 text-[10px]" : "h-9 text-xs"
+                        )}
+                      >
+                        <option value="all">{currentText.any}</option>
+                        {provinces.map((province) => (
+                          <option key={province.code} value={province.code}>
+                            {province.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {/* City Selection */}
                     <div>
                       <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectCity}</Label>
-                      <Select 
-                        value={filters.city || "all"} 
-                        onValueChange={handleCityChange}
-                        onOpenChange={setIsMenuOpen}
+                      <select
+                        value={filters.city || "all"}
+                        onChange={(e) => handleCityChange(e.target.value)}
                         disabled={!filters.state || filters.state === 'all'}
+                        className={cn(
+                          "w-full bg-background border border-border rounded-lg px-3 text-foreground",
+                          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
+                          "transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
+                          isMobile ? "h-8 text-[10px]" : "h-9 text-xs"
+                        )}
                       >
-                        <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
-                          <SelectValue placeholder={currentText.selectCity} />
-                        </SelectTrigger>
-                        <SelectContent 
-                          className="bg-background border rounded-lg shadow-2xl"
-                          position="popper"
-                          sideOffset={4}
-                        >
-                          <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
-                          {cities.map((city) => (
-                            <SelectItem key={city.code} value={city.code} className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>
-                              {city.type} {city.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        <option value="all">{currentText.any}</option>
+                        {cities.map((city) => (
+                          <option key={city.code} value={city.code}>
+                            {city.type} {city.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {/* Area Selection */}
                     <div>
                       <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectArea}</Label>
-                      <Select 
-                        value={filters.area || "all"} 
-                        onValueChange={handleAreaChange}
-                        onOpenChange={setIsMenuOpen}
+                      <select
+                        value={filters.area || "all"}
+                        onChange={(e) => handleAreaChange(e.target.value)}
                         disabled={!filters.city || filters.city === 'all'}
+                        className={cn(
+                          "w-full bg-background border border-border rounded-lg px-3 text-foreground",
+                          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
+                          "transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
+                          isMobile ? "h-8 text-[10px]" : "h-9 text-xs"
+                        )}
                       >
-                        <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
-                          <SelectValue placeholder={currentText.selectArea} />
-                        </SelectTrigger>
-                        <SelectContent 
-                          className="bg-background border rounded-lg shadow-2xl"
-                          position="popper"
-                          sideOffset={4}
-                        >
-                          <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
-                          {areas.map((area) => (
-                            <SelectItem key={area.code} value={area.code} className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>
-                              {area.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        <option value="all">{currentText.any}</option>
+                        {areas.map((area) => (
+                          <option key={area.code} value={area.code}>
+                            {area.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {/* Nearby Search */}
