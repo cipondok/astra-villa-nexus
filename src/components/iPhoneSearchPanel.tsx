@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import * as PopoverPrimitive from "@radix-ui/react-popover"; // 🔥 CRITICAL: For Portal support
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,6 +15,7 @@ import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
+import { useAutoScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
 
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
@@ -38,6 +40,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // 🔥 CRITICAL: Auto-lock scroll when ANY overlay is open to prevent layout shifts
+  // This reserves space for the scrollbar (typically 15px) so the page doesn't jump
+  useAutoScrollLock(showFilters || isMenuOpen);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1752,13 +1758,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent 
-                  className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
-                  align="start" 
-                  sideOffset={8}
-                  avoidCollisions={true}
-                  collisionPadding={8}
-                >
+                
+                {/* 🔥 CRITICAL: Portal renders outside main flow, preventing scrollbar-induced shifts */}
+                <PopoverPrimitive.Portal>
+                  <PopoverContent 
+                    className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
+                    align="start" 
+                    sideOffset={8}
+                    avoidCollisions={true}
+                    collisionPadding={8}
+                    onCloseAutoFocus={(e) => e.preventDefault()} // 🔥 Prevent focus jump
+                    style={{ 
+                      // 🔥 Compensate for removed scrollbar if needed (usually handled by body padding)
+                      paddingRight: 'var(--removed-body-scroll-bar-size, 0px)' 
+                    }}
+                  >
                   <div className="space-y-3 p-1">
                     {/* State/Province Selection */}
                     <div className="space-y-1.5">
@@ -1903,6 +1917,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     )}
                   </div>
                 </PopoverContent>
+                </PopoverPrimitive.Portal> {/* 🔥 Close Portal */}
               </Popover>
             )}
           </div>
