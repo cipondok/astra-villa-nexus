@@ -339,10 +339,10 @@ const Index = () => {
             {/* Search Panel - No Background */}
             <div className="p-1 md:p-3 w-full px-0 md:px-3">
               <div className="mb-1.5 md:mb-2 text-center">
-                <h2 className="text-xs md:text-lg lg:text-xl font-bold leading-tight text-foreground mb-0.5 md:mb-1">
+                <h2 className="text-[11px] md:text-lg lg:text-xl font-bold leading-tight text-foreground mb-0.5 md:mb-1">
                   {t.findYour}
                 </h2>
-                <p className="text-[10px] md:text-xs lg:text-sm text-muted-foreground">
+                <p className="text-[9px] md:text-xs lg:text-sm text-muted-foreground">
                   🔍 {t.searchPowered}
                 </p>
               </div>
