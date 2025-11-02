@@ -28,11 +28,12 @@ Deno.serve(async (req) => {
     );
 
     // Verify user is authenticated and is admin
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
     
     if (userError || !user) {
       console.error('Authentication error:', userError);
-      throw new Error('Unauthorized');
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 });
     }
 
     console.log('Authenticated user:', user.id);
