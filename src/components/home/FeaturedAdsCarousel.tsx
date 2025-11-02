@@ -73,8 +73,8 @@ export default function FeaturedAdsCarousel() {
 
   // Auto-scroll configuration
   useAutoHorizontalScroll(scrollRef, {
-    speed: 1,
-    intervalMs: 30,
+    speed: 1.5,
+    intervalMs: 25,
     direction: 'rtl',
     pauseOnHover: true
   });

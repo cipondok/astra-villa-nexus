@@ -34,7 +34,6 @@ const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppI
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
-const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -550,34 +549,6 @@ const Index = () => {
                 </div>
 
                 {/* Featured Properties - Modern Auto-Scrolling Carousel */}
-                <section className={cn(
-                  "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0",
-                  isMobile ? "p-3" : "p-4 lg:p-6"
-                )}>
-                  <div className={cn(
-                    "text-center no-space-waste",
-                    isMobile ? "mb-3" : "mb-4"
-                  )}>
-                    <h2 className={cn(
-                      "font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent",
-                      isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
-                    )}>
-                      {t.featuredProperties}
-                    </h2>
-                    <p className={cn(
-                      "text-gray-600 dark:text-gray-300",
-                      isMobile ? "text-xs" : "text-sm lg:text-base"
-                    )}>
-                      {t.premiumProperties}
-                    </p>
-                  </div>
-                  
-                  <div className="container-compact">
-                    <Suspense fallback={<div className="flex gap-6 px-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 w-[300px] flex-shrink-0 rounded-xl" />)}</div>}>
-                      <PropertySlideshow />
-                    </Suspense>
-                  </div>
-                </section>
 
                 {/* Properties for Sale Section - Compact */}
                 <div className="section-compact">
