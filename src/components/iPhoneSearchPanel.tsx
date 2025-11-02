@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -112,6 +112,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     minArea: '',
     maxArea: '',
     features: [] as string[],
+    facilities: [] as string[],
     yearBuilt: '',
     condition: '',
     sortBy: 'newest',
@@ -594,6 +595,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       { id: 'generator', label: currentText.generator, icon: '⚡' },
       { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
     ],
+    facilities: [
+      { id: 'parking_space', label: 'Parking Space', icon: '🅿️' },
+      { id: 'security_system', label: 'Security System', icon: '🔐' },
+      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊‍♂️' },
+      { id: 'gym_fitness', label: 'Gym/Fitness Center', icon: '🏋️' },
+      { id: 'elevator_lift', label: 'Elevator/Lift', icon: '🛗' },
+      { id: 'garden_yard', label: 'Garden/Yard', icon: '🌳' },
+      { id: 'bbq_area', label: 'BBQ Area', icon: '🍖' },
+      { id: 'playground', label: 'Children\'s Playground', icon: '🎠' },
+      { id: 'cctv_surveillance', label: 'CCTV Surveillance', icon: '📹' },
+      { id: 'backup_generator', label: 'Backup Generator', icon: '⚡' },
+      { id: 'clubhouse', label: 'Clubhouse', icon: '🏛️' },
+      { id: 'tennis_court', label: 'Tennis Court', icon: '🎾' },
+    ],
     maxPrice: 20000,
     priceStep: 500
   });
@@ -633,6 +648,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       { id: 'generator', label: currentText.generator, icon: '⚡' },
       { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
     ],
+    facilities: [
+      { id: 'air_conditioning', label: 'Air Conditioning', icon: '❄️' },
+      { id: 'water_heater_facility', label: 'Water Heater', icon: '🚿' },
+      { id: 'internet_wifi', label: 'Internet/WiFi', icon: '📶' },
+      { id: 'tv_cable', label: 'TV/Cable', icon: '📺' },
+      { id: 'washing_machine', label: 'Washing Machine', icon: '🧺' },
+      { id: 'refrigerator', label: 'Refrigerator', icon: '🧊' },
+      { id: 'stove_oven', label: 'Stove/Oven', icon: '🍳' },
+      { id: 'microwave', label: 'Microwave', icon: '🔥' },
+      { id: 'furniture_included', label: 'Furniture Included', icon: '🛋️' },
+      { id: 'bedding_linens', label: 'Bedding/Linens', icon: '🛏️' },
+      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
+      { id: 'kitchen_utensils', label: 'Kitchen Utensils', icon: '🔪' },
+    ],
     maxPrice: 100,
     priceStep: 5
   });
@@ -646,6 +675,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     ],
     propertyTypes: propertyTypeOptions,
     features: propertyFeatures,
+    facilities: [
+      { id: 'parking_space', label: 'Parking Space', icon: '🅿️' },
+      { id: 'security_system', label: 'Security System', icon: '🔐' },
+      { id: 'air_conditioning', label: 'Air Conditioning', icon: '❄️' },
+      { id: 'water_heater_facility', label: 'Water Heater', icon: '🚿' },
+      { id: 'internet_wifi', label: 'Internet/WiFi', icon: '📶' },
+      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊‍♂️' },
+      { id: 'gym_fitness', label: 'Gym/Fitness Center', icon: '🏋️' },
+      { id: 'elevator_lift', label: 'Elevator/Lift', icon: '🛗' },
+    ],
     maxPrice: 15000,
     priceStep: 100
   });
@@ -735,6 +774,15 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     }));
   };
 
+  const handleFacilityToggle = (facilityId: string) => {
+    setFilters(prev => ({
+      ...prev,
+      facilities: prev.facilities.includes(facilityId)
+        ? prev.facilities.filter(f => f !== facilityId)
+        : [...prev.facilities, facilityId]
+    }));
+  };
+
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({
       ...prev,
@@ -767,6 +815,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       minArea: '',
       maxArea: '',
       features: [],
+      facilities: [],
       yearBuilt: '',
       condition: '',
       sortBy: 'newest',
@@ -1601,6 +1650,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
                     Location
                   </TabsTrigger>
+                  <TabsTrigger value="facilities" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
+                    <Warehouse className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Facilities
+                  </TabsTrigger>
                   <TabsTrigger value="amenities" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
                     <Building className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
                     Amenities
@@ -1982,6 +2035,34 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
                   </div>
                 </div>
+                </TabsContent>
+
+                <TabsContent value="facilities" className={cn("bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
+                <Label className={cn("font-semibold text-foreground block", isMobile ? "text-xs mb-2" : "text-sm mb-2.5")}>
+                  Property Facilities
+                  {activeTab === 'rent' && <span className="ml-2 text-blue-600 dark:text-blue-400">(Rental)</span>}
+                  {(activeTab === 'sale' || activeTab === 'new_project') && <span className="ml-2 text-blue-600 dark:text-blue-400">(Buy)</span>}
+                </Label>
+                
+                <div className={cn("grid gap-2", isMobile ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3")}>
+                  {currentFilters.facilities?.map((facility: any) => (
+                    <div key={facility.id} className={cn("flex items-center bg-white/50 dark:bg-blue-950/20 rounded-lg hover:bg-white/80 dark:hover:bg-blue-950/30 transition-colors", isMobile ? "space-x-1.5 p-2" : "space-x-2 p-2.5")}>
+                      <Checkbox
+                        id={facility.id}
+                        checked={filters.facilities.includes(facility.id)}
+                        onCheckedChange={() => handleFacilityToggle(facility.id)}
+                        className={cn("border-blue-300 dark:border-blue-700 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")}
+                      />
+                      <Label
+                        htmlFor={facility.id}
+                        className={cn("font-normal cursor-pointer flex items-center gap-1 text-blue-700 dark:text-blue-300", isMobile ? "text-[10px]" : "text-xs")}
+                      >
+                        <span className={cn(isMobile ? "text-xs" : "text-sm")}>{facility.icon}</span>
+                        <span>{facility.label}</span>
+                      </Label>
+                     </div>
+                  ))}
+                 </div>
                 </TabsContent>
 
                 <TabsContent value="amenities" className={cn("bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
