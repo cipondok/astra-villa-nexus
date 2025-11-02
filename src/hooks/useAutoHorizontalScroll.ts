@@ -17,46 +17,60 @@ export default function useAutoHorizontalScroll(
     if (!el) return;
 
     let paused = false;
-    let id: number | null = null;
+    let rafId: number | null = null;
+    let last = performance.now();
 
-    const tick = () => {
-      if (!el || paused) return;
-      const step = Math.max(1, speed);
-      // Move visually from right to left by increasing scrollLeft
-      el.scrollLeft += direction === 'rtl' ? step : -step;
+    // Handlers kept as references so we can remove them on cleanup
+    const onMouseEnter = () => (paused = true);
+    const onMouseLeave = () => (paused = false);
+    const onTouchStart = () => (paused = true);
+    const onTouchEnd = () => (paused = false);
 
-      const reachedEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
-      const reachedStart = el.scrollLeft <= 0;
+    const tickRaf = (now: number) => {
+      if (!el) return;
+      const dt = Math.min(64, now - last); // cap delta to avoid huge jumps
+      last = now;
 
-      if (direction === 'rtl' && reachedEnd) {
-        el.scrollLeft = 0; // loop back
+      if (!paused) {
+        // Convert provided speed (px per interval) into px per frame using intervalMs as baseline
+        const baseline = intervalMs ?? 16.7; // safeguard
+        const px = Math.max(0.5, speed) * (dt / baseline);
+        el.scrollLeft += direction === 'rtl' ? px : -px;
+
+        const reachedEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+        const reachedStart = el.scrollLeft <= 0;
+
+        if (direction === 'rtl' && reachedEnd) {
+          el.scrollLeft = 0; // loop back
+        }
+        if (direction === 'ltr' && reachedStart) {
+          el.scrollLeft = el.scrollWidth; // jump to end
+        }
       }
-      if (direction === 'ltr' && reachedStart) {
-        el.scrollLeft = el.scrollWidth; // jump to end
-      }
+
+      rafId = window.requestAnimationFrame(tickRaf);
     };
 
-    const start = () => {
-      if (id) return;
-      id = window.setInterval(tick, intervalMs);
-    };
-
-    const stop = () => {
-      if (!id) return;
-      window.clearInterval(id);
-      id = null;
-    };
-
-    if (pauseOnHover) {
-      el.addEventListener('mouseenter', () => (paused = true));
-      el.addEventListener('mouseleave', () => (paused = false));
-      el.addEventListener('touchstart', () => (paused = true), { passive: true });
-      el.addEventListener('touchend', () => (paused = false));
+    // Only start if there is something to scroll
+    if (el.scrollWidth > el.clientWidth) {
+      rafId = window.requestAnimationFrame(tickRaf);
     }
 
-    start();
+    if (pauseOnHover) {
+      el.addEventListener('mouseenter', onMouseEnter);
+      el.addEventListener('mouseleave', onMouseLeave);
+      el.addEventListener('touchstart', onTouchStart, { passive: true });
+      el.addEventListener('touchend', onTouchEnd);
+    }
+
     return () => {
-      stop();
+      if (rafId) window.cancelAnimationFrame(rafId);
+      if (pauseOnHover) {
+        el.removeEventListener('mouseenter', onMouseEnter);
+        el.removeEventListener('mouseleave', onMouseLeave);
+        el.removeEventListener('touchstart', onTouchStart as any);
+        el.removeEventListener('touchend', onTouchEnd);
+      }
     };
   }, [ref, speed, intervalMs, direction, pauseOnHover]);
 }

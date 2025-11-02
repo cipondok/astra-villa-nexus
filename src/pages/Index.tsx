@@ -334,15 +334,15 @@ const Index = () => {
         
         
         {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
-        <section className="relative w-full pt-2 md:pt-0">
-          <HomeIntroSlider language={language} className="h-[50vh] sm:h-[225px] md:h-[250px] lg:h-[275px]">
+        <section className="relative w-full pt-14 md:pt-4 lg:pt-0">
+          <HomeIntroSlider language={language} className="h-[46vh] sm:h-[220px] md:h-[240px] lg:h-[260px] xl:h-[300px]">
             {/* Search Panel - No Background */}
             <div className="p-1 md:p-3 w-full px-0 md:px-3">
               <div className="mb-1.5 md:mb-2 text-center">
-                <h2 className="text-sm md:text-xl font-bold text-foreground mb-0.5 md:mb-1">
+                <h2 className="text-xs md:text-lg lg:text-xl font-bold leading-tight text-foreground mb-0.5 md:mb-1">
                   {t.findYour}
                 </h2>
-                <p className="text-[10px] md:text-sm text-muted-foreground">
+                <p className="text-[10px] md:text-xs lg:text-sm text-muted-foreground">
                   🔍 {t.searchPowered}
                 </p>
               </div>
