@@ -2206,11 +2206,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     {/* State/Province Selection */}
                     <div>
                       <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectProvince}</Label>
-                      <Select value={filters.state || "all"} onValueChange={handleStateChange}>
+                      <Select value={filters.state || "all"} onValueChange={handleStateChange} onOpenChange={setIsMenuOpen}>
                         <SelectTrigger className={cn("w-full bg-background", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectProvince} />
                         </SelectTrigger>
-                        <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
+                        <SelectContent 
+                          className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]"
+                          position="popper"
+                          sideOffset={4}
+                          onCloseAutoFocus={(e) => e.preventDefault()}
+                        >
                           <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
                           {provinces.map((province) => (
                             <SelectItem key={province.code} value={province.code} className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>
@@ -2233,7 +2238,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectCity} />
                         </SelectTrigger>
-                        <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
+                        <SelectContent 
+                          className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]"
+                          position="popper"
+                          sideOffset={4}
+                          onCloseAutoFocus={(e) => e.preventDefault()}
+                        >
                           <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
                           {cities.map((city) => (
                             <SelectItem key={city.code} value={city.code} className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>
@@ -2256,7 +2266,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectArea} />
                         </SelectTrigger>
-                        <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
+                        <SelectContent 
+                          className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]"
+                          position="popper"
+                          sideOffset={4}
+                          onCloseAutoFocus={(e) => e.preventDefault()}
+                        >
                           <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
                           {areas.map((area) => (
                             <SelectItem key={area.code} value={area.code} className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>
