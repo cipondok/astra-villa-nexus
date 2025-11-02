@@ -153,7 +153,7 @@ const AuthenticatedNavigation = ({
                 {/* Home */}
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className="flex items-center space-x-1 px-2 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                    className="flex items-center space-x-1 px-2 py-1.5 rounded-md text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-accent/50 transition-colors cursor-pointer"
                     onClick={() => navigate('/')}
                   >
                     <Home className="h-3.5 w-3.5" />
@@ -168,33 +168,33 @@ const AuthenticatedNavigation = ({
                     <span>{currentText.browse}</span>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-48 p-2">
+                    <div className="w-44 p-1.5">
                       <NavigationMenuLink
-                        className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        className="block px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                         onClick={() => navigate('/dijual')}
                       >
                         {currentText.properties}
                       </NavigationMenuLink>
                       <NavigationMenuLink
-                        className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        className="block px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                         onClick={() => navigate('/buy')}
                       >
                         {currentText.forSale}
                       </NavigationMenuLink>
                       <NavigationMenuLink
-                        className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        className="block px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                         onClick={() => navigate('/rent')}
                       >
                         {currentText.forRent}
                       </NavigationMenuLink>
                       <NavigationMenuLink
-                        className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        className="block px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                         onClick={() => navigate('/new-projects')}
                       >
                         {currentText.newProjects}
                       </NavigationMenuLink>
                       <NavigationMenuLink
-                        className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        className="block px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                         onClick={() => navigate('/pre-launching')}
                       >
                         {currentText.preLaunching}
@@ -211,24 +211,20 @@ const AuthenticatedNavigation = ({
                       <span>Properties</span>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div className="w-48 p-2">
+                      <div className="w-44 p-1.5">
                         <NavigationMenuLink
-                          className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                           onClick={() => navigate('/my-properties')}
                         >
-                          <div className="flex items-center space-x-2">
-                            <List className="h-4 w-4" />
-                            <span>{currentText.myProperties}</span>
-                          </div>
+                          <List className="h-3.5 w-3.5" />
+                          <span>{currentText.myProperties}</span>
                         </NavigationMenuLink>
                         <NavigationMenuLink
-                          className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-md text-xs hover:bg-accent/50 cursor-pointer transition-all"
                           onClick={() => navigate('/add-property')}
                         >
-                          <div className="flex items-center space-x-2">
-                            <Plus className="h-4 w-4" />
-                            <span>{currentText.addProperty}</span>
-                          </div>
+                          <Plus className="h-3.5 w-3.5" />
+                          <span>{currentText.addProperty}</span>
                         </NavigationMenuLink>
                       </div>
                     </NavigationMenuContent>
@@ -239,7 +235,7 @@ const AuthenticatedNavigation = ({
                 {canAccessAdmin && (
                   <NavigationMenuItem>
                     <NavigationMenuLink
-                      className="flex items-center space-x-1 px-2 py-1.5 rounded-md text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                      className="flex items-center space-x-1 px-2 py-1.5 rounded-md text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
                       onClick={() => navigate('/admin')}
                     >
                       <Shield className="h-3.5 w-3.5" />
