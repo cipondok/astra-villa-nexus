@@ -61,12 +61,12 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
   };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
-          className="relative w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30"
+          className="relative w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0"
         >
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg">
             <span className="text-white text-sm font-semibold">
@@ -83,9 +83,13 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         </Button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent className="w-64 p-0 backdrop-blur-xl bg-background/95 border-border/50 shadow-2xl" align="end">
+      <DropdownMenuContent 
+        className="w-64 p-0 backdrop-blur-xl bg-background/95 border-border/50 shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2" 
+        align="end"
+        sideOffset={8}
+      >
         {/* User Profile Header */}
-        <DropdownMenuLabel className="p-3 border-b border-border/50">
+        <DropdownMenuLabel className="p-3 border-b border-border/50 opacity-100">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-md ring-2 ring-background">
               <span className="text-white text-xs font-semibold">
@@ -104,8 +108,8 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         </DropdownMenuLabel>
 
         {/* Role-specific Quick Actions */}
-        <div className="p-2">
-          <div className="grid grid-cols-2 gap-1.5">
+        <div className="p-2 opacity-100">
+          <div className="grid grid-cols-2 gap-1.5 opacity-100">
             {isAdmin && (
               <>
                 <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
@@ -177,7 +181,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         </div>
 
         {/* Settings & Account */}
-        <div className="p-2 border-t border-border/50">
+        <div className="p-2 border-t border-border/50 opacity-100">
           <DropdownMenuItem 
             onClick={() => { navigate('/profile'); setIsOpen(false); }}
             className="flex items-center gap-2.5 px-3 py-2 rounded-md cursor-pointer"
