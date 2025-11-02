@@ -542,8 +542,8 @@ const Index = () => {
                 </div>
 
                 {/* ASTRA Villa Features Section */}
-                <div className="section-compact mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-40 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                <div className="w-full max-w-full mx-auto mb-6">
+                  <Suspense fallback={<div className="animate-pulse h-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <AstraVillaFeatures />
                   </Suspense>
                 </div>

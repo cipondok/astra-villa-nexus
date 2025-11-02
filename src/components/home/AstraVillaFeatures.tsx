@@ -1,10 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import { 
-  Sparkles,
-  Globe
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 // Import custom web icons
 import newProjectsIcon from '@/assets/icons/new-projects-icon.png';
@@ -85,33 +81,29 @@ const features: Feature[] = [
 
 const AstraVillaFeatures = () => {
   return (
-    <section className="w-full py-8 md:py-12 lg:py-16">
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <div className="text-center mb-6 md:mb-8 animate-fade-in">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="relative w-10 h-10 flex items-center justify-center rounded-full bg-blue-500/10 dark:bg-blue-400/10">
-              <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400 relative z-10" strokeWidth={2.5} />
-              <div className="absolute inset-0 bg-blue-500/30 dark:bg-blue-400/30 rounded-full animate-pulse"></div>
-            </div>
-            <Sparkles className="w-6 h-6 text-amber-500 dark:text-amber-400 animate-pulse" strokeWidth={2.5} />
+    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-3 md:p-4 overflow-hidden">
+      {/* Section Header */}
+      <div className="mb-3">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="p-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+            <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+          <h2 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
             AI-Powered Tools & Features
           </h2>
-          <p className="text-xs md:text-sm text-muted-foreground">
-            Smart Property Solutions for Indonesia
-          </p>
         </div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} feature={feature} index={index} />
-          ))}
-        </div>
+        <p className="text-xs text-muted-foreground pl-9">
+          Smart Property Solutions for Indonesia
+        </p>
       </div>
-    </section>
+
+      {/* Features Carousel */}
+      <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+        {features.map((feature, index) => (
+          <FeatureCard key={index} feature={feature} index={index} />
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -145,102 +137,34 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   return (
     <div
       onClick={handleClick}
-      className={cn(
-        'group relative overflow-hidden rounded-lg transition-all duration-300 cursor-pointer',
-        'bg-gradient-to-br from-background to-accent/5',
-        'border border-border/50 dark:border-border',
-        'shadow-sm hover:shadow-lg hover:border-primary/30',
-        'hover:-translate-y-1 hover:scale-[1.02]',
-        'animate-fade-in'
-      )}
-      style={{
-        animationDelay: `${index * 0.05}s`
-      }}
+      className="flex-shrink-0 w-[280px] md:w-[320px] cursor-pointer group"
     >
-      {/* Gradient Overlay on Hover */}
-      <div className={cn(
-        'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500',
-        'bg-gradient-to-br',
-        feature.color
-      )} 
-        style={{ opacity: 0.05 }}
-      />
-
-      {/* Card Content */}
-      <div className="relative p-4 md:p-6 h-full flex flex-col">
-        {/* Icon Container with AI Badge */}
-        <div className="relative mb-3 md:mb-4 flex items-center justify-center">
-          <div className={cn(
-            'relative w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center',
-            'transition-all duration-500 group-hover:scale-110 group-hover:rotate-3',
-            'bg-white/80 dark:bg-background/80 backdrop-blur-sm',
-            'border-2 border-border/30 dark:border-border/50',
-            'shadow-lg group-hover:shadow-2xl',
-            'before:absolute before:inset-0 before:rounded-2xl before:opacity-0 group-hover:before:opacity-100 before:transition-opacity',
-            'before:bg-gradient-to-br',
-            `before:${feature.color}`,
-            'before:-z-10 before:blur-xl'
-          )}>
+      <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px]">
+        {/* Icon - Left Side */}
+        <div className="relative w-[90px] flex-shrink-0 flex items-center justify-center">
+          <div className="relative w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-background to-accent/10 shadow-sm group-hover:scale-110 transition-transform duration-300">
             <img 
               src={feature.icon} 
               alt={feature.title}
-              className="w-10 h-10 md:w-12 md:h-12 object-contain transition-all duration-500 group-hover:scale-110 relative z-10 drop-shadow-lg"
-              style={{
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
-              }}
+              className="w-8 h-8 object-contain"
             />
+            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-sm">
+              <Sparkles className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+            </div>
           </div>
-          <div className={cn(
-            'absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center',
-            'bg-gradient-to-br from-amber-400 to-orange-500',
-            'shadow-lg animate-pulse'
-          )}>
-            <Sparkles className="w-3 h-3 text-white" strokeWidth={3} />
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 dark:to-white/5" />
         </div>
-
-        {/* Title */}
-        <h3 className={cn(
-          'text-sm md:text-base font-bold mb-2 text-center',
-          'text-foreground',
-          'group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:text-transparent',
-          `group-hover:${feature.color}`,
-          'transition-all duration-300'
-        )}>
-          {feature.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-xs text-muted-foreground leading-relaxed flex-grow line-clamp-2 text-center">
-          {feature.description}
-        </p>
-
-        {/* Hover Arrow Indicator */}
-        <div className="mt-2 flex items-center justify-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors duration-300">
-          <span className="mr-1 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-            Explore
-          </span>
-          <svg 
-            className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+        
+        {/* Content - Right Side */}
+        <div className="flex-1 p-2.5 flex flex-col justify-center">
+          <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+            {feature.title}
+          </h3>
+          <p className="text-[10px] text-muted-foreground line-clamp-2">
+            {feature.description}
+          </p>
         </div>
       </div>
-
-      {/* Decorative Corner Element */}
-      <div className={cn(
-        'absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-10 transition-opacity duration-300',
-        'bg-gradient-to-br',
-        feature.color
-      )}
-        style={{
-          clipPath: 'polygon(100% 0, 0 0, 100% 100%)'
-        }}
-      />
     </div>
   );
 };
