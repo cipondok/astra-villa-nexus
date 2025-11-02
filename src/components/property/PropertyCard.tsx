@@ -10,6 +10,7 @@ import PropertyRatingDisplay from './PropertyRatingDisplay';
 import PropertyRatingModal from './PropertyRatingModal';
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from "@/types/property";
+import VerificationBadge from '@/components/ui/VerificationBadge';
 
 interface PropertyCardProps {
   id: string;
@@ -27,6 +28,10 @@ interface PropertyCardProps {
   virtual_tour_url?: string;
   created_at?: string;
   posted_at?: string;
+  owner_type?: string;
+  owner_verified?: boolean;
+  agent_verified?: boolean;
+  agency_verified?: boolean;
   posted_by?: {
     id: string;
     name: string;
@@ -57,6 +62,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   virtual_tour_url,
   created_at,
   posted_at,
+  owner_type,
+  owner_verified,
+  agent_verified,
+  agency_verified,
   posted_by
 }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -154,7 +163,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
           )}
           
-          <div className="absolute top-2 left-2 flex gap-2 flex-wrap">
+          <div className="absolute top-2 left-2 flex gap-2 flex-wrap max-w-[70%]">
             <Badge 
               className={`${listing_type === 'sale' 
                 ? 'bg-emerald-600 text-white' 
@@ -168,6 +177,19 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 <Box className="h-3 w-3" />
                 3D Available
               </Badge>
+            )}
+          </div>
+
+          {/* Verification Badges - Bottom Left */}
+          <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
+            {owner_type === 'individual' && owner_verified && (
+              <VerificationBadge type="owner" verified={true} size="sm" />
+            )}
+            {owner_type === 'agent' && agent_verified && (
+              <VerificationBadge type="agent" verified={true} size="sm" />
+            )}
+            {owner_type === 'agency' && agency_verified && (
+              <VerificationBadge type="agency" verified={true} size="sm" />
             )}
           </div>
 

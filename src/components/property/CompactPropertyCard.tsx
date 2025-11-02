@@ -10,6 +10,7 @@ import PropertyRatingDisplay from './PropertyRatingDisplay';
 import PropertyRatingModal from './PropertyRatingModal';
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from '@/types/property';
+import VerificationBadge from '@/components/ui/VerificationBadge';
 
 interface CompactProperty {
   id: string;
@@ -30,6 +31,10 @@ interface CompactProperty {
   city?: string;
   created_at?: string;
   posted_at?: string;
+  owner_type?: string;
+  owner_verified?: boolean;
+  agent_verified?: boolean;
+  agency_verified?: boolean;
   posted_by?: {
     id: string;
     name: string;
@@ -190,7 +195,7 @@ const CompactPropertyCard = ({
           />
 
           {/* Top Badges */}
-          <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+          <div className="absolute top-2 left-2 flex flex-wrap gap-1 max-w-[70%]">
             <Badge 
               className="bg-primary text-primary-foreground font-medium px-2 py-0.5 text-xs shadow-md"
             >
@@ -206,6 +211,19 @@ const CompactPropertyCard = ({
                 <ViewIcon className="h-2.5 w-2.5" />
                 <span>3D</span>
               </Badge>
+            )}
+          </div>
+
+          {/* Verification Badges - Bottom Left */}
+          <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
+            {property.owner_type === 'individual' && property.owner_verified && (
+              <VerificationBadge type="owner" verified={true} size="sm" />
+            )}
+            {property.owner_type === 'agent' && property.agent_verified && (
+              <VerificationBadge type="agent" verified={true} size="sm" />
+            )}
+            {property.owner_type === 'agency' && property.agency_verified && (
+              <VerificationBadge type="agency" verified={true} size="sm" />
             )}
           </div>
 
