@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
     // Get authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      throw new Error('No authorization header');
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), { headers: corsHeaders, status: 401 });
     }
 
     // Create Supabase client with user's auth

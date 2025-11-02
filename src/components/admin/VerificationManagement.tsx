@@ -82,9 +82,32 @@ const VerificationManagement = () => {
     verifiedVendors: 0
   });
 
+  const [authStatus, setAuthStatus] = useState<'ok' | 'unauth' | 'forbidden'>('ok');
+
   useEffect(() => {
     fetchVerifications();
   }, [selectedTab, statusFilter]);
+
+  if (authStatus !== 'ok') {
+    return (
+      <Card className="max-w-3xl mx-auto mt-8">
+        <CardHeader>
+          <CardTitle>{authStatus === 'unauth' ? 'Sign in required' : 'Admin access required'}</CardTitle>
+          <CardDescription>
+            {authStatus === 'unauth'
+              ? 'Please sign in to view verification requests.'
+              : 'You do not have permission to access this section.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex gap-3">
+          <Button onClick={() => window.location.href = '/'} variant="outline">Go Home</Button>
+          {authStatus === 'unauth' && (
+            <Button onClick={() => window.location.href = '/login'}>Sign In</Button>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
 
   const fetchVerifications = async () => {
     try {
@@ -94,7 +117,9 @@ const VerificationManagement = () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
       if (!token) {
-        throw new Error('Unauthorized');
+        setAuthStatus('unauth');
+        toast.error('Please sign in to access verification requests');
+        return;
       }
 
       // Call edge function to get verification requests with auth header
@@ -116,7 +141,16 @@ const VerificationManagement = () => {
       }
     } catch (error: any) {
       console.error('Error fetching verifications:', error);
-      toast.error('Failed to load verification requests');
+      const msg = String(error?.message || '').toLowerCase();
+      if (msg.includes('admin')) {
+        setAuthStatus('forbidden');
+        toast.error('Admin access required');
+      } else if (msg.includes('unauthorized')) {
+        setAuthStatus('unauth');
+        toast.error('Please sign in to continue');
+      } else {
+        toast.error('Failed to load verification requests');
+      }
     } finally {
       setLoading(false);
     }
