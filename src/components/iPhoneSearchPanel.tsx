@@ -2210,8 +2210,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className={cn("w-full bg-background", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectProvince} />
                         </SelectTrigger>
-                        <SelectContent 
-className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
+<SelectContent 
+className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
                           position="popper"
                           sideOffset={4}
                           onCloseAutoFocus={(e) => e.preventDefault()}
@@ -2238,8 +2238,8 @@ className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscro
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectCity} />
                         </SelectTrigger>
-                        <SelectContent 
-className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
+<SelectContent 
+className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
                           position="popper"
                           sideOffset={4}
                           onCloseAutoFocus={(e) => e.preventDefault()}
@@ -2266,8 +2266,8 @@ className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscro
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectArea} />
                         </SelectTrigger>
-                        <SelectContent 
-className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
+<SelectContent 
+className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
                           position="popper"
                           sideOffset={4}
                           onCloseAutoFocus={(e) => e.preventDefault()}
