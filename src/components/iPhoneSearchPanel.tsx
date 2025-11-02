@@ -840,13 +840,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   };
 
   const getActiveFiltersCount = () => {
-    let count = Object.entries(filters).filter(([key, value]) => {
-      if (key === 'features') return Array.isArray(value) && value.length > 0;
-      if (key === 'sortBy') return false; // Don't count sortBy as it has a default value
-      if (key === 'checkInDate' || key === 'checkOutDate') return value !== null;
-      // Exclude empty strings, null, undefined, and 'all' values
-      return value !== '' && value !== null && value !== undefined && value !== 'all';
-    }).length;
+    let count = 0;
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      // Skip sortBy as it always has a default value
+      if (key === 'sortBy') return;
+      
+      // Count arrays (features, facilities) only if they have items
+      if (key === 'features' || key === 'facilities') {
+        if (Array.isArray(value) && value.length > 0) count++;
+        return;
+      }
+      
+      // Count date fields only if they're set
+      if (key === 'checkInDate' || key === 'checkOutDate') {
+        if (value !== null) count++;
+        return;
+      }
+      
+      // Count other fields only if they're not empty/null/undefined/'all'
+      if (value && value !== '' && value !== 'all') {
+        count++;
+      }
+    });
     
     return count;
   };
