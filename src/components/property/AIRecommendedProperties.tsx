@@ -185,30 +185,30 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       </div>
 
       {isGenerating ? (
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="flex-shrink-0 w-[320px] md:w-[380px] h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
           ))}
         </div>
       ) : (
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {recommendations.map((property) => (
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
-              className="flex-shrink-0 w-[320px] md:w-[380px] cursor-pointer group"
+              className="cursor-pointer group"
             >
               <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
                 {/* Image - Left Side */}
-                <div className="relative w-[140px] flex-shrink-0">
+                <div className="relative w-[100px] lg:w-[120px] flex-shrink-0">
                   <img
                     src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                     alt={property.title}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute top-2 left-2">
-                    <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
+                  <div className="absolute top-1 left-1">
+                    <span className="px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[9px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
                       {property.property_type}
                     </span>
                   </div>
@@ -216,16 +216,16 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                 </div>
                 
                 {/* Content - Right Side */}
-                <div className="flex-1 p-3 flex flex-col justify-between">
+                <div className="flex-1 p-2 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1">
+                    <h3 className="text-xs font-semibold text-foreground line-clamp-2 mb-0.5">
                       {property.title}
                     </h3>
-                    <div className="text-[10px] text-muted-foreground line-clamp-1">
+                    <div className="text-[9px] text-muted-foreground line-clamp-1">
                       {property.city || property.location}
                     </div>
                   </div>
-                  <div className="text-sm font-bold text-primary">
+                  <div className="text-xs font-bold text-primary">
                     {property.price && property.price >= 1000000 
                       ? `Rp ${(property.price / 1000000).toFixed(1)}M`
                       : `Rp ${property.price?.toLocaleString() || 'N/A'}`
