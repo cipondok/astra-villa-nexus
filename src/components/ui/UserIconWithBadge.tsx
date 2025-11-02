@@ -84,23 +84,23 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
       </DropdownMenuTrigger>
       
       <DropdownMenuContent 
-        className="w-64 p-0 backdrop-blur-xl bg-background/95 border-border/50 shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2" 
+        className="w-52 p-0 backdrop-blur-md bg-background/70 border-border/30 shadow-xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2" 
         align="end"
         sideOffset={8}
       >
         {/* User Profile Header */}
-        <DropdownMenuLabel className="p-3 border-b border-border/50 opacity-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-md ring-2 ring-background">
+        <DropdownMenuLabel className="p-2 border-b border-border/30 opacity-100">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-sm">
               <span className="text-white text-xs font-semibold">
                 {getUserInitials()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-foreground truncate">
+              <p className="font-medium text-xs text-foreground truncate">
                 {profile?.full_name || user?.email}
               </p>
-              <p className="text-xs text-muted-foreground capitalize">
+              <p className="text-[10px] text-muted-foreground capitalize">
                 {roles[0]?.replace('_', ' ') || 'User'}
               </p>
             </div>
@@ -108,72 +108,72 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         </DropdownMenuLabel>
 
         {/* Role-specific Quick Actions */}
-        <div className="p-2 opacity-100">
-          <div className="flex flex-col gap-1 opacity-100">
+        <div className="p-1.5 opacity-100">
+          <div className="flex flex-col gap-0.5 opacity-100">
             {isAdmin && (
               <>
-                <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Crown className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm font-medium">Admin Panel</span>
+                <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Crown className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span className="text-xs font-medium">Admin Panel</span>
                 </button>
-                <button onClick={() => { navigate('/dijual'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Building2 className="h-4 w-4 text-green-500" />
-                  <span className="text-sm font-medium">Properties</span>
+                <button onClick={() => { navigate('/dijual'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Building2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                  <span className="text-xs font-medium">Properties</span>
                 </button>
-                <button onClick={() => { navigate('/users'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <User className="h-4 w-4 text-purple-500" />
-                  <span className="text-sm font-medium">Users</span>
+                <button onClick={() => { navigate('/users'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <User className="h-3.5 w-3.5 text-purple-500 shrink-0" />
+                  <span className="text-xs font-medium">Users</span>
                 </button>
-                <button onClick={() => { navigate('/analytics'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <BarChart3 className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm font-medium">Analytics</span>
+                <button onClick={() => { navigate('/analytics'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <BarChart3 className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                  <span className="text-xs font-medium">Analytics</span>
                 </button>
               </>
             )}
 
             {isAgent && (
               <>
-                <button onClick={() => { navigate('/agent'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <User className="h-4 w-4 text-green-500" />
-                  <span className="text-sm font-medium">Agent Hub</span>
+                <button onClick={() => { navigate('/agent'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <User className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                  <span className="text-xs font-medium">Agent Hub</span>
                 </button>
-                <button onClick={() => { navigate('/listings'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Building2 className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm font-medium">My Listings</span>
+                <button onClick={() => { navigate('/listings'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Building2 className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span className="text-xs font-medium">My Listings</span>
                 </button>
               </>
             )}
 
             {isVendor && (
               <>
-                <button onClick={() => { navigate('/vendor'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Settings className="h-4 w-4 text-purple-500" />
-                  <span className="text-sm font-medium">Vendor Panel</span>
+                <button onClick={() => { navigate('/vendor'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Settings className="h-3.5 w-3.5 text-purple-500 shrink-0" />
+                  <span className="text-xs font-medium">Vendor Panel</span>
                 </button>
-                <button onClick={() => { navigate('/services'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Sparkles className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm font-medium">My Services</span>
+                <button onClick={() => { navigate('/services'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Sparkles className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span className="text-xs font-medium">My Services</span>
                 </button>
               </>
             )}
 
             {!isAdmin && !isAgent && !isVendor && (
               <>
-                <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <BarChart3 className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm font-medium">Dashboard</span>
+                <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <BarChart3 className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span className="text-xs font-medium">Dashboard</span>
                 </button>
-                <button onClick={() => { navigate('/saved'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Heart className="h-4 w-4 text-red-500" />
-                  <span className="text-sm font-medium">Saved</span>
+                <button onClick={() => { navigate('/saved'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Heart className="h-3.5 w-3.5 text-red-500 shrink-0" />
+                  <span className="text-xs font-medium">Saved</span>
                 </button>
-                <button onClick={() => { navigate('/search'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <Building2 className="h-4 w-4 text-green-500" />
-                  <span className="text-sm font-medium">Browse</span>
+                <button onClick={() => { navigate('/search'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <Building2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                  <span className="text-xs font-medium">Browse</span>
                 </button>
-                <button onClick={() => { navigate('/notifications'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
-                  <MessageSquare className="h-4 w-4 text-purple-500" />
-                  <span className="text-sm font-medium">Messages</span>
+                <button onClick={() => { navigate('/notifications'); setIsOpen(false); }} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent/50 transition-all w-full text-left">
+                  <MessageSquare className="h-3.5 w-3.5 text-purple-500 shrink-0" />
+                  <span className="text-xs font-medium">Messages</span>
                 </button>
               </>
             )}
@@ -181,21 +181,21 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         </div>
 
         {/* Settings & Account */}
-        <div className="p-2 border-t border-border/50 opacity-100">
+        <div className="p-1.5 border-t border-border/30 opacity-100">
           <DropdownMenuItem 
             onClick={() => { navigate('/profile'); setIsOpen(false); }}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-md cursor-pointer"
+            className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer"
           >
-            <Settings className="h-4 w-4" />
-            <span className="text-sm">Settings</span>
+            <Settings className="h-3.5 w-3.5 shrink-0" />
+            <span className="text-xs">Settings</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem 
             onClick={handleSignOut}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-md cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+            className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50/50 dark:hover:bg-red-950/30"
           >
-            <LogOut className="h-4 w-4" />
-            <span className="text-sm">Sign Out</span>
+            <LogOut className="h-3.5 w-3.5 shrink-0" />
+            <span className="text-xs">Sign Out</span>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>
