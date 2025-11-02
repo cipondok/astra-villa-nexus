@@ -626,6 +626,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       { id: 'storage_unit', label: 'Storage Unit / Locker', icon: '📦' },
       { id: 'bike_storage', label: 'Bike Storage', icon: '🚲' },
       { id: 'guest_suite', label: 'Guest Suite', icon: '🏠' },
+      { id: 'wheelchair_accessible', label: 'Wheelchair Accessible', icon: '♿' },
+      { id: 'ground_floor', label: 'Ground Floor Unit', icon: '⬇️' },
+      { id: 'grab_bars', label: 'Grab Bars in Bathroom', icon: '🚿' },
+      { id: 'smoke_free', label: 'Smoke-Free Building', icon: '🚭' },
+      { id: 'gated_community', label: 'Gated Community', icon: '🚧' },
+      { id: 'utilities_included', label: 'Utilities Included', icon: '💡' },
+      { id: 'trash_recycling', label: 'Trash / Recycling', icon: '♻️' },
+      { id: 'snow_removal', label: 'Snow Removal', icon: '❄️' },
+      { id: 'pest_control', label: 'Pest Control', icon: '🐛' },
+      { id: 'onsite_maintenance', label: 'On-Site Maintenance', icon: '🔧' },
+      { id: 'near_transit', label: 'Near Public Transit', icon: '🚇' },
+      { id: 'walk_bike_score', label: 'Walk Score / Bike Score', icon: '🚶' },
+      { id: 'near_parks', label: 'Near Parks / Trails', icon: '🌲' },
+      { id: 'waterfront_view', label: 'Waterfront / Lake View', icon: '🌊' },
+      { id: 'smart_thermostat', label: 'Smart Thermostat', icon: '🌡️' },
+      { id: 'keyless_entry', label: 'Keyless Entry', icon: '🔑' },
+      { id: 'video_doorbell', label: 'Video Doorbell', icon: '📹' },
+      { id: 'smart_lighting', label: 'Smart Lighting', icon: '💡' },
     ],
     maxPrice: 20000,
     priceStep: 500
@@ -1532,18 +1550,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 <div>
                   {/* Facilities Tabs */}
                   <Tabs defaultValue="outdoor" className="w-full">
-                    <TabsList className="w-full flex justify-start gap-1 h-auto bg-transparent p-2 border-b border-gray-200 dark:border-gray-700">
-                      <TabsTrigger value="outdoor" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Outdoor</TabsTrigger>
-                      <TabsTrigger value="utility" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Utility</TabsTrigger>
-                      <TabsTrigger value="safety" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Safety</TabsTrigger>
-                      <TabsTrigger value="premium" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Premium</TabsTrigger>
+                    <TabsList className="w-full flex justify-start gap-1 h-auto bg-transparent p-2 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+                      <TabsTrigger value="outdoor" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white whitespace-nowrap">Outdoor</TabsTrigger>
+                      <TabsTrigger value="utility" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white whitespace-nowrap">Utility</TabsTrigger>
+                      <TabsTrigger value="safety" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white whitespace-nowrap">Safety</TabsTrigger>
+                      <TabsTrigger value="premium" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white whitespace-nowrap">Premium</TabsTrigger>
+                      <TabsTrigger value="tech" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white whitespace-nowrap">Tech</TabsTrigger>
                     </TabsList>
                     
                     {/* Outdoor & Community */}
                     <TabsContent value="outdoor" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'balcony_terrace', 'pet_friendly', 'clubhouse', 'tennis_court', 'parking_space'].includes(f.id)
+                          ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'balcony_terrace', 'pet_friendly', 'clubhouse', 'tennis_court', 'parking_space', 'near_transit', 'walk_bike_score', 'near_parks', 'waterfront_view'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
@@ -1573,7 +1592,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="utility" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['air_conditioning', 'heating', 'internet_wifi', 'laundry', 'washing_machine', 'dishwasher', 'refrigerator', 'stove_oven', 'microwave', 'bedding_linens', 'kitchen_utensils'].includes(f.id)
+                          ['air_conditioning', 'heating', 'internet_wifi', 'laundry', 'washing_machine', 'dishwasher', 'refrigerator', 'stove_oven', 'microwave', 'bedding_linens', 'kitchen_utensils', 'utilities_included', 'trash_recycling', 'snow_removal', 'pest_control', 'onsite_maintenance'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
@@ -1603,7 +1622,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="safety" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['security_system', 'cctv_surveillance', 'elevator_lift', 'backup_generator'].includes(f.id)
+                          ['security_system', 'cctv_surveillance', 'elevator_lift', 'backup_generator', 'wheelchair_accessible', 'ground_floor', 'grab_bars', 'smoke_free', 'gated_community'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
@@ -1634,6 +1653,36 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
                           ['gym_fitness', 'furnished', 'concierge', 'rooftop_lounge', 'sauna_spa', 'coworking', 'ev_charging', 'storage_unit', 'bike_storage', 'guest_suite'].includes(f.id)
+                        ).map((facility: any) => (
+                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <Checkbox
+                              id={`facility-${facility.id}`}
+                              checked={filters.facilities.includes(facility.id)}
+                              onCheckedChange={(checked) => {
+                                const newFacilities = checked
+                                  ? [...filters.facilities, facility.id]
+                                  : filters.facilities.filter((f: string) => f !== facility.id);
+                                handleFilterChange('facilities', newFacilities);
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <label
+                              htmlFor={`facility-${facility.id}`}
+                              className="text-xs cursor-pointer flex items-center gap-1"
+                            >
+                              <span>{facility.icon}</span>
+                              <span className="flex-1">{facility.label}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+
+                    {/* Tech & Smart Home */}
+                    <TabsContent value="tech" className="mt-0 p-3">
+                      <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                        {currentFilters.facilities?.filter((f: any) => 
+                          ['smart_thermostat', 'keyless_entry', 'video_doorbell', 'smart_lighting'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
