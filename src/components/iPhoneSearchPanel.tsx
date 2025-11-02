@@ -1728,17 +1728,30 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                     {currentText.location}
                     {((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && (
-                      <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                      <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-blue-500 text-white">
+                        {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
+                      </span>
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" sideOffset={4}>
+                <PopoverContent 
+                  className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
+                  align="start" 
+                  sideOffset={4}
+                  avoidCollisions={true}
+                  collisionPadding={8}
+                >
                   <div className="space-y-3 p-1">
                     {/* State/Province Selection */}
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-foreground">{currentText.selectProvince}</Label>
+                      <Label className="text-xs font-medium text-foreground flex items-center gap-1">
+                        {currentText.selectProvince}
+                        {provinces.length === 0 && (
+                          <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
+                        )}
+                      </Label>
                       <Select value={filters.state || "all"} onValueChange={handleStateChange}>
-                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors">
+                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500">
                           <SelectValue placeholder={currentText.selectProvince}>
                             <span className="truncate">
                               {filters.state && filters.state !== 'all' 
@@ -1747,75 +1760,125 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             </span>
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">{currentText.any}</SelectItem>
-                          {provinces.map((province) => (
-                            <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                              {province.name}
+                        <SelectContent 
+                          className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
+                          position="popper"
+                          sideOffset={4}
+                        >
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                            {currentText.any}
+                          </SelectItem>
+                          {provinces.length > 0 ? (
+                            provinces.map((province) => (
+                              <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                                {province.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
+                              ⚠️ No provinces found in database
                             </SelectItem>
-                          ))}
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* City Selection */}
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-foreground">{currentText.selectCity}</Label>
-                      <Select 
-                        value={filters.city || "all"} 
-                        onValueChange={handleCityChange}
-                        disabled={!filters.state || filters.state === 'all'}
-                      >
-                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                          <SelectValue placeholder={currentText.selectCity}>
-                            <span className="truncate">
-                              {filters.city && filters.city !== 'all' 
-                                ? (() => {
-                                    const city = cities.find(c => c.code === filters.city);
-                                    return city ? `${city.type} ${city.name}` : currentText.any;
-                                  })()
-                                : currentText.any}
-                            </span>
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">{currentText.any}</SelectItem>
-                          {cities.map((city) => (
-                            <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                              {city.type} {city.name}
+                    {/* City Selection - Only show when state is selected */}
+                    {filters.state && filters.state !== 'all' && (
+                      <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <Label className="text-xs font-medium text-foreground flex items-center gap-1">
+                          {currentText.selectCity}
+                          {cities.length === 0 && (
+                            <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
+                          )}
+                        </Label>
+                        <Select 
+                          value={filters.city || "all"} 
+                          onValueChange={handleCityChange}
+                          disabled={cities.length === 0}
+                        >
+                          <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
+                            <SelectValue placeholder={currentText.selectCity}>
+                              <span className="truncate">
+                                {filters.city && filters.city !== 'all' 
+                                  ? (() => {
+                                      const city = cities.find(c => c.code === filters.city);
+                                      return city ? `${city.type} ${city.name}` : currentText.any;
+                                    })()
+                                  : currentText.any}
+                              </span>
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent 
+                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
+                            position="popper"
+                            sideOffset={4}
+                          >
+                            <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                              {currentText.any}
                             </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                            {cities.length > 0 ? (
+                              cities.map((city) => (
+                                <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                                  {city.type} {city.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
+                                ⚠️ No cities found for selected province
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
 
-                    {/* Area Selection */}
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-foreground">{currentText.selectArea}</Label>
-                      <Select 
-                        value={filters.area || "all"} 
-                        onValueChange={handleAreaChange}
-                        disabled={!filters.city || filters.city === 'all'}
-                      >
-                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                          <SelectValue placeholder={currentText.selectArea}>
-                            <span className="truncate">
-                              {filters.area && filters.area !== 'all' 
-                                ? areas.find(a => a.code === filters.area)?.name 
-                                : currentText.any}
-                            </span>
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">{currentText.any}</SelectItem>
-                          {areas.map((area) => (
-                            <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                              {area.name}
+                    {/* Area Selection - Only show when city is selected */}
+                    {filters.city && filters.city !== 'all' && (
+                      <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <Label className="text-xs font-medium text-foreground flex items-center gap-1">
+                          {currentText.selectArea}
+                          {areas.length === 0 && (
+                            <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
+                          )}
+                        </Label>
+                        <Select 
+                          value={filters.area || "all"} 
+                          onValueChange={handleAreaChange}
+                          disabled={areas.length === 0}
+                        >
+                          <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
+                            <SelectValue placeholder={currentText.selectArea}>
+                              <span className="truncate">
+                                {filters.area && filters.area !== 'all' 
+                                  ? areas.find(a => a.code === filters.area)?.name 
+                                  : currentText.any}
+                              </span>
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent 
+                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
+                            position="popper"
+                            sideOffset={4}
+                          >
+                            <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                              {currentText.any}
                             </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                            {areas.length > 0 ? (
+                              areas.map((area) => (
+                                <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                                  {area.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
+                                ⚠️ No areas found for selected city
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </PopoverContent>
               </Popover>
