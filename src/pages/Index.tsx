@@ -34,6 +34,7 @@ const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppI
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
+const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -561,6 +562,13 @@ const Index = () => {
                 <div className="section-compact">
                   <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                  </Suspense>
+                </div>
+
+                {/* Marketplace Services Section */}
+                <div className="section-compact mt-8">
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <MarketplaceServices />
                   </Suspense>
                 </div>
               </>
