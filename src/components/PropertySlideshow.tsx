@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import VerificationBadge from "@/components/ui/VerificationBadge";
 
 interface Property {
   id: number;
@@ -36,8 +35,10 @@ const PropertySlideshow = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select('id, title, location, price, property_type, bedrooms, bathrooms, area_sqm, images, thumbnail_url, city, state')
         .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .not('title', 'is', null)
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -49,6 +50,7 @@ const PropertySlideshow = () => {
       return data || [];
     },
     staleTime: 60000,
+    refetchOnWindowFocus: false,
   });
 
   // Use auto-scroll hook with right-to-left direction
