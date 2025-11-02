@@ -2211,27 +2211,31 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <div className="w-1 h-4 bg-primary rounded-full" />
                         {currentText.selectProvince}
                       </Label>
-                      <select
-                        value={filters.state || "all"}
-                        onChange={(e) => handleStateChange(e.target.value)}
-                        className={cn(
-                          "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 text-foreground font-medium",
-                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
-                          "hover:border-primary/50 hover:shadow-md cursor-pointer",
-                          "appearance-none bg-[length:12px] bg-[position:right_1rem_center] bg-no-repeat",
-                          isMobile ? "text-sm" : "text-base"
-                        )}
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
-                        }}
-                      >
-                        <option value="all">{currentText.any}</option>
-                        {provinces.map((province) => (
-                          <option key={province.code} value={province.code}>
-                            {province.name}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="relative">
+                        <select
+                          value={filters.state || "all"}
+                          onChange={(e) => handleStateChange(e.target.value)}
+                          className={cn(
+                            "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 pr-10 text-foreground font-medium",
+                            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
+                            "hover:border-primary/50 hover:shadow-md cursor-pointer",
+                            "appearance-none text-base leading-normal",
+                            isMobile ? "min-h-[44px]" : "h-auto"
+                          )}
+                        >
+                          <option value="all">{currentText.any}</option>
+                          {provinces.map((province) => (
+                            <option key={province.code} value={province.code}>
+                              {province.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                          <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
 
                     {/* City Selection */}
@@ -2240,29 +2244,33 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <div className="w-1 h-4 bg-primary rounded-full" />
                         {currentText.selectCity}
                       </Label>
-                      <select
-                        value={filters.city || "all"}
-                        onChange={(e) => handleCityChange(e.target.value)}
-                        disabled={!filters.state || filters.state === 'all'}
-                        className={cn(
-                          "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 text-foreground font-medium",
-                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
-                          "hover:border-primary/50 hover:shadow-md cursor-pointer",
-                          "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
-                          "appearance-none bg-[length:12px] bg-[position:right_1rem_center] bg-no-repeat",
-                          isMobile ? "text-sm" : "text-base"
-                        )}
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
-                        }}
-                      >
-                        <option value="all">{currentText.any}</option>
-                        {cities.map((city) => (
-                          <option key={city.code} value={city.code}>
-                            {city.type} {city.name}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="relative">
+                        <select
+                          value={filters.city || "all"}
+                          onChange={(e) => handleCityChange(e.target.value)}
+                          disabled={!filters.state || filters.state === 'all'}
+                          className={cn(
+                            "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 pr-10 text-foreground font-medium",
+                            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
+                            "hover:border-primary/50 hover:shadow-md cursor-pointer",
+                            "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
+                            "appearance-none text-base leading-normal",
+                            isMobile ? "min-h-[44px]" : "h-auto"
+                          )}
+                        >
+                          <option value="all">{currentText.any}</option>
+                          {cities.map((city) => (
+                            <option key={city.code} value={city.code}>
+                              {city.type} {city.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                          <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Area Selection */}
@@ -2271,29 +2279,33 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <div className="w-1 h-4 bg-primary rounded-full" />
                         {currentText.selectArea}
                       </Label>
-                      <select
-                        value={filters.area || "all"}
-                        onChange={(e) => handleAreaChange(e.target.value)}
-                        disabled={!filters.city || filters.city === 'all'}
-                        className={cn(
-                          "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 text-foreground font-medium",
-                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
-                          "hover:border-primary/50 hover:shadow-md cursor-pointer",
-                          "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
-                          "appearance-none bg-[length:12px] bg-[position:right_1rem_center] bg-no-repeat",
-                          isMobile ? "text-sm" : "text-base"
-                        )}
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
-                        }}
-                      >
-                        <option value="all">{currentText.any}</option>
-                        {areas.map((area) => (
-                          <option key={area.code} value={area.code}>
-                            {area.name}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="relative">
+                        <select
+                          value={filters.area || "all"}
+                          onChange={(e) => handleAreaChange(e.target.value)}
+                          disabled={!filters.city || filters.city === 'all'}
+                          className={cn(
+                            "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 pr-10 text-foreground font-medium",
+                            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
+                            "hover:border-primary/50 hover:shadow-md cursor-pointer",
+                            "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
+                            "appearance-none text-base leading-normal",
+                            isMobile ? "min-h-[44px]" : "h-auto"
+                          )}
+                        >
+                          <option value="all">{currentText.any}</option>
+                          {areas.map((area) => (
+                            <option key={area.code} value={area.code}>
+                              {area.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                          <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Nearby Search */}
