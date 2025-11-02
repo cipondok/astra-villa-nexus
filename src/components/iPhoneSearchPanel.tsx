@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
 import { useScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
@@ -123,6 +124,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     bathrooms: '',
     minArea: '',
     maxArea: '',
+    minPrice: 0,
+    maxPrice: 0,
     features: [] as string[],
     facilities: [] as string[],
     yearBuilt: '',
@@ -749,16 +752,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     priceStep: 100
   });
 
-  // Get current filters based on active tab
-  const getCurrentFilters = () => {
+  // Get current filters based on active tab - Memoized for performance
+  const currentFilters = useMemo(() => {
     switch (activeTab) {
       case 'sale': return getSaleFilters();
       case 'rent': return getRentFilters();
       default: return getAllFilters();
     }
-  };
-
-  const currentFilters = getCurrentFilters();
+  }, [activeTab, propertyTypeOptions]);
 
   const sortOptions = [
     { value: 'newest', label: currentText.newest },
@@ -813,12 +814,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   };
 
 
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    if (onLiveSearch) {
-      onLiveSearch(value);
+  // Debounced search query for performance
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // Trigger live search with debounced value
+  useEffect(() => {
+    if (onLiveSearch && debouncedSearchQuery !== undefined) {
+      onLiveSearch(debouncedSearchQuery);
     }
-  };
+  }, [debouncedSearchQuery, onLiveSearch]);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
 
   const handleFilterChange = (key: string, value: any) => {
     const actualValue = value === "all" ? "" : value;
@@ -890,6 +898,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       bathrooms: '',
       minArea: '',
       maxArea: '',
+      minPrice: 0,
+      maxPrice: 0,
       features: [],
       facilities: [],
       yearBuilt: '',
@@ -953,19 +963,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const getSelectedFiltersDisplay = () => {
     const selected = [];
     
-    // Combine location parts
+    // Combine location parts with null safety
     const locationParts = [];
     if (filters.state && filters.state !== 'all') {
       const province = provinces.find(p => p.code === filters.state);
-      if (province) locationParts.push(province.name);
+      locationParts.push(province?.name || filters.state);
     }
     if (filters.city && filters.city !== 'all') {
       const city = cities.find(c => c.code === filters.city);
-      if (city) locationParts.push(city.name);
+      locationParts.push(city?.name || filters.city);
     }
     if (filters.area && filters.area !== 'all') {
       const area = areas.find(a => a.code === filters.area);
-      if (area) locationParts.push(area.name);
+      locationParts.push(area?.name || filters.area);
     }
     if (locationParts.length > 0) selected.push(locationParts.join(', '));
     
@@ -1018,6 +1028,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       bathrooms: filters.bathrooms === 'all' ? '' : filters.bathrooms,
       minArea: areaRange[0],
       maxArea: areaRange[1],
+      minPrice: filters.minPrice || undefined,
+      maxPrice: filters.maxPrice || undefined,
       features: filters.features,
       yearBuilt: filters.yearBuilt === 'all' ? '' : filters.yearBuilt,
       condition: filters.condition === 'all' ? '' : filters.condition,
@@ -1200,6 +1212,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   onClick={() => toggleSearchType('location')}
                   variant="ghost"
                   size="sm"
+                  aria-label={currentText.location}
                   className={cn(
                     "p-0 rounded-md",
                     isMobile ? "h-6 w-6" : "h-7 w-7",
@@ -1213,15 +1226,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   onClick={() => toggleSearchType('nearby')}
                   variant="ghost"
                   size="sm"
+                  aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
                   className={cn(
-                    "p-0 rounded-md",
+                    "p-0 rounded-md relative",
                     isMobile ? "h-6 w-6" : "h-7 w-7",
                     useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                   )}
                   disabled={isGettingLocation}
                   title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
                 >
-                  <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />
+                  {isGettingLocation ? (
+                    <div className="animate-spin h-3 w-3 border-2 border-blue-500 rounded-full border-t-transparent" />
+                  ) : (
+                    <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />
+                  )}
                 </Button>
               </div>
               
@@ -1296,6 +1314,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               <Button
                 onClick={() => setShowFilters(!showFilters)}
                 variant="outline"
+                aria-label={currentText.filters}
                 className={cn(
                   "relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all",
                   isMobile ? "h-8 px-2.5" : "h-9 px-3"
@@ -1328,6 +1347,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
             <Button
               onClick={handleSearch}
+              aria-label={currentText.search}
               className={cn(
                 "bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center",
                 isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5"
@@ -2351,13 +2371,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <DollarSign className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                     {currentText.priceRange}: Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}
                   </Label>
-                  <div className={cn("bg-white/50 dark:bg-green-950/20 rounded-lg", isMobile ? "mt-1.5 p-2" : "mt-2 p-2.5")}>
+                   <div className={cn("bg-white/50 dark:bg-green-950/20 rounded-lg", isMobile ? "mt-1.5 p-2" : "mt-2 p-2.5")}>
                     <Slider
                       value={priceRange}
                       onValueChange={(value) => {
                         setPriceRange(value);
-                        handleFilterChange('minPrice', value[0] * (currentFilters.priceStep * 1000000));
-                        handleFilterChange('maxPrice', value[1] * (currentFilters.priceStep * 1000000));
+                        // Store actual IDR values in state
+                        const minPriceIDR = value[0] * currentFilters.priceStep * 1000000;
+                        const maxPriceIDR = value[1] * currentFilters.priceStep * 1000000;
+                        setFilters(prev => ({ 
+                          ...prev, 
+                          minPrice: minPriceIDR,
+                          maxPrice: maxPriceIDR
+                        }));
                       }}
                       max={currentFilters.maxPrice}
                       min={0}
@@ -2377,13 +2403,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <Square className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                     {currentText.area}: {areaRange[0]} - {areaRange[1]} m²
                   </Label>
-                  <div className={cn("bg-white/50 dark:bg-green-950/20 rounded-lg", isMobile ? "mt-1.5 p-2" : "mt-2 p-2.5")}>
+                   <div className={cn("bg-white/50 dark:bg-green-950/20 rounded-lg", isMobile ? "mt-1.5 p-2" : "mt-2 p-2.5")}>
                     <Slider
                       value={areaRange}
                       onValueChange={(value) => {
                         setAreaRange(value);
-                        handleFilterChange('minArea', value[0]);
-                        handleFilterChange('maxArea', value[1]);
+                        setFilters(prev => ({
+                          ...prev,
+                          minArea: String(value[0]),
+                          maxArea: String(value[1])
+                        }));
                       }}
                       max={1000}
                       min={0}
