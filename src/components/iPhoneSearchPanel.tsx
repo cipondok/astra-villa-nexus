@@ -2210,11 +2210,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <select
                         value={filters.state || "all"}
                         onChange={(e) => handleStateChange(e.target.value)}
+                        onFocus={() => { document.documentElement.classList.add('modal-open'); document.body.classList.add('modal-open'); }}
+                        onBlur={() => { document.documentElement.classList.remove('modal-open'); document.body.classList.remove('modal-open'); }}
                         className={cn(
                           "w-full bg-background border border-border rounded-lg px-3 text-foreground",
                           "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
                           "transition-all duration-200",
-                          isMobile ? "h-8 text-[10px]" : "h-9 text-xs"
+                          isMobile ? "h-10 text-base" : "h-10 text-sm"
                         )}
                       >
                         <option value="all">{currentText.any}</option>
@@ -2233,11 +2235,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         value={filters.city || "all"}
                         onChange={(e) => handleCityChange(e.target.value)}
                         disabled={!filters.state || filters.state === 'all'}
+                        onFocus={() => { document.documentElement.classList.add('modal-open'); document.body.classList.add('modal-open'); }}
+                        onBlur={() => { document.documentElement.classList.remove('modal-open'); document.body.classList.remove('modal-open'); }}
                         className={cn(
                           "w-full bg-background border border-border rounded-lg px-3 text-foreground",
                           "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
                           "transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
-                          isMobile ? "h-8 text-[10px]" : "h-9 text-xs"
+                          isMobile ? "h-10 text-base" : "h-10 text-sm"
                         )}
                       >
                         <option value="all">{currentText.any}</option>
@@ -2256,11 +2260,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         value={filters.area || "all"}
                         onChange={(e) => handleAreaChange(e.target.value)}
                         disabled={!filters.city || filters.city === 'all'}
+                        onFocus={() => { document.documentElement.classList.add('modal-open'); document.body.classList.add('modal-open'); }}
+                        onBlur={() => { document.documentElement.classList.remove('modal-open'); document.body.classList.remove('modal-open'); }}
                         className={cn(
                           "w-full bg-background border border-border rounded-lg px-3 text-foreground",
                           "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
                           "transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
-                          isMobile ? "h-8 text-[10px]" : "h-9 text-xs"
+                          isMobile ? "h-10 text-base" : "h-10 text-sm"
                         )}
                       >
                         <option value="all">{currentText.any}</option>
