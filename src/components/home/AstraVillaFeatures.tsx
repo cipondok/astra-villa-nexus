@@ -81,24 +81,22 @@ const features: Feature[] = [
 
 const AstraVillaFeatures = () => {
   return (
-    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-3 md:p-4 overflow-hidden">
+    <div className="relative overflow-hidden">
       {/* Section Header */}
-      <div className="mb-3">
-        <div className="flex items-center gap-2 mb-1">
-          <div className="p-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-          <h2 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+      <div className="mb-6 text-center">
+        <div className="inline-flex items-center gap-2 mb-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/30 dark:border-blue-700/30">
+          <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
             AI-Powered Tools & Features
           </h2>
         </div>
-        <p className="text-xs text-muted-foreground pl-9">
+        <p className="text-sm text-muted-foreground mt-2">
           Smart Property Solutions for Indonesia
         </p>
       </div>
 
-      {/* Features Grid */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Features Grid - 4 per row, 2 rows */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {features.map((feature, index) => (
           <FeatureCard key={index} feature={feature} index={index} />
         ))}
@@ -137,30 +135,30 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   return (
     <div
       onClick={handleClick}
-      className="cursor-pointer group"
+      className="group cursor-pointer"
     >
-      <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px]">
-        {/* Icon - Left Side */}
-        <div className="relative w-[90px] flex-shrink-0 flex items-center justify-center">
-          <div className="relative w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-background to-accent/10 shadow-sm group-hover:scale-110 transition-transform duration-300">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-5 h-full flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/30">
+        {/* Icon Container */}
+        <div className="relative mb-4">
+          <div className={`relative w-16 h-16 rounded-2xl ${feature.bgGradient} flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300`}>
             <img 
               src={feature.icon} 
               alt={feature.title}
-              className="w-8 h-8 object-contain"
+              className="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300"
             />
-            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-sm">
-              <Sparkles className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-            </div>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 dark:to-white/5" />
+          {/* AI Badge */}
+          <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 shadow-md">
+            <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+          </div>
         </div>
         
-        {/* Content - Right Side */}
-        <div className="flex-1 p-2.5 flex flex-col justify-center">
-          <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+        {/* Content */}
+        <div className="flex-1 flex flex-col">
+          <h3 className="text-sm md:text-base font-semibold text-foreground mb-2 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
             {feature.title}
           </h3>
-          <p className="text-[10px] text-muted-foreground line-clamp-2">
+          <p className="text-xs text-muted-foreground line-clamp-2">
             {feature.description}
           </p>
         </div>
