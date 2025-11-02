@@ -1500,14 +1500,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </PopoverTrigger>
               <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
                 <div>
-                  {/* Header with Title */}
-                  <div className="flex items-center gap-1.5 px-3 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700">
-                    <Building2 className="h-4 w-4 text-blue-500" />
-                    <h4 className="text-sm font-semibold text-foreground">
-                      {currentText.facilities}
-                    </h4>
-                  </div>
-                  
                   {/* Facilities Tabs */}
                   <Tabs defaultValue="outdoor" className="w-full">
                     <TabsList className="w-full flex justify-start gap-1 h-auto bg-transparent p-2 border-b border-gray-200 dark:border-gray-700">
