@@ -46,7 +46,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
       className={cn(
         "relative w-full overflow-hidden bg-background",
         "min-h-[200px] md:min-h-[400px]",
-        "pt-16 md:pt-16 lg:pt-20",
+        "md:pt-16 lg:pt-20",
         className
       )}
       style={{ 
