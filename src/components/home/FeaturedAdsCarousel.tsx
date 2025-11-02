@@ -114,10 +114,14 @@ export default function FeaturedAdsCarousel() {
     return null;
   }
 
+  // Duplicate items for seamless infinite scroll
+  const displayAds = ads && ads.length > 0 ? [...ads, ...ads] : [];
+  const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties] : [];
+
   return (
-    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-4 md:p-6 mb-6 overflow-hidden">
+    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-4 md:p-6 my-8 overflow-hidden group">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
             Featured Properties
@@ -127,23 +131,23 @@ export default function FeaturedAdsCarousel() {
           </p>
         </div>
         
-        {/* Navigation Buttons */}
+        {/* Navigation Buttons - Always Visible */}
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="icon"
             onClick={() => scroll('left')}
-            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm border-border hover:bg-background"
+            className="h-10 w-10 rounded-full bg-white dark:bg-gray-800 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-5 w-5 text-primary" />
           </Button>
           <Button
             variant="outline"
             size="icon"
             onClick={() => scroll('right')}
-            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm border-border hover:bg-background"
+            className="h-10 w-10 rounded-full bg-white dark:bg-gray-800 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-5 w-5 text-primary" />
           </Button>
         </div>
       </div>
@@ -151,15 +155,15 @@ export default function FeaturedAdsCarousel() {
       {/* Carousel */}
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-2"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="flex gap-4 overflow-x-auto scrollbar-hide py-2"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
       >
         {showFallback ? (
-          fallbackProperties.map((p) => (
+          displayProperties.map((p, idx) => (
             <div
-              key={p.id}
+              key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[220px] md:w-[260px] cursor-pointer group"
+              className="flex-shrink-0 w-[240px] md:w-[280px] cursor-pointer group"
             >
               <div className="relative overflow-hidden rounded-lg mb-2">
                 <img
@@ -186,11 +190,11 @@ export default function FeaturedAdsCarousel() {
             </div>
           ))
         ) : (
-          ads.map((ad) => (
+          displayAds.map((ad, idx) => (
             <div
-              key={ad.id}
+              key={`${ad.id}-${idx}`}
               onClick={() => handleAdClick(ad)}
-              className="flex-shrink-0 w-[220px] md:w-[260px] cursor-pointer group relative rounded-lg overflow-hidden"
+              className="flex-shrink-0 w-[240px] md:w-[280px] cursor-pointer group relative rounded-lg overflow-hidden"
             >
               <div className="relative h-36 overflow-hidden">
                 <img
