@@ -39,11 +39,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [showLocationButtons, setShowLocationButtons] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  // 🔥 CRITICAL: Auto-lock scroll when ANY overlay is open to prevent layout shifts
-  // This reserves space for the scrollbar (typically 15px) so the page doesn't jump
-  useAutoScrollLock(showFilters || isMenuOpen);
+  // 🔥 CRITICAL: Only lock scroll for full-screen filter modal, not small popovers
+  // Small popovers use Radix Portal and don't affect page scroll
+  useAutoScrollLock(showFilters);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -59,8 +58,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     window.addEventListener('resize', checkMobile);
 
     const handleScroll = () => {
-      // Pause header minimize logic while any menu/popover is open to prevent layout jumps
-      if (showFilters || isMenuOpen) return;
+      // Pause header minimize logic while filter modal is open
+      if (showFilters) return;
 
       const currentScrollY = window.scrollY;
 
@@ -81,7 +80,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [lastScrollY, showFilters]);
+  }, [lastScrollY, showFilters, isMinimized]);
   
   // Trending and smart suggestions
   const trendingSearches = [
@@ -1549,7 +1548,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Facilities Button - Opens Popover */}
-            <Popover onOpenChange={setIsMenuOpen}>
+            <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1737,7 +1736,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover modal={false} onOpenChange={setIsMenuOpen}>
+              <Popover modal={false}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -1782,7 +1781,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
                         )}
                       </Label>
-                      <Select value={filters.state || "all"} onValueChange={handleStateChange} onOpenChange={setIsMenuOpen}>
+                      <Select value={filters.state || "all"} onValueChange={handleStateChange}>
                         <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500">
                           <SelectValue placeholder={currentText.selectProvince}>
                             <span className="truncate">
@@ -1828,7 +1827,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <Select 
                           value={filters.city || "all"} 
                           onValueChange={handleCityChange}
-                          onOpenChange={setIsMenuOpen}
                           disabled={cities.length === 0}
                         >
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
@@ -1880,7 +1878,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <Select 
                           value={filters.area || "all"} 
                           onValueChange={handleAreaChange}
-                          onOpenChange={setIsMenuOpen}
                           disabled={areas.length === 0}
                         >
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
