@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -282,6 +282,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       bathrooms: "Bathrooms",
       area: "Area (m²)",
       features: "Features",
+      facilities: "Facilities",
       yearBuilt: "Year Built",
       condition: "Condition",
       sortBy: "Sort By",
@@ -374,6 +375,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       bathrooms: "Kamar Mandi",
       area: "Luas (m²)",
       features: "Fasilitas",
+      facilities: "Fasilitas Properti",
       yearBuilt: "Tahun Dibangun",
       condition: "Kondisi",
       sortBy: "Urutkan",
@@ -1476,6 +1478,63 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </Button>
               </div>
             </div>
+
+            {/* Facilities Button - Opens Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
+                    (filters.facilities && filters.facilities.length > 0) && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  )}
+                >
+                  <Building2 className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  {currentText.facilities}
+                  {(filters.facilities && filters.facilities.length > 0) && (
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                      <Building2 className="h-3.5 w-3.5 text-blue-500" />
+                      {currentText.facilities}
+                    </h4>
+                  </div>
+                  
+                  {/* Facilities Checklist */}
+                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                    {currentFilters.facilities?.map((facility: any) => (
+                      <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <Checkbox
+                          id={`facility-${facility.id}`}
+                          checked={filters.facilities.includes(facility.id)}
+                          onCheckedChange={(checked) => {
+                            const newFacilities = checked
+                              ? [...filters.facilities, facility.id]
+                              : filters.facilities.filter((f: string) => f !== facility.id);
+                            handleFilterChange('facilities', newFacilities);
+                          }}
+                          className="h-4 w-4"
+                        />
+                        <label
+                          htmlFor={`facility-${facility.id}`}
+                          className="text-xs cursor-pointer flex items-center gap-1"
+                        >
+                          <span>{facility.icon}</span>
+                          <span className="flex-1">{facility.label}</span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
