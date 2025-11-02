@@ -97,8 +97,8 @@ const AstraVillaFeatures = () => {
         </p>
       </div>
 
-      {/* Features Carousel */}
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+      {/* Features Grid */}
+      <div className="grid grid-cols-2 gap-3">
         {features.map((feature, index) => (
           <FeatureCard key={index} feature={feature} index={index} />
         ))}
@@ -137,7 +137,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   return (
     <div
       onClick={handleClick}
-      className="flex-shrink-0 w-[280px] md:w-[320px] cursor-pointer group"
+      className="cursor-pointer group"
     >
       <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px]">
         {/* Icon - Left Side */}
