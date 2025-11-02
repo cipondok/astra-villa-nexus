@@ -85,8 +85,8 @@ const AstraVillaFeatures = () => {
       {/* Section Header */}
       <div className="mb-3 md:mb-6 text-center">
         <div className="inline-flex items-center gap-1.5 md:gap-2 mb-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/30 dark:border-blue-700/30">
-          <Sparkles className="h-3.5 w-3.5 md:h-5 md:w-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-sm md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+          <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xs md:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
             AI-Powered Tools & Features
           </h2>
         </div>
@@ -155,7 +155,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
         
         {/* Content */}
         <div className="flex-1 flex flex-col">
-          <h3 className="text-[10px] md:text-sm lg:text-base font-semibold text-foreground mb-1 md:mb-2 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
+          <h3 className="text-[9px] md:text-sm lg:text-base font-semibold text-foreground mb-1 md:mb-2 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
             {feature.title}
           </h3>
           <p className="text-[8px] md:text-xs text-muted-foreground line-clamp-2 hidden md:block">

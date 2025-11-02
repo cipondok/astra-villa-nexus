@@ -150,7 +150,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <div className={cn("bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-3 md:p-4", className)}>
+    <div className={cn("bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-2 md:p-4", className)}>
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
@@ -158,7 +158,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h3 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+              <h3 className="text-sm md:text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                 AI Recommended For You
               </h3>
               <p className="text-xs text-muted-foreground hidden sm:block">
@@ -185,22 +185,22 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       </div>
 
       {isGenerating ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
+            <div key={i} className="h-[100px] sm:h-[110px] md:h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
           {recommendations.map((property) => (
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
               className="cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px] sm:h-[110px] md:h-[120px]">
                 {/* Image - Left Side */}
-                <div className="relative w-[100px] lg:w-[120px] flex-shrink-0">
+                <div className="relative w-[88px] sm:w-[100px] lg:w-[120px] flex-shrink-0">
                   <img
                     src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                     alt={property.title}
@@ -225,7 +225,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                       {property.city || property.location}
                     </div>
                   </div>
-                  <div className="text-xs font-bold text-primary">
+                  <div className="text-[11px] md:text-xs font-bold text-primary">
                     {property.price && property.price >= 1000000 
                       ? `Rp ${(property.price / 1000000).toFixed(1)}M`
                       : `Rp ${property.price?.toLocaleString() || 'N/A'}`
