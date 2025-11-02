@@ -150,18 +150,18 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <div className={cn("bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-2 md:p-4", className)}>
-      <div className="mb-3">
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-              <Sparkles className="h-4 w-4 text-white" />
+    <div className={cn("bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-1.5 md:p-4", className)}>
+      <div className="mb-2">
+        <div className="flex items-center justify-between mb-0.5">
+          <div className="flex items-center gap-1.5">
+            <div className="p-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+              <Sparkles className="h-3 w-3 text-white" />
             </div>
             <div>
-              <h3 className="text-sm md:text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+              <h3 className="text-[11px] md:text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                 AI Recommended For You
               </h3>
-              <p className="text-xs text-muted-foreground hidden sm:block">
+              <p className="text-[9px] text-muted-foreground hidden sm:block">
                 {user ? 'Personalized based on your preferences' : 'Trending properties selected by AI'}
               </p>
             </div>
@@ -171,44 +171,44 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             disabled={isGenerating}
             size="sm"
             variant="outline"
-            className="gap-1.5 h-8 px-3"
+            className="gap-1 h-6 px-2"
           >
-            <RefreshCw className={cn("h-3.5 w-3.5", isGenerating && "animate-spin")} />
+            <RefreshCw className={cn("h-3 w-3", isGenerating && "animate-spin")} />
             <span className="hidden sm:inline text-xs">Refresh</span>
           </Button>
         </div>
-        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-          <TrendingUp className="h-3 w-3" />
+        <div className="flex items-center gap-1 text-[8px] text-muted-foreground">
+          <TrendingUp className="h-2.5 w-2.5" />
           <span className="hidden sm:inline">Powered by Lovable AI • Updated in real-time</span>
           <span className="sm:hidden">AI Powered</span>
         </div>
       </div>
 
       {isGenerating ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-3">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-[100px] sm:h-[110px] md:h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
+            <div key={i} className="h-[80px] sm:h-[110px] md:h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-3">
           {recommendations.map((property) => (
             <div
               key={property.id}
               onClick={() => onPropertyClick(property)}
               className="cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px] sm:h-[110px] md:h-[120px]">
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] sm:h-[110px] md:h-[120px]">
                 {/* Image - Left Side */}
-                <div className="relative w-[88px] sm:w-[100px] lg:w-[120px] flex-shrink-0">
+                <div className="relative w-[70px] sm:w-[100px] lg:w-[120px] flex-shrink-0">
                   <img
                     src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                     alt={property.title}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute top-1 left-1">
-                    <span className="px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[9px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
+                  <div className="absolute top-0.5 left-0.5">
+                    <span className="px-1 py-0.5 bg-primary/90 text-primary-foreground text-[8px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
                       {property.property_type}
                     </span>
                   </div>
@@ -216,16 +216,16 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                 </div>
                 
                 {/* Content - Right Side */}
-                <div className="flex-1 p-2 flex flex-col justify-between">
+                <div className="flex-1 p-1.5 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xs font-semibold text-foreground line-clamp-2 mb-0.5">
+                    <h3 className="text-[10px] font-semibold text-foreground line-clamp-2 mb-0.5">
                       {property.title}
                     </h3>
-                    <div className="text-[9px] text-muted-foreground line-clamp-1">
+                    <div className="text-[8px] text-muted-foreground line-clamp-1">
                       {property.city || property.location}
                     </div>
                   </div>
-                  <div className="text-[11px] md:text-xs font-bold text-primary">
+                  <div className="text-[9px] md:text-xs font-bold text-primary">
                     {property.price && property.price >= 1000000 
                       ? `Rp ${(property.price / 1000000).toFixed(1)}M`
                       : `Rp ${property.price?.toLocaleString() || 'N/A'}`
