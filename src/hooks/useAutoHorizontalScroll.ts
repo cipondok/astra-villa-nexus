@@ -5,12 +5,13 @@ interface AutoScrollOptions {
   intervalMs?: number; // interval duration
   direction?: 'ltr' | 'rtl'; // visual movement
   pauseOnHover?: boolean;
+  seamless?: boolean; // enable seamless loop with duplicated content
 }
 
 // Auto-scrolls a horizontal container. Resets to start when reaching the end.
 export default function useAutoHorizontalScroll(
   ref: RefObject<HTMLElement>,
-  { speed = 1, intervalMs = 25, direction = 'rtl', pauseOnHover = true }: AutoScrollOptions = {}
+  { speed = 1, intervalMs = 25, direction = 'rtl', pauseOnHover = true, seamless = false }: AutoScrollOptions = {}
 ) {
   useEffect(() => {
     const el = ref.current;
@@ -37,21 +38,38 @@ export default function useAutoHorizontalScroll(
         const px = Math.max(0.5, speed) * (dt / baseline);
         const currentScroll = el.scrollLeft;
         const newScroll = currentScroll + (direction === 'rtl' ? px : -px);
-        
-        // Check bounds and handle loop
+
         const maxScroll = el.scrollWidth - el.clientWidth;
-        
+        const loopWidth = seamless ? Math.floor(el.scrollWidth / 2) : 0;
+
         if (direction === 'rtl') {
-          if (newScroll >= maxScroll) {
-            el.scrollLeft = 0; // loop back to start
+          if (seamless && loopWidth > 0) {
+            // When crossing the loop boundary, keep the offset for seamless effect
+            if (newScroll >= loopWidth) {
+              el.scrollLeft = newScroll - loopWidth;
+            } else {
+              el.scrollLeft = newScroll;
+            }
           } else {
-            el.scrollLeft = newScroll;
+            if (newScroll >= maxScroll) {
+              el.scrollLeft = 0; // loop back to start (non-seamless)
+            } else {
+              el.scrollLeft = newScroll;
+            }
           }
         } else {
-          if (newScroll <= 0) {
-            el.scrollLeft = maxScroll; // jump to end
+          if (seamless && loopWidth > 0) {
+            if (newScroll <= 0) {
+              el.scrollLeft = loopWidth + newScroll; // preserve offset
+            } else {
+              el.scrollLeft = newScroll;
+            }
           } else {
-            el.scrollLeft = newScroll;
+            if (newScroll <= 0) {
+              el.scrollLeft = maxScroll; // jump to end (non-seamless)
+            } else {
+              el.scrollLeft = newScroll;
+            }
           }
         }
       }
@@ -90,5 +108,5 @@ export default function useAutoHorizontalScroll(
       resizeObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [ref, speed, intervalMs, direction, pauseOnHover]);
+  }, [ref, speed, intervalMs, direction, pauseOnHover, seamless]);
 }

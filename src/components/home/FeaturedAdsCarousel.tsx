@@ -76,7 +76,8 @@ export default function FeaturedAdsCarousel() {
     speed: 1.5,
     intervalMs: 25,
     direction: 'rtl',
-    pauseOnHover: false
+    pauseOnHover: false,
+    seamless: true
   });
 
   const scroll = (direction: 'left' | 'right') => {
@@ -150,9 +151,9 @@ export default function FeaturedAdsCarousel() {
 
       {/* Carousel */}
       <div
-        ref={scrollRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
+  ref={scrollRef}
+  className="flex gap-3 overflow-hidden"
+  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
       >
         {showFallback ? (
           displayProperties.map((p, idx) => (
