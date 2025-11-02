@@ -90,13 +90,22 @@ const VerificationManagement = () => {
     try {
       setLoading(true);
 
-      // Call edge function to get verification requests
+      // Ensure authenticated session and pass JWT explicitly
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) {
+        throw new Error('Unauthorized');
+      }
+
+      // Call edge function to get verification requests with auth header
       const { data, error } = await supabase.functions.invoke('get-verification-requests', {
         body: {
           type: selectedTab,
           status: statusFilter
-        }
+        },
+        headers: { Authorization: `Bearer ${token}` }
       });
+
 
       if (error) throw error;
 
@@ -115,13 +124,18 @@ const VerificationManagement = () => {
 
   const handleVerifyOwner = async (userId: string, type: 'identity' | 'email' | 'phone', status: boolean) => {
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error('Unauthorized');
+
       const { data, error } = await supabase.functions.invoke('verify-owner', {
         body: {
           userId,
           verificationType: type,
           status,
           notes: verificationNotes
-        }
+        },
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (error) throw error;
@@ -140,13 +154,18 @@ const VerificationManagement = () => {
 
   const handleVerifyVendor = async (vendorId: string, type: string, status: boolean) => {
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error('Unauthorized');
+
       const { data, error } = await supabase.functions.invoke('verify-vendor', {
         body: {
           vendorId,
           verificationType: type,
           status,
           notes: verificationNotes
-        }
+        },
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (error) throw error;
