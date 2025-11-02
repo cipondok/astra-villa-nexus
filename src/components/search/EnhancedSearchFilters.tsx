@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Search, MapPin, Filter, ChevronDown, Home, Bed, Bath, Car, Wifi, AirVent, Sofa } from "lucide-react";
+import { Search, MapPin, Filter, ChevronDown, Home, Bed, Bath, Car, Wifi, AirVent, Sofa, Shield, Droplets, Tv, Wind, Warehouse, Building2 } from "lucide-react";
 import { useState } from "react";
 
 interface EnhancedSearchFiltersProps {
@@ -24,7 +24,9 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
   const [amenities, setAmenities] = useState<string[]>([]);
+  const [facilities, setFacilities] = useState<string[]>([]);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showFacilities, setShowFacilities] = useState(false);
 
   const text = {
     en: {
@@ -48,7 +50,10 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
       anyBedroom: "Any",
       anyBathroom: "Any",
       filters: "Filters",
-      myLocation: "My Location"
+      myLocation: "My Location",
+      facilities: "Facilities",
+      buyFacilities: "For Buy",
+      rentFacilities: "For Rent"
     },
     id: {
       search: "Cari properti, lokasi, atau area...",
@@ -71,7 +76,10 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
       anyBedroom: "Semua",
       anyBathroom: "Semua",
       filters: "Filter",
-      myLocation: "Lokasi Saya"
+      myLocation: "Lokasi Saya",
+      facilities: "Fasilitas",
+      buyFacilities: "Untuk Beli",
+      rentFacilities: "Untuk Sewa"
     }
   };
 
@@ -104,11 +112,35 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
     { icon: Sofa, key: "furnished", label: language === "en" ? "Furnished" : "Furnished" }
   ];
 
+  const buyFacilityOptions = [
+    { icon: Car, key: "parking", label: language === "en" ? "Parking" : "Parkir" },
+    { icon: Shield, key: "security", label: language === "en" ? "Security" : "Keamanan" },
+    { icon: Droplets, key: "pool", label: language === "en" ? "Pool" : "Kolam Renang" },
+    { icon: Building2, key: "elevator", label: language === "en" ? "Elevator" : "Lift" },
+    { icon: Warehouse, key: "storage", label: language === "en" ? "Storage" : "Gudang" }
+  ];
+
+  const rentFacilityOptions = [
+    { icon: AirVent, key: "ac", label: "AC" },
+    { icon: Wind, key: "water_heater", label: language === "en" ? "Water Heater" : "Pemanas Air" },
+    { icon: Wifi, key: "wifi", label: "WiFi" },
+    { icon: Tv, key: "tv_cable", label: language === "en" ? "TV Cable" : "TV Kabel" },
+    { icon: Sofa, key: "furnished", label: language === "en" ? "Furnished" : "Furnished" }
+  ];
+
   const toggleAmenity = (amenityKey: string) => {
     setAmenities(prev => 
       prev.includes(amenityKey) 
         ? prev.filter(a => a !== amenityKey)
         : [...prev, amenityKey]
+    );
+  };
+
+  const toggleFacility = (facilityKey: string) => {
+    setFacilities(prev => 
+      prev.includes(facilityKey) 
+        ? prev.filter(f => f !== facilityKey)
+        : [...prev, facilityKey]
     );
   };
 
@@ -123,7 +155,8 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
       priceRange,
       bedrooms,
       bathrooms,
-      amenities
+      amenities,
+      facilities
     };
     
     console.log('Search filters:', searchFilters);
@@ -188,6 +221,61 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Facilities Popover */}
+            <Popover open={showFacilities} onOpenChange={setShowFacilities}>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="compact-filter btn-secondary-ios border-0 bg-background/80 h-10 md:h-12 rounded-xl text-xs md:text-sm"
+                >
+                  <Building2 className="h-3.5 md:h-4 w-3.5 md:w-4 mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">{currentText.facilities}</span>
+                  <ChevronDown className="h-3.5 md:h-4 w-3.5 md:w-4 ml-1 md:ml-2" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80 macos-select border-0 rounded-2xl" align="end">
+                <div className="space-y-3 md:space-y-4">
+                  {/* Buy Facilities */}
+                  <div>
+                    <label className="text-xs md:text-sm font-medium text-foreground mb-2 block">{currentText.buyFacilities}</label>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {buyFacilityOptions.map((facility) => (
+                        <Button
+                          key={facility.key}
+                          variant={facilities.includes(facility.key) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => toggleFacility(facility.key)}
+                          className="compact-filter btn-secondary-ios h-8 md:h-9 text-xs rounded-lg"
+                        >
+                          <facility.icon className="h-3 w-3 mr-1" />
+                          {facility.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rent Facilities */}
+                  <div>
+                    <label className="text-xs md:text-sm font-medium text-foreground mb-2 block">{currentText.rentFacilities}</label>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {rentFacilityOptions.map((facility) => (
+                        <Button
+                          key={facility.key}
+                          variant={facilities.includes(facility.key) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => toggleFacility(facility.key)}
+                          className="compact-filter btn-secondary-ios h-8 md:h-9 text-xs rounded-lg"
+                        >
+                          <facility.icon className="h-3 w-3 mr-1" />
+                          {facility.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Advanced Filters Popover */}
             <Popover open={showAdvanced} onOpenChange={setShowAdvanced}>
