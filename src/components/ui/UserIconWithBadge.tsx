@@ -109,71 +109,71 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
 
         {/* Role-specific Quick Actions */}
         <div className="p-2 opacity-100">
-          <div className="grid grid-cols-2 gap-1.5 opacity-100">
+          <div className="flex flex-col gap-1 opacity-100">
             {isAdmin && (
               <>
-                <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Crown className="h-4 w-4 text-blue-500" />
-                  <span className="text-[10px] font-medium">Admin</span>
+                  <span className="text-sm font-medium">Admin Panel</span>
                 </button>
-                <button onClick={() => { navigate('/dijual'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/dijual'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Building2 className="h-4 w-4 text-green-500" />
-                  <span className="text-[10px] font-medium">Properties</span>
+                  <span className="text-sm font-medium">Properties</span>
                 </button>
-                <button onClick={() => { navigate('/users'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/users'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <User className="h-4 w-4 text-purple-500" />
-                  <span className="text-[10px] font-medium">Users</span>
+                  <span className="text-sm font-medium">Users</span>
                 </button>
-                <button onClick={() => { navigate('/analytics'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/analytics'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <BarChart3 className="h-4 w-4 text-orange-500" />
-                  <span className="text-[10px] font-medium">Analytics</span>
+                  <span className="text-sm font-medium">Analytics</span>
                 </button>
               </>
             )}
 
             {isAgent && (
               <>
-                <button onClick={() => { navigate('/agent'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/agent'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <User className="h-4 w-4 text-green-500" />
-                  <span className="text-[10px] font-medium">Agent Hub</span>
+                  <span className="text-sm font-medium">Agent Hub</span>
                 </button>
-                <button onClick={() => { navigate('/listings'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/listings'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Building2 className="h-4 w-4 text-blue-500" />
-                  <span className="text-[10px] font-medium">Listings</span>
+                  <span className="text-sm font-medium">My Listings</span>
                 </button>
               </>
             )}
 
             {isVendor && (
               <>
-                <button onClick={() => { navigate('/vendor'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/vendor'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Settings className="h-4 w-4 text-purple-500" />
-                  <span className="text-[10px] font-medium">Vendor</span>
+                  <span className="text-sm font-medium">Vendor Panel</span>
                 </button>
-                <button onClick={() => { navigate('/services'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/services'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Sparkles className="h-4 w-4 text-blue-500" />
-                  <span className="text-[10px] font-medium">Services</span>
+                  <span className="text-sm font-medium">My Services</span>
                 </button>
               </>
             )}
 
             {!isAdmin && !isAgent && !isVendor && (
               <>
-                <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <BarChart3 className="h-4 w-4 text-blue-500" />
-                  <span className="text-[10px] font-medium">Dashboard</span>
+                  <span className="text-sm font-medium">Dashboard</span>
                 </button>
-                <button onClick={() => { navigate('/saved'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/saved'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Heart className="h-4 w-4 text-red-500" />
-                  <span className="text-[10px] font-medium">Saved</span>
+                  <span className="text-sm font-medium">Saved</span>
                 </button>
-                <button onClick={() => { navigate('/search'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/search'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <Building2 className="h-4 w-4 text-green-500" />
-                  <span className="text-[10px] font-medium">Browse</span>
+                  <span className="text-sm font-medium">Browse</span>
                 </button>
-                <button onClick={() => { navigate('/notifications'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-md hover:bg-accent transition-all hover:scale-105">
+                <button onClick={() => { navigate('/notifications'); setIsOpen(false); }} className="flex items-center gap-3 p-2.5 rounded-md hover:bg-accent transition-all hover:scale-[1.02] w-full">
                   <MessageSquare className="h-4 w-4 text-purple-500" />
-                  <span className="text-[10px] font-medium">Messages</span>
+                  <span className="text-sm font-medium">Messages</span>
                 </button>
               </>
             )}
