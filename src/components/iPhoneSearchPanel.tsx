@@ -1498,26 +1498,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                      <Building2 className="h-3.5 w-3.5 text-blue-500" />
+              <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
+                <div>
+                  {/* Header with Title */}
+                  <div className="flex items-center gap-1.5 px-3 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                    <Building2 className="h-4 w-4 text-blue-500" />
+                    <h4 className="text-sm font-semibold text-foreground">
                       {currentText.facilities}
                     </h4>
                   </div>
                   
                   {/* Facilities Tabs */}
                   <Tabs defaultValue="outdoor" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-3 h-auto">
-                      <TabsTrigger value="outdoor" className="text-[10px] px-1 py-1.5">Outdoor</TabsTrigger>
-                      <TabsTrigger value="utility" className="text-[10px] px-1 py-1.5">Utility</TabsTrigger>
-                      <TabsTrigger value="safety" className="text-[10px] px-1 py-1.5">Safety</TabsTrigger>
-                      <TabsTrigger value="premium" className="text-[10px] px-1 py-1.5">Premium</TabsTrigger>
+                    <TabsList className="w-full flex justify-start gap-1 h-auto bg-transparent p-2 border-b border-gray-200 dark:border-gray-700">
+                      <TabsTrigger value="outdoor" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Outdoor</TabsTrigger>
+                      <TabsTrigger value="utility" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Utility</TabsTrigger>
+                      <TabsTrigger value="safety" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Safety</TabsTrigger>
+                      <TabsTrigger value="premium" className="text-[10px] px-2 py-1.5 rounded-md data-[state=active]:bg-blue-500 data-[state=active]:text-white">Premium</TabsTrigger>
                     </TabsList>
                     
                     {/* Outdoor & Community */}
-                    <TabsContent value="outdoor" className="mt-0">
+                    <TabsContent value="outdoor" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
                           ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'parking_space'].includes(f.id)
@@ -1547,7 +1548,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </TabsContent>
 
                     {/* Utility & Service */}
-                    <TabsContent value="utility" className="mt-0">
+                    <TabsContent value="utility" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
                           ['air_conditioning', 'water_heater_facility', 'internet_wifi', 'tv_cable', 'washing_machine', 'refrigerator', 'stove_oven', 'microwave'].includes(f.id)
@@ -1577,7 +1578,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </TabsContent>
 
                     {/* Accessibility & Safety */}
-                    <TabsContent value="safety" className="mt-0">
+                    <TabsContent value="safety" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
                           ['security_system', 'cctv_surveillance', 'elevator_lift', 'furniture_included'].includes(f.id)
@@ -1607,7 +1608,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </TabsContent>
 
                     {/* Premium & Lifestyle */}
-                    <TabsContent value="premium" className="mt-0">
+                    <TabsContent value="premium" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
                           ['gym_fitness'].includes(f.id)
