@@ -598,11 +598,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
     ],
     facilities: [
-      { id: 'parking_space', label: 'Parking Space', icon: '🅿️' },
-      { id: 'security_system', label: 'Security System', icon: '🔐' },
-      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊‍♂️' },
-      { id: 'gym_fitness', label: 'Gym/Fitness Center', icon: '🏋️' },
-      { id: 'elevator_lift', label: 'Elevator/Lift', icon: '🛗' },
+      { id: 'air_conditioning', label: 'Air Conditioning (AC)', icon: '❄️' },
+      { id: 'heating', label: 'Heating', icon: '🔥' },
+      { id: 'internet_wifi', label: 'Wi-Fi / Internet', icon: '📶' },
+      { id: 'parking_space', label: 'Parking', icon: '🚗' },
+      { id: 'elevator_lift', label: 'Elevator / Lift', icon: '🛗' },
+      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊' },
+      { id: 'gym_fitness', label: 'Gym / Fitness Center', icon: '🏋️' },
+      { id: 'laundry', label: 'Laundry', icon: '🧺' },
+      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
+      { id: 'balcony_terrace', label: 'Balcony / Terrace', icon: '🌿' },
+      { id: 'pet_friendly', label: 'Pet-Friendly', icon: '🐶' },
+      { id: 'furnished', label: 'Furnished', icon: '🛋️' },
+      { id: 'security_system', label: 'Security System', icon: '🔒' },
       { id: 'garden_yard', label: 'Garden/Yard', icon: '🌳' },
       { id: 'bbq_area', label: 'BBQ Area', icon: '🍖' },
       { id: 'playground', label: 'Children\'s Playground', icon: '🎠' },
@@ -651,17 +659,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
     ],
     facilities: [
-      { id: 'air_conditioning', label: 'Air Conditioning', icon: '❄️' },
-      { id: 'water_heater_facility', label: 'Water Heater', icon: '🚿' },
-      { id: 'internet_wifi', label: 'Internet/WiFi', icon: '📶' },
-      { id: 'tv_cable', label: 'TV/Cable', icon: '📺' },
+      { id: 'air_conditioning', label: 'Air Conditioning (AC)', icon: '❄️' },
+      { id: 'heating', label: 'Heating', icon: '🔥' },
+      { id: 'internet_wifi', label: 'Wi-Fi / Internet', icon: '📶' },
+      { id: 'parking_space', label: 'Parking', icon: '🚗' },
+      { id: 'elevator_lift', label: 'Elevator / Lift', icon: '🛗' },
+      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊' },
+      { id: 'gym_fitness', label: 'Gym / Fitness Center', icon: '🏋️' },
+      { id: 'laundry', label: 'Laundry', icon: '🧺' },
+      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
+      { id: 'balcony_terrace', label: 'Balcony / Terrace', icon: '🌿' },
+      { id: 'pet_friendly', label: 'Pet-Friendly', icon: '🐶' },
+      { id: 'furnished', label: 'Furnished', icon: '🛋️' },
+      { id: 'security_system', label: 'Security System', icon: '🔒' },
       { id: 'washing_machine', label: 'Washing Machine', icon: '🧺' },
       { id: 'refrigerator', label: 'Refrigerator', icon: '🧊' },
       { id: 'stove_oven', label: 'Stove/Oven', icon: '🍳' },
       { id: 'microwave', label: 'Microwave', icon: '🔥' },
-      { id: 'furniture_included', label: 'Furniture Included', icon: '🛋️' },
       { id: 'bedding_linens', label: 'Bedding/Linens', icon: '🛏️' },
-      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
       { id: 'kitchen_utensils', label: 'Kitchen Utensils', icon: '🔪' },
     ],
     maxPrice: 100,
@@ -678,14 +693,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     propertyTypes: propertyTypeOptions,
     features: propertyFeatures,
     facilities: [
-      { id: 'parking_space', label: 'Parking Space', icon: '🅿️' },
-      { id: 'security_system', label: 'Security System', icon: '🔐' },
-      { id: 'air_conditioning', label: 'Air Conditioning', icon: '❄️' },
-      { id: 'water_heater_facility', label: 'Water Heater', icon: '🚿' },
-      { id: 'internet_wifi', label: 'Internet/WiFi', icon: '📶' },
-      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊‍♂️' },
-      { id: 'gym_fitness', label: 'Gym/Fitness Center', icon: '🏋️' },
-      { id: 'elevator_lift', label: 'Elevator/Lift', icon: '🛗' },
+      { id: 'air_conditioning', label: 'Air Conditioning (AC)', icon: '❄️' },
+      { id: 'heating', label: 'Heating', icon: '🔥' },
+      { id: 'internet_wifi', label: 'Wi-Fi / Internet', icon: '📶' },
+      { id: 'parking_space', label: 'Parking', icon: '🚗' },
+      { id: 'elevator_lift', label: 'Elevator / Lift', icon: '🛗' },
+      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊' },
+      { id: 'gym_fitness', label: 'Gym / Fitness Center', icon: '🏋️' },
+      { id: 'laundry', label: 'Laundry', icon: '🧺' },
+      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
+      { id: 'balcony_terrace', label: 'Balcony / Terrace', icon: '🌿' },
+      { id: 'pet_friendly', label: 'Pet-Friendly', icon: '🐶' },
+      { id: 'furnished', label: 'Furnished', icon: '🛋️' },
+      { id: 'security_system', label: 'Security System', icon: '🔒' },
     ],
     maxPrice: 15000,
     priceStep: 100
@@ -1515,7 +1535,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="outdoor" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'parking_space'].includes(f.id)
+                          ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'balcony_terrace', 'pet_friendly', 'clubhouse', 'tennis_court', 'parking_space'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
@@ -1545,7 +1565,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="utility" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['air_conditioning', 'water_heater_facility', 'internet_wifi', 'tv_cable', 'washing_machine', 'refrigerator', 'stove_oven', 'microwave'].includes(f.id)
+                          ['air_conditioning', 'heating', 'internet_wifi', 'laundry', 'washing_machine', 'dishwasher', 'refrigerator', 'stove_oven', 'microwave', 'bedding_linens', 'kitchen_utensils'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
@@ -1575,7 +1595,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="safety" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['security_system', 'cctv_surveillance', 'elevator_lift', 'furniture_included'].includes(f.id)
+                          ['security_system', 'cctv_surveillance', 'elevator_lift', 'backup_generator'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
@@ -1605,7 +1625,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="premium" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['gym_fitness'].includes(f.id)
+                          ['gym_fitness', 'furnished'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
