@@ -1777,11 +1777,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             </span>
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent 
-                          className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
-                          position="popper"
-                          sideOffset={4}
-                        >
+                         <SelectContent 
+                           className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
+                           position="popper"
+                           sideOffset={4}
+                           onCloseAutoFocus={(e) => e.preventDefault()}
+                         >
                           <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                             {currentText.any}
                           </SelectItem>
@@ -1812,6 +1813,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <Select 
                           value={filters.city || "all"} 
                           onValueChange={handleCityChange}
+                          onOpenChange={setIsMenuOpen}
                           disabled={cities.length === 0}
                         >
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
@@ -1830,6 +1832,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                             className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
                             position="popper"
                             sideOffset={4}
+                            onCloseAutoFocus={(e) => e.preventDefault()}
                           >
                             <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {currentText.any}
@@ -1862,6 +1865,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <Select 
                           value={filters.area || "all"} 
                           onValueChange={handleAreaChange}
+                          onOpenChange={setIsMenuOpen}
                           disabled={areas.length === 0}
                         >
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
