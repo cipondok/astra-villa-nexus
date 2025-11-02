@@ -37,6 +37,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [showLocationButtons, setShowLocationButtons] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -52,8 +53,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     window.addEventListener('resize', checkMobile);
 
     const handleScroll = () => {
-      // Pause header minimize logic while filters modal is open to prevent layout jumps
-      if (showFilters) return;
+      // Pause header minimize logic while any menu/popover is open to prevent layout jumps
+      if (showFilters || isMenuOpen) return;
 
       const currentScrollY = window.scrollY;
 
@@ -1526,7 +1527,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Facilities Button - Opens Popover */}
-            <Popover>
+            <Popover onOpenChange={setIsMenuOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1546,7 +1547,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
+              <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onOpenAutoFocus={(e) => e.preventDefault()} onCloseAutoFocus={(e) => e.preventDefault()}>
                 <div>
                   {/* Facilities Tabs */}
                   <Tabs defaultValue="outdoor" className="w-full">
@@ -1714,7 +1715,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover modal={false}>
+              <Popover modal={false} onOpenChange={setIsMenuOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -1750,7 +1751,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
                         )}
                       </Label>
-                      <Select value={filters.state || "all"} onValueChange={handleStateChange}>
+                      <Select value={filters.state || "all"} onValueChange={handleStateChange} onOpenChange={setIsMenuOpen}>
                         <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500">
                           <SelectValue placeholder={currentText.selectProvince}>
                             <span className="truncate">
@@ -2206,6 +2207,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <Select 
                         value={filters.city || "all"} 
                         onValueChange={handleCityChange}
+                        onOpenChange={setIsMenuOpen}
                         disabled={!filters.state || filters.state === 'all'}
                       >
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
@@ -2228,6 +2230,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <Select 
                         value={filters.area || "all"} 
                         onValueChange={handleAreaChange}
+                        onOpenChange={setIsMenuOpen}
                         disabled={!filters.city || filters.city === 'all'}
                       >
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
