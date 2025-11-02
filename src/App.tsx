@@ -62,6 +62,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
+import MarketplaceCategory from '@/pages/MarketplaceCategory';
 
 
 const AppContent = () => {
@@ -127,6 +128,7 @@ const AppContent = () => {
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="/community" element={<Community />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
