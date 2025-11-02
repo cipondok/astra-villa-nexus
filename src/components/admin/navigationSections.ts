@@ -39,7 +39,8 @@ import {
   Bell,
   ImageIcon,
   Map,
-  Cloud
+  Cloud,
+  ShieldCheck
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -112,6 +113,13 @@ export const navigationSections = {
       label: "User Management",
       icon: Users,
       description: "Manage user accounts, roles, and authentication"
+    },
+    {
+      key: "verification-management",
+      label: "Verification Management",
+      icon: ShieldCheck,
+      description: "Approve and manage owner, agent, and agency verifications",
+      badge: "New"
     },
     {
       key: "property-management-hub",

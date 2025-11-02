@@ -57,6 +57,7 @@ import CaptchaSettings from "./CaptchaSettings";
 import CloudflareSettings from "./CloudflareSettings";
 import PropertyFiltersManagement from "./PropertyFiltersManagement";
 import SocialMediaSettings from "./SocialMediaSettings";
+import VerificationManagement from "./VerificationManagement";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -74,6 +75,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ProjectProgressReport />;
       case "user-management":
         return <EnhancedUserManagement />;
+      case "verification-management":
+        return <VerificationManagement />;
       case "property-management":
       case "property-management-hub":
         return <AdminPropertyManagement />;

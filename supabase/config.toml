@@ -31,3 +31,12 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.send-inquiry-email]
     verify_jwt = false
 
+  [functions.verify-owner]
+    verify_jwt = true
+
+  [functions.verify-vendor]
+    verify_jwt = true
+
+  [functions.get-verification-requests]
+    verify_jwt = true
+
