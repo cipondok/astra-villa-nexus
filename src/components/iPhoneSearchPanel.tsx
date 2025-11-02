@@ -2211,7 +2211,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <SelectValue placeholder={currentText.selectProvince} />
                         </SelectTrigger>
                         <SelectContent 
-                          className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]"
+className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
                           position="popper"
                           sideOffset={4}
                           onCloseAutoFocus={(e) => e.preventDefault()}
@@ -2239,7 +2239,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <SelectValue placeholder={currentText.selectCity} />
                         </SelectTrigger>
                         <SelectContent 
-                          className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]"
+className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
                           position="popper"
                           sideOffset={4}
                           onCloseAutoFocus={(e) => e.preventDefault()}
@@ -2267,7 +2267,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <SelectValue placeholder={currentText.selectArea} />
                         </SelectTrigger>
                         <SelectContent 
-                          className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]"
+className="bg-popover border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
                           position="popper"
                           sideOffset={4}
                           onCloseAutoFocus={(e) => e.preventDefault()}
