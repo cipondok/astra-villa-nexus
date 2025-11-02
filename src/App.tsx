@@ -61,6 +61,7 @@ import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import Community from '@/pages/Community';
+import Marketplace from '@/pages/Marketplace';
 
 
 const AppContent = () => {
@@ -125,6 +126,7 @@ const AppContent = () => {
           <Route path="/partners/ventures" element={<JointVentures />} />
           <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>

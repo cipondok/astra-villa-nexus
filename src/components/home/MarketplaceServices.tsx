@@ -97,28 +97,26 @@ const MarketplaceServices = () => {
 
   return (
     <div className="relative">
-      {/* Section Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
-              Marketplace Services
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Connect with trusted vendors for all your property needs
-            </p>
-          </div>
-          <button
-            onClick={() => navigate('/marketplace')}
-            className="px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-          >
-            View All →
-          </button>
+      {/* Section Header - Compact */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-lg md:text-xl font-bold text-foreground">
+            Marketplace Services
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Trusted vendors for your property needs
+          </p>
         </div>
+        <button
+          onClick={() => navigate('/marketplace')}
+          className="text-xs md:text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+        >
+          View All →
+        </button>
       </div>
 
-      {/* Services Grid - 4 columns */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Services Grid - 4 columns, more compact */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {services.map((service, index) => (
           <ServiceCard
             key={index}
@@ -128,20 +126,20 @@ const MarketplaceServices = () => {
         ))}
       </div>
 
-      {/* CTA Banner */}
-      <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* CTA Banner - Slim */}
+      <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="text-center md:text-left">
-            <h3 className="text-xl font-bold text-foreground mb-1">
+            <h3 className="text-sm md:text-base font-semibold text-foreground">
               Are you a service provider?
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Join our marketplace and grow your business
             </p>
           </div>
           <button
             onClick={() => navigate('/vendor-registration')}
-            className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
+            className="px-4 py-2 text-sm bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors"
           >
             Become a Vendor
           </button>
@@ -162,28 +160,28 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
       onClick={onClick}
       className="group cursor-pointer"
     >
-      <div className="relative overflow-hidden rounded-xl bg-card border border-border p-5 h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/30">
-        {/* Icon Container */}
-        <div className={`w-14 h-14 rounded-xl ${service.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+      <div className="relative overflow-hidden rounded-lg bg-card border border-border p-3 h-full flex flex-col transition-all duration-300 hover:shadow-md hover:scale-105 hover:border-primary/30">
+        {/* Icon Container - Smaller */}
+        <div className={`w-10 h-10 rounded-lg ${service.bgColor} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
           <div className={service.iconColor}>
-            {service.icon}
+            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-5 h-5' })}
           </div>
         </div>
 
-        {/* Content */}
+        {/* Content - Compact */}
         <div className="flex-1">
-          <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+          <h3 className="text-xs md:text-sm font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2">
             {service.title}
           </h3>
-          <p className="text-xs text-muted-foreground mb-3">
+          <p className="text-[10px] text-muted-foreground mb-2 line-clamp-1">
             {service.description}
           </p>
           
-          {/* Vendor Count Badge */}
-          <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 dark:bg-primary/20">
-            <Store className="w-3 h-3 text-primary" />
-            <span className="text-xs font-medium text-primary">
-              {service.vendorCount}+ vendors
+          {/* Vendor Count Badge - Smaller */}
+          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-primary/20">
+            <Store className="w-2.5 h-2.5 text-primary" />
+            <span className="text-[10px] font-medium text-primary">
+              {service.vendorCount}+
             </span>
           </div>
         </div>
