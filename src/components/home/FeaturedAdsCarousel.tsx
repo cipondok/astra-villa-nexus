@@ -91,13 +91,13 @@ export default function FeaturedAdsCarousel() {
   });
 
   // Auto-scroll configuration from admin settings
-  useAutoHorizontalScroll(scrollRef, {
-    speed: carouselSettings?.auto_scroll ? (carouselSettings.scroll_speed || 1.5) : 0,
-    intervalMs: carouselSettings?.interval_ms || 25,
-    direction: (carouselSettings?.scroll_direction as 'ltr' | 'rtl') || 'rtl',
-    pauseOnHover: carouselSettings?.pause_on_hover ?? false,
-    loopMode: (carouselSettings?.loop_mode as 'stop' | 'loop' | 'seamless') || 'stop'
-  });
+useAutoHorizontalScroll(scrollRef, {
+  speed: carouselSettings ? (carouselSettings.auto_scroll ? (carouselSettings.scroll_speed || 1.5) : 0) : 1.5,
+  intervalMs: carouselSettings?.interval_ms || 25,
+  direction: (carouselSettings?.scroll_direction as 'ltr' | 'rtl') || 'rtl',
+  pauseOnHover: carouselSettings?.pause_on_hover ?? false,
+  loopMode: (carouselSettings?.loop_mode as 'stop' | 'loop' | 'seamless') || 'seamless'
+});
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -142,10 +142,10 @@ export default function FeaturedAdsCarousel() {
     <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-3 md:p-4 overflow-hidden group">
       {/* Header */}
       <div className="mb-3">
-        <h2 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+        <h2 className="text-base md:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
           Featured Properties
         </h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
+        <p className="text-[11px] text-muted-foreground mt-0.5">
           Exclusive opportunities you don't want to miss
         </p>
       </div>
@@ -171,7 +171,7 @@ export default function FeaturedAdsCarousel() {
       {/* Carousel */}
       <div
   ref={scrollRef}
-  className="flex gap-3 overflow-hidden"
+  className="flex gap-2 md:gap-3 overflow-hidden"
   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
       >
         {showFallback ? (
@@ -179,19 +179,19 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[320px] md:w-[380px] cursor-pointer group"
+              className="flex-shrink-0 w-[260px] md:w-[360px] cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px]">
                 {/* Image - Left Side */}
-                <div className="relative w-[140px] flex-shrink-0">
+                <div className="relative w-[110px] md:w-[140px] flex-shrink-0">
                   <img
                     src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
                     alt={p.title}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute top-2 left-2">
-                    <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
+                  <div className="absolute top-1 left-1">
+                    <span className="px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[9px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
                       {p.property_type}
                     </span>
                   </div>
@@ -199,12 +199,12 @@ export default function FeaturedAdsCarousel() {
                 </div>
                 
                 {/* Content - Right Side */}
-                <div className="flex-1 p-3 flex flex-col justify-between">
+                <div className="flex-1 p-2 md:p-3 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1">
+                    <h3 className="text-[11px] md:text-sm font-semibold text-foreground line-clamp-2 mb-0.5 md:mb-1">
                       {p.title}
                     </h3>
-                    <div className="text-[10px] text-muted-foreground line-clamp-1">
+                    <div className="text-[9px] md:text-[10px] text-muted-foreground line-clamp-1">
                       {(p.city || p.state) ? `${p.city ?? ''}${p.city && p.state ? ', ' : ''}${p.state ?? ''}` : ''}
                     </div>
                   </div>
@@ -220,11 +220,11 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${ad.id}-${idx}`}
               onClick={() => handleAdClick(ad)}
-              className="flex-shrink-0 w-[320px] md:w-[380px] cursor-pointer group"
+              className="flex-shrink-0 w-[260px] md:w-[360px] cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[120px]">
+              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[100px]">
                 {/* Image - Left Side */}
-                <div className="relative w-[140px] flex-shrink-0">
+                <div className="relative w-[110px] md:w-[140px] flex-shrink-0">
                   <img
                     src={ad.image_url}
                     alt={ad.title}
@@ -235,12 +235,12 @@ export default function FeaturedAdsCarousel() {
                 </div>
                 
                 {/* Content - Right Side */}
-                <div className="flex-1 p-3 flex flex-col justify-center">
-                  <h3 className="text-sm font-bold text-foreground mb-1 line-clamp-2">
+                <div className="flex-1 p-2 md:p-3 flex flex-col justify-center">
+                  <h3 className="text-[11px] md:text-sm font-bold text-foreground mb-0.5 md:mb-1 line-clamp-2">
                     {ad.title}
                   </h3>
                   {ad.subtitle && (
-                    <p className="text-[11px] text-muted-foreground line-clamp-2">
+                    <p className="text-[10px] md:text-[11px] text-muted-foreground line-clamp-2">
                       {ad.subtitle}
                     </p>
                   )}
