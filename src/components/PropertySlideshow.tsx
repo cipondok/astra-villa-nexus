@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import VerificationBadge from "@/components/ui/VerificationBadge";
 
 interface Property {
   id: number;
@@ -19,6 +20,10 @@ interface Property {
   thumbnail_url?: string;
   city: string;
   state: string;
+  owner_type?: string;
+  owner_verified?: boolean;
+  agent_verified?: boolean;
+  agency_verified?: boolean;
 }
 
 const PropertySlideshow = () => {
@@ -31,7 +36,15 @@ const PropertySlideshow = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select(`
+          id, title, location, price, property_type, bedrooms, bathrooms, 
+          area_sqm, images, thumbnail_url, city, state, user_id, created_at,
+          profiles!inner(
+            role,
+            user_verification(verified, verification_type),
+            vendor_profiles(verified, verification_type)
+          )
+        `)
         .eq('status', 'active')
         .order('created_at', { ascending: false })
         .limit(20);
@@ -41,7 +54,36 @@ const PropertySlideshow = () => {
         return [];
       }
 
-      return data || [];
+      // Map verification data
+      return (data || []).map((property: any) => {
+        const profile = property.profiles;
+        const ownerType = profile?.role === 'owner' ? 'owner' : 
+                         profile?.role === 'agent' ? 'agent' : 
+                         profile?.role === 'agency' ? 'agency' : undefined;
+        
+        const ownerVerified = profile?.user_verification?.some((v: any) => v.verified && v.verification_type === 'identity');
+        const agentVerified = profile?.vendor_profiles?.some((v: any) => v.verified && v.verification_type === 'KTP');
+        const agencyVerified = profile?.vendor_profiles?.some((v: any) => v.verified && v.verification_type === 'SIUP');
+        
+        return {
+          id: property.id,
+          title: property.title,
+          location: property.location,
+          price: property.price,
+          property_type: property.property_type,
+          bedrooms: property.bedrooms,
+          bathrooms: property.bathrooms,
+          area_sqm: property.area_sqm,
+          images: property.images,
+          thumbnail_url: property.thumbnail_url,
+          city: property.city,
+          state: property.state,
+          owner_type: ownerType,
+          owner_verified: ownerVerified,
+          agent_verified: agentVerified,
+          agency_verified: agencyVerified
+        } as Property;
+      });
     },
     staleTime: 60000,
   });
@@ -143,6 +185,22 @@ const PropertySlideshow = () => {
                   {property.property_type}
                 </span>
               </div>
+              
+              {/* Verification Badge */}
+              {property.owner_type && (
+                <div className="absolute bottom-3 left-3">
+                  {property.owner_type === 'owner' && property.owner_verified && (
+                    <VerificationBadge type="owner" verified={true} size="sm" />
+                  )}
+                  {property.owner_type === 'agent' && property.agent_verified && (
+                    <VerificationBadge type="agent" verified={true} size="sm" />
+                  )}
+                  {property.owner_type === 'agency' && property.agency_verified && (
+                    <VerificationBadge type="agency" verified={true} size="sm" />
+                  )}
+                </div>
+              )}
+              
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             
