@@ -59,14 +59,7 @@ export default function FeaturedAdsCarousel() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select(`
-          id, title, price, property_type, city, state, images, thumbnail_url, created_at, user_id,
-          profiles!inner(
-            role,
-            user_verification(verified, verification_type),
-            vendor_profiles(verified, verification_type)
-          )
-        `)
+        .select('id, title, price, property_type, city, state, images, thumbnail_url, created_at')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .not('title', 'is', null)
@@ -74,33 +67,7 @@ export default function FeaturedAdsCarousel() {
         .limit(16);
       
       if (error) throw error;
-      
-      // Map verification data
-      return data.map((property: any) => {
-        const profile = property.profiles;
-        const ownerType = profile?.role === 'owner' ? 'owner' : 
-                         profile?.role === 'agent' ? 'agent' : 
-                         profile?.role === 'agency' ? 'agency' : undefined;
-        
-        const ownerVerified = profile?.user_verification?.some((v: any) => v.verified && v.verification_type === 'identity');
-        const agentVerified = profile?.vendor_profiles?.some((v: any) => v.verified && v.verification_type === 'KTP');
-        const agencyVerified = profile?.vendor_profiles?.some((v: any) => v.verified && v.verification_type === 'SIUP');
-        
-        return {
-          id: property.id,
-          title: property.title,
-          price: property.price,
-          property_type: property.property_type,
-          city: property.city,
-          state: property.state,
-          images: property.images,
-          thumbnail_url: property.thumbnail_url,
-          owner_type: ownerType,
-          owner_verified: ownerVerified,
-          agent_verified: agentVerified,
-          agency_verified: agencyVerified
-        } as FallbackProperty;
-      });
+      return data as FallbackProperty[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -207,22 +174,6 @@ export default function FeaturedAdsCarousel() {
                     {p.property_type}
                   </span>
                 </div>
-                
-                {/* Verification Badge */}
-                {p.owner_type && (
-                  <div className="absolute bottom-2 left-2">
-                    {p.owner_type === 'owner' && p.owner_verified && (
-                      <VerificationBadge type="owner" verified={true} size="sm" />
-                    )}
-                    {p.owner_type === 'agent' && p.agent_verified && (
-                      <VerificationBadge type="agent" verified={true} size="sm" />
-                    )}
-                    {p.owner_type === 'agency' && p.agency_verified && (
-                      <VerificationBadge type="agency" verified={true} size="sm" />
-                    )}
-                  </div>
-                )}
-                
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <div className="px-1">
