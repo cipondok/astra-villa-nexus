@@ -1507,31 +1507,135 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </h4>
                   </div>
                   
-                  {/* Facilities Checklist */}
-                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                    {currentFilters.facilities?.map((facility: any) => (
-                      <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <Checkbox
-                          id={`facility-${facility.id}`}
-                          checked={filters.facilities.includes(facility.id)}
-                          onCheckedChange={(checked) => {
-                            const newFacilities = checked
-                              ? [...filters.facilities, facility.id]
-                              : filters.facilities.filter((f: string) => f !== facility.id);
-                            handleFilterChange('facilities', newFacilities);
-                          }}
-                          className="h-4 w-4"
-                        />
-                        <label
-                          htmlFor={`facility-${facility.id}`}
-                          className="text-xs cursor-pointer flex items-center gap-1"
-                        >
-                          <span>{facility.icon}</span>
-                          <span className="flex-1">{facility.label}</span>
-                        </label>
+                  {/* Facilities Tabs */}
+                  <Tabs defaultValue="outdoor" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-3 h-auto">
+                      <TabsTrigger value="outdoor" className="text-[10px] px-1 py-1.5">Outdoor</TabsTrigger>
+                      <TabsTrigger value="utility" className="text-[10px] px-1 py-1.5">Utility</TabsTrigger>
+                      <TabsTrigger value="safety" className="text-[10px] px-1 py-1.5">Safety</TabsTrigger>
+                      <TabsTrigger value="premium" className="text-[10px] px-1 py-1.5">Premium</TabsTrigger>
+                    </TabsList>
+                    
+                    {/* Outdoor & Community */}
+                    <TabsContent value="outdoor" className="mt-0">
+                      <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                        {currentFilters.facilities?.filter((f: any) => 
+                          ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'parking_space'].includes(f.id)
+                        ).map((facility: any) => (
+                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <Checkbox
+                              id={`facility-${facility.id}`}
+                              checked={filters.facilities.includes(facility.id)}
+                              onCheckedChange={(checked) => {
+                                const newFacilities = checked
+                                  ? [...filters.facilities, facility.id]
+                                  : filters.facilities.filter((f: string) => f !== facility.id);
+                                handleFilterChange('facilities', newFacilities);
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <label
+                              htmlFor={`facility-${facility.id}`}
+                              className="text-xs cursor-pointer flex items-center gap-1"
+                            >
+                              <span>{facility.icon}</span>
+                              <span className="flex-1">{facility.label}</span>
+                            </label>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </TabsContent>
+
+                    {/* Utility & Service */}
+                    <TabsContent value="utility" className="mt-0">
+                      <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                        {currentFilters.facilities?.filter((f: any) => 
+                          ['air_conditioning', 'water_heater_facility', 'internet_wifi', 'tv_cable', 'washing_machine', 'refrigerator', 'stove_oven', 'microwave'].includes(f.id)
+                        ).map((facility: any) => (
+                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <Checkbox
+                              id={`facility-${facility.id}`}
+                              checked={filters.facilities.includes(facility.id)}
+                              onCheckedChange={(checked) => {
+                                const newFacilities = checked
+                                  ? [...filters.facilities, facility.id]
+                                  : filters.facilities.filter((f: string) => f !== facility.id);
+                                handleFilterChange('facilities', newFacilities);
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <label
+                              htmlFor={`facility-${facility.id}`}
+                              className="text-xs cursor-pointer flex items-center gap-1"
+                            >
+                              <span>{facility.icon}</span>
+                              <span className="flex-1">{facility.label}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+
+                    {/* Accessibility & Safety */}
+                    <TabsContent value="safety" className="mt-0">
+                      <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                        {currentFilters.facilities?.filter((f: any) => 
+                          ['security_system', 'cctv_surveillance', 'elevator_lift', 'furniture_included'].includes(f.id)
+                        ).map((facility: any) => (
+                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <Checkbox
+                              id={`facility-${facility.id}`}
+                              checked={filters.facilities.includes(facility.id)}
+                              onCheckedChange={(checked) => {
+                                const newFacilities = checked
+                                  ? [...filters.facilities, facility.id]
+                                  : filters.facilities.filter((f: string) => f !== facility.id);
+                                handleFilterChange('facilities', newFacilities);
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <label
+                              htmlFor={`facility-${facility.id}`}
+                              className="text-xs cursor-pointer flex items-center gap-1"
+                            >
+                              <span>{facility.icon}</span>
+                              <span className="flex-1">{facility.label}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+
+                    {/* Premium & Lifestyle */}
+                    <TabsContent value="premium" className="mt-0">
+                      <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                        {currentFilters.facilities?.filter((f: any) => 
+                          ['gym_fitness'].includes(f.id)
+                        ).map((facility: any) => (
+                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <Checkbox
+                              id={`facility-${facility.id}`}
+                              checked={filters.facilities.includes(facility.id)}
+                              onCheckedChange={(checked) => {
+                                const newFacilities = checked
+                                  ? [...filters.facilities, facility.id]
+                                  : filters.facilities.filter((f: string) => f !== facility.id);
+                                handleFilterChange('facilities', newFacilities);
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <label
+                              htmlFor={`facility-${facility.id}`}
+                              className="text-xs cursor-pointer flex items-center gap-1"
+                            >
+                              <span>{facility.icon}</span>
+                              <span className="flex-1">{facility.label}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </PopoverContent>
             </Popover>
