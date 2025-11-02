@@ -83,20 +83,6 @@ const AdvancedPropertyFilters = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onToggle}>
-      <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="h-8 text-xs font-medium px-3"
-        >
-          <Filter className="h-3.5 w-3.5 mr-1.5" />
-          <span>Filters</span>
-          {getActiveFiltersCount() > 0 && (
-            <Badge variant="secondary" className="ml-1.5 text-xs px-1.5 py-0.5">{getActiveFiltersCount()}</Badge>
-          )}
-        </Button>
-      </DialogTrigger>
-      
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
         <DialogHeader className="p-6 pb-4 sticky top-0 bg-background z-10 border-b">
           <DialogTitle className="flex items-center justify-between text-xl">
