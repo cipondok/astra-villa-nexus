@@ -63,6 +63,7 @@ import CookieSystem from '@/components/cookies/CookieSystem';
 import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
 import MarketplaceCategory from '@/pages/MarketplaceCategory';
+import VendorRegistration from '@/pages/VendorRegistration';
 
 
 const AppContent = () => {
@@ -129,6 +130,7 @@ const AppContent = () => {
           <Route path="/community" element={<Community />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
+          <Route path="/vendor-registration" element={<VendorRegistration />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
