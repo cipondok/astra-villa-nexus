@@ -34,6 +34,7 @@ const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppI
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
+const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -548,7 +549,7 @@ const Index = () => {
                   </Suspense>
                 </div>
 
-                {/* Featured Properties - Zero-waste Compact Layout */}
+                {/* Featured Properties - Modern Auto-Scrolling Carousel */}
                 <section className={cn(
                   "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0",
                   isMobile ? "p-3" : "p-4 lg:p-6"
@@ -572,29 +573,8 @@ const Index = () => {
                   </div>
                   
                   <div className="container-compact">
-                    <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />)}</div>}>
-                      <PropertyGridView
-                        properties={featuredProperties}
-                        onPropertyClick={handlePropertyClick}
-                        onView3D={handlePropertyClick}
-                        onSave={(property) => console.log('Save property:', property.id)}
-                        onShare={async (property) => {
-                          const success = await shareProperty({
-                            id: property.id,
-                            title: property.title,
-                            price: property.price || 0,
-                            location: property.location || property.city || '',
-                            images: property.images
-                          });
-                          if (success) {
-                            toast.success("Property link shared!");
-                          }
-                        }}
-                        onContact={(property) => {
-                          setSelectedProperty(property);
-                          setWhatsappDialogOpen(true);
-                        }}
-                      />
+                    <Suspense fallback={<div className="flex gap-6 px-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 w-[300px] flex-shrink-0 rounded-xl" />)}</div>}>
+                      <PropertySlideshow />
                     </Suspense>
                   </div>
                 </section>

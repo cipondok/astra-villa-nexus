@@ -1,8 +1,10 @@
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Property {
   id: number;
@@ -21,6 +23,7 @@ interface Property {
 
 const PropertySlideshow = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   // Fetch featured properties for slideshow
   const { data: properties = [] } = useQuery({
@@ -43,13 +46,25 @@ const PropertySlideshow = () => {
     staleTime: 60000,
   });
 
-  // Use auto-scroll hook
+  // Use auto-scroll hook with right-to-left direction
   useAutoHorizontalScroll(containerRef, {
-    speed: 1,
-    intervalMs: 30,
+    speed: 1.5,
+    intervalMs: 25,
     direction: 'rtl',
     pauseOnHover: true,
   });
+
+  const scrollLeft = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
@@ -63,14 +78,14 @@ const PropertySlideshow = () => {
 
   if (properties.length === 0) {
     return (
-      <div className="w-full overflow-hidden">
-        <div className="flex gap-3 px-4">
+      <div className="w-full overflow-hidden my-8">
+        <div className="flex gap-4 px-4">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="flex-shrink-0 w-[280px] animate-pulse">
-              <div className="h-40 bg-muted rounded-lg mb-2"></div>
+            <div key={index} className="flex-shrink-0 w-[300px] animate-pulse">
+              <div className="h-48 bg-muted rounded-xl mb-2"></div>
               <div className="space-y-2">
-                <div className="h-3 bg-muted rounded w-3/4"></div>
-                <div className="h-2 bg-muted rounded w-1/2"></div>
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
               </div>
             </div>
           ))}
@@ -83,51 +98,76 @@ const PropertySlideshow = () => {
   const displayProperties = [...properties, ...properties];
 
   return (
-    <div className="w-full overflow-hidden py-4">
+    <div 
+      className="w-full overflow-hidden relative my-12 group"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      {/* Modern Navigation Arrows */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={scrollLeft}
+        className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 backdrop-blur-md shadow-xl border-2 border-primary/20 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+      >
+        <ChevronLeft className="h-6 w-6 text-primary" />
+      </Button>
+
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={scrollRight}
+        className={`absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 backdrop-blur-md shadow-xl border-2 border-primary/20 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+      >
+        <ChevronRight className="h-6 w-6 text-primary" />
+      </Button>
+
       <div 
         ref={containerRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-4"
+        className="flex gap-6 overflow-x-auto scrollbar-hide px-4 py-4"
         style={{ scrollBehavior: 'auto' }}
       >
         {displayProperties.map((property, idx) => (
           <div 
             key={`${property.id}-${idx}`}
-            className="flex-shrink-0 w-[280px] group cursor-pointer"
+            className="flex-shrink-0 w-[300px] group cursor-pointer transition-all duration-300 hover:scale-105"
           >
-            <div className="relative overflow-hidden rounded-lg mb-2">
+            <div className="relative overflow-hidden rounded-2xl mb-3 shadow-lg">
               <img
                 src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                 alt={property.title}
-                className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
+                className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              <div className="absolute top-2 right-2">
-                <span className="px-2 py-0.5 bg-primary/90 text-primary-foreground text-[10px] font-semibold rounded-full backdrop-blur-sm">
+              <div className="absolute top-3 right-3">
+                <span className="px-3 py-1.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm shadow-md">
                   {property.property_type}
                 </span>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             
-            <div className="px-1">
-              <div className="text-sm font-bold text-foreground mb-0.5">
+            <div className="px-2">
+              <div className="text-lg font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                 {formatPrice(property.price)}
               </div>
-              <h3 className="text-xs font-medium text-foreground/90 line-clamp-1 mb-1">
+              <h3 className="text-sm font-semibold text-foreground line-clamp-1 mb-2">
                 {property.title}
               </h3>
-              <div className="text-[10px] text-muted-foreground mb-2 line-clamp-1">
+              <div className="text-xs text-muted-foreground mb-3 line-clamp-1 flex items-center gap-1">
+                <i className="fas fa-map-marker-alt"></i>
                 {property.city}, {property.state}
               </div>
-              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
                   <i className="fas fa-bed"></i>
                   <span>{property.bedrooms}</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <i className="fas fa-bath"></i>
                   <span>{property.bathrooms}</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
+                  <i className="fas fa-ruler-combined"></i>
                   <span>{property.area_sqm}m²</span>
                 </div>
               </div>
