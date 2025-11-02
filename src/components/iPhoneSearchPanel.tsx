@@ -42,19 +42,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   
   // Track individual popover states for scroll lock
   const [isLocationPopoverOpen, setIsLocationPopoverOpen] = useState(false);
-  const [isPropertyTypePopoverOpen, setIsPropertyTypePopoverOpen] = useState(false);
+  const [isPropertyPopoverOpen, setIsPropertyPopoverOpen] = useState(false);
   const [isFacilitiesPopoverOpen, setIsFacilitiesPopoverOpen] = useState(false);
-  const [isCheckInPopoverOpen, setIsCheckInPopoverOpen] = useState(false);
-  const [isCheckOutPopoverOpen, setIsCheckOutPopoverOpen] = useState(false);
   
-  // 🔥 CRITICAL: Apply scroll lock when ANY overlay is open
-  // Reference-counted system handles multiple overlays gracefully
-  useScrollLock(showFilters);
-  useScrollLock(isLocationPopoverOpen);
-  useScrollLock(isPropertyTypePopoverOpen);
-  useScrollLock(isFacilitiesPopoverOpen);
-  useScrollLock(isCheckInPopoverOpen);
-  useScrollLock(isCheckOutPopoverOpen);
+  // 🔒 Lock body scroll when any overlay is open (prevents layout shifts)
+  useScrollLock(
+    showFilters || isLocationPopoverOpen || isPropertyPopoverOpen || isFacilitiesPopoverOpen
+  );
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -948,33 +942,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     };
   }, [showFilters, showSuggestions]);
 
-  // Lock background scroll when filters are open (prevents page jump and keeps modal fixed)
-  useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
+  // Removed manual scroll locking useEffect in favor of useScrollLock hook above
 
-    if (showFilters) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      const prevOverflow = body.style.overflow;
-      const prevPaddingRight = body.style.paddingRight;
-
-      // Add class to html/body for robust locking across devices
-      root.classList.add('modal-open');
-      body.classList.add('modal-open');
-
-      body.style.overflow = 'hidden';
-      if (scrollbarWidth > 0) {
-        body.style.paddingRight = `${scrollbarWidth}px`;
-      }
-
-      return () => {
-        root.classList.remove('modal-open');
-        body.classList.remove('modal-open');
-        body.style.overflow = prevOverflow;
-        body.style.paddingRight = prevPaddingRight;
-      };
-    }
-  }, [showFilters]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) return `${price / 1000} M`;
@@ -1422,7 +1391,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
-            <Popover onOpenChange={setIsPropertyTypePopoverOpen}>
+            <Popover onOpenChange={setIsPropertyPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -2492,7 +2461,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <div className={cn("grid grid-cols-2", isMobile ? "gap-1" : "gap-2")}>
                         <div>
                           <Label className={cn("text-orange-600 dark:text-orange-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>{currentText.checkIn}</Label>
-                          <Popover onOpenChange={setIsCheckInPopoverOpen}>
+                          <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
@@ -2523,7 +2492,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                         <div>
                           <Label className={cn("text-orange-600 dark:text-orange-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>{currentText.checkOut}</Label>
-                          <Popover onOpenChange={setIsCheckOutPopoverOpen}>
+                          <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
