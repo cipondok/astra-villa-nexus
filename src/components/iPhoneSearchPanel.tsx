@@ -618,6 +618,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       { id: 'backup_generator', label: 'Backup Generator', icon: '⚡' },
       { id: 'clubhouse', label: 'Clubhouse', icon: '🏛️' },
       { id: 'tennis_court', label: 'Tennis Court', icon: '🎾' },
+      { id: 'concierge', label: 'Concierge / 24-hr Doorman', icon: '🛎️' },
+      { id: 'rooftop_lounge', label: 'Rooftop Deck / Lounge', icon: '🌆' },
+      { id: 'sauna_spa', label: 'Sauna / Spa / Steam Room', icon: '♨️' },
+      { id: 'coworking', label: 'Business Center / Co-working', icon: '💼' },
+      { id: 'ev_charging', label: 'EV Charging Station', icon: '🔌' },
+      { id: 'storage_unit', label: 'Storage Unit / Locker', icon: '📦' },
+      { id: 'bike_storage', label: 'Bike Storage', icon: '🚲' },
+      { id: 'guest_suite', label: 'Guest Suite', icon: '🏠' },
     ],
     maxPrice: 20000,
     priceStep: 500
@@ -1625,7 +1633,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <TabsContent value="premium" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
                         {currentFilters.facilities?.filter((f: any) => 
-                          ['gym_fitness', 'furnished'].includes(f.id)
+                          ['gym_fitness', 'furnished', 'concierge', 'rooftop_lounge', 'sauna_spa', 'coworking', 'ev_charging', 'storage_unit', 'bike_storage', 'guest_suite'].includes(f.id)
                         ).map((facility: any) => (
                           <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             <Checkbox
