@@ -1714,7 +1714,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover>
+              <Popover modal={false}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -1732,20 +1732,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                        <MapPin className="h-3.5 w-3.5 text-blue-500" />
-                        {currentText.location}
-                      </h4>
-                    </div>
-                    
+                <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" sideOffset={4}>
+                  <div className="space-y-3 p-1">
                     {/* State/Province Selection */}
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">{currentText.selectProvince}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-medium text-foreground">{currentText.selectProvince}</Label>
                       <Select value={filters.state || "all"} onValueChange={handleStateChange}>
-                        <SelectTrigger className="h-8 text-xs bg-background border-border rounded-lg">
+                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors">
                           <SelectValue placeholder={currentText.selectProvince}>
                             <span className="truncate">
                               {filters.state && filters.state !== 'all' 
@@ -1755,9 +1748,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">{currentText.any}</SelectItem>
                           {provinces.map((province) => (
-                            <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer">
+                            <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {province.name}
                             </SelectItem>
                           ))}
@@ -1766,14 +1759,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
 
                     {/* City Selection */}
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">{currentText.selectCity}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-medium text-foreground">{currentText.selectCity}</Label>
                       <Select 
                         value={filters.city || "all"} 
                         onValueChange={handleCityChange}
                         disabled={!filters.state || filters.state === 'all'}
                       >
-                        <SelectTrigger className="h-8 text-xs bg-background border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                           <SelectValue placeholder={currentText.selectCity}>
                             <span className="truncate">
                               {filters.city && filters.city !== 'all' 
@@ -1786,9 +1779,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">{currentText.any}</SelectItem>
                           {cities.map((city) => (
-                            <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer">
+                            <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {city.type} {city.name}
                             </SelectItem>
                           ))}
@@ -1797,14 +1790,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
 
                     {/* Area Selection */}
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">{currentText.selectArea}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-medium text-foreground">{currentText.selectArea}</Label>
                       <Select 
                         value={filters.area || "all"} 
                         onValueChange={handleAreaChange}
                         disabled={!filters.city || filters.city === 'all'}
                       >
-                        <SelectTrigger className="h-8 text-xs bg-background border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                           <SelectValue placeholder={currentText.selectArea}>
                             <span className="truncate">
                               {filters.area && filters.area !== 'all' 
@@ -1814,9 +1807,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]">
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer">{currentText.any}</SelectItem>
+                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">{currentText.any}</SelectItem>
                           {areas.map((area) => (
-                            <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer">
+                            <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {area.name}
                             </SelectItem>
                           ))}
