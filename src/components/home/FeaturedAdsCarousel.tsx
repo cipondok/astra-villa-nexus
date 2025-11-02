@@ -76,7 +76,7 @@ export default function FeaturedAdsCarousel() {
     speed: 1.5,
     intervalMs: 25,
     direction: 'rtl',
-    pauseOnHover: true
+    pauseOnHover: false
   });
 
   const scroll = (direction: 'left' | 'right') => {

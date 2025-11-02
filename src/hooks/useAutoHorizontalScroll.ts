@@ -31,30 +31,35 @@ export default function useAutoHorizontalScroll(
       const dt = Math.min(64, now - last); // cap delta to avoid huge jumps
       last = now;
 
-      if (!paused) {
+      if (!paused && el.scrollWidth > el.clientWidth) {
         // Convert provided speed (px per interval) into px per frame using intervalMs as baseline
         const baseline = intervalMs ?? 16.7; // safeguard
         const px = Math.max(0.5, speed) * (dt / baseline);
-        el.scrollLeft += direction === 'rtl' ? px : -px;
-
-        const reachedEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
-        const reachedStart = el.scrollLeft <= 0;
-
-        if (direction === 'rtl' && reachedEnd) {
-          el.scrollLeft = 0; // loop back
-        }
-        if (direction === 'ltr' && reachedStart) {
-          el.scrollLeft = el.scrollWidth; // jump to end
+        const currentScroll = el.scrollLeft;
+        const newScroll = currentScroll + (direction === 'rtl' ? px : -px);
+        
+        // Check bounds and handle loop
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        
+        if (direction === 'rtl') {
+          if (newScroll >= maxScroll) {
+            el.scrollLeft = 0; // loop back to start
+          } else {
+            el.scrollLeft = newScroll;
+          }
+        } else {
+          if (newScroll <= 0) {
+            el.scrollLeft = maxScroll; // jump to end
+          } else {
+            el.scrollLeft = newScroll;
+          }
         }
       }
 
       rafId = window.requestAnimationFrame(tickRaf);
     };
 
-    // Only start if there is something to scroll
-    if (el.scrollWidth > el.clientWidth) {
-      rafId = window.requestAnimationFrame(tickRaf);
-    }
+    rafId = window.requestAnimationFrame(tickRaf);
 
     if (pauseOnHover) {
       el.addEventListener('mouseenter', onMouseEnter);
@@ -62,6 +67,17 @@ export default function useAutoHorizontalScroll(
       el.addEventListener('touchstart', onTouchStart, { passive: true });
       el.addEventListener('touchend', onTouchEnd);
     }
+
+    // Observe size and content changes to ensure scrolling stays active when data loads
+    const resizeObserver = new ResizeObserver(() => {
+      // noop: the RAF loop checks dimensions every frame
+    });
+    resizeObserver.observe(el);
+
+    const mutationObserver = new MutationObserver(() => {
+      // noop: RAF loop handles scrolling; observer ensures we keep running after DOM updates
+    });
+    mutationObserver.observe(el, { childList: true, subtree: true });
 
     return () => {
       if (rafId) window.cancelAnimationFrame(rafId);
@@ -71,6 +87,8 @@ export default function useAutoHorizontalScroll(
         el.removeEventListener('touchstart', onTouchStart as any);
         el.removeEventListener('touchend', onTouchEnd);
       }
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
     };
   }, [ref, speed, intervalMs, direction, pauseOnHover]);
 }
