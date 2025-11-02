@@ -2197,7 +2197,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </TabsContent>
 
                 <TabsContent value="location" className={cn("bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
-                  <div className={cn(isMobile ? "space-y-2" : "space-y-3")}>
+                  {/* Reserve min-height to prevent layout shifts */}
+                  <div className={cn(isMobile ? "space-y-2 min-h-[280px]" : "space-y-3 min-h-[320px]")}>
                     <Label className={cn("font-semibold text-foreground flex items-center gap-1.5", isMobile ? "text-xs" : "text-sm")}>
                       <MapPin className={cn("text-primary", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                       Location Selection
@@ -2210,11 +2211,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         <SelectTrigger className={cn("w-full bg-background", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectProvince} />
                         </SelectTrigger>
-<SelectContent 
-className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
+                        <SelectContent 
+                          className="bg-background border rounded-lg shadow-2xl"
                           position="popper"
                           sideOffset={4}
-                          onCloseAutoFocus={(e) => e.preventDefault()}
                         >
                           <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
                           {provinces.map((province) => (
@@ -2238,11 +2238,10 @@ className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl ma
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectCity} />
                         </SelectTrigger>
-<SelectContent 
-className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
+                        <SelectContent 
+                          className="bg-background border rounded-lg shadow-2xl"
                           position="popper"
                           sideOffset={4}
-                          onCloseAutoFocus={(e) => e.preventDefault()}
                         >
                           <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
                           {cities.map((city) => (
@@ -2266,11 +2265,10 @@ className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl ma
                         <SelectTrigger className={cn("w-full bg-background disabled:opacity-50", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
                           <SelectValue placeholder={currentText.selectArea} />
                         </SelectTrigger>
-<SelectContent 
-className="bg-background backdrop-blur-0 isolate border rounded-lg shadow-2xl max-h-72 md:max-h-80 overscroll-contain overflow-y-auto z-[110000]"
+                        <SelectContent 
+                          className="bg-background border rounded-lg shadow-2xl"
                           position="popper"
                           sideOffset={4}
-                          onCloseAutoFocus={(e) => e.preventDefault()}
                         >
                           <SelectItem value="all" className={cn("hover:bg-accent rounded cursor-pointer", isMobile ? "text-[10px]" : "text-xs")}>{currentText.any}</SelectItem>
                           {areas.map((area) => (
