@@ -1298,6 +1298,48 @@ export type Database = {
         }
         Relationships: []
       }
+      carousel_settings: {
+        Row: {
+          auto_scroll: boolean | null
+          carousel_name: string
+          created_at: string | null
+          id: string
+          interval_ms: number | null
+          is_enabled: boolean | null
+          loop_mode: string | null
+          pause_on_hover: boolean | null
+          scroll_direction: string | null
+          scroll_speed: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          auto_scroll?: boolean | null
+          carousel_name: string
+          created_at?: string | null
+          id?: string
+          interval_ms?: number | null
+          is_enabled?: boolean | null
+          loop_mode?: string | null
+          pause_on_hover?: boolean | null
+          scroll_direction?: string | null
+          scroll_speed?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          auto_scroll?: boolean | null
+          carousel_name?: string
+          created_at?: string | null
+          id?: string
+          interval_ms?: number | null
+          is_enabled?: boolean | null
+          loop_mode?: string | null
+          pause_on_hover?: boolean | null
+          scroll_direction?: string | null
+          scroll_speed?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null

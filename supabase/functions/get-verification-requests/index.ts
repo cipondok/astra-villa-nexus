@@ -55,10 +55,12 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Get query parameters
-    const url = new URL(req.url);
-    const type = url.searchParams.get('type') || 'all'; // 'owners', 'vendors', 'all'
-    const status = url.searchParams.get('status') || 'pending'; // 'pending', 'verified', 'all'
+    // Get parameters from request body
+    const requestBody = await req.json();
+    const type = requestBody.type || 'all'; // 'owners', 'vendors', 'all'
+    const status = requestBody.status || 'pending'; // 'pending', 'verified', 'all'
+    
+    console.log('Request parameters:', { type, status });
 
     const results: any = {
       owners: [],

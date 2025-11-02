@@ -51,6 +51,7 @@ import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
 import ProjectProgressReport from "./ProjectProgressReport";
 import HomepageSliderSettings from "./HomepageSliderSettings";
+import CarouselSettingsManager from "./CarouselSettingsManager";
 import ProjectMapVisualization from "./ProjectMapVisualization";
 import CookieConsentSettings from "./CookieConsentSettings";
 import CaptchaSettings from "./CaptchaSettings";
@@ -103,6 +104,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <VendorsHubContent />;
       case "homepage-slider":
         return <HomepageSliderSettings />;
+      case "carousel-settings":
+        return <CarouselSettingsManager />;
       case "social-media-settings":
         return <SocialMediaSettings />;
       case "content-management":

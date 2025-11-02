@@ -35,6 +35,25 @@ export default function FeaturedAdsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Fetch carousel settings from admin
+  const { data: carouselSettings } = useQuery({
+    queryKey: ['carousel-settings-featured'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('carousel_settings')
+        .select('*')
+        .eq('carousel_name', 'featured_properties')
+        .single();
+      
+      if (error) {
+        console.warn('No carousel settings found, using defaults');
+        return null;
+      }
+      return data;
+    },
+    staleTime: 30 * 1000, // Cache for 30 seconds
+  });
+
   // Fetch active featured ads
   const { data: ads, isLoading } = useQuery({
     queryKey: ['featured-ads'],
@@ -71,13 +90,13 @@ export default function FeaturedAdsCarousel() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Auto-scroll configuration
+  // Auto-scroll configuration from admin settings
   useAutoHorizontalScroll(scrollRef, {
-    speed: 1.5,
-    intervalMs: 25,
-    direction: 'rtl',
-    pauseOnHover: false,
-    seamless: true
+    speed: carouselSettings?.auto_scroll ? (carouselSettings.scroll_speed || 1.5) : 0,
+    intervalMs: carouselSettings?.interval_ms || 25,
+    direction: (carouselSettings?.scroll_direction as 'ltr' | 'rtl') || 'rtl',
+    pauseOnHover: carouselSettings?.pause_on_hover ?? false,
+    loopMode: (carouselSettings?.loop_mode as 'stop' | 'loop' | 'seamless') || 'stop'
   });
 
   const scroll = (direction: 'left' | 'right') => {

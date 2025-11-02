@@ -5,13 +5,13 @@ interface AutoScrollOptions {
   intervalMs?: number; // interval duration
   direction?: 'ltr' | 'rtl'; // visual movement
   pauseOnHover?: boolean;
-  seamless?: boolean; // enable seamless loop with duplicated content
+  loopMode?: 'stop' | 'loop' | 'seamless'; // stop at end, jump to start, or seamless
 }
 
-// Auto-scrolls a horizontal container. Resets to start when reaching the end.
+// Auto-scrolls a horizontal container with configurable loop behavior
 export default function useAutoHorizontalScroll(
   ref: RefObject<HTMLElement>,
-  { speed = 1, intervalMs = 25, direction = 'rtl', pauseOnHover = true, seamless = false }: AutoScrollOptions = {}
+  { speed = 1, intervalMs = 25, direction = 'rtl', pauseOnHover = true, loopMode = 'loop' }: AutoScrollOptions = {}
 ) {
   useEffect(() => {
     const el = ref.current;
@@ -40,33 +40,53 @@ export default function useAutoHorizontalScroll(
         const newScroll = currentScroll + (direction === 'rtl' ? px : -px);
 
         const maxScroll = el.scrollWidth - el.clientWidth;
+        const seamless = loopMode === 'seamless';
         const loopWidth = seamless ? Math.floor(el.scrollWidth / 2) : 0;
 
         if (direction === 'rtl') {
           if (seamless && loopWidth > 0) {
-            // When crossing the loop boundary, keep the offset for seamless effect
+            // Seamless loop: reset position when crossing boundary
             if (newScroll >= loopWidth) {
               el.scrollLeft = newScroll - loopWidth;
             } else {
               el.scrollLeft = newScroll;
             }
-          } else {
+          } else if (loopMode === 'stop') {
+            // Stop mode: pause at the end
             if (newScroll >= maxScroll) {
-              el.scrollLeft = 0; // loop back to start (non-seamless)
+              el.scrollLeft = maxScroll;
+              paused = true; // Stop scrolling
+            } else {
+              el.scrollLeft = newScroll;
+            }
+          } else {
+            // Loop mode: jump back to start
+            if (newScroll >= maxScroll) {
+              el.scrollLeft = 0;
             } else {
               el.scrollLeft = newScroll;
             }
           }
         } else {
           if (seamless && loopWidth > 0) {
+            // Seamless loop for LTR
             if (newScroll <= 0) {
-              el.scrollLeft = loopWidth + newScroll; // preserve offset
+              el.scrollLeft = loopWidth + newScroll;
+            } else {
+              el.scrollLeft = newScroll;
+            }
+          } else if (loopMode === 'stop') {
+            // Stop mode: pause at the start
+            if (newScroll <= 0) {
+              el.scrollLeft = 0;
+              paused = true; // Stop scrolling
             } else {
               el.scrollLeft = newScroll;
             }
           } else {
+            // Loop mode: jump to end
             if (newScroll <= 0) {
-              el.scrollLeft = maxScroll; // jump to end (non-seamless)
+              el.scrollLeft = maxScroll;
             } else {
               el.scrollLeft = newScroll;
             }
@@ -108,5 +128,5 @@ export default function useAutoHorizontalScroll(
       resizeObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [ref, speed, intervalMs, direction, pauseOnHover, seamless]);
+  }, [ref, speed, intervalMs, direction, pauseOnHover, loopMode]);
 }
