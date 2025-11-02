@@ -1737,24 +1737,25 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     variant="outline"
                     size="sm"
                     className={cn(
-                      "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                      isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                      ((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                      "group relative overflow-hidden bg-gradient-to-r from-background to-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300",
+                      isMobile ? "h-9 px-3 text-xs" : "h-10 px-4 text-sm",
+                      ((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && "border-primary/70 bg-primary/5 shadow-md"
                     )}
                   >
-                    <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
-                    {currentText.location}
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <MapPin className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 text-primary relative z-10 group-hover:scale-110 transition-transform duration-300")} />
+                    <span className="relative z-10 font-medium">{currentText.location}</span>
                     {((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && (
-                      <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-blue-500 text-white">
+                      <span className="ml-2 px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm animate-in zoom-in duration-200 relative z-10">
                         {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                       </span>
                     )}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent 
-                  className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
+                  className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
                   align="start" 
-                  sideOffset={4}
+                  sideOffset={8}
                   avoidCollisions={true}
                   collisionPadding={8}
                 >
@@ -2205,19 +2206,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </Label>
                     
                     {/* State/Province Selection */}
-                    <div>
-                      <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectProvince}</Label>
+                    <div className="space-y-2">
+                      <Label className={cn("text-muted-foreground font-semibold flex items-center gap-2", isMobile ? "text-xs" : "text-sm")}>
+                        <div className="w-1 h-4 bg-primary rounded-full" />
+                        {currentText.selectProvince}
+                      </Label>
                       <select
                         value={filters.state || "all"}
                         onChange={(e) => handleStateChange(e.target.value)}
-                        onFocus={() => { document.documentElement.classList.add('modal-open'); document.body.classList.add('modal-open'); }}
-                        onBlur={() => { document.documentElement.classList.remove('modal-open'); document.body.classList.remove('modal-open'); }}
                         className={cn(
-                          "w-full bg-background border border-border rounded-lg px-3 text-foreground",
-                          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
-                          "transition-all duration-200",
-                          isMobile ? "h-10 text-base" : "h-10 text-sm"
+                          "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 text-foreground font-medium",
+                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
+                          "hover:border-primary/50 hover:shadow-md cursor-pointer",
+                          "appearance-none bg-[length:12px] bg-[position:right_1rem_center] bg-no-repeat",
+                          isMobile ? "text-sm" : "text-base"
                         )}
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
+                        }}
                       >
                         <option value="all">{currentText.any}</option>
                         {provinces.map((province) => (
@@ -2229,20 +2235,26 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
 
                     {/* City Selection */}
-                    <div>
-                      <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectCity}</Label>
+                    <div className="space-y-2">
+                      <Label className={cn("text-muted-foreground font-semibold flex items-center gap-2", isMobile ? "text-xs" : "text-sm")}>
+                        <div className="w-1 h-4 bg-primary rounded-full" />
+                        {currentText.selectCity}
+                      </Label>
                       <select
                         value={filters.city || "all"}
                         onChange={(e) => handleCityChange(e.target.value)}
                         disabled={!filters.state || filters.state === 'all'}
-                        onFocus={() => { document.documentElement.classList.add('modal-open'); document.body.classList.add('modal-open'); }}
-                        onBlur={() => { document.documentElement.classList.remove('modal-open'); document.body.classList.remove('modal-open'); }}
                         className={cn(
-                          "w-full bg-background border border-border rounded-lg px-3 text-foreground",
-                          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
-                          "transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
-                          isMobile ? "h-10 text-base" : "h-10 text-sm"
+                          "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 text-foreground font-medium",
+                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
+                          "hover:border-primary/50 hover:shadow-md cursor-pointer",
+                          "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
+                          "appearance-none bg-[length:12px] bg-[position:right_1rem_center] bg-no-repeat",
+                          isMobile ? "text-sm" : "text-base"
                         )}
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
+                        }}
                       >
                         <option value="all">{currentText.any}</option>
                         {cities.map((city) => (
@@ -2254,20 +2266,26 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
 
                     {/* Area Selection */}
-                    <div>
-                      <Label className={cn("text-muted-foreground block", isMobile ? "text-[10px] mb-1" : "text-xs mb-1.5")}>{currentText.selectArea}</Label>
+                    <div className="space-y-2">
+                      <Label className={cn("text-muted-foreground font-semibold flex items-center gap-2", isMobile ? "text-xs" : "text-sm")}>
+                        <div className="w-1 h-4 bg-primary rounded-full" />
+                        {currentText.selectArea}
+                      </Label>
                       <select
                         value={filters.area || "all"}
                         onChange={(e) => handleAreaChange(e.target.value)}
                         disabled={!filters.city || filters.city === 'all'}
-                        onFocus={() => { document.documentElement.classList.add('modal-open'); document.body.classList.add('modal-open'); }}
-                        onBlur={() => { document.documentElement.classList.remove('modal-open'); document.body.classList.remove('modal-open'); }}
                         className={cn(
-                          "w-full bg-background border border-border rounded-lg px-3 text-foreground",
-                          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
-                          "transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
-                          isMobile ? "h-10 text-base" : "h-10 text-sm"
+                          "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 text-foreground font-medium",
+                          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
+                          "hover:border-primary/50 hover:shadow-md cursor-pointer",
+                          "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
+                          "appearance-none bg-[length:12px] bg-[position:right_1rem_center] bg-no-repeat",
+                          isMobile ? "text-sm" : "text-base"
                         )}
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`
+                        }}
                       >
                         <option value="all">{currentText.any}</option>
                         {areas.map((area) => (
