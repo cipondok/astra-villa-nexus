@@ -182,6 +182,23 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
     }
   };
 
+  const handleReaction = (messageId: string, reaction: 'positive' | 'negative') => {
+    setMessages(prev =>
+      prev.map(msg =>
+        msg.id === messageId ? { ...msg, reaction } : msg
+      )
+    );
+    
+    // Show feedback toast
+    toast({
+      title: reaction === 'positive' ? "Thanks for your feedback!" : "Thanks for letting us know",
+      description: reaction === 'positive' 
+        ? "Glad the response was helpful!" 
+        : "We'll use this to improve our responses.",
+      duration: 2000,
+    });
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -255,7 +272,8 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
                   <AIChatMessages 
                     messages={messages} 
                     isLoading={isLoading} 
-                    messagesEndRef={messagesEndRef} 
+                    messagesEndRef={messagesEndRef}
+                    onReaction={handleReaction}
                   />
                 </div>
 

@@ -7,6 +7,7 @@ export interface Message {
   content: string;
   timestamp: Date;
   functionCall?: any;
+  reaction?: 'positive' | 'negative' | null;
 }
 
 export interface QuickAction {

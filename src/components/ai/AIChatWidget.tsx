@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Home, Users, MapPin, Handshake } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import AIChatTrigger from "./AIChatTrigger";
 import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
@@ -55,6 +56,24 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       setMessages([welcomeMessage]);
     }
   }, [isOpen, propertyId, messages.length]);
+
+  const { toast } = useToast();
+
+  const handleReaction = (messageId: string, reaction: 'positive' | 'negative') => {
+    setMessages(prev =>
+      prev.map(msg =>
+        msg.id === messageId ? { ...msg, reaction } : msg
+      )
+    );
+    
+    toast({
+      title: reaction === 'positive' ? "Thanks for your feedback!" : "Thanks for letting us know",
+      description: reaction === 'positive' 
+        ? "Glad the response was helpful!" 
+        : "We'll use this to improve our responses.",
+      duration: 2000,
+    });
+  };
 
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
@@ -201,6 +220,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     messages={messages}
                     isLoading={isLoading}
                     messagesEndRef={messagesEndRef}
+                    onReaction={handleReaction}
                   />
                 </div>
               </ScrollArea>
