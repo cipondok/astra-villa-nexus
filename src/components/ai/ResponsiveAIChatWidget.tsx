@@ -242,7 +242,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* Chat trigger - Fixed position at bottom right corner */}
       {!isOpen && (
         <div 
-          className="fixed z-[9999] pointer-events-none transition-all duration-300 ease-in-out"
+          className="fixed z-[10002] pointer-events-none transition-all duration-300 ease-in-out"
           style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
         >
           <div className="pointer-events-auto hover:scale-105">
@@ -255,7 +255,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {isOpen && (
         <div 
           className={cn(
-            "fixed z-[9999] transition-all duration-300 ease-in-out pointer-events-none",
+            "fixed z-[10002] transition-all duration-300 ease-in-out pointer-events-none",
             isMinimized ? "w-[280px]" : isMobile ? "w-full" : "w-[420px]",
             isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]",
             isMobile ? "left-0 right-0" : ""

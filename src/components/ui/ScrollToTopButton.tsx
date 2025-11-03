@@ -38,7 +38,7 @@ const ScrollToTopButton = () => {
   return (
     <Button
       onClick={scrollToTop}
-      className="fixed bottom-24 right-6 z-[9950] h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-2xl hover:shadow-blue-500/25 hover:scale-110 transition-all duration-300 transform-gpu will-change-transform pointer-events-auto animate-fade-in border-2 border-white/20 backdrop-blur-sm"
+      className="fixed bottom-24 right-24 z-[9950] h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-2xl hover:shadow-blue-500/25 hover:scale-110 transition-all duration-300 transform-gpu will-change-transform pointer-events-auto animate-fade-in border-2 border-white/20 backdrop-blur-sm"
       size="icon"
       aria-label="Scroll to top"
     >
