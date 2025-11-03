@@ -31,7 +31,7 @@ serve(async (req) => {
     const message = rawBody.message;
     const userId = sanitizeUuid(rawBody.userId);
     const propertyId = sanitizeUuid(rawBody.propertyId);
-    const conversationId = rawBody.conversationId;
+    const initialConversationId = rawBody.conversationId;
 
     console.log('AI Assistant request:', { message, userId, propertyId });
 

@@ -61,14 +61,11 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
     setIsLoading(true);
 
     try {
-      const functionName = propertyId ? 'rental-negotiator' : 'ai-assistant';
-      
-      const { data, error } = await supabase.functions.invoke(functionName, {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: {
           message: messageText,
           conversationId,
           propertyId,
-          messages: messages.map(m => ({ role: m.role, content: m.content })),
         },
       });
 
@@ -77,7 +74,7 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: data.message || data.response || "I'm here to help!",
+        content: data.message || "I'm here to help!",
         timestamp: new Date(),
         functionCall: data.functionCall,
       };
