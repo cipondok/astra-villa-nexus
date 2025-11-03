@@ -9,6 +9,8 @@ import { ThumbsUp, ThumbsDown, MessageSquare, TrendingUp, Download } from 'lucid
 import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { format, subDays } from 'date-fns';
+import { MessageDetailsDialog } from './MessageDetailsDialog';
+import { toast } from 'sonner';
 
 interface ReactionStats {
   total_reactions: number;
@@ -29,6 +31,9 @@ const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))'];
 
 export function AIFeedbackAnalytics() {
   const [timeRange, setTimeRange] = useState(30);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedReactionType, setSelectedReactionType] = useState<'positive' | 'negative' | 'all'>('all');
 
   // Fetch overall reaction stats
   const { data: reactionStats, isLoading: statsLoading } = useQuery({
@@ -108,6 +113,27 @@ export function AIFeedbackAnalytics() {
     },
     enabled: !!reactionStats,
   });
+
+  const handleChartClick = (data: any, reactionType: 'positive' | 'negative' | 'all' = 'all') => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const clickedDate = data.activePayload[0].payload.date;
+      setSelectedDate(clickedDate);
+      setSelectedReactionType(reactionType);
+      setDialogOpen(true);
+      toast.info(`Viewing messages from ${clickedDate}`);
+    }
+  };
+
+  const handlePieClick = (data: any) => {
+    if (data && data.name) {
+      const reactionType = data.name.toLowerCase() as 'positive' | 'negative';
+      setSelectedReactionType(reactionType);
+      // For pie chart, we don't have a specific date, so we'll show all messages with that reaction type
+      setSelectedDate(null);
+      setDialogOpen(true);
+      toast.info(`Viewing all ${data.name.toLowerCase()} reactions`);
+    }
+  };
 
   const handleExportData = async () => {
     const startDate = format(subDays(new Date(), timeRange), 'yyyy-MM-dd');
@@ -237,7 +263,7 @@ export function AIFeedbackAnalytics() {
         <Card>
           <CardHeader>
             <CardTitle>Reactions Timeline</CardTitle>
-            <CardDescription>Daily positive and negative reactions</CardDescription>
+            <CardDescription>Click on any data point to view messages from that date</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer
@@ -254,7 +280,10 @@ export function AIFeedbackAnalytics() {
               className="h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={timeSeriesData || []}>
+                <AreaChart 
+                  data={timeSeriesData || []}
+                  onClick={handleChartClick}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis />
@@ -267,6 +296,7 @@ export function AIFeedbackAnalytics() {
                     stroke="hsl(var(--chart-1))"
                     fill="hsl(var(--chart-1))"
                     fillOpacity={0.6}
+                    cursor="pointer"
                   />
                   <Area
                     type="monotone"
@@ -275,6 +305,7 @@ export function AIFeedbackAnalytics() {
                     stroke="hsl(var(--chart-2))"
                     fill="hsl(var(--chart-2))"
                     fillOpacity={0.6}
+                    cursor="pointer"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -286,7 +317,7 @@ export function AIFeedbackAnalytics() {
         <Card>
           <CardHeader>
             <CardTitle>Reaction Distribution</CardTitle>
-            <CardDescription>Overall positive vs negative breakdown</CardDescription>
+            <CardDescription>Click on a segment to view messages by reaction type</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer
@@ -313,9 +344,15 @@ export function AIFeedbackAnalytics() {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
+                    onClick={handlePieClick}
+                    cursor="pointer"
                   >
                     {(distributionData || []).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={COLORS[index % COLORS.length]}
+                        className="hover:opacity-80 transition-opacity"
+                      />
                     ))}
                   </Pie>
                   <ChartTooltip content={<ChartTooltipContent />} />
@@ -325,6 +362,15 @@ export function AIFeedbackAnalytics() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Message Details Dialog */}
+      <MessageDetailsDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        selectedDate={selectedDate}
+        reactionType={selectedReactionType}
+        timeRange={timeRange}
+      />
     </div>
   );
 }
