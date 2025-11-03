@@ -88,7 +88,7 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
       { role: 'user', content: message }
     ];
 
-    // Call Lovable AI (Gemini is FREE until Oct 6, 2025!)
+    // Call Lovable AI with streaming enabled
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -98,6 +98,7 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages,
+        stream: true,
         functions: [
           {
             name: 'control_3d_tour',
@@ -167,42 +168,35 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
       }),
     });
 
-    const aiResponse = await response.json();
-
-    if (!response.ok || !aiResponse.choices || aiResponse.choices.length === 0) {
-      console.error('Error from OpenAI API:', aiResponse);
-      const errorMessage = aiResponse.error?.message || 'Failed to get a valid response from OpenAI.';
-      // We are inside the main try-catch, so we can just throw. The catch block will handle it.
-      throw new Error(errorMessage);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error from Lovable AI:', response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      throw new Error('AI gateway error');
     }
 
-    let aiMessage = aiResponse.choices[0].message.content;
-    let functionCall = null;
-    let conversationId = initialConversationId;
-
-    // Handle function calls
-    if (aiResponse.choices[0].message.function_call) {
-      functionCall = aiResponse.choices[0].message.function_call;
-      aiMessage = await handleFunctionCall(supabase, functionCall, userId);
-    }
-
-    // Save conversation
-    conversationId = await saveConversation(supabase, conversationId, userId, message, aiMessage);
-
-    // Track user interaction for recommendations
-    await trackUserInteraction(supabase, userId, {
-      type: 'ai_chat',
-      message,
-      propertyId,
-      functionCall: functionCall?.name
-    });
-
-    return new Response(JSON.stringify({
-      message: aiMessage,
-      functionCall,
-      conversationId
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Return the streaming response directly
+    return new Response(response.body, {
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      },
     });
 
   } catch (error) {
