@@ -13,7 +13,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { ThumbsUp, ThumbsDown, Calendar, User, MessageSquare, Search, X, Filter, Copy, Check } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ThumbsUp, ThumbsDown, Calendar, User, MessageSquare, Search, X, Filter, Copy, Check, CheckSquare } from 'lucide-react';
 import { format, parse } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -47,6 +48,8 @@ export function MessageDetailsDialog({
   const [userIdFilter, setUserIdFilter] = useState('');
   const [conversationIdFilter, setConversationIdFilter] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [selectedMessages, setSelectedMessages] = useState<Set<string>>(new Set());
+  const [bulkCopied, setBulkCopied] = useState(false);
 
   const handleCopyMessage = async (message: MessageDetail) => {
     try {
@@ -81,6 +84,75 @@ ${messageData.content || 'No content available'}
       console.error('Failed to copy:', error);
       toast.error('Failed to copy message');
     }
+  };
+
+  const handleBulkCopy = async () => {
+    if (selectedMessages.size === 0) {
+      toast.error('No messages selected');
+      return;
+    }
+
+    try {
+      const selectedMessageData = filteredMessages.filter(msg => selectedMessages.has(msg.id));
+      
+      const formattedMessages = selectedMessageData.map((message, index) => {
+        return `
+═══════════════════════════════════════════════════════════
+MESSAGE ${index + 1} of ${selectedMessageData.length}
+═══════════════════════════════════════════════════════════
+Reaction: ${message.reaction_type.toUpperCase()}
+Message ID: ${message.message_id}
+Timestamp: ${format(new Date(message.created_at), 'yyyy-MM-dd HH:mm:ss')}
+User ID: ${message.user_id || 'anonymous'}
+Conversation ID: ${message.conversation_id || 'N/A'}
+
+Message Content:
+${message.message_content || 'No content available'}
+`;
+      }).join('\n');
+
+      const bulkReport = `AI MESSAGE FEEDBACK BULK REPORT
+Generated: ${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}
+Total Messages: ${selectedMessageData.length}
+${formattedMessages}
+═══════════════════════════════════════════════════════════
+END OF REPORT
+═══════════════════════════════════════════════════════════`;
+
+      await navigator.clipboard.writeText(bulkReport);
+      setBulkCopied(true);
+      toast.success(`${selectedMessages.size} messages copied to clipboard`);
+      
+      // Reset bulk copied state after 2 seconds
+      setTimeout(() => setBulkCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy messages:', error);
+      toast.error('Failed to copy messages');
+    }
+  };
+
+  const handleToggleMessage = (messageId: string) => {
+    setSelectedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedMessages.size === filteredMessages.length) {
+      setSelectedMessages(new Set());
+    } else {
+      setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
+    }
+  };
+
+  const handleClearSelection = () => {
+    setSelectedMessages(new Set());
   };
 
   const { data: messages, isLoading } = useQuery({
@@ -155,6 +227,7 @@ ${messageData.content || 'No content available'}
   };
 
   const hasActiveFilters = searchTerm || userIdFilter || conversationIdFilter;
+  const allSelected = filteredMessages.length > 0 && selectedMessages.size === filteredMessages.length;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -227,16 +300,64 @@ ${messageData.content || 'No content available'}
             </div>
           </div>
 
-          {/* Results count */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Filter className="w-3 h-3" />
-              Showing {filteredMessages.length} of {messages?.length || 0} messages
-            </span>
-            {hasActiveFilters && (
-              <Badge variant="secondary" className="text-xs">
-                Filters Active
-              </Badge>
+          {/* Results count and bulk actions */}
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <Filter className="w-3 h-3" />
+                Showing {filteredMessages.length} of {messages?.length || 0} messages
+              </span>
+              {hasActiveFilters && (
+                <Badge variant="secondary" className="text-xs">
+                  Filters Active
+                </Badge>
+              )}
+            </div>
+            {filteredMessages.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSelectAll}
+                  className="h-7 text-xs"
+                >
+                  <CheckSquare className="w-3 h-3 mr-1" />
+                  {allSelected ? 'Deselect All' : 'Select All'}
+                </Button>
+                {selectedMessages.size > 0 && (
+                  <>
+                    <Badge variant="default" className="text-xs">
+                      {selectedMessages.size} selected
+                    </Badge>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleBulkCopy}
+                      className="h-7 text-xs"
+                    >
+                      {bulkCopied ? (
+                        <>
+                          <Check className="w-3 h-3 mr-1" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3 mr-1" />
+                          Copy Selected
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearSelection}
+                      className="h-7 text-xs"
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -251,26 +372,37 @@ ${messageData.content || 'No content available'}
               {filteredMessages.map((message) => (
                 <div
                   key={message.id}
-                  className="border border-border rounded-lg p-4 space-y-3 hover:bg-accent/50 transition-colors"
+                  className={`border rounded-lg p-4 space-y-3 transition-colors ${
+                    selectedMessages.has(message.id)
+                      ? 'border-primary bg-accent/70'
+                      : 'border-border hover:bg-accent/50'
+                  }`}
                 >
-                  {/* Header with reaction, timestamp, and copy button */}
+                  {/* Header with checkbox, reaction, timestamp, and copy button */}
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {message.reaction_type === 'positive' ? (
-                        <Badge variant="default" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20">
-                          <ThumbsUp className="w-3 h-3 mr-1" />
-                          Positive
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <Checkbox
+                        checked={selectedMessages.has(message.id)}
+                        onCheckedChange={() => handleToggleMessage(message.id)}
+                        className="mt-0.5"
+                      />
+                      <div className="flex items-center gap-2">
+                        {message.reaction_type === 'positive' ? (
+                          <Badge variant="default" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20">
+                            <ThumbsUp className="w-3 h-3 mr-1" />
+                            Positive
+                          </Badge>
+                        ) : (
+                          <Badge variant="default" className="bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20">
+                            <ThumbsDown className="w-3 h-3 mr-1" />
+                            Negative
+                          </Badge>
+                        )}
+                        <Badge variant="outline" className="text-xs">
+                          <Calendar className="w-3 h-3 mr-1" />
+                          {format(new Date(message.created_at), 'HH:mm:ss')}
                         </Badge>
-                      ) : (
-                        <Badge variant="default" className="bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20">
-                          <ThumbsDown className="w-3 h-3 mr-1" />
-                          Negative
-                        </Badge>
-                      )}
-                      <Badge variant="outline" className="text-xs">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {format(new Date(message.created_at), 'HH:mm:ss')}
-                      </Badge>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
