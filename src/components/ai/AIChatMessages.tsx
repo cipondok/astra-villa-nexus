@@ -3,6 +3,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Bot, LoaderCircle } from "lucide-react";
 import { Message } from "./types";
+import TypingIndicator from "./TypingIndicator";
 
 interface AIChatMessagesProps {
   messages: Message[];
@@ -36,16 +37,7 @@ const AIChatMessages = ({ messages, isLoading, messagesEndRef }: AIChatMessagesP
         </div>
       ))}
 
-      {isLoading && (
-        <div className="flex justify-start">
-          <div className="bg-white/70 p-3 rounded-lg">
-            <div className="flex items-center gap-2">
-              <LoaderCircle className="h-5 w-5 text-purple-600 animate-spin" />
-              <span className="text-sm">AI is thinking...</span>
-            </div>
-          </div>
-        </div>
-      )}
+      {isLoading && <TypingIndicator />}
       <div ref={messagesEndRef} />
     </div>
   );

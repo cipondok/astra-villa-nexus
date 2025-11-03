@@ -168,6 +168,16 @@ const config: Config = {
         "ai-shimmer": {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(100%)" }
+        },
+        "typing-dot": {
+          "0%, 60%, 100%": {
+            transform: "translateY(0) scale(1)",
+            opacity: "0.7"
+          },
+          "30%": {
+            transform: "translateY(-10px) scale(1.2)",
+            opacity: "1"
+          }
         }
       },
       animation: {
@@ -181,6 +191,7 @@ const config: Config = {
         "ai-search-pulse": "ai-search-pulse 2s ease-in-out infinite",
         "ai-particle-float": "ai-particle-float 3s ease-in-out infinite",
         "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
+        "typing-dot": "typing-dot 1.4s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
