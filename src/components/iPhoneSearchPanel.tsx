@@ -43,7 +43,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   
-  // 🔒 Lock body scroll for ALL popovers and modals to prevent layout shift
+  // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
   useScrollLock(showFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
   
   // Ref for click outside detection
@@ -985,6 +985,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   };
 
   const handleSearch = () => {
+    // 🔒 CRITICAL: Preserve scroll position to prevent iPhone Safari jump
+    const currentScroll = window.scrollY;
+    
     const listingType = activeTab === 'all' ? '' : activeTab;
     
     // Construct location from selected parts
@@ -1036,6 +1039,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
     console.log('Search data being sent:', searchData);
     onSearch(searchData);
+    
+    // 🔒 CRITICAL: Restore scroll position after React updates
+    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
   // Simple mobile view - only input and button by default
@@ -1231,11 +1237,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
                 >
                   {isGettingLocation ? (
-                    <div className="animate-spin h-3 w-3 border-2 border-blue-500 rounded-full border-t-transparent" />
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="animate-spin h-3 w-3 border-2 border-blue-500 rounded-full border-t-transparent" />
+                    </div>
                   ) : (
                     <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />
                   )}
                 </Button>
+                
+                {/* 🔒 FIXED: Loading overlay for geolocation - Better UX */}
+                {isGettingLocation && (
+                  <div className="absolute inset-0 bg-white/80 dark:bg-black/80 flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
+                    <div className="flex items-center gap-2 text-xs font-medium">
+                      <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent" />
+                      <span className="text-blue-600 dark:text-blue-400">{currentText.gettingLocation}</span>
+                    </div>
+                  </div>
+                )}
               </div>
               
               {/* Smart Suggestions Dropdown */}
