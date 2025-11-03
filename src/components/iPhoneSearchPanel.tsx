@@ -41,15 +41,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Track individual popover states for scroll lock
-  const [isLocationPopoverOpen, setIsLocationPopoverOpen] = useState(false);
-  const [isPropertyPopoverOpen, setIsPropertyPopoverOpen] = useState(false);
-  const [isFacilitiesPopoverOpen, setIsFacilitiesPopoverOpen] = useState(false);
-  
-  // 🔒 Lock body scroll when any overlay is open (prevents layout shifts)
-  useScrollLock(
-    showFilters || isLocationPopoverOpen || isPropertyPopoverOpen || isFacilitiesPopoverOpen
-  );
+  // 🔒 Lock body scroll only for advanced filters modal (not for small popovers to prevent layout shift)
+  useScrollLock(showFilters);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1411,7 +1404,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
-            <Popover onOpenChange={setIsPropertyPopoverOpen}>
+            <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1555,7 +1548,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Facilities Button - Opens Popover */}
-            <Popover onOpenChange={setIsFacilitiesPopoverOpen}>
+            <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1750,7 +1743,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover modal={false} onOpenChange={setIsLocationPopoverOpen}>
+              <Popover modal={false}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
