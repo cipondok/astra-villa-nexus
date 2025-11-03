@@ -13,8 +13,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { ThumbsUp, ThumbsDown, Calendar, User, MessageSquare, Search, X, Filter } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Calendar, User, MessageSquare, Search, X, Filter, Copy, Check } from 'lucide-react';
 import { format, parse } from 'date-fns';
+import { toast } from 'sonner';
 
 interface MessageDetailsDialogProps {
   open: boolean;
@@ -45,6 +46,42 @@ export function MessageDetailsDialog({
   const [searchTerm, setSearchTerm] = useState('');
   const [userIdFilter, setUserIdFilter] = useState('');
   const [conversationIdFilter, setConversationIdFilter] = useState('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyMessage = async (message: MessageDetail) => {
+    try {
+      const messageData = {
+        message_id: message.message_id,
+        content: message.message_content,
+        reaction: message.reaction_type,
+        timestamp: format(new Date(message.created_at), 'yyyy-MM-dd HH:mm:ss'),
+        user_id: message.user_id || 'anonymous',
+        conversation_id: message.conversation_id || 'N/A',
+      };
+
+      const formattedText = `AI Message Feedback Report
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Reaction: ${messageData.reaction.toUpperCase()}
+Message ID: ${messageData.message_id}
+Timestamp: ${messageData.timestamp}
+User ID: ${messageData.user_id}
+Conversation ID: ${messageData.conversation_id}
+
+Message Content:
+${messageData.content || 'No content available'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+      await navigator.clipboard.writeText(formattedText);
+      setCopiedId(message.id);
+      toast.success('Message copied to clipboard');
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy:', error);
+      toast.error('Failed to copy message');
+    }
+  };
 
   const { data: messages, isLoading } = useQuery({
     queryKey: ['ai-message-details', selectedDate, reactionType, timeRange],
@@ -216,9 +253,9 @@ export function MessageDetailsDialog({
                   key={message.id}
                   className="border border-border rounded-lg p-4 space-y-3 hover:bg-accent/50 transition-colors"
                 >
-                  {/* Header with reaction and timestamp */}
+                  {/* Header with reaction, timestamp, and copy button */}
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {message.reaction_type === 'positive' ? (
                         <Badge variant="default" className="bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20">
                           <ThumbsUp className="w-3 h-3 mr-1" />
@@ -235,9 +272,24 @@ export function MessageDetailsDialog({
                         {format(new Date(message.created_at), 'HH:mm:ss')}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <User className="w-3 h-3" />
-                      {message.user_id ? message.user_id.slice(0, 8) : 'Anonymous'}
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <User className="w-3 h-3" />
+                        {message.user_id ? message.user_id.slice(0, 8) : 'Anonymous'}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 shrink-0"
+                        onClick={() => handleCopyMessage(message)}
+                        title="Copy message details"
+                      >
+                        {copiedId === message.id ? (
+                          <Check className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </Button>
                     </div>
                   </div>
 
