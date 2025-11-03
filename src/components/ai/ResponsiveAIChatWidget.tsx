@@ -4,8 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, ArrowUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useScrollDirection } from "@/hooks/useScrollDirection";
 import AIChatTrigger from "./AIChatTrigger";
 import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
@@ -32,6 +33,8 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
+  const { scrollDirection, scrollY, isAtTop } = useScrollDirection();
+  const [showWidget, setShowWidget] = useState(true);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,6 +43,19 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Handle scroll direction for auto-hide/show
+  useEffect(() => {
+    if (isOpen) {
+      setShowWidget(true); // Always show when chat is open
+    } else {
+      if (scrollDirection === 'down' && scrollY > 100) {
+        setShowWidget(false); // Hide on scroll down
+      } else if (scrollDirection === 'up' || isAtTop) {
+        setShowWidget(true); // Show on scroll up or at top
+      }
+    }
+  }, [scrollDirection, scrollY, isAtTop, isOpen]);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -232,21 +248,45 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     ...(propertyId
       ? [
           { icon: MapPin, text: "Tour property", action: "Give me a guided tour of this property" },
-          { icon: Handshake, text: "Negotiate", action: "I'd like to negotiate the rental terms." }
+      { icon: Handshake, text: "Negotiate", action: "I'd like to negotiate the rental terms." }
         ]
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
-      {/* Chat trigger - Fixed position at bottom right corner */}
+      {/* Scroll to top arrow - appears on scroll */}
+      {!isAtTop && !isOpen && showWidget && (
+        <div 
+          className="fixed z-[10001] transition-all duration-300 ease-in-out animate-fade-in"
+          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', left: 'calc(1rem + env(safe-area-inset-left))' }}
+        >
+          <Button
+            onClick={scrollToTop}
+            className="h-12 w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 hover:scale-110 transition-all duration-300 border-2 border-white/30"
+            size="icon"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="h-5 w-5 text-white" />
+          </Button>
+        </div>
+      )}
+
+      {/* Chat trigger - Fixed position at bottom right corner with scroll behavior */}
       {!isOpen && (
         <div 
-          className="fixed z-[10002] pointer-events-none transition-all duration-300 ease-in-out"
+          className={cn(
+            "fixed z-[10002] pointer-events-none transition-all duration-500 ease-in-out",
+            showWidget ? "translate-y-0 opacity-100" : "translate-y-32 opacity-0"
+          )}
           style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
         >
-          <div className="pointer-events-auto hover:scale-105">
-            <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); }} />
+          <div className="pointer-events-auto hover:scale-105 transition-transform duration-200">
+            <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
           </div>
         </div>
       )}

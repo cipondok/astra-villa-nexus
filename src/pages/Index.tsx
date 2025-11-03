@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { logSearchError } from "@/utils/errorLogger";
 
-import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
 import { BaseProperty } from "@/types/property";
 import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
@@ -578,10 +577,6 @@ const Index = () => {
             )}
           </div>
         </div>
-
-        {/* Scroll to Top Button */}
-        <ScrollToTopButton />
-
         
         {/* AI Search Loading Dialog */}
         <Suspense fallback={null}>

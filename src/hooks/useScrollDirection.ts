@@ -4,24 +4,28 @@ export const useScrollDirection = () => {
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | 'idle'>('idle');
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [isAtTop, setIsAtTop] = useState(true);
 
   useEffect(() => {
     let ticking = false;
     let idleTimeout: NodeJS.Timeout;
 
     const updateScrollDirection = () => {
-      const scrollY = window.pageYOffset;
+      const currentScrollY = window.pageYOffset;
       
-      setIsScrolled(scrollY > 100);
+      setScrollY(currentScrollY);
+      setIsScrolled(currentScrollY > 100);
+      setIsAtTop(currentScrollY < 100);
 
-      if (Math.abs(scrollY - lastScrollY) < 5) {
+      if (Math.abs(currentScrollY - lastScrollY) < 5) {
         ticking = false;
         return;
       }
 
-      const direction = scrollY > lastScrollY ? 'down' : 'up';
+      const direction = currentScrollY > lastScrollY ? 'down' : 'up';
       setScrollDirection(direction);
-      setLastScrollY(scrollY);
+      setLastScrollY(currentScrollY);
       ticking = false;
 
       clearTimeout(idleTimeout);
@@ -45,5 +49,5 @@ export const useScrollDirection = () => {
     };
   }, [lastScrollY]);
 
-  return { scrollDirection, isScrolled };
+  return { scrollDirection, isScrolled, scrollY, isAtTop };
 };
