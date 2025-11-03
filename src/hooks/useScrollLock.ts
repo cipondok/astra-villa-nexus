@@ -1,29 +1,23 @@
 import { useEffect } from 'react';
 
-// Reference-counted, global scroll lock to prevent layout shifts when overlays open
-let locked = 0;
-let scrollbarWidth = 0;
-let originalPadding = "";
-
-export const useScrollLock = (isOpen: boolean) => {
+export const useScrollLock = (lock: boolean) => {
   useEffect(() => {
-    if (isOpen) {
-      if (locked === 0) {
-        const doc = document.documentElement;
-        scrollbarWidth = window.innerWidth - doc.clientWidth;
-        originalPadding = document.body.style.paddingRight;
-        document.body.style.overflow = "hidden";
-        if (scrollbarWidth > 0) {
-          document.body.style.paddingRight = `${scrollbarWidth}px`;
-        }
-      }
-      locked++;
-    } else if (locked > 0) {
-      locked--;
-      if (locked === 0) {
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = originalPadding;
-      }
+    if (!lock) {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.body.classList.remove('scroll-locked');
+      return;
     }
-  }, [isOpen]);
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+    document.body.classList.add('scroll-locked');
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.body.classList.remove('scroll-locked');
+    };
+  }, [lock]);
 };

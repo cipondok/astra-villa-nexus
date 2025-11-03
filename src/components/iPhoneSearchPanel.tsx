@@ -6,7 +6,6 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import * as PopoverPrimitive from "@radix-ui/react-popover"; // 🔥 CRITICAL: For Portal support
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -41,9 +40,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
+  const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   
-  // 🔒 Lock body scroll for advanced filters and location popover
-  useScrollLock(showFilters || isLocationOpen);
+  // 🔒 Lock body scroll for ALL popovers and modals to prevent layout shift
+  useScrollLock(showFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1405,7 +1406,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
-            <Popover modal={true}>
+            <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen} modal={true}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1425,8 +1426,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverPrimitive.Portal>
-                <PopoverContent 
+                <PopoverContent
                   className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
                   align="start"
                   onCloseAutoFocus={(e) => e.preventDefault()}
@@ -1467,7 +1467,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
               </PopoverContent>
-            </PopoverPrimitive.Portal>
             </Popover>
 
             {/* Bedrooms +/- */}
@@ -1549,7 +1548,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Facilities Button - Opens Popover */}
-            <Popover modal={true}>
+            <Popover open={isFacilitiesOpen} onOpenChange={setIsFacilitiesOpen} modal={true}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1569,8 +1568,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverPrimitive.Portal>
-                <PopoverContent 
+              <PopoverContent
                   className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
                   align="start" 
                   onOpenAutoFocus={(e) => e.preventDefault()} 
@@ -1739,7 +1737,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </Tabs>
                 </div>
               </PopoverContent>
-            </PopoverPrimitive.Portal>
             </Popover>
 
             {/* Location Button - Opens Popover with 3 selects */}
@@ -1767,8 +1764,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </PopoverTrigger>
                 
                 {/* 🔥 CRITICAL: Portal renders outside main flow, preventing scrollbar-induced shifts */}
-                <PopoverPrimitive.Portal>
-                  <PopoverContent 
+                  <PopoverContent
                     className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
                     align="start" 
                     sideOffset={8}
@@ -1922,7 +1918,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     )}
                   </div>
                 </PopoverContent>
-                </PopoverPrimitive.Portal> {/* 🔥 Close Portal */}
               </Popover>
             )}
           </div>
@@ -2494,8 +2489,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverPrimitive.Portal>
-                              <PopoverContent 
+                            <PopoverContent
                                 className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" 
                                 align="start"
                                 onCloseAutoFocus={(e) => e.preventDefault()}
@@ -2509,7 +2503,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 className="pointer-events-auto"
                               />
                             </PopoverContent>
-                          </PopoverPrimitive.Portal>
                           </Popover>
                         </div>
 
@@ -2525,8 +2518,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverPrimitive.Portal>
-                              <PopoverContent 
+                            <PopoverContent
                                 className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" 
                                 align="start"
                                 onCloseAutoFocus={(e) => e.preventDefault()}
@@ -2540,7 +2532,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                 className="pointer-events-auto"
                               />
                             </PopoverContent>
-                          </PopoverPrimitive.Portal>
                           </Popover>
                         </div>
                       </div>
