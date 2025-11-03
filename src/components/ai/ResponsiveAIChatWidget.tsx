@@ -44,12 +44,12 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     scrollToBottom();
   }, [messages]);
 
-  // Handle scroll direction for auto-hide/show
+  // Handle scroll direction for auto-hide/show (50px threshold for better responsiveness)
   useEffect(() => {
     if (isOpen) {
       setShowWidget(true); // Always show when chat is open
     } else {
-      if (scrollDirection === 'down' && scrollY > 100) {
+      if (scrollDirection === 'down' && scrollY > 50) {
         setShowWidget(false); // Hide on scroll down
       } else if (scrollDirection === 'up' || isAtTop) {
         setShowWidget(true); // Show on scroll up or at top
@@ -280,8 +280,8 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {!isOpen && (
         <div 
           className={cn(
-            "fixed z-[10002] pointer-events-none transition-all duration-500 ease-in-out",
-            showWidget ? "translate-y-0 opacity-100" : "translate-y-32 opacity-0"
+            "fixed z-[10002] pointer-events-none transition-all duration-500 ease-out transform-gpu",
+            showWidget ? "translate-y-0 opacity-100 scale-100" : "translate-y-24 opacity-0 scale-90"
           )}
           style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
         >
