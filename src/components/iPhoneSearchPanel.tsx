@@ -1404,7 +1404,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
-            <Popover>
+            <Popover modal={true}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1548,7 +1548,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Facilities Button - Opens Popover */}
-            <Popover>
+            <Popover modal={true}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -1743,7 +1743,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover modal={false}>
+              <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
