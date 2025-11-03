@@ -112,15 +112,21 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
         {shouldShowWidget && (
           <motion.div
             key="chat-widget"
-            initial={{ opacity: 0, y: 100, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ 
+              duration: scrollDirection === 'down' ? 0.2 : 0.3,
+              ease: "easeOut"
+            }}
             className="fixed bottom-6 right-6 z-[9999] pointer-events-auto"
           >
             {!isOpen ? (
               // Collapsed State - Floating Button
               <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="relative group"
@@ -151,10 +157,10 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
             ) : (
               // Expanded State - Chat Window
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 className="w-[380px] h-[600px] max-h-[80vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden"
                 style={{ maxWidth: 'calc(100vw - 3rem)' }}
               >
@@ -197,10 +203,10 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
       <AnimatePresence>
         {isScrolled && !isOpen && shouldShowWidget && (
           <motion.div
-            initial={{ opacity: 0, y: 100 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="fixed bottom-24 right-6 z-[9998] pointer-events-auto"
           >
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
