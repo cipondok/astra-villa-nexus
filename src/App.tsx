@@ -64,9 +64,16 @@ import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
 import MarketplaceCategory from '@/pages/MarketplaceCategory';
 import VendorRegistration from '@/pages/VendorRegistration';
+import { useCLSMonitor } from '@/hooks/useCLSMonitor';
+import { useScrollRestore } from '@/hooks/useScrollRestore';
 
 
 const AppContent = () => {
+  // 📊 PRO: Monitor Cumulative Layout Shift for performance tracking
+  useCLSMonitor(process.env.NODE_ENV === 'development');
+  
+  // 💾 PRO: Auto-restore scroll position per route
+  useScrollRestore(true);
   const location = useLocation();
   const { language } = useLanguage();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);

@@ -988,6 +988,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     // 🔒 CRITICAL: Preserve scroll position to prevent iPhone Safari jump
     const currentScroll = window.scrollY;
     
+    // 📳 PRO: Haptic feedback for search action on mobile devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    
     const listingType = activeTab === 'all' ? '' : activeTab;
     
     // Construct location from selected parts
