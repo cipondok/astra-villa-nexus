@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useScrollLock } from "@/hooks/useScrollLock";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 
@@ -75,6 +76,7 @@ const Index = () => {
   const [quickSearch, setQuickSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  useScrollLock(filtersOpen);
   const [filters, setFilters] = useState<PropertyFilters>({
     searchQuery: "",
     priceRange: [0, 50000000000],

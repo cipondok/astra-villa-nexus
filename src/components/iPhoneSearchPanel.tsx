@@ -40,9 +40,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [showLocationButtons, setShowLocationButtons] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
   
-  // 🔒 Lock body scroll only for advanced filters modal (not for small popovers to prevent layout shift)
-  useScrollLock(showFilters);
+  // 🔒 Lock body scroll for advanced filters and location popover
+  useScrollLock(showFilters || isLocationOpen);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1743,7 +1744,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Location Button - Opens Popover with 3 selects */}
             {!useNearbyLocation && (
-              <Popover modal={true}>
+              <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen} modal={true}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
