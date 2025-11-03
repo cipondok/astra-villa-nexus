@@ -206,6 +206,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "ai-feedback-analytics",
+      label: "AI Feedback Analytics",
+      icon: TrendingUp,
+      description: "Track user reactions to AI responses and measure AI assistant quality",
+      badge: "New"
+    },
+    {
       key: "analytics",
       label: "Web Traffic Analytics",
       icon: BarChart3,

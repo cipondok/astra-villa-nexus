@@ -50,6 +50,7 @@ import UserExperienceTips from "./UserExperienceTips";
 import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
 import ProjectProgressReport from "./ProjectProgressReport";
+import { AIFeedbackAnalytics } from "./AIFeedbackAnalytics";
 import HomepageSliderSettings from "./HomepageSliderSettings";
 import CarouselSettingsManager from "./CarouselSettingsManager";
 import ProjectMapVisualization from "./ProjectMapVisualization";
@@ -176,6 +177,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AlgorithmDashboard />;
       case "notifications-center":
         return <AdminNotificationsCenter />;
+      case "ai-feedback-analytics":
+        return <AIFeedbackAnalytics />;
       case "project-map":
         return <ProjectMapVisualization />;
       case "cookie-settings":
