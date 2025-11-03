@@ -24,7 +24,7 @@ const InitialLoadingScreen = () => {
       } else {
         clearInterval(interval);
       }
-    }, 400);
+    }, 300); // 5 stages × 300ms = 1500ms total
 
     return () => clearInterval(interval);
   }, []);

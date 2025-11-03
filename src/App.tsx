@@ -162,10 +162,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Loading screen duration matches the InitialLoadingScreen animation (5 stages × 400ms = 2000ms)
+    // Fast loading screen for better UX (1.5 seconds)
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2100); // 2.1 seconds to ensure smooth completion
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
