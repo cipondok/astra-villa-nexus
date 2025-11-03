@@ -65,12 +65,38 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   const { toast } = useToast();
 
-  const handleReaction = (messageId: string, reaction: 'positive' | 'negative') => {
+  const handleReaction = async (messageId: string, reaction: 'positive' | 'negative') => {
+    // Find the message to get its content
+    const message = messages.find(m => m.id === messageId);
+    if (!message) return;
+
     setMessages(prev =>
       prev.map(msg =>
         msg.id === messageId ? { ...msg, reaction } : msg
       )
     );
+    
+    // Save to database
+    try {
+      const { error } = await supabase.from('ai_message_reactions').insert({
+        message_id: messageId,
+        conversation_id: conversationId,
+        user_id: user?.id || null,
+        message_content: message.content,
+        reaction_type: reaction,
+        property_id: propertyId || null,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          function_call: message.functionCall?.name || null
+        }
+      });
+
+      if (error) {
+        console.error('Failed to save reaction:', error);
+      }
+    } catch (error) {
+      console.error('Error saving reaction:', error);
+    }
     
     toast({
       title: reaction === 'positive' ? "Thanks for your feedback!" : "Thanks for letting us know",

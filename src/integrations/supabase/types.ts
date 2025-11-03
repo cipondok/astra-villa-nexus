@@ -415,6 +415,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_message_reactions: {
+        Row: {
+          conversation_id: string | null
+          created_at: string | null
+          id: string
+          message_content: string
+          message_id: string
+          metadata: Json | null
+          property_id: string | null
+          reaction_type: string
+          user_id: string | null
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_content: string
+          message_id: string
+          metadata?: Json | null
+          property_id?: string | null
+          reaction_type: string
+          user_id?: string | null
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_content?: string
+          message_id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          reaction_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_vendor_suggestions: {
         Row: {
           ai_suggestion: Json
@@ -8907,6 +8943,16 @@ export type Database = {
       }
     }
     Views: {
+      ai_reaction_analytics: {
+        Row: {
+          date: string | null
+          reaction_count: number | null
+          reaction_type: string | null
+          unique_conversations: number | null
+          unique_users: number | null
+        }
+        Relationships: []
+      }
       public_properties: {
         Row: {
           advance_booking_days: number | null

@@ -182,12 +182,37 @@ const FloatingChatWidget = ({ propertyId, onTourControl }: FloatingChatWidgetPro
     }
   };
 
-  const handleReaction = (messageId: string, reaction: 'positive' | 'negative') => {
+  const handleReaction = async (messageId: string, reaction: 'positive' | 'negative') => {
+    // Find the message to get its content
+    const message = messages.find(m => m.id === messageId);
+    if (!message) return;
+
     setMessages(prev =>
       prev.map(msg =>
         msg.id === messageId ? { ...msg, reaction } : msg
       )
     );
+    
+    // Save to database
+    try {
+      const { error } = await supabase.from('ai_message_reactions').insert({
+        message_id: messageId,
+        conversation_id: conversationId,
+        message_content: message.content,
+        reaction_type: reaction,
+        property_id: propertyId || null,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          function_call: message.functionCall?.name || null
+        }
+      });
+
+      if (error) {
+        console.error('Failed to save reaction:', error);
+      }
+    } catch (error) {
+      console.error('Error saving reaction:', error);
+    }
     
     // Show feedback toast
     toast({
