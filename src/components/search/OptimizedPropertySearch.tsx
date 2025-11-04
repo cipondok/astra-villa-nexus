@@ -78,6 +78,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [showSaveFilterPresetDialog, setShowSaveFilterPresetDialog] = useState(false);
   const [filterPresetName, setFilterPresetName] = useState('');
   const [showImageUploadHelp, setShowImageUploadHelp] = useState(false);
+  const [showImageSearchTutorial, setShowImageSearchTutorial] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState(0);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
   const { toast } = useToast();
@@ -136,6 +138,13 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     const weightPresets = localStorage.getItem('similarityWeightPresets');
     if (weightPresets) {
       setSavedWeightPresets(JSON.parse(weightPresets));
+    }
+
+    // Check if user has seen image search tutorial
+    const hasSeenTutorial = localStorage.getItem('imageSearchTutorialCompleted');
+    if (!hasSeenTutorial) {
+      // Don't show tutorial immediately, wait for user to open image upload
+      // Tutorial will be triggered when they first click the camera icon
     }
   }, []);
 
@@ -752,6 +761,35 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     toast({
       title: "Quick Filter Applied",
       description: `Applied "${names[presetType]}" filter preset`
+    });
+  };
+
+  // Tutorial handlers
+  const nextTutorialStep = () => {
+    if (tutorialStep < 4) {
+      setTutorialStep(tutorialStep + 1);
+    } else {
+      completeTutorial();
+    }
+  };
+
+  const prevTutorialStep = () => {
+    if (tutorialStep > 0) {
+      setTutorialStep(tutorialStep - 1);
+    }
+  };
+
+  const skipTutorial = () => {
+    completeTutorial();
+  };
+
+  const completeTutorial = () => {
+    localStorage.setItem('imageSearchTutorialCompleted', 'true');
+    setShowImageSearchTutorial(false);
+    setShowImageUpload(true);
+    toast({
+      title: "Tutorial Complete!",
+      description: "You can now start using image search to find similar properties"
     });
   };
 
@@ -1766,7 +1804,15 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     type="button"
                     size="icon"
                     variant={uploadedImage ? "default" : "ghost"}
-                    onClick={() => setShowImageUpload(true)}
+                    onClick={() => {
+                      const hasSeenTutorial = localStorage.getItem('imageSearchTutorialCompleted');
+                      if (!hasSeenTutorial && !uploadedImage) {
+                        setShowImageSearchTutorial(true);
+                        setTutorialStep(0);
+                      } else {
+                        setShowImageUpload(true);
+                      }
+                    }}
                     className={`absolute right-2 top-1/2 transform -translate-y-1/2`}
                   >
                     <Camera className="h-4 w-4" />
@@ -3995,6 +4041,268 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <Button variant="outline" onClick={() => setSelectedPropertyBreakdown(null)}>
               Close
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Interactive Image Search Tutorial */}
+      <Dialog open={showImageSearchTutorial} onOpenChange={setShowImageSearchTutorial}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-primary" />
+              Welcome to Image Search!
+            </DialogTitle>
+            <DialogDescription>
+              Learn how to find similar properties using just a photo
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Progress indicator */}
+            <div className="flex items-center justify-center gap-2">
+              {[0, 1, 2, 3, 4].map((step) => (
+                <div
+                  key={step}
+                  className={`h-2 rounded-full transition-all ${
+                    step === tutorialStep 
+                      ? 'w-8 bg-primary' 
+                      : step < tutorialStep 
+                      ? 'w-2 bg-primary/50' 
+                      : 'w-2 bg-muted'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Step 0: Introduction */}
+            {tutorialStep === 0 && (
+              <div className="space-y-4 py-6">
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Camera className="h-10 w-10 text-primary" />
+                  </div>
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold">Find Your Dream Property with a Photo</h3>
+                  <p className="text-muted-foreground">
+                    Upload any property image and our AI will find similar listings based on style, architecture, and features.
+                  </p>
+                </div>
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium mb-1">Best Results:</p>
+                      <p className="text-muted-foreground">Use clear, well-lit exterior photos showing the full property facade for the most accurate matches.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 1: Upload Methods */}
+            {tutorialStep === 1 && (
+              <div className="space-y-4 py-6">
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Upload className="h-10 w-10 text-blue-600" />
+                  </div>
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold">Multiple Ways to Upload</h3>
+                  <p className="text-muted-foreground">Choose the method that works best for you</p>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center p-4 border rounded-lg bg-muted/30">
+                    <Upload className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <p className="font-medium text-sm">Drag & Drop</p>
+                    <p className="text-xs text-muted-foreground mt-1">Drop image anywhere</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg bg-muted/30">
+                    <ImageIcon className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <p className="font-medium text-sm">Browse Files</p>
+                    <p className="text-xs text-muted-foreground mt-1">Select from device</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg bg-muted/30">
+                    <Camera className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <p className="font-medium text-sm">Take Photo</p>
+                    <p className="text-xs text-muted-foreground mt-1">Use camera (mobile)</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: AI Analysis */}
+            {tutorialStep === 2 && (
+              <div className="space-y-4 py-6">
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center">
+                    <BarChart3 className="h-10 w-10 text-purple-600" />
+                  </div>
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold">AI Analyzes Your Image</h3>
+                  <p className="text-muted-foreground">Our AI identifies key property features automatically</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="border rounded-lg p-3 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-bold">1</span>
+                      </div>
+                      <p className="font-medium text-sm">Property Type</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground pl-8">House, villa, apartment, etc.</p>
+                  </div>
+                  <div className="border rounded-lg p-3 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-bold">2</span>
+                      </div>
+                      <p className="font-medium text-sm">Architecture</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground pl-8">Style, design elements</p>
+                  </div>
+                  <div className="border rounded-lg p-3 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-bold">3</span>
+                      </div>
+                      <p className="font-medium text-sm">Size & Layout</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground pl-8">Estimated bedrooms, floors</p>
+                  </div>
+                  <div className="border rounded-lg p-3 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-bold">4</span>
+                      </div>
+                      <p className="font-medium text-sm">Amenities</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground pl-8">Pool, garden, parking</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Similarity Weights */}
+            {tutorialStep === 3 && (
+              <div className="space-y-4 py-6">
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                    <SlidersHorizontal className="h-10 w-10 text-green-600" />
+                  </div>
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold">Customize Your Search</h3>
+                  <p className="text-muted-foreground">Adjust what matters most to you</p>
+                </div>
+                <div className="border rounded-lg p-4 space-y-3 bg-muted/20">
+                  <p className="text-sm font-medium">Similarity Weights</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Property Type</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-primary/20 rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full" style={{ width: '30%' }} />
+                        </div>
+                        <span className="font-medium w-8">30%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Style</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-primary/20 rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full" style={{ width: '20%' }} />
+                        </div>
+                        <span className="font-medium w-8">20%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Amenities</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-primary/20 rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full" style={{ width: '25%' }} />
+                        </div>
+                        <span className="font-medium w-8">25%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Higher weights = More important to your search
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Results & Features */}
+            {tutorialStep === 4 && (
+              <div className="space-y-4 py-6">
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center">
+                    <TrendingUp className="h-10 w-10 text-orange-600" />
+                  </div>
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold">View Your Results</h3>
+                  <p className="text-muted-foreground">Discover properties ranked by similarity</p>
+                </div>
+                <div className="space-y-3">
+                  <div className="border rounded-lg p-4 bg-muted/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center">
+                        <span className="text-lg font-bold text-primary">95%</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">Similarity Score</p>
+                        <p className="text-xs text-muted-foreground">How closely it matches your image</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <Badge variant="secondary" className="text-xs">Sort by feature</Badge>
+                      <Badge variant="secondary" className="text-xs">Filter results</Badge>
+                      <Badge variant="secondary" className="text-xs">View breakdown</Badge>
+                    </div>
+                  </div>
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-sm font-medium text-green-900 mb-1">✓ Ready to start!</p>
+                    <p className="text-xs text-green-700">Click "Start Searching" to begin finding similar properties</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="flex items-center justify-between sm:justify-between">
+            <Button
+              variant="ghost"
+              onClick={skipTutorial}
+              className="text-muted-foreground"
+            >
+              Skip Tutorial
+            </Button>
+            <div className="flex gap-2">
+              {tutorialStep > 0 && (
+                <Button variant="outline" onClick={prevTutorialStep}>
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Back
+                </Button>
+              )}
+              <Button onClick={nextTutorialStep}>
+                {tutorialStep === 4 ? (
+                  <>
+                    Start Searching
+                    <Camera className="h-4 w-4 ml-2" />
+                  </>
+                ) : (
+                  <>
+                    Next
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </>
+                )}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
