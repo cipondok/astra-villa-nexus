@@ -67,6 +67,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   }, []);
 
   // Handle scroll direction for auto-hide/show (10px threshold with 200ms delay for synchronized transitions)
+  // Chat window stays visible when open regardless of scrolling
   useEffect(() => {
     // Clear any pending hide timeout
     if (hideTimeoutRef.current) {
@@ -75,7 +76,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     }
 
     if (isOpen) {
-      setShowWidget(true); // Always show when chat is open
+      setShowWidget(true); // Always show when chat is open - no hiding on scroll
     } else {
       if (scrollDirection === 'down' && scrollY > 10) {
         // Delay hiding by 200ms to match animation duration
@@ -342,11 +343,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       )}
 
-      {/* Chat window - Fixed position at bottom right corner */}
+      {/* Chat window - Fixed position, always visible when open even during scroll */}
       {isOpen && (
         <div 
           className={cn(
-            "fixed z-[10002] transition-all duration-300 ease-in-out pointer-events-none",
+            "fixed z-[10003] transition-all duration-300 ease-in-out",
             isMinimized ? "w-[280px]" : isMobile ? "w-full" : "w-[420px]",
             isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]",
             isMobile ? "left-0 right-0" : ""
@@ -357,7 +358,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               : { bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }
           }
         >
-          <Card className="pointer-events-auto h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
+          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
             {/* Header with Close and Minimize */}
             <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <div className="flex items-center gap-2">
