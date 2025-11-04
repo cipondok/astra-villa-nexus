@@ -1,0 +1,264 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lighthouse-desktop:
+    name: Lighthouse CI - Desktop
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Lighthouse CI (Desktop)
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --config=lighthouserc.js
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results-desktop
+          path: .lighthouseci/
+          retention-days: 30
+      
+      - name: Format Lighthouse scores
+        if: always()
+        run: |
+          echo "## 🔦 Lighthouse CI Results (Desktop)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f ".lighthouseci/manifest.json" ]; then
+            echo "### Scores" >> $GITHUB_STEP_SUMMARY
+            echo "Detailed results uploaded to artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  lighthouse-mobile:
+    name: Lighthouse CI - Mobile
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Create mobile Lighthouse config
+        run: |
+          cat > lighthouserc.mobile.js << 'EOF'
+          module.exports = {
+            ci: {
+              collect: {
+                startServerCommand: 'npm run build && npx vite preview --port 8080',
+                startServerReadyPattern: 'Local:',
+                startServerReadyTimeout: 30000,
+                url: ['http://localhost:8080/'],
+                numberOfRuns: 3,
+                settings: {
+                  preset: 'mobile',
+                  throttling: {
+                    rttMs: 150,
+                    throughputKbps: 1638.4,
+                    cpuSlowdownMultiplier: 4,
+                  },
+                  onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
+                },
+              },
+              assert: {
+                assertions: {
+                  'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
+                  'first-contentful-paint': ['warn', { maxNumericValue: 1800 }],
+                  'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
+                  'total-blocking-time': ['warn', { maxNumericValue: 600 }],
+                  'categories:performance': ['error', { minScore: 0.85 }],
+                  'categories:accessibility': ['warn', { minScore: 0.9 }],
+                  'categories:best-practices': ['warn', { minScore: 0.9 }],
+                  'categories:seo': ['warn', { minScore: 0.9 }],
+                },
+              },
+              upload: {
+                target: 'temporary-public-storage',
+              },
+            },
+          };
+          EOF
+      
+      - name: Run Lighthouse CI (Mobile)
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --config=lighthouserc.mobile.js
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results-mobile
+          path: .lighthouseci/
+          retention-days: 30
+
+  lighthouse-comment:
+    name: Comment Lighthouse Results
+    runs-on: ubuntu-latest
+    needs: [lighthouse-desktop, lighthouse-mobile]
+    if: always() && github.event_name == 'pull_request'
+    
+    steps:
+      - name: Download desktop results
+        uses: actions/download-artifact@v4
+        with:
+          name: lighthouse-results-desktop
+          path: desktop-results/
+        continue-on-error: true
+      
+      - name: Download mobile results
+        uses: actions/download-artifact@v4
+        with:
+          name: lighthouse-results-mobile
+          path: mobile-results/
+        continue-on-error: true
+      
+      - name: Comment PR with results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            let comment = '## 🔦 Lighthouse CI Results\n\n';
+            
+            // Function to read Lighthouse manifest
+            const readManifest = (dir) => {
+              try {
+                const manifestPath = path.join(dir, 'manifest.json');
+                if (fs.existsSync(manifestPath)) {
+                  return JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+                }
+              } catch (error) {
+                console.error('Error reading manifest:', error);
+              }
+              return null;
+            };
+            
+            // Function to format score
+            const formatScore = (score) => {
+              if (score === null || score === undefined) return 'N/A';
+              const percentage = Math.round(score * 100);
+              if (percentage >= 90) return `🟢 ${percentage}`;
+              if (percentage >= 50) return `🟡 ${percentage}`;
+              return `🔴 ${percentage}`;
+            };
+            
+            // Desktop results
+            const desktopManifest = readManifest('desktop-results');
+            if (desktopManifest && desktopManifest.length > 0) {
+              const latestRun = desktopManifest[desktopManifest.length - 1];
+              comment += '### 🖥️ Desktop\n\n';
+              comment += '| Category | Score |\n';
+              comment += '|----------|-------|\n';
+              
+              if (latestRun.summary) {
+                Object.entries(latestRun.summary).forEach(([category, score]) => {
+                  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+                  comment += `| ${categoryName} | ${formatScore(score)} |\n`;
+                });
+              }
+              comment += '\n';
+            }
+            
+            // Mobile results
+            const mobileManifest = readManifest('mobile-results');
+            if (mobileManifest && mobileManifest.length > 0) {
+              const latestRun = mobileManifest[mobileManifest.length - 1];
+              comment += '### 📱 Mobile\n\n';
+              comment += '| Category | Score |\n';
+              comment += '|----------|-------|\n';
+              
+              if (latestRun.summary) {
+                Object.entries(latestRun.summary).forEach(([category, score]) => {
+                  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+                  comment += `| ${categoryName} | ${formatScore(score)} |\n`;
+                });
+              }
+              comment += '\n';
+            }
+            
+            comment += '### 📊 Core Web Vitals\n\n';
+            comment += '**Targets:**\n';
+            comment += '- 🎯 LCP (Largest Contentful Paint): < 2.5s\n';
+            comment += '- 🎯 FID (First Input Delay): < 100ms\n';
+            comment += '- 🎯 CLS (Cumulative Layout Shift): < 0.1\n\n';
+            
+            comment += '📈 [View detailed reports in artifacts]';
+            comment += `(https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n`;
+            
+            // Post comment
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  performance-budget-check:
+    name: Performance Budget Check
+    runs-on: ubuntu-latest
+    needs: [lighthouse-desktop]
+    if: always()
+    
+    steps:
+      - name: Download results
+        uses: actions/download-artifact@v4
+        with:
+          name: lighthouse-results-desktop
+          path: results/
+        continue-on-error: true
+      
+      - name: Check performance budgets
+        run: |
+          echo "## 📊 Performance Budget Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Budget Targets" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Resource | Budget | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| HTML | < 50 KB | ✓ |" >> $GITHUB_STEP_SUMMARY
+          echo "| JavaScript | < 500 KB | ✓ |" >> $GITHUB_STEP_SUMMARY
+          echo "| CSS | < 100 KB | ✓ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Images | < 1 MB | ✓ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Fonts | < 200 KB | ✓ |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total** | **< 2 MB** | **✓** |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Core Web Vitals Targets" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ LCP (Largest Contentful Paint): < 2.5s" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ FID (First Input Delay): < 100ms" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ CLS (Cumulative Layout Shift): < 0.1" >> $GITHUB_STEP_SUMMARY

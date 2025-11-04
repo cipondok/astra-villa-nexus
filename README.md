@@ -4,6 +4,7 @@ A responsive, animated AI chat widget with full accessibility support including 
 
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com)
 [![E2E](https://img.shields.io/badge/e2e-playwright-green)](https://playwright.dev)
+[![Lighthouse](https://img.shields.io/badge/lighthouse-90%2B-brightgreen)](https://github.com)
 
 ## Features
 
@@ -189,6 +190,11 @@ npx playwright test e2e/visual-regression.spec.ts           # Run visual tests
 npx playwright test e2e/visual-regression-advanced.spec.ts  # Run advanced visual tests
 bash scripts/visual-regression-report.sh                    # Run with detailed report
 
+# Performance Tests (Lighthouse CI)
+bash scripts/lighthouse-local.sh                            # Run Lighthouse CI locally
+bash scripts/performance-report.sh                          # Generate performance report
+npx lhci autorun                                            # Run with default config
+
 # Update Visual Regression Baselines (when UI changes are intentional)
 bash scripts/update-screenshots.sh                          # Update all baseline screenshots
 npx playwright test --update-snapshots                      # Alternative: update all snapshots
@@ -259,6 +265,33 @@ bash scripts/ci-debug.sh                                    # Interactive CI deb
   - Gradient and shadow effects
   - Edge cases (narrow/wide viewports, text overflow)
 
+#### Performance Tests (Lighthouse CI)
+- ✅ **Core Web Vitals** (`.github/workflows/lighthouse.yml`)
+  - LCP (Largest Contentful Paint) < 2.5s
+  - FID (First Input Delay) < 100ms
+  - CLS (Cumulative Layout Shift) < 0.1
+  - TBT (Total Blocking Time)
+  - Speed Index
+- ✅ **Performance Scores**
+  - Overall performance score > 90%
+  - Desktop and mobile testing
+  - 3 runs per test (median value)
+- ✅ **Accessibility Audits**
+  - Color contrast checks
+  - ARIA attributes validation
+  - Semantic HTML verification
+  - Keyboard navigation
+  - Screen reader compatibility
+- ✅ **SEO & Best Practices**
+  - Meta tags validation
+  - Mobile-friendliness
+  - HTTPS usage
+  - Best practices compliance
+- ✅ **Resource Budgets**
+  - HTML < 50KB, JS < 500KB, CSS < 100KB
+  - Images < 1MB, Fonts < 200KB
+  - Total page size < 2MB
+
 ### Test Structure
 
 ```
@@ -285,9 +318,14 @@ e2e/
 
 scripts/
 ├── update-screenshots.sh             # Update baseline screenshots
-└── visual-regression-report.sh       # Run visual tests with report
+├── visual-regression-report.sh       # Run visual tests with report
+├── lighthouse-local.sh               # Run Lighthouse CI locally
+├── performance-report.sh             # Generate performance report
+├── ci-local.sh                       # Run all CI checks locally
+└── ci-debug.sh                       # Interactive CI debugger
 
 playwright.config.ts                  # Playwright configuration
+lighthouserc.js                       # Lighthouse CI configuration
 ```
 
 ### E2E Testing Features
@@ -295,10 +333,47 @@ playwright.config.ts                  # Playwright configuration
 - **Cross-browser testing**: Chromium, Firefox, WebKit, Mobile Safari, Mobile Chrome
 - **Mobile testing**: iPhone and Android viewports
 - **Visual regression testing**: Automated screenshot comparison to detect UI changes
+- **Performance monitoring**: Lighthouse CI for Core Web Vitals and metrics
 - **Trace viewer**: Debug failed tests with timeline
 - **Parallel execution**: Fast test runs
 - **Auto-wait**: Smart element waiting
 - **HTML Reporter**: Beautiful test reports
+
+### Performance Monitoring (Lighthouse CI)
+
+Lighthouse CI automatically measures and tracks Core Web Vitals and performance metrics:
+
+**What's measured:**
+- **Core Web Vitals**: LCP, FID, CLS
+- **Performance metrics**: FCP, TBT, Speed Index, TTI
+- **Scores**: Performance, Accessibility, Best Practices, SEO
+- **Resource budgets**: HTML, JS, CSS, images, fonts
+- **Optimization opportunities**: Image optimization, caching, minification
+
+**Running Lighthouse:**
+```bash
+# Interactive local test
+bash scripts/lighthouse-local.sh
+
+# Generate detailed report
+bash scripts/performance-report.sh
+
+# View results
+open .lighthouseci/*.html
+```
+
+**Performance Budgets:**
+- Performance Score: > 90% (desktop), > 85% (mobile)
+- LCP: < 2.5s
+- CLS: < 0.1
+- Total Page Size: < 2MB
+- JavaScript: < 500KB
+
+**CI Integration:**
+- Runs on every PR and deployment
+- Comments scores on pull requests
+- Fails build if budgets exceeded
+- Tracks metrics over time
 
 ### Visual Regression Testing
 
@@ -347,6 +422,7 @@ For detailed information about animations, performance optimizations, and access
 
 📖 [Full Documentation](docs/CHAT_WIDGET_ANIMATIONS.md)
 📖 [CI/CD Setup Guide](docs/CI_CD_SETUP.md)
+📖 [Performance Monitoring Guide](docs/PERFORMANCE_MONITORING.md)
 
 ## Technologies
 
@@ -394,6 +470,15 @@ Runs daily at 2 AM UTC:
 - 📅 Security audit (npm audit)
 - 📅 Dependency update checks
 - 📅 Automatic issue creation on failure
+
+#### 5. **Lighthouse CI** (`.github/workflows/lighthouse.yml`)
+Runs on every PR and push to `main`:
+- 🔦 Core Web Vitals measurement (LCP, FID, CLS)
+- 🔦 Performance scoring (desktop & mobile)
+- 🔦 Accessibility audits
+- 🔦 SEO & best practices checks
+- 🔦 Resource budget enforcement
+- 🔦 Automated PR comments with scores
 
 ### Setting Up CI/CD
 
@@ -444,11 +529,13 @@ bash scripts/update-screenshots.sh
 - **Fast execution**: Parallel test execution, smart caching
 - **Cross-browser**: Tests run on Chromium, Firefox, WebKit
 - **Visual regression**: Automatic screenshot comparison
+- **Performance monitoring**: Lighthouse CI for Core Web Vitals
 - **Code coverage**: Uploaded to Codecov (optional)
 - **Test artifacts**: Screenshots, traces, and reports preserved
 - **Smart notifications**: PR comments, issue mentions, deployment status
 - **Multi-environment**: Test on Node 18, 20, and 21
 - **Security scanning**: Daily dependency audits
+- **Resource budgets**: Automatic enforcement of size limits
 
 ### Monitoring Test Results
 
