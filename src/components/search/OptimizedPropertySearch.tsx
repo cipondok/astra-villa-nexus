@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Slider } from '@/components/ui/slider';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
 import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap } from 'lucide-react';
 
@@ -195,12 +196,25 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </SelectContent>
               </Select>
 
-              <Input
-                placeholder="Min Area (sqm)"
-                type="number"
-                value={filters.minArea || ''}
-                onChange={(e) => updateFilters({ minArea: e.target.value ? Number(e.target.value) : undefined })}
-              />
+              <div className="col-span-2 md:col-span-4 space-y-3 p-4 bg-background rounded-md border">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Area Range (sqm)</label>
+                  <span className="text-sm text-muted-foreground">
+                    {filters.minArea || 0} - {filters.maxArea || 1000} sqm
+                  </span>
+                </div>
+                <Slider
+                  min={0}
+                  max={1000}
+                  step={10}
+                  value={[filters.minArea || 0, filters.maxArea || 1000]}
+                  onValueChange={(value) => updateFilters({ 
+                    minArea: value[0] === 0 ? undefined : value[0],
+                    maxArea: value[1] === 1000 ? undefined : value[1]
+                  })}
+                  className="w-full"
+                />
+              </div>
 
               <Button variant="outline" onClick={clearCache} size="sm">
                 Clear Cache
