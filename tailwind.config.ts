@@ -186,7 +186,7 @@ const config: Config = {
           },
           "50%": {
             opacity: "0.7",
-            boxShadow: "0 0 30px hsla(217, 91%, 60%, 0.7), 0 0 60px hsla(271, 91%, 65%, 0.5)"
+            boxShadow: "0 0 40px hsla(217, 91%, 60%, 0.9), 0 0 80px hsla(271, 91%, 65%, 0.7)"
           }
         }
       },
