@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import PropertyAdvancedFilters from '@/components/search/PropertyAdvancedFilters';
+import AdvancedPropertyFilters, { PropertyFilters } from '@/components/search/AdvancedPropertyFilters';
 import PropertySearchResults from '@/components/search/PropertySearchResults';
 import PropertyMapView from '@/components/search/PropertyMapView';
 import { usePropertySearch } from '@/hooks/usePropertySearch';
 import { BaseProperty } from '@/types/property';
 import { useAlert } from '@/contexts/AlertContext';
-import { Search, Filter, Grid, List, Map } from 'lucide-react';
+import { Search, Filter, Grid, List, Map, SlidersHorizontal } from 'lucide-react';
 
 const PropertySearch = () => {
   const navigate = useNavigate();
@@ -20,6 +21,19 @@ const PropertySearch = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [savedProperties, setSavedProperties] = useState<string[]>([]);
   const [areaFilteredProperties, setAreaFilteredProperties] = useState<BaseProperty[] | null>(null);
+  const [showModernFilters, setShowModernFilters] = useState(false);
+  const [modernFilters, setModernFilters] = useState<PropertyFilters>({
+    searchQuery: "",
+    priceRange: [0, 50000000000],
+    location: "all",
+    propertyTypes: [],
+    bedrooms: null,
+    bathrooms: null,
+    minArea: null,
+    maxArea: null,
+    listingType: "all",
+    sortBy: "newest"
+  });
 
   const {
     searchResults,
@@ -126,6 +140,15 @@ const PropertySearch = () => {
             </div>
             <div className="flex items-center gap-2">
               <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowModernFilters(true)}
+                className="flex items-center gap-2"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span className="hidden sm:inline">Advanced Filters</span>
+              </Button>
+              <Button
                 variant={language === 'en' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setLanguage('en')}
@@ -142,6 +165,41 @@ const PropertySearch = () => {
             </div>
           </div>
         </div>
+
+        {/* Modern Advanced Filters Dialog */}
+        <AdvancedPropertyFilters
+          filters={modernFilters}
+          onFiltersChange={(newFilters) => {
+            setModernFilters(newFilters);
+            // Convert and apply to main search
+            searchProperties({
+              query: newFilters.searchQuery,
+              priceRange: [newFilters.priceRange[0], newFilters.priceRange[1]],
+              propertyType: newFilters.propertyTypes[0],
+              listingType: newFilters.listingType,
+              bedrooms: newFilters.bedrooms,
+              bathrooms: newFilters.bathrooms,
+              location: newFilters.location,
+            });
+          }}
+          onClearFilters={() => {
+            setModernFilters({
+              searchQuery: "",
+              priceRange: [0, 50000000000],
+              location: "all",
+              propertyTypes: [],
+              bedrooms: null,
+              bathrooms: null,
+              minArea: null,
+              maxArea: null,
+              listingType: "all",
+              sortBy: "newest"
+            });
+            clearSearch();
+          }}
+          isOpen={showModernFilters}
+          onToggle={() => setShowModernFilters(!showModernFilters)}
+        />
 
         {/* Search Filters */}
         <div className="mb-8">

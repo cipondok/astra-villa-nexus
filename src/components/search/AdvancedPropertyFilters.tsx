@@ -189,11 +189,11 @@ const AdvancedPropertyFilters = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onToggle}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden p-0 bg-gradient-to-br from-background to-muted/20">
-        <DialogHeader className="p-6 pb-4 sticky top-0 bg-gradient-to-r from-primary/5 to-primary/10 backdrop-blur-sm z-10 border-b border-primary/20">
-          <DialogTitle className="flex items-center justify-between text-2xl">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden p-0 bg-gradient-to-br from-background to-muted/20 animate-in slide-in-from-right-5 duration-300">
+        <DialogHeader className="p-6 pb-4 sticky top-0 bg-gradient-to-r from-primary/5 to-primary/10 backdrop-blur-sm z-10 border-b border-primary/20 animate-in fade-in-0 duration-300">
+          <DialogTitle className="flex items-center justify-between text-2xl animate-in fade-in-50 slide-in-from-left-5 duration-500">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+              <div className="p-2 bg-primary/10 rounded-lg animate-in zoom-in-50 duration-500 delay-100">
                 <Filter className="h-6 w-6 text-primary" />
               </div>
               <div className="flex flex-col">
@@ -203,7 +203,7 @@ const AdvancedPropertyFilters = ({
                 </span>
               </div>
               {getActiveFiltersCount() > 0 && (
-                <Badge className="bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold">
+                <Badge className="bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold animate-in zoom-in-50 duration-300 delay-200">
                   {getActiveFiltersCount()} Active
                 </Badge>
               )}
@@ -227,7 +227,7 @@ const AdvancedPropertyFilters = ({
                   sortBy: "newest"
                 });
               }}
-              className="h-10 px-4 hover:bg-destructive/10 hover:text-destructive transition-colors"
+              className="h-10 px-4 hover:bg-destructive/10 hover:text-destructive transition-all duration-300 hover:scale-105"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               Clear All
@@ -237,25 +237,29 @@ const AdvancedPropertyFilters = ({
 
         <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-6 py-6 space-y-8">
           {/* Filter Presets */}
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500 delay-200">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
               <Label className="text-base font-semibold">Quick Presets</Label>
               <Badge variant="secondary" className="text-xs">Popular</Badge>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filterPresets.map((preset) => (
+              {filterPresets.map((preset, index) => (
                 <button
                   key={preset.id}
                   onClick={() => applyPreset(preset.id)}
-                  className="group relative p-4 rounded-xl border-2 border-primary/10 bg-gradient-to-br from-background to-primary/5 hover:border-primary/30 hover:shadow-lg transition-all duration-300 text-left"
+                  className="group relative p-4 rounded-xl border-2 border-primary/10 bg-gradient-to-br from-background to-primary/5 hover:border-primary/30 hover:shadow-lg transition-all duration-300 text-left hover:scale-105 animate-in fade-in-0 slide-in-from-bottom-3 hover-scale"
+                  style={{ 
+                    animationDelay: `${300 + index * 100}ms`,
+                    animationFillMode: 'backwards'
+                  }}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="text-3xl group-hover:scale-110 transition-transform">
+                    <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
                       {preset.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors duration-300">
                         {preset.name}
                       </h3>
                       <p className="text-xs text-muted-foreground line-clamp-2">
@@ -263,8 +267,8 @@ const AdvancedPropertyFilters = ({
                       </p>
                     </div>
                   </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center animate-in zoom-in-50">
                       <Sparkles className="h-3 w-3 text-primary" />
                     </div>
                   </div>
@@ -273,9 +277,9 @@ const AdvancedPropertyFilters = ({
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 animate-in fade-in-0 duration-500 delay-700" />
           {/* Search Query */}
-          <div className="space-y-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
+          <div className="space-y-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 animate-in fade-in-50 slide-in-from-bottom-3 duration-500 delay-800">
             <div className="flex items-center gap-2">
               <Search className="h-5 w-5 text-primary" />
               <Label htmlFor="search" className="text-base font-semibold">Search Properties</Label>
@@ -285,14 +289,15 @@ const AdvancedPropertyFilters = ({
               placeholder="Search by title, description, or location..."
               value={localFilters.searchQuery}
               onChange={(e) => updateFilter('searchQuery', e.target.value)}
-              className="h-12 text-base border-primary/20 focus:ring-2 focus:ring-primary/20 bg-background"
+              className="h-12 text-base border-primary/20 focus:ring-2 focus:ring-primary/20 bg-background transition-all duration-300"
             />
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 animate-in fade-in-0 duration-500 delay-900" />
 
           {/* Price Range */}
-          <div className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/10">
+          <div className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/10 animate-in fade-in-50 slide-in-from-bottom-3 duration-500 delay-1000 transition-all hover:shadow-md"
+          >
             <div className="flex items-center gap-2">
               <DollarSign className="h-5 w-5 text-green-600" />
               <Label className="text-base font-semibold">Price Range</Label>
