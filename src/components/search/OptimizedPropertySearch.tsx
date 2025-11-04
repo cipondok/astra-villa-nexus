@@ -60,6 +60,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   });
   const [showFeatureFilters, setShowFeatureFilters] = useState(false);
   const [imageFeatures, setImageFeatures] = useState<any>(null);
+  const [sortBy, setSortBy] = useState<'overall' | 'propertyType' | 'style' | 'architecture' | 'bedrooms' | 'amenities'>('overall');
   const [recognition, setRecognition] = useState<any>(null);
   const [similarityWeights, setSimilarityWeights] = useState({
     propertyType: 30,
@@ -676,6 +677,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setSimilarityScores({});
     setSimilarityBreakdowns({});
     setSelectedPropertyBreakdown(null);
+    setSortBy('overall');
     setFeatureFilters({
       propertyType: 0,
       style: 0,
@@ -720,7 +722,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     });
   }, [searchMode, similarityBreakdowns, featureFilters, similarityWeights]);
 
-  // Sort results by similarity score when in image search mode
+  // Sort results by similarity score or specific feature score
   const sortedResults = useMemo(() => {
     // First apply feature filters
     const filtered = filterByFeatureScores(results);
@@ -731,11 +733,26 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     }
 
     return [...filtered].sort((a, b) => {
-      const scoreA = similarityScores[a.id] || 0;
-      const scoreB = similarityScores[b.id] || 0;
+      let scoreA = 0;
+      let scoreB = 0;
+
+      if (sortBy === 'overall') {
+        scoreA = similarityScores[a.id] || 0;
+        scoreB = similarityScores[b.id] || 0;
+      } else {
+        // Sort by specific feature score
+        const breakdownA = similarityBreakdowns[a.id];
+        const breakdownB = similarityBreakdowns[b.id];
+        
+        if (breakdownA && breakdownB) {
+          scoreA = breakdownA[sortBy] || 0;
+          scoreB = breakdownB[sortBy] || 0;
+        }
+      }
+      
       return scoreB - scoreA;
     });
-  }, [results, similarityScores, searchMode, filterByFeatureScores]);
+  }, [results, similarityScores, similarityBreakdowns, searchMode, sortBy, filterByFeatureScores]);
 
   const replayVoiceCommand = (historyItem: { command: string; filters: any }) => {
     updateFilters(historyItem.filters);
@@ -1761,31 +1778,80 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </div>
               </div>
               
-              {/* Feature-Specific Filters */}
-              {showFeatureFilters && (
-                <div className="mt-4 pt-4 border-t space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h5 className="font-semibold text-sm">Filter by Feature Match</h5>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setFeatureFilters({
-                        propertyType: 0,
-                        style: 0,
-                        architecture: 0,
-                        bedrooms: 0,
-                        amenities: 0
-                      })}
-                      className="text-xs h-6"
-                    >
-                      Clear All
-                    </Button>
+              {/* Sort By and Feature Filters */}
+              <div className="mt-4 pt-4 border-t space-y-4">
+                <div className="flex flex-col gap-4">
+                  {/* Sort By Selector */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold">Sort Results By</Label>
+                    <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="overall">
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="h-4 w-4" />
+                            Overall Match
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="propertyType">Property Type Match</SelectItem>
+                        <SelectItem value="style">Style Match</SelectItem>
+                        <SelectItem value="architecture">Architecture Match</SelectItem>
+                        <SelectItem value="bedrooms">Bedrooms Match</SelectItem>
+                        <SelectItem value="amenities">Amenities Match</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Show only properties scoring above these thresholds for each feature
-                  </p>
 
-                  <div className="space-y-3">
+                  {/* Feature Filters Toggle */}
+                  {!showFeatureFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowFeatureFilters(true)}
+                      className="gap-2 w-full"
+                    >
+                      <SlidersHorizontal className="h-4 w-4" />
+                      Show Feature Filters
+                    </Button>
+                  )}
+                </div>
+
+                {showFeatureFilters && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h5 className="font-semibold text-sm">Filter by Feature Match</h5>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setShowFeatureFilters(false)}
+                          className="text-xs h-6"
+                        >
+                          Hide
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setFeatureFilters({
+                            propertyType: 0,
+                            style: 0,
+                            architecture: 0,
+                            bedrooms: 0,
+                            amenities: 0
+                          })}
+                          className="text-xs h-6"
+                        >
+                          Clear All
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Show only properties scoring above these thresholds for each feature
+                    </p>
+
+                    <div className="space-y-3">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <Label className="text-xs">Property Type Match</Label>
@@ -1903,11 +1969,12 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                         </div>
                       </div>
                     )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-            )}
+          )}
 
           {/* Advanced Filters Toggle */}
           <div className="flex items-center justify-between gap-4">
