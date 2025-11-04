@@ -120,7 +120,14 @@ const DebugPanel = ({
                         animation: 'shimmer 3s infinite'
                       }}
                     />
-                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900 shadow-[0_0_12px_rgba(251,191,36,0.8)] z-10" />
+                    <span 
+                      className="absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-gray-900 z-10" 
+                      style={{
+                        background: 'rgb(251, 191, 36)',
+                        boxShadow: '0 0 12px rgba(251, 191, 36, 0.8)',
+                        animation: 'badgePulse 3s infinite'
+                      }}
+                    />
                   </>
                 )}
                 {!isOverridden && null}
@@ -141,6 +148,16 @@ const DebugPanel = ({
                     }
                     100% {
                       transform: translateX(200%);
+                    }
+                  }
+                  @keyframes badgePulse {
+                    0%, 100% {
+                      background: rgb(251, 191, 36);
+                      box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+                    }
+                    50% {
+                      background: rgb(252, 211, 77);
+                      box-shadow: 0 0 20px rgba(251, 191, 36, 1);
                     }
                   }
                 `}</style>
