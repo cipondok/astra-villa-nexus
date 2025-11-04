@@ -88,7 +88,7 @@ const DebugPanel = ({
 
       {/* Debug panel */}
       {isOpen && (
-        <div className="fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700">
+        <div className="fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 animate-fade-in">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-sm flex items-center gap-2">
               <Settings className="h-4 w-4" />
