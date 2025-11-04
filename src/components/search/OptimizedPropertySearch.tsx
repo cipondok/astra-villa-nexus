@@ -73,6 +73,10 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [showWeightPresets, setShowWeightPresets] = useState(false);
   const [showSavePresetDialog, setShowSavePresetDialog] = useState(false);
   const [presetName, setPresetName] = useState('');
+  const [savedFilterPresets, setSavedFilterPresets] = useState<Array<{ name: string; filters: typeof featureFilters }>>([]);
+  const [showFilterPresets, setShowFilterPresets] = useState(false);
+  const [showSaveFilterPresetDialog, setShowSaveFilterPresetDialog] = useState(false);
+  const [filterPresetName, setFilterPresetName] = useState('');
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
   const { toast } = useToast();
@@ -123,7 +127,11 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       }));
       setVoiceCommandHistory(historyWithDates);
     }
-
+    
+    const filterPresets = localStorage.getItem('savedFilterPresets');
+    if (filterPresets) {
+      setSavedFilterPresets(JSON.parse(filterPresets));
+    }
     const weightPresets = localStorage.getItem('similarityWeightPresets');
     if (weightPresets) {
       setSavedWeightPresets(JSON.parse(weightPresets));
@@ -668,6 +676,81 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     toast({
       title: "Quick Preset Applied",
       description: `Applied "${names[presetType]}" configuration`
+    });
+  };
+
+  // Filter Preset Handlers
+  const handleSaveFilterPreset = () => {
+    if (!filterPresetName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a name for the preset",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newPreset = {
+      name: filterPresetName,
+      filters: { ...featureFilters }
+    };
+
+    const updated = [...savedFilterPresets, newPreset];
+    setSavedFilterPresets(updated);
+    localStorage.setItem('savedFilterPresets', JSON.stringify(updated));
+
+    toast({
+      title: "Filter Preset Saved",
+      description: `"${filterPresetName}" has been saved successfully`
+    });
+
+    setFilterPresetName('');
+    setShowSaveFilterPresetDialog(false);
+  };
+
+  const handleApplyFilterPreset = (preset: { name: string; filters: typeof featureFilters }) => {
+    setFeatureFilters(preset.filters);
+    setShowFilterPresets(false);
+    
+    toast({
+      title: "Filter Preset Applied",
+      description: `Applied "${preset.name}" filter configuration`
+    });
+  };
+
+  const handleDeleteFilterPreset = (index: number) => {
+    const updated = savedFilterPresets.filter((_, i) => i !== index);
+    setSavedFilterPresets(updated);
+    localStorage.setItem('savedFilterPresets', JSON.stringify(updated));
+    
+    toast({
+      title: "Preset Deleted",
+      description: "Filter preset has been removed"
+    });
+  };
+
+  const applyQuickFilterPreset = (presetType: 'style' | 'amenities' | 'type' | 'architecture' | 'exact') => {
+    const presets = {
+      style: { propertyType: 30, style: 80, architecture: 70, bedrooms: 0, amenities: 30 },
+      amenities: { propertyType: 20, style: 0, architecture: 0, bedrooms: 0, amenities: 80 },
+      type: { propertyType: 90, style: 30, architecture: 30, bedrooms: 60, amenities: 30 },
+      architecture: { propertyType: 30, style: 60, architecture: 90, bedrooms: 0, amenities: 30 },
+      exact: { propertyType: 80, style: 80, architecture: 80, bedrooms: 80, amenities: 80 }
+    };
+
+    setFeatureFilters(presets[presetType]);
+    
+    const names = {
+      style: 'Style Focus',
+      amenities: 'Amenities Focus',
+      type: 'Property Type Focus',
+      architecture: 'Architecture Focus',
+      exact: 'Exact Match'
+    };
+
+    toast({
+      title: "Quick Filter Applied",
+      description: `Applied "${names[presetType]}" filter preset`
     });
   };
 
@@ -1803,6 +1886,96 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Quick Filter Presets */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold">Quick Filter Presets</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => applyQuickFilterPreset('style')}
+                        className="text-xs"
+                      >
+                        Style Focus
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => applyQuickFilterPreset('amenities')}
+                        className="text-xs"
+                      >
+                        Amenities Focus
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => applyQuickFilterPreset('type')}
+                        className="text-xs"
+                      >
+                        Type Focus
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => applyQuickFilterPreset('architecture')}
+                        className="text-xs"
+                      >
+                        Architecture Focus
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => applyQuickFilterPreset('exact')}
+                        className="text-xs col-span-2"
+                      >
+                        Exact Match (All 80%+)
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Saved Filter Presets */}
+                  {savedFilterPresets.length > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-semibold">Saved Filter Presets</Label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowFilterPresets(true)}
+                          className="text-xs h-6"
+                        >
+                          Manage
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {savedFilterPresets.slice(0, 4).map((preset, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleApplyFilterPreset(preset)}
+                            className="text-xs truncate"
+                          >
+                            {preset.name}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Save Current Filter Configuration */}
+                  {Object.values(featureFilters).some(v => v > 0) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowSaveFilterPresetDialog(true)}
+                      className="w-full gap-2"
+                    >
+                      <Save className="h-4 w-4" />
+                      Save Current Filter Settings
+                    </Button>
+                  )}
 
                   {/* Feature Filters Toggle */}
                   {!showFeatureFilters && (
@@ -3303,6 +3476,157 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               Cancel
             </Button>
             <Button onClick={handleSaveWeightPreset}>
+              <Save className="h-4 w-4 mr-2" />
+              Save Preset
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Filter Presets Dialog */}
+      <Dialog open={showFilterPresets} onOpenChange={setShowFilterPresets}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <SlidersHorizontal className="h-5 w-5" />
+              Saved Filter Presets
+            </DialogTitle>
+            <DialogDescription>
+              Quickly apply your saved feature filter configurations
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            {savedFilterPresets.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <SlidersHorizontal className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                <p>No saved filter presets yet</p>
+                <p className="text-sm">Set your feature filters and save them as a preset for quick access</p>
+              </div>
+            ) : (
+              savedFilterPresets.map((preset, index) => (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold mb-2">{preset.name}</h3>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Property Type:</span>
+                          <span className="font-medium">{preset.filters.propertyType}%+</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Style:</span>
+                          <span className="font-medium">{preset.filters.style}%+</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Architecture:</span>
+                          <span className="font-medium">{preset.filters.architecture}%+</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Bedrooms:</span>
+                          <span className="font-medium">{preset.filters.bedrooms}%+</span>
+                        </div>
+                        <div className="flex justify-between col-span-2">
+                          <span className="text-muted-foreground">Amenities:</span>
+                          <span className="font-medium">{preset.filters.amenities}%+</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => handleApplyFilterPreset(preset)}
+                      >
+                        Apply
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteFilterPreset(index)}
+                        className="hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowFilterPresets(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Save Filter Preset Dialog */}
+      <Dialog open={showSaveFilterPresetDialog} onOpenChange={setShowSaveFilterPresetDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Save className="h-5 w-5" />
+              Save Filter Preset
+            </DialogTitle>
+            <DialogDescription>
+              Save your current feature filter settings for quick access later
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="filter-preset-name">Preset Name</Label>
+              <Input
+                id="filter-preset-name"
+                placeholder="e.g., Style Focus, Exact Match, Amenities Only..."
+                value={filterPresetName}
+                onChange={(e) => setFilterPresetName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSaveFilterPreset();
+                  }
+                }}
+              />
+            </div>
+            <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+              <p className="text-xs font-medium">Current Filter Thresholds:</p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Property Type:</span>
+                  <span className="font-medium">{featureFilters.propertyType > 0 ? `${featureFilters.propertyType}%+` : 'Any'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Style:</span>
+                  <span className="font-medium">{featureFilters.style > 0 ? `${featureFilters.style}%+` : 'Any'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Architecture:</span>
+                  <span className="font-medium">{featureFilters.architecture > 0 ? `${featureFilters.architecture}%+` : 'Any'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Bedrooms:</span>
+                  <span className="font-medium">{featureFilters.bedrooms > 0 ? `${featureFilters.bedrooms}%+` : 'Any'}</span>
+                </div>
+                <div className="flex justify-between col-span-2">
+                  <span className="text-muted-foreground">Amenities:</span>
+                  <span className="font-medium">{featureFilters.amenities > 0 ? `${featureFilters.amenities}%+` : 'Any'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowSaveFilterPresetDialog(false);
+              setFilterPresetName('');
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveFilterPreset}>
               <Save className="h-4 w-4 mr-2" />
               Save Preset
             </Button>
