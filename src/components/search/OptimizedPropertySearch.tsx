@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -38,6 +38,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [recognitionConfidence, setRecognitionConfidence] = useState<number | null>(null);
   const [showRetryOption, setShowRetryOption] = useState(false);
   const [lastTranscript, setLastTranscript] = useState('');
+  const [voiceCommandHistory, setVoiceCommandHistory] = useState<Array<{ command: string; timestamp: Date; filters: any }>>([]);
+  const [showVoiceHistory, setShowVoiceHistory] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
@@ -77,6 +79,17 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     const savedLanguage = localStorage.getItem('voiceSearchLanguage');
     if (savedLanguage) {
       setVoiceLanguage(savedLanguage);
+    }
+
+    const voiceHistory = localStorage.getItem('voiceCommandHistory');
+    if (voiceHistory) {
+      const parsed = JSON.parse(voiceHistory);
+      // Convert timestamp strings back to Date objects
+      const historyWithDates = parsed.map((item: any) => ({
+        ...item,
+        timestamp: new Date(item.timestamp)
+      }));
+      setVoiceCommandHistory(historyWithDates);
     }
   }, []);
 
@@ -155,6 +168,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             setInterimTranscript('');
             setShowRetryOption(false);
             setRecognitionConfidence(null);
+
+            // Add to voice command history
+            addToVoiceHistory(final, parsedFilters);
             
             const filterDescriptions = [];
             if (parsedFilters.propertyType) filterDescriptions.push(`Type: ${parsedFilters.propertyType}`);
@@ -297,6 +313,55 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setRecognitionConfidence(null);
     setLastTranscript('');
     handleVoiceSearch();
+  };
+
+  const addToVoiceHistory = (command: string, filters: any) => {
+    const newEntry = {
+      command,
+      timestamp: new Date(),
+      filters
+    };
+
+    const updated = [newEntry, ...voiceCommandHistory].slice(0, 10); // Keep last 10 commands
+    setVoiceCommandHistory(updated);
+    localStorage.setItem('voiceCommandHistory', JSON.stringify(updated));
+  };
+
+  const replayVoiceCommand = (historyItem: { command: string; filters: any }) => {
+    updateFilters(historyItem.filters);
+    setShowVoiceHistory(false);
+    
+    const filterDescriptions = [];
+    if (historyItem.filters.propertyType) filterDescriptions.push(`Type: ${historyItem.filters.propertyType}`);
+    if (historyItem.filters.minBedrooms) filterDescriptions.push(`${historyItem.filters.minBedrooms}+ bedrooms`);
+    if (historyItem.filters.minBathrooms) filterDescriptions.push(`${historyItem.filters.minBathrooms}+ bathrooms`);
+    if (historyItem.filters.maxPrice) filterDescriptions.push(`Under $${historyItem.filters.maxPrice.toLocaleString()}`);
+    if (historyItem.filters.minPrice) filterDescriptions.push(`Over $${historyItem.filters.minPrice.toLocaleString()}`);
+    if (historyItem.filters.amenities) filterDescriptions.push(`Amenities: ${historyItem.filters.amenities.join(', ')}`);
+    
+    toast({
+      title: "Voice Command Replayed",
+      description: filterDescriptions.join(' • ')
+    });
+  };
+
+  const clearVoiceHistory = () => {
+    setVoiceCommandHistory([]);
+    localStorage.removeItem('voiceCommandHistory');
+    setShowVoiceHistory(false);
+    toast({
+      title: "Voice History Cleared",
+      description: "All voice command history has been removed"
+    });
+  };
+
+  const formatTimeAgo = (date: Date) => {
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
   };
 
   const handleAcceptLowConfidence = () => {
@@ -969,6 +1034,28 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+
+            {/* Voice Command History Button */}
+            {voiceCommandHistory.length > 0 && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => setShowVoiceHistory(true)}
+                      className="absolute right-16 top-1/2 transform -translate-y-1/2"
+                    >
+                      <History className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Voice command history ({voiceCommandHistory.length})</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
             {searchInput && (
               <button
                 onClick={handleClearSearch}
@@ -1430,6 +1517,90 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           </Card>
         )}
       </div>
+
+      {/* Voice Command History Dialog */}
+      <Dialog open={showVoiceHistory} onOpenChange={setShowVoiceHistory}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              Voice Command History
+            </DialogTitle>
+            <DialogDescription>
+              Replay previous voice commands to quickly reuse successful searches.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            {voiceCommandHistory.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Mic className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                <p>No voice commands yet</p>
+                <p className="text-sm">Use voice search to start building your history</p>
+              </div>
+            ) : (
+              voiceCommandHistory.map((item, index) => {
+                const filterDescriptions = [];
+                if (item.filters.propertyType) filterDescriptions.push(`${item.filters.propertyType}`);
+                if (item.filters.listingType) filterDescriptions.push(item.filters.listingType);
+                if (item.filters.minBedrooms) filterDescriptions.push(`${item.filters.minBedrooms}+ beds`);
+                if (item.filters.minBathrooms) filterDescriptions.push(`${item.filters.minBathrooms}+ baths`);
+                if (item.filters.maxPrice) filterDescriptions.push(`<$${(item.filters.maxPrice / 1000).toFixed(0)}k`);
+                if (item.filters.minPrice) filterDescriptions.push(`>$${(item.filters.minPrice / 1000).toFixed(0)}k`);
+                if (item.filters.amenities?.length) filterDescriptions.push(`${item.filters.amenities.length} amenities`);
+
+                return (
+                  <div
+                    key={index}
+                    className="p-3 border rounded-lg hover:bg-accent transition-colors group"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Mic className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                          <p className="font-medium text-sm truncate">{item.command}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-1 mb-1">
+                          {filterDescriptions.map((desc, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">
+                              {desc}
+                            </Badge>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {formatTimeAgo(item.timestamp)}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => replayVoiceCommand(item)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        Replay
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+          <DialogFooter className="flex items-center justify-between">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={clearVoiceHistory}
+              disabled={voiceCommandHistory.length === 0}
+              className="mr-auto"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Clear History
+            </Button>
+            <Button variant="outline" onClick={() => setShowVoiceHistory(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
