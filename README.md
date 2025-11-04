@@ -1,73 +1,148 @@
-# Welcome to your Lovable project
+# AI Chat Widget with Accessibility
 
-## Project info
+A responsive, animated AI chat widget with full accessibility support including `prefers-reduced-motion` compliance and developer debug tools.
 
-**URL**: https://lovable.dev/projects/587b095c-681f-4e0c-8a42-457ae72c28e9
+## Features
 
-## How can I edit this code?
+### 🎨 Smooth Animations
+- Scroll-based show/hide behavior
+- Entrance animations with slide, fade, scale, and rotation effects
+- Multi-layer pulsing glow effect
+- Hover and interaction states
+- Performance-optimized for mobile devices
 
-There are several ways of editing your application.
+### ♿ Accessibility First
+- **Reduced Motion Support**: Automatically detects and respects `prefers-reduced-motion` system setting
+- Disables decorative animations when reduced motion is enabled
+- Maintains functionality while simplifying visual effects
+- WCAG 2.1 compliant
 
-**Use Lovable**
+### 🛠️ Developer Tools
+- **Debug Panel** (Development Mode Only)
+  - Toggle reduced motion on/off without changing OS settings
+  - Visual status indicator showing current state
+  - Manual override with localStorage persistence
+  - One-click reset to system preferences
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/587b095c-681f-4e0c-8a42-457ae72c28e9) and start prompting.
+### 📱 Responsive Design
+- Optimized for both desktop and mobile devices
+- Touch-friendly target sizes
+- Adaptive positioning and sizing
+- Battery-efficient animations on mobile
 
-Changes made via Lovable will be committed automatically to this repo.
+## Quick Start
 
-**Use your preferred IDE**
+### Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```bash
+npm install
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Development
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Testing Reduced Motion
 
-**Use GitHub Codespaces**
+#### Option 1: Debug Panel (Recommended for Development)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Start the development server
+2. Look for the **Settings** button in the bottom-left corner
+3. Click to open the Animation Debug panel
+4. Toggle animations on/off instantly
+5. Reset to system settings when done
 
-## What technologies are used for this project?
+#### Option 2: System Settings
 
-This project is built with:
+**macOS:**
+```
+System Settings → Accessibility → Display → Reduce motion
+```
 
-- Vite
+**Windows:**
+```
+Settings → Accessibility → Visual effects → Animation effects
+```
+
+**Linux (GNOME):**
+```
+Settings → Accessibility → Seeing → Reduced animation
+```
+
+## Debug Panel Features
+
+The debug panel appears only in development mode and provides:
+
+- **Current Status Display**: Shows whether reduced motion is ON or OFF
+- **Manual Override**: Toggle animations without changing OS settings
+- **Override Indicator**: Visual warning when manual override is active
+- **Reset Button**: One-click return to system preferences
+- **Persistent Settings**: Override saved to localStorage across sessions
+
+### Using the Debug Panel
+
+1. Click the ⚙️ Settings icon in the bottom-left corner
+2. The panel shows current animation state
+3. Click "Enable Animations" or "Disable Animations" to toggle
+4. Click "Reset to System Setting" to clear manual override
+5. Close the panel with the X button (your settings persist)
+
+## Visual Indicators
+
+### Console Logs (Development)
+- `✨ Accessibility: Full animations enabled` - Normal animation mode
+- `🎯 Accessibility: Reduced motion mode is ACTIVE` - Simplified animations
+- `🔧 Dev Override: Reduced motion manually set to ON/OFF` - Manual toggle used
+
+### On-Screen Badge (Development)
+A "Reduced Motion" badge appears above the chat button when reduced motion is active, helping you verify the current state at a glance.
+
+## Project Structure
+
+```
+src/
+├── components/
+│   └── ai/
+│       ├── ResponsiveAIChatWidget.tsx  # Main chat widget
+│       └── DebugPanel.tsx              # Debug control panel
+├── hooks/
+│   └── usePrefersReducedMotion.ts     # Accessibility hook
+└── ...
+```
+
+## Documentation
+
+For detailed information about animations, performance optimizations, and accessibility features, see:
+
+📖 [Full Documentation](docs/CHAT_WIDGET_ANIMATIONS.md)
+
+## Technologies
+
+- React 18
 - TypeScript
-- React
-- shadcn-ui
 - Tailwind CSS
+- Framer Motion
+- Vite
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/587b095c-681f-4e0c-8a42-457ae72c28e9) and click on Share -> Publish.
+Click the **Publish** button in the top-right corner of the Lovable editor to deploy your app.
 
-## Can I connect a custom domain to my Lovable project?
+## Custom Domain
 
-Yes, you can!
+To connect a custom domain, navigate to: `Project > Settings > Domains`
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Browser Support
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Chrome/Edge (latest)
+- Firefox (latest)
+- Safari (latest)
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+## License
+
+Built with [Lovable](https://lovable.dev)
