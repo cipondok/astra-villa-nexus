@@ -119,7 +119,7 @@ const DebugPanel = ({
       {/* Debug panel */}
       {isOpen && (
         <div className={cn(
-          "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 transition-shadow duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.3)]",
+          "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 transition-all duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.3)] hover:border-gray-600",
           isClosing ? "animate-exit" : "animate-enter"
         )}>
           <div className="flex items-center justify-between mb-3">
