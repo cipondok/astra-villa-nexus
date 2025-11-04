@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
+import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
 import {
   Shield,
   Mail,
@@ -219,11 +220,18 @@ const MFASettings = () => {
   };
 
   const disableMFA = async () => {
+    if (!user?.id || !validateUUIDWithLogging(user.id, 'MFASettings.disableMFA', {
+      operation: 'disable_mfa'
+    })) {
+      console.error('Invalid user ID for disabling MFA');
+      return;
+    }
+
     try {
       await supabase.from('mfa_settings' as any).update({
         is_enabled: false,
         updated_at: new Date().toISOString(),
-      }).eq('user_id', user?.id);
+      }).eq('user_id', user.id);
 
       toast({
         title: "MFA Disabled",

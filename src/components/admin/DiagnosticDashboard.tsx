@@ -29,6 +29,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDynamicDiagnostics } from '@/hooks/useDynamicDiagnostics';
+import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
 
 interface SystemHealth {
   database: 'healthy' | 'warning' | 'critical';
@@ -77,11 +78,19 @@ const DiagnosticDashboard = () => {
     queryFn: async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user?.id || '')
-          .eq('is_active', true);
+        
+        // Only query user_roles if we have a valid user ID
+        let userRoles = null;
+        if (user?.id && validateUUIDWithLogging(user.id, 'DiagnosticDashboard.authHealth', {
+          operation: 'fetch_user_roles'
+        })) {
+          const { data } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .eq('is_active', true);
+          userRoles = data;
+        }
         
         return { 
           status: session ? 'healthy' : 'warning', 

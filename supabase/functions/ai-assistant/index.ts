@@ -233,7 +233,7 @@ async function getUserContext(supabase: any, userId: string) {
 }
 
 async function getConversationHistory(supabase: any, conversationId: string, userId: string) {
-  if (!conversationId) return [];
+  if (!conversationId || !userId) return [];
 
   const { data } = await supabase
     .from('ai_conversations')
@@ -247,6 +247,12 @@ async function getConversationHistory(supabase: any, conversationId: string, use
 }
 
 async function saveConversation(supabase: any, conversationId: string, userId: string, userMessage: string, aiMessage: string) {
+  // Skip saving if userId is not valid (guest users)
+  if (!userId) {
+    console.log("Cannot save conversation: userId is null (guest user)");
+    return conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
   const newConversationId = conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
   if (!aiMessage?.trim()) {

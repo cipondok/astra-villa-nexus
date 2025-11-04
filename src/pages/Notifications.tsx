@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
+import { validateUUIDWithLogging } from "@/utils/uuid-validation-logger";
 
 interface Notification {
   id: string;
@@ -63,10 +64,17 @@ const Notifications = () => {
   };
 
   const markAllAsRead = async () => {
+    if (!user?.id || !validateUUIDWithLogging(user.id, 'Notifications.markAllAsRead', {
+      operation: 'mark_all_read'
+    })) {
+      console.error('Invalid user ID for marking notifications as read');
+      return;
+    }
+
     const { error } = await supabase
       .from('user_notifications')
       .update({ is_read: true })
-      .eq('user_id', user?.id)
+      .eq('user_id', user.id)
       .eq('is_read', false);
     
     if (!error) {
