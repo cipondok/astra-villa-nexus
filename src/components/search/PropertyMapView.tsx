@@ -60,6 +60,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const [selectedSavedArea, setSelectedSavedArea] = useState<string>('');
   const [showHeatmap, setShowHeatmap] = useState<boolean>(false);
   const [heatmapMode, setHeatmapMode] = useState<'density' | 'price'>('density');
+  const [heatmapFilter, setHeatmapFilter] = useState<{ min: number; max: number; zone: string } | null>(null);
   const { toast } = useToast();
 
   // Load saved areas from localStorage on mount
@@ -373,6 +374,76 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       }
     });
 
+    // Handle heatmap clicks for price filtering
+    map.current.on('click', 'heatmap-layer', (e) => {
+      if (!showHeatmap || heatmapMode !== 'price') return;
+
+      // Get all properties at this location
+      const features = map.current?.queryRenderedFeatures(e.point, {
+        layers: ['heatmap-layer'],
+      });
+
+      if (!features || features.length === 0) return;
+
+      // Calculate price ranges based on all properties
+      const allPrices = properties.map(p => p.price).sort((a, b) => a - b);
+      const minPrice = Math.min(...allPrices);
+      const maxPrice = Math.max(...allPrices);
+      const priceRange = maxPrice - minPrice;
+
+      // Divide into 5 zones based on the heatmap color ramp
+      const zones = [
+        { min: minPrice, max: minPrice + priceRange * 0.2, name: 'Very Low', color: 'rgb(103,169,207)' },
+        { min: minPrice + priceRange * 0.2, max: minPrice + priceRange * 0.4, name: 'Low', color: 'rgb(209,229,240)' },
+        { min: minPrice + priceRange * 0.4, max: minPrice + priceRange * 0.6, name: 'Medium', color: 'rgb(253,219,199)' },
+        { min: minPrice + priceRange * 0.6, max: minPrice + priceRange * 0.8, name: 'High', color: 'rgb(239,138,98)' },
+        { min: minPrice + priceRange * 0.8, max: maxPrice, name: 'Very High', color: 'rgb(178,24,43)' },
+      ];
+
+      // Find properties near the click point
+      const nearbyProperties = properties.filter(property => {
+        const coords = getCoordinatesForProperty(property);
+        if (!coords) return false;
+
+        // Calculate distance from click point
+        const dx = coords[0] - e.lngLat.lng;
+        const dy = coords[1] - e.lngLat.lat;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Within ~500m (rough approximation)
+        return distance < 0.005;
+      });
+
+      if (nearbyProperties.length === 0) return;
+
+      // Calculate average price of nearby properties
+      const avgPrice = nearbyProperties.reduce((sum, p) => sum + p.price, 0) / nearbyProperties.length;
+
+      // Find which zone this average price falls into
+      const zone = zones.find(z => avgPrice >= z.min && avgPrice <= z.max) || zones[2];
+
+      // Apply filter
+      setHeatmapFilter({
+        min: zone.min,
+        max: zone.max,
+        zone: zone.name,
+      });
+
+      // Filter and update properties
+      const filtered = properties.filter(p => p.price >= zone.min && p.price <= zone.max);
+      
+      if (onFilterByArea) {
+        onFilterByArea(filtered);
+      }
+
+      setFilteredCount(filtered.length);
+
+      toast({
+        title: `${zone.name} Price Zone`,
+        description: `Showing ${filtered.length} properties between ${formatIDR(zone.min)} - ${formatIDR(zone.max)}`,
+      });
+    });
+
     // Change cursor on hover
     map.current.on('mouseenter', 'clusters', () => {
       if (map.current) map.current.getCanvas().style.cursor = 'pointer';
@@ -384,6 +455,14 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       if (map.current) map.current.getCanvas().style.cursor = 'pointer';
     });
     map.current.on('mouseleave', 'unclustered-point', () => {
+      if (map.current) map.current.getCanvas().style.cursor = '';
+    });
+    map.current.on('mouseenter', 'heatmap-layer', () => {
+      if (map.current && showHeatmap && heatmapMode === 'price') {
+        map.current.getCanvas().style.cursor = 'pointer';
+      }
+    });
+    map.current.on('mouseleave', 'heatmap-layer', () => {
       if (map.current) map.current.getCanvas().style.cursor = '';
     });
 
@@ -743,6 +822,25 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     handleDrawDelete();
   };
 
+  // Clear heatmap filter
+  const clearHeatmapFilter = () => {
+    setHeatmapFilter(null);
+    setFilteredCount(null);
+    
+    if (onFilterByArea) {
+      onFilterByArea(properties);
+    }
+
+    // Reset marker visibility if using individual markers
+    if (!useClustering) {
+      markers.current.forEach(marker => {
+        const element = marker.getElement();
+        element.style.opacity = '1';
+        element.style.pointerEvents = 'auto';
+      });
+    }
+  };
+
   // Token input UI
   if (!mapboxToken && !showTokenInput) {
     return (
@@ -1019,6 +1117,11 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
                 {heatmapMode === 'density' ? 'Property Density' : 'Price Distribution'}
               </span>
             </div>
+            {heatmapMode === 'price' && (
+              <p className="text-[10px] text-muted-foreground">
+                Click on heat zones to filter by price
+              </p>
+            )}
             <div className="flex items-center gap-2">
               <div className="flex h-4 rounded overflow-hidden" style={{ width: '120px' }}>
                 <div style={{ flex: 1, background: 'rgb(103,169,207)' }} />
@@ -1034,6 +1137,18 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
             </div>
           </div>
         </Card>
+      )}
+
+      {/* Active Heatmap Filter Badge */}
+      {heatmapFilter && (
+        <Badge 
+          className="absolute top-20 right-4 z-10 py-2 px-4 text-sm cursor-pointer hover:opacity-80"
+          onClick={clearHeatmapFilter}
+        >
+          <Flame className="h-3 w-3 mr-2" />
+          {heatmapFilter.zone}: {formatIDR(heatmapFilter.min)} - {formatIDR(heatmapFilter.max)}
+          <X className="h-3 w-3 ml-2" />
+        </Badge>
       )}
 
       {/* Property detail card */}
