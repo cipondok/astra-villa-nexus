@@ -200,7 +200,7 @@ const config: Config = {
         "ai-particle-float": "ai-particle-float 3s ease-in-out infinite",
         "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
         "typing-dot": "typing-dot 1.4s ease-in-out infinite",
-        "subtle-pulse": "subtle-pulse 3s ease-in-out infinite",
+        "subtle-pulse": "subtle-pulse 4s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
