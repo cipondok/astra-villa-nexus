@@ -179,7 +179,7 @@ const DebugPanel = ({
                   const event = new KeyboardEvent('keydown', { key: '?' });
                   window.dispatchEvent(event);
                 }}
-                className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+                className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors hover-scale"
               >
                 <Keyboard className="h-3 w-3" />
                 <span>View all shortcuts</span>
