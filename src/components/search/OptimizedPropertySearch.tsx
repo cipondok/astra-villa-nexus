@@ -33,6 +33,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [interimTranscript, setInterimTranscript] = useState('');
   const [recognition, setRecognition] = useState<any>(null);
   const { toast } = useToast();
   
@@ -69,24 +70,43 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       const recognitionInstance = new SpeechRecognition();
       recognitionInstance.continuous = false;
-      recognitionInstance.interimResults = false;
+      recognitionInstance.interimResults = true;
       recognitionInstance.lang = 'en-US';
 
       recognitionInstance.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setSearchInput(transcript);
-        updateFilters({ searchText: transcript });
-        addToRecentSearches(transcript);
-        setIsListening(false);
+        let interim = '';
+        let final = '';
         
-        toast({
-          title: "Voice Search",
-          description: `Searching for: "${transcript}"`
-        });
+        for (let i = 0; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            final += transcript;
+          } else {
+            interim += transcript;
+          }
+        }
+        
+        if (interim) {
+          setInterimTranscript(interim);
+        }
+        
+        if (final) {
+          setSearchInput(final);
+          updateFilters({ searchText: final });
+          addToRecentSearches(final);
+          setIsListening(false);
+          setInterimTranscript('');
+          
+          toast({
+            title: "Voice Search",
+            description: `Searching for: "${final}"`
+          });
+        }
       };
 
       recognitionInstance.onerror = (event: any) => {
         setIsListening(false);
+        setInterimTranscript('');
         toast({
           title: "Voice Search Error",
           description: event.error === 'no-speech' ? 'No speech detected' : 'Please try again',
@@ -96,6 +116,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
       recognitionInstance.onend = () => {
         setIsListening(false);
+        setInterimTranscript('');
       };
 
       setRecognition(recognitionInstance);
@@ -172,8 +193,10 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     if (isListening) {
       recognition.stop();
       setIsListening(false);
+      setInterimTranscript('');
     } else {
       setIsListening(true);
+      setInterimTranscript('');
       recognition.start();
     }
   }, [recognition, isListening, toast]);
@@ -476,6 +499,33 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
   return (
     <div className="space-y-6">
+      {/* Live Transcription Banner */}
+      {isListening && (
+        <div className="fixed top-0 left-0 right-0 z-50 animate-in slide-in-from-top duration-300">
+          <div className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 bg-white rounded-full animate-pulse" />
+                  <span className="text-sm font-semibold">Listening...</span>
+                </div>
+                <div className="flex-1 text-base font-medium">
+                  {interimTranscript || "Start speaking..."}
+                </div>
+                <Button
+                  onClick={handleVoiceSearch}
+                  size="sm"
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                >
+                  Stop (Ctrl+M)
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Search Header */}
       <Card>
         <CardHeader>
