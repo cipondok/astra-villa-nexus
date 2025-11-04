@@ -10,8 +10,26 @@ import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, Layers } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, Layers, Save, BookmarkPlus } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
+import { useToast } from '@/hooks/use-toast';
+
+interface SavedArea {
+  id: string;
+  name: string;
+  type: 'polygon' | 'circle';
+  feature: any;
+  radius?: number;
+  createdAt: string;
+}
 
 interface PropertyMapViewProps {
   properties: BaseProperty[];
@@ -31,8 +49,25 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const [drawMode, setDrawMode] = useState<'none' | 'polygon' | 'circle'>('none');
   const [filteredCount, setFilteredCount] = useState<number | null>(null);
   const [drawnArea, setDrawnArea] = useState<any>(null);
-  const [circleRadius, setCircleRadius] = useState<number>(2000); // Default 2km in meters
+  const [circleRadius, setCircleRadius] = useState<number>(2000);
   const [useClustering, setUseClustering] = useState<boolean>(true);
+  const [savedAreas, setSavedAreas] = useState<SavedArea[]>([]);
+  const [areaName, setAreaName] = useState<string>('');
+  const [showSaveDialog, setShowSaveDialog] = useState<boolean>(false);
+  const [selectedSavedArea, setSelectedSavedArea] = useState<string>('');
+  const { toast } = useToast();
+
+  // Load saved areas from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('savedSearchAreas');
+    if (saved) {
+      try {
+        setSavedAreas(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load saved areas:', e);
+      }
+    }
+  }, []);
 
   // Initialize map
   useEffect(() => {
@@ -549,6 +584,106 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     return `${meters} m`;
   };
 
+  // Save current drawn area
+  const saveCurrentArea = () => {
+    if (!drawnArea || !areaName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please draw an area and enter a name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (drawMode === 'none') {
+      toast({
+        title: "Error",
+        description: "Please select a draw mode first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newArea: SavedArea = {
+      id: Date.now().toString(),
+      name: areaName.trim(),
+      type: drawMode,
+      feature: drawnArea,
+      radius: drawMode === 'circle' ? circleRadius : undefined,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedAreas = [...savedAreas, newArea];
+    setSavedAreas(updatedAreas);
+    localStorage.setItem('savedSearchAreas', JSON.stringify(updatedAreas));
+    
+    setAreaName('');
+    setShowSaveDialog(false);
+    
+    toast({
+      title: "Area Saved",
+      description: `"${newArea.name}" has been saved to your favorites`,
+    });
+  };
+
+  // Load a saved area
+  const loadSavedArea = (areaId: string) => {
+    const area = savedAreas.find(a => a.id === areaId);
+    if (!area || !draw.current) return;
+
+    // Clear existing drawings
+    draw.current.deleteAll();
+    
+    // Add the saved area
+    draw.current.add(area.feature);
+    setDrawnArea(area.feature);
+    setDrawMode(area.type);
+    
+    if (area.radius) {
+      setCircleRadius(area.radius);
+    }
+
+    // Trigger filtering
+    handleDrawCreate({ features: [area.feature] });
+
+    // Fit map to the loaded area
+    if (map.current && area.feature.geometry) {
+      const coordinates = area.feature.geometry.coordinates[0];
+      const bounds = new mapboxgl.LngLatBounds();
+      
+      coordinates.forEach((coord: [number, number]) => {
+        bounds.extend(coord);
+      });
+      
+      map.current.fitBounds(bounds, {
+        padding: 100,
+        duration: 1000,
+      });
+    }
+
+    toast({
+      title: "Area Loaded",
+      description: `"${area.name}" has been loaded`,
+    });
+  };
+
+  // Delete a saved area
+  const deleteSavedArea = (areaId: string) => {
+    const area = savedAreas.find(a => a.id === areaId);
+    const updatedAreas = savedAreas.filter(a => a.id !== areaId);
+    setSavedAreas(updatedAreas);
+    localStorage.setItem('savedSearchAreas', JSON.stringify(updatedAreas));
+    
+    if (selectedSavedArea === areaId) {
+      setSelectedSavedArea('');
+    }
+
+    toast({
+      title: "Area Deleted",
+      description: area ? `"${area.name}" has been removed` : "Area removed",
+    });
+  };
+
   // Clear drawn area
   const clearDrawnArea = () => {
     if (!draw.current) return;
@@ -621,7 +756,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       <div ref={mapContainer} className="absolute inset-0" />
 
       {/* Drawing Tools */}
-      <Card className="absolute top-4 left-4 p-3 shadow-lg z-10 w-64">
+      <Card className="absolute top-4 left-4 p-3 shadow-lg z-10 w-72">
         <div className="flex flex-col gap-3">
           <div className="text-xs font-semibold text-muted-foreground">
             Map Controls
@@ -638,6 +773,43 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
               onCheckedChange={setUseClustering}
             />
           </div>
+
+          {/* Saved Areas */}
+          {savedAreas.length > 0 && (
+            <div className="space-y-2 pb-2 border-b">
+              <Label className="text-xs">Saved Search Areas</Label>
+              <div className="flex gap-1">
+                <Select value={selectedSavedArea} onValueChange={(value) => {
+                  setSelectedSavedArea(value);
+                  loadSavedArea(value);
+                }}>
+                  <SelectTrigger className="h-8 text-xs flex-1">
+                    <SelectValue placeholder="Load saved area..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {savedAreas.map((area) => (
+                      <SelectItem key={area.id} value={area.id}>
+                        <div className="flex items-center gap-2">
+                          {area.type === 'circle' ? <Circle className="h-3 w-3" /> : <Pentagon className="h-3 w-3" />}
+                          <span>{area.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedSavedArea && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => deleteSavedArea(selectedSavedArea)}
+                    className="h-8 px-2"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="text-xs font-semibold text-muted-foreground">
             Draw Search Area
@@ -686,15 +858,65 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
           )}
 
           {drawnArea && (
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={clearDrawnArea}
-              className="w-full justify-start"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Clear Area
-            </Button>
+            <>
+              {!showSaveDialog ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowSaveDialog(true)}
+                  className="w-full justify-start"
+                >
+                  <BookmarkPlus className="h-4 w-4 mr-2" />
+                  Save This Area
+                </Button>
+              ) : (
+                <div className="space-y-2 pt-2 border-t">
+                  <Label className="text-xs">Save Search Area</Label>
+                  <Input
+                    placeholder="Enter area name..."
+                    value={areaName}
+                    onChange={(e) => setAreaName(e.target.value)}
+                    className="h-8 text-xs"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        saveCurrentArea();
+                      }
+                    }}
+                  />
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      onClick={saveCurrentArea}
+                      className="flex-1 h-7"
+                    >
+                      <Save className="h-3 w-3 mr-1" />
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setShowSaveDialog(false);
+                        setAreaName('');
+                      }}
+                      className="h-7"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={clearDrawnArea}
+                className="w-full justify-start"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Clear Area
+              </Button>
+            </>
           )}
         </div>
       </Card>
