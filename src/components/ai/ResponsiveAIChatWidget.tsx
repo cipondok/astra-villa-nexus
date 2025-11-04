@@ -35,6 +35,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const { isMobile } = useIsMobile();
   const { scrollDirection, scrollY, isAtTop } = useScrollDirection();
   const [showWidget, setShowWidget] = useState(true);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,17 +45,33 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     scrollToBottom();
   }, [messages]);
 
-  // Handle scroll direction for auto-hide/show (10px threshold for ultra-fast response)
+  // Handle scroll direction for auto-hide/show (10px threshold with 300ms delay to prevent flicker)
   useEffect(() => {
+    // Clear any pending hide timeout
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+
     if (isOpen) {
       setShowWidget(true); // Always show when chat is open
     } else {
       if (scrollDirection === 'down' && scrollY > 10) {
-        setShowWidget(false); // Hide on scroll down
+        // Delay hiding by 300ms to prevent flicker on quick scrolls
+        hideTimeoutRef.current = setTimeout(() => {
+          setShowWidget(false);
+        }, 300);
       } else if (scrollDirection === 'up' || isAtTop) {
-        setShowWidget(true); // Show on scroll up or at top
+        setShowWidget(true); // Show immediately on scroll up or at top
       }
     }
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
   }, [scrollDirection, scrollY, isAtTop, isOpen]);
 
   useEffect(() => {
