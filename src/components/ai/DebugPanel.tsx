@@ -116,9 +116,11 @@ const DebugPanel = ({
               onClick={handleClose}
               variant="ghost"
               size="icon"
-              className="h-6 w-6 text-gray-400 hover:text-white"
+              className="h-6 w-6 text-gray-400 hover:text-white group"
             >
-              <X className="h-4 w-4" />
+              <span className="transition-transform duration-300 group-hover:rotate-90 inline-block">
+                <X className="h-4 w-4" />
+              </span>
             </Button>
           </div>
 
