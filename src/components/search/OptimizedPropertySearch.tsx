@@ -35,6 +35,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [isListening, setIsListening] = useState(false);
   const [interimTranscript, setInterimTranscript] = useState('');
   const [voiceLanguage, setVoiceLanguage] = useState('en-US');
+  const [recognitionConfidence, setRecognitionConfidence] = useState<number | null>(null);
+  const [showRetryOption, setShowRetryOption] = useState(false);
+  const [lastTranscript, setLastTranscript] = useState('');
   const [recognition, setRecognition] = useState<any>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
@@ -105,11 +108,15 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       recognitionInstance.onresult = (event: any) => {
         let interim = '';
         let final = '';
+        let confidence = 0;
         
         for (let i = 0; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
+          const resultConfidence = event.results[i][0].confidence;
+          
           if (event.results[i].isFinal) {
             final += transcript;
+            confidence = resultConfidence;
           } else {
             interim += transcript;
           }
@@ -120,6 +127,23 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
         }
         
         if (final) {
+          setRecognitionConfidence(confidence);
+          setLastTranscript(final);
+          
+          // Low confidence threshold (below 70%)
+          if (confidence < 0.7) {
+            setShowRetryOption(true);
+            setIsListening(false);
+            setInterimTranscript('');
+            
+            toast({
+              title: "Low Confidence",
+              description: `Understood: "${final}" (${Math.round(confidence * 100)}% confident). Would you like to retry?`,
+              variant: "destructive"
+            });
+            return;
+          }
+          
           // Parse voice command for filters
           const parsedFilters = parseVoiceCommand(final);
           
@@ -129,6 +153,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             setSearchInput('');
             setIsListening(false);
             setInterimTranscript('');
+            setShowRetryOption(false);
+            setRecognitionConfidence(null);
             
             const filterDescriptions = [];
             if (parsedFilters.propertyType) filterDescriptions.push(`Type: ${parsedFilters.propertyType}`);
@@ -140,7 +166,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             
             toast({
               title: "Filters Applied",
-              description: filterDescriptions.join(' • ') || "Filters set successfully"
+              description: `${filterDescriptions.join(' • ')} (${Math.round(confidence * 100)}% confidence)`
             });
           } else {
             // Regular search text
@@ -149,10 +175,12 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             addToRecentSearches(final);
             setIsListening(false);
             setInterimTranscript('');
+            setShowRetryOption(false);
+            setRecognitionConfidence(null);
             
             toast({
               title: "Voice Search",
-              description: `Searching for: "${final}"`
+              description: `Searching for: "${final}" (${Math.round(confidence * 100)}% confidence)`
             });
           }
         }
@@ -170,7 +198,10 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
       recognitionInstance.onend = () => {
         setIsListening(false);
-        setInterimTranscript('');
+        if (!showRetryOption) {
+          setInterimTranscript('');
+          setRecognitionConfidence(null);
+        }
       };
 
       setRecognition(recognitionInstance);
@@ -248,14 +279,62 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       recognition.stop();
       setIsListening(false);
       setInterimTranscript('');
+      setShowRetryOption(false);
+      setRecognitionConfidence(null);
       stopSound.play().catch(err => console.error('Error playing stop sound:', err));
     } else {
       setIsListening(true);
       setInterimTranscript('');
+      setShowRetryOption(false);
+      setRecognitionConfidence(null);
       recognition.start();
       startSound.play().catch(err => console.error('Error playing start sound:', err));
     }
   }, [recognition, isListening, toast, startSound, stopSound]);
+
+  const handleRetry = () => {
+    setShowRetryOption(false);
+    setRecognitionConfidence(null);
+    setLastTranscript('');
+    handleVoiceSearch();
+  };
+
+  const handleAcceptLowConfidence = () => {
+    if (lastTranscript) {
+      const parsedFilters = parseVoiceCommand(lastTranscript);
+      
+      if (Object.keys(parsedFilters).length > 0) {
+        updateFilters(parsedFilters);
+        setSearchInput('');
+        
+        const filterDescriptions = [];
+        if (parsedFilters.propertyType) filterDescriptions.push(`Type: ${parsedFilters.propertyType}`);
+        if (parsedFilters.minBedrooms) filterDescriptions.push(`${parsedFilters.minBedrooms}+ bedrooms`);
+        if (parsedFilters.minBathrooms) filterDescriptions.push(`${parsedFilters.minBathrooms}+ bathrooms`);
+        if (parsedFilters.maxPrice) filterDescriptions.push(`Under $${parsedFilters.maxPrice.toLocaleString()}`);
+        if (parsedFilters.minPrice) filterDescriptions.push(`Over $${parsedFilters.minPrice.toLocaleString()}`);
+        if (parsedFilters.amenities) filterDescriptions.push(`Amenities: ${parsedFilters.amenities.join(', ')}`);
+        
+        toast({
+          title: "Filters Applied",
+          description: filterDescriptions.join(' • ')
+        });
+      } else {
+        setSearchInput(lastTranscript);
+        updateFilters({ searchText: lastTranscript });
+        addToRecentSearches(lastTranscript);
+        
+        toast({
+          title: "Voice Search",
+          description: `Searching for: "${lastTranscript}"`
+        });
+      }
+    }
+    
+    setShowRetryOption(false);
+    setRecognitionConfidence(null);
+    setLastTranscript('');
+  };
 
   const handleLanguageChange = (newLanguage: string) => {
     setVoiceLanguage(newLanguage);
@@ -711,6 +790,59 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 >
                   Stop (Ctrl+M)
                 </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Low Confidence Retry Banner */}
+      {showRetryOption && recognitionConfidence !== null && (
+        <div className="fixed top-0 left-0 right-0 z-50 animate-in slide-in-from-top duration-300">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold">Low Confidence Detected</span>
+                    <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                      {Math.round(recognitionConfidence * 100)}% confident
+                    </Badge>
+                  </div>
+                  <p className="text-sm">
+                    Understood: "{lastTranscript}"
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleRetry}
+                    size="sm"
+                    variant="secondary"
+                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                  >
+                    Retry
+                  </Button>
+                  <Button
+                    onClick={handleAcceptLowConfidence}
+                    size="sm"
+                    variant="secondary"
+                    className="bg-white text-orange-600 hover:bg-white/90"
+                  >
+                    Accept Anyway
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowRetryOption(false);
+                      setRecognitionConfidence(null);
+                      setLastTranscript('');
+                    }}
+                    size="sm"
+                    variant="ghost"
+                    className="text-white hover:bg-white/20"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
