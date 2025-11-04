@@ -178,13 +178,26 @@ const DebugPanel = ({
                       transform: scale(1.15);
                     }
                   }
+                  @keyframes iconSpin {
+                    0% {
+                      transform: rotate(0deg);
+                    }
+                    100% {
+                      transform: rotate(360deg);
+                    }
+                  }
                   .animate-toggle-scale {
                     animation: toggleScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
                   }
+                  .animate-icon-spin {
+                    animation: iconSpin 0.5s ease-out !important;
+                  }
                 `}</style>
                 <span className={cn(
-                  "transition-transform duration-300 group-hover:rotate-90 inline-block animate-bounce",
-                  isOverridden && "pulse"
+                  "transition-transform duration-300 inline-block animate-bounce",
+                  "group-hover:rotate-90",
+                  isOverridden && "pulse",
+                  shouldAnimate && "animate-icon-spin"
                 )} style={{ animationIterationCount: '3', animationDuration: '1s' }}>
                   <Settings className="h-4 w-4 text-white" />
                 </span>
