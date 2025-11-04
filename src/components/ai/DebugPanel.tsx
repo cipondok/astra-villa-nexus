@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Settings, X } from 'lucide-react';
+import { Settings, X, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 
 interface DebugPanelProps {
   prefersReducedMotion: boolean;
@@ -52,6 +53,8 @@ const DebugPanel = ({
 
   return (
     <>
+      <KeyboardShortcutsModal />
+      
       {/* Toggle button */}
       {!isOpen && (
         <Button
@@ -127,15 +130,21 @@ const DebugPanel = ({
             </div>
 
             {/* Info */}
-            <div className="text-[10px] text-gray-500 pt-2 border-t border-gray-700">
+            <div className="text-[10px] text-gray-500 pt-2 border-t border-gray-700 space-y-2">
               <p>Toggle animations without changing OS settings.</p>
-              <p className="mt-1">Setting persists in localStorage.</p>
-              <p className="mt-2 text-gray-600 font-semibold">Keyboard Shortcuts:</p>
-              <div className="mt-1 space-y-0.5 text-gray-600">
-                <p><kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + D</kbd> Toggle panel</p>
-                <p><kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + A</kbd> Toggle animations</p>
-                <p><kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + R</kbd> Reset override</p>
-              </div>
+              <p>Setting persists in localStorage.</p>
+              
+              <button
+                onClick={() => {
+                  // Trigger the help modal by dispatching a keyboard event
+                  const event = new KeyboardEvent('keydown', { key: '?' });
+                  window.dispatchEvent(event);
+                }}
+                className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                <Keyboard className="h-3 w-3" />
+                <span>View all shortcuts</span>
+              </button>
             </div>
           </div>
         </div>

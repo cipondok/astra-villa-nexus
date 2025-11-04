@@ -86,6 +86,7 @@ The debug panel appears only in development mode and provides:
   - `Cmd/Ctrl + D` - Toggle debug panel open/closed
   - `Cmd/Ctrl + A` - Toggle animations on/off directly
   - `Cmd/Ctrl + R` - Reset to system settings (clears override)
+  - `?` or `Cmd/Ctrl + /` - Show keyboard shortcuts help modal
 
 ### Using the Debug Panel
 
@@ -100,6 +101,9 @@ The debug panel appears only in development mode and provides:
 - `Cmd/Ctrl + D` - Open/close the debug panel
 - `Cmd/Ctrl + A` - Instantly toggle animations on/off
 - `Cmd/Ctrl + R` - Reset to system settings (if override is active)
+- `?` or `Cmd/Ctrl + /` - View all keyboard shortcuts
+
+💡 **Tip**: Press `?` anytime to see all available keyboard shortcuts in a help modal!
 
 ## Visual Indicators
 
