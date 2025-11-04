@@ -101,7 +101,7 @@ const DebugPanel = ({
               <Button
                 onClick={() => setIsOpen(true)}
                 className={cn(
-                  "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group transition-all duration-300 relative",
+                  "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group transition-all duration-300 relative overflow-hidden",
                   isOverridden 
                     ? "bg-yellow-800/80 hover:bg-yellow-700/80 hover:shadow-[0_0_30px_rgba(251,191,36,0.8)]" 
                     : "bg-gray-800 hover:bg-gray-700 hover:shadow-[0_0_20px_rgba(156,163,175,0.5)]"
@@ -112,8 +112,18 @@ const DebugPanel = ({
                 size="icon"
               >
                 {isOverridden && (
-                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
+                  <>
+                    <span 
+                      className="absolute inset-0 shimmer-effect" 
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3), transparent)',
+                        animation: 'shimmer 3s infinite'
+                      }}
+                    />
+                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900 shadow-[0_0_12px_rgba(251,191,36,0.8)] z-10" />
+                  </>
                 )}
+                {!isOverridden && null}
                 <style>{`
                   @keyframes slideUpFade {
                     from {
@@ -123,6 +133,14 @@ const DebugPanel = ({
                     to {
                       opacity: 1;
                       transform: translateY(0);
+                    }
+                  }
+                  @keyframes shimmer {
+                    0% {
+                      transform: translateX(-100%);
+                    }
+                    100% {
+                      transform: translateX(200%);
                     }
                   }
                 `}</style>
