@@ -1662,6 +1662,54 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </PopoverContent>
             </Popover>
 
+            {/* Sort Dropdown */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
+                    filters.sortBy !== 'newest' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  )}
+                >
+                  <TrendingUp className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  {currentText.sortBy}
+                  {filters.sortBy !== 'newest' && (
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-56 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
+                align="start"
+                onCloseAutoFocus={(e) => e.preventDefault()}
+              >
+                <div className="space-y-1">
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                    {currentText.sortBy}
+                  </div>
+                  {sortOptions.map((option) => (
+                    <Button
+                      key={option.value}
+                      variant={filters.sortBy === option.value ? "default" : "ghost"}
+                      size="sm"
+                      className={cn(
+                        "w-full justify-start h-8 text-xs",
+                        filters.sortBy === option.value && "bg-primary text-primary-foreground"
+                      )}
+                      onClick={() => {
+                        handleFilterChange('sortBy', option.value);
+                      }}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Facilities Button - Opens Popover */}
             <Popover open={isFacilitiesOpen} onOpenChange={setIsFacilitiesOpen} modal={true}>
               <PopoverTrigger asChild>
