@@ -188,6 +188,16 @@ const config: Config = {
             opacity: "0.85",
             boxShadow: "0 0 40px hsla(217, 91%, 60%, 0.9), 0 0 80px hsla(271, 91%, 65%, 0.7), 0 0 120px hsla(217, 91%, 60%, 0.4)"
           }
+        },
+        "subtle-pulse-mobile": {
+          "0%, 100%": {
+            opacity: "1",
+            boxShadow: "0 0 10px hsla(217, 91%, 60%, 0.3), 0 0 20px hsla(271, 91%, 65%, 0.2)"
+          },
+          "50%": {
+            opacity: "0.9",
+            boxShadow: "0 0 15px hsla(217, 91%, 60%, 0.5), 0 0 30px hsla(271, 91%, 65%, 0.4)"
+          }
         }
       },
       animation: {
@@ -203,6 +213,7 @@ const config: Config = {
         "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
         "typing-dot": "typing-dot 1.4s ease-in-out infinite",
         "subtle-pulse": "subtle-pulse 4s ease-in-out infinite",
+        "subtle-pulse-mobile": "subtle-pulse-mobile 4s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
