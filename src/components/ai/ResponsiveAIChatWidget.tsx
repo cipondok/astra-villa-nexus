@@ -288,12 +288,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         >
           <Button
             onClick={scrollToTop}
-            className="h-12 w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 hover:scale-110 border-2 border-white/30"
+            className="h-14 w-14 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 hover:scale-110 border-2 border-white/30"
             style={{ transition: 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)' }}
             size="icon"
             aria-label="Scroll to top"
           >
-            <ArrowUp className="h-5 w-5 text-white" />
+            <ArrowUp className="h-6 w-6 md:h-5 md:w-5 text-white" />
           </Button>
         </div>
       )}
