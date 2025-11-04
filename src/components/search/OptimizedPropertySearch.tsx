@@ -34,6 +34,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [interimTranscript, setInterimTranscript] = useState('');
+  const [voiceLanguage, setVoiceLanguage] = useState('en-US');
   const [recognition, setRecognition] = useState<any>(null);
   const { toast } = useToast();
   
@@ -62,7 +63,28 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     if (recent) {
       setRecentSearches(JSON.parse(recent));
     }
+    
+    const savedLanguage = localStorage.getItem('voiceSearchLanguage');
+    if (savedLanguage) {
+      setVoiceLanguage(savedLanguage);
+    }
   }, []);
+
+  // Language options for voice search
+  const voiceLanguages = [
+    { code: 'en-US', name: 'English (US)', flag: '🇺🇸' },
+    { code: 'en-GB', name: 'English (UK)', flag: '🇬🇧' },
+    { code: 'es-ES', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'fr-FR', name: 'French', flag: '🇫🇷' },
+    { code: 'de-DE', name: 'German', flag: '🇩🇪' },
+    { code: 'it-IT', name: 'Italian', flag: '🇮🇹' },
+    { code: 'pt-BR', name: 'Portuguese', flag: '🇧🇷' },
+    { code: 'zh-CN', name: 'Chinese', flag: '🇨🇳' },
+    { code: 'ja-JP', name: 'Japanese', flag: '🇯🇵' },
+    { code: 'ko-KR', name: 'Korean', flag: '🇰🇷' },
+    { code: 'ar-SA', name: 'Arabic', flag: '🇸🇦' },
+    { code: 'hi-IN', name: 'Hindi', flag: '🇮🇳' },
+  ];
 
   // Initialize Web Speech API
   React.useEffect(() => {
@@ -71,7 +93,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       const recognitionInstance = new SpeechRecognition();
       recognitionInstance.continuous = false;
       recognitionInstance.interimResults = true;
-      recognitionInstance.lang = 'en-US';
+      recognitionInstance.lang = voiceLanguage;
 
       recognitionInstance.onresult = (event: any) => {
         let interim = '';
@@ -121,7 +143,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
       setRecognition(recognitionInstance);
     }
-  }, [updateFilters, toast]);
+  }, [updateFilters, toast, voiceLanguage]);
 
   const { results, totalCount, page, totalPages, isLoading, error, responseTime, cacheHit } = searchResponse;
 
@@ -200,6 +222,26 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       recognition.start();
     }
   }, [recognition, isListening, toast]);
+
+  const handleLanguageChange = (newLanguage: string) => {
+    setVoiceLanguage(newLanguage);
+    localStorage.setItem('voiceSearchLanguage', newLanguage);
+    
+    // If currently listening, restart with new language
+    if (isListening && recognition) {
+      recognition.stop();
+      setTimeout(() => {
+        recognition.lang = newLanguage;
+        recognition.start();
+      }, 100);
+    }
+    
+    const langName = voiceLanguages.find(l => l.code === newLanguage)?.name || newLanguage;
+    toast({
+      title: "Language Changed",
+      description: `Voice search now set to ${langName}`
+    });
+  };
 
   const highlightMatch = (text: string, query: string) => {
     if (!query.trim()) return text;
@@ -512,6 +554,18 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 <div className="flex-1 text-base font-medium">
                   {interimTranscript || "Start speaking..."}
                 </div>
+                <Select value={voiceLanguage} onValueChange={handleLanguageChange}>
+                  <SelectTrigger className="w-[160px] bg-white/20 hover:bg-white/30 text-white border-white/30 h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover z-[60]">
+                    {voiceLanguages.map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        {lang.flag} {lang.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button
                   onClick={handleVoiceSearch}
                   size="sm"
@@ -565,22 +619,61 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <TooltipProvider>
               <Tooltip open={isListening ? true : undefined}>
                 <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleVoiceSearch}
-                    size="icon"
-                    variant="ghost"
-                    className={`absolute right-11 top-1/2 transform -translate-y-1/2 h-7 w-7 transition-all ${
-                      isListening 
-                        ? "text-red-500 hover:text-red-600 animate-pulse ring-2 ring-red-400 ring-offset-2" 
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                    aria-label={isListening ? "Stop recording" : "Start voice search"}
-                  >
-                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                  </Button>
+                  <div className="absolute right-11 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                    <Button
+                      onClick={handleVoiceSearch}
+                      size="icon"
+                      variant="ghost"
+                      className={`h-7 w-7 transition-all ${
+                        isListening 
+                          ? "text-red-500 hover:text-red-600 animate-pulse ring-2 ring-red-400 ring-offset-2" 
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                      aria-label={isListening ? "Stop recording" : "Start voice search"}
+                    >
+                      {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    </Button>
+                    {!isListening && (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5 text-xs hover:bg-muted p-0"
+                            aria-label="Select language"
+                          >
+                            {voiceLanguages.find(l => l.code === voiceLanguage)?.flag || '🌐'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64 p-2 bg-popover z-50" align="end">
+                          <div className="space-y-1">
+                            <p className="text-xs font-semibold text-muted-foreground px-2 py-1">Voice Search Language</p>
+                            {voiceLanguages.map((lang) => (
+                              <button
+                                key={lang.code}
+                                onClick={() => handleLanguageChange(lang.code)}
+                                className={`w-full text-left px-2 py-1.5 text-sm rounded hover:bg-accent transition-colors flex items-center gap-2 ${
+                                  voiceLanguage === lang.code ? 'bg-accent font-medium' : ''
+                                }`}
+                              >
+                                <span className="text-base">{lang.flag}</span>
+                                <span>{lang.name}</span>
+                                {voiceLanguage === lang.code && (
+                                  <span className="ml-auto text-primary">✓</span>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                  </div>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-red-500 text-white">
-                  {isListening ? "🎤 Listening... (Press Ctrl+M to stop)" : "Voice search (Ctrl+M)"}
+                <TooltipContent side="bottom" className={isListening ? "bg-red-500 text-white" : ""}>
+                  {isListening 
+                    ? `🎤 Listening in ${voiceLanguages.find(l => l.code === voiceLanguage)?.name}... (Ctrl+M to stop)` 
+                    : `Voice search (Ctrl+M) - ${voiceLanguages.find(l => l.code === voiceLanguage)?.name}`
+                  }
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
