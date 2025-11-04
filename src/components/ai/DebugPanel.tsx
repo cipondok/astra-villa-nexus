@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Settings, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,20 @@ const DebugPanel = ({
   onClearOverride 
 }: DebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Keyboard shortcut: Cmd/Ctrl + D
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+        e.preventDefault();
+        setIsOpen(prev => !prev);
+        console.log('🔧 Debug Panel: Toggled via keyboard shortcut (Cmd/Ctrl + D)');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Only show in development
   if (process.env.NODE_ENV !== 'development') return null;
@@ -101,6 +115,9 @@ const DebugPanel = ({
             <div className="text-[10px] text-gray-500 pt-2 border-t border-gray-700">
               <p>Toggle animations without changing OS settings.</p>
               <p className="mt-1">Setting persists in localStorage.</p>
+              <p className="mt-2 text-gray-600">
+                Keyboard: <kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + D</kbd>
+              </p>
             </div>
           </div>
         </div>
