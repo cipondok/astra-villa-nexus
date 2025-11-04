@@ -1,4 +1,4 @@
-import { Bot } from "lucide-react";
+import { Bot, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
 
@@ -6,6 +6,9 @@ export type ChatButtonVariant = "pulse" | "glow" | "subtle";
 
 interface ChatButtonProps {
   onClick: () => void;
+  onDragStart?: (e: React.MouseEvent | React.TouchEvent) => void;
+  isDragging?: boolean;
+  position?: { x: number; y: number };
   unreadCount?: number;
   variant?: ChatButtonVariant;
   className?: string;
@@ -13,19 +16,23 @@ interface ChatButtonProps {
 
 const ChatButton = ({ 
   onClick, 
+  onDragStart,
+  isDragging = false,
+  position,
   unreadCount = 0, 
   variant = "pulse",
   className 
 }: ChatButtonProps) => {
   const baseStyles = cn(
-    "fixed bottom-6 right-6 z-[9999]",
+    "fixed z-[9999]",
     "h-14 w-14 rounded-full",
     "text-white shadow-lg",
     "flex items-center justify-center",
     "transition-all duration-300 ease-out",
-    "transform hover:scale-110 active:scale-95",
+    !isDragging && "transform hover:scale-110 active:scale-95",
+    isDragging && "scale-105 cursor-grabbing shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
-    "cursor-pointer"
+    "cursor-grab hover:cursor-grab active:cursor-grabbing"
   );
 
   const variantStyles: Record<ChatButtonVariant, string> = {
@@ -47,11 +54,38 @@ const ChatButton = ({
     )
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    // Only trigger onClick if not dragging
+    if (!isDragging) {
+      onClick();
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (onDragStart) {
+      onDragStart(e);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (onDragStart) {
+      onDragStart(e);
+    }
+  };
+
   return (
     <button
-      onClick={onClick}
-      className={cn(baseStyles, variantStyles[variant], className)}
-      aria-label="Open AI chat assistant"
+      onClick={handleClick}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      className={cn("group", baseStyles, variantStyles[variant], className)}
+      style={position ? {
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        bottom: 'auto',
+        right: 'auto',
+      } : undefined}
+      aria-label="Open AI chat assistant (drag to reposition)"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -61,7 +95,17 @@ const ChatButton = ({
         }
       }}
     >
-      <Bot className="h-6 w-6" aria-hidden="true" />
+      <div className="relative">
+        <Bot className="h-6 w-6" aria-hidden="true" />
+        {/* Drag handle indicator */}
+        <GripVertical 
+          className={cn(
+            "absolute -bottom-1 -right-1 h-3 w-3 opacity-0 transition-opacity",
+            "group-hover:opacity-60"
+          )} 
+          aria-hidden="true"
+        />
+      </div>
       <UnreadBadge count={unreadCount} />
     </button>
   );

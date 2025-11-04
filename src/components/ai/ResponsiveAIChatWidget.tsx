@@ -14,6 +14,7 @@ import { Message, QuickAction } from "./types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useChatKeyboardShortcuts } from "@/hooks/useChatKeyboardShortcuts";
+import { useDraggablePosition } from "@/hooks/useDraggablePosition";
 import { cn } from "@/lib/utils";
 
 interface ResponsiveAIChatWidgetProps {
@@ -39,6 +40,12 @@ const ResponsiveAIChatWidget = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
+  
+  // Draggable position for chat button
+  const { position, isDragging, handleDragStart } = useDraggablePosition({
+    defaultPosition: { x: window.innerWidth - 80, y: window.innerHeight - 80 }, // bottom-right
+    storageKey: "chatbot-button-position",
+  });
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -286,18 +293,50 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
+  // Calculate chat window position relative to button
+  const getChatWindowPosition = () => {
+    if (isMobile) {
+      return { bottom: 0, left: 0, right: 0 };
+    }
+    
+    // Position chat window to the left of the button
+    const windowWidth = 420;
+    const windowHeight = 680;
+    const gap = 16; // 1rem gap between button and window
+    
+    let left = position.x - windowWidth - gap;
+    let top = position.y;
+    
+    // If window would go off left edge, show it on the right of button
+    if (left < 8) {
+      left = position.x + 56 + gap; // 56px = button width
+    }
+    
+    // Constrain to viewport
+    const maxLeft = window.innerWidth - windowWidth - 8;
+    const maxTop = window.innerHeight - windowHeight - 8;
+    
+    left = Math.max(8, Math.min(left, maxLeft));
+    top = Math.max(8, Math.min(top, maxTop));
+    
+    return { left, top };
+  };
+
   return (
     <>
-      {/* Floating chat button - always visible */}
+      {/* Floating chat button - draggable and always visible */}
       {!isOpen && (
         <ChatButton 
           onClick={handleOpen}
+          onDragStart={handleDragStart}
+          isDragging={isDragging}
+          position={position}
           unreadCount={unreadCount}
           variant={buttonVariant}
         />
       )}
 
-      {/* Chat window */}
+      {/* Chat window - positioned relative to button */}
       {isOpen && (
         <div 
           className={cn(
@@ -305,8 +344,6 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             "transition-all duration-300 ease-out",
             isMinimized ? "w-[320px]" : isMobile ? "w-full" : "w-[420px]",
             isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "h-[680px]",
-            // Position
-            isMobile ? "bottom-0 left-0 right-0" : "bottom-6 right-6",
             // Animations
             isMobile 
               ? isClosing 
@@ -316,6 +353,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 ? "animate-slide-out-right" 
                 : "animate-slide-in-right"
           )}
+          style={
+            isMobile
+              ? { bottom: 0, left: 0, right: 0 }
+              : getChatWindowPosition()
+          }
           role="dialog"
           aria-label="AI Chat Assistant"
           aria-modal="true"

@@ -1,12 +1,20 @@
 # Chatbot Widget - Usage Guide
 
 ## Overview
-A minimal, elegant, always-visible floating chatbot widget for real estate applications.
+A minimal, elegant, always-visible floating chatbot widget with **drag-and-drop repositioning** for real estate applications.
 
 ## Features
 
+### 🎯 Drag-and-Drop Repositioning
+- **Grab and move** the button anywhere on screen
+- **Position persists** across sessions (saved in localStorage)
+- **Smart positioning**: Chat window appears next to button
+- **Viewport constraints**: Button stays within screen bounds
+- **Touch support**: Works on mobile devices
+- **Visual feedback**: Cursor changes and button scales when dragging
+
 ### ✨ Always Visible
-- Fixed position at `bottom-6 right-6`
+- Fixed position (customizable via drag)
 - Never hides on scroll
 - Expandable popup interface
 
@@ -27,6 +35,12 @@ Three beautiful button styles to choose from:
 - **`Ctrl+K`** (or `Cmd+K` on Mac) - Open chat
 - **`Esc`** - Close chat
 - **`Enter`** - Send message (in input field)
+
+### 🖱️ Mouse Interactions
+- **Click** - Open/close chat
+- **Click & Drag** - Reposition button anywhere on screen
+- **Hover** - Scale up with smooth animation
+- **Drag handle** - Small grip icon appears on hover
 
 ### 📱 Mobile Responsive
 - Fullscreen on mobile (90vh)
@@ -119,6 +133,24 @@ useChatKeyboardShortcuts({
 });
 ```
 
+### useDraggablePosition
+Manages draggable element position with localStorage persistence.
+
+```tsx
+import { useDraggablePosition } from "@/hooks/useDraggablePosition";
+
+const { position, isDragging, handleDragStart, resetPosition } = useDraggablePosition({
+  defaultPosition: { x: 24, y: 24 },
+  storageKey: "my-draggable-key",
+  bounds: {
+    minX: 8,
+    maxX: window.innerWidth - 64,
+    minY: 8,
+    maxY: window.innerHeight - 64,
+  }
+});
+```
+
 ## Animations
 
 ### Desktop
@@ -145,14 +177,34 @@ src/components/ai/
 └── types.ts                      # TypeScript types
 
 src/hooks/
-└── useChatKeyboardShortcuts.ts   # Keyboard shortcut logic
+├── useChatKeyboardShortcuts.ts   # Keyboard shortcut logic
+└── useDraggablePosition.ts       # Drag-and-drop logic
 ```
 
 ### State Management
+- **Position**: Saved in localStorage, loads on mount
 - **Unread Count**: Increments when AI responds while chat is closed
 - **Messages**: Full conversation history
 - **Conversation ID**: Persists across session
 - **Loading States**: UI feedback for async operations
+- **Drag State**: Tracks active dragging, prevents click during drag
+
+## How Drag-and-Drop Works
+
+### User Experience
+1. **Hover** over the button - cursor changes to `grab`
+2. **Click and hold** - cursor changes to `grabbing`, button scales up
+3. **Move mouse** - button follows cursor smoothly
+4. **Release** - position saves to localStorage automatically
+5. **Chat window** opens next to button's new position
+
+### Technical Details
+- Uses `mousedown`/`touchstart` to initiate drag
+- `mousemove`/`touchmove` updates position in real-time
+- `mouseup`/`touchend` saves position to localStorage
+- Position is constrained to viewport bounds (8px padding)
+- Chat window intelligently positions left or right of button
+- If not enough space on left, opens on right side
 
 ## Customization
 
@@ -166,6 +218,29 @@ const variantStyles: Record<ChatButtonVariant, string> = {
   subtle: "...",
   custom: "bg-gradient-to-r from-green-600 to-teal-600 hover:shadow-xl"
 };
+```
+
+### Custom Drag Bounds
+Constrain dragging to specific area:
+
+```tsx
+const { position, handleDragStart } = useDraggablePosition({
+  defaultPosition: { x: 24, y: 24 },
+  bounds: {
+    minX: 100,
+    maxX: 500,
+    minY: 100,
+    maxY: 400,
+  }
+});
+```
+
+### Reset Position Programmatically
+```tsx
+const { resetPosition } = useDraggablePosition();
+
+// Reset to default position
+<button onClick={resetPosition}>Reset Chatbot Position</button>
 ```
 
 ### Custom Keyboard Shortcuts
@@ -198,11 +273,24 @@ if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'c') {
 - Check z-index conflicts (button uses `z-[9999]`)
 - Verify component is rendered in DOM
 - Check for CSS conflicts with `fixed` positioning
+- Clear localStorage if position is saved off-screen: `localStorage.removeItem('chatbot-button-position')`
 
-### Unread badge not showing
-- Ensure `isOpen` state is correct
-- Verify AI messages have `role: 'assistant'`
-- Check badge visibility in dark/light mode
+### Dragging not working
+- Ensure `onDragStart` handler is passed to `ChatButton`
+- Check console for errors during drag events
+- Verify touch events work on mobile devices
+- Test with different browsers (some may block mouse events)
+
+### Position resets on refresh
+- Check if localStorage is enabled
+- Verify storage key is consistent
+- Look for localStorage clear in app code
+- Test in incognito mode (localStorage persists separately)
+
+### Chat window appears off-screen
+- Window auto-constrains to viewport bounds
+- Reset position: `localStorage.removeItem('chatbot-button-position')`
+- Check `getChatWindowPosition()` logic
 
 ### Keyboard shortcuts not working
 - Check for conflicting browser shortcuts
@@ -214,11 +302,17 @@ if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'c') {
 1. **Single Instance**: Only render one `ResponsiveAIChatWidget` per page
 2. **Lazy Loading**: Use React.lazy() for better performance
 3. **Error Handling**: Implement error boundaries around the widget
-4. **Testing**: Mock keyboard events and test all variants
+4. **Testing**: Mock keyboard events, drag events, and test all variants
 5. **Accessibility**: Test with keyboard-only navigation and screen readers
+6. **Position Limits**: Set reasonable bounds to prevent button going off-screen
+7. **Visual Feedback**: Use cursor changes and animations to indicate draggability
 
 ## Future Enhancements
-- [ ] Drag to reposition button
+- [x] ~~Drag to reposition button~~ ✅ Implemented!
+- [ ] Double-click to reset position to default
+- [ ] Snap to grid or edges
+- [ ] Magnetic corners (auto-snap to corners)
+- [ ] Position presets (top-left, top-right, bottom-left, bottom-right)
 - [ ] Sound notifications for new messages
 - [ ] Minimize to compact mode
 - [ ] Chat history persistence
