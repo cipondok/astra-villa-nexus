@@ -80,6 +80,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [showImageUploadHelp, setShowImageUploadHelp] = useState(false);
   const [showImageSearchTutorial, setShowImageSearchTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
+  const [highlightedElement, setHighlightedElement] = useState<string | null>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
   const { toast } = useToast();
@@ -767,7 +768,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   // Tutorial handlers
   const nextTutorialStep = () => {
     if (tutorialStep < 4) {
-      setTutorialStep(tutorialStep + 1);
+      const nextStep = tutorialStep + 1;
+      setTutorialStep(nextStep);
+      updateHighlight(nextStep);
     } else {
       completeTutorial();
     }
@@ -775,7 +778,32 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
   const prevTutorialStep = () => {
     if (tutorialStep > 0) {
-      setTutorialStep(tutorialStep - 1);
+      const prevStep = tutorialStep - 1;
+      setTutorialStep(prevStep);
+      updateHighlight(prevStep);
+    }
+  };
+
+  const updateHighlight = (step: number) => {
+    // Update which element should be highlighted based on step
+    switch (step) {
+      case 0:
+        setHighlightedElement('camera-button');
+        break;
+      case 1:
+        setHighlightedElement('upload-area');
+        break;
+      case 2:
+        setHighlightedElement(null); // No specific element for AI analysis
+        break;
+      case 3:
+        setHighlightedElement('weight-sliders');
+        break;
+      case 4:
+        setHighlightedElement('results-area');
+        break;
+      default:
+        setHighlightedElement(null);
     }
   };
 
@@ -786,6 +814,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const completeTutorial = () => {
     localStorage.setItem('imageSearchTutorialCompleted', 'true');
     setShowImageSearchTutorial(false);
+    setHighlightedElement(null);
     setShowImageUpload(true);
     toast({
       title: "Tutorial Complete!",
@@ -1809,11 +1838,15 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       if (!hasSeenTutorial && !uploadedImage) {
                         setShowImageSearchTutorial(true);
                         setTutorialStep(0);
+                        setHighlightedElement('camera-button');
                       } else {
                         setShowImageUpload(true);
                       }
                     }}
-                    className={`absolute right-2 top-1/2 transform -translate-y-1/2`}
+                    id="camera-button"
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 transition-all ${
+                      highlightedElement === 'camera-button' ? 'z-[60] ring-4 ring-primary animate-pulse' : ''
+                    }`}
                   >
                     <Camera className="h-4 w-4" />
                   </Button>
@@ -4045,6 +4078,58 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
         </DialogContent>
       </Dialog>
 
+      {/* Tutorial Spotlight Overlay */}
+      {showImageSearchTutorial && highlightedElement && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          
+          {/* Spotlight effect with tooltip */}
+          {highlightedElement === 'camera-button' && (
+            <>
+              <div 
+                className="absolute pointer-events-auto"
+                style={{
+                  top: 'var(--camera-button-top, 50%)',
+                  right: 'var(--camera-button-right, 2rem)',
+                  transform: 'translateY(-50%)'
+                }}
+              >
+                <div className="relative">
+                  {/* Pulsing ring */}
+                  <div className="absolute inset-0 rounded-lg bg-primary/30 animate-pulse" 
+                    style={{ 
+                      padding: '12px',
+                      boxShadow: '0 0 0 20px rgba(var(--primary-rgb), 0.1), 0 0 0 40px rgba(var(--primary-rgb), 0.05)'
+                    }}
+                  />
+                  
+                  {/* Tooltip with arrow */}
+                  <div className="absolute top-1/2 right-full mr-6 -translate-y-1/2 pointer-events-auto">
+                    <div className="relative bg-white dark:bg-gray-800 p-4 rounded-lg shadow-2xl border border-primary/20 animate-fade-in w-72">
+                      {/* Arrow pointing right */}
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full">
+                        <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-white dark:border-l-gray-800" />
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Camera className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1 text-sm">Camera Button</h4>
+                          <p className="text-xs text-muted-foreground">Click here to start an image search. Upload a photo to find similar properties.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       {/* Interactive Image Search Tutorial */}
       <Dialog open={showImageSearchTutorial} onOpenChange={setShowImageSearchTutorial}>
         <DialogContent className="max-w-2xl">
@@ -4079,7 +4164,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             {tutorialStep === 0 && (
               <div className="space-y-4 py-6">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center animate-scale-in">
                     <Camera className="h-10 w-10 text-primary" />
                   </div>
                 </div>
@@ -4089,12 +4174,14 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     Upload any property image and our AI will find similar listings based on style, architecture, and features.
                   </p>
                 </div>
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 animate-fade-in">
                   <div className="flex items-start gap-3">
-                    <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 animate-pulse">
+                      <span className="text-white text-xs font-bold">👈</span>
+                    </div>
                     <div className="text-sm">
-                      <p className="font-medium mb-1">Best Results:</p>
-                      <p className="text-muted-foreground">Use clear, well-lit exterior photos showing the full property facade for the most accurate matches.</p>
+                      <p className="font-medium mb-1">Look at the highlighted button!</p>
+                      <p className="text-muted-foreground">The camera button is now pulsing. This is where you'll start your image search.</p>
                     </div>
                   </div>
                 </div>
@@ -4190,7 +4277,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             {tutorialStep === 3 && (
               <div className="space-y-4 py-6">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center animate-scale-in">
                     <SlidersHorizontal className="h-10 w-10 text-green-600" />
                   </div>
                 </div>
@@ -4198,14 +4285,26 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   <h3 className="text-xl font-semibold">Customize Your Search</h3>
                   <p className="text-muted-foreground">Adjust what matters most to you</p>
                 </div>
+                <Alert className="border-green-200 bg-green-50/50 animate-fade-in">
+                  <div className="flex items-start gap-2">
+                    <div className="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0 animate-pulse mt-0.5">
+                      <SlidersHorizontal className="h-3 w-3 text-white" />
+                    </div>
+                    <AlertDescription className="text-sm">
+                      <span className="font-medium">Weight sliders will appear in the upload dialog!</span>
+                      <br />
+                      <span className="text-muted-foreground text-xs">You can adjust how much each feature matters to your search (Property Type, Style, Architecture, etc.)</span>
+                    </AlertDescription>
+                  </div>
+                </Alert>
                 <div className="border rounded-lg p-4 space-y-3 bg-muted/20">
-                  <p className="text-sm font-medium">Similarity Weights</p>
+                  <p className="text-sm font-medium">Example: Balanced Weights</p>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Property Type</span>
                       <div className="flex items-center gap-2">
                         <div className="w-24 h-2 bg-primary/20 rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: '30%' }} />
+                          <div className="h-full bg-primary rounded-full transition-all" style={{ width: '30%' }} />
                         </div>
                         <span className="font-medium w-8">30%</span>
                       </div>
@@ -4214,7 +4313,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       <span className="text-muted-foreground">Style</span>
                       <div className="flex items-center gap-2">
                         <div className="w-24 h-2 bg-primary/20 rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: '20%' }} />
+                          <div className="h-full bg-primary rounded-full transition-all" style={{ width: '20%' }} />
                         </div>
                         <span className="font-medium w-8">20%</span>
                       </div>
@@ -4223,7 +4322,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       <span className="text-muted-foreground">Amenities</span>
                       <div className="flex items-center gap-2">
                         <div className="w-24 h-2 bg-primary/20 rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: '25%' }} />
+                          <div className="h-full bg-primary rounded-full transition-all" style={{ width: '25%' }} />
                         </div>
                         <span className="font-medium w-8">25%</span>
                       </div>
