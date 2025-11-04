@@ -1685,13 +1685,20 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           {/* Main Search Input */}
           <div className="relative">
             <Input
-              placeholder="Search properties by location, title, or description..."
+              placeholder="Search by location, title, description, or upload an image..."
               value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
               className={searchInput ? "pr-28" : "pr-20"}
             />
+            {/* Image Search Badge */}
+            {!searchInput && (
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none opacity-60">
+                <Camera className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-medium text-primary">Image Search Available</span>
+              </div>
+            )}
             <TooltipProvider>
               <Tooltip open={isListening ? true : undefined}>
                 <TooltipTrigger asChild>
