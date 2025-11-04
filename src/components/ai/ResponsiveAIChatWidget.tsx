@@ -39,6 +39,13 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const [showWidget, setShowWidget] = useState(true);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Developer indicator for reduced motion mode
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      console.log('♿ Chat Widget: Running in reduced motion mode - animations simplified');
+    }
+  }, [prefersReducedMotion]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -327,6 +334,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             !prefersReducedMotion && "hover:scale-105"
           )}>
             <div className={showWidget && !prefersReducedMotion ? (isMobile ? "animate-subtle-pulse-mobile" : "animate-subtle-pulse") : ""}>
+              {/* Dev indicator for reduced motion */}
+              {prefersReducedMotion && process.env.NODE_ENV === 'development' && (
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50">
+                  Reduced Motion
+                </div>
+              )}
               <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
             </div>
           </div>
