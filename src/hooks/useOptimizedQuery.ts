@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { useCallback } from 'react';
+import { isValidUUID } from '@/utils/uuid-validation';
 
 export interface OptimizedQueryOptions<T> extends Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'> {
   queryKey: string[];
@@ -103,6 +104,7 @@ export function useUserProfileQuery(userId?: string) {
     queryKey: ['user-profile'],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required');
+      if (!isValidUUID(userId)) throw new Error('Invalid user ID format');
       
       const { supabase } = await import('@/integrations/supabase/client');
       const { data, error } = await supabase
@@ -114,7 +116,7 @@ export function useUserProfileQuery(userId?: string) {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
+    enabled: !!userId && isValidUUID(userId),
     staleTime: 10 * 60 * 1000, // 10 minutes for user profile
     dependencies: [userId],
   });
