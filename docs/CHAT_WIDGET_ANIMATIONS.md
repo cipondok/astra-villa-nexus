@@ -161,7 +161,7 @@ animation: {
 
 ### Dependencies
 - **React Hooks**: useState, useRef, useEffect
-- **Custom Hooks**: useScrollDirection, useIsMobile
+- **Custom Hooks**: useScrollDirection, useIsMobile, usePrefersReducedMotion
 - **UI Components**: Shadcn/ui Button, Card, ScrollArea
 - **Styling**: Tailwind CSS with custom animations
 - **Icons**: Lucide React
@@ -177,7 +177,8 @@ src/components/ai/
 └── types.ts
 
 src/hooks/
-└── useScrollDirection.ts        (Scroll detection hook)
+├── useScrollDirection.ts        (Scroll detection hook)
+└── usePrefersReducedMotion.ts   (Motion preference detection)
 
 tailwind.config.ts               (Custom animations)
 ```
@@ -200,6 +201,12 @@ tailwind.config.ts               (Custom animations)
 - **Safe Area Insets**: Respects device notches and system UI
 - **ARIA Labels**: Proper screen reader support
 - **Keyboard Navigation**: Focus states enabled
+- **Prefers-Reduced-Motion**: Full support for motion sensitivity
+  - Disables all bounce, scale, rotation animations
+  - Removes pulsing glow effects
+  - Disables hover scale effects
+  - Uses simple opacity fade (150ms) only
+  - Automatically detected via CSS media query
 
 ### Visual Feedback
 - **Bounce Animation**: Initial page load attention
@@ -224,10 +231,75 @@ tailwind.config.ts               (Custom animations)
 
 ---
 
+## ♿ Accessibility Features
+
+### Prefers-Reduced-Motion Support
+The chat widget fully respects user motion preferences through the CSS media query `(prefers-reduced-motion: reduce)`.
+
+#### When Enabled
+All decorative animations are disabled:
+- ❌ Bounce effects
+- ❌ Scale transformations
+- ❌ Rotation animations
+- ❌ Pulsing glow effects
+- ❌ Hover scale effects
+- ✅ Simple opacity fade (150ms)
+- ✅ Core functionality maintained
+
+#### How to Enable (for Testing)
+
+**macOS:**
+```
+System Settings → Accessibility → Display → Reduce Motion (toggle on)
+```
+
+**Windows:**
+```
+Settings → Accessibility → Visual effects → Animation effects (toggle off)
+```
+
+**iOS:**
+```
+Settings → Accessibility → Motion → Reduce Motion (toggle on)
+```
+
+**Android:**
+```
+Settings → Accessibility → Remove animations (toggle on)
+```
+
+#### Implementation
+```typescript
+// Custom hook detects user preference
+const prefersReducedMotion = usePrefersReducedMotion();
+
+// Conditionally apply animations
+className={cn(
+  "fixed z-[10002]",
+  prefersReducedMotion
+    ? showWidget ? "opacity-100" : "opacity-0"
+    : "translate-y-0 opacity-100 scale-100 rotate-0"
+)}
+
+// Disable pulse glow when reduced motion enabled
+<div className={showWidget && !prefersReducedMotion ? "animate-subtle-pulse" : ""}>
+```
+
+#### Testing Checklist
+- [ ] Enable reduced motion in OS settings
+- [ ] Verify chat button only fades (no bounce/scale/rotation)
+- [ ] Confirm no pulsing glow effect
+- [ ] Check scroll arrow appears without animations
+- [ ] Verify hover effects are disabled
+- [ ] Test scroll behavior still works
+- [ ] Confirm functionality is unaffected
+
+---
+
 ## 🚀 Future Enhancements
 
 ### Potential Additions
-1. **Prefers-Reduced-Motion**: Disable animations for accessibility
+1. ✅ **Prefers-Reduced-Motion**: ✅ IMPLEMENTED
 2. **Gesture Support**: Swipe to dismiss on mobile
 3. **Haptic Feedback**: Vibration on mobile interactions
 4. **Dynamic Themes**: Support for custom color schemes
@@ -300,5 +372,5 @@ const ARROW_THRESHOLD = 100; // Adjust as needed
 ---
 
 **Last Updated**: 2025-11-04  
-**Version**: 1.0  
+**Version**: 1.1 (Added Prefers-Reduced-Motion Support)  
 **Maintainer**: Lovable AI Assistant
