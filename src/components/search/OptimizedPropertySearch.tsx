@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -67,6 +67,19 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     'Elevator'
   ];
 
+  // Count active filters (excluding searchText and sortBy)
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.propertyType) count++;
+    if (filters.listingType) count++;
+    if (filters.minPrice || filters.maxPrice) count++;
+    if (filters.minBedrooms) count++;
+    if (filters.minBathrooms) count++;
+    if (filters.minArea || filters.maxArea) count++;
+    if (filters.amenities && filters.amenities.length > 0) count++;
+    return count;
+  }, [filters]);
+
   const SkeletonCard = () => (
     <Card className="h-48">
       <CardContent className="p-4">
@@ -134,15 +147,25 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
           {/* Advanced Filters Toggle */}
           <div className="flex items-center justify-between gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              {showFilters ? 'Hide Filters' : 'Show Filters'}
-            </Button>
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                className="gap-2"
+              >
+                <Filter className="h-4 w-4" />
+                {showFilters ? 'Hide Filters' : 'Show Filters'}
+              </Button>
+              {activeFilterCount > 0 && (
+                <Badge 
+                  variant="default" 
+                  className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                >
+                  {activeFilterCount}
+                </Badge>
+              )}
+            </div>
 
             <div className="flex items-center gap-3">
               <Select value={filters.sortBy || ''} onValueChange={(value) => updateFilters({ sortBy: value || undefined })}>
