@@ -297,10 +297,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {!isOpen && (
         <div 
           className={cn(
-            "fixed z-[10002] pointer-events-none transition-all duration-200 ease-out transform-gpu",
+            "fixed z-[10002] pointer-events-none transform-gpu",
             showWidget ? "translate-y-0 opacity-100 scale-100" : "translate-y-24 opacity-0 scale-90"
           )}
-          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
+          style={{ 
+            bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
+            right: 'calc(1rem + env(safe-area-inset-right))',
+            transition: 'all 200ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}
         >
           <div className="pointer-events-auto hover:scale-105 transition-transform duration-200">
             <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
