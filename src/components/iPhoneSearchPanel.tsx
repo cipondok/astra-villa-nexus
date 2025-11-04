@@ -2356,276 +2356,320 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <ScrollArea className="w-full whitespace-nowrap">
                 <div className="flex items-center gap-1.5 pb-1">
-                  {/* Property Type */}
-                  {filters.propertyType && filters.propertyType !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('propertyType', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Bedrooms */}
-                  {filters.bedrooms && filters.bedrooms !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <Bed className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {filters.bedrooms} {isMobile ? 'bd' : 'bed'}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('bedrooms', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Bathrooms */}
-                  {filters.bathrooms && filters.bathrooms !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <Bath className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {filters.bathrooms} {isMobile ? 'ba' : 'bath'}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('bathrooms', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Parking */}
-                  {filters.parking && filters.parking !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <Car className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {filters.parking} parking
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('parking', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Price Range */}
-                  {(filters.minPrice > 0 || filters.maxPrice > 0) && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <DollarSign className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {activeTab === 'rent' 
-                          ? `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`
-                          : filters.minPrice >= 1000000000 
-                            ? `${(filters.minPrice / 1000000000).toFixed(1)}-${(filters.maxPrice / 1000000000).toFixed(1)}M`
-                            : `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`
-                        }
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => {
-                          handleFilterChange('minPrice', 0);
-                          handleFilterChange('maxPrice', 0);
-                          setPriceRange([0, currentFilters.maxPrice]);
-                        }}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Year Built */}
-                  {filters.yearBuilt && filters.yearBuilt !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <CalendarIcon className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {yearOptions.find(y => y.value === filters.yearBuilt)?.label}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('yearBuilt', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Condition */}
-                  {filters.condition && filters.condition !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <Star className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {conditionOptions.find(c => c.value === filters.condition)?.label}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('condition', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Furnishing */}
-                  {filters.furnishing && filters.furnishing !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <Home className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {furnishingOptions.find(f => f.value === filters.furnishing)?.label}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('furnishing', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Location filters */}
-                  {filters.state && filters.state !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {provinces.find(p => p.code === filters.state)?.name}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('state', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {filters.city && filters.city !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {cities.find(c => c.code === filters.city)?.name}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('city', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {filters.area && filters.area !== 'all' && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {areas.find(a => a.code === filters.area)?.name}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('area', 'all')}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Facilities count */}
-                  {filters.facilities && filters.facilities.length > 0 && (
-                    <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                      isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                    )}>
-                      <Building2 className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      <span className="text-blue-700 dark:text-blue-300 font-medium">
-                        {filters.facilities.length} {isMobile ? 'fac' : 'facilities'}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                        onClick={() => handleFilterChange('facilities', [])}
-                      >
-                        <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Clear All button */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium animate-in fade-in scale-in duration-200 hover:scale-105 transition-all",
-                      isMobile ? "h-5 px-2 text-[9px]" : "h-6 px-2.5 text-xs"
-                    )}
-                    onClick={clearAllFilters}
-                  >
-                    {currentText.clearFilters}
-                  </Button>
+                  {(() => {
+                    let chipIndex = 0;
+                    return (
+                      <>
+                        {/* Property Type */}
+                        {filters.propertyType && filters.propertyType !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('propertyType', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Bedrooms */}
+                        {filters.bedrooms && filters.bedrooms !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <Bed className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {filters.bedrooms} {isMobile ? 'bd' : 'bed'}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('bedrooms', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Bathrooms */}
+                        {filters.bathrooms && filters.bathrooms !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <Bath className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {filters.bathrooms} {isMobile ? 'ba' : 'bath'}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('bathrooms', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Parking */}
+                        {filters.parking && filters.parking !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <Car className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {filters.parking} parking
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('parking', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Price Range */}
+                        {(filters.minPrice > 0 || filters.maxPrice > 0) && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <DollarSign className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {activeTab === 'rent' 
+                                ? `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`
+                                : filters.minPrice >= 1000000000 
+                                  ? `${(filters.minPrice / 1000000000).toFixed(1)}-${(filters.maxPrice / 1000000000).toFixed(1)}M`
+                                  : `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`
+                              }
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => {
+                                handleFilterChange('minPrice', 0);
+                                handleFilterChange('maxPrice', 0);
+                                setPriceRange([0, currentFilters.maxPrice]);
+                              }}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Year Built */}
+                        {filters.yearBuilt && filters.yearBuilt !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <CalendarIcon className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {yearOptions.find(y => y.value === filters.yearBuilt)?.label}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('yearBuilt', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Condition */}
+                        {filters.condition && filters.condition !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <Star className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {conditionOptions.find(c => c.value === filters.condition)?.label}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('condition', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Furnishing */}
+                        {filters.furnishing && filters.furnishing !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <Home className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {furnishingOptions.find(f => f.value === filters.furnishing)?.label}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('furnishing', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Location filters */}
+                        {filters.state && filters.state !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {provinces.find(p => p.code === filters.state)?.name}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('state', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {filters.city && filters.city !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {cities.find(c => c.code === filters.city)?.name}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('city', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {filters.area && filters.area !== 'all' && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {areas.find(a => a.code === filters.area)?.name}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('area', 'all')}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Facilities count */}
+                        {filters.facilities && filters.facilities.length > 0 && (
+                          <div 
+                            className={cn(
+                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
+                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
+                            )}
+                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
+                          >
+                            <Building2 className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            <span className="text-blue-700 dark:text-blue-300 font-medium">
+                              {filters.facilities.length} {isMobile ? 'fac' : 'facilities'}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
+                              onClick={() => handleFilterChange('facilities', [])}
+                            >
+                              <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* Clear All button */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={cn(
+                            "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium animate-in fade-in scale-in duration-200 hover:scale-105 transition-all",
+                            isMobile ? "h-5 px-2 text-[9px]" : "h-6 px-2.5 text-xs"
+                          )}
+                          style={{ animationDelay: `${chipIndex * 50}ms` }}
+                          onClick={clearAllFilters}
+                        >
+                          {currentText.clearFilters}
+                        </Button>
+                      </>
+                    );
+                  })()}
                 </div>
               </ScrollArea>
             </div>
