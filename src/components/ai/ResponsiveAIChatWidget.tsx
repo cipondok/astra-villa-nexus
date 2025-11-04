@@ -8,6 +8,7 @@ import { Home, Users, MapPin, Handshake, Bot, ArrowUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import DebugPanel from "./DebugPanel";
 import AIChatTrigger from "./AIChatTrigger";
 import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
@@ -35,7 +36,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
   const { scrollDirection, scrollY, isAtTop } = useScrollDirection();
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const { prefersReducedMotion, toggleOverride, clearOverride, isOverridden } = usePrefersReducedMotion();
   const [showWidget, setShowWidget] = useState(true);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -285,6 +286,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
+      {/* Debug Panel - Development Only */}
+      <DebugPanel
+        prefersReducedMotion={prefersReducedMotion}
+        isOverridden={isOverridden}
+        onToggleMotion={toggleOverride}
+        onClearOverride={clearOverride}
+      />
+
       {/* Scroll to top arrow - appears on scroll */}
       {!isAtTop && !isOpen && showWidget && (
         <div 
