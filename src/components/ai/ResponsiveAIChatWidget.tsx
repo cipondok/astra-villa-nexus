@@ -55,6 +55,17 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     scrollToBottom();
   }, [messages]);
 
+  // Listen for FAB menu to open chat
+  useEffect(() => {
+    const handleOpenChat = () => {
+      setIsOpen(true);
+      setIsMinimized(false);
+    };
+    
+    window.addEventListener('openAIChat', handleOpenChat);
+    return () => window.removeEventListener('openAIChat', handleOpenChat);
+  }, []);
+
   // Handle scroll direction for auto-hide/show (10px threshold with 200ms delay for synchronized transitions)
   useEffect(() => {
     // Clear any pending hide timeout
@@ -294,33 +305,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         onClearOverride={clearOverride}
       />
 
-      {/* Scroll to top arrow - appears on scroll */}
-      {!isAtTop && !isOpen && showWidget && (
-        <div 
-          className={cn("fixed z-[10001] transform-gpu", !prefersReducedMotion && "animate-fade-in")}
-          style={{ 
-            bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
-            left: 'calc(1rem + env(safe-area-inset-left))',
-            transition: prefersReducedMotion ? 'none' : 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)'
-          }}
-        >
-          <Button
-            onClick={scrollToTop}
-            className={cn(
-              "h-14 w-14 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 border-2 border-white/30",
-              !prefersReducedMotion && "hover:scale-110"
-            )}
-            style={{ transition: prefersReducedMotion ? 'none' : 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)' }}
-            size="icon"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp className="h-6 w-6 md:h-5 md:w-5 text-white" />
-          </Button>
-        </div>
-      )}
-
-      {/* Chat trigger - Fixed position at bottom right corner with scroll behavior */}
-      {!isOpen && (
+      {/* Scroll to top arrow - Hidden, now controlled by FAB menu */}
+      {/* Chat trigger - Hidden, controlled by FAB menu */}
+      {false && !isOpen && (
         <div 
           className={cn(
             "fixed z-[10002] pointer-events-none transform-gpu",

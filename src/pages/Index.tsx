@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -18,6 +18,7 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
+import { FloatingActionMenu } from "@/components/ui/FloatingActionMenu";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -94,6 +95,19 @@ const Index = () => {
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const [imageSearchMode, setImageSearchMode] = useState(false);
   const [uploadedImageBase64, setUploadedImageBase64] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  // Track scroll position for FAB menu
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.pageYOffset > 300);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Note: Removed hardcoded admin email check for security
   // Users are redirected based on their role stored in the user_roles table
@@ -365,23 +379,7 @@ const Index = () => {
                 />
               </Suspense>
               
-              {/* Image Search Button */}
-              <div className="mt-2 flex justify-center">
-                <ImageSearchButton
-                  onImageSelected={(base64) => {
-                    setUploadedImageBase64(base64);
-                    setImageSearchMode(true);
-                    toast.info("Image search feature is under development. Using regular search for now.");
-                    // TODO: Implement actual image similarity search
-                  }}
-                  onClear={() => {
-                    setUploadedImageBase64(null);
-                    setImageSearchMode(false);
-                  }}
-                  isSearching={isSearching}
-                  hasImage={!!uploadedImageBase64}
-                />
-              </div>
+              {/* Image Search now in FAB menu - removed from here */}
               
               {/* Advanced Filters - Compact inline */}
               <div className="mt-2 flex justify-end">
@@ -609,14 +607,58 @@ const Index = () => {
         />
         </Suspense>
         
-        {/* Customer AI Chat Widget - Fixed position on right */}
+        {/* Consolidated Floating Action Menu */}
+        <FloatingActionMenu
+          onScrollToTop={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenChat={() => {
+            setChatOpen(true);
+            // Trigger the AI widget to open
+            const event = new CustomEvent('openAIChat');
+            window.dispatchEvent(event);
+          }}
+          onImageSearch={() => {
+            imageInputRef.current?.click();
+          }}
+          showScrollButton={showScrollButton}
+        />
+
+        {/* Hidden Image Input for FAB */}
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+              toast.error('Please select an image file');
+              return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+              toast.error('Image size must be less than 5MB');
+              return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const result = event.target?.result as string;
+              setUploadedImageBase64(result);
+              setImageSearchMode(true);
+              toast.success('Image uploaded! Searching for similar properties...');
+              // TODO: Implement actual image similarity search
+            };
+            reader.readAsDataURL(file);
+          }}
+          className="hidden"
+        />
+
+        {/* Customer AI Chat Widget - Hidden by default, controlled by FAB */}
         <Suspense fallback={null}>
           <ResponsiveAIChatWidget />
-        </Suspense>
-        
-        {/* Scroll to Top Button - Always visible when scrolling */}
-        <Suspense fallback={null}>
-          <ScrollToTopButton />
         </Suspense>
         
         {/* WhatsApp Inquiry Dialog */}
