@@ -130,7 +130,7 @@ const DebugPanel = ({
               <div className="flex items-center justify-between mb-1">
                 <span className="text-gray-400">Reduced Motion:</span>
                 <span className={cn(
-                  "font-semibold",
+                  "font-semibold transition-colors duration-300",
                   prefersReducedMotion ? "text-orange-400" : "text-green-400"
                 )}>
                   {prefersReducedMotion ? "ON" : "OFF"}
