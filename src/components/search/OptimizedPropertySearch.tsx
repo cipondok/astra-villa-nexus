@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon, Settings } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon, Settings, BarChart3, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -49,6 +49,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [searchMode, setSearchMode] = useState<'text' | 'image' | 'combined'>('text');
   const [dragActive, setDragActive] = useState(false);
   const [similarityScores, setSimilarityScores] = useState<Record<string, number>>({});
+  const [similarityBreakdowns, setSimilarityBreakdowns] = useState<Record<string, any>>({});
+  const [selectedPropertyBreakdown, setSelectedPropertyBreakdown] = useState<string | null>(null);
   const [imageFeatures, setImageFeatures] = useState<any>(null);
   const [recognition, setRecognition] = useState<any>(null);
   const [similarityWeights, setSimilarityWeights] = useState({
@@ -474,12 +476,16 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       const { uploadedFeatures, similarities } = data;
       setImageFeatures(uploadedFeatures);
 
-      // Create similarity score map
+      // Create similarity score and breakdown maps
       const scoresMap: Record<string, number> = {};
+      const breakdownsMap: Record<string, any> = {};
       similarities.forEach((s: any) => {
         scoresMap[s.propertyId] = s.similarity;
+        breakdownsMap[s.propertyId] = s.breakdown;
       });
       setSimilarityScores(scoresMap);
+      setSimilarityBreakdowns(breakdownsMap);
+      setSearchMode('image');
 
       // Apply filters based on image analysis
       const imageFilters: any = {};
@@ -510,7 +516,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
       toast({
         title: "Image Analysis Complete",
-        description: `Detected: ${description.join(' • ')}`
+        description: `Found ${similarities.length} similar properties. Click the chart icon on any property to see detailed match breakdown.`
       });
 
     } catch (error: any) {
@@ -660,6 +666,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setUploadedImage(null);
     setSearchMode('text');
     setSimilarityScores({});
+    setSimilarityBreakdowns({});
+    setSelectedPropertyBreakdown(null);
     setImageFeatures(null);
     handleResetFilters();
   };
@@ -2018,12 +2026,13 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sortedResults.map((property) => {
                 const similarity = similarityScores[property.id];
+                const breakdown = similarityBreakdowns[property.id];
                 const hasSimilarityScore = searchMode === 'image' && similarity !== undefined;
                 
                 return (
                   <Card 
                     key={property.id} 
-                    className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                    className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden group"
                     onClick={() => onResultSelect?.(property.id)}
                   >
                     {(property.thumbnail_url || (property.images && property.images[0])) && (
@@ -2034,13 +2043,26 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                           className="w-full h-48 object-cover"
                         />
                         {hasSimilarityScore && (
-                          <div className="absolute top-2 right-2">
+                          <div className="absolute top-2 right-2 flex gap-2">
                             <Badge 
                               variant={similarity >= 70 ? "default" : similarity >= 50 ? "secondary" : "outline"}
                               className="text-xs font-bold backdrop-blur-sm bg-background/90"
                             >
                               {similarity}% Match
                             </Badge>
+                            {breakdown && (
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="h-6 px-2 backdrop-blur-sm bg-background/90 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedPropertyBreakdown(property.id);
+                                }}
+                              >
+                                <BarChart3 className="h-3 w-3" />
+                              </Button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -2978,6 +3000,130 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <Button onClick={handleSaveWeightPreset}>
               <Save className="h-4 w-4 mr-2" />
               Save Preset
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Similarity Breakdown Dialog */}
+      <Dialog open={selectedPropertyBreakdown !== null} onOpenChange={() => setSelectedPropertyBreakdown(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Similarity Match Breakdown
+            </DialogTitle>
+            <DialogDescription>
+              Detailed analysis of how this property matches your uploaded image
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedPropertyBreakdown && similarityBreakdowns[selectedPropertyBreakdown] && (
+            <div className="space-y-6">
+              {/* Overall Score */}
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium">Overall Match Score</span>
+                  <Badge 
+                    variant={similarityScores[selectedPropertyBreakdown] >= 70 ? "default" : "secondary"}
+                    className="text-lg font-bold px-3 py-1"
+                  >
+                    {similarityScores[selectedPropertyBreakdown]}%
+                  </Badge>
+                </div>
+                <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                  <div 
+                    className="h-full bg-primary transition-all duration-500"
+                    style={{ width: `${similarityScores[selectedPropertyBreakdown]}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Feature Breakdown */}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-sm flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Feature Contributions
+                </h4>
+                
+                {Object.entries(similarityBreakdowns[selectedPropertyBreakdown]).map(([feature, score]: [string, any]) => {
+                  const featureNames: Record<string, string> = {
+                    propertyType: 'Property Type',
+                    style: 'Design Style',
+                    architecture: 'Architecture',
+                    bedrooms: 'Bedroom Count',
+                    amenities: 'Amenities'
+                  };
+                  
+                  const maxScore = similarityWeights[feature as keyof typeof similarityWeights];
+                  const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+                  
+                  return (
+                    <div key={feature} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium">{featureNames[feature]}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">
+                            {score} / {maxScore} points
+                          </span>
+                          <Badge 
+                            variant={percentage >= 80 ? "default" : percentage >= 50 ? "secondary" : "outline"}
+                            className="text-xs"
+                          >
+                            {Math.round(percentage)}%
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-500 ${
+                            percentage >= 80 ? 'bg-green-500' : 
+                            percentage >= 50 ? 'bg-orange-500' : 
+                            'bg-gray-400'
+                          }`}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Weight Configuration Info */}
+              <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">Current Weight Configuration:</p>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex justify-between">
+                    <span>Property Type:</span>
+                    <span className="font-medium">{similarityWeights.propertyType}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Style:</span>
+                    <span className="font-medium">{similarityWeights.style}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Architecture:</span>
+                    <span className="font-medium">{similarityWeights.architecture}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Bedrooms:</span>
+                    <span className="font-medium">{similarityWeights.bedrooms}%</span>
+                  </div>
+                  <div className="flex justify-between col-span-2">
+                    <span>Amenities:</span>
+                    <span className="font-medium">{similarityWeights.amenities}%</span>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Adjust weights in the image search settings to change how features are prioritized
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedPropertyBreakdown(null)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

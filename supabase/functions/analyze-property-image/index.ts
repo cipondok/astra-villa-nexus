@@ -132,21 +132,31 @@ serve(async (req) => {
             const propertyFeaturesText = propertyData.choices[0].message.content;
             const propertyFeatures = JSON.parse(propertyFeaturesText);
 
-            // Calculate similarity score using custom weights
+            // Calculate similarity score using custom weights with detailed breakdown
             let similarity = 0;
+            const breakdown = {
+              propertyType: 0,
+              style: 0,
+              architecture: 0,
+              bedrooms: 0,
+              amenities: 0
+            };
 
             // Property type match
             if (uploadedFeatures.propertyType === propertyFeatures.propertyType) {
+              breakdown.propertyType = similarityWeights.propertyType;
               similarity += similarityWeights.propertyType;
             }
 
             // Style match
             if (uploadedFeatures.style === propertyFeatures.style) {
+              breakdown.style = similarityWeights.style;
               similarity += similarityWeights.style;
             }
 
             // Architecture style
             if (uploadedFeatures.architectureStyle === propertyFeatures.architectureStyle) {
+              breakdown.architecture = similarityWeights.architecture;
               similarity += similarityWeights.architecture;
             }
 
@@ -154,18 +164,29 @@ serve(async (req) => {
             if (uploadedFeatures.bedrooms > 0 && propertyFeatures.bedrooms > 0) {
               const bedroomDiff = Math.abs(uploadedFeatures.bedrooms - propertyFeatures.bedrooms);
               const bedroomScore = Math.max(0, 1 - (bedroomDiff * 0.3)); // 0-1 scale
-              similarity += bedroomScore * similarityWeights.bedrooms;
+              breakdown.bedrooms = bedroomScore * similarityWeights.bedrooms;
+              similarity += breakdown.bedrooms;
             }
 
             // Amenities match - distribute weight across 3 amenities
             const amenityWeight = similarityWeights.amenities / 3;
-            if (uploadedFeatures.hasPool === propertyFeatures.hasPool) similarity += amenityWeight;
-            if (uploadedFeatures.hasGarden === propertyFeatures.hasGarden) similarity += amenityWeight;
-            if (uploadedFeatures.hasBalcony === propertyFeatures.hasBalcony) similarity += amenityWeight;
+            let amenitiesScore = 0;
+            if (uploadedFeatures.hasPool === propertyFeatures.hasPool) amenitiesScore += amenityWeight;
+            if (uploadedFeatures.hasGarden === propertyFeatures.hasGarden) amenitiesScore += amenityWeight;
+            if (uploadedFeatures.hasBalcony === propertyFeatures.hasBalcony) amenitiesScore += amenityWeight;
+            breakdown.amenities = amenitiesScore;
+            similarity += amenitiesScore;
 
             return {
               propertyId: property.id,
               similarity: Math.round(similarity),
+              breakdown: {
+                propertyType: Math.round(breakdown.propertyType),
+                style: Math.round(breakdown.style),
+                architecture: Math.round(breakdown.architecture),
+                bedrooms: Math.round(breakdown.bedrooms),
+                amenities: Math.round(breakdown.amenities)
+              },
               features: propertyFeatures
             };
           } catch (error) {
