@@ -292,11 +292,38 @@ User Agent: ${navigator.userAgent}
           {/* Backdrop blur overlay */}
           <div 
             className={cn(
-              "fixed inset-0 z-[99998] bg-black/20 backdrop-blur-sm transition-opacity duration-300",
-              isClosing ? "opacity-0" : "opacity-100"
+              "fixed inset-0 z-[99998] bg-black/20 backdrop-blur-sm"
             )}
+            style={{
+              animation: isClosing 
+                ? 'backdropOut 0.3s ease-out forwards'
+                : 'backdropIn 0.3s ease-out forwards'
+            }}
             onClick={handleClose}
-          />
+          >
+            <style>{`
+              @keyframes backdropIn {
+                from {
+                  opacity: 0;
+                  backdrop-filter: blur(0px);
+                }
+                to {
+                  opacity: 1;
+                  backdrop-filter: blur(4px);
+                }
+              }
+              @keyframes backdropOut {
+                from {
+                  opacity: 1;
+                  backdrop-filter: blur(4px);
+                }
+                to {
+                  opacity: 0;
+                  backdrop-filter: blur(0px);
+                }
+              }
+            `}</style>
+          </div>
           
           <div 
             className={cn(
