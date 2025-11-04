@@ -2676,72 +2676,73 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           ) : null}
 
 
-           {/* Advanced Filters Modal */}
+           {/* Advanced Filters Modal - Slim & Optimized */}
           {showFilters && (
-            <div ref={filterRef} className="fixed z-[99999] inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2 md:p-4 animate-in fade-in duration-200">
-              <div className="bg-background w-full max-w-[95vw] md:max-w-6xl h-[95dvh] md:h-[92dvh] rounded-xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50 animate-in slide-in-from-bottom-5 duration-300">
-              {/* Header */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-3 py-2.5 md:px-5 md:py-4 shrink-0">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Filter className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            <div ref={filterRef} className="fixed z-[99999] inset-0 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
+              <div className="bg-background w-full max-w-full md:max-w-4xl h-[85dvh] md:h-[80dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border border-border/50 animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300">
+              {/* Header - Compact */}
+              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-3 py-2 md:px-4 md:py-3 shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Filter className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-sm md:text-lg font-semibold text-foreground">Advanced Filters</h3>
-                    <p className="text-[10px] md:text-xs text-muted-foreground">Refine your search</p>
+                    <h3 className="text-xs md:text-base font-semibold text-foreground">Filters</h3>
+                    <p className="text-[9px] md:text-[10px] text-muted-foreground">Refine search</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <Button
                     onClick={clearAllFilters}
                     variant="outline"
                     size="sm"
-                    className="h-9 px-3 text-xs"
+                    className="h-7 px-2 text-[10px] md:h-8 md:px-3 md:text-xs"
                   >
-                    <X className="h-4 w-4 mr-1.5" />
+                    <X className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1" />
                     Clear
                   </Button>
                   <Button
                     onClick={() => setShowFilters(false)}
                     variant="ghost"
                     size="sm"
-                    className="h-9 w-9 p-0"
+                    className="h-7 w-7 p-0 md:h-8 md:w-8"
+                    aria-label="Close filters"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
-              {/* Content with ScrollArea */}
-              <ScrollArea className="flex-1 h-[calc(88dvh-120px)] md:h-[calc(90dvh-130px)] overscroll-contain">
-                <div className="p-4 md:p-5">
+              {/* Content with ScrollArea - Compact */}
+              <ScrollArea className="flex-1 overscroll-contain">
+                <div className="p-2.5 md:p-4">
 
-              {/* Filter Categories in Tabs */}
+              {/* Filter Categories in Tabs - Compact */}
               <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className="w-full sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-1 rounded-lg mb-4">
-                  <TabsTrigger value="propertySpecs" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
-                    <Home className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                    Property
+                <TabsList className="w-full sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-0.5 rounded-lg mb-2.5 md:mb-3 grid grid-cols-5">
+                  <TabsTrigger value="propertySpecs" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
+                    <Home className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
+                    <span className="hidden sm:inline">Property</span>
                   </TabsTrigger>
-                  <TabsTrigger value="pricing" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
-                    <DollarSign className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                    Pricing
+                  <TabsTrigger value="pricing" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
+                    <DollarSign className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
+                    <span className="hidden sm:inline">Price</span>
                   </TabsTrigger>
-                  <TabsTrigger value="location" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
-                    <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                    Location
+                  <TabsTrigger value="location" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
+                    <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
+                    <span className="hidden sm:inline">Location</span>
                   </TabsTrigger>
-                  <TabsTrigger value="facilities" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
-                    <Warehouse className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                    Facilities
+                  <TabsTrigger value="facilities" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
+                    <Warehouse className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
+                    <span className="hidden sm:inline">Facilities</span>
                   </TabsTrigger>
-                  <TabsTrigger value="amenities" className="flex-1 text-xs md:text-sm py-2 md:py-2.5">
-                    <Building className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                    Amenities
+                  <TabsTrigger value="amenities" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
+                    <Building className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
+                    <span className="hidden sm:inline">Amenities</span>
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="propertySpecs" className="space-y-4 md:space-y-5 bg-card border border-border rounded-lg shadow-sm p-4 md:p-5">
+                <TabsContent value="propertySpecs" className="space-y-2.5 md:space-y-3 bg-card border border-border rounded-lg shadow-sm p-2.5 md:p-3.5">
                 
                 {/* Property Details - Compact Grid Layout */}
                 <div className="grid grid-cols-2 gap-1 md:gap-1.5">
@@ -3257,18 +3258,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </div>
               </ScrollArea>
             
-            {/* Footer with Apply Button */}
-            <div className="border-t border-border bg-muted/30 px-4 py-3 md:px-5 md:py-4">
+            {/* Footer with Apply Button - Compact */}
+            <div className="border-t border-border bg-muted/30 px-3 py-2 md:px-4 md:py-2.5 shrink-0">
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowFilters(false);
                 }}
-                className="w-full h-11 md:h-12 text-sm md:text-base font-medium"
+                className="w-full h-9 md:h-10 text-xs md:text-sm font-medium"
                 size="lg"
               >
-                <Search className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                Apply Filters & Search
+                <Search className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                Apply Filters
               </Button>
             </div>
           </div>
