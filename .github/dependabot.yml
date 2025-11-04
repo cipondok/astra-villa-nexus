@@ -1,0 +1,232 @@
+# Dependabot Configuration
+# Automated dependency updates with security vulnerability scanning
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+
+updates:
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    
+    # Security and versioning rules
+    open-pull-requests-limit: 10
+    
+    # Automatically merge security updates
+    # Note: Requires GitHub Auto-merge to be enabled
+    pull-request-branch-name:
+      separator: "-"
+    
+    # Commit message configuration
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    
+    # Reviewers and assignees (customize as needed)
+    # reviewers:
+    #   - "your-team-name"
+    # assignees:
+    #   - "maintainer-username"
+    
+    # Labels for PRs
+    labels:
+      - "dependencies"
+      - "automated"
+    
+    # Version requirements
+    versioning-strategy: "auto"
+    
+    # Allow both direct and indirect updates
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    
+    # Group updates by dependency type
+    groups:
+      # React and related packages
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # UI component libraries (Radix)
+      ui-components:
+        patterns:
+          - "@radix-ui/*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Testing frameworks
+      testing:
+        patterns:
+          - "@playwright/*"
+          - "@testing-library/*"
+          - "vitest*"
+          - "jsdom"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Build tools and Vite
+      build-tools:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+          - "typescript"
+          - "postcss"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Linting and formatting
+      linting:
+        patterns:
+          - "eslint*"
+          - "prettier*"
+          - "@typescript-eslint/*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Supabase and backend
+      backend:
+        patterns:
+          - "@supabase/*"
+          - "@tanstack/react-query"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Styling and UI utilities
+      styling:
+        patterns:
+          - "tailwind*"
+          - "tailwindcss-*"
+          - "class-variance-authority"
+          - "clsx"
+          - "tailwind-merge"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Animation and motion
+      animation:
+        patterns:
+          - "framer-motion"
+          - "embla-carousel*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Form handling
+      forms:
+        patterns:
+          - "react-hook-form"
+          - "@hookform/*"
+          - "zod"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Icons and assets
+      icons:
+        patterns:
+          - "lucide-react"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # 3D and graphics
+      graphics:
+        patterns:
+          - "three"
+          - "@react-three/*"
+          - "@tensorflow/*"
+          - "@vladmandic/*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Web3 and blockchain
+      web3:
+        patterns:
+          - "@web3modal/*"
+          - "wagmi"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # Utilities and helpers
+      utilities:
+        patterns:
+          - "date-fns"
+          - "dompurify"
+          - "@types/dompurify"
+          - "zustand"
+          - "sonner"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # CI/CD tools
+      ci-tools:
+        patterns:
+          - "@lhci/*"
+          - "axe-core"
+          - "axe-playwright"
+        update-types:
+          - "minor"
+          - "patch"
+    
+    # Ignore specific versions or dependencies (examples)
+    ignore:
+      # Example: Ignore major version updates for stable packages
+      # - dependency-name: "react"
+      #   update-types: ["version-update:semver-major"]
+      
+      # Example: Ignore specific versions
+      # - dependency-name: "typescript"
+      #   versions: ["5.0.0"]
+      
+      # Ignore patch updates for specific packages (if needed)
+      # - dependency-name: "*"
+      #   update-types: ["version-update:semver-patch"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    
+    open-pull-requests-limit: 5
+    
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+    
+    labels:
+      - "github-actions"
+      - "dependencies"
+      - "automated"
+    
+    # Group all GitHub Actions updates together
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

@@ -429,6 +429,48 @@ npx playwright show-report
 
 Unit tests are located next to the files they test with a `.test.ts` or `.test.tsx` extension. E2E tests are in the `e2e/` directory. All unit tests run in a jsdom environment with automatic cleanup after each test.
 
+## 🔄 Automated Dependency Management
+
+### Dependabot Configuration
+
+This project uses **Dependabot** for automated dependency updates and security vulnerability scanning.
+
+**Features:**
+- 🔒 **Security Updates**: Automatic PRs for vulnerabilities
+- 📦 **Grouped Updates**: Dependencies grouped by type (React, UI, Testing, etc.)
+- 📅 **Weekly Schedule**: Updates checked every Monday at 9 AM UTC
+- 🏷️ **Smart Labeling**: Automatic PR labels and commit message formatting
+- 🎯 **Version Control**: Intelligent versioning strategy (auto)
+
+**Configuration:**
+- Location: `.github/dependabot.yml`
+- Schedule: Weekly (Mondays, 9:00 UTC)
+- Max open PRs: 10 for npm, 5 for GitHub Actions
+- Update types: Both direct and indirect dependencies
+
+**Dependency Groups:**
+- `react`: React and related packages
+- `ui-components`: Radix UI components
+- `testing`: Testing frameworks (Playwright, Vitest)
+- `build-tools`: Vite, TypeScript, build tools
+- `backend`: Supabase, TanStack Query
+- `styling`: Tailwind CSS and utilities
+- `forms`: React Hook Form, Zod
+- `ci-tools`: Lighthouse CI, axe-core
+- And more...
+
+**How It Works:**
+1. Dependabot checks for updates weekly
+2. Creates grouped PRs by dependency type
+3. CI/CD runs all tests automatically
+4. Security updates get priority
+5. Review and merge when ready
+
+**Manual Trigger:**
+You can also trigger dependency updates manually from the GitHub "Insights" → "Dependency graph" → "Dependabot" tab.
+
+For detailed Dependabot configuration and customization, see [CI/CD Setup Guide](docs/CI_CD_SETUP.md#automated-dependency-management).
+
 ## Documentation
 
 For detailed information about animations, performance optimizations, and accessibility features, see:

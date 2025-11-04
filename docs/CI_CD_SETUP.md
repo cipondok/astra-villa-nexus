@@ -379,6 +379,141 @@ deploy-custom:
 - Check secret name matches exactly (case-sensitive)
 - Ensure using correct syntax: `${{ secrets.SECRET_NAME }}`
 
+## 🔄 Automated Dependency Management
+
+### Dependabot Setup
+
+This project includes comprehensive Dependabot configuration for automated dependency updates and security vulnerability scanning.
+
+#### Configuration Overview
+
+**File**: `.github/dependabot.yml`
+
+**Key Features:**
+- Weekly update schedule (Mondays at 9 AM UTC)
+- Grouped PRs by dependency type
+- Security vulnerability scanning
+- Automatic versioning strategy
+- Support for npm packages and GitHub Actions
+
+#### Dependency Groups
+
+Dependencies are automatically grouped into logical categories:
+
+| Group | Packages | Purpose |
+|-------|----------|---------|
+| `react` | react, react-dom, @types/react | React core packages |
+| `ui-components` | @radix-ui/* | UI component libraries |
+| `testing` | @playwright/*, @testing-library/* | Testing frameworks |
+| `build-tools` | vite, typescript, @vitejs/* | Build and compilation tools |
+| `backend` | @supabase/*, @tanstack/react-query | Backend and data fetching |
+| `styling` | tailwindcss, tailwind-* | Styling utilities |
+| `forms` | react-hook-form, zod | Form handling |
+| `ci-tools` | @lhci/cli, axe-core | CI/CD tools |
+| `github-actions` | actions/* | GitHub Actions workflows |
+
+#### Update Strategy
+
+**Versioning Rules:**
+- **Patch updates**: Auto-grouped, safe to merge
+- **Minor updates**: Grouped by dependency type
+- **Major updates**: Individual PRs for review
+- **Security updates**: Highest priority, separate PRs
+
+**PR Limits:**
+- npm dependencies: 10 open PRs maximum
+- GitHub Actions: 5 open PRs maximum
+
+#### Customization
+
+**Add Reviewers/Assignees:**
+```yaml
+reviewers:
+  - "your-team-name"
+assignees:
+  - "maintainer-username"
+```
+
+**Ignore Specific Updates:**
+```yaml
+ignore:
+  - dependency-name: "react"
+    update-types: ["version-update:semver-major"]
+  - dependency-name: "typescript"
+    versions: ["5.0.0"]
+```
+
+**Add Custom Groups:**
+```yaml
+groups:
+  custom-group:
+    patterns:
+      - "package-prefix-*"
+      - "specific-package"
+    update-types:
+      - "minor"
+      - "patch"
+```
+
+#### Security Scanning
+
+Dependabot automatically:
+1. Scans for known vulnerabilities in dependencies
+2. Creates PRs for security updates (labeled `security`)
+3. Prioritizes security updates over regular updates
+4. Provides detailed vulnerability information in PR descriptions
+
+**View Security Alerts:**
+- Go to GitHub → Security → Dependabot alerts
+- Filter by severity, package, or status
+- Review and merge security update PRs
+
+#### Workflow Integration
+
+Dependabot PRs automatically trigger:
+- ✅ Unit tests
+- ✅ E2E tests
+- ✅ Accessibility audits
+- ✅ Visual regression tests
+- ✅ Lighthouse performance checks
+- ✅ Build validation
+
+**Auto-merge Requirements:**
+1. All CI checks must pass
+2. No merge conflicts
+3. Approved by required reviewers (if configured)
+
+#### Manual Trigger
+
+**Trigger updates manually:**
+1. Go to GitHub → Insights → Dependency graph
+2. Click "Dependabot" tab
+3. Click "Check for updates" button
+4. Review and merge created PRs
+
+**Or via GitHub CLI:**
+```bash
+gh api repos/{owner}/{repo}/dependabot/updates \
+  -X POST \
+  -F package_ecosystem=npm
+```
+
+#### Best Practices
+
+1. **Review Grouped PRs**: Check all packages in a group before merging
+2. **Test Locally**: For major updates, test locally before merging
+3. **Monitor Dashboard**: Use test dashboard to track update impact
+4. **Stagger Merges**: Don't merge all PRs at once
+5. **Read Changelogs**: Review breaking changes in major updates
+
+#### Commit Message Format
+
+Dependabot uses consistent commit message formatting:
+
+- Production dependencies: `chore(deps): update package-name to v1.2.3`
+- Dev dependencies: `chore(deps-dev): update package-name to v1.2.3`
+- GitHub Actions: `chore(ci): update actions/checkout to v4`
+
 ## Best Practices
 
 1. **Keep workflows fast**
