@@ -20,6 +20,16 @@ const DebugPanel = ({
   onClearOverride 
 }: DebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    // Wait for animation to complete before unmounting
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 300); // Match animation duration
+  };
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -27,11 +37,14 @@ const DebugPanel = ({
       // Cmd/Ctrl + D: Toggle debug panel
       if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
         e.preventDefault();
-        const newState = !isOpen;
-        setIsOpen(newState);
+        if (isOpen) {
+          handleClose();
+        } else {
+          setIsOpen(true);
+        }
         console.log('🔧 Debug Panel: Toggled via keyboard shortcut (Cmd/Ctrl + D)');
         toast({
-          title: newState ? "Debug Panel Opened" : "Debug Panel Closed",
+          title: isOpen ? "Debug Panel Closed" : "Debug Panel Opened",
           description: "Press Cmd/Ctrl + D to toggle",
           duration: 2000,
         });
@@ -88,14 +101,17 @@ const DebugPanel = ({
 
       {/* Debug panel */}
       {isOpen && (
-        <div className="fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 animate-enter">
+        <div className={cn(
+          "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700",
+          isClosing ? "animate-exit" : "animate-enter"
+        )}>
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-sm flex items-center gap-2">
               <Settings className="h-4 w-4" />
               Animation Debug
             </h3>
             <Button
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
               variant="ghost"
               size="icon"
               className="h-6 w-6 text-gray-400 hover:text-white"
