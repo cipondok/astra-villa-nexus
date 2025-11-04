@@ -307,12 +307,15 @@ User Agent: ${navigator.userAgent}
           {/* Backdrop blur overlay */}
           <div 
             className={cn(
-              "fixed inset-0 z-[99998] bg-black/20 backdrop-blur-sm"
+              "fixed inset-0 z-[99998] bg-black/20 backdrop-blur-sm transition-shadow duration-1000",
+              isOverridden && "shadow-[inset_0_0_80px_rgba(251,191,36,0.15)]"
             )}
             style={{
               animation: isClosing 
                 ? 'backdropOut 0.3s ease-out forwards'
-                : 'backdropIn 0.3s ease-out forwards'
+                : isOverridden
+                  ? 'backdropIn 0.3s ease-out forwards, backdropGlowPulse 3s ease-in-out infinite'
+                  : 'backdropIn 0.3s ease-out forwards'
             }}
             onClick={handleClose}
           >
@@ -335,6 +338,14 @@ User Agent: ${navigator.userAgent}
                 to {
                   opacity: 0;
                   backdrop-filter: blur(0px);
+                }
+              }
+              @keyframes backdropGlowPulse {
+                0%, 100% {
+                  box-shadow: inset 0 0 80px rgba(251, 191, 36, 0.15);
+                }
+                50% {
+                  box-shadow: inset 0 0 120px rgba(251, 191, 36, 0.25);
                 }
               }
             `}</style>
