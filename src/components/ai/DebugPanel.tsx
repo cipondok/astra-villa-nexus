@@ -117,11 +117,22 @@ User Agent: ${navigator.userAgent}
           duration: 2000,
         });
       }
+      
+      // Cmd/Ctrl + C: Copy debug info (only when panel is open)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'c' && isOpen) {
+        // Only override if no text is selected
+        const selection = window.getSelection();
+        if (!selection || selection.toString().length === 0) {
+          e.preventDefault();
+          handleCopyDebugInfo();
+          console.log('🔧 Debug Info: Copied via keyboard shortcut (Cmd/Ctrl + C)');
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onToggleMotion, onClearOverride, isOverridden, isOpen, prefersReducedMotion]);
+  }, [onToggleMotion, onClearOverride, isOverridden, isOpen, prefersReducedMotion, handleCopyDebugInfo]);
 
   // Only show in development
   if (process.env.NODE_ENV !== 'development') return null;
@@ -278,6 +289,10 @@ User Agent: ${navigator.userAgent}
                         <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">⌘/Ctrl + R</kbd>
                       </div>
                     )}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-muted-foreground">Copy debug info</span>
+                      <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">⌘/Ctrl + C</kbd>
+                    </div>
                   </div>
                 </div>
               </div>
