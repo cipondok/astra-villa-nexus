@@ -82,14 +82,17 @@ The debug panel appears only in development mode and provides:
 - **Override Indicator**: Visual warning when manual override is active
 - **Reset Button**: One-click return to system preferences
 - **Persistent Settings**: Override saved to localStorage across sessions
+- **Keyboard Shortcut**: Press `Cmd/Ctrl + D` to instantly toggle the panel open/closed
 
 ### Using the Debug Panel
 
-1. Click the ⚙️ Settings icon in the bottom-left corner
+1. **Open the panel**:
+   - Click the ⚙️ Settings icon in the bottom-left corner, OR
+   - Press `Cmd/Ctrl + D` on your keyboard
 2. The panel shows current animation state
 3. Click "Enable Animations" or "Disable Animations" to toggle
 4. Click "Reset to System Setting" to clear manual override
-5. Close the panel with the X button (your settings persist)
+5. Close the panel with the X button or `Cmd/Ctrl + D` (your settings persist)
 
 ## Visual Indicators
 
