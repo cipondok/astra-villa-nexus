@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon, Settings, BarChart3, TrendingUp } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon, Settings, BarChart3, TrendingUp, SlidersHorizontal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -51,6 +51,14 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [similarityScores, setSimilarityScores] = useState<Record<string, number>>({});
   const [similarityBreakdowns, setSimilarityBreakdowns] = useState<Record<string, any>>({});
   const [selectedPropertyBreakdown, setSelectedPropertyBreakdown] = useState<string | null>(null);
+  const [featureFilters, setFeatureFilters] = useState({
+    propertyType: 0,
+    style: 0,
+    architecture: 0,
+    bedrooms: 0,
+    amenities: 0
+  });
+  const [showFeatureFilters, setShowFeatureFilters] = useState(false);
   const [imageFeatures, setImageFeatures] = useState<any>(null);
   const [recognition, setRecognition] = useState<any>(null);
   const [similarityWeights, setSimilarityWeights] = useState({
@@ -668,22 +676,66 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setSimilarityScores({});
     setSimilarityBreakdowns({});
     setSelectedPropertyBreakdown(null);
+    setFeatureFilters({
+      propertyType: 0,
+      style: 0,
+      architecture: 0,
+      bedrooms: 0,
+      amenities: 0
+    });
+    setShowFeatureFilters(false);
     setImageFeatures(null);
     handleResetFilters();
   };
 
-  // Sort results by similarity score when in image search mode
-  const sortedResults = useMemo(() => {
-    if (searchMode !== 'image' || Object.keys(similarityScores).length === 0) {
-      return results;
+  // Filter results by feature scores
+  const filterByFeatureScores = useCallback((properties: any[]) => {
+    if (searchMode !== 'image' || Object.keys(similarityBreakdowns).length === 0) {
+      return properties;
     }
 
-    return [...results].sort((a, b) => {
+    const hasActiveFilters = Object.values(featureFilters).some(threshold => threshold > 0);
+    if (!hasActiveFilters) {
+      return properties;
+    }
+
+    return properties.filter(property => {
+      const breakdown = similarityBreakdowns[property.id];
+      if (!breakdown) return true;
+
+      // Check each feature filter
+      for (const [feature, threshold] of Object.entries(featureFilters)) {
+        if (threshold > 0) {
+          const featureScore = breakdown[feature] || 0;
+          const maxScore = similarityWeights[feature as keyof typeof similarityWeights];
+          const percentage = maxScore > 0 ? (featureScore / maxScore) * 100 : 0;
+          
+          if (percentage < threshold) {
+            return false;
+          }
+        }
+      }
+      
+      return true;
+    });
+  }, [searchMode, similarityBreakdowns, featureFilters, similarityWeights]);
+
+  // Sort results by similarity score when in image search mode
+  const sortedResults = useMemo(() => {
+    // First apply feature filters
+    const filtered = filterByFeatureScores(results);
+    
+    // Then sort by similarity
+    if (searchMode !== 'image' || Object.keys(similarityScores).length === 0) {
+      return filtered;
+    }
+
+    return [...filtered].sort((a, b) => {
       const scoreA = similarityScores[a.id] || 0;
       const scoreB = similarityScores[b.id] || 0;
       return scoreB - scoreA;
     });
-  }, [results, similarityScores, searchMode]);
+  }, [results, similarityScores, searchMode, filterByFeatureScores]);
 
   const replayVoiceCommand = (historyItem: { command: string; filters: any }) => {
     updateFilters(historyItem.filters);
@@ -1708,8 +1760,154 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   </Button>
                 </div>
               </div>
+              
+              {/* Feature-Specific Filters */}
+              {showFeatureFilters && (
+                <div className="mt-4 pt-4 border-t space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h5 className="font-semibold text-sm">Filter by Feature Match</h5>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setFeatureFilters({
+                        propertyType: 0,
+                        style: 0,
+                        architecture: 0,
+                        bedrooms: 0,
+                        amenities: 0
+                      })}
+                      className="text-xs h-6"
+                    >
+                      Clear All
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Show only properties scoring above these thresholds for each feature
+                  </p>
+
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs">Property Type Match</Label>
+                        <span className="text-xs font-medium">
+                          {featureFilters.propertyType > 0 ? `${featureFilters.propertyType}%+` : 'Any'}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[featureFilters.propertyType]}
+                        onValueChange={(value) => setFeatureFilters(prev => ({ ...prev, propertyType: value[0] }))}
+                        min={0}
+                        max={100}
+                        step={10}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs">Style Match</Label>
+                        <span className="text-xs font-medium">
+                          {featureFilters.style > 0 ? `${featureFilters.style}%+` : 'Any'}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[featureFilters.style]}
+                        onValueChange={(value) => setFeatureFilters(prev => ({ ...prev, style: value[0] }))}
+                        min={0}
+                        max={100}
+                        step={10}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs">Architecture Match</Label>
+                        <span className="text-xs font-medium">
+                          {featureFilters.architecture > 0 ? `${featureFilters.architecture}%+` : 'Any'}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[featureFilters.architecture]}
+                        onValueChange={(value) => setFeatureFilters(prev => ({ ...prev, architecture: value[0] }))}
+                        min={0}
+                        max={100}
+                        step={10}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs">Bedroom Count Match</Label>
+                        <span className="text-xs font-medium">
+                          {featureFilters.bedrooms > 0 ? `${featureFilters.bedrooms}%+` : 'Any'}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[featureFilters.bedrooms]}
+                        onValueChange={(value) => setFeatureFilters(prev => ({ ...prev, bedrooms: value[0] }))}
+                        min={0}
+                        max={100}
+                        step={10}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs">Amenities Match</Label>
+                        <span className="text-xs font-medium">
+                          {featureFilters.amenities > 0 ? `${featureFilters.amenities}%+` : 'Any'}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[featureFilters.amenities]}
+                        onValueChange={(value) => setFeatureFilters(prev => ({ ...prev, amenities: value[0] }))}
+                        min={0}
+                        max={100}
+                        step={10}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {Object.values(featureFilters).some(v => v > 0) && (
+                      <div className="bg-muted/50 rounded p-2 text-xs">
+                        <p className="font-medium mb-1">Active Filters:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {featureFilters.propertyType > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              Type {featureFilters.propertyType}%+
+                            </Badge>
+                          )}
+                          {featureFilters.style > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              Style {featureFilters.style}%+
+                            </Badge>
+                          )}
+                          {featureFilters.architecture > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              Arch {featureFilters.architecture}%+
+                            </Badge>
+                          )}
+                          {featureFilters.bedrooms > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              Beds {featureFilters.bedrooms}%+
+                            </Badge>
+                          )}
+                          {featureFilters.amenities > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              Amenities {featureFilters.amenities}%+
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+            )}
 
           {/* Advanced Filters Toggle */}
           <div className="flex items-center justify-between gap-4">
@@ -2015,6 +2213,30 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
       {/* Results */}
       <div className="space-y-4">
+        {/* Feature Filter Summary */}
+        {searchMode === 'image' && Object.values(featureFilters).some(v => v > 0) && (
+          <Alert>
+            <SlidersHorizontal className="h-4 w-4" />
+            <AlertDescription>
+              Showing {sortedResults.length} of {results.length} properties matching your feature filters
+              <Button
+                size="sm"
+                variant="link"
+                onClick={() => setFeatureFilters({
+                  propertyType: 0,
+                  style: 0,
+                  architecture: 0,
+                  bedrooms: 0,
+                  amenities: 0
+                })}
+                className="ml-2 h-auto p-0"
+              >
+                Clear filters
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
@@ -2535,7 +2757,23 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     className="w-24 h-24 object-cover rounded-lg border-2 border-primary"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold mb-1">Active Image Search</h4>
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="font-semibold">Active Image Search</h4>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setShowFeatureFilters(!showFeatureFilters)}
+                        className="h-7"
+                      >
+                        <SlidersHorizontal className="h-3 w-3 mr-1" />
+                        Feature Filters
+                        {Object.values(featureFilters).some(v => v > 0) && (
+                          <Badge variant="secondary" className="ml-2 h-5 px-1.5">
+                            {Object.values(featureFilters).filter(v => v > 0).length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </div>
                     <p className="text-sm text-muted-foreground mb-3">
                       Showing properties similar to your uploaded image
                     </p>
