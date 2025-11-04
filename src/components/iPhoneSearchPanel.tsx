@@ -117,6 +117,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     priceRange: '',
     bedrooms: '',
     bathrooms: '',
+    parking: '',
     minArea: '',
     maxArea: '',
     minPrice: 0,
@@ -791,6 +792,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
+  const parkingOptions = ['1', '2', '3', '4+'];
 
   // Rental duration options (1-12 months)
   const rentalDurationOptions = Array.from({ length: 12 }, (_, i) => ({
@@ -899,6 +901,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       priceRange: '',
       bedrooms: '',
       bathrooms: '',
+      parking: '',
       minArea: '',
       maxArea: '',
       minPrice: 0,
@@ -1895,6 +1898,67 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       }}
                     >
                       {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Parking Filter */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
+                    (filters.parking && filters.parking !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  )}
+                >
+                  <Car className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  {currentText.parking}
+                  {(filters.parking && filters.parking !== 'all') && (
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
+                align="start"
+                onCloseAutoFocus={(e) => e.preventDefault()}
+              >
+                <div className="space-y-1">
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                    {currentText.parking}
+                  </div>
+                  <Button
+                    variant={(!filters.parking || filters.parking === 'all') ? "default" : "ghost"}
+                    size="sm"
+                    className={cn(
+                      "w-full justify-start h-8 text-xs",
+                      (!filters.parking || filters.parking === 'all') && "bg-primary text-primary-foreground"
+                    )}
+                    onClick={() => {
+                      handleFilterChange('parking', 'all');
+                    }}
+                  >
+                    {currentText.any}
+                  </Button>
+                  {parkingOptions.map((option) => (
+                    <Button
+                      key={option}
+                      variant={filters.parking === option ? "default" : "ghost"}
+                      size="sm"
+                      className={cn(
+                        "w-full justify-start h-8 text-xs",
+                        filters.parking === option && "bg-primary text-primary-foreground"
+                      )}
+                      onClick={() => {
+                        handleFilterChange('parking', option);
+                      }}
+                    >
+                      {option}
                     </Button>
                   ))}
                 </div>
