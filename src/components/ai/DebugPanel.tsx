@@ -91,7 +91,7 @@ const DebugPanel = ({
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full bg-gray-800 hover:bg-gray-700 shadow-lg"
+          className="fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full bg-gray-800 hover:bg-gray-700 shadow-lg hover-scale"
           size="icon"
           title="Animation Debug Panel"
         >
