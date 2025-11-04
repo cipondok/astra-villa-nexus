@@ -3,6 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Settings, X, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 import OnboardingTooltip from './OnboardingTooltip';
 
@@ -89,42 +95,62 @@ const DebugPanel = ({
       
       {/* Toggle button */}
       {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className={cn(
-            "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group hover:shadow-[0_0_20px_rgba(156,163,175,0.5)] transition-all duration-300 relative",
-            isOverridden 
-              ? "bg-yellow-800/80 hover:bg-yellow-700/80" 
-              : "bg-gray-800 hover:bg-gray-700"
-          )}
-          style={{ 
-            animation: 'slideUpFade 0.5s ease-out 500ms both'
-          }}
-          size="icon"
-          title="Animation Debug Panel"
-        >
-          {isOverridden && (
-            <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
-          )}
-          <style>{`
-            @keyframes slideUpFade {
-              from {
-                opacity: 0;
-                transform: translateY(20px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-          `}</style>
-          <span className={cn(
-            "transition-transform duration-300 group-hover:rotate-90 inline-block animate-bounce",
-            isOverridden && "pulse"
-          )} style={{ animationIterationCount: '3', animationDuration: '1s' }}>
-            <Settings className="h-4 w-4 text-white" />
-          </span>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                className={cn(
+                  "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group hover:shadow-[0_0_20px_rgba(156,163,175,0.5)] transition-all duration-300 relative",
+                  isOverridden 
+                    ? "bg-yellow-800/80 hover:bg-yellow-700/80" 
+                    : "bg-gray-800 hover:bg-gray-700"
+                )}
+                style={{ 
+                  animation: 'slideUpFade 0.5s ease-out 500ms both'
+                }}
+                size="icon"
+              >
+                {isOverridden && (
+                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
+                )}
+                <style>{`
+                  @keyframes slideUpFade {
+                    from {
+                      opacity: 0;
+                      transform: translateY(20px);
+                    }
+                    to {
+                      opacity: 1;
+                      transform: translateY(0);
+                    }
+                  }
+                `}</style>
+                <span className={cn(
+                  "transition-transform duration-300 group-hover:rotate-90 inline-block animate-bounce",
+                  isOverridden && "pulse"
+                )} style={{ animationIterationCount: '3', animationDuration: '1s' }}>
+                  <Settings className="h-4 w-4 text-white" />
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="max-w-xs">
+              <div className="space-y-1">
+                <p className="font-semibold">
+                  {isOverridden ? "⚠️ Manual Override Active" : "Animation Debug Panel"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Animations are currently <span className="font-semibold">{prefersReducedMotion ? "OFF" : "ON"}</span>
+                </p>
+                {isOverridden && (
+                  <p className="text-xs text-yellow-400">
+                    Click to manage override settings
+                  </p>
+                )}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
 
       {/* Debug panel */}
