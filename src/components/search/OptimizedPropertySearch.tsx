@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -109,6 +109,12 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const handleSearchBlur = () => {
     // Delay to allow click on recent search items
     setTimeout(() => setShowRecentSearches(false), 200);
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    updateFilters({ searchText: undefined });
+    setShowRecentSearches(false);
   };
 
   const highlightMatch = (text: string, query: string) => {
@@ -437,8 +443,17 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
-              className="pr-10"
+              className={searchInput ? "pr-20" : "pr-10"}
             />
+            {searchInput && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-10 top-1/2 transform -translate-y-1/2 h-5 w-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+              </button>
+            )}
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             
             {/* Search Suggestions */}
