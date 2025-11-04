@@ -2009,7 +2009,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         {currentFilters.facilities?.filter((f: any) => 
                           ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'balcony_terrace', 'pet_friendly', 'clubhouse', 'tennis_court', 'parking_space', 'near_transit', 'walk_bike_score', 'near_parks', 'waterfront_view'].includes(f.id)
                         ).map((facility: any) => (
-                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                          <div key={facility.id} className={cn(
+                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
+                            filters.facilities.includes(facility.id)
+                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
+                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+                          )}>
                             <Checkbox
                               id={`facility-${facility.id}`}
                               checked={filters.facilities.includes(facility.id)}
@@ -2019,11 +2024,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                   : filters.facilities.filter((f: string) => f !== facility.id);
                                 handleFilterChange('facilities', newFacilities);
                               }}
-                              className="h-4 w-4"
+                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                             />
                             <label
                               htmlFor={`facility-${facility.id}`}
-                              className="text-xs cursor-pointer flex items-center gap-1"
+                              className={cn(
+                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
+                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
+                              )}
                             >
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
@@ -2039,7 +2047,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         {currentFilters.facilities?.filter((f: any) => 
                           ['air_conditioning', 'heating', 'internet_wifi', 'laundry', 'washing_machine', 'dishwasher', 'refrigerator', 'stove_oven', 'microwave', 'bedding_linens', 'kitchen_utensils', 'utilities_included', 'trash_recycling', 'snow_removal', 'pest_control', 'onsite_maintenance'].includes(f.id)
                         ).map((facility: any) => (
-                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                          <div key={facility.id} className={cn(
+                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
+                            filters.facilities.includes(facility.id)
+                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
+                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+                          )}>
                             <Checkbox
                               id={`facility-${facility.id}`}
                               checked={filters.facilities.includes(facility.id)}
@@ -2049,11 +2062,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                   : filters.facilities.filter((f: string) => f !== facility.id);
                                 handleFilterChange('facilities', newFacilities);
                               }}
-                              className="h-4 w-4"
+                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                             />
                             <label
                               htmlFor={`facility-${facility.id}`}
-                              className="text-xs cursor-pointer flex items-center gap-1"
+                              className={cn(
+                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
+                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
+                              )}
                             >
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
@@ -2069,7 +2085,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         {currentFilters.facilities?.filter((f: any) => 
                           ['security_system', 'cctv_surveillance', 'elevator_lift', 'backup_generator', 'wheelchair_accessible', 'ground_floor', 'grab_bars', 'smoke_free', 'gated_community'].includes(f.id)
                         ).map((facility: any) => (
-                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                          <div key={facility.id} className={cn(
+                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
+                            filters.facilities.includes(facility.id)
+                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
+                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+                          )}>
                             <Checkbox
                               id={`facility-${facility.id}`}
                               checked={filters.facilities.includes(facility.id)}
@@ -2079,11 +2100,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                   : filters.facilities.filter((f: string) => f !== facility.id);
                                 handleFilterChange('facilities', newFacilities);
                               }}
-                              className="h-4 w-4"
+                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                             />
                             <label
                               htmlFor={`facility-${facility.id}`}
-                              className="text-xs cursor-pointer flex items-center gap-1"
+                              className={cn(
+                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
+                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
+                              )}
                             >
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
@@ -2099,7 +2123,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         {currentFilters.facilities?.filter((f: any) => 
                           ['gym_fitness', 'furnished', 'concierge', 'rooftop_lounge', 'sauna_spa', 'coworking', 'ev_charging', 'storage_unit', 'bike_storage', 'guest_suite'].includes(f.id)
                         ).map((facility: any) => (
-                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                          <div key={facility.id} className={cn(
+                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
+                            filters.facilities.includes(facility.id)
+                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
+                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+                          )}>
                             <Checkbox
                               id={`facility-${facility.id}`}
                               checked={filters.facilities.includes(facility.id)}
@@ -2109,11 +2138,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                   : filters.facilities.filter((f: string) => f !== facility.id);
                                 handleFilterChange('facilities', newFacilities);
                               }}
-                              className="h-4 w-4"
+                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                             />
                             <label
                               htmlFor={`facility-${facility.id}`}
-                              className="text-xs cursor-pointer flex items-center gap-1"
+                              className={cn(
+                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
+                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
+                              )}
                             >
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
@@ -2129,7 +2161,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         {currentFilters.facilities?.filter((f: any) => 
                           ['smart_thermostat', 'keyless_entry', 'video_doorbell', 'smart_lighting'].includes(f.id)
                         ).map((facility: any) => (
-                          <div key={facility.id} className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                          <div key={facility.id} className={cn(
+                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
+                            filters.facilities.includes(facility.id)
+                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
+                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+                          )}>
                             <Checkbox
                               id={`facility-${facility.id}`}
                               checked={filters.facilities.includes(facility.id)}
@@ -2139,11 +2176,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                                   : filters.facilities.filter((f: string) => f !== facility.id);
                                 handleFilterChange('facilities', newFacilities);
                               }}
-                              className="h-4 w-4"
+                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                             />
                             <label
                               htmlFor={`facility-${facility.id}`}
-                              className="text-xs cursor-pointer flex items-center gap-1"
+                              className={cn(
+                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
+                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
+                              )}
                             >
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
@@ -3090,16 +3130,31 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 
                 <div className={cn("grid gap-2", isMobile ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3")}>
                   {currentFilters.features.map((feature) => (
-                    <div key={feature.id} className={cn("flex items-center bg-white/50 dark:bg-purple-950/20 rounded-lg hover:bg-white/80 dark:hover:bg-purple-950/30 transition-colors", isMobile ? "space-x-1.5 p-2" : "space-x-2 p-2.5")}>
+                    <div key={feature.id} className={cn(
+                      "flex items-center rounded-lg transition-all cursor-pointer border-2",
+                      isMobile ? "space-x-1.5 p-2" : "space-x-2 p-2.5",
+                      filters.features.includes(feature.id)
+                        ? "bg-purple-500/30 dark:bg-purple-500/40 border-purple-600 shadow-lg"
+                        : "bg-white/50 dark:bg-purple-950/20 border-transparent hover:bg-white/80 dark:hover:bg-purple-950/30"
+                    )}>
                       <Checkbox
                         id={feature.id}
                         checked={filters.features.includes(feature.id)}
                         onCheckedChange={() => handleFeatureToggle(feature.id)}
-                        className={cn("border-purple-300 dark:border-purple-700 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")}
+                        className={cn(
+                          "border-2 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600",
+                          isMobile ? "h-4.5 w-4.5" : "h-5 w-5"
+                        )}
                       />
                       <Label
                         htmlFor={feature.id}
-                        className={cn("font-normal cursor-pointer flex items-center gap-1 text-purple-700 dark:text-purple-300", isMobile ? "text-[10px]" : "text-xs")}
+                        className={cn(
+                          "cursor-pointer flex items-center gap-1",
+                          isMobile ? "text-[10px]" : "text-xs",
+                          filters.features.includes(feature.id)
+                            ? "font-semibold text-purple-900 dark:text-purple-100"
+                            : "font-normal text-purple-700 dark:text-purple-300"
+                        )}
                       >
                         <span className={cn(isMobile ? "text-xs" : "text-sm")}>{feature.icon}</span>
                         <span>{feature.label}</span>
