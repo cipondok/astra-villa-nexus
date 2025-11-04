@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Settings, X, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 
 interface DebugPanelProps {
@@ -25,8 +26,14 @@ const DebugPanel = ({
       // Cmd/Ctrl + D: Toggle debug panel
       if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
         e.preventDefault();
-        setIsOpen(prev => !prev);
+        const newState = !isOpen;
+        setIsOpen(newState);
         console.log('🔧 Debug Panel: Toggled via keyboard shortcut (Cmd/Ctrl + D)');
+        toast({
+          title: newState ? "Debug Panel Opened" : "Debug Panel Closed",
+          description: "Press Cmd/Ctrl + D to toggle",
+          duration: 2000,
+        });
       }
       
       // Cmd/Ctrl + A: Toggle animations directly
@@ -34,6 +41,11 @@ const DebugPanel = ({
         e.preventDefault();
         onToggleMotion();
         console.log('🔧 Animation Toggle: Triggered via keyboard shortcut (Cmd/Ctrl + A)');
+        toast({
+          title: prefersReducedMotion ? "Animations Enabled" : "Animations Disabled",
+          description: "Press Cmd/Ctrl + A to toggle",
+          duration: 2000,
+        });
       }
       
       // Cmd/Ctrl + R: Reset to system settings
@@ -41,12 +53,17 @@ const DebugPanel = ({
         e.preventDefault();
         onClearOverride();
         console.log('🔧 Reset Override: Triggered via keyboard shortcut (Cmd/Ctrl + R)');
+        toast({
+          title: "Reset to System Settings",
+          description: "Manual override cleared",
+          duration: 2000,
+        });
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onToggleMotion, onClearOverride, isOverridden]);
+  }, [onToggleMotion, onClearOverride, isOverridden, isOpen, prefersReducedMotion]);
 
   // Only show in development
   if (process.env.NODE_ENV !== 'development') return null;
