@@ -163,6 +163,46 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     });
   };
 
+  // Keyboard shortcuts
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // F key - Toggle filters
+      if (e.key === 'f' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        // Only trigger if not typing in an input
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          setShowFilters(prev => !prev);
+        }
+      }
+      
+      // Ctrl+S or Cmd+S - Save search
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        if (activeFilterCount > 0 || searchInput) {
+          e.preventDefault();
+          setSaveDialogOpen(true);
+        }
+      }
+      
+      // Ctrl+X or Cmd+X - Clear all filters
+      if ((e.ctrlKey || e.metaKey) && e.key === 'x') {
+        if (activeFilterCount > 0 || searchInput || filters.sortBy) {
+          e.preventDefault();
+          handleResetFilters();
+        }
+      }
+      
+      // Escape - Close dialogs/popovers
+      if (e.key === 'Escape') {
+        setSaveDialogOpen(false);
+        setSavedSearchesOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeFilterCount, searchInput, filters.sortBy]);
+
   const SkeletonCard = () => (
     <Card className="h-48">
       <CardContent className="p-4">
@@ -186,6 +226,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <div className="flex items-center gap-2">
               <Search className="h-5 w-5" />
               Optimized Property Search
+              <Badge variant="secondary" className="text-xs font-normal">
+                Shortcuts: F (filters) • Ctrl+S (save) • Ctrl+X (clear)
+              </Badge>
             </div>
             {showAnalytics && (
               <div className="flex items-center gap-4 text-sm">
