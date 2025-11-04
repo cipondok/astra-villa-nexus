@@ -135,18 +135,35 @@ const DebugPanel = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" className="max-w-xs">
-              <div className="space-y-1">
-                <p className="font-semibold">
-                  {isOverridden ? "⚠️ Manual Override Active" : "Animation Debug Panel"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Animations are currently <span className="font-semibold">{prefersReducedMotion ? "OFF" : "ON"}</span>
-                </p>
-                {isOverridden && (
-                  <p className="text-xs text-yellow-400">
-                    Click to manage override settings
+              <div className="space-y-2">
+                <div>
+                  <p className="font-semibold">
+                    {isOverridden ? "⚠️ Manual Override Active" : "Animation Debug Panel"}
                   </p>
-                )}
+                  <p className="text-xs text-muted-foreground">
+                    Animations are currently <span className="font-semibold">{prefersReducedMotion ? "OFF" : "ON"}</span>
+                  </p>
+                </div>
+                
+                <div className="pt-1 border-t border-border space-y-1">
+                  <p className="text-xs font-semibold text-muted-foreground">Shortcuts:</p>
+                  <div className="space-y-0.5 text-xs">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-muted-foreground">Toggle panel</span>
+                      <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">⌘/Ctrl + D</kbd>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-muted-foreground">Toggle animations</span>
+                      <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">⌘/Ctrl + A</kbd>
+                    </div>
+                    {isOverridden && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-muted-foreground">Reset override</span>
+                        <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">⌘/Ctrl + R</kbd>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </TooltipContent>
           </Tooltip>
