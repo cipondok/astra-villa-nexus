@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import PropertyAdvancedFilters from '@/components/search/PropertyAdvancedFilters';
 import PropertySearchResults from '@/components/search/PropertySearchResults';
+import PropertyMapView from '@/components/search/PropertyMapView';
 import { usePropertySearch } from '@/hooks/usePropertySearch';
 import { BaseProperty } from '@/types/property';
 import { useAlert } from '@/contexts/AlertContext';
@@ -207,7 +208,6 @@ const PropertySearch = () => {
                       variant={viewMode === 'map' ? 'default' : 'ghost'}
                       onClick={() => setViewMode('map')}
                       className="rounded-none px-3"
-                      disabled
                     >
                       <Map className="h-4 w-4" />
                     </Button>
@@ -230,16 +230,23 @@ const PropertySearch = () => {
         )}
 
         {/* Search Results */}
-        <PropertySearchResults
-          properties={searchResults || []}
-          language={language}
-          isLoading={isLoading}
-          onPropertyClick={handlePropertyClick}
-          onSaveProperty={handleSaveProperty}
-          onShareProperty={handleShareProperty}
-          onView3D={handleView3D}
-          savedPropertyIds={savedProperties}
-        />
+        {viewMode === 'map' ? (
+          <PropertyMapView
+            properties={searchResults || []}
+            onPropertyClick={handlePropertyClick}
+          />
+        ) : (
+          <PropertySearchResults
+            properties={searchResults || []}
+            language={language}
+            isLoading={isLoading}
+            onPropertyClick={handlePropertyClick}
+            onSaveProperty={handleSaveProperty}
+            onShareProperty={handleShareProperty}
+            onView3D={handleView3D}
+            savedPropertyIds={savedProperties}
+          />
+        )}
       </div>
     </div>
   );
