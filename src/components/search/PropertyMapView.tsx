@@ -7,6 +7,8 @@ import { BaseProperty } from '@/types/property';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
 import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2 } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
 
@@ -27,6 +29,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const [drawMode, setDrawMode] = useState<'none' | 'polygon' | 'circle'>('none');
   const [filteredCount, setFilteredCount] = useState<number | null>(null);
   const [drawnArea, setDrawnArea] = useState<any>(null);
+  const [circleRadius, setCircleRadius] = useState<number>(2000); // Default 2km in meters
 
   // Initialize map
   useEffect(() => {
@@ -299,17 +302,26 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     setDrawnArea(null);
     setFilteredCount(null);
 
+    updateCircle();
+  };
+
+  // Update circle with current radius
+  const updateCircle = () => {
+    if (!draw.current || !map.current) return;
+
+    // Clear existing circle
+    draw.current.deleteAll();
+
     // Get center of current map view
     const center = map.current.getCenter();
-    const radius = 2000; // 2km radius in meters
     const points = 64;
     const coordinates: number[][] = [];
 
-    // Create circle as polygon
+    // Create circle as polygon using current radius
     for (let i = 0; i <= points; i++) {
       const angle = (i * 360) / points;
-      const dx = radius * Math.cos(angle * Math.PI / 180) / 111320;
-      const dy = radius * Math.sin(angle * Math.PI / 180) / (111320 * Math.cos(center.lat * Math.PI / 180));
+      const dx = circleRadius * Math.cos(angle * Math.PI / 180) / 111320;
+      const dy = circleRadius * Math.sin(angle * Math.PI / 180) / (111320 * Math.cos(center.lat * Math.PI / 180));
       coordinates.push([center.lng + dx, center.lat + dy]);
     }
 
@@ -325,6 +337,23 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
 
     draw.current.add(circleFeature);
     handleDrawCreate({ features: [circleFeature] });
+  };
+
+  // Handle radius change
+  const handleRadiusChange = (value: number[]) => {
+    setCircleRadius(value[0]);
+    if (drawMode === 'circle' && drawnArea) {
+      // Redraw circle with new radius
+      setTimeout(() => updateCircle(), 0);
+    }
+  };
+
+  // Format radius for display
+  const formatRadius = (meters: number): string => {
+    if (meters >= 1000) {
+      return `${(meters / 1000).toFixed(1)} km`;
+    }
+    return `${meters} m`;
   };
 
   // Clear drawn area
@@ -399,9 +428,9 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       <div ref={mapContainer} className="absolute inset-0" />
 
       {/* Drawing Tools */}
-      <Card className="absolute top-4 left-4 p-2 shadow-lg z-10">
-        <div className="flex flex-col gap-2">
-          <div className="text-xs font-semibold text-muted-foreground mb-1 px-1">
+      <Card className="absolute top-4 left-4 p-3 shadow-lg z-10 w-64">
+        <div className="flex flex-col gap-3">
+          <div className="text-xs font-semibold text-muted-foreground">
             Draw Search Area
           </div>
           <Button
@@ -422,6 +451,31 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
             <Circle className="h-4 w-4 mr-2" />
             Circle
           </Button>
+          
+          {/* Radius Slider for Circle */}
+          {drawMode === 'circle' && (
+            <div className="pt-2 border-t space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Search Radius</Label>
+                <Badge variant="secondary" className="text-xs font-mono">
+                  {formatRadius(circleRadius)}
+                </Badge>
+              </div>
+              <Slider
+                value={[circleRadius]}
+                onValueChange={handleRadiusChange}
+                min={500}
+                max={10000}
+                step={100}
+                className="w-full"
+              />
+              <div className="flex justify-between text-[10px] text-muted-foreground">
+                <span>500m</span>
+                <span>10km</span>
+              </div>
+            </div>
+          )}
+
           {drawnArea && (
             <Button
               size="sm"
@@ -430,7 +484,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
               className="w-full justify-start"
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              Clear
+              Clear Area
             </Button>
           )}
         </div>
