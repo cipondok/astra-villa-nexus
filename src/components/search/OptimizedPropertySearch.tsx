@@ -9,8 +9,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface OptimizedPropertySearchProps {
   onResultSelect?: (propertyId: string) => void;
@@ -20,6 +23,11 @@ interface OptimizedPropertySearchProps {
 const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: OptimizedPropertySearchProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchInput, setSearchInput] = useState('');
+  const [savedSearches, setSavedSearches] = useState<Array<{ name: string; filters: any }>>([]);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [savedSearchesOpen, setSavedSearchesOpen] = useState(false);
+  const [searchName, setSearchName] = useState('');
+  const { toast } = useToast();
   
   const {
     searchResponse,
@@ -34,6 +42,14 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     hasPrevPage,
     clearCache
   } = useOptimizedPropertySearch();
+
+  // Load saved searches from localStorage on mount
+  React.useEffect(() => {
+    const saved = localStorage.getItem('savedSearches');
+    if (saved) {
+      setSavedSearches(JSON.parse(saved));
+    }
+  }, []);
 
   const { results, totalCount, page, totalPages, isLoading, error, responseTime, cacheHit } = searchResponse;
 
@@ -94,6 +110,57 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       sortBy: undefined
     });
     setSearchInput('');
+  };
+
+  const handleSaveSearch = () => {
+    if (!searchName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a name for this search",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newSearch = {
+      name: searchName.trim(),
+      filters: { ...filters, searchText: searchInput }
+    };
+
+    const updated = [...savedSearches, newSearch];
+    setSavedSearches(updated);
+    localStorage.setItem('savedSearches', JSON.stringify(updated));
+    
+    toast({
+      title: "Search Saved",
+      description: `"${searchName}" has been saved successfully`
+    });
+
+    setSearchName('');
+    setSaveDialogOpen(false);
+  };
+
+  const handleApplySavedSearch = (search: { name: string; filters: any }) => {
+    const { searchText, ...restFilters } = search.filters;
+    setSearchInput(searchText || '');
+    updateFilters(restFilters);
+    setSavedSearchesOpen(false);
+    
+    toast({
+      title: "Search Applied",
+      description: `Applied "${search.name}" filters`
+    });
+  };
+
+  const handleDeleteSavedSearch = (index: number) => {
+    const updated = savedSearches.filter((_, i) => i !== index);
+    setSavedSearches(updated);
+    localStorage.setItem('savedSearches', JSON.stringify(updated));
+    
+    toast({
+      title: "Search Deleted",
+      description: "Saved search has been removed"
+    });
   };
 
   const SkeletonCard = () => (
@@ -193,6 +260,86 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 >
                   Reset All
                 </Button>
+              )}
+
+              <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    disabled={!activeFilterCount && !searchInput}
+                  >
+                    <Save className="h-4 w-4" />
+                    Save Search
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Save Search</DialogTitle>
+                    <DialogDescription>
+                      Give this search combination a name to quickly access it later.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <Input
+                    placeholder="e.g., Beach Villas Under 1M"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSaveSearch()}
+                  />
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSaveSearch}>Save</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              {savedSearches.length > 0 && (
+                <Popover open={savedSearchesOpen} onOpenChange={setSavedSearchesOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <BookmarkCheck className="h-4 w-4" />
+                      Saved ({savedSearches.length})
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="start">
+                    <div className="p-4 border-b">
+                      <h4 className="font-semibold text-sm">Saved Searches</h4>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Click to apply a saved search
+                      </p>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {savedSearches.map((search, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors border-b last:border-0"
+                        >
+                          <button
+                            onClick={() => handleApplySavedSearch(search)}
+                            className="flex-1 text-left text-sm font-medium hover:text-primary transition-colors"
+                          >
+                            {search.name}
+                          </button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteSavedSearch(index)}
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
               )}
             </div>
 
