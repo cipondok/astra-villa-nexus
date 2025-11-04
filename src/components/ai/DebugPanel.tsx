@@ -148,7 +148,7 @@ const DebugPanel = ({
               <Button
                 onClick={onToggleMotion}
                 className={cn(
-                  "w-full text-xs h-8 hover-scale",
+                  "w-full text-xs h-8 hover-scale transition-colors duration-300",
                   prefersReducedMotion 
                     ? "bg-green-600 hover:bg-green-700" 
                     : "bg-orange-600 hover:bg-orange-700"
