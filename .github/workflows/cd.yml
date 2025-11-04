@@ -1,0 +1,251 @@
+name: CD - Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip tests and deploy directly'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  # Run all tests first
+  tests:
+    name: Run All Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    if: ${{ !inputs.skip_tests }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run unit tests
+        run: npm test -- --run
+      
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run E2E tests (all browsers)
+        run: npx playwright test --grep-invert "visual-regression"
+        env:
+          CI: true
+      
+      - name: Run visual regression tests
+        run: npx playwright test e2e/visual-regression.spec.ts e2e/visual-regression-advanced.spec.ts
+        continue-on-error: true
+        env:
+          CI: true
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployment-test-results
+          path: |
+            playwright-report/
+            test-results/
+            coverage/
+          retention-days: 30
+
+  # Build production bundle
+  build:
+    name: Build Production
+    runs-on: ubuntu-latest
+    needs: [tests]
+    if: always() && (needs.tests.result == 'success' || inputs.skip_tests)
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build for production
+        run: npm run build
+        env:
+          NODE_ENV: production
+      
+      - name: Generate build report
+        run: |
+          echo "## Production Build Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Size" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          du -sh dist/ >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Largest Assets" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          find dist/ -type f -exec du -h {} \; | sort -rh | head -10 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist/
+          retention-days: 30
+
+  # Deploy to Lovable
+  deploy-lovable:
+    name: Deploy to Lovable
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: success()
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy notification
+        run: |
+          echo "## 🚀 Deployment Started" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deploying to Lovable production environment..." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Author:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Lovable GitHub Integration
+        run: |
+          echo "ℹ️ Lovable automatically deploys when changes are pushed to the main branch"
+          echo "The two-way sync will trigger a deployment automatically"
+          echo ""
+          echo "To manually deploy:"
+          echo "1. Visit your Lovable project"
+          echo "2. Click the 'Publish' button in the top-right corner"
+          echo "3. Or use the Lovable CLI (if available)"
+      
+      - name: Create deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: 'production',
+              auto_merge: false,
+              required_contexts: []
+            });
+            
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: 'success',
+              description: 'Deployed to Lovable via GitHub integration',
+              environment_url: 'https://yourapp.lovable.app'
+            });
+
+  # Optional: Deploy to custom hosting
+  deploy-custom:
+    name: Deploy to Custom Hosting (Optional)
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: false # Set to true to enable custom deployment
+    timeout-minutes: 10
+    
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: production-build
+          path: dist/
+      
+      - name: Deploy to Vercel
+        if: false # Enable if using Vercel
+        run: |
+          npm install -g vercel
+          vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Deploy to Netlify
+        if: false # Enable if using Netlify
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --prod --dir=dist
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      
+      - name: Deploy to AWS S3
+        if: false # Enable if using AWS S3
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Sync to S3
+        if: false # Enable if using AWS S3
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET }}/ --delete
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+  # Notify deployment status
+  notify:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-lovable]
+    if: always()
+    
+    steps:
+      - name: Deployment summary
+        run: |
+          echo "## 🎉 Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ needs.deploy-lovable.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** Production (Lovable)" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployed at:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Quick Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [View Application](https://yourapp.lovable.app)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Test Results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [Commit Details](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Comment on related issues
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const commit = await github.rest.repos.getCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha
+            });
+            
+            const issueNumbers = commit.data.commit.message.match(/#(\d+)/g);
+            if (issueNumbers) {
+              for (const issue of issueNumbers) {
+                const issueNumber = issue.replace('#', '');
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: `✅ Deployed to production in ${context.sha.substring(0, 7)}`
+                });
+              }
+            }

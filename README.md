@@ -192,6 +192,10 @@ bash scripts/visual-regression-report.sh                    # Run with detailed 
 # Update Visual Regression Baselines (when UI changes are intentional)
 bash scripts/update-screenshots.sh                          # Update all baseline screenshots
 npx playwright test --update-snapshots                      # Alternative: update all snapshots
+
+# Local CI Checks
+bash scripts/ci-local.sh                                    # Run all CI checks locally before pushing
+bash scripts/ci-debug.sh                                    # Interactive CI debugging tool
 ```
 
 ### Test Coverage
@@ -342,6 +346,7 @@ Unit tests are located next to the files they test with a `.test.ts` or `.test.t
 For detailed information about animations, performance optimizations, and accessibility features, see:
 
 📖 [Full Documentation](docs/CHAT_WIDGET_ANIMATIONS.md)
+📖 [CI/CD Setup Guide](docs/CI_CD_SETUP.md)
 
 ## Technologies
 
@@ -350,6 +355,118 @@ For detailed information about animations, performance optimizations, and access
 - Tailwind CSS
 - Framer Motion
 - Vite
+- Vitest (Unit Testing)
+- Playwright (E2E & Visual Regression Testing)
+- GitHub Actions (CI/CD)
+
+## CI/CD Pipeline
+
+This project includes a comprehensive CI/CD pipeline using GitHub Actions:
+
+### Workflows
+
+#### 1. **CI - Pull Request Checks** (`.github/workflows/ci.yml`)
+Runs on every pull request and push to `develop`:
+- ✅ Unit tests with coverage reporting
+- ✅ E2E tests across Chromium, Firefox, and WebKit
+- ✅ Visual regression testing
+- ✅ TypeScript type checking
+- ✅ Build verification
+- ✅ Automated test summary and PR comments
+
+#### 2. **CD - Deploy to Production** (`.github/workflows/cd.yml`)
+Runs on push to `main`:
+- ✅ Full test suite execution
+- ✅ Production build generation
+- ✅ Automatic deployment via Lovable's GitHub integration
+- ✅ Deployment status tracking
+- ✅ Notification on related issues
+
+#### 3. **Update Visual Baselines** (`.github/workflows/visual-baseline-update.yml`)
+Manual workflow to update screenshot baselines:
+- 🔄 Run via GitHub Actions UI
+- 🔄 Updates baseline screenshots
+- 🔄 Commits changes automatically
+
+#### 4. **Scheduled Tests** (`.github/workflows/scheduled-tests.yml`)
+Runs daily at 2 AM UTC:
+- 📅 Full test suite across multiple Node versions
+- 📅 Security audit (npm audit)
+- 📅 Dependency update checks
+- 📅 Automatic issue creation on failure
+
+### Setting Up CI/CD
+
+1. **Connect to GitHub:**
+   ```bash
+   # In Lovable editor, click GitHub → Connect to GitHub
+   # Authorize the Lovable GitHub App
+   # Create repository
+   ```
+
+2. **Workflows are automatically enabled** when you push to GitHub
+
+3. **Configure secrets (if needed):**
+   - Go to GitHub repo → Settings → Secrets and variables → Actions
+   - Add any required secrets (e.g., `CODECOV_TOKEN` for coverage reporting)
+
+4. **Customize deployment:**
+   - Edit `.github/workflows/cd.yml`
+   - Enable custom hosting options (Vercel, Netlify, AWS S3)
+   - Add required secrets for your hosting provider
+
+### Local CI Checks
+
+Run CI checks locally before pushing:
+
+```bash
+# Run all checks (recommended before pushing)
+bash scripts/ci-local.sh
+
+# Interactive debugging for specific checks
+bash scripts/ci-debug.sh
+```
+
+### Visual Regression Management
+
+When you intentionally change UI:
+
+```bash
+# Update baselines locally
+bash scripts/update-screenshots.sh
+
+# Or via GitHub Actions
+# Go to Actions → Update Visual Baselines → Run workflow
+```
+
+### CI/CD Features
+
+- **Fast execution**: Parallel test execution, smart caching
+- **Cross-browser**: Tests run on Chromium, Firefox, WebKit
+- **Visual regression**: Automatic screenshot comparison
+- **Code coverage**: Uploaded to Codecov (optional)
+- **Test artifacts**: Screenshots, traces, and reports preserved
+- **Smart notifications**: PR comments, issue mentions, deployment status
+- **Multi-environment**: Test on Node 18, 20, and 21
+- **Security scanning**: Daily dependency audits
+
+### Monitoring Test Results
+
+- **GitHub Actions UI**: View all workflow runs
+- **PR Checks**: See status directly on pull requests
+- **Test Reports**: Download HTML reports from artifacts
+- **Coverage Reports**: View coverage trends (if Codecov configured)
+- **Deployment Status**: Track via GitHub Deployments
+
+### Troubleshooting CI Failures
+
+1. **View detailed logs** in GitHub Actions
+2. **Download test artifacts** for screenshots and traces
+3. **Run locally** using `bash scripts/ci-debug.sh`
+4. **Check visual diffs** in test results artifacts
+5. **Review the troubleshooting docs** for common issues
+
+
 
 ## Deployment
 

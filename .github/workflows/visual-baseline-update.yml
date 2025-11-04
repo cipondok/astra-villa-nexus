@@ -1,0 +1,65 @@
+name: Update Visual Regression Baselines
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to update baselines for'
+        required: true
+        default: 'main'
+      commit_message:
+        description: 'Commit message for baseline update'
+        required: false
+        default: 'Update visual regression baselines'
+
+jobs:
+  update-baselines:
+    name: Update Visual Baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+      
+      - name: Run visual tests and update baselines
+        run: npx playwright test e2e/visual-regression.spec.ts e2e/visual-regression-advanced.spec.ts --update-snapshots
+        env:
+          CI: true
+          UPDATE_SNAPSHOTS: true
+      
+      - name: Commit updated baselines
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add e2e/**/*-snapshots/
+          git diff --staged --quiet || git commit -m "${{ inputs.commit_message }}"
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ inputs.branch }}
+      
+      - name: Create summary
+        run: |
+          echo "## ✅ Visual Baselines Updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ inputs.branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Updated at:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "New baseline screenshots have been committed to the repository." >> $GITHUB_STEP_SUMMARY
