@@ -326,10 +326,19 @@ scripts/
 ├── lighthouse-local.sh               # Run Lighthouse CI locally
 ├── performance-report.sh             # Generate performance report
 ├── ci-local.sh                       # Run all CI checks locally
-└── ci-debug.sh                       # Interactive CI debugger
+├── ci-debug.sh                       # Interactive CI debugger
+└── generate-dashboard-data.sh        # Generate dashboard data locally
 
 playwright.config.ts                  # Playwright configuration
 lighthouserc.js                       # Lighthouse CI configuration
+
+dashboard/                            # Test results dashboard
+├── index.html                        # Dashboard HTML
+├── styles.css                        # Dashboard styles
+├── dashboard.js                      # Dashboard controller
+├── charts.js                         # Chart configurations
+├── data-loader.js                    # Data loading utilities
+└── data/                             # Test data (generated)
 ```
 
 ### E2E Testing Features
@@ -548,6 +557,43 @@ bash scripts/update-screenshots.sh
 - **Test Reports**: Download HTML reports from artifacts
 - **Coverage Reports**: View coverage trends (if Codecov configured)
 - **Deployment Status**: Track via GitHub Deployments
+- **Test Dashboard**: Interactive dashboard at `https://<username>.github.io/<repo>/`
+
+### Test Results Dashboard
+
+An interactive dashboard displays comprehensive test metrics:
+
+**Features:**
+- 📊 Real-time test statistics and trends
+- 🔦 Lighthouse performance scores over time
+- ♿ Accessibility audit results
+- 📈 Code coverage trends
+- 👁️ Visual regression change gallery
+- 📦 Build size tracking
+
+**Accessing the Dashboard:**
+
+The dashboard is automatically deployed to GitHub Pages after each test run:
+```
+https://<your-username>.github.io/<your-repo>/
+```
+
+**Local Dashboard:**
+```bash
+# Generate dashboard data from local tests
+bash scripts/generate-dashboard-data.sh
+
+# Open dashboard
+open dashboard/index.html
+```
+
+**Dashboard Sections:**
+1. **Overview**: Test pass/fail rates, duration trends
+2. **Performance**: Lighthouse scores, Core Web Vitals
+3. **Accessibility**: WCAG violations, audit results
+4. **Coverage**: Line, branch, function coverage
+5. **Visual Regression**: Screenshot diffs, failure gallery
+6. **Build Size**: Bundle size trends, resource analysis
 
 ### Troubleshooting CI Failures
 
