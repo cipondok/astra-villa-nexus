@@ -46,6 +46,19 @@ npm run dev
 
 The app will be available at `http://localhost:8080`
 
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
 ### Testing Reduced Motion
 
 #### Option 1: Debug Panel (Recommended for Development)
@@ -122,11 +135,32 @@ src/
 ├── components/
 │   └── ai/
 │       ├── ResponsiveAIChatWidget.tsx  # Main chat widget
-│       └── DebugPanel.tsx              # Debug control panel
+│       ├── DebugPanel.tsx              # Debug control panel
+│       └── KeyboardShortcutsModal.tsx  # Shortcuts help modal
 ├── hooks/
 │   └── usePrefersReducedMotion.ts     # Accessibility hook
+├── test/
+│   ├── setup.ts                        # Test configuration
+│   └── globals.d.ts                    # TypeScript test types
 └── ...
+
+Tests:
+├── src/hooks/usePrefersReducedMotion.test.ts  # Hook unit tests
+└── src/components/ai/DebugPanel.test.tsx       # Component unit tests
 ```
+
+## Testing
+
+The project uses Vitest and React Testing Library for testing.
+
+### Test Coverage
+
+- **usePrefersReducedMotion Hook**: Tests system preference detection, manual override, localStorage persistence, and priority handling
+- **DebugPanel Component**: Tests UI rendering, button interactions, keyboard shortcuts, and environment-based visibility
+
+### Writing Tests
+
+Tests are located next to the files they test with a `.test.ts` or `.test.tsx` extension. All tests run in a jsdom environment with automatic cleanup after each test.
 
 ## Documentation
 
