@@ -29,6 +29,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [savedSearchesOpen, setSavedSearchesOpen] = useState(false);
   const [searchName, setSearchName] = useState('');
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
   const { toast } = useToast();
   
   const {
@@ -51,6 +53,11 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     if (saved) {
       setSavedSearches(JSON.parse(saved));
     }
+    
+    const recent = localStorage.getItem('recentSearches');
+    if (recent) {
+      setRecentSearches(JSON.parse(recent));
+    }
   }, []);
 
   const { results, totalCount, page, totalPages, isLoading, error, responseTime, cacheHit } = searchResponse;
@@ -59,11 +66,49 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setSearchInput(value);
     updateFilters({ searchText: value });
     fetchSuggestions(value);
+    setShowRecentSearches(false);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchInput(suggestion);
     updateFilters({ searchText: suggestion });
+    setShowRecentSearches(false);
+    addToRecentSearches(suggestion);
+  };
+
+  const handleRecentSearchClick = (query: string) => {
+    setSearchInput(query);
+    updateFilters({ searchText: query });
+    setShowRecentSearches(false);
+  };
+
+  const addToRecentSearches = (query: string) => {
+    if (!query.trim() || query.length < 2) return;
+    
+    const updated = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5);
+    setRecentSearches(updated);
+    localStorage.setItem('recentSearches', JSON.stringify(updated));
+  };
+
+  const clearRecentSearches = () => {
+    setRecentSearches([]);
+    localStorage.removeItem('recentSearches');
+    setShowRecentSearches(false);
+    toast({
+      title: "Recent Searches Cleared",
+      description: "Your search history has been removed"
+    });
+  };
+
+  const handleSearchFocus = () => {
+    if (!searchInput && recentSearches.length > 0) {
+      setShowRecentSearches(true);
+    }
+  };
+
+  const handleSearchBlur = () => {
+    // Delay to allow click on recent search items
+    setTimeout(() => setShowRecentSearches(false), 200);
   };
 
   const handleAmenityToggle = (amenity: string) => {
@@ -373,12 +418,14 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               placeholder="Search properties by location, title, or description..."
               value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
+              onFocus={handleSearchFocus}
+              onBlur={handleSearchBlur}
               className="pr-10"
             />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             
             {/* Search Suggestions */}
-            {suggestions.length > 0 && (
+            {suggestions.length > 0 && !showRecentSearches && (
               <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto rounded-md border border-border bg-popover shadow-lg">
                 {suggestions.map((suggestion, index) => (
                   <button
@@ -387,6 +434,33 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Recent Searches */}
+            {showRecentSearches && recentSearches.length > 0 && (
+              <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto rounded-md border border-border bg-popover shadow-lg">
+                <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/50">
+                  <span className="text-xs font-medium text-muted-foreground">Recent Searches</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearRecentSearches}
+                    className="h-6 text-xs hover:text-destructive"
+                  >
+                    Clear
+                  </Button>
+                </div>
+                {recentSearches.map((query, index) => (
+                  <button
+                    key={index}
+                    className="w-full text-left px-4 py-3 text-sm hover:bg-accent transition-colors border-b last:border-b-0 flex items-center gap-2"
+                    onClick={() => handleRecentSearchClick(query)}
+                  >
+                    <Clock className="h-3 w-3 text-muted-foreground" />
+                    {query}
                   </button>
                 ))}
               </div>
