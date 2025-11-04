@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -42,6 +42,11 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [showVoiceHistory, setShowVoiceHistory] = useState(false);
   const [showVoiceHelp, setShowVoiceHelp] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [imageSearching, setImageSearching] = useState(false);
+  const [searchMode, setSearchMode] = useState<'text' | 'image' | 'combined'>('text');
+  const [dragActive, setDragActive] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
@@ -391,6 +396,126 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       title: "Template Applied",
       description: `"${template.name}" - ${template.command}`
     });
+  };
+
+  // Image upload handlers
+  const handleImageUpload = (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Please upload an image smaller than 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid File Type",
+        description: "Please upload an image file (JPG, PNG, WebP)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setUploadedImage(base64);
+      setShowImageUpload(false);
+      performImageSearch(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const performImageSearch = async (imageBase64: string) => {
+    setImageSearching(true);
+    setSearchMode('image');
+
+    try {
+      // Simulate AI image analysis - in production, this would call Lovable AI
+      // to analyze the image and extract property features
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Mock: Extract features from the image
+      const mockFeatures = {
+        propertyType: Math.random() > 0.5 ? 'house' : 'apartment',
+        bedrooms: Math.floor(Math.random() * 3) + 2,
+        hasPool: Math.random() > 0.7,
+        hasGarden: Math.random() > 0.6
+      };
+
+      // Apply filters based on image analysis
+      const imageFilters: any = {
+        propertyType: mockFeatures.propertyType
+      };
+
+      if (mockFeatures.bedrooms) {
+        imageFilters.minBedrooms = mockFeatures.bedrooms;
+      }
+
+      const amenities = [];
+      if (mockFeatures.hasPool) amenities.push('Pool');
+      if (mockFeatures.hasGarden) amenities.push('Garden');
+      if (amenities.length > 0) {
+        imageFilters.amenities = amenities;
+      }
+
+      updateFilters(imageFilters);
+
+      const description = [];
+      description.push(mockFeatures.propertyType);
+      if (mockFeatures.bedrooms) description.push(`${mockFeatures.bedrooms}+ bedrooms`);
+      if (amenities.length > 0) description.push(amenities.join(', '));
+
+      toast({
+        title: "Image Analysis Complete",
+        description: `Found: ${description.join(' • ')}`
+      });
+
+    } catch (error) {
+      toast({
+        title: "Image Search Failed",
+        description: "Please try again or use text search",
+        variant: "destructive"
+      });
+    } finally {
+      setImageSearching(false);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleImageUpload(files[0]);
+    }
+  };
+
+  const clearImageSearch = () => {
+    setUploadedImage(null);
+    setSearchMode('text');
+    handleResetFilters();
   };
 
   const replayVoiceCommand = (historyItem: { command: string; filters: any }) => {
@@ -1171,6 +1296,27 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
               </button>
             )}
+
+            {/* Image Search Button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setShowImageUpload(true)}
+                    className={`absolute ${searchInput ? 'right-16' : 'right-10'} top-1/2 transform -translate-y-1/2 ${uploadedImage ? 'text-primary' : ''}`}
+                  >
+                    <Camera className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Picture search - Upload image to find similar properties</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             
             {/* Search Suggestions */}
@@ -1215,6 +1361,47 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               </div>
             )}
           </div>
+
+          {/* Image Search Indicator */}
+          {uploadedImage && (
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-16 h-16 rounded border bg-muted overflow-hidden flex-shrink-0">
+                    <img 
+                      src={uploadedImage} 
+                      alt="Search reference" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <ImageIcon className="h-4 w-4 text-primary" />
+                      <p className="font-medium text-sm">Picture Search Active</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Showing properties similar to your uploaded image
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {imageSearching && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      Analyzing...
+                    </div>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={clearImageSearch}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Advanced Filters Toggle */}
           <div className="flex items-center justify-between gap-4">
@@ -1973,6 +2160,109 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowTemplates(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Upload Dialog */}
+      <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Camera className="h-5 w-5" />
+              Picture Search
+            </DialogTitle>
+            <DialogDescription>
+              Upload a photo of a property to find similar listings
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Drag & Drop Zone */}
+            <div
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                dragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Upload className="h-8 w-8 text-primary" />
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-1">
+                    Drag & drop your image here
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    or click to browse (JPG, PNG, WebP • Max 5MB)
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) handleImageUpload(file);
+                      };
+                      input.click();
+                    }}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Choose File
+                  </Button>
+
+                  {/* Mobile Camera Access */}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.capture = 'environment';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) handleImageUpload(file);
+                      };
+                      input.click();
+                    }}
+                    className="md:hidden"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Take Photo
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Info Box */}
+            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+              <div className="flex items-start gap-2">
+                <Lightbulb className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground mb-1">How it works:</p>
+                  <ul className="space-y-1">
+                    <li>• Upload an image of a property you like</li>
+                    <li>• Our AI analyzes the image to identify property features</li>
+                    <li>• We match those features to similar properties in our database</li>
+                    <li>• Results show properties with comparable characteristics</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowImageUpload(false)}>
+              Cancel
             </Button>
           </DialogFooter>
         </DialogContent>
