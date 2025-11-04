@@ -4,13 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, ArrowUp } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import DebugPanel from "./DebugPanel";
-import AIChatTrigger from "./AIChatTrigger";
-import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
 import AIChatInput from "./AIChatInput";
@@ -36,17 +33,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
-  const { scrollDirection, scrollY, isAtTop } = useScrollDirection();
   const { prefersReducedMotion, toggleOverride, clearOverride, isOverridden } = usePrefersReducedMotion();
-  const [showWidget, setShowWidget] = useState(true);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Developer indicator for reduced motion mode
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      console.log('♿ Chat Widget: Running in reduced motion mode - animations simplified');
-    }
-  }, [prefersReducedMotion]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -75,38 +62,8 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
       setIsOpen(false);
       setIsClosing(false);
       setIsMinimized(false);
-    }, 300); // Match animation duration
+    }, 300);
   };
-
-  // Handle scroll direction for auto-hide/show (10px threshold with 200ms delay for synchronized transitions)
-  // Chat window stays visible when open regardless of scrolling
-  useEffect(() => {
-    // Clear any pending hide timeout
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-      hideTimeoutRef.current = null;
-    }
-
-    if (isOpen) {
-      setShowWidget(true); // Always show when chat is open - no hiding on scroll
-    } else {
-      if (scrollDirection === 'down' && scrollY > 10) {
-        // Delay hiding by 200ms to match animation duration
-        hideTimeoutRef.current = setTimeout(() => {
-          setShowWidget(false);
-        }, 200);
-      } else if (scrollDirection === 'up' || isAtTop) {
-        setShowWidget(true); // Show immediately on scroll up or at top
-      }
-    }
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (hideTimeoutRef.current) {
-        clearTimeout(hideTimeoutRef.current);
-      }
-    };
-  }, [scrollDirection, scrollY, isAtTop, isOpen]);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -299,14 +256,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     ...(propertyId
       ? [
           { icon: MapPin, text: "Tour property", action: "Give me a guided tour of this property" },
-      { icon: Handshake, text: "Negotiate", action: "I'd like to negotiate the rental terms." }
+          { icon: Handshake, text: "Negotiate", action: "I'd like to negotiate the rental terms." }
         ]
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <>
@@ -318,65 +271,62 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         onClearOverride={clearOverride}
       />
 
-      {/* Scroll to top arrow - Hidden, now controlled by FAB menu */}
-      {/* Chat trigger - Hidden, controlled by FAB menu */}
-      {false && !isOpen && (
-        <div 
+      {/* Always-visible chat trigger button */}
+      {!isOpen && (
+        <button
+          onClick={() => {
+            setIsClosing(false);
+            setIsOpen(true);
+            setIsMinimized(false);
+          }}
           className={cn(
-            "fixed z-[10002] pointer-events-none transform-gpu",
-            prefersReducedMotion
-              ? showWidget ? "opacity-100" : "opacity-0"
-              : showWidget 
-                ? "translate-y-0 opacity-100 scale-100 rotate-0" 
-                : isMobile 
-                  ? "translate-y-24 opacity-0 scale-90" 
-                  : "translate-y-24 opacity-0 scale-90 rotate-[18deg]"
+            "fixed bottom-6 right-6 z-[9999]",
+            "h-14 w-14 rounded-full",
+            "bg-gradient-to-r from-blue-600 to-purple-600",
+            "hover:from-blue-700 hover:to-purple-700",
+            "text-white shadow-lg hover:shadow-xl",
+            "flex items-center justify-center",
+            "transition-all duration-300 ease-out",
+            "transform hover:scale-110 active:scale-95",
+            !prefersReducedMotion && "animate-subtle-pulse",
+            "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
           )}
-          style={{ 
-            bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
-            right: 'calc(1rem + env(safe-area-inset-right))',
-            transition: prefersReducedMotion ? 'opacity 150ms ease' : 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)'
+          aria-label="Open AI chat assistant"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsOpen(true);
+            }
           }}
         >
-          <div className={cn(
-            "pointer-events-auto transition-transform duration-200",
-            !prefersReducedMotion && "hover:scale-105"
-          )}>
-            <div className={showWidget && !prefersReducedMotion ? (isMobile ? "animate-subtle-pulse-mobile" : "animate-subtle-pulse") : ""}>
-              {/* Dev indicator for reduced motion */}
-              {prefersReducedMotion && process.env.NODE_ENV === 'development' && (
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50">
-                  Reduced Motion
-                </div>
-              )}
-              <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
-            </div>
-          </div>
-        </div>
+          <Bot className="h-6 w-6" />
+        </button>
       )}
 
-      {/* Chat window - Fixed position, always visible when open even during scroll */}
+      {/* Chat window - Always fixed at bottom-right */}
       {isOpen && (
         <div 
           className={cn(
-            "fixed z-[10003] transition-all duration-300 ease-out",
-            isMinimized ? "w-[280px]" : isMobile ? "w-full" : "w-[420px]",
-            isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]",
-            isMobile ? "left-0 right-0" : "",
-            // Slide-in/out animations
+            "fixed z-[9999]",
+            "transition-all duration-300 ease-out",
+            isMinimized ? "w-[320px]" : isMobile ? "w-full" : "w-[420px]",
+            isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "h-[680px]",
+            // Position
+            isMobile ? "bottom-0 left-0 right-0" : "bottom-6 right-6",
+            // Animations
             isMobile 
               ? isClosing 
                 ? "animate-slide-out-bottom" 
                 : "animate-slide-in-bottom"
               : isClosing 
-                ? "animate-slide-out-right opacity-0 scale-95" 
+                ? "animate-slide-out-right" 
                 : "animate-slide-in-right"
           )}
-          style={
-            isMobile
-              ? { bottom: 0 }
-              : { bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }
-          }
+          role="dialog"
+          aria-label="AI Chat Assistant"
+          aria-modal="true"
         >
           <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
             {/* Header with Close and Minimize */}
