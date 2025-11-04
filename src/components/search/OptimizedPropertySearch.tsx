@@ -12,8 +12,9 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2 } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import html2pdf from 'html2pdf.js';
 
 interface OptimizedPropertySearchProps {
   onResultSelect?: (propertyId: string) => void;
@@ -27,6 +28,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [savedSearchesOpen, setSavedSearchesOpen] = useState(false);
   const [searchName, setSearchName] = useState('');
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const { toast } = useToast();
   
   const {
@@ -161,6 +163,126 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       title: "Search Deleted",
       description: "Saved search has been removed"
     });
+  };
+
+  const handleExportCSV = () => {
+    if (results.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No results to export",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const headers = ['Title', 'Type', 'Listing', 'Price', 'Bedrooms', 'Bathrooms', 'Area (sqm)', 'Location', 'City'];
+    const csvContent = [
+      headers.join(','),
+      ...results.map(property => [
+        `"${property.title.replace(/"/g, '""')}"`,
+        property.property_type,
+        property.listing_type,
+        property.price,
+        property.bedrooms,
+        property.bathrooms,
+        property.area_sqm || 0,
+        `"${property.area.replace(/"/g, '""')}"`,
+        property.city
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `property-search-results-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    
+    setExportMenuOpen(false);
+    toast({
+      title: "Export Successful",
+      description: "CSV file has been downloaded"
+    });
+  };
+
+  const handleExportPDF = () => {
+    if (results.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No results to export",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 10px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #0066cc; color: white; padding: 10px; text-align: left; }
+            td { padding: 8px; border-bottom: 1px solid #ddd; }
+            tr:hover { background-color: #f5f5f5; }
+            .footer { margin-top: 20px; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <h1>Property Search Results</h1>
+          <p>Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+          <p>Total Results: ${totalCount}</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Beds</th>
+                <th>Baths</th>
+                <th>Area (sqm)</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${results.map(property => `
+                <tr>
+                  <td>${property.title}</td>
+                  <td>${property.property_type}</td>
+                  <td>$${property.price.toLocaleString()}</td>
+                  <td>${property.bedrooms}</td>
+                  <td>${property.bathrooms}</td>
+                  <td>${property.area_sqm || 'N/A'}</td>
+                  <td>${property.city}, ${property.area}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="footer">
+            <p>This document contains ${results.length} properties from the search results.</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const element = document.createElement('div');
+    element.innerHTML = htmlContent;
+    
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 10,
+        filename: `property-search-results-${new Date().toISOString().split('T')[0]}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      })
+      .save()
+      .then(() => {
+        setExportMenuOpen(false);
+        toast({
+          title: "Export Successful",
+          description: "PDF file has been downloaded"
+        });
+      });
   };
 
   // Keyboard shortcuts
@@ -387,6 +509,40 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             </div>
 
             <div className="flex items-center gap-3">
+              <Popover open={exportMenuOpen} onOpenChange={setExportMenuOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    disabled={results.length === 0}
+                  >
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-56 p-2" align="end">
+                  <div className="space-y-1">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2"
+                      onClick={handleExportCSV}
+                    >
+                      <FileSpreadsheet className="h-4 w-4" />
+                      Export as CSV
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2"
+                      onClick={handleExportPDF}
+                    >
+                      <FileText className="h-4 w-4" />
+                      Export as PDF
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
               <Select value={filters.sortBy || ''} onValueChange={(value) => updateFilters({ sortBy: value || undefined })}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort by" />
