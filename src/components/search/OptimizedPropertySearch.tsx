@@ -51,6 +51,13 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [similarityScores, setSimilarityScores] = useState<Record<string, number>>({});
   const [imageFeatures, setImageFeatures] = useState<any>(null);
   const [recognition, setRecognition] = useState<any>(null);
+  const [similarityWeights, setSimilarityWeights] = useState({
+    propertyType: 30,
+    style: 20,
+    architecture: 15,
+    bedrooms: 10,
+    amenities: 25
+  });
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
   const { toast } = useToast();
@@ -443,12 +450,13 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       })).filter(p => p.imageUrl);
 
       // Call edge function to analyze the uploaded image and compare with properties
-      const { data, error } = await supabase.functions.invoke('analyze-property-image', {
-        body: {
-          imageUrl: imageBase64,
-          propertyImages: propertiesToAnalyze
-        }
-      });
+            const { data, error } = await supabase.functions.invoke('analyze-property-image', {
+              body: {
+                imageUrl: imageBase64,
+                propertyImages: propertiesToAnalyze,
+                weights: similarityWeights
+              }
+            });
 
       if (error) {
         throw error;
@@ -1351,20 +1359,20 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   <Button
                     type="button"
                     size="icon"
-                    variant="ghost"
+                    variant={uploadedImage ? "default" : "ghost"}
                     onClick={() => setShowImageUpload(true)}
-                    className={`absolute ${searchInput ? 'right-16' : 'right-10'} top-1/2 transform -translate-y-1/2 ${uploadedImage ? 'text-primary' : ''}`}
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2`}
                   >
                     <Camera className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>Picture search - Upload image to find similar properties</p>
+                  <p>{uploadedImage ? 'Searching by image - Click to change' : 'Picture search - Upload image to find similar properties'}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
 
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            
             
             {/* Search Suggestions */}
             {suggestions.length > 0 && !showRecentSearches && (
@@ -2238,7 +2246,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
       {/* Image Upload Dialog */}
       <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Camera className="h-5 w-5" />
@@ -2250,6 +2258,175 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           </DialogHeader>
 
           <div className="space-y-4">
+            {/* Active Image Search Display */}
+            {uploadedImage && (
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className="flex items-start gap-4">
+                  <img
+                    src={uploadedImage}
+                    alt="Uploaded search"
+                    className="w-24 h-24 object-cover rounded-lg border-2 border-primary"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold mb-1">Active Image Search</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Showing properties similar to your uploaded image
+                    </p>
+                    {imageFeatures && (
+                      <div className="flex flex-wrap gap-1">
+                        {imageFeatures.propertyType && (
+                          <Badge variant="secondary" className="text-xs">
+                            {imageFeatures.propertyType}
+                          </Badge>
+                        )}
+                        {imageFeatures.style && (
+                          <Badge variant="secondary" className="text-xs">
+                            {imageFeatures.style}
+                          </Badge>
+                        )}
+                        {imageFeatures.bedrooms > 0 && (
+                          <Badge variant="secondary" className="text-xs">
+                            {imageFeatures.bedrooms} beds
+                          </Badge>
+                        )}
+                        {imageFeatures.hasPool && (
+                          <Badge variant="secondary" className="text-xs">
+                            Pool
+                          </Badge>
+                        )}
+                        {imageFeatures.hasGarden && (
+                          <Badge variant="secondary" className="text-xs">
+                            Garden
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={clearImageSearch}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Similarity Weights Configuration */}
+            <div className="border rounded-lg p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-sm">Similarity Matching Weights</h4>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setSimilarityWeights({
+                    propertyType: 30,
+                    style: 20,
+                    architecture: 15,
+                    bedrooms: 10,
+                    amenities: 25
+                  })}
+                  className="text-xs"
+                >
+                  Reset to Default
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Adjust how much each feature influences similarity matching (total should equal 100%)
+              </p>
+              
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Property Type</Label>
+                    <span className="text-sm font-medium">{similarityWeights.propertyType}%</span>
+                  </div>
+                  <Slider
+                    value={[similarityWeights.propertyType]}
+                    onValueChange={(value) => setSimilarityWeights(prev => ({ ...prev, propertyType: value[0] }))}
+                    min={0}
+                    max={50}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Style & Design</Label>
+                    <span className="text-sm font-medium">{similarityWeights.style}%</span>
+                  </div>
+                  <Slider
+                    value={[similarityWeights.style]}
+                    onValueChange={(value) => setSimilarityWeights(prev => ({ ...prev, style: value[0] }))}
+                    min={0}
+                    max={50}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Architecture</Label>
+                    <span className="text-sm font-medium">{similarityWeights.architecture}%</span>
+                  </div>
+                  <Slider
+                    value={[similarityWeights.architecture]}
+                    onValueChange={(value) => setSimilarityWeights(prev => ({ ...prev, architecture: value[0] }))}
+                    min={0}
+                    max={50}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Bedroom Count</Label>
+                    <span className="text-sm font-medium">{similarityWeights.bedrooms}%</span>
+                  </div>
+                  <Slider
+                    value={[similarityWeights.bedrooms]}
+                    onValueChange={(value) => setSimilarityWeights(prev => ({ ...prev, bedrooms: value[0] }))}
+                    min={0}
+                    max={30}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Amenities (Pool, Garden, etc.)</Label>
+                    <span className="text-sm font-medium">{similarityWeights.amenities}%</span>
+                  </div>
+                  <Slider
+                    value={[similarityWeights.amenities]}
+                    onValueChange={(value) => setSimilarityWeights(prev => ({ ...prev, amenities: value[0] }))}
+                    min={0}
+                    max={50}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="bg-muted/50 rounded p-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Total Weight:</span>
+                    <span className={`font-medium ${
+                      Object.values(similarityWeights).reduce((a, b) => a + b, 0) === 100 
+                        ? 'text-green-600' 
+                        : 'text-orange-600'
+                    }`}>
+                      {Object.values(similarityWeights).reduce((a, b) => a + b, 0)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Drag & Drop Zone */}
             <div
               onDragEnter={handleDragEnter}
@@ -2323,8 +2500,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   <ul className="space-y-1">
                     <li>• Upload an image of a property you like</li>
                     <li>• Our AI analyzes the image to identify property features</li>
+                    <li>• Adjust weights to prioritize what matters most to you</li>
                     <li>• We match those features to similar properties in our database</li>
-                    <li>• Results show properties with comparable characteristics</li>
+                    <li>• Results show properties ranked by similarity score</li>
                   </ul>
                 </div>
               </div>
@@ -2333,7 +2511,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowImageUpload(false)}>
-              Cancel
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -11,8 +11,17 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, propertyImages } = await req.json();
+    const { imageUrl, propertyImages, weights } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    
+    // Default weights if not provided
+    const similarityWeights = weights || {
+      propertyType: 30,
+      style: 20,
+      architecture: 15,
+      bedrooms: 10,
+      amenities: 25
+    };
 
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -123,40 +132,36 @@ serve(async (req) => {
             const propertyFeaturesText = propertyData.choices[0].message.content;
             const propertyFeatures = JSON.parse(propertyFeaturesText);
 
-            // Calculate similarity score
+            // Calculate similarity score using custom weights
             let similarity = 0;
-            let totalWeight = 0;
 
-            // Property type match (30% weight)
+            // Property type match
             if (uploadedFeatures.propertyType === propertyFeatures.propertyType) {
-              similarity += 30;
+              similarity += similarityWeights.propertyType;
             }
-            totalWeight += 30;
 
-            // Style match (20% weight)
+            // Style match
             if (uploadedFeatures.style === propertyFeatures.style) {
-              similarity += 20;
+              similarity += similarityWeights.style;
             }
-            totalWeight += 20;
 
-            // Architecture style (15% weight)
+            // Architecture style
             if (uploadedFeatures.architectureStyle === propertyFeatures.architectureStyle) {
-              similarity += 15;
+              similarity += similarityWeights.architecture;
             }
-            totalWeight += 15;
 
-            // Bedrooms proximity (10% weight)
+            // Bedrooms proximity - scaled to weight
             if (uploadedFeatures.bedrooms > 0 && propertyFeatures.bedrooms > 0) {
               const bedroomDiff = Math.abs(uploadedFeatures.bedrooms - propertyFeatures.bedrooms);
-              similarity += Math.max(0, 10 - (bedroomDiff * 3));
+              const bedroomScore = Math.max(0, 1 - (bedroomDiff * 0.3)); // 0-1 scale
+              similarity += bedroomScore * similarityWeights.bedrooms;
             }
-            totalWeight += 10;
 
-            // Amenities match (25% total)
-            if (uploadedFeatures.hasPool === propertyFeatures.hasPool) similarity += 8;
-            if (uploadedFeatures.hasGarden === propertyFeatures.hasGarden) similarity += 8;
-            if (uploadedFeatures.hasBalcony === propertyFeatures.hasBalcony) similarity += 9;
-            totalWeight += 25;
+            // Amenities match - distribute weight across 3 amenities
+            const amenityWeight = similarityWeights.amenities / 3;
+            if (uploadedFeatures.hasPool === propertyFeatures.hasPool) similarity += amenityWeight;
+            if (uploadedFeatures.hasGarden === propertyFeatures.hasGarden) similarity += amenityWeight;
+            if (uploadedFeatures.hasBalcony === propertyFeatures.hasBalcony) similarity += amenityWeight;
 
             return {
               propertyId: property.id,
