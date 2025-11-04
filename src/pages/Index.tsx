@@ -20,6 +20,7 @@ import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { FloatingActionMenu } from "@/components/ui/FloatingActionMenu";
 import { KeyboardShortcutIndicator } from "@/components/ui/KeyboardShortcutIndicator";
+import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 // Lazy load heavy components for better performance
@@ -99,6 +100,7 @@ const Index = () => {
   const [uploadedImageBase64, setUploadedImageBase64] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   // Track scroll position for FAB menu
@@ -144,6 +146,7 @@ const Index = () => {
         key: '?',
         description: 'Show Keyboard Shortcuts',
         action: () => {
+          setShowShortcutsPanel(true);
           const event = new CustomEvent('toggleShortcutsPanel');
           window.dispatchEvent(event);
         }
@@ -664,6 +667,26 @@ const Index = () => {
             imageInputRef.current?.click();
           }}
           showScrollButton={showScrollButton}
+        />
+
+        {/* Command Palette (Cmd+K / Ctrl+K) */}
+        <CommandPalette
+          onOpenChat={() => {
+            setChatOpen(true);
+            const event = new CustomEvent('openAIChat');
+            window.dispatchEvent(event);
+          }}
+          onOpenImageSearch={() => {
+            imageInputRef.current?.click();
+          }}
+          onScrollToTop={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onShowShortcuts={() => {
+            setShowShortcutsPanel(true);
+            const event = new CustomEvent('toggleShortcutsPanel');
+            window.dispatchEvent(event);
+          }}
         />
 
         {/* Keyboard Shortcuts Indicator */}
