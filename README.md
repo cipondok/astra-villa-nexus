@@ -82,17 +82,24 @@ The debug panel appears only in development mode and provides:
 - **Override Indicator**: Visual warning when manual override is active
 - **Reset Button**: One-click return to system preferences
 - **Persistent Settings**: Override saved to localStorage across sessions
-- **Keyboard Shortcut**: Press `Cmd/Ctrl + D` to instantly toggle the panel open/closed
+- **Keyboard Shortcuts**:
+  - `Cmd/Ctrl + D` - Toggle debug panel open/closed
+  - `Cmd/Ctrl + A` - Toggle animations on/off directly
+  - `Cmd/Ctrl + R` - Reset to system settings (clears override)
 
 ### Using the Debug Panel
 
-1. **Open the panel**:
-   - Click the ⚙️ Settings icon in the bottom-left corner, OR
-   - Press `Cmd/Ctrl + D` on your keyboard
+**With Mouse/Touch:**
+1. Click the ⚙️ Settings icon in the bottom-left corner
 2. The panel shows current animation state
 3. Click "Enable Animations" or "Disable Animations" to toggle
 4. Click "Reset to System Setting" to clear manual override
-5. Close the panel with the X button or `Cmd/Ctrl + D` (your settings persist)
+5. Close the panel with the X button (your settings persist)
+
+**With Keyboard:**
+- `Cmd/Ctrl + D` - Open/close the debug panel
+- `Cmd/Ctrl + A` - Instantly toggle animations on/off
+- `Cmd/Ctrl + R` - Reset to system settings (if override is active)
 
 ## Visual Indicators
 

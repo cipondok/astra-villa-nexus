@@ -18,19 +18,34 @@ const DebugPanel = ({
 }: DebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Keyboard shortcut: Cmd/Ctrl + D
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl + D: Toggle debug panel
       if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
         e.preventDefault();
         setIsOpen(prev => !prev);
         console.log('🔧 Debug Panel: Toggled via keyboard shortcut (Cmd/Ctrl + D)');
       }
+      
+      // Cmd/Ctrl + A: Toggle animations directly
+      if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+        e.preventDefault();
+        onToggleMotion();
+        console.log('🔧 Animation Toggle: Triggered via keyboard shortcut (Cmd/Ctrl + A)');
+      }
+      
+      // Cmd/Ctrl + R: Reset to system settings
+      if ((e.metaKey || e.ctrlKey) && e.key === 'r' && isOverridden) {
+        e.preventDefault();
+        onClearOverride();
+        console.log('🔧 Reset Override: Triggered via keyboard shortcut (Cmd/Ctrl + R)');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [onToggleMotion, onClearOverride, isOverridden]);
 
   // Only show in development
   if (process.env.NODE_ENV !== 'development') return null;
@@ -115,9 +130,12 @@ const DebugPanel = ({
             <div className="text-[10px] text-gray-500 pt-2 border-t border-gray-700">
               <p>Toggle animations without changing OS settings.</p>
               <p className="mt-1">Setting persists in localStorage.</p>
-              <p className="mt-2 text-gray-600">
-                Keyboard: <kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + D</kbd>
-              </p>
+              <p className="mt-2 text-gray-600 font-semibold">Keyboard Shortcuts:</p>
+              <div className="mt-1 space-y-0.5 text-gray-600">
+                <p><kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + D</kbd> Toggle panel</p>
+                <p><kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + A</kbd> Toggle animations</p>
+                <p><kbd className="px-1 py-0.5 bg-gray-800 rounded text-[9px]">⌘/Ctrl + R</kbd> Reset override</p>
+              </div>
             </div>
           </div>
         </div>
