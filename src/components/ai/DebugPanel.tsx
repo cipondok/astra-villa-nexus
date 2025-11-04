@@ -109,7 +109,8 @@ const DebugPanel = ({
               <Button
                 onClick={() => setIsOpen(true)}
                 className={cn(
-                  "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group transition-all duration-300 relative overflow-hidden",
+                  "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group relative overflow-hidden",
+                  "transition-[background-color,box-shadow] duration-500 ease-in-out",
                   isOverridden 
                     ? "bg-yellow-800/80 hover:bg-yellow-700/80 hover:shadow-[0_0_30px_rgba(251,191,36,0.8)]" 
                     : "bg-gray-800 hover:bg-gray-700 hover:shadow-[0_0_20px_rgba(156,163,175,0.5)]",
