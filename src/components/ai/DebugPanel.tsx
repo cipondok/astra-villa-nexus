@@ -137,7 +137,7 @@ const DebugPanel = ({
                 </span>
               </div>
               {isOverridden && (
-                <div className="text-yellow-400 text-[10px] mt-1">
+                <div className="text-yellow-400 text-[10px] mt-1 pulse">
                   ⚠️ Manual override active
                 </div>
               )}
