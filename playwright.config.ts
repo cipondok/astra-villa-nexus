@@ -30,6 +30,21 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  /* Expect options for visual regression testing */
+  expect: {
+    toHaveScreenshot: {
+      // Maximum pixel difference allowed between baseline and actual screenshots
+      maxDiffPixels: 100,
+      // Threshold for pixel color difference (0-1, where 0 is identical)
+      threshold: 0.2,
+      // Disable animations in screenshots for consistency
+      animations: 'disabled',
+    },
+  },
+
+  /* Update snapshots on first run or when explicitly requested */
+  updateSnapshots: process.env.UPDATE_SNAPSHOTS === 'true' ? 'all' : 'missing',
+
   /* Configure projects for major browsers */
   projects: [
     {

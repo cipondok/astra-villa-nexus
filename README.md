@@ -183,6 +183,15 @@ npx playwright test              # Run all E2E tests
 npx playwright test --ui         # Run with interactive UI
 npx playwright test --debug      # Debug mode
 npx playwright show-report       # View test report
+
+# Visual Regression Tests
+npx playwright test e2e/visual-regression.spec.ts           # Run visual tests
+npx playwright test e2e/visual-regression-advanced.spec.ts  # Run advanced visual tests
+bash scripts/visual-regression-report.sh                    # Run with detailed report
+
+# Update Visual Regression Baselines (when UI changes are intentional)
+bash scripts/update-screenshots.sh                          # Update all baseline screenshots
+npx playwright test --update-snapshots                      # Alternative: update all snapshots
 ```
 
 ### Test Coverage
@@ -227,6 +236,25 @@ npx playwright show-report       # View test report
   - State persistence
   - Multi-panel coexistence
 
+#### Visual Regression Tests (Playwright)
+- ✅ **Component Snapshots** (`e2e/visual-regression.spec.ts`)
+  - Chat widget appearance (normal, hover, mobile)
+  - Debug panel states (closed, open, with override)
+  - Onboarding tooltip (desktop & mobile)
+  - Keyboard shortcuts modal
+  - Full page layouts
+  - Dark mode vs Light mode comparison
+  - State transition captures
+- ✅ **Advanced Visual Tests** (`e2e/visual-regression-advanced.spec.ts`)
+  - Component interaction states (hover, focus)
+  - Layout combinations (multiple panels open)
+  - Responsive breakpoints (7 viewport sizes)
+  - Accessibility states (focus visible, high contrast)
+  - Badge and indicator states
+  - Typography and text rendering
+  - Gradient and shadow effects
+  - Edge cases (narrow/wide viewports, text overflow)
+
 ### Test Structure
 
 ```
@@ -243,24 +271,67 @@ src/
     └── globals.d.ts    # TypeScript definitions
 
 e2e/
-├── onboarding.spec.ts         # Onboarding tooltip tests
-├── debug-panel.spec.ts        # Debug panel tests
-├── chat-widget.spec.ts        # Chat widget tests
-├── keyboard-shortcuts.spec.ts # Shortcuts modal tests
-└── integration.spec.ts        # Full user flow tests
+├── onboarding.spec.ts                # Onboarding tooltip tests
+├── debug-panel.spec.ts               # Debug panel tests
+├── chat-widget.spec.ts               # Chat widget tests
+├── keyboard-shortcuts.spec.ts        # Shortcuts modal tests
+├── integration.spec.ts               # Full user flow tests
+├── visual-regression.spec.ts         # Visual regression tests
+└── visual-regression-advanced.spec.ts # Advanced visual tests
 
-playwright.config.ts           # Playwright configuration
+scripts/
+├── update-screenshots.sh             # Update baseline screenshots
+└── visual-regression-report.sh       # Run visual tests with report
+
+playwright.config.ts                  # Playwright configuration
 ```
 
 ### E2E Testing Features
 
 - **Cross-browser testing**: Chromium, Firefox, WebKit, Mobile Safari, Mobile Chrome
 - **Mobile testing**: iPhone and Android viewports
-- **Visual regression**: Screenshots on failure
+- **Visual regression testing**: Automated screenshot comparison to detect UI changes
 - **Trace viewer**: Debug failed tests with timeline
 - **Parallel execution**: Fast test runs
 - **Auto-wait**: Smart element waiting
 - **HTML Reporter**: Beautiful test reports
+
+### Visual Regression Testing
+
+The project includes comprehensive visual regression testing to automatically detect unintended UI changes:
+
+**How it works:**
+1. Baseline screenshots are captured for each component state
+2. Future test runs compare new screenshots against baselines
+3. Tests fail if visual differences exceed configured thresholds
+4. Diff images highlight exact pixel differences
+
+**What's tested:**
+- Component appearance (normal, hover, focus states)
+- Layout at 7+ responsive breakpoints
+- Dark mode vs Light mode
+- All interactive states (buttons, panels, modals)
+- Typography and text rendering
+- Gradients, shadows, and visual effects
+- Edge cases (narrow viewports, text overflow)
+
+**Managing baselines:**
+```bash
+# When you make intentional UI changes, update baselines:
+bash scripts/update-screenshots.sh
+
+# Or update a specific test:
+npx playwright test e2e/visual-regression.spec.ts --update-snapshots
+
+# Review differences in the HTML report:
+npx playwright show-report
+```
+
+**Configuration:**
+- `maxDiffPixels`: 100 pixels allowed difference
+- `threshold`: 0.2 (20% color difference tolerance)
+- Animations disabled for consistent captures
+- Baselines stored in `e2e/*.spec.ts-snapshots/`
 
 ### Writing Tests
 
