@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
 import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap } from 'lucide-react';
 
@@ -45,6 +47,25 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setSearchInput(suggestion);
     updateFilters({ searchText: suggestion });
   };
+
+  const handleAmenityToggle = (amenity: string) => {
+    const currentAmenities = filters.amenities || [];
+    const newAmenities = currentAmenities.includes(amenity)
+      ? currentAmenities.filter(a => a !== amenity)
+      : [...currentAmenities, amenity];
+    updateFilters({ amenities: newAmenities.length > 0 ? newAmenities : undefined });
+  };
+
+  const amenitiesList = [
+    'Pool',
+    'Gym',
+    'Parking',
+    'Security',
+    'Garden',
+    'Balcony',
+    'Air Conditioning',
+    'Elevator'
+  ];
 
   const SkeletonCard = () => (
     <Card className="h-48">
@@ -214,6 +235,27 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   })}
                   className="w-full"
                 />
+              </div>
+
+              <div className="col-span-2 md:col-span-4 space-y-3 p-4 bg-background rounded-md border">
+                <label className="text-sm font-medium">Amenities</label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {amenitiesList.map((amenity) => (
+                    <div key={amenity} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={amenity}
+                        checked={filters.amenities?.includes(amenity) || false}
+                        onCheckedChange={() => handleAmenityToggle(amenity)}
+                      />
+                      <Label
+                        htmlFor={amenity}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {amenity}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <Button variant="outline" onClick={clearCache} size="sm">
