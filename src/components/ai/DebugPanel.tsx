@@ -104,7 +104,7 @@ const DebugPanel = ({
           title="Animation Debug Panel"
         >
           {isOverridden && (
-            <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900" />
+            <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full pulse border-2 border-gray-900 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
           )}
           <style>{`
             @keyframes slideUpFade {
