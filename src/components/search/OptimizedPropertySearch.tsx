@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [imageSearching, setImageSearching] = useState(false);
   const [searchMode, setSearchMode] = useState<'text' | 'image' | 'combined'>('text');
   const [dragActive, setDragActive] = useState(false);
+  const [similarityScores, setSimilarityScores] = useState<Record<string, number>>({});
+  const [imageFeatures, setImageFeatures] = useState<any>(null);
   const [recognition, setRecognition] = useState<any>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
@@ -433,30 +436,49 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setSearchMode('image');
 
     try {
-      // Simulate AI image analysis - in production, this would call Lovable AI
-      // to analyze the image and extract property features
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Get current search results to analyze their images
+      const propertiesToAnalyze = results.map(result => ({
+        id: result.id,
+        imageUrl: result.thumbnail_url || (result.images && result.images[0]) || null
+      })).filter(p => p.imageUrl);
 
-      // Mock: Extract features from the image
-      const mockFeatures = {
-        propertyType: Math.random() > 0.5 ? 'house' : 'apartment',
-        bedrooms: Math.floor(Math.random() * 3) + 2,
-        hasPool: Math.random() > 0.7,
-        hasGarden: Math.random() > 0.6
-      };
+      // Call edge function to analyze the uploaded image and compare with properties
+      const { data, error } = await supabase.functions.invoke('analyze-property-image', {
+        body: {
+          imageUrl: imageBase64,
+          propertyImages: propertiesToAnalyze
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      const { uploadedFeatures, similarities } = data;
+      setImageFeatures(uploadedFeatures);
+
+      // Create similarity score map
+      const scoresMap: Record<string, number> = {};
+      similarities.forEach((s: any) => {
+        scoresMap[s.propertyId] = s.similarity;
+      });
+      setSimilarityScores(scoresMap);
 
       // Apply filters based on image analysis
-      const imageFilters: any = {
-        propertyType: mockFeatures.propertyType
-      };
+      const imageFilters: any = {};
 
-      if (mockFeatures.bedrooms) {
-        imageFilters.minBedrooms = mockFeatures.bedrooms;
+      if (uploadedFeatures.propertyType) {
+        imageFilters.propertyType = uploadedFeatures.propertyType;
+      }
+
+      if (uploadedFeatures.bedrooms && uploadedFeatures.bedrooms > 0) {
+        imageFilters.minBedrooms = uploadedFeatures.bedrooms;
       }
 
       const amenities = [];
-      if (mockFeatures.hasPool) amenities.push('Pool');
-      if (mockFeatures.hasGarden) amenities.push('Garden');
+      if (uploadedFeatures.hasPool) amenities.push('Pool');
+      if (uploadedFeatures.hasGarden) amenities.push('Garden');
+      if (uploadedFeatures.hasBalcony) amenities.push('Balcony');
       if (amenities.length > 0) {
         imageFilters.amenities = amenities;
       }
@@ -464,19 +486,29 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       updateFilters(imageFilters);
 
       const description = [];
-      description.push(mockFeatures.propertyType);
-      if (mockFeatures.bedrooms) description.push(`${mockFeatures.bedrooms}+ bedrooms`);
+      if (uploadedFeatures.propertyType) description.push(uploadedFeatures.propertyType);
+      if (uploadedFeatures.style) description.push(uploadedFeatures.style);
+      if (uploadedFeatures.bedrooms > 0) description.push(`${uploadedFeatures.bedrooms} bedrooms`);
       if (amenities.length > 0) description.push(amenities.join(', '));
 
       toast({
         title: "Image Analysis Complete",
-        description: `Found: ${description.join(' • ')}`
+        description: `Detected: ${description.join(' • ')}`
       });
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Image search error:', error);
+      
+      let errorMessage = "Please try again or use text search";
+      if (error.message?.includes('Rate limit')) {
+        errorMessage = "Rate limit exceeded. Please try again in a moment.";
+      } else if (error.message?.includes('Payment required')) {
+        errorMessage = "AI credits needed. Please add credits to continue.";
+      }
+      
       toast({
         title: "Image Search Failed",
-        description: "Please try again or use text search",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -515,8 +547,23 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const clearImageSearch = () => {
     setUploadedImage(null);
     setSearchMode('text');
+    setSimilarityScores({});
+    setImageFeatures(null);
     handleResetFilters();
   };
+
+  // Sort results by similarity score when in image search mode
+  const sortedResults = useMemo(() => {
+    if (searchMode !== 'image' || Object.keys(similarityScores).length === 0) {
+      return results;
+    }
+
+    return [...results].sort((a, b) => {
+      const scoreA = similarityScores[a.id] || 0;
+      const scoreB = similarityScores[b.id] || 0;
+      return scoreB - scoreA;
+    });
+  }, [results, similarityScores, searchMode]);
 
   const replayVoiceCommand = (historyItem: { command: string; filters: any }) => {
     updateFilters(historyItem.filters);
@@ -1713,42 +1760,66 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               <SkeletonCard key={index} />
             ))}
           </div>
-        ) : results.length > 0 ? (
+        ) : sortedResults.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.map((property) => (
-                <Card 
-                  key={property.id} 
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => onResultSelect?.(property.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <h3 className="font-semibold line-clamp-1">{property.title}</h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {property.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div className="text-lg font-bold text-primary">
-                          ${property.price?.toLocaleString()}
-                        </div>
-                        <Badge variant="outline">
-                          {property.property_type}
-                        </Badge>
+              {sortedResults.map((property) => {
+                const similarity = similarityScores[property.id];
+                const hasSimilarityScore = searchMode === 'image' && similarity !== undefined;
+                
+                return (
+                  <Card 
+                    key={property.id} 
+                    className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                    onClick={() => onResultSelect?.(property.id)}
+                  >
+                    {(property.thumbnail_url || (property.images && property.images[0])) && (
+                      <div className="relative">
+                        <img 
+                          src={property.thumbnail_url || property.images[0]}
+                          alt={property.title}
+                          className="w-full h-48 object-cover"
+                        />
+                        {hasSimilarityScore && (
+                          <div className="absolute top-2 right-2">
+                            <Badge 
+                              variant={similarity >= 70 ? "default" : similarity >= 50 ? "secondary" : "outline"}
+                              className="text-xs font-bold backdrop-blur-sm bg-background/90"
+                            >
+                              {similarity}% Match
+                            </Badge>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>{property.city}, {property.area}</span>
-                        <span>{property.bedrooms}BR / {property.bathrooms}BA</span>
-                      </div>
-                      {property.area_sqm && (
-                        <div className="text-xs text-muted-foreground">
-                          {property.area_sqm} sqm
+                    )}
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <h3 className="font-semibold line-clamp-1">{property.title}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {property.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <div className="text-lg font-bold text-primary">
+                            ${property.price?.toLocaleString()}
+                          </div>
+                          <Badge variant="outline">
+                            {property.property_type}
+                          </Badge>
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <span>{property.city}, {property.area}</span>
+                          <span>{property.bedrooms}BR / {property.bathrooms}BA</span>
+                        </div>
+                        {property.area_sqm && (
+                          <div className="text-xs text-muted-foreground">
+                            {property.area_sqm} sqm
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
             {/* Pagination */}

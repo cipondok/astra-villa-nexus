@@ -37,6 +37,7 @@ interface SearchResult {
   area_sqm: number;
   images: string[];
   image_urls: string[];
+  thumbnail_url?: string;
   status: string;
   created_at: string;
   total_count: number;
