@@ -181,10 +181,12 @@ const config: Config = {
         },
         "subtle-pulse": {
           "0%, 100%": {
-            opacity: "1"
+            opacity: "1",
+            boxShadow: "0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(147, 51, 234, 0.3)"
           },
           "50%": {
-            opacity: "0.7"
+            opacity: "0.7",
+            boxShadow: "0 0 30px rgba(59, 130, 246, 0.7), 0 0 60px rgba(147, 51, 234, 0.5)"
           }
         }
       },
