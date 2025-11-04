@@ -118,15 +118,25 @@ const DebugPanel = ({
 
       {/* Debug panel */}
       {isOpen && (
-        <div 
-          className={cn(
-            "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 transition-all duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.3)] hover:border-gray-600",
-            isClosing ? "animate-exit" : ""
-          )}
-          style={!isClosing ? {
-            animation: 'panelFadeIn 0.3s ease-out, panelScaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
-          } : undefined}
-        >
+        <>
+          {/* Backdrop blur overlay */}
+          <div 
+            className={cn(
+              "fixed inset-0 z-[99998] bg-black/20 backdrop-blur-sm transition-opacity duration-300",
+              isClosing ? "opacity-0" : "opacity-100"
+            )}
+            onClick={handleClose}
+          />
+          
+          <div 
+            className={cn(
+              "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 transition-all duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.3)] hover:border-gray-600",
+              isClosing ? "animate-exit" : ""
+            )}
+            style={!isClosing ? {
+              animation: 'panelFadeIn 0.3s ease-out, panelScaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            } : undefined}
+          >
           <style>{`
             @keyframes panelScaleIn {
               from {
@@ -226,6 +236,7 @@ const DebugPanel = ({
             </div>
           </div>
         </div>
+        </>
       )}
     </>
   );
