@@ -1570,6 +1570,98 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </div>
             </div>
 
+            {/* Price Range Slider */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
+                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
+                    (filters.minPrice > 0 || filters.maxPrice > 0) && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  )}
+                >
+                  <DollarSign className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  {currentText.priceRange}
+                  {(filters.minPrice > 0 || filters.maxPrice > 0) && (
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-72 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
+                align="start"
+                onCloseAutoFocus={(e) => e.preventDefault()}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                      <DollarSign className="h-3.5 w-3.5 text-blue-500" />
+                      {currentText.priceRange}
+                    </h4>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => {
+                        setPriceRange([0, currentFilters.maxPrice]);
+                        handleFilterChange('minPrice', 0);
+                        handleFilterChange('maxPrice', 0);
+                      }}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <Slider
+                      value={priceRange}
+                      onValueChange={(value) => {
+                        setPriceRange(value);
+                        handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                        handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                      }}
+                      min={0}
+                      max={currentFilters.maxPrice}
+                      step={currentFilters.priceStep}
+                      className="w-full"
+                    />
+                    
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex flex-col">
+                        <span className="text-muted-foreground mb-1">Min</span>
+                        <span className="font-semibold text-foreground">
+                          {activeTab === 'rent' 
+                            ? `${priceRange[0]}jt`
+                            : priceRange[0] >= 1000 
+                              ? `${(priceRange[0] / 1000).toFixed(1)}M`
+                              : `${priceRange[0]}jt`
+                          }
+                        </span>
+                      </div>
+                      <span className="text-muted-foreground">-</span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-muted-foreground mb-1">Max</span>
+                        <span className="font-semibold text-foreground">
+                          {activeTab === 'rent'
+                            ? priceRange[1] >= currentFilters.maxPrice
+                              ? 'Any'
+                              : `${priceRange[1]}jt`
+                            : priceRange[1] >= currentFilters.maxPrice
+                              ? 'Any'
+                              : priceRange[1] >= 1000 
+                                ? `${(priceRange[1] / 1000).toFixed(1)}M`
+                                : `${priceRange[1]}jt`
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Facilities Button - Opens Popover */}
             <Popover open={isFacilitiesOpen} onOpenChange={setIsFacilitiesOpen} modal={true}>
               <PopoverTrigger asChild>
