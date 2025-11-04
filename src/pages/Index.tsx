@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
+import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -35,6 +36,7 @@ const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatur
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
+const ScrollToTopButton = lazy(() => import("@/components/ui/ScrollToTopButton"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -90,6 +92,8 @@ const Index = () => {
   });
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
+  const [imageSearchMode, setImageSearchMode] = useState(false);
+  const [uploadedImageBase64, setUploadedImageBase64] = useState<string | null>(null);
 
   // Note: Removed hardcoded admin email check for security
   // Users are redirected based on their role stored in the user_roles table
@@ -361,6 +365,24 @@ const Index = () => {
                 />
               </Suspense>
               
+              {/* Image Search Button */}
+              <div className="mt-2 flex justify-center">
+                <ImageSearchButton
+                  onImageSelected={(base64) => {
+                    setUploadedImageBase64(base64);
+                    setImageSearchMode(true);
+                    toast.info("Image search feature is under development. Using regular search for now.");
+                    // TODO: Implement actual image similarity search
+                  }}
+                  onClear={() => {
+                    setUploadedImageBase64(null);
+                    setImageSearchMode(false);
+                  }}
+                  isSearching={isSearching}
+                  hasImage={!!uploadedImageBase64}
+                />
+              </div>
+              
               {/* Advanced Filters - Compact inline */}
               <div className="mt-2 flex justify-end">
                 <Suspense fallback={<div className="animate-pulse h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
@@ -590,6 +612,11 @@ const Index = () => {
         {/* Customer AI Chat Widget - Fixed position on right */}
         <Suspense fallback={null}>
           <ResponsiveAIChatWidget />
+        </Suspense>
+        
+        {/* Scroll to Top Button - Always visible when scrolling */}
+        <Suspense fallback={null}>
+          <ScrollToTopButton />
         </Suspense>
         
         {/* WhatsApp Inquiry Dialog */}
