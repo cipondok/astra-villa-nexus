@@ -336,8 +336,10 @@ const DebugPanel = ({
             <div 
               className="bg-gray-800 rounded p-2" 
               style={{ 
-                animation: 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both',
-                opacity: 0
+                animation: isClosing 
+                  ? 'slideOutStagger 0.3s ease-in 0.15s both'
+                  : 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both',
+                opacity: isClosing ? 1 : 0
               }}
             >
               <style>{`
@@ -349,6 +351,16 @@ const DebugPanel = ({
                   to {
                     transform: translateX(0) scale(1);
                     opacity: 1;
+                  }
+                }
+                @keyframes slideOutStagger {
+                  from {
+                    transform: translateX(0) scale(1);
+                    opacity: 1;
+                  }
+                  to {
+                    transform: translateX(-30px) scale(0.95);
+                    opacity: 0;
                   }
                 }
               `}</style>
@@ -372,8 +384,10 @@ const DebugPanel = ({
             <div 
               className="space-y-2" 
               style={{ 
-                animation: 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both',
-                opacity: 0
+                animation: isClosing 
+                  ? 'slideOutStagger 0.3s ease-in 0.08s both'
+                  : 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both',
+                opacity: isClosing ? 1 : 0
               }}
             >
               <Button
@@ -403,8 +417,10 @@ const DebugPanel = ({
             <div 
               className="text-[10px] text-gray-500 pt-2 border-t border-gray-700 space-y-2" 
               style={{ 
-                animation: 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both',
-                opacity: 0
+                animation: isClosing 
+                  ? 'slideOutStagger 0.3s ease-in 0s both'
+                  : 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both',
+                opacity: isClosing ? 1 : 0
               }}
             >
               <p>Toggle animations without changing OS settings.</p>
