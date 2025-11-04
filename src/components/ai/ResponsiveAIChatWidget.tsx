@@ -297,7 +297,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {!isOpen && (
         <div 
           className={cn(
-            "fixed z-[10002] pointer-events-none transition-all duration-500 ease-out transform-gpu",
+            "fixed z-[10002] pointer-events-none transition-all duration-300 ease-out transform-gpu",
             showWidget ? "translate-y-0 opacity-100 scale-100" : "translate-y-24 opacity-0 scale-90"
           )}
           style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
