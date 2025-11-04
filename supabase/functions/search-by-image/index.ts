@@ -1,10 +1,75 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const SearchRequestSchema = z.object({
+  imageUrl: z.string()
+    .min(1, 'Image URL is required')
+    .refine((url) => {
+      // Validate data URL format
+      if (url.startsWith('data:image/')) {
+        const parts = url.split(',');
+        if (parts.length !== 2) return false;
+        
+        // Check base64 size (max 5MB encoded)
+        const base64Data = parts[1];
+        const sizeInBytes = (base64Data.length * 3) / 4;
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        
+        return sizeInBytes <= maxSize;
+      }
+      
+      // Validate HTTP(S) URL format
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        try {
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      
+      return false;
+    }, 'Invalid image URL format or size exceeds 5MB'),
+  weights: z.object({
+    propertyType: z.number().min(0).max(100).optional(),
+    style: z.number().min(0).max(100).optional(),
+    architecture: z.number().min(0).max(100).optional(),
+    bedrooms: z.number().min(0).max(100).optional(),
+    amenities: z.number().min(0).max(100).optional(),
+  }).optional()
+});
+
+// Rate limiting: Simple in-memory store (use Redis/Supabase in production)
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(identifier: string): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const limit = rateLimitStore.get(identifier);
+  
+  // Allow 5 requests per minute
+  const MAX_REQUESTS = 5;
+  const WINDOW_MS = 60 * 1000;
+  
+  if (!limit || now > limit.resetAt) {
+    rateLimitStore.set(identifier, { count: 1, resetAt: now + WINDOW_MS });
+    return { allowed: true };
+  }
+  
+  if (limit.count >= MAX_REQUESTS) {
+    const retryAfter = Math.ceil((limit.resetAt - now) / 1000);
+    return { allowed: false, retryAfter };
+  }
+  
+  limit.count++;
+  return { allowed: true };
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,13 +77,59 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, weights = { propertyType: 30, style: 20, architecture: 15, bedrooms: 10, amenities: 25 } } = await req.json();
+    // Rate limiting check (use IP or user agent as identifier)
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const userAgent = req.headers.get('user-agent') || 'unknown';
+    const rateLimitId = `${clientIp}-${userAgent}`;
     
-    if (!imageUrl) {
+    const rateLimit = checkRateLimit(rateLimitId);
+    if (!rateLimit.allowed) {
       return new Response(
-        JSON.stringify({ error: 'Image URL is required' }),
+        JSON.stringify({ 
+          error: 'Rate limit exceeded. Please try again later.',
+          retryAfter: rateLimit.retryAfter 
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Retry-After': String(rateLimit.retryAfter || 60)
+          }, 
+          status: 429 
+        }
+      );
+    }
+
+    // Parse and validate input
+    const body = await req.json();
+    const validationResult = SearchRequestSchema.safeParse(body);
+    
+    if (!validationResult.success) {
+      console.error('Validation error:', validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid request data',
+          details: validationResult.error.errors.map(e => e.message).join(', ')
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       );
+    }
+
+    const { imageUrl, weights = { propertyType: 30, style: 20, architecture: 15, bedrooms: 10, amenities: 25 } } = validationResult.data;
+    
+    // Additional content type validation for data URLs
+    if (imageUrl.startsWith('data:')) {
+      const mimeType = imageUrl.split(';')[0].split(':')[1];
+      const validMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      
+      if (!validMimeTypes.includes(mimeType)) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'Invalid image format. Supported formats: JPEG, PNG, WebP, GIF' 
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+        );
+      }
     }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -126,10 +237,11 @@ Be specific and accurate. If uncertain about a field, make your best educated gu
 
     console.log('Image features extracted:', imageFeatures);
 
-    // Step 2: Query Supabase for all properties
+    // Step 2: Query Supabase for published properties
+    // Using anon key to respect RLS policies (published properties are public)
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const { data: properties, error: dbError } = await supabase
       .from('properties')
