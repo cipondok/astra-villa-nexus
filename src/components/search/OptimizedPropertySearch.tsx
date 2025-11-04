@@ -77,6 +77,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [showFilterPresets, setShowFilterPresets] = useState(false);
   const [showSaveFilterPresetDialog, setShowSaveFilterPresetDialog] = useState(false);
   const [filterPresetName, setFilterPresetName] = useState('');
+  const [showImageUploadHelp, setShowImageUploadHelp] = useState(false);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
   const { toast } = useToast();
@@ -2977,10 +2978,21 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Camera className="h-5 w-5" />
-              Picture Search
-            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2">
+                <Camera className="h-5 w-5" />
+                Picture Search
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowImageUploadHelp(true)}
+                className="gap-2"
+              >
+                <HelpCircle className="h-4 w-4" />
+                Tips for Best Results
+              </Button>
+            </div>
             <DialogDescription>
               Upload a photo of a property to find similar listings
             </DialogDescription>
@@ -3629,6 +3641,235 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <Button onClick={handleSaveFilterPreset}>
               <Save className="h-4 w-4 mr-2" />
               Save Preset
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Upload Help Dialog */}
+      <Dialog open={showImageUploadHelp} onOpenChange={setShowImageUploadHelp}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Tips for Best Image Search Results
+            </DialogTitle>
+            <DialogDescription>
+              Learn what makes a great property image for accurate similarity matching
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Good Examples */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-green-600">
+                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                  ✓
+                </div>
+                <h3 className="font-semibold">Good Image Examples</h3>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border rounded-lg p-3 space-y-2">
+                  <div className="aspect-video bg-gradient-to-br from-blue-100 to-blue-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-blue-400" />
+                      Front exterior view
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium">Clear Front View</p>
+                  <p className="text-xs text-muted-foreground">Full property facade visible, good lighting, minimal obstructions</p>
+                </div>
+
+                <div className="border rounded-lg p-3 space-y-2">
+                  <div className="aspect-video bg-gradient-to-br from-green-100 to-green-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-green-400" />
+                      Complete building
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium">Complete Structure</p>
+                  <p className="text-xs text-muted-foreground">Entire property in frame, shows architecture and style clearly</p>
+                </div>
+
+                <div className="border rounded-lg p-3 space-y-2">
+                  <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-purple-400" />
+                      Daytime photo
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium">Good Lighting</p>
+                  <p className="text-xs text-muted-foreground">Bright, natural daylight, clear details and colors</p>
+                </div>
+
+                <div className="border rounded-lg p-3 space-y-2">
+                  <div className="aspect-video bg-gradient-to-br from-orange-100 to-orange-50 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-orange-400" />
+                      Straight angle
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium">Straight Angle</p>
+                  <p className="text-xs text-muted-foreground">Property facing camera directly, not tilted or angled</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bad Examples */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-red-600">
+                <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
+                  ✗
+                </div>
+                <h3 className="font-semibold">Avoid These</h3>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
+                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center opacity-50">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2" />
+                      Too dark or blurry
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium text-red-700">Poor Quality</p>
+                  <p className="text-xs text-muted-foreground">Blurry, dark, or low-resolution images</p>
+                </div>
+
+                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
+                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center opacity-50">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2" />
+                      Only small detail
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium text-red-700">Partial View</p>
+                  <p className="text-xs text-muted-foreground">Only showing a door, window, or small detail</p>
+                </div>
+
+                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
+                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center opacity-50">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2" />
+                      Interior only
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium text-red-700">Interior Photos</p>
+                  <p className="text-xs text-muted-foreground">Room interiors work poorly for matching property type</p>
+                </div>
+
+                <div className="border border-red-200 rounded-lg p-3 space-y-2 bg-red-50/30">
+                  <div className="aspect-video bg-gradient-to-br from-gray-300 to-gray-200 rounded flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="text-center opacity-50">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2" />
+                      Many obstructions
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium text-red-700">Blocked View</p>
+                  <p className="text-xs text-muted-foreground">Trees, cars, or other objects blocking the property</p>
+                </div>
+              </div>
+            </div>
+
+            {/* What We Analyze */}
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                What Our AI Analyzes
+              </h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">1</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Property Type</p>
+                    <p className="text-xs text-muted-foreground">House, villa, apartment, commercial</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">2</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Architectural Style</p>
+                    <p className="text-xs text-muted-foreground">Modern, traditional, minimalist, colonial</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">3</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Visual Features</p>
+                    <p className="text-xs text-muted-foreground">Colors, materials, roof type, windows</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">4</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Visible Amenities</p>
+                    <p className="text-xs text-muted-foreground">Pool, garden, balcony, garage</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">5</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Size Indicators</p>
+                    <p className="text-xs text-muted-foreground">Number of floors, building footprint</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">6</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Overall Aesthetics</p>
+                    <p className="text-xs text-muted-foreground">Luxury level, condition, appeal</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Pro Tips */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+              <h3 className="font-semibold flex items-center gap-2 text-blue-900">
+                <Lightbulb className="h-4 w-4" />
+                Pro Tips
+              </h3>
+              <ul className="space-y-1.5 text-sm text-blue-900">
+                <li className="flex items-start gap-2">
+                  <span className="text-blue-600">•</span>
+                  <span>Use professional listing photos for best accuracy</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-blue-600">•</span>
+                  <span>Outdoor facade photos work better than interior shots</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-blue-600">•</span>
+                  <span>Make sure the entire building is visible in the frame</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-blue-600">•</span>
+                  <span>Adjust similarity weights to prioritize what matters most to you</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-blue-600">•</span>
+                  <span>Try different photos of the same property to compare results</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => setShowImageUploadHelp(false)}>
+              Got It!
             </Button>
           </DialogFooter>
         </DialogContent>
