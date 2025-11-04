@@ -45,7 +45,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     scrollToBottom();
   }, [messages]);
 
-  // Handle scroll direction for auto-hide/show (10px threshold with 300ms delay to prevent flicker)
+  // Handle scroll direction for auto-hide/show (10px threshold with 200ms delay for synchronized transitions)
   useEffect(() => {
     // Clear any pending hide timeout
     if (hideTimeoutRef.current) {
@@ -57,10 +57,10 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
       setShowWidget(true); // Always show when chat is open
     } else {
       if (scrollDirection === 'down' && scrollY > 10) {
-        // Delay hiding by 300ms to prevent flicker on quick scrolls
+        // Delay hiding by 200ms to match animation duration
         hideTimeoutRef.current = setTimeout(() => {
           setShowWidget(false);
-        }, 300);
+        }, 200);
       } else if (scrollDirection === 'up' || isAtTop) {
         setShowWidget(true); // Show immediately on scroll up or at top
       }
