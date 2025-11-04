@@ -2359,7 +2359,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Property Type */}
                   {filters.propertyType && filters.propertyType !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <span className="text-blue-700 dark:text-blue-300 font-medium">
@@ -2379,7 +2379,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Bedrooms */}
                   {filters.bedrooms && filters.bedrooms !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <Bed className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2400,7 +2400,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Bathrooms */}
                   {filters.bathrooms && filters.bathrooms !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <Bath className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2421,7 +2421,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Parking */}
                   {filters.parking && filters.parking !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <Car className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2442,7 +2442,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Price Range */}
                   {(filters.minPrice > 0 || filters.maxPrice > 0) && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <DollarSign className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2472,7 +2472,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Year Built */}
                   {filters.yearBuilt && filters.yearBuilt !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <CalendarIcon className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2493,7 +2493,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Condition */}
                   {filters.condition && filters.condition !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <Star className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2514,7 +2514,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Furnishing */}
                   {filters.furnishing && filters.furnishing !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <Home className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2535,7 +2535,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Location filters */}
                   {filters.state && filters.state !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2555,7 +2555,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   
                   {filters.city && filters.city !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2575,7 +2575,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   
                   {filters.area && filters.area !== 'all' && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2596,7 +2596,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {/* Facilities count */}
                   {filters.facilities && filters.facilities.length > 0 && (
                     <div className={cn(
-                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all",
+                      "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200",
                       isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
                     )}>
                       <Building2 className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
@@ -2619,7 +2619,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium",
+                      "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium animate-in fade-in scale-in duration-200",
                       isMobile ? "h-5 px-2 text-[9px]" : "h-6 px-2.5 text-xs"
                     )}
                     onClick={clearAllFilters}
