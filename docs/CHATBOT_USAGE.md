@@ -1,17 +1,37 @@
-# Chatbot Widget - Usage Guide
+# Chatbot Widget - Advanced Features
 
 ## Overview
-A minimal, elegant, always-visible floating chatbot widget with **drag-and-drop repositioning** for real estate applications.
+A production-ready, always-visible floating chatbot widget with **drag-and-drop repositioning**, **sound notifications**, **chat persistence**, and **typing indicators** for real estate applications.
 
 ## Features
 
-### 🎯 Drag-and-Drop Repositioning
-- **Grab and move** the button anywhere on screen
+### 🎯 Drag-and-Drop Repositioning (Framer Motion)
+- **Long press to activate** (300ms hold)
+- **Smooth dragging** with cursor feedback (`grab` → `grabbing`)
 - **Position persists** across sessions (saved in localStorage)
-- **Smart positioning**: Chat window appears next to button
-- **Viewport constraints**: Button stays within screen bounds
+- **Viewport constraints**: Button stays within screen bounds (20px padding)
 - **Touch support**: Works on mobile devices
-- **Visual feedback**: Cursor changes and button scales when dragging
+- **Visual feedback**: GripVertical icon shows on hover and during drag
+
+### 🔔 Sound Notifications (Web Audio API)
+- **Soft chime** plays when AI responds (chat closed)
+- **No external files**: Generated using Web Audio API
+- **Volume**: 0.3 (gentle, non-intrusive)
+- **Mute toggle**: Volume icon in chat header
+- **Persistent preference**: Mute state saved to localStorage
+
+### 💾 Chat Persistence
+- **Auto-save**: Messages and conversation ID to localStorage
+- **Per-user storage**: `chat_history_${userId || 'guest'}`
+- **Auto-load**: Restores chat history on mount
+- **Auto-expire**: Clears after 7 days
+- **Welcome message**: Only shows if no persisted history
+
+### ⌨️ Typing Indicators
+- **Animated dots**: 3 bouncing dots show "AI is typing..."
+- **Framer Motion**: Smooth fade in/out with AnimatePresence
+- **Loading state**: Shows when `isLoading === true`
+- **Auto-hide**: Disappears when AI message arrives
 
 ### ✨ Always Visible
 - Fixed position (customizable via drag)
@@ -37,10 +57,10 @@ Three beautiful button styles to choose from:
 - **`Enter`** - Send message (in input field)
 
 ### 🖱️ Mouse Interactions
-- **Click** - Open/close chat
-- **Click & Drag** - Reposition button anywhere on screen
-- **Hover** - Scale up with smooth animation
-- **Drag handle** - Small grip icon appears on hover
+- **Short click** - Open/close chat
+- **Long press** (300ms) - Activate drag mode
+- **Drag** - Reposition button anywhere on screen
+- **Hover** - Scale up + show grip icon
 
 ### 📱 Mobile Responsive
 - Fullscreen on mobile (90vh)
@@ -96,8 +116,8 @@ function App() {
 
 ## Components
 
-### ChatButton
-The floating trigger button with unread badge.
+### ChatButton (with Framer Motion Drag)
+The floating trigger button with drag-and-drop, unread badge, and 3 variants.
 
 ```tsx
 import ChatButton from "@/components/ai/ChatButton";
@@ -109,6 +129,12 @@ import ChatButton from "@/components/ai/ChatButton";
 />
 ```
 
+**Features:**
+- Long press (300ms) to activate drag
+- Position saved to `localStorage` key: `chat_button_pos`
+- Framer Motion `drag` with momentum disabled
+- Constrained to viewport (20px padding)
+
 ### UnreadBadge
 Notification badge showing unread count.
 
@@ -116,6 +142,18 @@ Notification badge showing unread count.
 import UnreadBadge from "@/components/ai/UnreadBadge";
 
 <UnreadBadge count={5} />
+```
+
+### TypingIndicator
+Animated "AI is typing..." indicator with bouncing dots.
+
+```tsx
+import TypingIndicator from "@/components/ai/TypingIndicator";
+import { AnimatePresence } from "framer-motion";
+
+<AnimatePresence>
+  {isLoading && <TypingIndicator />}
+</AnimatePresence>
 ```
 
 ## Hooks
@@ -133,23 +171,54 @@ useChatKeyboardShortcuts({
 });
 ```
 
-### useDraggablePosition
-Manages draggable element position with localStorage persistence.
+### useSoundNotification
+Plays notification sounds using Web Audio API.
 
 ```tsx
-import { useDraggablePosition } from "@/hooks/useDraggablePosition";
+import { useSoundNotification } from "@/hooks/useSoundNotification";
 
-const { position, isDragging, handleDragStart, resetPosition } = useDraggablePosition({
-  defaultPosition: { x: 24, y: 24 },
-  storageKey: "my-draggable-key",
-  bounds: {
-    minX: 8,
-    maxX: window.innerWidth - 64,
-    minY: 8,
-    maxY: window.innerHeight - 64,
-  }
-});
+const { playNotification, isMuted, toggleMute } = useSoundNotification();
+
+// Play chime
+playNotification();
+
+// Toggle mute
+<button onClick={toggleMute}>
+  {isMuted ? "Unmute" : "Mute"}
+</button>
 ```
+
+**Sound Details:**
+- Two-note chime: E5 (659.25 Hz) → A5 (880 Hz)
+- Duration: 0.4 seconds
+- Volume: 0.3 (fade in/out envelope)
+- Wave: Sine (soft tone)
+
+### useChatPersistence
+Saves chat messages and conversation ID to localStorage with 7-day expiry.
+
+```tsx
+import { useChatPersistence } from "@/hooks/useChatPersistence";
+
+const { 
+  persistedMessages, 
+  persistedConversationId, 
+  saveChat, 
+  clearChat 
+} = useChatPersistence(user?.id);
+
+// Save chat
+saveChat(messages, conversationId);
+
+// Clear chat
+clearChat();
+```
+
+**Storage Details:**
+- Key format: `chat_history_${userId || 'guest'}`
+- Stores: `{ messages, conversationId, timestamp }`
+- Auto-expires: 7 days from last save
+- Loads on mount, saves on every message change
 
 ## Animations
 
@@ -176,35 +245,106 @@ src/components/ai/
 ├── AIChatQuickActions.tsx        # Quick action buttons
 └── types.ts                      # TypeScript types
 
+src/components/ai/
+├── ResponsiveAIChatWidget.tsx    # Main widget component
+├── ChatButton.tsx                 # Floating button with drag (Framer Motion)
+├── UnreadBadge.tsx               # Notification badge
+├── TypingIndicator.tsx           # Animated typing dots
+├── AIChatMessages.tsx            # Message display
+├── AIChatInput.tsx               # Input field
+├── AIChatQuickActions.tsx        # Quick action buttons
+└── types.ts                      # TypeScript types
+
 src/hooks/
 ├── useChatKeyboardShortcuts.ts   # Keyboard shortcut logic
-└── useDraggablePosition.ts       # Drag-and-drop logic
+├── useSoundNotification.ts       # Web Audio API sound
+└── useChatPersistence.ts         # localStorage chat history
 ```
 
 ### State Management
-- **Position**: Saved in localStorage, loads on mount
+- **Position**: Saved in `localStorage` (`chat_button_pos`), managed by Framer Motion drag
 - **Unread Count**: Increments when AI responds while chat is closed
-- **Messages**: Full conversation history
-- **Conversation ID**: Persists across session
-- **Loading States**: UI feedback for async operations
-- **Drag State**: Tracks active dragging, prevents click during drag
+- **Messages**: Full conversation history (persisted to localStorage)
+- **Conversation ID**: Persists across session (persisted to localStorage)
+- **Loading States**: UI feedback + typing indicator
+- **Drag State**: Long press (300ms) to activate, Framer Motion drag
+- **Sound Muted**: Toggle persisted to localStorage
 
-## How Drag-and-Drop Works
+## How Features Work
 
-### User Experience
-1. **Hover** over the button - cursor changes to `grab`
-2. **Click and hold** - cursor changes to `grabbing`, button scales up
-3. **Move mouse** - button follows cursor smoothly
-4. **Release** - position saves to localStorage automatically
-5. **Chat window** opens next to button's new position
+### 1. Drag-and-Drop (Framer Motion)
+**User Flow:**
+1. **Long press** (300ms) on button → Activates drag mode
+2. **Cursor changes** to `grabbing`, button scales up
+3. **Drag** button anywhere on screen (Framer Motion drag)
+4. **Release** → Position saved to `localStorage` (`chat_button_pos`)
+5. **Constraints**: 20px padding from viewport edges
 
-### Technical Details
-- Uses `mousedown`/`touchstart` to initiate drag
-- `mousemove`/`touchmove` updates position in real-time
-- `mouseup`/`touchend` saves position to localStorage
-- Position is constrained to viewport bounds (8px padding)
-- Chat window intelligently positions left or right of button
-- If not enough space on left, opens on right side
+**Technical:**
+```tsx
+<motion.button
+  drag={isDragging}
+  dragMomentum={false}
+  dragElastic={0}
+  onDragEnd={(_, info) => {
+    const newX = Math.max(20, Math.min(window.innerWidth - 76, info.point.x - 28));
+    const newY = Math.max(20, Math.min(window.innerHeight - 76, info.point.y - 28));
+    setPosition({ x: newX, y: newY });
+    localStorage.setItem('chat_button_pos', JSON.stringify({ x: newX, y: newY }));
+  }}
+/>
+```
+
+### 2. Sound Notifications (Web Audio API)
+**User Flow:**
+1. AI sends message while chat is closed
+2. Soft chime plays (E5 → A5, 0.4s)
+3. Volume icon in header toggles mute
+
+**Technical:**
+```tsx
+const oscillator = audioContext.createOscillator();
+oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime); // E5
+oscillator.frequency.setValueAtTime(880, audioContext.currentTime + 0.1); // A5
+gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.05);
+```
+
+### 3. Chat Persistence
+**User Flow:**
+1. User sends messages → Auto-saved to localStorage
+2. Refresh page → Chat history restored
+3. After 7 days → History auto-expires and clears
+
+**Technical:**
+```tsx
+const history: ChatHistory = {
+  messages,
+  conversationId,
+  timestamp: Date.now(),
+};
+localStorage.setItem(`chat_history_${userId || 'guest'}`, JSON.stringify(history));
+```
+
+### 4. Typing Indicators
+**User Flow:**
+1. User sends message → `isLoading = true`
+2. "AI is typing..." with 3 bouncing dots appears
+3. AI responds → Indicator fades out (AnimatePresence)
+
+**Technical:**
+```tsx
+<AnimatePresence>
+  {isLoading && <TypingIndicator />}
+</AnimatePresence>
+
+// In TypingIndicator:
+{[0, 1, 2].map((index) => (
+  <motion.div
+    animate={{ y: -8 }}
+    transition={{ delay: index * 0.15, repeat: Infinity }}
+  />
+))}
+```
 
 ## Customization
 
@@ -302,18 +442,19 @@ if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'c') {
 1. **Single Instance**: Only render one `ResponsiveAIChatWidget` per page
 2. **Lazy Loading**: Use React.lazy() for better performance
 3. **Error Handling**: Implement error boundaries around the widget
-4. **Testing**: Mock keyboard events, drag events, and test all variants
+4. **Testing**: Mock keyboard/drag events, sound API, and localStorage
 5. **Accessibility**: Test with keyboard-only navigation and screen readers
-6. **Position Limits**: Set reasonable bounds to prevent button going off-screen
-7. **Visual Feedback**: Use cursor changes and animations to indicate draggability
+6. **Position Limits**: Framer Motion constrains to viewport automatically
+7. **Sound UX**: Provide mute toggle, save preference
+8. **Storage Management**: Clear expired chats, handle localStorage quota
 
 ## Future Enhancements
-- [x] ~~Drag to reposition button~~ ✅ Implemented!
-- [ ] Double-click to reset position to default
-- [ ] Snap to grid or edges
-- [ ] Magnetic corners (auto-snap to corners)
-- [ ] Position presets (top-left, top-right, bottom-left, bottom-right)
-- [ ] Sound notifications for new messages
-- [ ] Minimize to compact mode
-- [ ] Chat history persistence
+- [x] ~~Drag to reposition button~~ ✅ Implemented with Framer Motion!
+- [x] ~~Sound notifications~~ ✅ Implemented with Web Audio API!
+- [x] ~~Chat persistence~~ ✅ Implemented with localStorage!
+- [x] ~~Typing indicators~~ ✅ Implemented with Framer Motion!
+- [ ] Export chat history (JSON/PDF)
+- [ ] Voice input/output (Web Speech API)
+- [ ] Message search and filtering
 - [ ] Multi-language support
+- [ ] Custom notification sounds

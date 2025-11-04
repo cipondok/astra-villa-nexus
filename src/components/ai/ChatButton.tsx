@@ -1,14 +1,13 @@
 import { Bot, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
+import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 
 export type ChatButtonVariant = "pulse" | "glow" | "subtle";
 
 interface ChatButtonProps {
   onClick: () => void;
-  onDragStart?: (e: React.MouseEvent | React.TouchEvent) => void;
-  isDragging?: boolean;
-  position?: { x: number; y: number };
   unreadCount?: number;
   variant?: ChatButtonVariant;
   className?: string;
@@ -16,30 +15,46 @@ interface ChatButtonProps {
 
 const ChatButton = ({ 
   onClick, 
-  onDragStart,
-  isDragging = false,
-  position,
   unreadCount = 0, 
   variant = "pulse",
   className 
 }: ChatButtonProps) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isLongPress, setIsLongPress] = useState(false);
+  const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load saved position on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('chat_button_pos');
+    if (saved) {
+      setPosition(JSON.parse(saved));
+    } else {
+      // Default: bottom-right corner
+      setPosition({
+        x: window.innerWidth - 80,
+        y: window.innerHeight - 80,
+      });
+    }
+  }, []);
+
   const baseStyles = cn(
     "fixed z-[9999]",
     "h-14 w-14 rounded-full",
     "text-white shadow-lg",
     "flex items-center justify-center",
     "transition-all duration-300 ease-out",
-    !isDragging && "transform hover:scale-110 active:scale-95",
-    isDragging && "scale-105 cursor-grabbing shadow-2xl",
+    !isDragging && "transform hover:scale-110",
+    isDragging && "scale-105 shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
-    "cursor-grab hover:cursor-grab active:cursor-grabbing"
+    isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
   );
 
   const variantStyles: Record<ChatButtonVariant, string> = {
     pulse: cn(
       "bg-gradient-to-r from-blue-600 to-purple-600",
       "hover:from-blue-700 hover:to-purple-700",
-      "animate-subtle-pulse hover:shadow-xl"
+      !isDragging && "animate-subtle-pulse hover:shadow-xl"
     ),
     glow: cn(
       "bg-gradient-to-r from-purple-600 to-pink-600",
@@ -54,38 +69,65 @@ const ChatButton = ({
     )
   };
 
-  const handleClick = (e: React.MouseEvent) => {
-    // Only trigger onClick if not dragging
-    if (!isDragging) {
+  // Long press to activate drag (300ms)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    pressTimerRef.current = setTimeout(() => {
+      setIsLongPress(true);
+      setIsDragging(true);
+    }, 300);
+  };
+
+  const handleMouseUp = () => {
+    if (pressTimerRef.current) {
+      clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
+    }
+
+    if (isDragging) {
+      // Save position to localStorage
+      localStorage.setItem('chat_button_pos', JSON.stringify(position));
+      setIsDragging(false);
+      setIsLongPress(false);
+    } else if (!isLongPress) {
+      // Short click - open chat
       onClick();
     }
+    setIsLongPress(false);
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (onDragStart) {
-      onDragStart(e);
+  const handleMouseLeave = () => {
+    if (pressTimerRef.current) {
+      clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (onDragStart) {
-      onDragStart(e);
-    }
+  const handleDragEnd = (_: any, info: { point: { x: number; y: number } }) => {
+    // Constrain to viewport with 20px padding
+    const newX = Math.max(20, Math.min(window.innerWidth - 76, info.point.x - 28)); // 28 = half button size
+    const newY = Math.max(20, Math.min(window.innerHeight - 76, info.point.y - 28));
+    
+    setPosition({ x: newX, y: newY });
+    localStorage.setItem('chat_button_pos', JSON.stringify({ x: newX, y: newY }));
+    setIsDragging(false);
   };
 
   return (
-    <button
-      onClick={handleClick}
+    <motion.button
+      drag={isDragging}
+      dragMomentum={false}
+      dragElastic={0}
+      onDragEnd={handleDragEnd}
       onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
       className={cn("group", baseStyles, variantStyles[variant], className)}
-      style={position ? {
+      style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
-        bottom: 'auto',
-        right: 'auto',
-      } : undefined}
-      aria-label="Open AI chat assistant (drag to reposition)"
+      }}
+      aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition)"}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -97,17 +139,17 @@ const ChatButton = ({
     >
       <div className="relative">
         <Bot className="h-6 w-6" aria-hidden="true" />
-        {/* Drag handle indicator */}
+        {/* Drag handle indicator - shows on hover */}
         <GripVertical 
           className={cn(
-            "absolute -bottom-1 -right-1 h-3 w-3 opacity-0 transition-opacity",
-            "group-hover:opacity-60"
+            "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
+            isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
           )} 
           aria-hidden="true"
         />
       </div>
       <UnreadBadge count={unreadCount} />
-    </button>
+    </motion.button>
   );
 };
 

@@ -1,28 +1,59 @@
+import { motion } from "framer-motion";
 import { Bot } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const TypingIndicator = () => {
+interface TypingIndicatorProps {
+  className?: string;
+}
+
+const TypingIndicator = ({ className }: TypingIndicatorProps) => {
+  const dotVariants = {
+    initial: { y: 0 },
+    animate: { y: -8 },
+  };
+
+  const dotTransition = {
+    duration: 0.5,
+    repeat: Infinity,
+    repeatType: "reverse" as const,
+    ease: "easeInOut" as const,
+  };
+
   return (
-    <div className="flex gap-3 justify-start animate-fade-in">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-        <Bot className="h-4 w-4 text-white" />
-      </div>
-      <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl px-4 py-3 shadow-sm">
-        <div className="flex gap-1.5 items-center">
-          <span 
-            className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-typing-dot"
-            style={{ animationDelay: '0ms' }}
-          />
-          <span 
-            className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-typing-dot"
-            style={{ animationDelay: '150ms' }}
-          />
-          <span 
-            className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-typing-dot"
-            style={{ animationDelay: '300ms' }}
-          />
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className={cn(
+        "flex justify-start",
+        className
+      )}
+    >
+      <div className="max-w-xs p-3 rounded-lg bg-white/70 dark:bg-gray-800">
+        <div className="flex items-center gap-2 mb-1">
+          <Bot className="h-4 w-4 text-purple-600" />
+          <span className="text-xs font-medium text-purple-600">AI Assistant</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-gray-600 dark:text-gray-400">Typing</span>
+          <div className="flex gap-1 ml-1">
+            {[0, 1, 2].map((index) => (
+              <motion.div
+                key={index}
+                variants={dotVariants}
+                initial="initial"
+                animate="animate"
+                transition={{
+                  ...dotTransition,
+                  delay: index * 0.15,
+                }}
+                className="w-1.5 h-1.5 rounded-full bg-purple-600"
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

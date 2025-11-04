@@ -4,17 +4,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
 import AIChatInput from "./AIChatInput";
+import TypingIndicator from "./TypingIndicator";
 import ChatButton, { ChatButtonVariant } from "./ChatButton";
 import { Message, QuickAction } from "./types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useChatKeyboardShortcuts } from "@/hooks/useChatKeyboardShortcuts";
-import { useDraggablePosition } from "@/hooks/useDraggablePosition";
+import { useSoundNotification } from "@/hooks/useSoundNotification";
+import { useChatPersistence } from "@/hooks/useChatPersistence";
+import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ResponsiveAIChatWidgetProps {
@@ -41,11 +44,11 @@ const ResponsiveAIChatWidget = ({
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
   
-  // Draggable position for chat button
-  const { position, isDragging, handleDragStart } = useDraggablePosition({
-    defaultPosition: { x: window.innerWidth - 80, y: window.innerHeight - 80 }, // bottom-right
-    storageKey: "chatbot-button-position",
-  });
+  // Sound notifications
+  const { playNotification, isMuted, toggleMute } = useSoundNotification();
+  
+  // Chat persistence
+  const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -56,15 +59,50 @@ const ResponsiveAIChatWidget = ({
     scrollToBottom();
   }, [messages]);
 
-  // Track unread messages
+  // Load persisted chat history on mount
+  useEffect(() => {
+    if (persistedMessages.length > 0) {
+      setMessages(persistedMessages);
+      setConversationId(persistedConversationId);
+    } else if (messages.length === 0) {
+      // Send welcome message only if no persisted history
+      const welcomeMessage: Message = {
+        id: 'welcome',
+        role: 'assistant',
+        content: `👋 Hi! I'm your AI assistant. I can help you with:
+
+🏠 Property recommendations and details
+💰 Rental term negotiations
+🏡 Neighborhood questions
+🛠️ Vendor service bookings  
+🎯 3D property tour guidance
+💡 Real estate advice
+
+${propertyId ? "I see you're viewing a property. Feel free to ask me anything about it!" : "How can I assist you today?"}`,
+        timestamp: new Date()
+      };
+      setMessages([welcomeMessage]);
+    }
+  }, [persistedMessages, persistedConversationId, propertyId]);
+
+  // Save chat to localStorage whenever messages or conversationId changes
+  useEffect(() => {
+    if (messages.length > 0 && conversationId) {
+      saveChat(messages, conversationId);
+    }
+  }, [messages, conversationId, saveChat]);
+
+  // Track unread messages and play sound notification
   useEffect(() => {
     if (!isOpen && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
-      if (lastMessage.role === 'assistant') {
+      if (lastMessage.role === 'assistant' && lastMessage.id !== 'welcome') {
         setUnreadCount(prev => prev + 1);
+        // Play sound notification when AI responds while chat is closed
+        playNotification();
       }
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, playNotification]);
 
   // Clear unread count when chat opens
   useEffect(() => {
@@ -96,28 +134,6 @@ const ResponsiveAIChatWidget = ({
     onOpen: handleOpen,
     onClose: handleClose,
   });
-
-  useEffect(() => {
-    if (messages.length === 0) {
-      // Send welcome message
-      const welcomeMessage: Message = {
-        id: 'welcome',
-        role: 'assistant',
-        content: `👋 Hi! I'm your AI assistant. I can help you with:
-
-🏠 Property recommendations and details
-💰 Rental term negotiations
-🏡 Neighborhood questions
-🛠️ Vendor service bookings  
-🎯 3D property tour guidance
-💡 Real estate advice
-
-${propertyId ? "I see you're viewing a property. Feel free to ask me anything about it!" : "How can I assist you today?"}`,
-        timestamp: new Date()
-      };
-      setMessages([welcomeMessage]);
-    }
-  }, [propertyId, messages.length]);
 
   const { toast } = useToast();
 
@@ -293,33 +309,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Calculate chat window position relative to button
+  // Calculate chat window position (no longer needed with ChatButton managing its own position)
   const getChatWindowPosition = () => {
     if (isMobile) {
       return { bottom: 0, left: 0, right: 0 };
     }
     
-    // Position chat window to the left of the button
-    const windowWidth = 420;
-    const windowHeight = 680;
-    const gap = 16; // 1rem gap between button and window
-    
-    let left = position.x - windowWidth - gap;
-    let top = position.y;
-    
-    // If window would go off left edge, show it on the right of button
-    if (left < 8) {
-      left = position.x + 56 + gap; // 56px = button width
-    }
-    
-    // Constrain to viewport
-    const maxLeft = window.innerWidth - windowWidth - 8;
-    const maxTop = window.innerHeight - windowHeight - 8;
-    
-    left = Math.max(8, Math.min(left, maxLeft));
-    top = Math.max(8, Math.min(top, maxTop));
-    
-    return { left, top };
+    // Fixed position on desktop
+    return { bottom: 24, right: 24 };
   };
 
   return (
@@ -328,15 +325,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {!isOpen && (
         <ChatButton 
           onClick={handleOpen}
-          onDragStart={handleDragStart}
-          isDragging={isDragging}
-          position={position}
           unreadCount={unreadCount}
           variant={buttonVariant}
         />
       )}
 
-      {/* Chat window - positioned relative to button */}
+      {/* Chat window - positioned fixed */}
       {isOpen && (
         <div 
           className={cn(
@@ -363,13 +357,23 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           aria-modal="true"
         >
           <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
-            {/* Header with Close and Minimize */}
+            {/* Header with Close, Minimize, and Sound Toggle */}
             <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
                 <span className="font-semibold text-sm">AI Assistant</span>
               </div>
               <div className="flex items-center gap-2">
+                {/* Sound toggle */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  onClick={toggleMute}
+                  aria-label={isMuted ? "Unmute notifications" : "Mute notifications"}
+                >
+                  {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -396,10 +400,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   <div className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}>
                     <AIChatMessages
                       messages={messages}
-                      isLoading={isLoading}
+                      isLoading={false}
                       messagesEndRef={messagesEndRef}
                       onReaction={handleReaction}
                     />
+                    {/* Typing indicator with animation */}
+                    <AnimatePresence>
+                      {isLoading && <TypingIndicator />}
+                    </AnimatePresence>
                   </div>
                 </ScrollArea>
 
