@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Settings, X, Keyboard } from 'lucide-react';
+import { Settings, X, Keyboard, Copy, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -28,6 +28,7 @@ const DebugPanel = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Trigger animation when override state changes
   useEffect(() => {
@@ -43,6 +44,35 @@ const DebugPanel = ({
       setIsOpen(false);
       setIsClosing(false);
     }, 300); // Match animation duration
+  };
+
+  const handleCopyDebugInfo = async () => {
+    const debugInfo = `Animation Debug Info
+━━━━━━━━━━━━━━━━━━━━
+Reduced Motion: ${prefersReducedMotion ? 'ON' : 'OFF'}
+Override Active: ${isOverridden ? 'YES' : 'NO'}
+Environment: ${process.env.NODE_ENV}
+Timestamp: ${new Date().toISOString()}
+User Agent: ${navigator.userAgent}
+━━━━━━━━━━━━━━━━━━━━`;
+
+    try {
+      await navigator.clipboard.writeText(debugInfo);
+      setCopied(true);
+      toast({
+        title: "✓ Copied to clipboard",
+        description: "Debug info copied successfully",
+        duration: 2000,
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please try again",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
   };
 
   // Keyboard shortcuts
@@ -426,17 +456,36 @@ const DebugPanel = ({
               <p>Toggle animations without changing OS settings.</p>
               <p>Setting persists in localStorage.</p>
               
-              <button
-                onClick={() => {
-                  // Trigger the help modal by dispatching a keyboard event
-                  const event = new KeyboardEvent('keydown', { key: '?' });
-                  window.dispatchEvent(event);
-                }}
-                className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors hover-scale"
-              >
-                <Keyboard className="h-3 w-3" />
-                <span>View all shortcuts</span>
-              </button>
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={() => {
+                    // Trigger the help modal by dispatching a keyboard event
+                    const event = new KeyboardEvent('keydown', { key: '?' });
+                    window.dispatchEvent(event);
+                  }}
+                  className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors hover-scale"
+                >
+                  <Keyboard className="h-3 w-3" />
+                  <span>View all shortcuts</span>
+                </button>
+                
+                <button
+                  onClick={handleCopyDebugInfo}
+                  className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors hover-scale ml-auto"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-3 w-3" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3 w-3" />
+                      <span>Copy info</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
