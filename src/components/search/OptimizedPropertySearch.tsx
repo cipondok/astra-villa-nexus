@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -41,6 +41,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [voiceCommandHistory, setVoiceCommandHistory] = useState<Array<{ command: string; timestamp: Date; filters: any }>>([]);
   const [showVoiceHistory, setShowVoiceHistory] = useState(false);
   const [showVoiceHelp, setShowVoiceHelp] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
@@ -326,6 +327,70 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     const updated = [newEntry, ...voiceCommandHistory].slice(0, 10); // Keep last 10 commands
     setVoiceCommandHistory(updated);
     localStorage.setItem('voiceCommandHistory', JSON.stringify(updated));
+  };
+
+  // Voice command templates
+  const voiceTemplates = [
+    {
+      name: 'Affordable Apartments',
+      command: 'Apartments under 500k',
+      filters: { propertyType: 'apartment', maxPrice: 500000 }
+    },
+    {
+      name: 'Family Houses',
+      command: '3 bedrooms house for sale',
+      filters: { propertyType: 'house', minBedrooms: 3, listingType: 'sale' }
+    },
+    {
+      name: 'Luxury Rentals',
+      command: 'Apartments for rent over 1 million with pool',
+      filters: { propertyType: 'apartment', listingType: 'rent', minPrice: 1000000, amenities: ['Pool'] }
+    },
+    {
+      name: 'Budget Rentals',
+      command: 'Apartments for rent under 5 million',
+      filters: { propertyType: 'apartment', listingType: 'rent', maxPrice: 5000000 }
+    },
+    {
+      name: 'Modern Condos',
+      command: 'Apartments with gym and parking',
+      filters: { propertyType: 'apartment', amenities: ['Gym', 'Parking'] }
+    },
+    {
+      name: 'Spacious Homes',
+      command: '4 bedroom 3 bathroom house',
+      filters: { propertyType: 'house', minBedrooms: 4, minBathrooms: 3 }
+    },
+    {
+      name: 'Secure Living',
+      command: 'Properties with security and parking',
+      filters: { amenities: ['Security', 'Parking'] }
+    },
+    {
+      name: 'Premium Villas',
+      command: 'Villas over 2 million with pool and garden',
+      filters: { propertyType: 'villa', minPrice: 2000000, amenities: ['Pool', 'Garden'] }
+    },
+    {
+      name: 'Student Housing',
+      command: 'Apartments for rent under 3 million',
+      filters: { propertyType: 'apartment', listingType: 'rent', maxPrice: 3000000 }
+    },
+    {
+      name: 'Office Spaces',
+      command: 'Commercial properties with parking',
+      filters: { propertyType: 'commercial', amenities: ['Parking'] }
+    }
+  ];
+
+  const applyTemplate = (template: typeof voiceTemplates[0]) => {
+    updateFilters(template.filters);
+    setShowTemplates(false);
+    
+    toast({
+      title: "Template Applied",
+      description: `"${template.name}" - ${template.command}`
+    });
   };
 
   const replayVoiceCommand = (historyItem: { command: string; filters: any }) => {
@@ -1077,6 +1142,26 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+
+            {/* Templates Button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setShowTemplates(true)}
+                    className={`absolute ${voiceCommandHistory.length > 0 ? 'right-40' : 'right-28'} top-1/2 transform -translate-y-1/2`}
+                  >
+                    <FileCode className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Quick search templates</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {searchInput && (
               <button
                 onClick={handleClearSearch}
@@ -1788,6 +1873,106 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           <DialogFooter>
             <Button onClick={() => setShowVoiceHelp(false)}>
               Got it!
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Voice Command Templates Dialog */}
+      <Dialog open={showTemplates} onOpenChange={setShowTemplates}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileCode className="h-5 w-5" />
+              Quick Search Templates
+            </DialogTitle>
+            <DialogDescription>
+              Click on any template to instantly apply pre-configured search filters
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {voiceTemplates.map((template, index) => {
+              const filterTags = [];
+              if (template.filters.propertyType) filterTags.push(template.filters.propertyType);
+              if (template.filters.listingType) filterTags.push(template.filters.listingType);
+              if (template.filters.minBedrooms) filterTags.push(`${template.filters.minBedrooms}+ beds`);
+              if (template.filters.minBathrooms) filterTags.push(`${template.filters.minBathrooms}+ baths`);
+              if (template.filters.maxPrice) {
+                const price = template.filters.maxPrice;
+                if (price >= 1000000) {
+                  filterTags.push(`<${price / 1000000}M`);
+                } else if (price >= 1000) {
+                  filterTags.push(`<${price / 1000}k`);
+                }
+              }
+              if (template.filters.minPrice) {
+                const price = template.filters.minPrice;
+                if (price >= 1000000) {
+                  filterTags.push(`>${price / 1000000}M`);
+                } else if (price >= 1000) {
+                  filterTags.push(`>${price / 1000}k`);
+                }
+              }
+              if (template.filters.amenities?.length) {
+                filterTags.push(...template.filters.amenities);
+              }
+
+              return (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 hover:shadow-md transition-all group cursor-pointer bg-card"
+                  onClick={() => applyTemplate(template)}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
+                        <p className="text-xs text-muted-foreground font-mono truncate">
+                          "{template.command}"
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          applyTemplate(template);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                      >
+                        Use
+                      </Button>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1">
+                      {filterTags.map((tag, i) => (
+                        <Badge key={i} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mt-4">
+            <div className="flex items-start gap-3">
+              <Lightbulb className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-sm mb-1">Quick Tip</h3>
+                <p className="text-sm text-muted-foreground">
+                  After applying a template, you can further customize your search using the filters panel or by speaking additional voice commands.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowTemplates(false)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
