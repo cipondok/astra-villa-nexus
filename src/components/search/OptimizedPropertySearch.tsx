@@ -1000,32 +1000,52 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       return;
     }
 
-    const headers = ['Title', 'Type', 'Listing', 'Price', 'Bedrooms', 'Bathrooms', 'Area (sqm)', 'Location', 'City'];
+    const hasImageSearch = searchMode === 'image' && Object.keys(similarityScores).length > 0;
+    
+    const headers = hasImageSearch 
+      ? ['Similarity Score (%)', 'Title', 'Type', 'Listing', 'Price', 'Bedrooms', 'Bathrooms', 'Area (sqm)', 'Location', 'City', 'Description']
+      : ['Title', 'Type', 'Listing', 'Price', 'Bedrooms', 'Bathrooms', 'Area (sqm)', 'Location', 'City', 'Description'];
+    
     const csvContent = [
       headers.join(','),
-      ...results.map(property => [
-        `"${property.title.replace(/"/g, '""')}"`,
-        property.property_type,
-        property.listing_type,
-        property.price,
-        property.bedrooms,
-        property.bathrooms,
-        property.area_sqm || 0,
-        `"${property.area.replace(/"/g, '""')}"`,
-        property.city
-      ].join(','))
+      ...sortedResults.map(property => {
+        const baseData = [
+          `"${property.title.replace(/"/g, '""')}"`,
+          property.property_type,
+          property.listing_type,
+          property.price,
+          property.bedrooms,
+          property.bathrooms,
+          property.area_sqm || 0,
+          `"${property.area.replace(/"/g, '""')}"`,
+          property.city,
+          `"${(property.description || '').replace(/"/g, '""').substring(0, 200)}"`
+        ];
+        
+        if (hasImageSearch) {
+          const similarity = similarityScores[property.id] || 0;
+          return [similarity, ...baseData].join(',');
+        }
+        
+        return baseData.join(',');
+      })
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `property-search-results-${new Date().toISOString().split('T')[0]}.csv`;
+    const filename = hasImageSearch 
+      ? `property-image-search-results-${new Date().toISOString().split('T')[0]}.csv`
+      : `property-search-results-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = filename;
     link.click();
     
     setExportMenuOpen(false);
     toast({
       title: "Export Successful",
-      description: "CSV file has been downloaded"
+      description: hasImageSearch 
+        ? `Exported ${results.length} properties with similarity scores`
+        : "CSV file has been downloaded"
     });
   };
 
@@ -1039,51 +1059,166 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       return;
     }
 
+    const hasImageSearch = searchMode === 'image' && Object.keys(similarityScores).length > 0;
+
     const htmlContent = `
       <html>
         <head>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 10px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th { background-color: #0066cc; color: white; padding: 10px; text-align: left; }
-            td { padding: 8px; border-bottom: 1px solid #ddd; }
-            tr:hover { background-color: #f5f5f5; }
-            .footer { margin-top: 20px; font-size: 12px; color: #666; }
+            body { 
+              font-family: Arial, sans-serif; 
+              padding: 20px; 
+              color: #333;
+            }
+            h1 { 
+              color: #0066cc; 
+              border-bottom: 3px solid #0066cc; 
+              padding-bottom: 10px;
+              margin-bottom: 20px;
+            }
+            .meta-info {
+              background-color: #f5f5f5;
+              padding: 15px;
+              border-radius: 5px;
+              margin-bottom: 20px;
+            }
+            .meta-info p {
+              margin: 5px 0;
+              color: #666;
+            }
+            ${hasImageSearch ? `
+            .image-search-notice {
+              background-color: #e3f2fd;
+              border-left: 4px solid #0066cc;
+              padding: 15px;
+              margin-bottom: 20px;
+            }
+            .similarity-badge {
+              display: inline-block;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-weight: bold;
+              font-size: 12px;
+            }
+            .similarity-high { background-color: #4caf50; color: white; }
+            .similarity-medium { background-color: #ff9800; color: white; }
+            .similarity-low { background-color: #9e9e9e; color: white; }
+            ` : ''}
+            table { 
+              width: 100%; 
+              border-collapse: collapse; 
+              margin-top: 20px;
+              page-break-inside: auto;
+            }
+            tr {
+              page-break-inside: avoid;
+              page-break-after: auto;
+            }
+            th { 
+              background-color: #0066cc; 
+              color: white; 
+              padding: 12px 8px; 
+              text-align: left;
+              font-size: 11px;
+            }
+            td { 
+              padding: 10px 8px; 
+              border-bottom: 1px solid #ddd;
+              font-size: 10px;
+              vertical-align: top;
+            }
+            tr:nth-child(even) { 
+              background-color: #f9f9f9; 
+            }
+            .property-title {
+              font-weight: bold;
+              color: #0066cc;
+              margin-bottom: 4px;
+            }
+            .property-desc {
+              font-size: 9px;
+              color: #666;
+              line-height: 1.4;
+            }
+            .footer { 
+              margin-top: 30px; 
+              padding-top: 15px;
+              border-top: 1px solid #ddd;
+              font-size: 11px; 
+              color: #666;
+              text-align: center;
+            }
           </style>
         </head>
         <body>
-          <h1>Property Search Results</h1>
-          <p>Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-          <p>Total Results: ${totalCount}</p>
+          <h1>Property Search Results${hasImageSearch ? ' - Image Search' : ''}</h1>
+          
+          <div class="meta-info">
+            <p><strong>Generated:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+            <p><strong>Total Results:</strong> ${results.length} properties</p>
+            ${hasImageSearch ? `<p><strong>Search Type:</strong> Visual Similarity Matching</p>` : ''}
+          </div>
+
+          ${hasImageSearch ? `
+          <div class="image-search-notice">
+            <p style="margin: 0; font-weight: bold; color: #0066cc;">📷 Image-Based Search Results</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #555;">
+              Properties are ranked by visual similarity to your uploaded image. 
+              Scores reflect matches in property type, style, architecture, size, and amenities.
+            </p>
+          </div>
+          ` : ''}
+          
           <table>
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Price</th>
-                <th>Beds</th>
-                <th>Baths</th>
-                <th>Area (sqm)</th>
-                <th>Location</th>
+                ${hasImageSearch ? '<th style="width: 8%;">Match</th>' : ''}
+                <th style="width: ${hasImageSearch ? '30%' : '35%'};">Property</th>
+                <th style="width: ${hasImageSearch ? '8%' : '10%'};">Type</th>
+                <th style="width: ${hasImageSearch ? '12%' : '15%'};">Price</th>
+                <th style="width: ${hasImageSearch ? '6%' : '8%'};">Beds</th>
+                <th style="width: ${hasImageSearch ? '6%' : '8%'};">Baths</th>
+                <th style="width: ${hasImageSearch ? '8%' : '10%'};">Area</th>
+                <th style="width: ${hasImageSearch ? '22%' : '24%'};">Location</th>
               </tr>
             </thead>
             <tbody>
-              ${results.map(property => `
+              ${sortedResults.map(property => {
+                const similarity = similarityScores[property.id];
+                const similarityClass = similarity >= 70 ? 'similarity-high' : similarity >= 50 ? 'similarity-medium' : 'similarity-low';
+                
+                return `
                 <tr>
-                  <td>${property.title}</td>
+                  ${hasImageSearch ? `
+                    <td>
+                      <span class="similarity-badge ${similarityClass}">
+                        ${similarity}%
+                      </span>
+                    </td>
+                  ` : ''}
+                  <td>
+                    <div class="property-title">${property.title}</div>
+                    <div class="property-desc">${(property.description || 'No description').substring(0, 120)}${property.description?.length > 120 ? '...' : ''}</div>
+                  </td>
                   <td>${property.property_type}</td>
                   <td>$${property.price.toLocaleString()}</td>
                   <td>${property.bedrooms}</td>
                   <td>${property.bathrooms}</td>
-                  <td>${property.area_sqm || 'N/A'}</td>
+                  <td>${property.area_sqm || 'N/A'} m²</td>
                   <td>${property.city}, ${property.area}</td>
                 </tr>
-              `).join('')}
+              `}).join('')}
             </tbody>
           </table>
+          
           <div class="footer">
             <p>This document contains ${results.length} properties from the search results.</p>
+            ${hasImageSearch ? `
+              <p style="margin-top: 10px; font-style: italic;">
+                Similarity scores are based on weighted analysis of property features including type, style, 
+                architecture, bedroom count, and amenities.
+              </p>
+            ` : ''}
           </div>
         </body>
       </html>
@@ -1092,11 +1227,15 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     const element = document.createElement('div');
     element.innerHTML = htmlContent;
     
+    const filename = hasImageSearch
+      ? `property-image-search-results-${new Date().toISOString().split('T')[0]}.pdf`
+      : `property-search-results-${new Date().toISOString().split('T')[0]}.pdf`;
+    
     html2pdf()
       .from(element)
       .set({
         margin: 10,
-        filename: `property-search-results-${new Date().toISOString().split('T')[0]}.pdf`,
+        filename: filename,
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
       })
@@ -1105,7 +1244,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
         setExportMenuOpen(false);
         toast({
           title: "Export Successful",
-          description: "PDF file has been downloaded"
+          description: hasImageSearch
+            ? `PDF exported with ${results.length} properties and similarity scores`
+            : "PDF file has been downloaded"
         });
       });
   };
