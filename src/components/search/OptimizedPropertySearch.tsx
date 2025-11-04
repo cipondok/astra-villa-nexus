@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -58,6 +58,10 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     bedrooms: 10,
     amenities: 25
   });
+  const [savedWeightPresets, setSavedWeightPresets] = useState<Array<{ name: string; weights: typeof similarityWeights }>>([]);
+  const [showWeightPresets, setShowWeightPresets] = useState(false);
+  const [showSavePresetDialog, setShowSavePresetDialog] = useState(false);
+  const [presetName, setPresetName] = useState('');
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
   const { toast } = useToast();
@@ -107,6 +111,11 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
         timestamp: new Date(item.timestamp)
       }));
       setVoiceCommandHistory(historyWithDates);
+    }
+
+    const weightPresets = localStorage.getItem('similarityWeightPresets');
+    if (weightPresets) {
+      setSavedWeightPresets(JSON.parse(weightPresets));
     }
   }, []);
 
@@ -550,6 +559,101 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     if (files && files.length > 0) {
       handleImageUpload(files[0]);
     }
+  };
+
+  // Weight preset management
+  const handleSaveWeightPreset = () => {
+    if (!presetName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a name for this preset",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const total = Object.values(similarityWeights).reduce((a, b) => a + b, 0);
+    if (total !== 100) {
+      toast({
+        title: "Invalid Weights",
+        description: "Total weight must equal 100%",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check for duplicate names
+    if (savedWeightPresets.some(p => p.name.toLowerCase() === presetName.trim().toLowerCase())) {
+      toast({
+        title: "Duplicate Name",
+        description: "A preset with this name already exists",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newPreset = {
+      name: presetName.trim(),
+      weights: { ...similarityWeights }
+    };
+
+    const updated = [...savedWeightPresets, newPreset];
+    setSavedWeightPresets(updated);
+    localStorage.setItem('similarityWeightPresets', JSON.stringify(updated));
+    
+    toast({
+      title: "Preset Saved",
+      description: `"${presetName}" has been saved successfully`
+    });
+
+    setPresetName('');
+    setShowSavePresetDialog(false);
+  };
+
+  const handleApplyWeightPreset = (preset: { name: string; weights: typeof similarityWeights }) => {
+    setSimilarityWeights(preset.weights);
+    setShowWeightPresets(false);
+    
+    toast({
+      title: "Preset Applied",
+      description: `Applied "${preset.name}" weight configuration`
+    });
+  };
+
+  const handleDeleteWeightPreset = (index: number) => {
+    const updated = savedWeightPresets.filter((_, i) => i !== index);
+    setSavedWeightPresets(updated);
+    localStorage.setItem('similarityWeightPresets', JSON.stringify(updated));
+    
+    toast({
+      title: "Preset Deleted",
+      description: "Weight preset has been removed"
+    });
+  };
+
+  const applyQuickPreset = (presetType: 'balanced' | 'style' | 'size' | 'amenities' | 'type') => {
+    const presets = {
+      balanced: { propertyType: 30, style: 20, architecture: 15, bedrooms: 10, amenities: 25 },
+      style: { propertyType: 15, style: 40, architecture: 30, bedrooms: 5, amenities: 10 },
+      size: { propertyType: 10, style: 10, architecture: 5, bedrooms: 50, amenities: 25 },
+      amenities: { propertyType: 10, style: 10, architecture: 5, bedrooms: 10, amenities: 65 },
+      type: { propertyType: 60, style: 15, architecture: 15, bedrooms: 5, amenities: 5 }
+    };
+
+    setSimilarityWeights(presets[presetType]);
+    
+    const names = {
+      balanced: 'Balanced',
+      style: 'Style Priority',
+      size: 'Size Priority',
+      amenities: 'Amenities Priority',
+      type: 'Property Type Priority'
+    };
+
+    toast({
+      title: "Quick Preset Applied",
+      description: `Applied "${names[presetType]}" configuration`
+    });
   };
 
   const clearImageSearch = () => {
@@ -2317,24 +2421,83 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             <div className="border rounded-lg p-4 space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold text-sm">Similarity Matching Weights</h4>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setSimilarityWeights({
-                    propertyType: 30,
-                    style: 20,
-                    architecture: 15,
-                    bedrooms: 10,
-                    amenities: 25
-                  })}
-                  className="text-xs"
-                >
-                  Reset to Default
-                </Button>
+                <div className="flex gap-2">
+                  {savedWeightPresets.length > 0 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setShowWeightPresets(true)}
+                    >
+                      <BookmarkCheck className="h-3 w-3 mr-1" />
+                      My Presets ({savedWeightPresets.length})
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setSimilarityWeights({
+                      propertyType: 30,
+                      style: 20,
+                      architecture: 15,
+                      bedrooms: 10,
+                      amenities: 25
+                    })}
+                    className="text-xs"
+                  >
+                    Reset
+                  </Button>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mb-2">
                 Adjust how much each feature influences similarity matching (total should equal 100%)
               </p>
+
+              {/* Quick Presets */}
+              <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">Quick Presets:</p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => applyQuickPreset('balanced')}
+                    className="text-xs h-7"
+                  >
+                    Balanced
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => applyQuickPreset('style')}
+                    className="text-xs h-7"
+                  >
+                    Style Priority
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => applyQuickPreset('size')}
+                    className="text-xs h-7"
+                  >
+                    Size Priority
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => applyQuickPreset('amenities')}
+                    className="text-xs h-7"
+                  >
+                    Amenities Priority
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => applyQuickPreset('type')}
+                    className="text-xs h-7"
+                  >
+                    Type Priority
+                  </Button>
+                </div>
+              </div>
               
               <div className="space-y-3">
                 <div className="space-y-2">
@@ -2412,8 +2575,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                   />
                 </div>
 
-                <div className="bg-muted/50 rounded p-2 text-xs">
-                  <div className="flex items-center justify-between">
+                <div className="bg-muted/50 rounded p-2 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">Total Weight:</span>
                     <span className={`font-medium ${
                       Object.values(similarityWeights).reduce((a, b) => a + b, 0) === 100 
@@ -2423,6 +2586,20 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                       {Object.values(similarityWeights).reduce((a, b) => a + b, 0)}%
                     </span>
                   </div>
+                  {Object.values(similarityWeights).reduce((a, b) => a + b, 0) === 100 && (
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() => {
+                        setPresetName('');
+                        setShowSavePresetDialog(true);
+                      }}
+                      className="w-full h-7 text-xs"
+                    >
+                      <Save className="h-3 w-3 mr-1" />
+                      Save as Preset
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -2512,6 +2689,154 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowImageUpload(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Weight Presets Dialog */}
+      <Dialog open={showWeightPresets} onOpenChange={setShowWeightPresets}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Saved Weight Presets
+            </DialogTitle>
+            <DialogDescription>
+              Quickly apply your saved similarity weight configurations
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            {savedWeightPresets.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Settings className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                <p>No saved presets yet</p>
+                <p className="text-sm">Configure your weights and save them as a preset for quick access</p>
+              </div>
+            ) : (
+              savedWeightPresets.map((preset, index) => (
+                <div
+                  key={index}
+                  className="border rounded-lg p-4 hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold mb-2">{preset.name}</h3>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Property Type:</span>
+                          <span className="font-medium">{preset.weights.propertyType}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Style:</span>
+                          <span className="font-medium">{preset.weights.style}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Architecture:</span>
+                          <span className="font-medium">{preset.weights.architecture}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Bedrooms:</span>
+                          <span className="font-medium">{preset.weights.bedrooms}%</span>
+                        </div>
+                        <div className="flex justify-between col-span-2">
+                          <span className="text-muted-foreground">Amenities:</span>
+                          <span className="font-medium">{preset.weights.amenities}%</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => handleApplyWeightPreset(preset)}
+                      >
+                        Apply
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteWeightPreset(index)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowWeightPresets(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Save Preset Dialog */}
+      <Dialog open={showSavePresetDialog} onOpenChange={setShowSavePresetDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save Weight Preset</DialogTitle>
+            <DialogDescription>
+              Give your custom weight configuration a memorable name
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="preset-name">Preset Name</Label>
+              <Input
+                id="preset-name"
+                placeholder="e.g., Luxury Focus, Budget Homes, Family Sized..."
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSaveWeightPreset();
+                  }
+                }}
+              />
+            </div>
+            <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+              <p className="text-xs font-medium">Current Weights:</p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Property Type:</span>
+                  <span className="font-medium">{similarityWeights.propertyType}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Style:</span>
+                  <span className="font-medium">{similarityWeights.style}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Architecture:</span>
+                  <span className="font-medium">{similarityWeights.architecture}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Bedrooms:</span>
+                  <span className="font-medium">{similarityWeights.bedrooms}%</span>
+                </div>
+                <div className="flex justify-between col-span-2">
+                  <span className="text-muted-foreground">Amenities:</span>
+                  <span className="font-medium">{similarityWeights.amenities}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowSavePresetDialog(false);
+              setPresetName('');
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveWeightPreset}>
+              <Save className="h-4 w-4 mr-2" />
+              Save Preset
             </Button>
           </DialogFooter>
         </DialogContent>
