@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
   X, Filter, RotateCcw, Search, DollarSign, MapPin, Home, 
-  Bed, Bath, Maximize2, SortAsc, Building2 
+  Bed, Bath, Maximize2, SortAsc, Building2, Sparkles
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -50,6 +50,93 @@ const sortOptions = [
   { value: "popularity", label: "Most Popular" }
 ];
 
+const filterPresets = [
+  {
+    id: 'luxury',
+    name: 'Luxury Properties',
+    icon: '💎',
+    description: 'High-end properties with premium features',
+    filters: {
+      priceRange: [5000000000, 50000000000] as [number, number],
+      propertyTypes: ['villa', 'penthouse'],
+      bedrooms: '3',
+      bathrooms: '3',
+      minArea: 200,
+      listingType: 'all',
+    }
+  },
+  {
+    id: 'budget',
+    name: 'Budget Friendly',
+    icon: '💰',
+    description: 'Affordable options for smart buyers',
+    filters: {
+      priceRange: [0, 2000000000] as [number, number],
+      propertyTypes: ['apartment', 'studio'],
+      bedrooms: null,
+      bathrooms: null,
+      minArea: null,
+      listingType: 'all',
+    }
+  },
+  {
+    id: 'family',
+    name: 'Family Homes',
+    icon: '🏡',
+    description: 'Spacious homes perfect for families',
+    filters: {
+      priceRange: [2000000000, 10000000000] as [number, number],
+      propertyTypes: ['house', 'townhouse'],
+      bedrooms: '3',
+      bathrooms: '2',
+      minArea: 150,
+      listingType: 'all',
+    }
+  },
+  {
+    id: 'investment',
+    name: 'Investment Properties',
+    icon: '📈',
+    description: 'Great rental income potential',
+    filters: {
+      priceRange: [1000000000, 5000000000] as [number, number],
+      propertyTypes: ['apartment', 'condo'],
+      bedrooms: '2',
+      bathrooms: '1',
+      minArea: 50,
+      listingType: 'all',
+    }
+  },
+  {
+    id: 'modern',
+    name: 'Modern Living',
+    icon: '🏢',
+    description: 'Contemporary design and amenities',
+    filters: {
+      priceRange: [3000000000, 15000000000] as [number, number],
+      propertyTypes: ['condo', 'penthouse', 'duplex'],
+      bedrooms: '2',
+      bathrooms: '2',
+      minArea: 100,
+      listingType: 'all',
+    }
+  },
+  {
+    id: 'rental',
+    name: 'For Rent',
+    icon: '🔑',
+    description: 'Available rental properties',
+    filters: {
+      priceRange: [0, 50000000000] as [number, number],
+      propertyTypes: [],
+      bedrooms: null,
+      bathrooms: null,
+      minArea: null,
+      listingType: 'rent',
+    }
+  },
+];
+
 const AdvancedPropertyFilters = ({ 
   filters, 
   onFiltersChange, 
@@ -70,6 +157,21 @@ const AdvancedPropertyFilters = ({
       ? localFilters.propertyTypes.filter(t => t !== type)
       : [...localFilters.propertyTypes, type];
     updateFilter('propertyTypes', newTypes);
+  };
+
+  const applyPreset = (presetId: string) => {
+    const preset = filterPresets.find(p => p.id === presetId);
+    if (!preset) return;
+
+    const newFilters = {
+      ...localFilters,
+      ...preset.filters,
+      maxArea: localFilters.maxArea, // Keep max area
+      sortBy: localFilters.sortBy, // Keep sort preference
+    };
+    
+    setLocalFilters(newFilters);
+    onFiltersChange(newFilters);
   };
 
   const getActiveFiltersCount = () => {
@@ -134,6 +236,44 @@ const AdvancedPropertyFilters = ({
         </DialogHeader>
 
         <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-6 py-6 space-y-8">
+          {/* Filter Presets */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <Label className="text-base font-semibold">Quick Presets</Label>
+              <Badge variant="secondary" className="text-xs">Popular</Badge>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {filterPresets.map((preset) => (
+                <button
+                  key={preset.id}
+                  onClick={() => applyPreset(preset.id)}
+                  className="group relative p-4 rounded-xl border-2 border-primary/10 bg-gradient-to-br from-background to-primary/5 hover:border-primary/30 hover:shadow-lg transition-all duration-300 text-left"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="text-3xl group-hover:scale-110 transition-transform">
+                      {preset.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors">
+                        {preset.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {preset.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="h-3 w-3 text-primary" />
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <Separator className="my-6" />
           {/* Search Query */}
           <div className="space-y-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
             <div className="flex items-center gap-2">
