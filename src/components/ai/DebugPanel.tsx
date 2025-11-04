@@ -161,7 +161,7 @@ const DebugPanel = ({
                 <Button
                   onClick={onClearOverride}
                   variant="outline"
-                  className="w-full text-xs h-8 border-gray-600 hover:bg-gray-800 hover-scale"
+                  className="w-full text-xs h-8 border-gray-600 hover:bg-gray-800 hover-scale animate-fade-in"
                 >
                   Reset to System Setting
                 </Button>
