@@ -12,13 +12,15 @@ import { BaseProperty } from "@/types/property";
 import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Camera, MessageSquare, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { FloatingActionMenu } from "@/components/ui/FloatingActionMenu";
+import { KeyboardShortcutIndicator } from "@/components/ui/KeyboardShortcutIndicator";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -108,6 +110,47 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Keyboard shortcuts
+  const shortcuts = useKeyboardShortcuts({
+    shortcuts: [
+      {
+        key: 'c',
+        description: 'Open AI Chat Assistant',
+        action: () => {
+          setChatOpen(true);
+          const event = new CustomEvent('openAIChat');
+          window.dispatchEvent(event);
+          toast.success('Chat opened! (Press C)', { duration: 1500 });
+        }
+      },
+      {
+        key: 'i',
+        description: 'Open Image Search',
+        action: () => {
+          imageInputRef.current?.click();
+          toast.success('Image search opened! (Press I)', { duration: 1500 });
+        }
+      },
+      {
+        key: 't',
+        description: 'Scroll to Top',
+        action: () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          toast.success('Scrolling to top! (Press T)', { duration: 1500 });
+        }
+      },
+      {
+        key: '?',
+        description: 'Show Keyboard Shortcuts',
+        action: () => {
+          const event = new CustomEvent('toggleShortcutsPanel');
+          window.dispatchEvent(event);
+        }
+      }
+    ],
+    enabled: true
+  });
 
   // Note: Removed hardcoded admin email check for security
   // Users are redirected based on their role stored in the user_roles table
@@ -614,7 +657,6 @@ const Index = () => {
           }}
           onOpenChat={() => {
             setChatOpen(true);
-            // Trigger the AI widget to open
             const event = new CustomEvent('openAIChat');
             window.dispatchEvent(event);
           }}
@@ -622,6 +664,16 @@ const Index = () => {
             imageInputRef.current?.click();
           }}
           showScrollButton={showScrollButton}
+        />
+
+        {/* Keyboard Shortcuts Indicator */}
+        <KeyboardShortcutIndicator
+          shortcuts={[
+            { key: 'c', description: 'Open Chat', icon: MessageSquare },
+            { key: 'i', description: 'Image Search', icon: Camera },
+            { key: 't', description: 'Scroll to Top', icon: ArrowUp },
+            { key: '?', description: 'Show Shortcuts' }
+          ]}
         />
 
         {/* Hidden Image Input for FAB */}
