@@ -763,8 +763,21 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           <div className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg">
             <div className="container mx-auto px-4 py-4">
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 bg-white rounded-full animate-pulse" />
+                <div className="flex items-center gap-3">
+                  {/* Animated Waveform */}
+                  <div className="flex items-center gap-0.5 h-6">
+                    {[...Array(5)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-white rounded-full"
+                        style={{
+                          animation: `waveform 1s ease-in-out infinite`,
+                          animationDelay: `${i * 0.1}s`,
+                          height: '100%'
+                        }}
+                      />
+                    ))}
+                  </div>
                   <span className="text-sm font-semibold">Listening...</span>
                 </div>
                 <div className="flex-1 text-base font-medium">
@@ -793,6 +806,16 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               </div>
             </div>
           </div>
+          <style>{`
+            @keyframes waveform {
+              0%, 100% {
+                transform: scaleY(0.3);
+              }
+              50% {
+                transform: scaleY(1);
+              }
+            }
+          `}</style>
         </div>
       )}
 
