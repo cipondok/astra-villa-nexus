@@ -312,7 +312,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           }}
         >
           <div className="pointer-events-auto hover:scale-105 transition-transform duration-200">
-            <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
+            <div className={showWidget ? "animate-pulse" : ""}>
+              <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
+            </div>
           </div>
         </div>
       )}
