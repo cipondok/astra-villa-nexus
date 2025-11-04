@@ -26,6 +26,7 @@ interface ResponsiveAIChatWidgetProps {
 
 const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatWidgetProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,6 +59,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   // Listen for FAB menu to open chat
   useEffect(() => {
     const handleOpenChat = () => {
+      setIsClosing(false);
       setIsOpen(true);
       setIsMinimized(false);
     };
@@ -65,6 +67,16 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     window.addEventListener('openAIChat', handleOpenChat);
     return () => window.removeEventListener('openAIChat', handleOpenChat);
   }, []);
+
+  // Handle close with animation
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+      setIsMinimized(false);
+    }, 300); // Match animation duration
+  };
 
   // Handle scroll direction for auto-hide/show (10px threshold with 200ms delay for synchronized transitions)
   // Chat window stays visible when open regardless of scrolling
@@ -347,10 +359,18 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {isOpen && (
         <div 
           className={cn(
-            "fixed z-[10003] transition-all duration-300 ease-in-out",
+            "fixed z-[10003] transition-all duration-300 ease-out",
             isMinimized ? "w-[280px]" : isMobile ? "w-full" : "w-[420px]",
             isMinimized ? "h-auto" : isMobile ? "h-[95vh]" : "h-[680px] max-h-[calc(100vh-48px)]",
-            isMobile ? "left-0 right-0" : ""
+            isMobile ? "left-0 right-0" : "",
+            // Slide-in/out animations
+            isMobile 
+              ? isClosing 
+                ? "animate-slide-out-bottom" 
+                : "animate-slide-in-bottom"
+              : isClosing 
+                ? "animate-slide-out-right opacity-0 scale-95" 
+                : "animate-slide-in-right"
           )}
           style={
             isMobile
@@ -378,10 +398,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsMinimized(false);
-                  }}
+                  onClick={handleClose}
                 >
                   ✕
                 </Button>

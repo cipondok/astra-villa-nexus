@@ -198,6 +198,46 @@ const config: Config = {
             opacity: "0.9",
             boxShadow: "0 0 15px hsla(217, 91%, 60%, 0.5), 0 0 30px hsla(271, 91%, 65%, 0.4)"
           }
+        },
+        "slide-in-right": {
+          "0%": {
+            transform: "translateX(100%)",
+            opacity: "0"
+          },
+          "100%": {
+            transform: "translateX(0)",
+            opacity: "1"
+          }
+        },
+        "slide-out-right": {
+          "0%": {
+            transform: "translateX(0)",
+            opacity: "1"
+          },
+          "100%": {
+            transform: "translateX(100%)",
+            opacity: "0"
+          }
+        },
+        "slide-in-bottom": {
+          "0%": {
+            transform: "translateY(100%)",
+            opacity: "0"
+          },
+          "100%": {
+            transform: "translateY(0)",
+            opacity: "1"
+          }
+        },
+        "slide-out-bottom": {
+          "0%": {
+            transform: "translateY(0)",
+            opacity: "1"
+          },
+          "100%": {
+            transform: "translateY(100%)",
+            opacity: "0"
+          }
         }
       },
       animation: {
@@ -214,6 +254,10 @@ const config: Config = {
         "typing-dot": "typing-dot 1.4s ease-in-out infinite",
         "subtle-pulse": "subtle-pulse 4s ease-in-out infinite",
         "subtle-pulse-mobile": "subtle-pulse-mobile 4s ease-in-out infinite",
+        "slide-in-right": "slide-in-right 0.3s ease-out",
+        "slide-out-right": "slide-out-right 0.3s ease-in",
+        "slide-in-bottom": "slide-in-bottom 0.3s ease-out",
+        "slide-out-bottom": "slide-out-bottom 0.3s ease-in",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
