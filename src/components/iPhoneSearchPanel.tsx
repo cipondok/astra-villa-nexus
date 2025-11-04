@@ -1948,8 +1948,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
            {/* Advanced Filters Modal */}
           {showFilters && (
-            <div ref={filterRef} className="fixed z-[9999] inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-2 md:p-4">
-              <div className="bg-background w-full max-w-[95vw] md:max-w-6xl h-[95dvh] md:h-[92dvh] rounded-xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50">
+            <div ref={filterRef} className="fixed z-[99999] inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2 md:p-4 animate-in fade-in duration-200">
+              <div className="bg-background w-full max-w-[95vw] md:max-w-6xl h-[95dvh] md:h-[92dvh] rounded-xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border/50 animate-in slide-in-from-bottom-5 duration-300">
               {/* Header */}
               <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-3 py-2.5 md:px-5 md:py-4 shrink-0">
                 <div className="flex items-center gap-2 md:gap-3">
@@ -2013,119 +2013,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 <TabsContent value="propertySpecs" className="space-y-4 md:space-y-5 bg-card border border-border rounded-lg shadow-sm p-4 md:p-5">
                 
-                {/* Room Configuration */}
-                <div>
-                  <Label className="text-sm md:text-base font-semibold text-foreground mb-3 md:mb-4 block">Room Configuration</Label>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                    {/* Bedrooms */}
-                    <div className="bg-muted/30 rounded-lg p-3 md:p-4">
-                      <Label className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3 flex items-center gap-2">
-                        <Bed className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                        Bedrooms
-                      </Label>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant={(!filters.bedrooms || filters.bedrooms === 'all') ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('bedrooms', 'all')}
-                          className="h-9 md:h-10 px-3 md:px-4 text-xs md:text-sm flex-1"
-                        >
-                          Any
-                        </Button>
-                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden bg-background">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
-                            onClick={() => {
-                              const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                              if (current > 0) {
-                                const next = current - 1;
-                                handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
-                              }
-                            }}
-                          >
-                            <span className="text-sm md:text-base font-bold">−</span>
-                          </Button>
-                          <span className="min-w-[32px] md:min-w-[36px] h-9 md:h-10 flex items-center justify-center bg-muted/50 px-2 text-xs md:text-sm font-semibold">
-                            {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
-                          </span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
-                            onClick={() => {
-                              const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                              if (current < 1000) {
-                                handleFilterChange('bedrooms', String(current + 1));
-                              }
-                            }}
-                          >
-                            <span className="text-sm md:text-base font-bold">+</span>
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bathrooms */}
-                    <div className="bg-muted/30 rounded-lg p-3 md:p-4">
-                      <Label className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3 flex items-center gap-2">
-                        <Bath className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                        Bathrooms
-                      </Label>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant={(!filters.bathrooms || filters.bathrooms === 'all') ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('bathrooms', 'all')}
-                          className="h-9 md:h-10 px-3 md:px-4 text-xs md:text-sm flex-1"
-                        >
-                          Any
-                        </Button>
-                        <div className="inline-flex items-center border border-border rounded-md overflow-hidden bg-background">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
-                            onClick={() => {
-                              const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                              if (current > 0) {
-                                const next = current - 1;
-                                handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
-                              }
-                            }}
-                          >
-                            <span className="text-sm md:text-base font-bold">−</span>
-                          </Button>
-                          <span className="min-w-[32px] md:min-w-[36px] h-9 md:h-10 flex items-center justify-center bg-muted/50 px-2 text-xs md:text-sm font-semibold">
-                            {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
-                          </span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-9 md:h-10 w-9 md:w-10 p-0 rounded-none hover:bg-muted"
-                            onClick={() => {
-                              const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                              if (current < 1000) {
-                                handleFilterChange('bathrooms', String(current + 1));
-                              }
-                            }}
-                          >
-                            <span className="text-sm md:text-base font-bold">+</span>
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Property Details - Compact Grid Layout */}
                 <div className="grid grid-cols-2 gap-1 md:gap-1.5">
                   {/* Year Built */}
