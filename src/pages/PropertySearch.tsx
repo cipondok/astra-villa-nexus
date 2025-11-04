@@ -19,6 +19,7 @@ const PropertySearch = () => {
   const { language, setLanguage } = useLanguage();
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [savedProperties, setSavedProperties] = useState<string[]>([]);
+  const [areaFilteredProperties, setAreaFilteredProperties] = useState<BaseProperty[] | null>(null);
 
   const {
     searchResults,
@@ -69,6 +70,10 @@ const PropertySearch = () => {
     if (property.three_d_model_url) {
       window.open(property.three_d_model_url, '_blank');
     }
+  };
+
+  const handleFilterByArea = (filteredProperties: BaseProperty[]) => {
+    setAreaFilteredProperties(filteredProperties);
   };
 
   const getActiveFiltersCount = () => {
@@ -234,10 +239,11 @@ const PropertySearch = () => {
           <PropertyMapView
             properties={searchResults || []}
             onPropertyClick={handlePropertyClick}
+            onFilterByArea={handleFilterByArea}
           />
         ) : (
           <PropertySearchResults
-            properties={searchResults || []}
+            properties={areaFilteredProperties || searchResults || []}
             language={language}
             isLoading={isLoading}
             onPropertyClick={handlePropertyClick}

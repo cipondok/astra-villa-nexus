@@ -1,24 +1,32 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { BaseProperty } from '@/types/property';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { X, Home, Bed, Bath, Maximize2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2 } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
 
 interface PropertyMapViewProps {
   properties: BaseProperty[];
   onPropertyClick: (property: BaseProperty) => void;
+  onFilterByArea?: (filteredProperties: BaseProperty[]) => void;
 }
 
-const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropertyClick }) => {
+const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropertyClick, onFilterByArea }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const draw = useRef<MapboxDraw | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
   const [showTokenInput, setShowTokenInput] = useState(false);
+  const [drawMode, setDrawMode] = useState<'none' | 'polygon' | 'circle'>('none');
+  const [filteredCount, setFilteredCount] = useState<number | null>(null);
+  const [drawnArea, setDrawnArea] = useState<any>(null);
 
   // Initialize map
   useEffect(() => {
@@ -46,9 +54,63 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       'top-right'
     );
 
+    // Initialize Mapbox Draw
+    draw.current = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {},
+      styles: [
+        // Polygon fill
+        {
+          id: 'gl-draw-polygon-fill',
+          type: 'fill',
+          filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+          paint: {
+            'fill-color': '#3b82f6',
+            'fill-outline-color': '#3b82f6',
+            'fill-opacity': 0.2,
+          },
+        },
+        // Polygon outline
+        {
+          id: 'gl-draw-polygon-stroke-active',
+          type: 'line',
+          filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+          paint: {
+            'line-color': '#3b82f6',
+            'line-width': 3,
+          },
+        },
+        // Vertex points
+        {
+          id: 'gl-draw-polygon-and-line-vertex-active',
+          type: 'circle',
+          filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point']],
+          paint: {
+            'circle-radius': 6,
+            'circle-color': '#ffffff',
+            'circle-stroke-color': '#3b82f6',
+            'circle-stroke-width': 2,
+          },
+        },
+      ],
+    });
+
+    map.current.addControl(draw.current as any);
+
+    // Handle draw events
+    map.current.on('draw.create', handleDrawCreate);
+    map.current.on('draw.update', handleDrawCreate);
+    map.current.on('draw.delete', handleDrawDelete);
+
     return () => {
+      if (map.current) {
+        map.current.off('draw.create', handleDrawCreate);
+        map.current.off('draw.update', handleDrawCreate);
+        map.current.off('draw.delete', handleDrawDelete);
+      }
       markers.current.forEach(marker => marker.remove());
       markers.current = [];
+      draw.current = null;
       map.current?.remove();
     };
   }, [mapboxToken]);
@@ -144,6 +206,134 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     return `${(price / 1000).toFixed(0)}K`;
   };
 
+  // Check if point is inside polygon
+  const isPointInPolygon = (point: [number, number], polygon: number[][][]): boolean => {
+    const [lng, lat] = point;
+    const rings = polygon[0];
+    let inside = false;
+
+    for (let i = 0, j = rings.length - 1; i < rings.length; j = i++) {
+      const xi = rings[i][0], yi = rings[i][1];
+      const xj = rings[j][0], yj = rings[j][1];
+
+      const intersect = ((yi > lat) !== (yj > lat))
+        && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+
+    return inside;
+  };
+
+  // Handle draw create/update
+  const handleDrawCreate = (e: any) => {
+    const data = draw.current?.getAll();
+    if (!data || data.features.length === 0) return;
+
+    const feature = data.features[0];
+    setDrawnArea(feature);
+
+    // Filter properties within drawn area
+    const filtered = properties.filter(property => {
+      const coords = getCoordinatesForProperty(property);
+      if (!coords) return false;
+
+      if (feature.geometry.type === 'Polygon') {
+        return isPointInPolygon(coords, feature.geometry.coordinates);
+      }
+      return false;
+    });
+
+    setFilteredCount(filtered.length);
+    if (onFilterByArea) {
+      onFilterByArea(filtered);
+    }
+
+    // Update marker visibility
+    markers.current.forEach((marker, index) => {
+      const property = properties[index];
+      const coords = getCoordinatesForProperty(property);
+      if (coords && feature.geometry.type === 'Polygon') {
+        const isInside = isPointInPolygon(coords, feature.geometry.coordinates);
+        const element = marker.getElement();
+        element.style.opacity = isInside ? '1' : '0.3';
+        element.style.pointerEvents = isInside ? 'auto' : 'none';
+      }
+    });
+  };
+
+  // Handle draw delete
+  const handleDrawDelete = () => {
+    setDrawnArea(null);
+    setFilteredCount(null);
+    setDrawMode('none');
+    
+    if (onFilterByArea) {
+      onFilterByArea(properties);
+    }
+
+    // Reset marker visibility
+    markers.current.forEach(marker => {
+      const element = marker.getElement();
+      element.style.opacity = '1';
+      element.style.pointerEvents = 'auto';
+    });
+  };
+
+  // Start drawing polygon
+  const startDrawPolygon = () => {
+    if (!draw.current) return;
+    draw.current.deleteAll();
+    draw.current.changeMode('draw_polygon');
+    setDrawMode('polygon');
+    setDrawnArea(null);
+    setFilteredCount(null);
+  };
+
+  // Start drawing circle (approximated as polygon)
+  const startDrawCircle = () => {
+    if (!draw.current || !map.current) return;
+    
+    // Clear existing drawings
+    draw.current.deleteAll();
+    setDrawMode('circle');
+    setDrawnArea(null);
+    setFilteredCount(null);
+
+    // Get center of current map view
+    const center = map.current.getCenter();
+    const radius = 2000; // 2km radius in meters
+    const points = 64;
+    const coordinates: number[][] = [];
+
+    // Create circle as polygon
+    for (let i = 0; i <= points; i++) {
+      const angle = (i * 360) / points;
+      const dx = radius * Math.cos(angle * Math.PI / 180) / 111320;
+      const dy = radius * Math.sin(angle * Math.PI / 180) / (111320 * Math.cos(center.lat * Math.PI / 180));
+      coordinates.push([center.lng + dx, center.lat + dy]);
+    }
+
+    // Add circle to map
+    const circleFeature = {
+      type: 'Feature' as const,
+      geometry: {
+        type: 'Polygon' as const,
+        coordinates: [coordinates],
+      },
+      properties: {},
+    };
+
+    draw.current.add(circleFeature);
+    handleDrawCreate({ features: [circleFeature] });
+  };
+
+  // Clear drawn area
+  const clearDrawnArea = () => {
+    if (!draw.current) return;
+    draw.current.deleteAll();
+    handleDrawDelete();
+  };
+
   // Token input UI
   if (!mapboxToken && !showTokenInput) {
     return (
@@ -207,6 +397,51 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   return (
     <div className="relative w-full h-[600px] rounded-lg overflow-hidden border">
       <div ref={mapContainer} className="absolute inset-0" />
+
+      {/* Drawing Tools */}
+      <Card className="absolute top-4 left-4 p-2 shadow-lg z-10">
+        <div className="flex flex-col gap-2">
+          <div className="text-xs font-semibold text-muted-foreground mb-1 px-1">
+            Draw Search Area
+          </div>
+          <Button
+            size="sm"
+            variant={drawMode === 'polygon' ? 'default' : 'outline'}
+            onClick={startDrawPolygon}
+            className="w-full justify-start"
+          >
+            <Pentagon className="h-4 w-4 mr-2" />
+            Polygon
+          </Button>
+          <Button
+            size="sm"
+            variant={drawMode === 'circle' ? 'default' : 'outline'}
+            onClick={startDrawCircle}
+            className="w-full justify-start"
+          >
+            <Circle className="h-4 w-4 mr-2" />
+            Circle
+          </Button>
+          {drawnArea && (
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={clearDrawnArea}
+              className="w-full justify-start"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Clear
+            </Button>
+          )}
+        </div>
+      </Card>
+
+      {/* Filtered Results Badge */}
+      {filteredCount !== null && (
+        <Badge className="absolute top-4 right-4 z-10 py-2 px-4 text-sm">
+          {filteredCount} {filteredCount === 1 ? 'property' : 'properties'} in area
+        </Badge>
+      )}
 
       {/* Property detail card */}
       {selectedProperty && (
