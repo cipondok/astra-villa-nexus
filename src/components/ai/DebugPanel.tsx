@@ -118,10 +118,34 @@ const DebugPanel = ({
 
       {/* Debug panel */}
       {isOpen && (
-        <div className={cn(
-          "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 transition-all duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.3)] hover:border-gray-600",
-          isClosing ? "animate-exit" : "animate-enter"
-        )}>
+        <div 
+          className={cn(
+            "fixed bottom-4 left-4 z-[99999] bg-gray-900 text-white rounded-lg shadow-2xl p-4 w-72 border border-gray-700 transition-all duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.3)] hover:border-gray-600",
+            isClosing ? "animate-exit" : ""
+          )}
+          style={!isClosing ? {
+            animation: 'panelFadeIn 0.3s ease-out, panelScaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          } : undefined}
+        >
+          <style>{`
+            @keyframes panelScaleIn {
+              from {
+                transform: scale(0.85);
+              }
+              to {
+                transform: scale(1);
+              }
+            }
+            @keyframes panelFadeIn {
+              from {
+                opacity: 0;
+              }
+              to {
+                opacity: 1;
+              }
+            }
+          `}</style>
+          
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-sm flex items-center gap-2">
               <Settings className="h-4 w-4" />
