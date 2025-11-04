@@ -23,6 +23,8 @@ A responsive, animated AI chat widget with full accessibility support including 
   - Visual status indicator showing current state
   - Manual override with localStorage persistence
   - One-click reset to system preferences
+- **Onboarding Tooltip**: First-visit guide introducing keyboard shortcuts and debug features
+- **Keyboard Shortcuts Help**: Press `?` to view all available shortcuts
 
 ### 📱 Responsive Design
 - Optimized for both desktop and mobile devices
@@ -127,6 +129,18 @@ The debug panel appears only in development mode and provides:
 
 ### On-Screen Badge (Development)
 A "Reduced Motion" badge appears above the chat button when reduced motion is active, helping you verify the current state at a glance.
+
+### Onboarding Tooltip (First Visit)
+On your first visit in development mode, an interactive tooltip appears to introduce you to:
+- Debug panel features
+- Keyboard shortcuts
+- Quick start guide
+
+The tooltip:
+- Appears automatically after 1.5 seconds
+- Can be dismissed with "Got It" or "Try It Now" buttons
+- Never shows again (tracked in localStorage)
+- Can be reset by clearing localStorage key: `debug-panel-onboarding-seen`
 
 ## Project Structure
 

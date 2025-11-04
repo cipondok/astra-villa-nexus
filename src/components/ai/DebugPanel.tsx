@@ -4,6 +4,7 @@ import { Settings, X, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
+import OnboardingTooltip from './OnboardingTooltip';
 
 interface DebugPanelProps {
   prefersReducedMotion: boolean;
@@ -71,6 +72,7 @@ const DebugPanel = ({
   return (
     <>
       <KeyboardShortcutsModal />
+      <OnboardingTooltip />
       
       {/* Toggle button */}
       {!isOpen && (
