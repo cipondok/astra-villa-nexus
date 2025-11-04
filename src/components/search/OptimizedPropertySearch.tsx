@@ -379,11 +379,11 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             
             {/* Search Suggestions */}
             {suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 z-10 bg-background border rounded-md shadow-lg mt-1">
+              <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto rounded-md border border-border bg-popover shadow-lg">
                 {suggestions.map((suggestion, index) => (
                   <button
                     key={index}
-                    className="w-full text-left px-3 py-2 hover:bg-muted transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm hover:bg-accent transition-colors border-b last:border-b-0"
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion}
