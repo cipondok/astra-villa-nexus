@@ -111,6 +111,23 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setTimeout(() => setShowRecentSearches(false), 200);
   };
 
+  const highlightMatch = (text: string, query: string) => {
+    if (!query.trim()) return text;
+    
+    const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
+    return (
+      <>
+        {parts.map((part, index) => 
+          part.toLowerCase() === query.toLowerCase() ? (
+            <span key={index} className="font-bold text-primary">{part}</span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </>
+    );
+  };
+
   const handleAmenityToggle = (amenity: string) => {
     const currentAmenities = filters.amenities || [];
     const newAmenities = currentAmenities.includes(amenity)
@@ -433,7 +450,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     className="w-full text-left px-4 py-3 text-sm hover:bg-accent transition-colors border-b last:border-b-0"
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
-                    {suggestion}
+                    {highlightMatch(suggestion, searchInput)}
                   </button>
                 ))}
               </div>
