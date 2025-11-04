@@ -158,7 +158,25 @@ const DebugPanel = ({
           
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-sm flex items-center gap-2">
-              <Settings className="h-4 w-4" />
+              <Settings 
+                className="h-4 w-4" 
+                style={{
+                  animation: 'spinIn 0.6s ease-out',
+                  transformOrigin: 'center'
+                }}
+              />
+              <style>{`
+                @keyframes spinIn {
+                  from {
+                    transform: rotate(-180deg);
+                    opacity: 0;
+                  }
+                  to {
+                    transform: rotate(0deg);
+                    opacity: 1;
+                  }
+                }
+              `}</style>
               Animation Debug
             </h3>
             <Button
