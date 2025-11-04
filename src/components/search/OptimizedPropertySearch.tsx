@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -40,6 +40,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [lastTranscript, setLastTranscript] = useState('');
   const [voiceCommandHistory, setVoiceCommandHistory] = useState<Array<{ command: string; timestamp: Date; filters: any }>>([]);
   const [showVoiceHistory, setShowVoiceHistory] = useState(false);
+  const [showVoiceHelp, setShowVoiceHelp] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const [startSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSp+zPDTgjUHHGS56+eVSg0PVqzn77BdGQc+ltryxXMoBSuAzvLaizsIHGa86+eXTBELUKbi8LJjHAU7kdj0ynYpBSp+zO/Uf0AKGGKz7OedUg8KRp3h8bl0IAcwh8z0z3osBS2DyvDajjwJHmW66+WZTgwPVKvm8axXFAo6ktXy0nwqBCh7ze7Tgz0LF162+dujUg8IRZve8rlzIwUtgM/z24k5CBtmuuvlnU0PDVSr5O+uWhcHMozQ89F7KwUog8ru1YU/ChZbsezooVcSCkSZ3fG9djAFKn7M8dmPPQkZZbrq5p5NEw5Tp+TwrV0VCTSLzvDTgTwHGmO28uSaTBIOTqXi8K9hGQc4j9DyzHQqByl7zuHVgjwKF2C07eWeSBEJQ5vd8rpzIAcqf8/z14k6CBhjtOvlnk8NDFKp4+2sWhkHNIvN8NF/OwgYYbXs5Z5PCw1Qp+Lwq14WBzWKze/ShTwHGGGz7OSdTBINTaPh76xeGAc2ic7w0YE8BxlhsvHkn04SDk6k4O6pWxYHNYfO79GBOwgZYbPs5Z5PCw5QpuLvrmAXBzaKzvDSgjsIGWGy7OWeTQ0NUKfh8K1eFgo3ic/v0oM7CBpgsfDknk4MDE6l4e6tWxcHNojO8dKBPAgaYLLv5J5OCwxOpOHurVsWBzaJzvHSgTwIGWCx8eSeTgwMTqTh76tcFwY2iM7x0YI7CBtfsO/lnU4NDk2j4e+sWhgHN4fO8NKBOwgaX7Hw5J1ODAxOpOHurlwWBzaIzvDTgTsJGl+x8OSfTgwMTqTh7q5cFgc2iM7v04E8CBpfsO/kn04MDk2k4e6uXBYHNonO8NOCOwgaXrHv5J5ODg1NoOHvq1sXBzaIzu/TgDwIGl6x7+SeTg0NTaHh7qxcFgc3h87w0oE7CBpesO/kn04MDU2k4e6uXBYGNonO79OCOwgZX7Dv5J9ODQxOpOHurlwWBjaIzu/UgDsJGV+w7+SfTg0MTqPh7q5bFgc2iM7v1IA7CBpfsO7kn04ODE6j4e6uWxYGNonO8NOBOwgZX7Dv5J9ODAxOo+HurlsWBzaIzu/TgTsIGV+w7+SfTg0MTqPh7q5bFgc2iM7v04E7CBlfsO/kn04NDE2k4e6uWxYGNojO79OBOwgaXrDv5J9ODQ1No+HurlsWBjaJzu/TgDsJGl+w7+SfTgwOTaLh7q5bFgY2ic7v04A8CBpesO/kn04NDk2h4O6uWhcGN4fO79OAOwgbX7Dv5J5ODg5MouDurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/knk4NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurVsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CBtfsO/kn04NDk2h4e6uWxYGN4fO79OAOwgbX7Dv5J5ODg5MoeHurlsVBjaJzvDTgDsJGl+w7+SeTg0OTaLg7q1cFQY3iM7v04A7CA=='));
   const [stopSound] = useState(() => new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm1dIBAAAAAABABEQB8AAEAfAAABAAgAZGF0YQoGAACAgoSBfn18fXx9fH19fXx+fX1+fn5+f39+f39/f39/gICAgICAgH+AgH+Af4B/gH+Af39/f39+fn5+fn19fX19fXx9fH1+fX5+f35+f39/f4B/gIB/gICAgICAgICAf4B/gH+Af39+fn5+fn59fX19fX19fH59fn9+f39/f39/gH+AgICAgICAfwB+f39+f35+fn59fX19fXx9fX1+fX5+f39/f3+Af4CAgICAgICAgH+Af39/f35+fn5+fX19fX18fX19fn5+f35/f39/gH+AgH+AgICAgIB/f39/f35+fn5+fn18fX19fX5+fn5/fn9/f39/gH+AgIB/gICAf4B/f39+fn5+fn19fX19fX19fn5+f39/f39/gH+AgICAgICAf4B/f39/fn5+fn59fX19fX19fX5+f35/f39/f4CAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn5/f39/f3+AgICAgICAgIB/f39/fn5+fn59fX19fX19fn5+f39/f39/gICAgICAgICAgH+Af35+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgICAgH9/f39+fn5+fn19fX19fX5+fn9/f39/f4CAgICAgA=='));
@@ -1056,6 +1057,26 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </Tooltip>
               </TooltipProvider>
             )}
+
+            {/* Voice Help Button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setShowVoiceHelp(true)}
+                    className={`absolute ${voiceCommandHistory.length > 0 ? 'right-28' : 'right-16'} top-1/2 transform -translate-y-1/2`}
+                  >
+                    <HelpCircle className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Voice command help & examples</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {searchInput && (
               <button
                 onClick={handleClearSearch}
@@ -1597,6 +1618,176 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
             </Button>
             <Button variant="outline" onClick={() => setShowVoiceHistory(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Voice Command Help Dialog */}
+      <Dialog open={showVoiceHelp} onOpenChange={setShowVoiceHelp}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Voice Command Guide
+            </DialogTitle>
+            <DialogDescription>
+              Learn how to use voice search with natural language commands
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Quick Tips */}
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-sm">Quick Tips</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Speak naturally - the system understands conversational language</li>
+                    <li>• Combine multiple criteria in one command</li>
+                    <li>• Use numbers or words for quantities (e.g., "3" or "three")</li>
+                    <li>• Speak clearly and at a normal pace for best results</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Example Commands by Category */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Example Commands</h3>
+
+              {/* Property Type */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-primary">Property Type</h4>
+                <div className="grid gap-2">
+                  {[
+                    'Show me apartments',
+                    'Find houses for sale',
+                    'Look for villas',
+                    'Commercial properties'
+                  ].map((cmd, i) => (
+                    <div key={i} className="bg-muted/50 rounded px-3 py-2 text-sm font-mono">
+                      "{cmd}"
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price Range */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-primary">Price Filters</h4>
+                <div className="grid gap-2">
+                  {[
+                    'Apartments under 500k',
+                    'Houses under 1 million',
+                    'Properties below 750 thousand',
+                    'Villas over 2 million'
+                  ].map((cmd, i) => (
+                    <div key={i} className="bg-muted/50 rounded px-3 py-2 text-sm font-mono">
+                      "{cmd}"
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bedrooms & Bathrooms */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-primary">Bedrooms & Bathrooms</h4>
+                <div className="grid gap-2">
+                  {[
+                    '3 bedroom apartments',
+                    'Four bedroom house',
+                    'Two bathroom villa',
+                    '3 bed 2 bath property'
+                  ].map((cmd, i) => (
+                    <div key={i} className="bg-muted/50 rounded px-3 py-2 text-sm font-mono">
+                      "{cmd}"
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Amenities */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-primary">Amenities</h4>
+                <div className="grid gap-2">
+                  {[
+                    'Apartments with pool',
+                    'Houses with gym and parking',
+                    'Properties with security and garden',
+                    'Villa with balcony and air conditioning'
+                  ].map((cmd, i) => (
+                    <div key={i} className="bg-muted/50 rounded px-3 py-2 text-sm font-mono">
+                      "{cmd}"
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Combined Commands */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-primary">Combined Commands (Recommended)</h4>
+                <div className="grid gap-2">
+                  {[
+                    '3 bedroom apartments under 500k with pool',
+                    'Four bedroom house for rent with parking',
+                    'Villas under 2 million with gym and garden',
+                    'Two bathroom apartments for sale with security',
+                    'Commercial properties over 1 million with elevator'
+                  ].map((cmd, i) => (
+                    <div key={i} className="bg-muted/50 rounded px-3 py-2 text-sm font-mono">
+                      "{cmd}"
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Listing Type */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-primary">Listing Type</h4>
+                <div className="grid gap-2">
+                  {[
+                    'Apartments for rent',
+                    'Houses for sale',
+                    'Properties to rent',
+                    'Villas to buy'
+                  ].map((cmd, i) => (
+                    <div key={i} className="bg-muted/50 rounded px-3 py-2 text-sm font-mono">
+                      "{cmd}"
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Supported Keywords */}
+            <div className="border rounded-lg p-4 space-y-3">
+              <h3 className="font-semibold text-sm">Supported Keywords</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-medium mb-1">Property Types:</p>
+                  <p className="text-muted-foreground">apartment, house, villa, commercial, land</p>
+                </div>
+                <div>
+                  <p className="font-medium mb-1">Listing Types:</p>
+                  <p className="text-muted-foreground">rent, sale, buy, purchase, rental</p>
+                </div>
+                <div>
+                  <p className="font-medium mb-1">Price Keywords:</p>
+                  <p className="text-muted-foreground">under, below, over, above, less than, more than</p>
+                </div>
+                <div>
+                  <p className="font-medium mb-1">Amenities:</p>
+                  <p className="text-muted-foreground">pool, gym, parking, security, garden, balcony, AC, elevator</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => setShowVoiceHelp(false)}>
+              Got it!
             </Button>
           </DialogFooter>
         </DialogContent>
