@@ -279,12 +279,17 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* Scroll to top arrow - appears on scroll */}
       {!isAtTop && !isOpen && showWidget && (
         <div 
-          className="fixed z-[10001] transition-all duration-300 ease-in-out animate-fade-in"
-          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', left: 'calc(1rem + env(safe-area-inset-left))' }}
+          className="fixed z-[10001] transform-gpu animate-fade-in"
+          style={{ 
+            bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
+            left: 'calc(1rem + env(safe-area-inset-left))',
+            transition: 'all 200ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}
         >
           <Button
             onClick={scrollToTop}
-            className="h-12 w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 hover:scale-110 transition-all duration-300 border-2 border-white/30"
+            className="h-12 w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 hover:scale-110 border-2 border-white/30"
+            style={{ transition: 'all 200ms cubic-bezier(0.34, 1.56, 0.64, 1)' }}
             size="icon"
             aria-label="Scroll to top"
           >
