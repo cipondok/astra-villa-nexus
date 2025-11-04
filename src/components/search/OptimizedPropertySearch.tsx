@@ -80,6 +80,22 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     return count;
   }, [filters]);
 
+  const handleResetFilters = () => {
+    updateFilters({
+      propertyType: undefined,
+      listingType: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
+      minBedrooms: undefined,
+      minBathrooms: undefined,
+      minArea: undefined,
+      maxArea: undefined,
+      amenities: undefined,
+      sortBy: undefined
+    });
+    setSearchInput('');
+  };
+
   const SkeletonCard = () => (
     <Card className="h-48">
       <CardContent className="p-4">
@@ -147,23 +163,36 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
           {/* Advanced Filters Toggle */}
           <div className="flex items-center justify-between gap-4">
-            <div className="relative">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                {showFilters ? 'Hide Filters' : 'Show Filters'}
-              </Button>
-              {activeFilterCount > 0 && (
-                <Badge 
-                  variant="default" 
-                  className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="gap-2"
                 >
-                  {activeFilterCount}
-                </Badge>
+                  <Filter className="h-4 w-4" />
+                  {showFilters ? 'Hide Filters' : 'Show Filters'}
+                </Button>
+                {activeFilterCount > 0 && (
+                  <Badge 
+                    variant="default" 
+                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {activeFilterCount}
+                  </Badge>
+                )}
+              </div>
+
+              {(activeFilterCount > 0 || searchInput || filters.sortBy) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleResetFilters}
+                  className="gap-2 text-muted-foreground hover:text-foreground"
+                >
+                  Reset All
+                </Button>
               )}
             </div>
 
