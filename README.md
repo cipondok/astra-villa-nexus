@@ -2,6 +2,9 @@
 
 A responsive, animated AI chat widget with full accessibility support including `prefers-reduced-motion` compliance and developer debug tools.
 
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com)
+[![E2E](https://img.shields.io/badge/e2e-playwright-green)](https://playwright.dev)
+
 ## Features
 
 ### 🎨 Smooth Animations
@@ -165,16 +168,103 @@ Tests:
 
 ## Testing
 
-The project uses Vitest and React Testing Library for testing.
+The project includes comprehensive unit tests and E2E tests for both the hook and components.
+
+### Running Tests
+
+```bash
+# Unit Tests (Vitest)
+npm test              # Run all unit tests
+npm run test:watch    # Run tests in watch mode
+npm run test:coverage # Generate coverage report
+
+# E2E Tests (Playwright)
+npx playwright test              # Run all E2E tests
+npx playwright test --ui         # Run with interactive UI
+npx playwright test --debug      # Debug mode
+npx playwright show-report       # View test report
+```
 
 ### Test Coverage
 
-- **usePrefersReducedMotion Hook**: Tests system preference detection, manual override, localStorage persistence, and priority handling
-- **DebugPanel Component**: Tests UI rendering, button interactions, keyboard shortcuts, and environment-based visibility
+#### Unit Tests
+- ✅ **usePrefersReducedMotion Hook**
+  - System preference detection
+  - Manual override functionality
+  - localStorage persistence
+  - Override clearing
+- ✅ **DebugPanel Component**
+  - Panel visibility toggling
+  - Animation state display
+  - User interactions
+  - Keyboard shortcuts
+
+#### E2E Tests (Playwright)
+- ✅ **Onboarding Flow** (`e2e/onboarding.spec.ts`)
+  - First-visit tooltip display
+  - Keyboard shortcut showcase
+  - Dismissal and persistence
+  - "Try It Now" functionality
+- ✅ **Debug Panel** (`e2e/debug-panel.spec.ts`)
+  - Panel opening/closing
+  - Animation toggling
+  - Manual override behavior
+  - Settings persistence
+  - Keyboard shortcuts integration
+- ✅ **Chat Widget** (`e2e/chat-widget.spec.ts`)
+  - Widget visibility and animations
+  - Responsive behavior
+  - Z-index stacking
+  - Mobile viewport testing
+- ✅ **Keyboard Shortcuts** (`e2e/keyboard-shortcuts.spec.ts`)
+  - Modal opening/closing
+  - Shortcut display
+  - Category organization
+- ✅ **Integration Tests** (`e2e/integration.spec.ts`)
+  - Complete user journey
+  - Keyboard-only navigation
+  - Mobile user flow
+  - State persistence
+  - Multi-panel coexistence
+
+### Test Structure
+
+```
+src/
+├── hooks/
+│   ├── usePrefersReducedMotion.ts
+│   └── usePrefersReducedMotion.test.ts
+├── components/
+│   └── ai/
+│       ├── DebugPanel.tsx
+│       └── DebugPanel.test.tsx
+└── test/
+    ├── setup.ts        # Test configuration
+    └── globals.d.ts    # TypeScript definitions
+
+e2e/
+├── onboarding.spec.ts         # Onboarding tooltip tests
+├── debug-panel.spec.ts        # Debug panel tests
+├── chat-widget.spec.ts        # Chat widget tests
+├── keyboard-shortcuts.spec.ts # Shortcuts modal tests
+└── integration.spec.ts        # Full user flow tests
+
+playwright.config.ts           # Playwright configuration
+```
+
+### E2E Testing Features
+
+- **Cross-browser testing**: Chromium, Firefox, WebKit, Mobile Safari, Mobile Chrome
+- **Mobile testing**: iPhone and Android viewports
+- **Visual regression**: Screenshots on failure
+- **Trace viewer**: Debug failed tests with timeline
+- **Parallel execution**: Fast test runs
+- **Auto-wait**: Smart element waiting
+- **HTML Reporter**: Beautiful test reports
 
 ### Writing Tests
 
-Tests are located next to the files they test with a `.test.ts` or `.test.tsx` extension. All tests run in a jsdom environment with automatic cleanup after each test.
+Unit tests are located next to the files they test with a `.test.ts` or `.test.tsx` extension. E2E tests are in the `e2e/` directory. All unit tests run in a jsdom environment with automatic cleanup after each test.
 
 ## Documentation
 
