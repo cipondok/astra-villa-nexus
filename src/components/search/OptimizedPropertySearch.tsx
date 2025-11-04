@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
 import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -511,19 +512,28 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               onBlur={handleSearchBlur}
               className={searchInput ? "pr-28" : "pr-20"}
             />
-            <Button
-              onClick={handleVoiceSearch}
-              size="icon"
-              variant="ghost"
-              className={`absolute right-11 top-1/2 transform -translate-y-1/2 h-7 w-7 ${
-                isListening 
-                  ? "text-red-500 hover:text-red-600 animate-pulse" 
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-              aria-label={isListening ? "Stop recording" : "Start voice search"}
-            >
-              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-            </Button>
+            <TooltipProvider>
+              <Tooltip open={isListening ? true : undefined}>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleVoiceSearch}
+                    size="icon"
+                    variant="ghost"
+                    className={`absolute right-11 top-1/2 transform -translate-y-1/2 h-7 w-7 transition-all ${
+                      isListening 
+                        ? "text-red-500 hover:text-red-600 animate-pulse ring-2 ring-red-400 ring-offset-2" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    aria-label={isListening ? "Stop recording" : "Start voice search"}
+                  >
+                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-red-500 text-white">
+                  {isListening ? "🎤 Listening... (Press Ctrl+M to stop)" : "Voice search (Ctrl+M)"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {searchInput && (
               <button
                 onClick={handleClearSearch}
