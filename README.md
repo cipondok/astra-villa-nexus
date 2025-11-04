@@ -185,6 +185,10 @@ npx playwright test --ui         # Run with interactive UI
 npx playwright test --debug      # Debug mode
 npx playwright show-report       # View test report
 
+# Accessibility Tests (axe-core)
+npx playwright test e2e/accessibility.spec.ts    # Run accessibility audits
+npx playwright test e2e/accessibility.spec.ts --ui # Interactive accessibility testing
+
 # Visual Regression Tests
 npx playwright test e2e/visual-regression.spec.ts           # Run visual tests
 npx playwright test e2e/visual-regression-advanced.spec.ts  # Run advanced visual tests

@@ -58,6 +58,8 @@
     "@vladmandic/face-api": "^1.7.15",
     "@web3modal/siwe": "^5.1.11",
     "@web3modal/wagmi": "^5.1.11",
+    "axe-core": "^4.11.0",
+    "axe-playwright": "^2.2.2",
     "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
