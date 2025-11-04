@@ -18,6 +18,7 @@ interface SearchFilters {
   minArea?: number;
   maxArea?: number;
   amenities?: string[];
+  sortBy?: string;
 }
 
 interface SearchResult {

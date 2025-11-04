@@ -133,7 +133,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
           </div>
 
           {/* Advanced Filters Toggle */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <Button
               variant="outline"
               size="sm"
@@ -143,12 +143,28 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               <Filter className="h-4 w-4" />
               {showFilters ? 'Hide Filters' : 'Show Filters'}
             </Button>
-            
-            {totalCount > 0 && (
-              <p className="text-sm text-muted-foreground">
-                Found {totalCount.toLocaleString()} properties
-              </p>
-            )}
+
+            <div className="flex items-center gap-3">
+              <Select value={filters.sortBy || ''} onValueChange={(value) => updateFilters({ sortBy: value || undefined })}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Default</SelectItem>
+                  <SelectItem value="price_asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price_desc">Price: High to Low</SelectItem>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="area_asc">Area: Small to Large</SelectItem>
+                  <SelectItem value="area_desc">Area: Large to Small</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {totalCount > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Found {totalCount.toLocaleString()} properties
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Advanced Filters */}
