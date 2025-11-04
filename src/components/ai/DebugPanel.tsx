@@ -336,27 +336,18 @@ const DebugPanel = ({
             <div 
               className="bg-gray-800 rounded p-2" 
               style={{ 
-                animation: 'slideInLeft 0.4s ease-out 0ms, fadeIn 0.3s ease-out 0ms',
-                opacity: 0,
-                animationFillMode: 'forwards'
+                animation: 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both',
+                opacity: 0
               }}
             >
               <style>{`
-                @keyframes slideInLeft {
+                @keyframes slideInStagger {
                   from {
-                    transform: translateX(-20px);
+                    transform: translateX(-30px) scale(0.95);
                     opacity: 0;
                   }
                   to {
-                    transform: translateX(0);
-                    opacity: 1;
-                  }
-                }
-                @keyframes fadeIn {
-                  from {
-                    opacity: 0;
-                  }
-                  to {
+                    transform: translateX(0) scale(1);
                     opacity: 1;
                   }
                 }
@@ -381,9 +372,8 @@ const DebugPanel = ({
             <div 
               className="space-y-2" 
               style={{ 
-                animation: 'slideInLeft 0.4s ease-out 100ms, fadeIn 0.3s ease-out 100ms',
-                opacity: 0,
-                animationFillMode: 'forwards'
+                animation: 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both',
+                opacity: 0
               }}
             >
               <Button
@@ -413,9 +403,8 @@ const DebugPanel = ({
             <div 
               className="text-[10px] text-gray-500 pt-2 border-t border-gray-700 space-y-2" 
               style={{ 
-                animation: 'slideInLeft 0.4s ease-out 200ms, fadeIn 0.3s ease-out 200ms',
-                opacity: 0,
-                animationFillMode: 'forwards'
+                animation: 'slideInStagger 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both',
+                opacity: 0
               }}
             >
               <p>Toggle animations without changing OS settings.</p>
