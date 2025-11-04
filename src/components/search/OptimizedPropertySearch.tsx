@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -158,7 +158,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setShowRecentSearches(false);
   };
 
-  const handleVoiceSearch = () => {
+  const handleVoiceSearch = useCallback(() => {
     if (!recognition) {
       toast({
         title: "Voice Search Unavailable",
@@ -175,7 +175,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       setIsListening(true);
       recognition.start();
     }
-  };
+  }, [recognition, isListening, toast]);
 
   const highlightMatch = (text: string, query: string) => {
     if (!query.trim()) return text;
@@ -442,6 +442,12 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
         }
       }
       
+      // Ctrl+M or Cmd+M - Toggle voice search
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault();
+        handleVoiceSearch();
+      }
+      
       // Escape - Close dialogs/popovers
       if (e.key === 'Escape') {
         setSaveDialogOpen(false);
@@ -451,7 +457,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeFilterCount, searchInput, filters.sortBy]);
+  }, [activeFilterCount, searchInput, filters.sortBy, handleVoiceSearch]);
 
   const SkeletonCard = () => (
     <Card className="h-48">
@@ -477,7 +483,7 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               <Search className="h-5 w-5" />
               Optimized Property Search
               <Badge variant="secondary" className="text-xs font-normal">
-                Shortcuts: F (filters) • Ctrl+S (save) • Ctrl+X (clear)
+                Shortcuts: F (filters) • Ctrl+S (save) • Ctrl+M (voice) • Ctrl+X (clear)
               </Badge>
             </div>
             {showAnalytics && (
