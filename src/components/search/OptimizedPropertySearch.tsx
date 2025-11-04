@@ -120,16 +120,41 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
         }
         
         if (final) {
-          setSearchInput(final);
-          updateFilters({ searchText: final });
-          addToRecentSearches(final);
-          setIsListening(false);
-          setInterimTranscript('');
+          // Parse voice command for filters
+          const parsedFilters = parseVoiceCommand(final);
           
-          toast({
-            title: "Voice Search",
-            description: `Searching for: "${final}"`
-          });
+          if (Object.keys(parsedFilters).length > 0) {
+            // Voice command contains filters
+            updateFilters(parsedFilters);
+            setSearchInput('');
+            setIsListening(false);
+            setInterimTranscript('');
+            
+            const filterDescriptions = [];
+            if (parsedFilters.propertyType) filterDescriptions.push(`Type: ${parsedFilters.propertyType}`);
+            if (parsedFilters.minBedrooms) filterDescriptions.push(`${parsedFilters.minBedrooms}+ bedrooms`);
+            if (parsedFilters.minBathrooms) filterDescriptions.push(`${parsedFilters.minBathrooms}+ bathrooms`);
+            if (parsedFilters.maxPrice) filterDescriptions.push(`Under $${parsedFilters.maxPrice.toLocaleString()}`);
+            if (parsedFilters.minPrice) filterDescriptions.push(`Over $${parsedFilters.minPrice.toLocaleString()}`);
+            if (parsedFilters.amenities) filterDescriptions.push(`Amenities: ${parsedFilters.amenities.join(', ')}`);
+            
+            toast({
+              title: "Filters Applied",
+              description: filterDescriptions.join(' • ') || "Filters set successfully"
+            });
+          } else {
+            // Regular search text
+            setSearchInput(final);
+            updateFilters({ searchText: final });
+            addToRecentSearches(final);
+            setIsListening(false);
+            setInterimTranscript('');
+            
+            toast({
+              title: "Voice Search",
+              description: `Searching for: "${final}"`
+            });
+          }
         }
       };
 
@@ -250,6 +275,109 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       title: "Language Changed",
       description: `Voice search now set to ${langName}`
     });
+  };
+
+  // Parse voice commands to extract filter parameters
+  const parseVoiceCommand = (text: string): any => {
+    const lowerText = text.toLowerCase();
+    const filters: any = {};
+    
+    // Property type detection
+    if (lowerText.includes('apartment') || lowerText.includes('condo')) {
+      filters.propertyType = 'apartment';
+    } else if (lowerText.includes('house') || lowerText.includes('home')) {
+      filters.propertyType = 'house';
+    } else if (lowerText.includes('villa')) {
+      filters.propertyType = 'villa';
+    } else if (lowerText.includes('commercial') || lowerText.includes('office')) {
+      filters.propertyType = 'commercial';
+    } else if (lowerText.includes('land')) {
+      filters.propertyType = 'land';
+    }
+    
+    // Listing type detection
+    if (lowerText.includes('for rent') || lowerText.includes('rental') || lowerText.includes('to rent')) {
+      filters.listingType = 'rent';
+    } else if (lowerText.includes('for sale') || lowerText.includes('buy') || lowerText.includes('purchase')) {
+      filters.listingType = 'sale';
+    }
+    
+    // Bedroom detection (e.g., "3 bedrooms", "3 bedroom", "three bedroom")
+    const bedroomMatch = lowerText.match(/(\d+|one|two|three|four|five|six)\s*(bed|bedroom)/i);
+    if (bedroomMatch) {
+      const bedroomMap: any = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+      filters.minBedrooms = bedroomMap[bedroomMatch[1]] || parseInt(bedroomMatch[1]);
+    }
+    
+    // Bathroom detection
+    const bathroomMatch = lowerText.match(/(\d+|one|two|three|four)\s*(bath|bathroom)/i);
+    if (bathroomMatch) {
+      const bathroomMap: any = { one: 1, two: 2, three: 3, four: 4 };
+      filters.minBathrooms = bathroomMap[bathroomMatch[1]] || parseInt(bathroomMatch[1]);
+    }
+    
+    // Price detection (e.g., "under 500k", "below 1 million", "under 500000")
+    const priceUnderMatch = lowerText.match(/(?:under|below|less than|max)\s*(?:\$|rp)?[\s]*([\d,]+)\s*([km]|million|thousand)?/i);
+    if (priceUnderMatch) {
+      let price = parseInt(priceUnderMatch[1].replace(/,/g, ''));
+      const unit = priceUnderMatch[2]?.toLowerCase();
+      
+      if (unit === 'k' || unit === 'thousand') {
+        price *= 1000;
+      } else if (unit === 'm' || unit === 'million') {
+        price *= 1000000;
+      }
+      
+      filters.maxPrice = price;
+    }
+    
+    // Price minimum (e.g., "over 1 million", "above 500k")
+    const priceOverMatch = lowerText.match(/(?:over|above|more than|min)\s*(?:\$|rp)?[\s]*([\d,]+)\s*([km]|million|thousand)?/i);
+    if (priceOverMatch) {
+      let price = parseInt(priceOverMatch[1].replace(/,/g, ''));
+      const unit = priceOverMatch[2]?.toLowerCase();
+      
+      if (unit === 'k' || unit === 'thousand') {
+        price *= 1000;
+      } else if (unit === 'm' || unit === 'million') {
+        price *= 1000000;
+      }
+      
+      filters.minPrice = price;
+    }
+    
+    // Amenities detection
+    const detectedAmenities: string[] = [];
+    if (lowerText.includes('pool') || lowerText.includes('swimming')) {
+      detectedAmenities.push('Pool');
+    }
+    if (lowerText.includes('gym') || lowerText.includes('fitness')) {
+      detectedAmenities.push('Gym');
+    }
+    if (lowerText.includes('parking') || lowerText.includes('garage')) {
+      detectedAmenities.push('Parking');
+    }
+    if (lowerText.includes('security') || lowerText.includes('guard')) {
+      detectedAmenities.push('Security');
+    }
+    if (lowerText.includes('garden') || lowerText.includes('yard')) {
+      detectedAmenities.push('Garden');
+    }
+    if (lowerText.includes('balcony') || lowerText.includes('terrace')) {
+      detectedAmenities.push('Balcony');
+    }
+    if (lowerText.includes('air conditioning') || lowerText.includes('ac') || lowerText.includes('aircon')) {
+      detectedAmenities.push('Air Conditioning');
+    }
+    if (lowerText.includes('elevator') || lowerText.includes('lift')) {
+      detectedAmenities.push('Elevator');
+    }
+    
+    if (detectedAmenities.length > 0) {
+      filters.amenities = detectedAmenities;
+    }
+    
+    return filters;
   };
 
   const highlightMatch = (text: string, query: string) => {
