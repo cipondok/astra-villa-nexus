@@ -1079,11 +1079,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               onClick={() => setShowFilters(true)}
               variant="outline"
               size="sm"
-              className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl relative"
+              className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl relative hover:bg-background/80 transition-all"
             >
               <Filter className="h-3.5 w-3.5" />
               {getActiveFiltersCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full font-bold shadow-md">
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full font-bold shadow-md animate-in zoom-in duration-200 ring-2 ring-background">
                   {getActiveFiltersCount()}
                 </span>
               )}
