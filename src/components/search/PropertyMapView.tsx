@@ -18,7 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, Layers, Save, BookmarkPlus } from 'lucide-react';
+import { 
+  X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, 
+  Layers, Save, BookmarkPlus, Flame 
+} from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
 import { useToast } from '@/hooks/use-toast';
 
@@ -55,6 +58,8 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const [areaName, setAreaName] = useState<string>('');
   const [showSaveDialog, setShowSaveDialog] = useState<boolean>(false);
   const [selectedSavedArea, setSelectedSavedArea] = useState<string>('');
+  const [showHeatmap, setShowHeatmap] = useState<boolean>(false);
+  const [heatmapMode, setHeatmapMode] = useState<'density' | 'price'>('density');
   const { toast } = useToast();
 
   // Load saved areas from localStorage on mount
@@ -173,7 +178,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       // Use individual markers
       setupIndividualMarkers();
     }
-  }, [properties, mapboxToken, useClustering]);
+  }, [properties, mapboxToken, useClustering, showHeatmap, heatmapMode]);
 
   // Setup clustering with GeoJSON
   const setupClustering = () => {
@@ -183,12 +188,20 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     if (map.current.getLayer('clusters')) map.current.removeLayer('clusters');
     if (map.current.getLayer('cluster-count')) map.current.removeLayer('cluster-count');
     if (map.current.getLayer('unclustered-point')) map.current.removeLayer('unclustered-point');
+    if (map.current.getLayer('heatmap-layer')) map.current.removeLayer('heatmap-layer');
     if (map.current.getSource('properties')) map.current.removeSource('properties');
 
     // Create GeoJSON features from properties
     const features = properties.map(property => {
       const coords = getCoordinatesForProperty(property);
       if (!coords) return null;
+
+      // Normalize price for heatmap (0-1 scale based on price range)
+      const maxPrice = Math.max(...properties.map(p => p.price));
+      const minPrice = Math.min(...properties.map(p => p.price));
+      const normalizedPrice = maxPrice > minPrice 
+        ? (property.price - minPrice) / (maxPrice - minPrice)
+        : 0.5;
 
       return {
         type: 'Feature' as const,
@@ -200,6 +213,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
           id: property.id,
           title: property.title,
           price: property.price,
+          normalizedPrice: normalizedPrice,
           listingType: property.listing_type,
           propertyData: JSON.stringify(property),
         },
@@ -218,6 +232,41 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       clusterRadius: 50,
     });
 
+    // Add heatmap layer
+    map.current.addLayer({
+      id: 'heatmap-layer',
+      type: 'heatmap',
+      source: 'properties',
+      paint: {
+        // Increase weight based on price or density
+        'heatmap-weight': heatmapMode === 'price' 
+          ? ['interpolate', ['linear'], ['get', 'normalizedPrice'], 0, 0, 1, 1]
+          : 1,
+        
+        // Increase intensity as zoom increases
+        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 1, 15, 3],
+        
+        // Color ramp for heatmap
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(33,102,172,0)',
+          0.2, 'rgb(103,169,207)',
+          0.4, 'rgb(209,229,240)',
+          0.6, 'rgb(253,219,199)',
+          0.8, 'rgb(239,138,98)',
+          1, 'rgb(178,24,43)',
+        ],
+        
+        // Adjust radius by zoom level
+        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 15, 20],
+        
+        // Transition from heatmap to circle layer at higher zoom
+        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, 14, showHeatmap ? 0.7 : 0],
+      },
+    }, 'clusters');
+
     // Add cluster circles layer
     map.current.addLayer({
       id: 'clusters',
@@ -228,23 +277,24 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
         'circle-color': [
           'step',
           ['get', 'point_count'],
-          '#10b981', // green for small clusters
+          '#10b981',
           10,
-          '#3b82f6', // blue for medium clusters
+          '#3b82f6',
           25,
-          '#8b5cf6', // purple for large clusters
+          '#8b5cf6',
         ],
         'circle-radius': [
           'step',
           ['get', 'point_count'],
-          20, // radius for small clusters
+          20,
           10,
-          30, // radius for medium clusters
+          30,
           25,
-          40, // radius for large clusters
+          40,
         ],
         'circle-stroke-width': 3,
         'circle-stroke-color': '#ffffff',
+        'circle-opacity': showHeatmap ? 0 : 1,
       },
     });
 
@@ -261,6 +311,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       },
       paint: {
         'text-color': '#ffffff',
+        'text-opacity': showHeatmap ? 0 : 1,
       },
     });
 
@@ -280,6 +331,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
         'circle-radius': 12,
         'circle-stroke-width': 3,
         'circle-stroke-color': '#ffffff',
+        'circle-opacity': showHeatmap ? 0 : 1,
       },
     });
 
@@ -763,7 +815,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
           </div>
           
           {/* Clustering Toggle */}
-          <div className="flex items-center justify-between pb-2 border-b">
+          <div className="flex items-center justify-between">
             <Label htmlFor="clustering" className="text-xs cursor-pointer">
               Property Clustering
             </Label>
@@ -773,6 +825,35 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
               onCheckedChange={setUseClustering}
             />
           </div>
+
+          {/* Heatmap Toggle */}
+          <div className="flex items-center justify-between pb-2 border-b">
+            <Label htmlFor="heatmap" className="text-xs cursor-pointer flex items-center gap-1">
+              <Flame className="h-3 w-3" />
+              Heatmap Overlay
+            </Label>
+            <Switch
+              id="heatmap"
+              checked={showHeatmap}
+              onCheckedChange={setShowHeatmap}
+            />
+          </div>
+
+          {/* Heatmap Mode Selection */}
+          {showHeatmap && (
+            <div className="space-y-2 pb-2 border-b">
+              <Label className="text-xs">Heatmap Mode</Label>
+              <Select value={heatmapMode} onValueChange={(value: 'density' | 'price') => setHeatmapMode(value)}>
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="density">Property Density</SelectItem>
+                  <SelectItem value="price">Price Distribution</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Saved Areas */}
           {savedAreas.length > 0 && (
@@ -926,6 +1007,33 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
         <Badge className="absolute top-4 right-4 z-10 py-2 px-4 text-sm">
           {filteredCount} {filteredCount === 1 ? 'property' : 'properties'} in area
         </Badge>
+      )}
+
+      {/* Heatmap Legend */}
+      {showHeatmap && (
+        <Card className="absolute bottom-4 right-4 p-3 shadow-lg z-10">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Flame className="h-4 w-4" />
+              <span className="text-xs font-semibold">
+                {heatmapMode === 'density' ? 'Property Density' : 'Price Distribution'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex h-4 rounded overflow-hidden" style={{ width: '120px' }}>
+                <div style={{ flex: 1, background: 'rgb(103,169,207)' }} />
+                <div style={{ flex: 1, background: 'rgb(209,229,240)' }} />
+                <div style={{ flex: 1, background: 'rgb(253,219,199)' }} />
+                <div style={{ flex: 1, background: 'rgb(239,138,98)' }} />
+                <div style={{ flex: 1, background: 'rgb(178,24,43)' }} />
+              </div>
+            </div>
+            <div className="flex justify-between text-[10px] text-muted-foreground">
+              <span>Low</span>
+              <span>High</span>
+            </div>
+          </div>
+        </Card>
       )}
 
       {/* Property detail card */}
