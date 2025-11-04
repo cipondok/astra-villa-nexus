@@ -303,7 +303,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <div 
           className={cn(
             "fixed z-[10002] pointer-events-none transform-gpu",
-            showWidget ? "translate-y-0 opacity-100 scale-100 rotate-0" : "translate-y-24 opacity-0 scale-90 rotate-[18deg]"
+            showWidget 
+              ? "translate-y-0 opacity-100 scale-100 rotate-0" 
+              : isMobile 
+                ? "translate-y-24 opacity-0 scale-90" 
+                : "translate-y-24 opacity-0 scale-90 rotate-[18deg]"
           )}
           style={{ 
             bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
