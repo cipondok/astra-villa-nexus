@@ -121,6 +121,15 @@ const DebugPanel = ({
                 }}
                 size="icon"
               >
+                {shouldAnimate && (
+                  <span 
+                    className="absolute inset-0 pointer-events-none z-20"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%)',
+                      animation: 'flash 0.3s ease-out'
+                    }}
+                  />
+                )}
                 {isOverridden && (
                   <>
                     <span 
@@ -184,6 +193,14 @@ const DebugPanel = ({
                     }
                     100% {
                       transform: rotate(360deg);
+                    }
+                  }
+                  @keyframes flash {
+                    0% {
+                      opacity: 1;
+                    }
+                    100% {
+                      opacity: 0;
                     }
                   }
                   .animate-toggle-scale {
