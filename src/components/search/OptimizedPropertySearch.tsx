@@ -393,19 +393,25 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 </SelectContent>
               </Select>
 
-              <Input
-                placeholder="Min Price"
-                type="number"
-                value={filters.minPrice || ''}
-                onChange={(e) => updateFilters({ minPrice: e.target.value ? Number(e.target.value) : undefined })}
-              />
-
-              <Input
-                placeholder="Max Price"
-                type="number"
-                value={filters.maxPrice || ''}
-                onChange={(e) => updateFilters({ maxPrice: e.target.value ? Number(e.target.value) : undefined })}
-              />
+              <div className="col-span-2 md:col-span-4 space-y-3 p-4 bg-background rounded-md border">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Price Range</label>
+                  <span className="text-sm text-muted-foreground">
+                    ${(filters.minPrice || 0).toLocaleString()} - ${(filters.maxPrice || 10000000).toLocaleString()}
+                  </span>
+                </div>
+                <Slider
+                  min={0}
+                  max={10000000}
+                  step={50000}
+                  value={[filters.minPrice || 0, filters.maxPrice || 10000000]}
+                  onValueChange={(value) => updateFilters({ 
+                    minPrice: value[0] === 0 ? undefined : value[0],
+                    maxPrice: value[1] === 10000000 ? undefined : value[1]
+                  })}
+                  className="w-full"
+                />
+              </div>
 
               <Select value={filters.minBedrooms?.toString() || ''} onValueChange={(value) => updateFilters({ minBedrooms: value ? Number(value) : undefined })}>
                 <SelectTrigger>
