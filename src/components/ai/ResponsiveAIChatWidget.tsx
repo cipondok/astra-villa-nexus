@@ -44,12 +44,12 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     scrollToBottom();
   }, [messages]);
 
-  // Handle scroll direction for auto-hide/show (25px threshold for instant response)
+  // Handle scroll direction for auto-hide/show (10px threshold for ultra-fast response)
   useEffect(() => {
     if (isOpen) {
       setShowWidget(true); // Always show when chat is open
     } else {
-      if (scrollDirection === 'down' && scrollY > 25) {
+      if (scrollDirection === 'down' && scrollY > 10) {
         setShowWidget(false); // Hide on scroll down
       } else if (scrollDirection === 'up' || isAtTop) {
         setShowWidget(true); // Show on scroll up or at top
