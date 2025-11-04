@@ -40,3 +40,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.get-verification-requests]
     verify_jwt = true
 
+  [functions.search-by-image]
+    verify_jwt = false
+

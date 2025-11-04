@@ -146,6 +146,16 @@ const PropertySearchResults = ({
               {property.property_type}
             </Badge>
             
+            {/* Similarity Score Badge (for image search) */}
+            {(property as any).similarityScore !== undefined && (
+              <Badge 
+                variant="default"
+                className="absolute top-12 left-2 bg-primary/90 text-white"
+              >
+                {(property as any).similarityScore}% match
+              </Badge>
+            )}
+            
             {/* Listing Type Badge */}
             <Badge 
               variant="default" 
