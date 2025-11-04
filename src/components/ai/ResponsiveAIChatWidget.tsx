@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Home, Users, MapPin, Handshake, Bot, ArrowUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import AIChatTrigger from "./AIChatTrigger";
 import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
@@ -34,6 +35,7 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
   const { scrollDirection, scrollY, isAtTop } = useScrollDirection();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [showWidget, setShowWidget] = useState(true);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -279,17 +281,20 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* Scroll to top arrow - appears on scroll */}
       {!isAtTop && !isOpen && showWidget && (
         <div 
-          className="fixed z-[10001] transform-gpu animate-fade-in"
+          className={cn("fixed z-[10001] transform-gpu", !prefersReducedMotion && "animate-fade-in")}
           style={{ 
             bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
             left: 'calc(1rem + env(safe-area-inset-left))',
-            transition: 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)'
+            transition: prefersReducedMotion ? 'none' : 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)'
           }}
         >
           <Button
             onClick={scrollToTop}
-            className="h-14 w-14 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 hover:scale-110 border-2 border-white/30"
-            style={{ transition: 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)' }}
+            className={cn(
+              "h-14 w-14 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 shadow-xl hover:shadow-gray-500/40 border-2 border-white/30",
+              !prefersReducedMotion && "hover:scale-110"
+            )}
+            style={{ transition: prefersReducedMotion ? 'none' : 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)' }}
             size="icon"
             aria-label="Scroll to top"
           >
@@ -303,20 +308,25 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <div 
           className={cn(
             "fixed z-[10002] pointer-events-none transform-gpu",
-            showWidget 
-              ? "translate-y-0 opacity-100 scale-100 rotate-0" 
-              : isMobile 
-                ? "translate-y-24 opacity-0 scale-90" 
-                : "translate-y-24 opacity-0 scale-90 rotate-[18deg]"
+            prefersReducedMotion
+              ? showWidget ? "opacity-100" : "opacity-0"
+              : showWidget 
+                ? "translate-y-0 opacity-100 scale-100 rotate-0" 
+                : isMobile 
+                  ? "translate-y-24 opacity-0 scale-90" 
+                  : "translate-y-24 opacity-0 scale-90 rotate-[18deg]"
           )}
           style={{ 
             bottom: 'calc(1rem + env(safe-area-inset-bottom))', 
             right: 'calc(1rem + env(safe-area-inset-right))',
-            transition: 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)'
+            transition: prefersReducedMotion ? 'opacity 150ms ease' : 'all 200ms cubic-bezier(0.34, 1.8, 0.64, 1)'
           }}
         >
-          <div className="pointer-events-auto hover:scale-105 transition-transform duration-200">
-            <div className={showWidget ? (isMobile ? "animate-subtle-pulse-mobile" : "animate-subtle-pulse") : ""}>
+          <div className={cn(
+            "pointer-events-auto transition-transform duration-200",
+            !prefersReducedMotion && "hover:scale-105"
+          )}>
+            <div className={showWidget && !prefersReducedMotion ? (isMobile ? "animate-subtle-pulse-mobile" : "animate-subtle-pulse") : ""}>
               <AIChatTrigger onOpen={() => { setIsOpen(true); setIsMinimized(false); setShowWidget(true); }} />
             </div>
           </div>
