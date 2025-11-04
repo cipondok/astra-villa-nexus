@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
-import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { X, Home, Bed, Bath, Maximize2, Circle, Pentagon, Trash2, Layers } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
 
 interface PropertyMapViewProps {
@@ -23,6 +24,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const map = useRef<mapboxgl.Map | null>(null);
   const draw = useRef<MapboxDraw | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
+  const clusterMarkers = useRef<mapboxgl.Marker[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
   const [showTokenInput, setShowTokenInput] = useState(false);
@@ -30,6 +32,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const [filteredCount, setFilteredCount] = useState<number | null>(null);
   const [drawnArea, setDrawnArea] = useState<any>(null);
   const [circleRadius, setCircleRadius] = useState<number>(2000); // Default 2km in meters
+  const [useClustering, setUseClustering] = useState<boolean>(true);
 
   // Initialize map
   useEffect(() => {
@@ -125,13 +128,203 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
     // Remove existing markers
     markers.current.forEach(marker => marker.remove());
     markers.current = [];
+    clusterMarkers.current.forEach(marker => marker.remove());
+    clusterMarkers.current = [];
+
+    if (useClustering) {
+      // Use GeoJSON clustering
+      setupClustering();
+    } else {
+      // Use individual markers
+      setupIndividualMarkers();
+    }
+  }, [properties, mapboxToken, useClustering]);
+
+  // Setup clustering with GeoJSON
+  const setupClustering = () => {
+    if (!map.current) return;
+
+    // Remove existing sources and layers
+    if (map.current.getLayer('clusters')) map.current.removeLayer('clusters');
+    if (map.current.getLayer('cluster-count')) map.current.removeLayer('cluster-count');
+    if (map.current.getLayer('unclustered-point')) map.current.removeLayer('unclustered-point');
+    if (map.current.getSource('properties')) map.current.removeSource('properties');
+
+    // Create GeoJSON features from properties
+    const features = properties.map(property => {
+      const coords = getCoordinatesForProperty(property);
+      if (!coords) return null;
+
+      return {
+        type: 'Feature' as const,
+        geometry: {
+          type: 'Point' as const,
+          coordinates: coords,
+        },
+        properties: {
+          id: property.id,
+          title: property.title,
+          price: property.price,
+          listingType: property.listing_type,
+          propertyData: JSON.stringify(property),
+        },
+      };
+    }).filter(f => f !== null);
+
+    // Add source
+    map.current.addSource('properties', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: features as any,
+      },
+      cluster: true,
+      clusterMaxZoom: 16,
+      clusterRadius: 50,
+    });
+
+    // Add cluster circles layer
+    map.current.addLayer({
+      id: 'clusters',
+      type: 'circle',
+      source: 'properties',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': [
+          'step',
+          ['get', 'point_count'],
+          '#10b981', // green for small clusters
+          10,
+          '#3b82f6', // blue for medium clusters
+          25,
+          '#8b5cf6', // purple for large clusters
+        ],
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20, // radius for small clusters
+          10,
+          30, // radius for medium clusters
+          25,
+          40, // radius for large clusters
+        ],
+        'circle-stroke-width': 3,
+        'circle-stroke-color': '#ffffff',
+      },
+    });
+
+    // Add cluster count labels
+    map.current.addLayer({
+      id: 'cluster-count',
+      type: 'symbol',
+      source: 'properties',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+        'text-size': 14,
+      },
+      paint: {
+        'text-color': '#ffffff',
+      },
+    });
+
+    // Add unclustered points layer
+    map.current.addLayer({
+      id: 'unclustered-point',
+      type: 'circle',
+      source: 'properties',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-color': [
+          'case',
+          ['==', ['get', 'listingType'], 'sale'],
+          '#3b82f6',
+          '#10b981',
+        ],
+        'circle-radius': 12,
+        'circle-stroke-width': 3,
+        'circle-stroke-color': '#ffffff',
+      },
+    });
+
+    // Handle cluster clicks
+    map.current.on('click', 'clusters', (e) => {
+      if (!map.current) return;
+      const features = map.current.queryRenderedFeatures(e.point, {
+        layers: ['clusters'],
+      });
+
+      const clusterId = features[0].properties?.cluster_id;
+      const source = map.current.getSource('properties') as mapboxgl.GeoJSONSource;
+      
+      source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err || !map.current) return;
+
+        map.current.easeTo({
+          center: (features[0].geometry as any).coordinates,
+          zoom: zoom + 0.5,
+          duration: 500,
+        });
+      });
+    });
+
+    // Handle unclustered point clicks
+    map.current.on('click', 'unclustered-point', (e) => {
+      if (!e.features?.[0]) return;
+      
+      const propertyData = e.features[0].properties?.propertyData;
+      if (propertyData) {
+        const property = JSON.parse(propertyData);
+        setSelectedProperty(property);
+        
+        map.current?.flyTo({
+          center: (e.features[0].geometry as any).coordinates,
+          zoom: 14,
+          duration: 1000,
+        });
+      }
+    });
+
+    // Change cursor on hover
+    map.current.on('mouseenter', 'clusters', () => {
+      if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+    });
+    map.current.on('mouseleave', 'clusters', () => {
+      if (map.current) map.current.getCanvas().style.cursor = '';
+    });
+    map.current.on('mouseenter', 'unclustered-point', () => {
+      if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+    });
+    map.current.on('mouseleave', 'unclustered-point', () => {
+      if (map.current) map.current.getCanvas().style.cursor = '';
+    });
+
+    // Fit bounds to properties
+    if (features.length > 0) {
+      const bounds = new mapboxgl.LngLatBounds();
+      features.forEach(feature => {
+        if (feature?.geometry.coordinates) {
+          bounds.extend(feature.geometry.coordinates as [number, number]);
+        }
+      });
+      
+      map.current.fitBounds(bounds, {
+        padding: 100,
+        maxZoom: 15,
+        duration: 1000,
+      });
+    }
+  };
+
+  // Setup individual markers (non-clustered)
+  const setupIndividualMarkers = () => {
+    if (!map.current) return;
 
     const bounds = new mapboxgl.LngLatBounds();
     let hasValidCoordinates = false;
 
     properties.forEach((property) => {
-      // For demo: generate coordinates based on location or use default
-      // In production, properties should have lat/lng in database
       const coords = getCoordinatesForProperty(property);
       
       if (coords) {
@@ -185,7 +378,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
         duration: 1000
       });
     }
-  }, [properties, mapboxToken]);
+  };
 
   // Helper function to get coordinates (placeholder - should come from database)
   const getCoordinatesForProperty = (property: BaseProperty): [number, number] | null => {
@@ -430,6 +623,22 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       {/* Drawing Tools */}
       <Card className="absolute top-4 left-4 p-3 shadow-lg z-10 w-64">
         <div className="flex flex-col gap-3">
+          <div className="text-xs font-semibold text-muted-foreground">
+            Map Controls
+          </div>
+          
+          {/* Clustering Toggle */}
+          <div className="flex items-center justify-between pb-2 border-b">
+            <Label htmlFor="clustering" className="text-xs cursor-pointer">
+              Property Clustering
+            </Label>
+            <Switch
+              id="clustering"
+              checked={useClustering}
+              onCheckedChange={setUseClustering}
+            />
+          </div>
+
           <div className="text-xs font-semibold text-muted-foreground">
             Draw Search Area
           </div>
