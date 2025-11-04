@@ -95,7 +95,7 @@ const DebugPanel = ({
           size="icon"
           title="Animation Debug Panel"
         >
-          <span className="transition-transform duration-300 group-hover:rotate-90 inline-block">
+          <span className="transition-transform duration-300 group-hover:rotate-90 inline-block animate-bounce" style={{ animationIterationCount: '3', animationDuration: '1s' }}>
             <Settings className="h-4 w-4 text-white" />
           </span>
         </Button>
