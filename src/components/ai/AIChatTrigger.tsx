@@ -12,10 +12,10 @@ const AIChatTrigger = ({ onOpen }: AIChatTriggerProps) => {
     <div className="pointer-events-auto relative group animate-bounce">
       <Button
         onClick={onOpen}
-        className="h-[72px] w-[72px] rounded-full bg-gradient-to-r from-blue-500 via-purple-600 to-blue-800 hover:from-blue-600 hover:via-purple-700 hover:to-blue-900 shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all duration-300 transform-gpu will-change-transform border-3 border-white/40 backdrop-blur-sm macos-smooth-click group-hover:animate-pulse"
+        className="h-[80px] w-[80px] md:h-[72px] md:w-[72px] rounded-full bg-gradient-to-r from-blue-500 via-purple-600 to-blue-800 hover:from-blue-600 hover:via-purple-700 hover:to-blue-900 shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all duration-300 transform-gpu will-change-transform border-3 border-white/40 backdrop-blur-sm macos-smooth-click group-hover:animate-pulse"
         size="icon"
       >
-        <Bot className="h-8 w-8 text-white drop-shadow-lg" />
+        <Bot className="h-9 w-9 md:h-8 md:w-8 text-white drop-shadow-lg" />
       </Button>
       
       {/* AI Badge */}
