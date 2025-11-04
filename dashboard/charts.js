@@ -394,6 +394,77 @@ class ChartManager {
     });
   }
 
+  createBundleSizeChart(ctx, data) {
+    const dates = data.map(d => d.date);
+    
+    this.charts.bundleSize = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dates,
+        datasets: [
+          {
+            label: 'Total Size (KB)',
+            data: data.map(d => d.totalSizeKB),
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Gzipped (KB)',
+            data: data.map(d => d.gzipSizeKB),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'CSS (KB)',
+            data: data.map(d => d.cssSizeKB),
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        ...this.defaultOptions,
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          annotation: {
+            annotations: {
+              totalLimit: {
+                type: 'line',
+                yMin: 500,
+                yMax: 500,
+                borderColor: 'rgba(239, 68, 68, 0.5)',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                label: {
+                  content: 'Total Limit: 500 KB',
+                  enabled: true,
+                  position: 'end',
+                  backgroundColor: 'rgba(239, 68, 68, 0.8)'
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: value => value + ' KB'
+            }
+          }
+        }
+      }
+    });
+  }
+
   destroyAll() {
     Object.values(this.charts).forEach(chart => chart.destroy());
     this.charts = {};

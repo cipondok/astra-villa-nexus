@@ -318,6 +318,61 @@
                 <canvas id="buildSizeChart"></canvas>
             </div>
         </section>
+
+        <!-- Bundle Size Section -->
+        <section id="bundle" class="section">
+            <h2>📊 Bundle Size Tracking</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="bundle-total">-</div>
+                        <div class="stat-label">Total Bundle Size</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="bundle-gzip">-</div>
+                        <div class="stat-label">Gzipped Size</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🎨</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="bundle-css">-</div>
+                        <div class="stat-label">CSS Bundle</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-icon">💚</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="bundle-health">-</div>
+                        <div class="stat-label">Health Status</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Bundle Size Trends (with Limits)</h3>
+                <canvas id="bundleSizeChart"></canvas>
+            </div>
+
+            <div class="info-box">
+                <h4>📏 Bundle Size Limits</h4>
+                <ul>
+                    <li><strong>Total App:</strong> 500 KB (gzipped)</li>
+                    <li><strong>Main Bundle:</strong> 300 KB (gzipped)</li>
+                    <li><strong>CSS Bundle:</strong> 100 KB (gzipped)</li>
+                    <li><strong>Vendor Chunk:</strong> 250 KB (gzipped)</li>
+                </ul>
+                <p><em>Builds automatically fail if these limits are exceeded.</em></p>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">

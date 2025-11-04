@@ -17,6 +17,7 @@ class Dashboard {
       this.updateCoverageStats();
       this.updateVisualStats();
       this.updateBuildStats();
+      this.updateBundleSizeStats();
       
       // Create charts
       this.createCharts();
@@ -91,8 +92,25 @@ class Dashboard {
     document.getElementById('assets-size').textContent = formatSize(buildSize.assets);
   }
 
+  updateBundleSizeStats() {
+    const { bundleSize } = this.data;
+    
+    document.getElementById('bundle-total').textContent = `${bundleSize.totalSizeKB} KB`;
+    document.getElementById('bundle-gzip').textContent = `${bundleSize.gzipSizeKB} KB`;
+    document.getElementById('bundle-css').textContent = `${bundleSize.cssSizeKB} KB`;
+    
+    // Calculate health indicators
+    const totalHealth = (bundleSize.totalSizeKB / bundleSize.limits.totalApp) * 100;
+    const cssHealth = (bundleSize.cssSizeKB / bundleSize.limits.cssBundle) * 100;
+    
+    document.getElementById('bundle-health').textContent = 
+      totalHealth < 80 ? '✓ Healthy' : 
+      totalHealth < 95 ? '⚠️ Warning' : 
+      '❌ Over Limit';
+  }
+
   createCharts() {
-    const { history, lighthouse, accessibility, coverage, visual, buildSize } = this.data;
+    const { history, lighthouse, accessibility, coverage, visual, buildSize, bundleSize } = this.data;
     
     // Overview charts
     window.chartManager.createTestTrendChart(
@@ -147,6 +165,12 @@ class Dashboard {
     window.chartManager.createBuildSizeChart(
       document.getElementById('buildSizeChart').getContext('2d'),
       buildSize.history
+    );
+    
+    // Bundle size chart
+    window.chartManager.createBundleSizeChart(
+      document.getElementById('bundleSizeChart').getContext('2d'),
+      bundleSize.history
     );
   }
 

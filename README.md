@@ -471,6 +471,63 @@ You can also trigger dependency updates manually from the GitHub "Insights" → 
 
 For detailed Dependabot configuration and customization, see [CI/CD Setup Guide](docs/CI_CD_SETUP.md#automated-dependency-management).
 
+## 📊 Bundle Size Tracking
+
+### Automated Bundle Size Monitoring
+
+This project uses **size-limit** to automatically track and enforce bundle size limits:
+
+**Features:**
+- ⚠️ **Automatic Build Failures**: Builds fail if bundle size exceeds thresholds
+- 📈 **Historical Tracking**: Bundle size trends displayed in dashboard
+- 🗜️ **Gzip Analysis**: Tracks both raw and compressed sizes
+- 📦 **Per-Bundle Limits**: Separate limits for JS, CSS, and vendor chunks
+
+**Configuration:**
+- Location: `.size-limit.js`
+- Limits: Total (500KB), Main (300KB), CSS (100KB), Vendor (250KB)
+- All sizes measured with gzip compression
+
+**Checking Bundle Size:**
+```bash
+# Check current bundle size against limits
+npm run size
+# OR if the script is not added to package.json:
+npx size-limit
+# OR use the provided script:
+./scripts/size-check.sh
+
+# Detailed analysis with visual breakdown
+./scripts/bundle-size-check.sh
+
+# Generate interactive bundle composition treemap
+./scripts/bundle-analyze.sh
+```
+
+**Setup:**
+To add bundle size checking to your npm scripts, add this to `package.json`:
+```json
+{
+  "scripts": {
+    "size": "size-limit"
+  }
+}
+```
+
+**How It Works:**
+1. CI/CD runs size checks on every PR and push
+2. Compares current size against base branch (for PRs)
+3. Comments on PR with size changes and warnings
+4. Fails build if limits are exceeded
+5. Tracks historical data in test dashboard
+
+**View in Dashboard:**
+The bundle size section shows:
+- Current total, gzipped, and CSS sizes
+- Health status indicator
+- Historical size trends with limit lines
+- Size comparison over time
+
 ## Documentation
 
 For detailed information about animations, performance optimizations, and accessibility features, see:

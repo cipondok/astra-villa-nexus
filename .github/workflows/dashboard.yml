@@ -138,6 +138,29 @@ jobs:
         with:
           path: dashboard/
       
+      - name: Collect bundle size data
+        run: |
+          mkdir -p dashboard-artifacts/bundle-data
+          
+          # Calculate bundle sizes
+          TOTAL_JS=$(find dist/assets -name "*.js" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          TOTAL_CSS=$(find dist/assets -name "*.css" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          TOTAL_JS_KB=$((TOTAL_JS / 1024))
+          TOTAL_CSS_KB=$((TOTAL_CSS / 1024))
+          
+          GZIP_SIZE=$(find dist/assets -type f \( -name "*.js" -o -name "*.css" \) -exec gzip -c {} \; | wc -c)
+          GZIP_SIZE_KB=$((GZIP_SIZE / 1024))
+          
+          cat > dashboard-artifacts/bundle-data/bundle-size.json << EOF
+          {
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "${{ github.sha }}",
+            "totalSizeKB": ${TOTAL_JS_KB},
+            "gzipSizeKB": ${GZIP_SIZE_KB},
+            "cssSizeKB": ${TOTAL_CSS_KB}
+          }
+          EOF
+      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

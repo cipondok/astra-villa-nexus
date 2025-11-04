@@ -67,10 +67,44 @@ EOF
     fi
 }
 
+# Function to extract bundle size data
+extract_bundle_size_data() {
+    echo "Extracting bundle size data..."
+    
+    if [ -d "dist" ]; then
+        # Calculate sizes
+        TOTAL_JS=$(find dist/assets -name "*.js" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+        TOTAL_CSS=$(find dist/assets -name "*.css" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+        TOTAL_JS_KB=$((TOTAL_JS / 1024))
+        TOTAL_CSS_KB=$((TOTAL_CSS / 1024))
+        
+        # Calculate gzipped size
+        GZIP_SIZE=$(find dist/assets -type f \( -name "*.js" -o -name "*.css" \) -exec gzip -c {} \; | wc -c)
+        GZIP_SIZE_KB=$((GZIP_SIZE / 1024))
+        
+        cat > dashboard/data/bundle-size.json << EOF
+{
+  "totalSizeKB": ${TOTAL_JS_KB},
+  "gzipSizeKB": ${GZIP_SIZE_KB},
+  "cssSizeKB": ${TOTAL_CSS_KB},
+  "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "limits": {
+    "totalApp": 500,
+    "mainBundle": 300,
+    "cssBundle": 100,
+    "vendorChunk": 250
+  },
+  "history": []
+}
+EOF
+    fi
+}
+
 # Run extractions
 extract_test_results
 extract_lighthouse_data
 extract_coverage_data
+extract_bundle_size_data
 
 echo ""
 echo "✅ Dashboard data generated successfully!"
@@ -79,5 +113,6 @@ echo "Data files created:"
 echo "  - dashboard/data/latest-tests.json"
 echo "  - dashboard/data/lighthouse-data.json"
 echo "  - dashboard/data/coverage-data.json"
+echo "  - dashboard/data/bundle-size.json"
 echo ""
 echo "Open dashboard/index.html in your browser to view the dashboard."

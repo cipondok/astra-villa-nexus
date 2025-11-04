@@ -1,0 +1,154 @@
+name: Bundle Size Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  bundle-size:
+    name: Check Bundle Size
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+      
+      - name: Check bundle size
+        id: size_check
+        run: |
+          echo "Running size-limit checks..."
+          npx size-limit > size-output.txt 2>&1 || echo "size_failed=true" >> $GITHUB_OUTPUT
+          cat size-output.txt
+        continue-on-error: true
+      
+      - name: Analyze bundle sizes
+        id: analyze
+        run: |
+          TOTAL_SIZE=$(find dist -type f -name "*.js" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          TOTAL_SIZE_KB=$((TOTAL_SIZE / 1024))
+          
+          CSS_SIZE=$(find dist -type f -name "*.css" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          CSS_SIZE_KB=$((CSS_SIZE / 1024))
+          
+          TOTAL_SIZE_GZIP=$(find dist -type f \( -name "*.js" -o -name "*.css" \) -exec gzip -c {} \; | wc -c)
+          TOTAL_SIZE_GZIP_KB=$((TOTAL_SIZE_GZIP / 1024))
+          
+          echo "total_size_kb=${TOTAL_SIZE_KB}" >> $GITHUB_OUTPUT
+          echo "css_size_kb=${CSS_SIZE_KB}" >> $GITHUB_OUTPUT
+          echo "gzip_size_kb=${TOTAL_SIZE_GZIP_KB}" >> $GITHUB_OUTPUT
+      
+      - name: Get base branch bundle size (for PRs)
+        if: github.event_name == 'pull_request'
+        id: base_size
+        run: |
+          git checkout ${{ github.base_ref }}
+          npm ci
+          npm run build
+          
+          BASE_SIZE=$(find dist -type f -name "*.js" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          BASE_SIZE_KB=$((BASE_SIZE / 1024))
+          
+          echo "base_size_kb=${BASE_SIZE_KB}" >> $GITHUB_OUTPUT
+          git checkout ${{ github.sha }}
+      
+      - name: Calculate size difference (for PRs)
+        if: github.event_name == 'pull_request'
+        id: diff
+        run: |
+          CURRENT_SIZE=${{ steps.analyze.outputs.total_size_kb }}
+          BASE_SIZE=${{ steps.base_size.outputs.base_size_kb }}
+          DIFF=$((CURRENT_SIZE - BASE_SIZE))
+          DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF / $BASE_SIZE) * 100}")
+          
+          echo "diff_kb=${DIFF}" >> $GITHUB_OUTPUT
+          echo "diff_percent=${DIFF_PERCENT}" >> $GITHUB_OUTPUT
+          
+          if [ $DIFF -gt 50 ]; then
+            echo "warning=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Comment PR with size report
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const currentSize = ${{ steps.analyze.outputs.total_size_kb }};
+            const gzipSize = ${{ steps.analyze.outputs.gzip_size_kb }};
+            const cssSize = ${{ steps.analyze.outputs.css_size_kb }};
+            const baseSize = ${{ steps.base_size.outputs.base_size_kb }};
+            const diff = ${{ steps.diff.outputs.diff_kb }};
+            const diffPercent = '${{ steps.diff.outputs.diff_percent }}';
+            const warning = '${{ steps.diff.outputs.warning }}' === 'true';
+            const sizeFailed = '${{ steps.size_check.outputs.size_failed }}' === 'true';
+            
+            const diffEmoji = diff > 0 ? '📈' : diff < 0 ? '📉' : '➖';
+            const statusEmoji = sizeFailed ? '❌' : warning ? '⚠️' : '✅';
+            
+            let comment = `## ${statusEmoji} Bundle Size Report\n\n`;
+            
+            if (sizeFailed) {
+              comment += `### ⚠️ Bundle size limit exceeded!\n\n`;
+            }
+            
+            comment += `| Metric | Size | Change |\n`;
+            comment += `|--------|------|--------|\n`;
+            comment += `| **Total JS** | ${currentSize} KB | ${diffEmoji} ${diff > 0 ? '+' : ''}${diff} KB (${diffPercent > 0 ? '+' : ''}${diffPercent}%) |\n`;
+            comment += `| **Gzipped** | ${gzipSize} KB | - |\n`;
+            comment += `| **CSS** | ${cssSize} KB | - |\n`;
+            comment += `| **Base** | ${baseSize} KB | - |\n\n`;
+            
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Bundle Size Report')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: comment
+              });
+            }
+      
+      - name: Fail if size limit exceeded
+        if: steps.size_check.outputs.size_failed == 'true'
+        run: |
+          echo "::error::Bundle size exceeds configured limits"
+          exit 1

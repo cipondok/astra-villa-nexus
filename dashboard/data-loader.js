@@ -46,6 +46,10 @@ class DataLoader {
     return await this.loadJSON('build-size-data.json');
   }
 
+  async loadBundleSizeData() {
+    return await this.loadJSON('bundle-size.json');
+  }
+
   async loadAllData() {
     const [
       tests,
@@ -54,7 +58,8 @@ class DataLoader {
       accessibility,
       coverage,
       visual,
-      buildSize
+      buildSize,
+      bundleSize
     ] = await Promise.all([
       this.loadLatestTestResults(),
       this.loadTestHistory(),
@@ -62,7 +67,8 @@ class DataLoader {
       this.loadAccessibilityData(),
       this.loadCoverageData(),
       this.loadVisualRegressionData(),
-      this.loadBuildSizeData()
+      this.loadBuildSizeData(),
+      this.loadBundleSizeData()
     ]);
 
     return {
@@ -72,7 +78,8 @@ class DataLoader {
       accessibility: accessibility || this.getMockAccessibilityData(),
       coverage: coverage || this.getMockCoverageData(),
       visual: visual || this.getMockVisualData(),
-      buildSize: buildSize || this.getMockBuildSizeData()
+      buildSize: buildSize || this.getMockBuildSizeData(),
+      bundleSize: bundleSize || this.getMockBundleSizeData()
     };
   }
 
@@ -226,6 +233,36 @@ class DataLoader {
         total: 1700 + Math.random() * 300,
         js: 1100 + Math.random() * 200,
         css: 200 + Math.random() * 100
+      });
+    }
+    return history;
+  }
+
+  getMockBundleSizeData() {
+    return {
+      totalSizeKB: 350,
+      gzipSizeKB: 125,
+      cssSizeKB: 48,
+      limits: {
+        totalApp: 500,
+        mainBundle: 300,
+        cssBundle: 100,
+        vendorChunk: 250
+      },
+      history: this.generateBundleSizeHistory()
+    };
+  }
+
+  generateBundleSizeHistory() {
+    const history = [];
+    for (let i = 30; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      history.push({
+        date: date.toISOString().split('T')[0],
+        totalSizeKB: 330 + Math.random() * 40,
+        gzipSizeKB: 115 + Math.random() * 20,
+        cssSizeKB: 45 + Math.random() * 8
       });
     }
     return history;
