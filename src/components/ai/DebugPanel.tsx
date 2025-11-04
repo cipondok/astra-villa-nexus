@@ -27,6 +27,14 @@ const DebugPanel = ({
 }: DebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
+  // Trigger animation when override state changes
+  useEffect(() => {
+    setShouldAnimate(true);
+    const timer = setTimeout(() => setShouldAnimate(false), 300);
+    return () => clearTimeout(timer);
+  }, [isOverridden]);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -104,7 +112,8 @@ const DebugPanel = ({
                   "fixed bottom-20 left-4 z-[99999] h-10 w-10 rounded-full shadow-lg hover-scale group transition-all duration-300 relative overflow-hidden",
                   isOverridden 
                     ? "bg-yellow-800/80 hover:bg-yellow-700/80 hover:shadow-[0_0_30px_rgba(251,191,36,0.8)]" 
-                    : "bg-gray-800 hover:bg-gray-700 hover:shadow-[0_0_20px_rgba(156,163,175,0.5)]"
+                    : "bg-gray-800 hover:bg-gray-700 hover:shadow-[0_0_20px_rgba(156,163,175,0.5)]",
+                  shouldAnimate && "animate-toggle-scale"
                 )}
                 style={{ 
                   animation: 'slideUpFade 0.5s ease-out 500ms both'
@@ -159,6 +168,17 @@ const DebugPanel = ({
                       background: rgb(252, 211, 77);
                       box-shadow: 0 0 20px rgba(251, 191, 36, 1);
                     }
+                  }
+                  @keyframes toggleScale {
+                    0%, 100% {
+                      transform: scale(1);
+                    }
+                    50% {
+                      transform: scale(1.15);
+                    }
+                  }
+                  .animate-toggle-scale {
+                    animation: toggleScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
                   }
                 `}</style>
                 <span className={cn(
