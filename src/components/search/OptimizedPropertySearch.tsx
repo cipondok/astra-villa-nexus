@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
-import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
 
@@ -31,6 +31,8 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
   const { toast } = useToast();
   
   const {
@@ -59,6 +61,45 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       setRecentSearches(JSON.parse(recent));
     }
   }, []);
+
+  // Initialize Web Speech API
+  React.useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+
+      recognitionInstance.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setSearchInput(transcript);
+        updateFilters({ searchText: transcript });
+        addToRecentSearches(transcript);
+        setIsListening(false);
+        
+        toast({
+          title: "Voice Search",
+          description: `Searching for: "${transcript}"`
+        });
+      };
+
+      recognitionInstance.onerror = (event: any) => {
+        setIsListening(false);
+        toast({
+          title: "Voice Search Error",
+          description: event.error === 'no-speech' ? 'No speech detected' : 'Please try again',
+          variant: "destructive"
+        });
+      };
+
+      recognitionInstance.onend = () => {
+        setIsListening(false);
+      };
+
+      setRecognition(recognitionInstance);
+    }
+  }, [updateFilters, toast]);
 
   const { results, totalCount, page, totalPages, isLoading, error, responseTime, cacheHit } = searchResponse;
 
@@ -115,6 +156,25 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     setSearchInput('');
     updateFilters({ searchText: undefined });
     setShowRecentSearches(false);
+  };
+
+  const handleVoiceSearch = () => {
+    if (!recognition) {
+      toast({
+        title: "Voice Search Unavailable",
+        description: "Your browser doesn't support voice input",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognition.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognition.start();
+    }
   };
 
   const highlightMatch = (text: string, query: string) => {
@@ -443,8 +503,21 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
-              className={searchInput ? "pr-20" : "pr-10"}
+              className={searchInput ? "pr-28" : "pr-20"}
             />
+            <Button
+              onClick={handleVoiceSearch}
+              size="icon"
+              variant="ghost"
+              className={`absolute right-11 top-1/2 transform -translate-y-1/2 h-7 w-7 ${
+                isListening 
+                  ? "text-red-500 hover:text-red-600 animate-pulse" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              aria-label={isListening ? "Stop recording" : "Start voice search"}
+            >
+              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
             {searchInput && (
               <button
                 onClick={handleClearSearch}
