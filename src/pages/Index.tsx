@@ -731,9 +731,9 @@ const Index = () => {
           className="hidden"
         />
 
-        {/* Customer AI Chat Widget - Hidden by default, controlled by FAB */}
+        {/* AI Chat Widget - Always visible, keyboard shortcuts: Ctrl+K to open, Esc to close */}
         <Suspense fallback={null}>
-          <ResponsiveAIChatWidget />
+          <ResponsiveAIChatWidget buttonVariant="pulse" />
         </Suspense>
         
         {/* WhatsApp Inquiry Dialog */}

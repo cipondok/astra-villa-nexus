@@ -6,22 +6,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Home, Users, MapPin, Handshake, Bot } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import DebugPanel from "./DebugPanel";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
 import AIChatInput from "./AIChatInput";
+import ChatButton, { ChatButtonVariant } from "./ChatButton";
 import { Message, QuickAction } from "./types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useChatKeyboardShortcuts } from "@/hooks/useChatKeyboardShortcuts";
 import { cn } from "@/lib/utils";
 
 interface ResponsiveAIChatWidgetProps {
   propertyId?: string;
   onTourControl?: (action: string, target: string) => void;
+  buttonVariant?: ChatButtonVariant;
 }
 
-const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatWidgetProps) => {
+const ResponsiveAIChatWidget = ({ 
+  propertyId, 
+  onTourControl,
+  buttonVariant = "pulse" 
+}: ResponsiveAIChatWidgetProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -30,11 +35,12 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>("");
   const [isListening, setIsListening] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
-  const { prefersReducedMotion, toggleOverride, clearOverride, isOverridden } = usePrefersReducedMotion();
 
+  // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -43,17 +49,29 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
     scrollToBottom();
   }, [messages]);
 
-  // Listen for FAB menu to open chat
+  // Track unread messages
   useEffect(() => {
-    const handleOpenChat = () => {
-      setIsClosing(false);
-      setIsOpen(true);
-      setIsMinimized(false);
-    };
-    
-    window.addEventListener('openAIChat', handleOpenChat);
-    return () => window.removeEventListener('openAIChat', handleOpenChat);
-  }, []);
+    if (!isOpen && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'assistant') {
+        setUnreadCount(prev => prev + 1);
+      }
+    }
+  }, [messages, isOpen]);
+
+  // Clear unread count when chat opens
+  useEffect(() => {
+    if (isOpen) {
+      setUnreadCount(0);
+    }
+  }, [isOpen]);
+
+  // Handle open
+  const handleOpen = () => {
+    setIsClosing(false);
+    setIsOpen(true);
+    setIsMinimized(false);
+  };
 
   // Handle close with animation
   const handleClose = () => {
@@ -64,6 +82,13 @@ const ResponsiveAIChatWidget = ({ propertyId, onTourControl }: ResponsiveAIChatW
       setIsMinimized(false);
     }, 300);
   };
+
+  // Keyboard shortcuts: Ctrl+K to open, Esc to close
+  useChatKeyboardShortcuts({
+    isOpen,
+    onOpen: handleOpen,
+    onClose: handleClose,
+  });
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -263,49 +288,16 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Debug Panel - Development Only */}
-      <DebugPanel
-        prefersReducedMotion={prefersReducedMotion}
-        isOverridden={isOverridden}
-        onToggleMotion={toggleOverride}
-        onClearOverride={clearOverride}
-      />
-
-      {/* Always-visible chat trigger button */}
+      {/* Floating chat button - always visible */}
       {!isOpen && (
-        <button
-          onClick={() => {
-            setIsClosing(false);
-            setIsOpen(true);
-            setIsMinimized(false);
-          }}
-          className={cn(
-            "fixed bottom-6 right-6 z-[9999]",
-            "h-14 w-14 rounded-full",
-            "bg-gradient-to-r from-blue-600 to-purple-600",
-            "hover:from-blue-700 hover:to-purple-700",
-            "text-white shadow-lg hover:shadow-xl",
-            "flex items-center justify-center",
-            "transition-all duration-300 ease-out",
-            "transform hover:scale-110 active:scale-95",
-            !prefersReducedMotion && "animate-subtle-pulse",
-            "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-          )}
-          aria-label="Open AI chat assistant"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setIsOpen(true);
-            }
-          }}
-        >
-          <Bot className="h-6 w-6" />
-        </button>
+        <ChatButton 
+          onClick={handleOpen}
+          unreadCount={unreadCount}
+          variant={buttonVariant}
+        />
       )}
 
-      {/* Chat window - Always fixed at bottom-right */}
+      {/* Chat window */}
       {isOpen && (
         <div 
           className={cn(
