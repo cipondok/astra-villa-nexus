@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { isValidUUID } from '@/utils/uuid-validation';
+import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
 
 export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin';
 
@@ -57,8 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
-      // Validate UUID before making database calls
-      if (!isValidUUID(userId)) {
+      // Validate UUID before making database calls with logging
+      if (!validateUUIDWithLogging(userId, 'AuthContext.fetchProfile', { 
+        operation: 'fetch_profile',
+        timestamp: new Date().toISOString() 
+      })) {
         console.error('Invalid user ID format:', userId);
         setProfile(null);
         setLoading(false);

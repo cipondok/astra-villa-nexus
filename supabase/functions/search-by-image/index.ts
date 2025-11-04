@@ -2,6 +2,23 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
+// UUID validation utility for edge functions
+const isValidUUID = (uuid: string | undefined | null): boolean => {
+  if (!uuid) return false;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
+};
+
+const logUUIDValidationError = (context: string, invalidValue: any, additionalInfo?: Record<string, any>) => {
+  console.error('UUID Validation Error:', {
+    timestamp: new Date().toISOString(),
+    context,
+    invalidValue,
+    type: typeof invalidValue,
+    ...additionalInfo
+  });
+};
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
