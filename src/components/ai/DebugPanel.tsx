@@ -175,7 +175,34 @@ const DebugPanel = ({
 
           <div className="space-y-3 text-xs">
             {/* Current status */}
-            <div className="bg-gray-800 rounded p-2 animate-fade-in" style={{ animationDelay: '0ms' }}>
+            <div 
+              className="bg-gray-800 rounded p-2" 
+              style={{ 
+                animation: 'slideInLeft 0.4s ease-out 0ms, fadeIn 0.3s ease-out 0ms',
+                opacity: 0,
+                animationFillMode: 'forwards'
+              }}
+            >
+              <style>{`
+                @keyframes slideInLeft {
+                  from {
+                    transform: translateX(-20px);
+                    opacity: 0;
+                  }
+                  to {
+                    transform: translateX(0);
+                    opacity: 1;
+                  }
+                }
+                @keyframes fadeIn {
+                  from {
+                    opacity: 0;
+                  }
+                  to {
+                    opacity: 1;
+                  }
+                }
+              `}</style>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-gray-400">Reduced Motion:</span>
                 <span className={cn(
@@ -193,7 +220,14 @@ const DebugPanel = ({
             </div>
 
             {/* Controls */}
-            <div className="space-y-2 animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <div 
+              className="space-y-2" 
+              style={{ 
+                animation: 'slideInLeft 0.4s ease-out 100ms, fadeIn 0.3s ease-out 100ms',
+                opacity: 0,
+                animationFillMode: 'forwards'
+              }}
+            >
               <Button
                 onClick={onToggleMotion}
                 className={cn(
@@ -218,7 +252,14 @@ const DebugPanel = ({
             </div>
 
             {/* Info */}
-            <div className="text-[10px] text-gray-500 pt-2 border-t border-gray-700 space-y-2 animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <div 
+              className="text-[10px] text-gray-500 pt-2 border-t border-gray-700 space-y-2" 
+              style={{ 
+                animation: 'slideInLeft 0.4s ease-out 200ms, fadeIn 0.3s ease-out 200ms',
+                opacity: 0,
+                animationFillMode: 'forwards'
+              }}
+            >
               <p>Toggle animations without changing OS settings.</p>
               <p>Setting persists in localStorage.</p>
               
