@@ -2838,6 +2838,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
 
+                {/* Parking Spaces */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Parking Spaces</Label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {['1', '2', '3', '4+'].map((parking) => (
+                      <Button
+                        key={parking}
+                        variant={filters.parking === parking ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('parking', filters.parking === parking ? '' : parking)}
+                        className="h-8 text-[10px]"
+                      >
+                        {parking}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Amenities */}
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Amenities</Label>
