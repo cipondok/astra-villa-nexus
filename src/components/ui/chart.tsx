@@ -74,6 +74,11 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Validate CSS color values to prevent injection
+  const isValidColor = (color: string): boolean => {
+    return /^(#[0-9A-Fa-f]{3,6}|rgb\(|rgba\(|hsl\(|hsla\(|var\()/.test(color);
+  };
+
   return (
     <style
       dangerouslySetInnerHTML={{
@@ -86,7 +91,7 @@ ${colorConfig
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+    return (color && isValidColor(color)) ? `  --color-${key}: ${color};` : null
   })
   .join("\n")}
 }

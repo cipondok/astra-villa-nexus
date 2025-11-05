@@ -17,6 +17,7 @@ import { useOptimizedPropertySearch } from '@/hooks/useOptimizedPropertySearch';
 import { Search, Filter, ChevronLeft, ChevronRight, Clock, Database, Zap, Save, BookmarkCheck, Trash2, Download, FileText, FileSpreadsheet, X, Mic, MicOff, History, HelpCircle, Lightbulb, FileCode, Camera, Upload, Image as ImageIcon, Settings, BarChart3, TrendingUp, SlidersHorizontal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
+import DOMPurify from 'dompurify';
 
 interface OptimizedPropertySearchProps {
   onResultSelect?: (propertyId: string) => void;
@@ -1415,6 +1416,9 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                 const similarity = similarityScores[property.id];
                 const similarityClass = similarity >= 70 ? 'similarity-high' : similarity >= 50 ? 'similarity-medium' : 'similarity-low';
                 
+                // Sanitize all user-controlled data to prevent XSS
+                const sanitize = (text: any) => DOMPurify.sanitize(String(text || ''), { ALLOWED_TAGS: [] });
+                
                 return `
                 <tr>
                   ${hasImageSearch ? `
@@ -1425,15 +1429,15 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
                     </td>
                   ` : ''}
                   <td>
-                    <div class="property-title">${property.title}</div>
-                    <div class="property-desc">${(property.description || 'No description').substring(0, 120)}${property.description?.length > 120 ? '...' : ''}</div>
+                    <div class="property-title">${sanitize(property.title)}</div>
+                    <div class="property-desc">${sanitize((property.description || 'No description').substring(0, 120))}${property.description?.length > 120 ? '...' : ''}</div>
                   </td>
-                  <td>${property.property_type}</td>
+                  <td>${sanitize(property.property_type)}</td>
                   <td>$${property.price.toLocaleString()}</td>
                   <td>${property.bedrooms}</td>
                   <td>${property.bathrooms}</td>
                   <td>${property.area_sqm || 'N/A'} m²</td>
-                  <td>${property.city}, ${property.area}</td>
+                  <td>${sanitize(property.city)}, ${sanitize(property.area)}</td>
                 </tr>
               `}).join('')}
             </tbody>
