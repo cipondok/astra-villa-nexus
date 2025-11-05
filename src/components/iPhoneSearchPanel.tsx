@@ -27,7 +27,7 @@ interface IPhoneSearchPanelProps {
 const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: IPhoneSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
-  const [showFilters, setShowFilters] = useState(false);
+  
   const [isMinimized, setIsMinimized] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
@@ -44,7 +44,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   
   // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
-  useScrollLock(showFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
+  useScrollLock(isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -60,9 +60,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     window.addEventListener('resize', checkMobile);
 
     const handleScroll = () => {
-      // Pause header minimize logic while filter modal is open
-      if (showFilters) return;
-
       const currentScrollY = window.scrollY;
 
       if (window.innerWidth < 768) { // Only on mobile
@@ -82,7 +79,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [lastScrollY, showFilters, isMinimized]);
+  }, [lastScrollY, isMinimized]);
   
   // Trending and smart suggestions
   const trendingSearches = [
@@ -929,19 +926,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       
-      // Close filters if clicking outside
-      if (
-        filterRef.current && 
-        !filterRef.current.contains(target) && 
-        showFilters &&
-        !target.closest('[role="dialog"]') &&
-        !target.closest('[role="listbox"]') &&
-        !target.closest('[role="presentation"]') &&
-        !target.closest('.pointer-events-auto')
-      ) {
-        setShowFilters(false);
-      }
-      
       // Close suggestions if clicking outside the suggestions dropdown
       if (
         suggestionsRef.current &&
@@ -956,7 +940,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showFilters, showSuggestions]);
+  }, [showSuggestions]);
 
   // Removed manual scroll locking useEffect in favor of useScrollLock hook above
 
@@ -1061,7 +1045,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   };
 
   // Simple mobile view - only input and button by default
-  if (isMobile && !showFilters) {
+  if (isMobile) {
     return (
       <div className="w-full sticky top-10 md:top-11 lg:top-12 z-40 transition-all duration-300 px-1">
         <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
@@ -1076,24 +1060,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               />
             </div>
             <Button
-              onClick={() => setShowFilters(true)}
-              variant="outline"
-              size="sm"
-              className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl relative hover:bg-background/80 transition-all"
-            >
-              <Filter className="h-3.5 w-3.5" />
-              {getActiveFiltersCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded-full font-bold shadow-md animate-in zoom-in duration-200 ring-2 ring-background">
-                  {getActiveFiltersCount()}
-                </span>
-              )}
-            </Button>
-            <Button
               onClick={handleSearch}
+              variant="default"
               size="sm"
-              className="h-9 px-3 text-xs btn-primary-ios shadow-md rounded-xl"
+              className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl"
             >
-              <Search className="h-3.5 w-3.5" />
+              <Search className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -1112,21 +1084,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           "space-y-1.5 bg-background/40 backdrop-blur-md rounded-2xl shadow-lg border border-border/30",
           isMobile ? "p-1.5" : "p-2 lg:p-3"
         )}>
-          
-          {/* Mobile close button when filters are open */}
-          {isMobile && (
-            <div className="flex justify-between items-center pb-1 border-b border-border/30">
-              <span className="text-xs font-bold text-foreground">Search Filters</span>
-              <Button
-                onClick={() => setShowFilters(false)}
-                variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0 rounded-lg hover:bg-destructive/10"
-              >
-                <X className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            </div>
-          )}
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
@@ -1337,41 +1294,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-            <div className={cn("flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
-              <Button
-                onClick={() => setShowFilters(!showFilters)}
-                variant="outline"
-                aria-label={currentText.filters}
-                className={cn(
-                  "relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all",
-                  isMobile ? "h-8 px-2.5" : "h-9 px-3"
-                )}
-              >
-                <div className={cn("flex items-center", isMobile ? "gap-1.5" : "gap-2")}>
-                  <Filter className={cn(isMobile ? "h-4 w-4" : "h-4 w-4")} />
-                  <span className="text-xs sm:text-sm">Filters</span>
-                  {getActiveFiltersCount() > 0 && (
-                    <span className={cn(
-                      "bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-full",
-                      isMobile ? "text-[10px] px-1.5 py-0.5" : "ml-1 text-xs px-2 py-0.5"
-                    )}>
-                      {getActiveFiltersCount()}
-                    </span>
-                  )}
-                </div>
-              </Button>
-              {getActiveFiltersCount() > 0 && !isMobile && (
-                <Button
-                  onClick={clearAllFilters}
-                  variant="ghost"
-                  size="sm"
-                  className="h-11 px-3 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl"
-                  title="Clear all filters"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
               )}
             </div>
             <Button
@@ -2716,620 +2638,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           ) : null}
 
 
-           {/* Advanced Filters Modal - Slim & Optimized */}
-          {showFilters && (
-            <div ref={filterRef} className="fixed z-[99999] inset-0 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
-              <div className="bg-background w-full max-w-full md:max-w-4xl h-[85dvh] md:h-[80dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border border-border/50 animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300">
-              {/* Header - Compact */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-3 py-2 md:px-4 md:py-3 shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Filter className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-xs md:text-base font-semibold text-foreground">Filters</h3>
-                    <p className="text-[9px] md:text-[10px] text-muted-foreground">Refine search</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    onClick={clearAllFilters}
-                    variant="outline"
-                    size="sm"
-                    className="h-7 px-2 text-[10px] md:h-8 md:px-3 md:text-xs"
-                  >
-                    <X className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1" />
-                    Clear
-                  </Button>
-                  <Button
-                    onClick={() => setShowFilters(false)}
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 p-0 md:h-8 md:w-8"
-                    aria-label="Close filters"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Content with ScrollArea - Compact */}
-              <ScrollArea className="flex-1 overscroll-contain">
-                <div className="p-2.5 md:p-4">
-
-              {/* Filter Categories in Tabs - Compact */}
-              <Tabs defaultValue="propertySpecs" className="w-full">
-                <TabsList className="w-full sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-0.5 rounded-lg mb-2.5 md:mb-3 grid grid-cols-5">
-                  <TabsTrigger value="propertySpecs" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
-                    <Home className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
-                    <span className="hidden sm:inline">Property</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="pricing" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
-                    <DollarSign className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
-                    <span className="hidden sm:inline">Price</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="location" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
-                    <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
-                    <span className="hidden sm:inline">Location</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="facilities" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
-                    <Warehouse className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
-                    <span className="hidden sm:inline">Facilities</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="amenities" className="text-[9px] md:text-xs py-1.5 md:py-2 px-1">
-                    <Building className="h-3 w-3 md:h-3.5 md:w-3.5 mr-0.5 md:mr-1" />
-                    <span className="hidden sm:inline">Amenities</span>
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="propertySpecs" className="space-y-2.5 md:space-y-3 bg-card border border-border rounded-lg shadow-sm p-2.5 md:p-3.5">
-                
-                {/* Property Details - Compact Grid Layout */}
-                <div className="grid grid-cols-2 gap-1 md:gap-1.5">
-                  {/* Year Built */}
-                  <div>
-                    <Label className={cn("text-blue-600 dark:text-blue-400 flex items-center gap-0.5", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>
-                      <Settings className={cn("text-blue-500", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      {currentText.yearBuilt}
-                    </Label>
-                    <div className="flex flex-wrap gap-0.5">
-                      <Button
-                        type="button"
-                        variant={(!filters.yearBuilt || filters.yearBuilt === 'all') ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleFilterChange('yearBuilt', 'all')}
-                        className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                      >
-                        Any
-                      </Button>
-                      {yearOptions.map((option) => (
-                        <Button
-                          key={option.value}
-                          type="button"
-                          variant={filters.yearBuilt === option.value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('yearBuilt', option.value)}
-                          className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Condition */}
-                  <div>
-                    <Label className={cn("text-blue-600 dark:text-blue-400 flex items-center gap-0.5", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>
-                      <Settings className={cn("text-blue-500", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                      {currentText.condition}
-                    </Label>
-                    <div className="flex flex-wrap gap-0.5">
-                      <Button
-                        type="button"
-                        variant={(!filters.condition || filters.condition === 'all') ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleFilterChange('condition', 'all')}
-                        className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                      >
-                        Any
-                      </Button>
-                      {conditionOptions.map((option) => (
-                        <Button
-                          key={option.value}
-                          type="button"
-                          variant={filters.condition === option.value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('condition', option.value)}
-                          className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Furnishing - Compact */}
-                <div>
-                  <Label className={cn("text-blue-600 dark:text-blue-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>Furnishing</Label>
-                  <div className="grid grid-cols-2 gap-0.5">
-                    <Button
-                      type="button"
-                      variant={(!filters.furnishing || filters.furnishing === 'all') ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleFilterChange('furnishing', 'all')}
-                      className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                    >
-                      Any
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={filters.furnishing === 'unfurnished' ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleFilterChange('furnishing', 'unfurnished')}
-                      className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                    >
-                      Unfurnished
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={filters.furnishing === 'semi_furnished' ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleFilterChange('furnishing', 'semi_furnished')}
-                      className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                    >
-                      Semi
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={filters.furnishing === 'fully_furnished' ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleFilterChange('furnishing', 'fully_furnished')}
-                      className={cn("border-blue-200 dark:border-blue-800", isMobile ? "h-5 px-1 text-[7px]" : "h-5 px-1.5 text-[8px]")}
-                    >
-                      Fully
-                    </Button>
-                  </div>
-                </div>
-                </TabsContent>
-
-                <TabsContent value="location" className={cn("bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
-                  {/* Reserve min-height to prevent layout shifts */}
-                  <div className={cn(isMobile ? "space-y-2 min-h-[280px]" : "space-y-3 min-h-[320px]")}>
-                    <Label className={cn("font-semibold text-foreground flex items-center gap-1.5", isMobile ? "text-xs" : "text-sm")}>
-                      <MapPin className={cn("text-primary", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                      Location Selection
-                    </Label>
-                    
-                    {/* State/Province Selection */}
-                    <div className="space-y-2">
-                      <Label className={cn("text-muted-foreground font-semibold flex items-center gap-2", isMobile ? "text-xs" : "text-sm")}>
-                        <div className="w-1 h-4 bg-primary rounded-full" />
-                        {currentText.selectProvince}
-                      </Label>
-                      <div className="relative">
-                        <select
-                          value={filters.state || "all"}
-                          onChange={(e) => handleStateChange(e.target.value)}
-                          className={cn(
-                            "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 pr-10 text-foreground font-medium",
-                            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
-                            "hover:border-primary/50 hover:shadow-md cursor-pointer",
-                            "appearance-none text-base leading-normal",
-                            isMobile ? "min-h-[44px]" : "h-auto"
-                          )}
-                        >
-                          <option value="all">{currentText.any}</option>
-                          {provinces.map((province) => (
-                            <option key={province.code} value={province.code}>
-                              {province.name}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                          <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* City Selection */}
-                    <div className="space-y-2">
-                      <Label className={cn("text-muted-foreground font-semibold flex items-center gap-2", isMobile ? "text-xs" : "text-sm")}>
-                        <div className="w-1 h-4 bg-primary rounded-full" />
-                        {currentText.selectCity}
-                      </Label>
-                      <div className="relative">
-                        <select
-                          value={filters.city || "all"}
-                          onChange={(e) => handleCityChange(e.target.value)}
-                          disabled={!filters.state || filters.state === 'all'}
-                          className={cn(
-                            "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 pr-10 text-foreground font-medium",
-                            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
-                            "hover:border-primary/50 hover:shadow-md cursor-pointer",
-                            "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
-                            "appearance-none text-base leading-normal",
-                            isMobile ? "min-h-[44px]" : "h-auto"
-                          )}
-                        >
-                          <option value="all">{currentText.any}</option>
-                          {cities.map((city) => (
-                            <option key={city.code} value={city.code}>
-                              {city.type} {city.name}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                          <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Area Selection */}
-                    <div className="space-y-2">
-                      <Label className={cn("text-muted-foreground font-semibold flex items-center gap-2", isMobile ? "text-xs" : "text-sm")}>
-                        <div className="w-1 h-4 bg-primary rounded-full" />
-                        {currentText.selectArea}
-                      </Label>
-                      <div className="relative">
-                        <select
-                          value={filters.area || "all"}
-                          onChange={(e) => handleAreaChange(e.target.value)}
-                          disabled={!filters.city || filters.city === 'all'}
-                          className={cn(
-                            "w-full bg-gradient-to-br from-background to-background/50 border-2 border-border/50 rounded-xl px-4 py-3 pr-10 text-foreground font-medium",
-                            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300",
-                            "hover:border-primary/50 hover:shadow-md cursor-pointer",
-                            "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border/50 disabled:hover:shadow-none",
-                            "appearance-none text-base leading-normal",
-                            isMobile ? "min-h-[44px]" : "h-auto"
-                          )}
-                        >
-                          <option value="all">{currentText.any}</option>
-                          {areas.map((area) => (
-                            <option key={area.code} value={area.code}>
-                              {area.name}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                          <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Nearby Search */}
-                    {useNearbyLocation && userLocation && (
-                      <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
-                        <Label className="text-sm font-medium text-primary mb-3 flex items-center gap-2">
-                          <MapPin className="h-4 w-4" fill="currentColor" />
-                          Nearby Search Active
-                        </Label>
-                        <div className="space-y-2">
-                          <p className="text-xs text-muted-foreground">
-                            Searching within {nearbyRadius}km radius
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <Label className="text-xs">{currentText.radius}:</Label>
-                            <Slider
-                              value={[nearbyRadius]}
-                              onValueChange={(value) => setNearbyRadius(value[0])}
-                              max={50}
-                              min={1}
-                              step={1}
-                              className="flex-1"
-                            />
-                            <span className="text-xs font-semibold min-w-[40px]">{nearbyRadius}km</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="pricing" className={cn("bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
-
-                {/* Price Range Slider */}
-                <div>
-                  <Label className={cn("font-medium text-green-700 dark:text-green-300 flex items-center gap-1.5", isMobile ? "text-[10px]" : "text-xs")}>
-                    <DollarSign className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                    {currentText.priceRange}: Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}
-                  </Label>
-                   <div className={cn("bg-white/50 dark:bg-green-950/20 rounded-lg", isMobile ? "mt-1.5 p-2" : "mt-2 p-2.5")}>
-                    <Slider
-                      value={priceRange}
-                      onValueChange={(value) => {
-                        setPriceRange(value);
-                        // Store actual IDR values in state
-                        const minPriceIDR = value[0] * currentFilters.priceStep * 1000000;
-                        const maxPriceIDR = value[1] * currentFilters.priceStep * 1000000;
-                        setFilters(prev => ({ 
-                          ...prev, 
-                          minPrice: minPriceIDR,
-                          maxPrice: maxPriceIDR
-                        }));
-                      }}
-                      max={currentFilters.maxPrice}
-                      min={0}
-                      step={currentFilters.priceStep}
-                      className="w-full"
-                    />
-                    <div className={cn("flex justify-between text-green-600 dark:text-green-400 mt-1.5", isMobile ? "text-[9px]" : "text-[10px]")}>
-                      <span>Rp 0</span>
-                      <span>Rp {currentFilters.maxPrice >= 1000 ? `${currentFilters.maxPrice/1000}M+` : `${currentFilters.maxPrice}jt+`}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Area Range Slider */}
-                <div>
-                  <Label className={cn("font-medium text-green-700 dark:text-green-300 flex items-center gap-1.5", isMobile ? "text-[10px]" : "text-xs")}>
-                    <Square className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                    {currentText.area}: {areaRange[0]} - {areaRange[1]} m²
-                  </Label>
-                   <div className={cn("bg-white/50 dark:bg-green-950/20 rounded-lg", isMobile ? "mt-1.5 p-2" : "mt-2 p-2.5")}>
-                    <Slider
-                      value={areaRange}
-                      onValueChange={(value) => {
-                        setAreaRange(value);
-                        setFilters(prev => ({
-                          ...prev,
-                          minArea: String(value[0]),
-                          maxArea: String(value[1])
-                        }));
-                      }}
-                      max={1000}
-                      min={0}
-                      step={10}
-                      className="w-full"
-                    />
-                    <div className={cn("flex justify-between text-green-600 dark:text-green-400 mt-1.5", isMobile ? "text-[9px]" : "text-[10px]")}>
-                      <span>0 m²</span>
-                      <span>1000+ m²</span>
-                    </div>
-                  </div>
-                </div>
-                </TabsContent>
-
-                <TabsContent value="facilities" className={cn("bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
-                <Label className={cn("font-semibold text-foreground block", isMobile ? "text-xs mb-2" : "text-sm mb-2.5")}>
-                  Property Facilities
-                  {activeTab === 'rent' && <span className="ml-2 text-blue-600 dark:text-blue-400">(Rental)</span>}
-                  {(activeTab === 'sale' || activeTab === 'new_project') && <span className="ml-2 text-blue-600 dark:text-blue-400">(Buy)</span>}
-                </Label>
-                
-                <div className={cn("grid gap-2", isMobile ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3")}>
-                  {currentFilters.facilities?.map((facility: any) => (
-                    <div key={facility.id} className={cn("flex items-center bg-white/50 dark:bg-blue-950/20 rounded-lg hover:bg-white/80 dark:hover:bg-blue-950/30 transition-colors", isMobile ? "space-x-1.5 p-2" : "space-x-2 p-2.5")}>
-                      <Checkbox
-                        id={facility.id}
-                        checked={filters.facilities.includes(facility.id)}
-                        onCheckedChange={() => handleFacilityToggle(facility.id)}
-                        className={cn("border-blue-300 dark:border-blue-700 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500", isMobile ? "h-3.5 w-3.5" : "h-4 w-4")}
-                      />
-                      <Label
-                        htmlFor={facility.id}
-                        className={cn("font-normal cursor-pointer flex items-center gap-1 text-blue-700 dark:text-blue-300", isMobile ? "text-[10px]" : "text-xs")}
-                      >
-                        <span className={cn(isMobile ? "text-xs" : "text-sm")}>{facility.icon}</span>
-                        <span>{facility.label}</span>
-                      </Label>
-                     </div>
-                  ))}
-                 </div>
-                </TabsContent>
-
-                <TabsContent value="amenities" className={cn("bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg shadow-sm", isMobile ? "space-y-2 p-3" : "space-y-3 p-4")}>
-                <Label className={cn("font-semibold text-foreground block", isMobile ? "text-xs mb-2" : "text-sm mb-2.5")}>Select Amenities & Features</Label>
-                
-                <div className={cn("grid gap-2", isMobile ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3")}>
-                  {currentFilters.features.map((feature) => (
-                    <div key={feature.id} className={cn(
-                      "flex items-center rounded-lg transition-all cursor-pointer border-2",
-                      isMobile ? "space-x-1.5 p-2" : "space-x-2 p-2.5",
-                      filters.features.includes(feature.id)
-                        ? "bg-purple-500/30 dark:bg-purple-500/40 border-purple-600 shadow-lg"
-                        : "bg-white/50 dark:bg-purple-950/20 border-transparent hover:bg-white/80 dark:hover:bg-purple-950/30"
-                    )}>
-                      <Checkbox
-                        id={feature.id}
-                        checked={filters.features.includes(feature.id)}
-                        onCheckedChange={() => handleFeatureToggle(feature.id)}
-                        className={cn(
-                          "border-2 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600",
-                          isMobile ? "h-4.5 w-4.5" : "h-5 w-5"
-                        )}
-                      />
-                      <Label
-                        htmlFor={feature.id}
-                        className={cn(
-                          "cursor-pointer flex items-center gap-1",
-                          isMobile ? "text-[10px]" : "text-xs",
-                          filters.features.includes(feature.id)
-                            ? "font-semibold text-purple-900 dark:text-purple-100"
-                            : "font-normal text-purple-700 dark:text-purple-300"
-                        )}
-                      >
-                        <span className={cn(isMobile ? "text-xs" : "text-sm")}>{feature.icon}</span>
-                        <span>{feature.label}</span>
-                      </Label>
-                     </div>
-                  ))}
-                 </div>
-                </TabsContent>
-              </Tabs>
-
-              {/* Rental Details Category - Only show for rent tab */}
-              {activeTab === 'rent' && (
-                <div className={cn("bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg mt-2", isMobile ? "p-2 space-y-2" : "p-2.5 space-y-2.5")}>
-                    
-                    {/* Date Selection */}
-                    <div>
-                      <Label className={cn("font-medium text-orange-700 dark:text-orange-300 block", isMobile ? "text-[9px] mb-1" : "text-[10px] mb-1.5")}>Rental Dates</Label>
-                      <div className={cn("grid grid-cols-2", isMobile ? "gap-1" : "gap-2")}>
-                        <div>
-                          <Label className={cn("text-orange-600 dark:text-orange-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>{currentText.checkIn}</Label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn("w-full justify-start text-left font-normal border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30", isMobile ? "h-6 text-[8px]" : "h-7 text-[9px]")}
-                              >
-                                <CalendarIcon className={cn("mr-0.5 text-orange-500", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                                {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" 
-                                align="start"
-                                onCloseAutoFocus={(e) => e.preventDefault()}
-                              >
-                              <Calendar
-                                mode="single"
-                                selected={filters.checkInDate}
-                                onSelect={(date) => handleFilterChange('checkInDate', date)}
-                                disabled={(date) => date < new Date()}
-                                initialFocus
-                                className="pointer-events-auto"
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-
-                        <div>
-                          <Label className={cn("text-orange-600 dark:text-orange-400 block", isMobile ? "text-[8px] mb-0.5" : "text-[9px] mb-1")}>{currentText.checkOut}</Label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn("w-full justify-start text-left font-normal border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30", isMobile ? "h-6 text-[8px]" : "h-7 text-[9px]")}
-                              >
-                                <CalendarIcon className={cn("mr-0.5 text-orange-500", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                                {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800 z-[210]" 
-                                align="start"
-                                onCloseAutoFocus={(e) => e.preventDefault()}
-                              >
-                              <Calendar
-                                mode="single"
-                                selected={filters.checkOutDate}
-                                onSelect={(date) => handleFilterChange('checkOutDate', date)}
-                                disabled={(date) => date < new Date() || (filters.checkInDate && date <= filters.checkInDate)}
-                                initialFocus
-                                className="pointer-events-auto"
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                      </div>
-
-                      {/* Days Counter */}
-                      {filters.checkInDate && filters.checkOutDate && (
-                        <div className={cn("text-center bg-orange-100 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800", isMobile ? "mt-1 p-1" : "mt-1.5 p-1.5")}>
-                          <div className={cn("font-semibold text-orange-700 dark:text-orange-300", isMobile ? "text-[9px]" : "text-[10px]")}>
-                            {calculateDays()} {currentText.days}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Rental Duration */}
-                    <div>
-                      <Label className={cn("font-medium text-orange-700 dark:text-orange-300 block", isMobile ? "text-[9px] mb-1" : "text-[10px] mb-1.5")}>Rental Duration</Label>
-                      <div className={cn("flex items-center", isMobile ? "gap-1" : "gap-1.5")}>
-                        <Clock className={cn("text-orange-500", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                        <Select value={filters.rentalDuration} onValueChange={(value) => handleFilterChange('rentalDuration', value)}>
-                          <SelectTrigger className={cn("border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30", isMobile ? "h-6 text-[8px]" : "h-7 text-[9px]")}>
-                            <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
-                          </SelectTrigger>
-                          <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
-                            <SelectItem value="all" className={cn(isMobile ? "text-[8px]" : "text-[9px]")}>{currentText.any}</SelectItem>
-                            {rentalDurationOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value} className={cn(isMobile ? "text-[8px]" : "text-[9px]")}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* Trip Purpose */}
-                    <div>
-                      <Label className={cn("font-medium text-orange-700 dark:text-orange-300 block", isMobile ? "text-[9px] mb-1" : "text-[10px] mb-1.5")}>Trip Purpose</Label>
-                      <div className={cn("flex items-center", isMobile ? "gap-1 mb-1" : "gap-1.5 mb-1.5")}>
-                        <Users className={cn("text-orange-500", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
-                        <span className={cn("text-orange-600 dark:text-orange-400", isMobile ? "text-[8px]" : "text-[9px]")}>{currentText.tripPurpose}</span>
-                      </div>
-                      <div className={cn("grid grid-cols-2", isMobile ? "gap-1" : "gap-1.5")}>
-                        {tripPurposeOptions.map((purpose) => (
-                          <Button
-                            key={purpose.value}
-                            variant={filters.tripPurpose === purpose.value ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => handleFilterChange('tripPurpose', purpose.value)}
-                            className={cn("justify-start border-orange-200 dark:border-orange-800", isMobile ? "h-5 text-[8px] gap-0.5" : "h-6 text-[9px] gap-1")}
-                          >
-                            <span className={cn(isMobile ? "text-[9px]" : "text-[10px]")}>{purpose.icon}</span>
-                            {purpose.label}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                </div>
-              )}
-
-              {/* Sort By Category */}
-              <div className={cn("bg-gradient-to-r from-gray-50/50 to-slate-50/50 dark:from-gray-950/20 dark:to-slate-950/20 border border-gray-200/50 dark:border-gray-800/50 rounded-lg", isMobile ? "p-2.5" : "p-3")}>
-                <div className={cn("flex items-center gap-1.5", isMobile ? "mb-2" : "mb-2.5")}>
-                  <div className={cn("rounded-full bg-gradient-to-r from-gray-400 to-slate-400 flex items-center justify-center", isMobile ? "w-5 h-5" : "w-6 h-6")}>
-                    <Settings className={cn("text-white", isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
-                  </div>
-                  <h4 className={cn("font-medium text-gray-700 dark:text-gray-300", isMobile ? "text-xs" : "text-sm")}>{currentText.sortBy}</h4>
-                </div>
-                
-                <Select value={filters.sortBy} onValueChange={(value) => handleFilterChange('sortBy', value)}>
-                  <SelectTrigger className={cn("border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/30", isMobile ? "h-8 text-[10px]" : "h-9 text-xs")}>
-                    <SelectValue placeholder={currentText.sortBy} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border rounded-lg shadow-2xl max-h-[50dvh] overflow-y-auto z-[110000]">
-                    {sortOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value} className={cn(isMobile ? "text-[10px]" : "text-xs")}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              </div>
-              </ScrollArea>
-            
-            {/* Footer with Apply Button - Compact */}
-            <div className="border-t border-border bg-muted/30 px-3 py-2 md:px-4 md:py-2.5 shrink-0">
-              <Button 
-                onClick={() => {
-                  handleSearch();
-                  setShowFilters(false);
-                }}
-                className="w-full h-9 md:h-10 text-xs md:text-sm font-medium"
-                size="lg"
-              >
-                <Search className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
-                Apply Filters
-              </Button>
-            </div>
-          </div>
-        </div>
-        )}
         </div>
       </div>
     </div>
