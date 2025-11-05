@@ -1130,15 +1130,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
         <div className={cn(
-          "space-y-1.5 bg-background/40 backdrop-blur-md rounded-2xl shadow-lg border border-border/30",
-          isMobile ? "p-1.5" : "p-2 lg:p-3"
+          "space-y-1.5 backdrop-blur-md rounded-2xl shadow-lg border",
+          isMobile 
+            ? "p-1.5 bg-card/95 border-border/40" 
+            : "p-2 lg:p-3 bg-background/60 border-border/30"
         )}>
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
             <div className={cn(
-              "inline-flex bg-background/60 rounded-lg border-0 shadow-sm relative",
-              isMobile ? "p-0.5" : "p-0.5"
+              "inline-flex rounded-lg border-0 shadow-sm relative",
+              isMobile 
+                ? "p-0.5 bg-muted/80" 
+                : "p-0.5 bg-background/60"
             )}>
               {/* Sliding background indicator */}
               <div 
@@ -1221,8 +1225,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 className={cn(
-                  "bg-background/60 border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium",
-                  isMobile ? "pl-8 pr-16 h-8 text-xs" : "pl-10 pr-20 h-9 text-sm"
+                  "border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium",
+                  isMobile 
+                    ? "pl-8 pr-16 h-8 text-xs bg-background border border-border" 
+                    : "pl-10 pr-20 h-9 text-sm bg-background/60"
                 )}
               />
               
@@ -1239,7 +1245,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   className={cn(
                     "p-0 rounded-md",
                     isMobile ? "h-6 w-6" : "h-7 w-7",
-                    !useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                    !useNearbyLocation 
+                      ? 'bg-primary/10 text-primary hover:bg-primary/20' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                   )}
                   title={currentText.location}
                 >
@@ -1253,7 +1261,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   className={cn(
                     "p-0 rounded-md relative",
                     isMobile ? "h-6 w-6" : "h-7 w-7",
-                    useNearbyLocation ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                    useNearbyLocation 
+                      ? 'bg-primary/10 text-primary hover:bg-primary/20' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                   )}
                   disabled={isGettingLocation}
                   title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
@@ -1356,8 +1366,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               variant="outline"
               aria-label="Advanced Filters"
               className={cn(
-                "relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all",
-                isMobile ? "h-8 px-2.5" : "h-9 px-3"
+                "relative rounded-xl transition-all",
+                isMobile 
+                  ? "h-8 px-2.5 bg-card border-border hover:bg-accent" 
+                  : "h-9 px-3 bg-background border-border hover:bg-muted"
               )}
             >
               <Filter className={cn(isMobile ? "h-4 w-4" : "h-4 w-4")} />
@@ -1367,7 +1379,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               onClick={handleSearch}
               aria-label={currentText.search}
               className={cn(
-                "bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center",
+                "bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center",
                 isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5"
               )}
             >
@@ -1435,17 +1447,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.propertyType && filters.propertyType !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    "rounded-lg transition-all shadow-sm",
+                    isMobile 
+                      ? "h-7 px-2 text-[10px] bg-card border-border" 
+                      : "h-8 px-3 text-xs bg-background border-border",
+                    (filters.propertyType && filters.propertyType !== 'all') && "border-primary bg-primary/10"
                   )}
                 >
-                  <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-primary")} />
                   {(filters.propertyType && filters.propertyType !== 'all') 
                     ? currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label || currentText.propertyType
                     : currentText.propertyType}
                   {(filters.propertyType && filters.propertyType !== 'all') && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />
                   )}
                 </Button>
               </PopoverTrigger>
@@ -1493,9 +1507,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </Popover>
 
             {/* Bedrooms +/- */}
-            <div className="inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+            <div className={cn(
+              "inline-flex items-center rounded-lg overflow-hidden shadow-sm border",
+              isMobile ? "bg-card border-border" : "bg-background border-border"
+            )}>
               <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
-                <Bed className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-blue-500")} />
+                <Bed className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-primary")} />
                 <Button
                   type="button"
                   variant="ghost"
@@ -1532,9 +1549,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Bathrooms +/- */}
-            <div className="inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+            <div className={cn(
+              "inline-flex items-center rounded-lg overflow-hidden shadow-sm border",
+              isMobile ? "bg-card border-border" : "bg-background border-border"
+            )}>
               <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
-                <Bath className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-blue-500")} />
+                <Bath className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-primary")} />
                 <Button
                   type="button"
                   variant="ghost"
@@ -1577,15 +1597,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.minPrice > 0 || filters.maxPrice > 0) && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    "rounded-lg transition-all shadow-sm",
+                    isMobile 
+                      ? "h-7 px-2 text-[10px] bg-card border-border" 
+                      : "h-8 px-3 text-xs bg-background border-border",
+                    (filters.minPrice > 0 || filters.maxPrice > 0) && "border-primary bg-primary/10"
                   )}
                 >
-                  <DollarSign className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
+                  <DollarSign className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-primary")} />
                   {currentText.priceRange}
                   {(filters.minPrice > 0 || filters.maxPrice > 0) && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />
                   )}
                 </Button>
               </PopoverTrigger>
@@ -2710,15 +2732,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
       {/* Advanced Filters Modal */}
       {showAdvancedFilters && (
-        <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
           <div 
             ref={advancedFiltersRef}
-            className="bg-background w-full max-w-full md:max-w-2xl h-[85dvh] md:h-[75dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border border-border/50 animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300"
+            className={cn(
+              "w-full max-w-full md:max-w-2xl h-[85dvh] md:h-[75dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300",
+              "bg-card md:bg-background border-border"
+            )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-4 py-3 shrink-0">
+            <div className={cn(
+              "flex items-center justify-between border-b border-border px-4 py-3 shrink-0",
+              "bg-gradient-to-r from-primary/10 to-accent/5"
+            )}>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Filter className="h-4 w-4 text-primary" />
                 </div>
                 <div>
@@ -2730,18 +2758,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 onClick={() => setShowAdvancedFilters(false)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto min-h-0 bg-background">
-              <div className="p-4 space-y-4 min-h-full w-full">
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <div className="p-4 space-y-4 min-h-full w-full bg-background/40">
                 {/* Price Range */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Price Range</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <DollarSign className="h-3 w-3 text-primary" />
+                    Price Range
+                  </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map((range) => (
                       <Button
@@ -2749,7 +2780,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.priceRange === range ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.priceRange === range && "shadow-md"
+                        )}
                       >
                         {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
                       </Button>
@@ -2759,7 +2793,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Bedrooms */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Bedrooms</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Bed className="h-3 w-3 text-primary" />
+                    Bedrooms
+                  </Label>
                   <div className="grid grid-cols-5 gap-2">
                     {['1', '2', '3', '4', '5+'].map((bed) => (
                       <Button
@@ -2767,7 +2804,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.bedrooms === bed ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.bedrooms === bed && "shadow-md"
+                        )}
                       >
                         {bed}
                       </Button>
@@ -2777,7 +2817,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Bathrooms */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Bathrooms</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Bath className="h-3 w-3 text-primary" />
+                    Bathrooms
+                  </Label>
                   <div className="grid grid-cols-5 gap-2">
                     {['1', '2', '3', '4', '5+'].map((bath) => (
                       <Button
@@ -2785,7 +2828,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.bathrooms === bath ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.bathrooms === bath && "shadow-md"
+                        )}
                       >
                         {bath}
                       </Button>
@@ -2795,7 +2841,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Property Condition */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Property Condition</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Star className="h-3 w-3 text-primary" />
+                    Property Condition
+                  </Label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { value: 'new', label: 'New' },
@@ -2808,7 +2857,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.condition === condition.value ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.condition === condition.value && "shadow-md"
+                        )}
                       >
                         {condition.label}
                       </Button>
@@ -2818,7 +2870,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Furnishing Status */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Furnishing Status</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Home className="h-3 w-3 text-primary" />
+                    Furnishing Status
+                  </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
                       { value: 'unfurnished', label: 'Unfurnished' },
@@ -2830,7 +2885,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.furnishing === furnishing.value ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('furnishing', filters.furnishing === furnishing.value ? '' : furnishing.value)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.furnishing === furnishing.value && "shadow-md"
+                        )}
                       >
                         {furnishing.label}
                       </Button>
@@ -2840,7 +2898,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Parking Spaces */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Parking Spaces</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Car className="h-3 w-3 text-primary" />
+                    Parking Spaces
+                  </Label>
                   <div className="grid grid-cols-4 gap-2">
                     {['1', '2', '3', '4+'].map((parking) => (
                       <Button
@@ -2848,7 +2909,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.parking === parking ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('parking', filters.parking === parking ? '' : parking)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.parking === parking && "shadow-md"
+                        )}
                       >
                         {parking}
                       </Button>
@@ -2858,7 +2922,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Year Built */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Year Built</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <CalendarIcon className="h-3 w-3 text-primary" />
+                    Year Built
+                  </Label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { value: 'before_2000', label: 'Before 2000' },
@@ -2871,7 +2938,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                         variant={filters.yearBuilt === year.value ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('yearBuilt', filters.yearBuilt === year.value ? '' : year.value)}
-                        className="h-8 text-[10px]"
+                        className={cn(
+                          "h-9 text-[11px] font-medium touch-target",
+                          filters.yearBuilt === year.value && "shadow-md"
+                        )}
                       >
                         {year.label}
                       </Button>
@@ -2881,7 +2951,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Amenities */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-foreground">Amenities</Label>
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Building2 className="h-3 w-3 text-primary" />
+                    Amenities
+                  </Label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { id: 'parking', label: 'Parking', icon: Car },
@@ -2903,7 +2976,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                               : [...current, amenity.id];
                             handleFilterChange('features', updated);
                           }}
-                          className="h-9 text-[10px] justify-start"
+                          className={cn(
+                            "h-9 text-[11px] justify-start font-medium touch-target",
+                            isSelected && "shadow-md"
+                          )}
                         >
                           <Icon className="h-3 w-3 mr-1.5" />
                           {amenity.label}
@@ -2918,9 +2994,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   variant="outline"
                   size="sm"
                   onClick={clearAllFilters}
-                  className="w-full h-9 text-xs text-destructive hover:text-destructive"
+                  className="w-full h-10 text-sm font-medium text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 touch-target"
                 >
-                  <X className="h-3.5 w-3.5 mr-1.5" />
+                  <X className="h-4 w-4 mr-2" />
                   Clear All Filters
                 </Button>
               </div>
