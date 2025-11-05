@@ -2793,6 +2793,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
 
+                {/* Property Condition */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Property Condition</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { value: 'new', label: 'New' },
+                      { value: 'like_new', label: 'Like New' },
+                      { value: 'good', label: 'Good' },
+                      { value: 'fair', label: 'Fair' },
+                    ].map((condition) => (
+                      <Button
+                        key={condition.value}
+                        variant={filters.condition === condition.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)}
+                        className="h-8 text-[10px]"
+                      >
+                        {condition.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Amenities */}
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Amenities</Label>
