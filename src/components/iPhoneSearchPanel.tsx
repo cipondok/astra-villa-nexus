@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2 } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2, LandPlot } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -1044,11 +1044,43 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
+  // Quick property type filters (top 4 types)
+  const quickPropertyTypes = [
+    { value: 'house', label: currentText.house, icon: Home },
+    { value: 'apartment', label: currentText.apartment, icon: Building2 },
+    { value: 'villa', label: currentText.villa, icon: Building },
+    { value: 'land', label: currentText.land, icon: LandPlot },
+  ];
+
   // Simple mobile view - only input and button by default
   if (isMobile) {
     return (
       <div className="w-full sticky top-10 md:top-11 lg:top-12 z-40 transition-all duration-300 px-1">
         <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
+          {/* Property Type Quick Filters */}
+          <div className="flex items-center gap-1 p-2 pb-1.5 border-b border-border/20">
+            {quickPropertyTypes.map((type) => {
+              const Icon = type.icon;
+              const isActive = filters.propertyType === type.value;
+              return (
+                <Button
+                  key={type.value}
+                  onClick={() => handleFilterChange('propertyType', isActive ? 'all' : type.value)}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "flex-1 h-8 px-2 text-[10px] rounded-lg transition-all",
+                    isActive && "shadow-md ring-2 ring-primary/20"
+                  )}
+                >
+                  <Icon className="h-3 w-3 mr-1" />
+                  <span className="truncate">{type.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+          
+          {/* Search Bar */}
           <div className="flex items-center gap-1.5 p-2">
             <div className="flex-1 relative">
               <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
@@ -1084,6 +1116,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           "space-y-1.5 bg-background/40 backdrop-blur-md rounded-2xl shadow-lg border border-border/30",
           isMobile ? "p-1.5" : "p-2 lg:p-3"
         )}>
+          
+          {/* Property Type Quick Filters */}
+          <div className="flex items-center justify-center gap-1.5 md:gap-2">
+            {quickPropertyTypes.map((type) => {
+              const Icon = type.icon;
+              const isActive = filters.propertyType === type.value;
+              return (
+                <Button
+                  key={type.value}
+                  onClick={() => handleFilterChange('propertyType', isActive ? 'all' : type.value)}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "flex-1 h-9 md:h-10 px-3 md:px-4 text-xs md:text-sm rounded-xl transition-all",
+                    isActive && "shadow-md ring-2 ring-primary/20"
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                  <span className="truncate">{type.label}</span>
+                </Button>
+              );
+            })}
+          </div>
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
