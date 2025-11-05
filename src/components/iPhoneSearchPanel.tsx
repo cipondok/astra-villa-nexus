@@ -2737,7 +2737,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Content */}
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               <div className="p-4 space-y-4">
                 {/* Price Range */}
                 <div className="space-y-2">
@@ -2924,7 +2924,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   Clear All Filters
                 </Button>
               </div>
-            </ScrollArea>
+            </div>
 
             {/* Footer */}
             <div className="border-t border-border bg-muted/30 px-4 py-3 shrink-0">
