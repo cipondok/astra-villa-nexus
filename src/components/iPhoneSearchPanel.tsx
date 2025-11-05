@@ -86,7 +86,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     "Apartment Jakarta Selatan",
     "Villa Bali",
     "Rumah Bandung",
-    "Office Space Sudirman"
+    "Office Space Sudirman",
+    "House Menteng",
+    "Apartment Kemang",
+    "Villa Seminyak",
+    "Land Ubud"
   ];
   
   const smartSuggestions = [
@@ -95,6 +99,30 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     "🏖️ Beach Villas",
     "💼 Commercial Properties"
   ];
+
+  // Filter suggestions based on search query
+  const getFilteredSuggestions = () => {
+    if (!searchQuery || searchQuery.trim().length === 0) {
+      return { smart: smartSuggestions, trending: trendingSearches };
+    }
+    
+    const query = searchQuery.toLowerCase().trim();
+    const filteredTrending = trendingSearches.filter(item => 
+      item.toLowerCase().includes(query)
+    );
+    const filteredSmart = smartSuggestions.filter(item => 
+      item.toLowerCase().includes(query)
+    );
+    
+    return { 
+      smart: filteredSmart.slice(0, 3), 
+      trending: filteredTrending.slice(0, 4) 
+    };
+  };
+  
+  const filteredSuggestions = getFilteredSuggestions();
+  const hasSuggestions = filteredSuggestions.smart.length > 0 || filteredSuggestions.trending.length > 0;
+  
   
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
@@ -1231,69 +1259,75 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && searchQuery.length === 0 && (
+              {showSuggestions && hasSuggestions && (
                 <div 
                   ref={suggestionsRef}
-                  className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[100] max-h-64 overflow-y-auto"
+                  className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg z-[100] max-h-56 overflow-y-auto"
                 >
-                  <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
-                        <Sparkles className="h-3 w-3 text-yellow-500" />
-                        Smart Selection
+                  {filteredSuggestions.smart.length > 0 && (
+                    <div className="p-2 border-b border-border/50">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
+                          <Sparkles className="h-2.5 w-2.5 text-yellow-500" />
+                          Smart Selection
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowSuggestions(false);
+                          }}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-2.5 w-2.5" />
+                        </button>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowSuggestions(false);
-                        }}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
+                      <div className="space-y-0.5">
+                        {filteredSuggestions.smart.map((suggestion, i) => {
+                          const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
+                          return (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSearchQuery(cleanText);
+                                setShowSuggestions(false);
+                                handleSearch();
+                              }}
+                              className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors"
+                            >
+                              {suggestion}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      {smartSuggestions.map((suggestion, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
-                            setSearchQuery(cleanText);
-                            setShowSuggestions(false);
-                            handleSearch();
-                          }}
-                          className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
+                  )}
+                  {filteredSuggestions.trending.length > 0 && (
+                    <div className="p-2">
+                      <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
+                        <TrendingUp className="h-2.5 w-2.5 text-green-500" />
+                        Trending
+                      </div>
+                      <div className="space-y-0.5">
+                        {filteredSuggestions.trending.map((trend, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSearchQuery(trend);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }}
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors"
+                          >
+                            {trend}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-3">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                      Trending
-                    </div>
-                    <div className="space-y-1">
-                      {trendingSearches.map((trend, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSearchQuery(trend);
-                            setShowSuggestions(false);
-                            handleSearch();
-                          }}
-                          className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                        >
-                          {trend}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
