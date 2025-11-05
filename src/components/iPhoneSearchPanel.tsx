@@ -2856,6 +2856,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
 
+                {/* Year Built */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Year Built</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { value: 'before_2000', label: 'Before 2000' },
+                      { value: '2000-2010', label: '2000-2010' },
+                      { value: '2010-2020', label: '2010-2020' },
+                      { value: 'after_2020', label: 'After 2020' },
+                    ].map((year) => (
+                      <Button
+                        key={year.value}
+                        variant={filters.yearBuilt === year.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('yearBuilt', filters.yearBuilt === year.value ? '' : year.value)}
+                        className="h-8 text-[10px]"
+                      >
+                        {year.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Amenities */}
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Amenities</Label>
