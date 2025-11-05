@@ -234,19 +234,19 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                   <ChevronDown className="h-3.5 md:h-4 w-3.5 md:w-4 ml-1 md:ml-2" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80 macos-select border-0 rounded-2xl" align="end">
-                <div className="space-y-3 md:space-y-4">
+              <PopoverContent className="w-72 sm:w-80 p-4 bg-background border border-border/50 shadow-lg rounded-2xl z-50" align="end" sideOffset={8}>
+                <div className="space-y-3">
                   {/* Buy Facilities */}
                   <div>
-                    <label className="text-xs md:text-sm font-medium text-foreground mb-2 block">{currentText.buyFacilities}</label>
-                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                    <label className="text-xs font-semibold text-foreground mb-1.5 block">{currentText.buyFacilities}</label>
+                    <div className="flex flex-wrap gap-1.5">
                       {buyFacilityOptions.map((facility) => (
                         <Button
                           key={facility.key}
                           variant={facilities.includes(facility.key) ? "default" : "outline"}
                           size="sm"
                           onClick={() => toggleFacility(facility.key)}
-                          className="compact-filter btn-secondary-ios h-8 md:h-9 text-xs rounded-lg"
+                          className="h-8 px-2.5 text-xs rounded-lg"
                         >
                           <facility.icon className="h-3 w-3 mr-1" />
                           {facility.label}
@@ -257,15 +257,15 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
 
                   {/* Rent Facilities */}
                   <div>
-                    <label className="text-xs md:text-sm font-medium text-foreground mb-2 block">{currentText.rentFacilities}</label>
-                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                    <label className="text-xs font-semibold text-foreground mb-1.5 block">{currentText.rentFacilities}</label>
+                    <div className="flex flex-wrap gap-1.5">
                       {rentFacilityOptions.map((facility) => (
                         <Button
                           key={facility.key}
                           variant={facilities.includes(facility.key) ? "default" : "outline"}
                           size="sm"
                           onClick={() => toggleFacility(facility.key)}
-                          className="compact-filter btn-secondary-ios h-8 md:h-9 text-xs rounded-lg"
+                          className="h-8 px-2.5 text-xs rounded-lg"
                         >
                           <facility.icon className="h-3 w-3 mr-1" />
                           {facility.label}
@@ -289,16 +289,16 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                   <ChevronDown className="h-3.5 md:h-4 w-3.5 md:w-4 ml-1 md:ml-2" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80 macos-select border-0 rounded-2xl" align="end">
-                <div className="space-y-3 md:space-y-4">
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
+              <PopoverContent className="w-72 sm:w-80 p-4 bg-background border border-border/50 shadow-lg rounded-2xl z-50" align="end" sideOffset={8}>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground mb-1 block">{currentText.listingType}</label>
+                      <label className="text-xs font-semibold text-foreground mb-1 block">{currentText.listingType}</label>
                       <Select value={listingType} onValueChange={setListingType}>
-                        <SelectTrigger className="compact-filter macos-select border-0 h-9 md:h-10 text-xs md:text-sm rounded-lg">
+                        <SelectTrigger className="h-9 text-xs rounded-lg">
                           <SelectValue placeholder={currentText.allTypes} />
                         </SelectTrigger>
-                        <SelectContent className="macos-select">
+                        <SelectContent>
                           <SelectItem value="">{currentText.allTypes}</SelectItem>
                           <SelectItem value="sale">{currentText.forSale}</SelectItem>
                           <SelectItem value="rent">{currentText.forRent}</SelectItem>
@@ -308,12 +308,12 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                     </div>
 
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground mb-1 block">{currentText.price}</label>
+                      <label className="text-xs font-semibold text-foreground mb-1 block">{currentText.price}</label>
                       <Select value={priceRange} onValueChange={setPriceRange}>
-                        <SelectTrigger className="compact-filter macos-select border-0 h-9 md:h-10 text-xs md:text-sm rounded-lg">
+                        <SelectTrigger className="h-9 text-xs rounded-lg">
                           <SelectValue placeholder={currentText.anyPrice} />
                         </SelectTrigger>
-                        <SelectContent className="macos-select">
+                        <SelectContent>
                           <SelectItem value="">{currentText.anyPrice}</SelectItem>
                           <SelectItem value="0-1000000000">Under Rp 1B</SelectItem>
                           <SelectItem value="1000000000-5000000000">Rp 1B - 5B</SelectItem>
@@ -323,12 +323,12 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                     </div>
 
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground mb-1 block">{currentText.bedrooms}</label>
+                      <label className="text-xs font-semibold text-foreground mb-1 block">{currentText.bedrooms}</label>
                       <Select value={bedrooms} onValueChange={setBedrooms}>
-                        <SelectTrigger className="compact-filter macos-select border-0 h-9 md:h-10 text-xs md:text-sm rounded-lg">
+                        <SelectTrigger className="h-9 text-xs rounded-lg">
                           <SelectValue placeholder={currentText.anyBedroom} />
                         </SelectTrigger>
-                        <SelectContent className="macos-select">
+                        <SelectContent>
                           <SelectItem value="">{currentText.anyBedroom}</SelectItem>
                           <SelectItem value="1">1</SelectItem>
                           <SelectItem value="2">2</SelectItem>
@@ -339,12 +339,12 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
                     </div>
 
                     <div>
-                      <label className="text-xs md:text-sm font-medium text-foreground mb-1 block">{currentText.bathrooms}</label>
+                      <label className="text-xs font-semibold text-foreground mb-1 block">{currentText.bathrooms}</label>
                       <Select value={bathrooms} onValueChange={setBathrooms}>
-                        <SelectTrigger className="compact-filter macos-select border-0 h-9 md:h-10 text-xs md:text-sm rounded-lg">
+                        <SelectTrigger className="h-9 text-xs rounded-lg">
                           <SelectValue placeholder={currentText.anyBathroom} />
                         </SelectTrigger>
-                        <SelectContent className="macos-select">
+                        <SelectContent>
                           <SelectItem value="">{currentText.anyBathroom}</SelectItem>
                           <SelectItem value="1">1</SelectItem>
                           <SelectItem value="2">2</SelectItem>
@@ -357,15 +357,15 @@ const EnhancedSearchFilters = ({ language, onSearch }: EnhancedSearchFiltersProp
 
                   {/* Amenities */}
                   <div>
-                    <label className="text-xs md:text-sm font-medium text-foreground mb-2 block">{currentText.amenities}</label>
-                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                    <label className="text-xs font-semibold text-foreground mb-1.5 block">{currentText.amenities}</label>
+                    <div className="flex flex-wrap gap-1.5">
                       {amenityOptions.map((amenity) => (
                         <Button
                           key={amenity.key}
                           variant={amenities.includes(amenity.key) ? "default" : "outline"}
                           size="sm"
                           onClick={() => toggleAmenity(amenity.key)}
-                          className="compact-filter btn-secondary-ios h-8 md:h-9 text-xs rounded-lg"
+                          className="h-8 px-2.5 text-xs rounded-lg"
                         >
                           <amenity.icon className="h-3 w-3 mr-1" />
                           {amenity.label}
