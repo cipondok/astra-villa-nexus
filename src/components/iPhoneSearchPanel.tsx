@@ -2816,6 +2816,28 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </div>
                 </div>
 
+                {/* Furnishing Status */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Furnishing Status</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { value: 'unfurnished', label: 'Unfurnished' },
+                      { value: 'semi_furnished', label: 'Semi-Furnished' },
+                      { value: 'fully_furnished', label: 'Fully Furnished' },
+                    ].map((furnishing) => (
+                      <Button
+                        key={furnishing.value}
+                        variant={filters.furnishing === furnishing.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('furnishing', filters.furnishing === furnishing.value ? '' : furnishing.value)}
+                        className="h-8 text-[10px]"
+                      >
+                        {furnishing.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Amenities */}
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Amenities</Label>
