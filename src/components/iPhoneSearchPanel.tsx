@@ -27,6 +27,7 @@ interface IPhoneSearchPanelProps {
 const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: IPhoneSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   
   const [isMinimized, setIsMinimized] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -44,11 +45,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   
   // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
-  useScrollLock(isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
+  useScrollLock(showAdvancedFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
   
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const advancedFiltersRef = useRef<HTMLDivElement>(null);
   
   // Detect mobile and scroll behavior
   useEffect(() => {
@@ -962,13 +964,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       ) {
         setShowSuggestions(false);
       }
+
+      // Close advanced filters if clicking outside
+      if (
+        advancedFiltersRef.current &&
+        !advancedFiltersRef.current.contains(target) &&
+        showAdvancedFilters &&
+        target.closest('.fixed.inset-0') // Only if clicking on backdrop
+      ) {
+        setShowAdvancedFilters(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showSuggestions]);
+  }, [showSuggestions, showAdvancedFilters]);
 
   // Removed manual scroll locking useEffect in favor of useScrollLock hook above
 
@@ -1088,6 +1100,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm"
               />
             </div>
+            <Button
+              onClick={() => setShowAdvancedFilters(true)}
+              variant="outline"
+              size="sm"
+              className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl"
+            >
+              <Filter className="h-4 w-4" />
+            </Button>
             <Button
               onClick={handleSearch}
               variant="default"
@@ -1331,6 +1351,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </div>
               )}
             </div>
+            <Button
+              onClick={() => setShowAdvancedFilters(true)}
+              variant="outline"
+              aria-label="Advanced Filters"
+              className={cn(
+                "relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all",
+                isMobile ? "h-8 px-2.5" : "h-9 px-3"
+              )}
+            >
+              <Filter className={cn(isMobile ? "h-4 w-4" : "h-4 w-4")} />
+              {!isMobile && <span className="ml-1.5 text-xs">Filters</span>}
+            </Button>
             <Button
               onClick={handleSearch}
               aria-label={currentText.search}
@@ -2675,6 +2707,156 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
         </div>
       </div>
+
+      {/* Advanced Filters Modal */}
+      {showAdvancedFilters && (
+        <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
+          <div 
+            ref={advancedFiltersRef}
+            className="bg-background w-full max-w-full md:max-w-2xl h-[85dvh] md:h-[75dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border border-border/50 animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border px-4 py-3 shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Filter className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Advanced Filters</h3>
+                  <p className="text-[10px] text-muted-foreground">Refine your search</p>
+                </div>
+              </div>
+              <Button
+                onClick={() => setShowAdvancedFilters(false)}
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Content */}
+            <ScrollArea className="flex-1">
+              <div className="p-4 space-y-4">
+                {/* Price Range */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Price Range</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map((range) => (
+                      <Button
+                        key={range}
+                        variant={filters.priceRange === range ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)}
+                        className="h-8 text-[10px]"
+                      >
+                        {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bedrooms */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Bedrooms</Label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {['1', '2', '3', '4', '5+'].map((bed) => (
+                      <Button
+                        key={bed}
+                        variant={filters.bedrooms === bed ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)}
+                        className="h-8 text-[10px]"
+                      >
+                        {bed}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bathrooms */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Bathrooms</Label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {['1', '2', '3', '4', '5+'].map((bath) => (
+                      <Button
+                        key={bath}
+                        variant={filters.bathrooms === bath ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)}
+                        className="h-8 text-[10px]"
+                      >
+                        {bath}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Amenities */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Amenities</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { id: 'parking', label: 'Parking', icon: Car },
+                      { id: 'pool', label: 'Pool', icon: Droplets },
+                      { id: 'wifi', label: 'WiFi', icon: Wifi },
+                      { id: 'security', label: 'Security', icon: Shield },
+                    ].map((amenity) => {
+                      const Icon = amenity.icon;
+                      const isSelected = filters.features?.includes(amenity.id);
+                      return (
+                        <Button
+                          key={amenity.id}
+                          variant={isSelected ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => {
+                            const current = filters.features || [];
+                            const updated = isSelected 
+                              ? current.filter(f => f !== amenity.id)
+                              : [...current, amenity.id];
+                            handleFilterChange('features', updated);
+                          }}
+                          className="h-9 text-[10px] justify-start"
+                        >
+                          <Icon className="h-3 w-3 mr-1.5" />
+                          {amenity.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Clear All */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearAllFilters}
+                  className="w-full h-9 text-xs text-destructive hover:text-destructive"
+                >
+                  <X className="h-3.5 w-3.5 mr-1.5" />
+                  Clear All Filters
+                </Button>
+              </div>
+            </ScrollArea>
+
+            {/* Footer */}
+            <div className="border-t border-border bg-muted/30 px-4 py-3 shrink-0">
+              <Button
+                onClick={() => {
+                  handleSearch();
+                  setShowAdvancedFilters(false);
+                }}
+                className="w-full h-10 text-sm font-medium"
+                size="lg"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Apply Filters
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
