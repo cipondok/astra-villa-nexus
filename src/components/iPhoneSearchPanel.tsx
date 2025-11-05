@@ -1087,39 +1087,334 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   // Simple mobile view - only input and button by default
   if (isMobile) {
     return (
-      <div className="w-full sticky top-10 md:top-11 lg:top-12 z-40 transition-all duration-300 px-1">
-        <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
-          {/* Search Bar */}
-          <div className="flex items-center gap-1.5 p-2">
-            <div className="flex-1 relative">
-              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-              <Input
-                placeholder={currentText.searchPlaceholder}
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm"
-              />
+      <>
+        <div className="w-full sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 transition-all duration-300 px-1 py-2">
+          <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
+            {/* Search Bar */}
+            <div className="flex items-center gap-1.5 p-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                <Input
+                  placeholder={currentText.searchPlaceholder}
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm"
+                />
+              </div>
+              <Button
+                onClick={() => setShowAdvancedFilters(true)}
+                variant="outline"
+                size="sm"
+                className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl"
+              >
+                <Filter className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={handleSearch}
+                variant="default"
+                size="sm"
+                className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
             </div>
-            <Button
-              onClick={() => setShowAdvancedFilters(true)}
-              variant="outline"
-              size="sm"
-              className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl"
-            >
-              <Filter className="h-4 w-4" />
-            </Button>
-            <Button
-              onClick={handleSearch}
-              variant="default"
-              size="sm"
-              className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl"
-            >
-              <Search className="h-4 w-4" />
-            </Button>
           </div>
         </div>
-      </div>
+
+        {/* Advanced Filters Modal (mobile) */}
+        {showAdvancedFilters && (
+          <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
+            <div
+              ref={advancedFiltersRef}
+              className={cn(
+                "w-full max-w-full md:max-w-2xl h-[85dvh] md:h/[75dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300",
+                "bg-card md:bg-background border-border"
+              )}
+            >
+              {/* Header */}
+              <div
+                className={cn(
+                  "flex items-center justify-between border-b border-border px-4 py-3 shrink-0",
+                  "bg-gradient-to-r from-primary/10 to-accent/5"
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <Filter className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Advanced Filters</h3>
+                    <p className="text-[10px] text-muted-foreground">Refine your search</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => setShowAdvancedFilters(false)}
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto min-h-0">
+                <div className="p-4 space-y-4 min-h-full w-full bg-background/40">
+                  {/* Price Range */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <DollarSign className="h-3 w-3 text-primary" />
+                      Price Range
+                    </Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map((range) => (
+                        <Button
+                          key={range}
+                          variant={filters.priceRange === range ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.priceRange === range && "shadow-md"
+                          )}
+                        >
+                          {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bedrooms */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <Bed className="h-3 w-3 text-primary" />
+                      Bedrooms
+                    </Label>
+                    <div className="grid grid-cols-5 gap-2">
+                      {['1', '2', '3', '4', '5+'].map((bed) => (
+                        <Button
+                          key={bed}
+                          variant={filters.bedrooms === bed ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.bedrooms === bed && "shadow-md"
+                          )}
+                        >
+                          {bed}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bathrooms */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <Bath className="h-3 w-3 text-primary" />
+                      Bathrooms
+                    </Label>
+                    <div className="grid grid-cols-5 gap-2">
+                      {['1', '2', '3', '4', '5+'].map((bath) => (
+                        <Button
+                          key={bath}
+                          variant={filters.bathrooms === bath ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.bathrooms === bath && "shadow-md"
+                          )}
+                        >
+                          {bath}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Property Condition */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <Star className="h-3 w-3 text-primary" />
+                      Property Condition
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { value: 'new', label: 'New' },
+                        { value: 'like_new', label: 'Like New' },
+                        { value: 'good', label: 'Good' },
+                        { value: 'fair', label: 'Fair' },
+                      ].map((condition) => (
+                        <Button
+                          key={condition.value}
+                          variant={filters.condition === condition.value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.condition === condition.value && "shadow-md"
+                          )}
+                        >
+                          {condition.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Furnishing Status */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <Home className="h-3 w-3 text-primary" />
+                      Furnishing Status
+                    </Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: 'unfurnished', label: 'Unfurnished' },
+                        { value: 'semi_furnished', label: 'Semi-Furnished' },
+                        { value: 'fully_furnished', label: 'Fully Furnished' },
+                      ].map((furnishing) => (
+                        <Button
+                          key={furnishing.value}
+                          variant={filters.furnishing === furnishing.value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('furnishing', filters.furnishing === furnishing.value ? '' : furnishing.value)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.furnishing === furnishing.value && "shadow-md"
+                          )}
+                        >
+                          {furnishing.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Parking Spaces */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <Car className="h-3 w-3 text-primary" />
+                      Parking Spaces
+                    </Label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {['1', '2', '3', '4+'].map((parking) => (
+                        <Button
+                          key={parking}
+                          variant={filters.parking === parking ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('parking', filters.parking === parking ? '' : parking)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.parking === parking && "shadow-md"
+                          )}
+                        >
+                          {parking}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Year Built */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <CalendarIcon className="h-3 w-3 text-primary" />
+                      Year Built
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { value: 'before_2000', label: 'Before 2000' },
+                        { value: '2000-2010', label: '2000-2010' },
+                        { value: '2010-2020', label: '2010-2020' },
+                        { value: 'after_2020', label: 'After 2020' },
+                      ].map((year) => (
+                        <Button
+                          key={year.value}
+                          variant={filters.yearBuilt === year.value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('yearBuilt', filters.yearBuilt === year.value ? '' : year.value)}
+                          className={cn(
+                            "h-9 text-[11px] font-medium touch-target",
+                            filters.yearBuilt === year.value && "shadow-md"
+                          )}
+                        >
+                          {year.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Amenities */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                      <Building2 className="h-3 w-3 text-primary" />
+                      Amenities
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { id: 'parking', label: 'Parking', icon: Car },
+                        { id: 'pool', label: 'Pool', icon: Droplets },
+                        { id: 'wifi', label: 'WiFi', icon: Wifi },
+                        { id: 'security', label: 'Security', icon: Shield },
+                      ].map((amenity) => {
+                        const Icon = amenity.icon;
+                        const isSelected = filters.features?.includes(amenity.id);
+                        return (
+                          <Button
+                            key={amenity.id}
+                            variant={isSelected ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => {
+                              const current = filters.features || [];
+                              const updated = isSelected 
+                                ? current.filter(f => f !== amenity.id)
+                                : [...current, amenity.id];
+                              handleFilterChange('features', updated);
+                            }}
+                            className={cn(
+                              "h-9 text-[11px] justify-start font-medium touch-target",
+                              isSelected && "shadow-md"
+                            )}
+                          >
+                            <Icon className="h-3 w-3 mr-1.5" />
+                            {amenity.label}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Clear All */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAllFilters}
+                    className="w-full h-10 text-sm font-medium text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 touch-target"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Clear All Filters
+                  </Button>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="border-t border-border bg-muted/30 px-4 py-3 shrink-0">
+                <Button
+                  onClick={() => {
+                    handleSearch();
+                    setShowAdvancedFilters(false);
+                  }}
+                  className="w-full h-10 text-sm font-medium"
+                  size="lg"
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     );
+  }
   }
 
   return (
