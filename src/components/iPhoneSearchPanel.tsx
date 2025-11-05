@@ -1052,13 +1052,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     { value: 'land', label: currentText.land, icon: LandPlot },
   ];
 
+  // Quick price range filters
+  const quickPriceRanges = [
+    { value: '0-1000000000', label: '< 1B', min: 0, max: 1000000000 },
+    { value: '1000000000-5000000000', label: '1B - 5B', min: 1000000000, max: 5000000000 },
+    { value: '5000000000-999999999999', label: '> 5B', min: 5000000000, max: 999999999999 },
+  ];
+
   // Simple mobile view - only input and button by default
   if (isMobile) {
     return (
       <div className="w-full sticky top-10 md:top-11 lg:top-12 z-40 transition-all duration-300 px-1">
         <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
           {/* Property Type Quick Filters */}
-          <div className="flex items-center gap-1 p-2 pb-1.5 border-b border-border/20">
+          <div className="flex items-center gap-1 p-2 pb-1">
             {quickPropertyTypes.map((type) => {
               const Icon = type.icon;
               const isActive = filters.propertyType === type.value;
@@ -1075,6 +1082,34 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 >
                   <Icon className="h-3 w-3 mr-1" />
                   <span className="truncate">{type.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+
+          {/* Price Range Quick Filters */}
+          <div className="flex items-center gap-1 px-2 pb-1.5 border-b border-border/20">
+            {quickPriceRanges.map((range) => {
+              const isActive = filters.priceRange === range.value;
+              return (
+                <Button
+                  key={range.value}
+                  onClick={() => {
+                    if (isActive) {
+                      handleFilterChange('priceRange', '');
+                    } else {
+                      handleFilterChange('priceRange', range.value);
+                    }
+                  }}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "flex-1 h-7 px-1.5 text-[9px] rounded-lg transition-all",
+                    isActive && "shadow-md ring-2 ring-primary/20"
+                  )}
+                >
+                  <DollarSign className="h-2.5 w-2.5 mr-0.5" />
+                  <span className="truncate">{range.label}</span>
                 </Button>
               );
             })}
@@ -1135,6 +1170,34 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 >
                   <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
                   <span className="truncate">{type.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+
+          {/* Price Range Quick Filters */}
+          <div className="flex items-center justify-center gap-1.5 md:gap-2">
+            {quickPriceRanges.map((range) => {
+              const isActive = filters.priceRange === range.value;
+              return (
+                <Button
+                  key={range.value}
+                  onClick={() => {
+                    if (isActive) {
+                      handleFilterChange('priceRange', '');
+                    } else {
+                      handleFilterChange('priceRange', range.value);
+                    }
+                  }}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "flex-1 h-8 md:h-9 px-2 md:px-3 text-[10px] md:text-xs rounded-xl transition-all",
+                    isActive && "shadow-md ring-2 ring-primary/20"
+                  )}
+                >
+                  <DollarSign className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" />
+                  <span className="truncate">{range.label}</span>
                 </Button>
               );
             })}
