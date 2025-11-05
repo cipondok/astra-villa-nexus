@@ -2737,11 +2737,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto min-h-0 bg-background">
+              <div className="p-4 space-y-4 min-h-full w-full">
                 {/* Price Range */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Price Range</Label>
+                  <Label className="text-xs font-semibold text-foreground">Price Range</Label>
                   <div className="grid grid-cols-3 gap-2">
                     {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map((range) => (
                       <Button
@@ -2759,7 +2759,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Bedrooms */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Bedrooms</Label>
+                  <Label className="text-xs font-semibold text-foreground">Bedrooms</Label>
                   <div className="grid grid-cols-5 gap-2">
                     {['1', '2', '3', '4', '5+'].map((bed) => (
                       <Button
@@ -2777,7 +2777,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Bathrooms */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Bathrooms</Label>
+                  <Label className="text-xs font-semibold text-foreground">Bathrooms</Label>
                   <div className="grid grid-cols-5 gap-2">
                     {['1', '2', '3', '4', '5+'].map((bath) => (
                       <Button
@@ -2795,7 +2795,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Property Condition */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Property Condition</Label>
+                  <Label className="text-xs font-semibold text-foreground">Property Condition</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { value: 'new', label: 'New' },
@@ -2818,7 +2818,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Furnishing Status */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Furnishing Status</Label>
+                  <Label className="text-xs font-semibold text-foreground">Furnishing Status</Label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
                       { value: 'unfurnished', label: 'Unfurnished' },
@@ -2840,7 +2840,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Parking Spaces */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Parking Spaces</Label>
+                  <Label className="text-xs font-semibold text-foreground">Parking Spaces</Label>
                   <div className="grid grid-cols-4 gap-2">
                     {['1', '2', '3', '4+'].map((parking) => (
                       <Button
@@ -2858,7 +2858,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Year Built */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Year Built</Label>
+                  <Label className="text-xs font-semibold text-foreground">Year Built</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { value: 'before_2000', label: 'Before 2000' },
@@ -2881,7 +2881,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                 {/* Amenities */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Amenities</Label>
+                  <Label className="text-xs font-semibold text-foreground">Amenities</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { id: 'parking', label: 'Parking', icon: Car },
