@@ -97,8 +97,8 @@ const AIFooterBot = () => {
 
       {/* AI Chat Window - Always visible on active screen */}
       {isOpen && (
-        <div className="fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto md:w-96 z-[9999] pointer-events-auto animate-scale-in px-4 md:px-0 pb-4 md:pb-0">
-          <Card className="shadow-2xl border-2 border-green-200 bg-background h-[calc(100vh-2rem)] md:h-auto max-h-[90vh] md:max-h-[600px] flex flex-col">
+        <div className="fixed inset-0 md:inset-auto md:bottom-6 md:right-6 md:w-96 z-[9999] pointer-events-auto animate-scale-in md:max-w-sm">
+          <Card className="shadow-2xl border-2 border-green-200 bg-background h-full md:h-auto md:max-h-[85vh] flex flex-col">
             <CardHeader className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-t-lg sticky top-0 z-10">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-white">
