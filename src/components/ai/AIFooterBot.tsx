@@ -74,10 +74,10 @@ const AIFooterBot = () => {
   }, []);
 
   return (
-    <>
-      {/* AI Bot Trigger Button - Always visible with high z-index */}
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] pointer-events-auto">
+      {/* AI Bot Trigger Button */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-[9999] pointer-events-auto">
+        <div className="relative">
           <Button
             onClick={() => setIsOpen(true)}
             className="h-14 w-14 rounded-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 shadow-2xl hover:shadow-3xl transition-all duration-200 hover:scale-110"
@@ -95,10 +95,10 @@ const AIFooterBot = () => {
         </div>
       )}
 
-      {/* AI Chat Window - Always visible on active screen */}
+      {/* AI Chat Window - Anchored to bottom-right */}
       {isOpen && (
-        <div className="fixed inset-0 md:inset-auto md:bottom-6 md:right-6 md:w-96 z-[9999] pointer-events-auto animate-scale-in md:max-w-sm">
-          <Card className="shadow-2xl border-2 border-green-200 bg-background h-full md:h-auto md:max-h-[85vh] flex flex-col">
+        <div className="fixed inset-0 md:inset-auto md:bottom-6 md:right-6 md:w-96 z-[9999] md:max-w-sm">
+          <Card className="shadow-2xl border-2 border-green-200 bg-background h-full md:h-auto md:max-h-[85vh] flex flex-col md:rounded-lg">
             <CardHeader className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-t-lg sticky top-0 z-10">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-white">
@@ -212,7 +212,7 @@ const AIFooterBot = () => {
           </Card>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
