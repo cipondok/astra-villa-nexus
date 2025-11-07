@@ -40,9 +40,11 @@ const Search = () => {
   const [isPulling, setIsPulling] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [newPropertyIds, setNewPropertyIds] = useState<Set<string>>(new Set());
   const touchStartY = useRef(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const previousCountRef = useRef<number>(0);
+  const previousPropertyIdsRef = useRef<Set<string>>(new Set());
   const PULL_THRESHOLD = 80; // Pixels to pull before triggering refresh
 
   const { data: dbProperties = [], isLoading, refetch } = useQuery({
@@ -90,8 +92,20 @@ const Search = () => {
   useEffect(() => {
     if (!isRefreshing && properties.length > 0) {
       previousCountRef.current = properties.length;
+      // Store current property IDs for comparison on next refresh
+      previousPropertyIdsRef.current = new Set(properties.map(p => p.id));
     }
   }, [properties.length, isRefreshing]);
+
+  // Clear new property highlights after 5 seconds
+  useEffect(() => {
+    if (newPropertyIds.size > 0) {
+      const timer = setTimeout(() => {
+        setNewPropertyIds(new Set());
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [newPropertyIds]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -155,6 +169,16 @@ const Search = () => {
         const newCount = result.data?.length || 0;
         const previousCount = previousCountRef.current;
         
+        // Identify new properties
+        const currentPropertyIds = new Set((result.data || []).map((p: any) => p.id));
+        const newIds = new Set<string>();
+        
+        currentPropertyIds.forEach(id => {
+          if (!previousPropertyIdsRef.current.has(id)) {
+            newIds.add(id);
+          }
+        });
+        
         // Show success feedback
         setTimeout(() => {
           setIsRefreshing(false);
@@ -163,6 +187,11 @@ const Search = () => {
           // Success haptic
           if ('vibrate' in navigator) {
             navigator.vibrate([30, 20, 30]);
+          }
+
+          // Highlight new properties
+          if (newIds.size > 0) {
+            setNewPropertyIds(newIds);
           }
 
           // Show toast with results
@@ -370,15 +399,65 @@ const Search = () => {
         {/* Results Grid */}
         {!isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            {properties.map((property) => (
-              <PropertyCard 
-                key={property.id} 
-                property={{
-                  ...property,
-                  id: parseInt(property.id)
-                }}
-              />
-            ))}
+            {properties.map((property) => {
+              const isNew = newPropertyIds.has(property.id);
+              
+              return (
+                <motion.div
+                  key={property.id}
+                  initial={isNew ? { scale: 0.95, opacity: 0 } : false}
+                  animate={
+                    isNew 
+                      ? {
+                          scale: [0.95, 1.02, 1],
+                          opacity: [0, 1, 1],
+                        }
+                      : {}
+                  }
+                  transition={{
+                    duration: 0.5,
+                    ease: "easeOut"
+                  }}
+                  className={isNew ? "relative" : ""}
+                >
+                  {isNew && (
+                    <>
+                      {/* Pulse Ring Animation */}
+                      <motion.div
+                        className="absolute inset-0 rounded-lg border-2 border-primary pointer-events-none z-10"
+                        initial={{ opacity: 0.8, scale: 1 }}
+                        animate={{
+                          opacity: [0.8, 0.3, 0],
+                          scale: [1, 1.05, 1.1],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: 2,
+                          ease: "easeOut"
+                        }}
+                      />
+                      
+                      {/* "NEW" Badge */}
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="absolute top-2 right-2 z-20 bg-primary text-primary-foreground px-2 py-1 rounded-md text-xs font-bold shadow-lg"
+                      >
+                        NEW
+                      </motion.div>
+                    </>
+                  )}
+                  
+                  <PropertyCard 
+                    property={{
+                      ...property,
+                      id: parseInt(property.id)
+                    }}
+                  />
+                </motion.div>
+              );
+            })}
           </div>
         )}
 
