@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import PropertyAdvancedFilters from '@/components/search/PropertyAdvancedFilters';
 import CollaborativeCursor from '@/components/collaboration/CollaborativeCursor';
+import ChatBubble from '@/components/collaboration/ChatBubble';
+import FilterHistory from '@/components/collaboration/FilterHistory';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,6 +40,9 @@ const SharedSearch = () => {
   const channelRef = useRef<any>(null);
   const throttleRef = useRef<NodeJS.Timeout | null>(null);
   const sessionUserId = useRef(user?.id || `guest-${Math.random().toString(36).substr(2, 9)}`).current;
+  const [filterHistory, setFilterHistory] = useState<any[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
 
   // Generate consistent color for user
   const getUserColor = (userId: string) => {
@@ -100,6 +105,16 @@ const SharedSearch = () => {
 
         setSearchData(combinedData as any);
         setFilters(searchDetails.filters || {});
+        
+        // Initialize filter history
+        const initialHistory = [{
+          id: `initial-${Date.now()}`,
+          filters: searchDetails.filters || {},
+          user_name: 'Initial',
+          timestamp: searchDetails.created_at || new Date().toISOString()
+        }];
+        setFilterHistory(initialHistory);
+        setHistoryIndex(0);
 
         // Increment access count
         await supabase
@@ -145,6 +160,13 @@ const SharedSearch = () => {
             return newCursors;
           });
         }
+      })
+      .on('broadcast', { event: 'filter_history' }, ({ payload }) => {
+        setFilterHistory(payload.history);
+        setHistoryIndex(payload.currentIndex);
+      })
+      .on('broadcast', { event: 'chat_message' }, ({ payload }) => {
+        setChatMessages(prev => [...prev, payload]);
       })
       .on('presence', { event: 'sync' }, () => {
         const state = collabChannel.presenceState();
@@ -253,6 +275,18 @@ const SharedSearch = () => {
     setFilters(newFilters);
     fetchProperties(newFilters);
     
+    // Add to history
+    const historyEntry = {
+      id: `${Date.now()}-${sessionUserId}`,
+      filters: newFilters,
+      user_name: user?.email?.split('@')[0] || 'Guest',
+      timestamp: new Date().toISOString()
+    };
+    
+    const newHistory = [...filterHistory.slice(0, historyIndex + 1), historyEntry];
+    setFilterHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+    
     // Broadcast to other collaborators
     const channel = supabase.channel(`collab-${shareId}`);
     channel.send({
@@ -260,7 +294,127 @@ const SharedSearch = () => {
       event: 'filters',
       payload: newFilters
     });
+    
+    channel.send({
+      type: 'broadcast',
+      event: 'filter_history',
+      payload: {
+        history: newHistory,
+        currentIndex: newHistory.length - 1
+      }
+    });
   };
+
+  const handleUndo = useCallback(() => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      const previousFilters = filterHistory[newIndex].filters;
+      setFilters(previousFilters);
+      setHistoryIndex(newIndex);
+      fetchProperties(previousFilters);
+      
+      // Broadcast
+      const channel = supabase.channel(`collab-${shareId}`);
+      channel.send({
+        type: 'broadcast',
+        event: 'filters',
+        payload: previousFilters
+      });
+      channel.send({
+        type: 'broadcast',
+        event: 'filter_history',
+        payload: {
+          history: filterHistory,
+          currentIndex: newIndex
+        }
+      });
+    }
+  }, [historyIndex, filterHistory, shareId]);
+
+  const handleRedo = useCallback(() => {
+    if (historyIndex < filterHistory.length - 1) {
+      const newIndex = historyIndex + 1;
+      const nextFilters = filterHistory[newIndex].filters;
+      setFilters(nextFilters);
+      setHistoryIndex(newIndex);
+      fetchProperties(nextFilters);
+      
+      // Broadcast
+      const channel = supabase.channel(`collab-${shareId}`);
+      channel.send({
+        type: 'broadcast',
+        event: 'filters',
+        payload: nextFilters
+      });
+      channel.send({
+        type: 'broadcast',
+        event: 'filter_history',
+        payload: {
+          history: filterHistory,
+          currentIndex: newIndex
+        }
+      });
+    }
+  }, [historyIndex, filterHistory, shareId]);
+
+  const handleRestoreHistory = useCallback((index: number) => {
+    const historyFilters = filterHistory[index].filters;
+    setFilters(historyFilters);
+    setHistoryIndex(index);
+    fetchProperties(historyFilters);
+    
+    // Broadcast
+    const channel = supabase.channel(`collab-${shareId}`);
+    channel.send({
+      type: 'broadcast',
+      event: 'filters',
+      payload: historyFilters
+    });
+    channel.send({
+      type: 'broadcast',
+      event: 'filter_history',
+      payload: {
+        history: filterHistory,
+        currentIndex: index
+      }
+    });
+  }, [filterHistory, shareId]);
+
+  const handleSendMessage = useCallback((text: string) => {
+    const message = {
+      id: `${Date.now()}-${sessionUserId}`,
+      text,
+      user_id: sessionUserId,
+      user_name: user?.email?.split('@')[0] || 'Guest',
+      timestamp: new Date().toISOString()
+    };
+    
+    setChatMessages(prev => [...prev, message]);
+    
+    // Broadcast
+    const channel = supabase.channel(`collab-${shareId}`);
+    channel.send({
+      type: 'broadcast',
+      event: 'chat_message',
+      payload: message
+    });
+  }, [shareId, sessionUserId, user?.email]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo]);
 
   if (loading) {
     return (
@@ -330,6 +484,18 @@ const SharedSearch = () => {
                   </Badge>
                 </div>
               )}
+              
+              {/* Filter History Controls */}
+              {filterHistory.length > 0 && (
+                <FilterHistory
+                  history={filterHistory}
+                  currentIndex={historyIndex}
+                  onUndo={handleUndo}
+                  onRedo={handleRedo}
+                  onRestore={handleRestoreHistory}
+                />
+              )}
+              
               <Badge variant="outline" className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 Expires in {expiresIn} days
@@ -389,6 +555,13 @@ const SharedSearch = () => {
             ))}
           </div>
         </div>
+        
+        {/* Chat Bubble */}
+        <ChatBubble
+          messages={chatMessages}
+          onSendMessage={handleSendMessage}
+          currentUserId={sessionUserId}
+        />
       </div>
     </div>
   );
