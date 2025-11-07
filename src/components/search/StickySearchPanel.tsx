@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Search, SlidersHorizontal, Save, Clock, X, Mic, Download, BarChart3, FileText, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Search, SlidersHorizontal, Save, Clock, X, Mic, Download, BarChart3, FileText, FileJson, FileSpreadsheet, Sparkles, GitCompare, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import PropertyAdvancedFilters from './PropertyAdvancedFilters';
 
 // Schema for saved search name validation
@@ -47,6 +49,7 @@ const StickySearchPanel = ({
   initialFilters = {}
 }: StickySearchPanelProps) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState(initialFilters.query || '');
@@ -58,6 +61,11 @@ const StickySearchPanel = ({
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+  const [compareSearches, setCompareSearches] = useState<[SavedSearch | null, SavedSearch | null]>([null, null]);
   const scrollRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -81,22 +89,113 @@ const StickySearchPanel = ({
 
   const activeFiltersCount = getActiveFiltersCount();
 
-  // Load saved and recent searches from localStorage
+  // Load saved searches from Supabase with real-time sync
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('savedSearches');
-      const recent = localStorage.getItem('recentSearches');
-      
-      if (saved) {
-        setSavedSearches(JSON.parse(saved));
+    if (!user?.id) {
+      // Load from localStorage if not authenticated
+      try {
+        const saved = localStorage.getItem('savedSearches');
+        const recent = localStorage.getItem('recentSearches');
+        
+        if (saved) {
+          setSavedSearches(JSON.parse(saved));
+        }
+        if (recent) {
+          setRecentSearches(JSON.parse(recent));
+        }
+      } catch (error) {
+        console.error('Failed to load searches:', error);
       }
+      return;
+    }
+
+    // Fetch saved searches from Supabase
+    const fetchSavedSearches = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('user_searches')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('timestamp', { ascending: false });
+
+        if (error) throw error;
+
+        if (data) {
+          const searches: SavedSearch[] = data.map(item => ({
+            id: item.id,
+            name: item.name,
+            query: item.query || '',
+            filters: item.filters || {},
+            timestamp: item.timestamp
+          }));
+          setSavedSearches(searches);
+        }
+      } catch (error) {
+        console.error('Failed to fetch saved searches:', error);
+        // Fallback to localStorage
+        const saved = localStorage.getItem('savedSearches');
+        if (saved) {
+          setSavedSearches(JSON.parse(saved));
+        }
+      }
+    };
+
+    fetchSavedSearches();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('user_searches_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_searches',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('Real-time update:', payload);
+          
+          if (payload.eventType === 'INSERT') {
+            const newSearch: SavedSearch = {
+              id: payload.new.id,
+              name: payload.new.name,
+              query: payload.new.query || '',
+              filters: payload.new.filters || {},
+              timestamp: payload.new.timestamp
+            };
+            setSavedSearches(prev => [newSearch, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setSavedSearches(prev => prev.map(s => 
+              s.id === payload.new.id ? {
+                id: payload.new.id,
+                name: payload.new.name,
+                query: payload.new.query || '',
+                filters: payload.new.filters || {},
+                timestamp: payload.new.timestamp
+              } : s
+            ));
+          } else if (payload.eventType === 'DELETE') {
+            setSavedSearches(prev => prev.filter(s => s.id !== payload.old.id));
+          }
+        }
+      )
+      .subscribe();
+
+    // Load recent searches from localStorage
+    try {
+      const recent = localStorage.getItem('recentSearches');
       if (recent) {
         setRecentSearches(JSON.parse(recent));
       }
     } catch (error) {
-      console.error('Failed to load searches:', error);
+      console.error('Failed to load recent searches:', error);
     }
-  }, []);
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
 
   // Voice Recognition Setup
   useEffect(() => {
@@ -242,7 +341,7 @@ const StickySearchPanel = ({
     }
   };
 
-  const handleSaveSearch = () => {
+  const handleSaveSearch = async () => {
     try {
       const validation = savedSearchSchema.safeParse({ name: saveName });
       
@@ -255,26 +354,50 @@ const StickySearchPanel = ({
         return;
       }
 
+      const timestamp = Date.now();
       const newSavedSearch: SavedSearch = {
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         name: saveName.trim(),
         query: searchQuery,
         filters: initialFilters,
-        timestamp: Date.now()
+        timestamp
       };
 
-      const updated = [...savedSearches, newSavedSearch];
-      setSavedSearches(updated);
-      localStorage.setItem('savedSearches', JSON.stringify(updated));
+      if (user?.id) {
+        // Save to Supabase
+        const { error } = await supabase
+          .from('user_searches')
+          .insert({
+            id: newSavedSearch.id,
+            user_id: user.id,
+            name: newSavedSearch.name,
+            query: newSavedSearch.query,
+            filters: newSavedSearch.filters,
+            timestamp: newSavedSearch.timestamp
+          });
 
-      toast({
-        title: "Search Saved",
-        description: `"${saveName}" has been saved successfully`
-      });
+        if (error) throw error;
+
+        toast({
+          title: "Search Saved",
+          description: `"${saveName}" has been saved and synced across devices`
+        });
+      } else {
+        // Save to localStorage
+        const updated = [...savedSearches, newSavedSearch];
+        setSavedSearches(updated);
+        localStorage.setItem('savedSearches', JSON.stringify(updated));
+
+        toast({
+          title: "Search Saved",
+          description: `"${saveName}" has been saved locally. Sign in to sync across devices.`
+        });
+      }
 
       setShowSaveDialog(false);
       setSaveName('');
     } catch (error) {
+      console.error('Save error:', error);
       toast({
         title: "Save Failed",
         description: "Failed to save search. Please try again.",
@@ -298,17 +421,34 @@ const StickySearchPanel = ({
     });
   };
 
-  const deleteSavedSearch = (id: string) => {
+  const deleteSavedSearch = async (id: string) => {
     try {
-      const updated = savedSearches.filter(s => s.id !== id);
-      setSavedSearches(updated);
-      localStorage.setItem('savedSearches', JSON.stringify(updated));
+      if (user?.id) {
+        // Delete from Supabase
+        const { error } = await supabase
+          .from('user_searches')
+          .delete()
+          .eq('id', id);
 
-      toast({
-        title: "Search Deleted",
-        description: "Saved search has been removed"
-      });
+        if (error) throw error;
+
+        toast({
+          title: "Search Deleted",
+          description: "Saved search has been removed from all devices"
+        });
+      } else {
+        // Delete from localStorage
+        const updated = savedSearches.filter(s => s.id !== id);
+        setSavedSearches(updated);
+        localStorage.setItem('savedSearches', JSON.stringify(updated));
+
+        toast({
+          title: "Search Deleted",
+          description: "Saved search has been removed"
+        });
+      }
     } catch (error) {
+      console.error('Delete error:', error);
       toast({
         title: "Delete Failed",
         description: "Failed to delete search",
@@ -493,6 +633,113 @@ const StickySearchPanel = ({
     };
   };
 
+  // AI Recommendations
+  const fetchAIRecommendations = async () => {
+    setIsLoadingAI(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-search-recommendations', {
+        body: {
+          recentSearches,
+          savedSearches,
+          filters: initialFilters
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.suggestions) {
+        setAiSuggestions(data.suggestions);
+        setShowAISuggestions(true);
+        toast({
+          title: "AI Suggestions Ready",
+          description: `Generated ${data.suggestions.length} personalized recommendations`
+        });
+      }
+    } catch (error: any) {
+      console.error('AI recommendations error:', error);
+      
+      if (error.message?.includes('429')) {
+        toast({
+          title: "Rate Limit Exceeded",
+          description: "Too many requests. Please try again later.",
+          variant: "destructive"
+        });
+      } else if (error.message?.includes('402')) {
+        toast({
+          title: "Payment Required",
+          description: "Please add credits to your workspace.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "AI Error",
+          description: "Failed to generate recommendations",
+          variant: "destructive"
+        });
+      }
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
+
+  const applySuggestion = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setShowAISuggestions(false);
+    addToRecentSearches(suggestion);
+    onSearch({
+      query: suggestion,
+      ...initialFilters
+    });
+  };
+
+  // Search Comparison
+  const startComparison = () => {
+    if (savedSearches.length < 2) {
+      toast({
+        title: "Not Enough Searches",
+        description: "You need at least 2 saved searches to compare",
+        variant: "destructive"
+      });
+      return;
+    }
+    setCompareSearches([null, null]);
+    setShowComparison(true);
+  };
+
+  const selectCompareSearch = (index: 0 | 1, search: SavedSearch) => {
+    const newCompareSearches: [SavedSearch | null, SavedSearch | null] = [...compareSearches];
+    newCompareSearches[index] = search;
+    setCompareSearches(newCompareSearches);
+  };
+
+  const getFilterDifferences = () => {
+    if (!compareSearches[0] || !compareSearches[1]) return [];
+    
+    const search1 = compareSearches[0];
+    const search2 = compareSearches[1];
+    const differences: Array<{ key: string; value1: any; value2: any }> = [];
+
+    const allKeys = new Set([
+      ...Object.keys(search1.filters || {}),
+      ...Object.keys(search2.filters || {})
+    ]);
+
+    allKeys.forEach(key => {
+      const val1 = search1.filters?.[key];
+      const val2 = search2.filters?.[key];
+      
+      if (JSON.stringify(val1) !== JSON.stringify(val2)) {
+        differences.push({
+          key,
+          value1: val1,
+          value2: val2
+        });
+      }
+    });
+
+    return differences;
+  };
+
   const text = {
     en: {
       search: "Search properties, location, or developer...",
@@ -510,7 +757,15 @@ const StickySearchPanel = ({
       analytics: "Analytics",
       export: "Export",
       voiceSearch: "Voice Search",
-      listening: "Listening..."
+      listening: "Listening...",
+      aiSuggest: "AI Suggest",
+      compare: "Compare",
+      aiSuggestions: "AI Recommendations",
+      compareSearches: "Compare Searches",
+      selectFirst: "Select first search",
+      selectSecond: "Select second search",
+      differences: "Differences",
+      similarities: "Similarities"
     },
     id: {
       search: "Cari properti, lokasi, atau pengembang...",
@@ -528,7 +783,15 @@ const StickySearchPanel = ({
       analytics: "Analitik",
       export: "Ekspor",
       voiceSearch: "Pencarian Suara",
-      listening: "Mendengarkan..."
+      listening: "Mendengarkan...",
+      aiSuggest: "Saran AI",
+      compare: "Bandingkan",
+      aiSuggestions: "Rekomendasi AI",
+      compareSearches: "Bandingkan Pencarian",
+      selectFirst: "Pilih pencarian pertama",
+      selectSecond: "Pilih pencarian kedua",
+      differences: "Perbedaan",
+      similarities: "Kesamaan"
     }
   };
 
@@ -650,6 +913,29 @@ const StickySearchPanel = ({
                     )}
                   </AnimatePresence>
                 </div>
+
+                 {/* AI Suggest Button */}
+                 <Button
+                   variant="outline"
+                   size="default"
+                   onClick={fetchAIRecommendations}
+                   disabled={isLoadingAI}
+                   className="h-10 px-3 sm:px-4 whitespace-nowrap"
+                   title={currentText.aiSuggest}
+                 >
+                   {isLoadingAI ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                 </Button>
+
+                 {/* Compare Button */}
+                 <Button
+                   variant="outline"
+                   size="default"
+                   onClick={startComparison}
+                   className="h-10 px-3 sm:px-4 whitespace-nowrap"
+                   title={currentText.compare}
+                 >
+                   <GitCompare className="h-4 w-4" />
+                 </Button>
 
                  {/* Analytics Button */}
                  <Button
@@ -949,6 +1235,79 @@ const StickySearchPanel = ({
               </div>
             );
           })()}
+        </DialogContent>
+      </Dialog>
+
+      {/* AI Suggestions Dialog */}
+      <Dialog open={showAISuggestions} onOpenChange={setShowAISuggestions}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5" />
+              {currentText.aiSuggestions}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2 py-4">
+            {aiSuggestions.map((suggestion, idx) => (
+              <Button
+                key={idx}
+                variant="outline"
+                className="w-full justify-start text-left h-auto py-3"
+                onClick={() => applySuggestion(suggestion)}
+              >
+                {suggestion}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Search Comparison Dialog */}
+      <Dialog open={showComparison} onOpenChange={setShowComparison}>
+        <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <GitCompare className="h-5 w-5" />
+              {currentText.compareSearches}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+            {[0, 1].map((idx) => (
+              <div key={idx} className="space-y-2">
+                <Label>{idx === 0 ? currentText.selectFirst : currentText.selectSecond}</Label>
+                <select
+                  className="w-full p-2 border rounded-md bg-background"
+                  value={compareSearches[idx]?.id || ''}
+                  onChange={(e) => {
+                    const search = savedSearches.find(s => s.id === e.target.value);
+                    if (search) selectCompareSearch(idx as 0 | 1, search);
+                  }}
+                >
+                  <option value="">Select...</option>
+                  {savedSearches.map(s => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+                {compareSearches[idx] && (
+                  <div className="bg-muted p-3 rounded-lg text-sm">
+                    <p className="font-medium">{compareSearches[idx]!.query}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {compareSearches[0] && compareSearches[1] && (
+            <div className="space-y-3">
+              <h3 className="font-medium">{currentText.differences}</h3>
+              {getFilterDifferences().map((diff, idx) => (
+                <div key={idx} className="grid grid-cols-3 gap-2 text-sm p-2 bg-muted rounded">
+                  <div className="font-medium capitalize">{diff.key}</div>
+                  <div>{JSON.stringify(diff.value1)}</div>
+                  <div>{JSON.stringify(diff.value2)}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
