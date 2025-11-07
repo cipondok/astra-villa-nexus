@@ -43,3 +43,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.search-by-image]
     verify_jwt = false
 
+  [functions.ai-search-suggestions]
+    verify_jwt = false
+

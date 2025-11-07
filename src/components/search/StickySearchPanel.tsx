@@ -79,12 +79,18 @@ const StickySearchPanel = ({
   const [showShareAnalytics, setShowShareAnalytics] = useState<string | null>(null);
   const [shareStats, setShareStats] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<{ id: string; name: string; avatar?: string }[]>([]);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [intelligentSuggestions, setIntelligentSuggestions] = useState<string[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [touchStartY, setTouchStartY] = useState(0);
+  const [isDraggingPanel, setIsDraggingPanel] = useState(false);
   const lastScrollY = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
+  const suggestionsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Calculate active filters count
   const getActiveFiltersCount = () => {
@@ -278,6 +284,15 @@ const StickySearchPanel = ({
     };
   }, [user?.id]);
 
+  // Cleanup suggestions timeout
+  useEffect(() => {
+    return () => {
+      if (suggestionsTimeoutRef.current) {
+        clearTimeout(suggestionsTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Voice Recognition Setup
   useEffect(() => {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -317,25 +332,56 @@ const StickySearchPanel = ({
     }
   }, [language]);
 
-  // Keyboard shortcut: Ctrl+K or Cmd+K to focus search
+  // Keyboard shortcut: Ctrl+K or Cmd+K to focus search + Arrow key navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+K or Cmd+K to focus search
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         searchInputRef.current?.focus();
         setShowAutocomplete(true);
+        fetchIntelligentSuggestions(searchQuery);
       }
       
-      // ESC to close autocomplete
+      // ESC to close autocomplete and reset selection
       if (e.key === 'Escape') {
         setShowAutocomplete(false);
         setShowExportMenu(false);
+        setSelectedSuggestionIndex(-1);
+      }
+
+      // Arrow key navigation in autocomplete
+      if (showAutocomplete && intelligentSuggestions.length > 0) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setSelectedSuggestionIndex(prev => 
+            prev < intelligentSuggestions.length - 1 ? prev + 1 : 0
+          );
+        }
+        
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setSelectedSuggestionIndex(prev => 
+            prev > 0 ? prev - 1 : intelligentSuggestions.length - 1
+          );
+        }
+
+        // Enter to apply selected suggestion
+        if (e.key === 'Enter' && selectedSuggestionIndex >= 0) {
+          e.preventDefault();
+          applySuggestion(intelligentSuggestions[selectedSuggestionIndex]);
+        }
+      }
+
+      // Tab navigation (let default behavior handle it, but track for accessibility)
+      if (e.key === 'Tab' && !e.shiftKey) {
+        // Browser handles tab naturally, we just ensure proper tab order in JSX
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [showAutocomplete, selectedSuggestionIndex, intelligentSuggestions, searchQuery]);
 
   // Handle scroll behavior - auto-minimize on scroll
   useEffect(() => {
@@ -419,6 +465,145 @@ const StickySearchPanel = ({
       localStorage.setItem('recentSearches', JSON.stringify(updated));
     } catch (error) {
       console.error('Failed to save recent search:', error);
+    }
+  };
+
+  // Fetch intelligent suggestions (AI + recent + saved)
+  const fetchIntelligentSuggestions = async (query: string) => {
+    // Clear previous timeout
+    if (suggestionsTimeoutRef.current) {
+      clearTimeout(suggestionsTimeoutRef.current);
+    }
+
+    // Debounce suggestions fetching
+    suggestionsTimeoutRef.current = setTimeout(async () => {
+      setIsLoadingSuggestions(true);
+      
+      try {
+        // Combine recent and saved searches as fallback
+        const fallbackSuggestions = [
+          ...recentSearches.slice(0, 3).map(s => s.query),
+          ...savedSearches.slice(0, 2).map(s => s.name)
+        ].filter((v, i, a) => a.indexOf(v) === i);
+
+        if (!query.trim()) {
+          setIntelligentSuggestions(fallbackSuggestions);
+          setIsLoadingSuggestions(false);
+          return;
+        }
+
+        // Fetch AI suggestions
+        const { data, error } = await supabase.functions.invoke('ai-search-suggestions', {
+          body: { 
+            query, 
+            recentSearches: recentSearches.slice(0, 5),
+            savedSearches: savedSearches.slice(0, 5),
+            filters: initialFilters 
+          }
+        });
+
+        if (error) {
+          console.error('AI suggestions error:', error);
+          // Use fallback
+          const filtered = fallbackSuggestions.filter(s => 
+            s.toLowerCase().includes(query.toLowerCase())
+          );
+          setIntelligentSuggestions(filtered.slice(0, 5));
+        } else {
+          const aiSuggestions = data?.suggestions || [];
+          // Combine AI suggestions with relevant recent/saved
+          const combined = [
+            ...aiSuggestions,
+            ...fallbackSuggestions.filter(s => 
+              s.toLowerCase().includes(query.toLowerCase())
+            )
+          ]
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .slice(0, 5);
+          
+          setIntelligentSuggestions(combined);
+        }
+      } catch (error) {
+        console.error('Failed to fetch suggestions:', error);
+        // Use fallback
+        const fallback = [
+          ...recentSearches.map(s => s.query),
+          ...savedSearches.map(s => s.name)
+        ]
+          .filter(s => s.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 5);
+        setIntelligentSuggestions(fallback);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    }, 300); // 300ms debounce
+  };
+
+  // Apply suggestion from dropdown
+  const applySuggestion = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setShowAutocomplete(false);
+    setSelectedSuggestionIndex(-1);
+    addToRecentSearches(suggestion);
+    
+    onSearch({
+      query: suggestion,
+      ...initialFilters
+    });
+
+    toast({
+      title: "Applied Suggestion",
+      description: `Searching for: ${suggestion}`
+    });
+  };
+
+  // Mobile gesture handlers
+  const handlePanelTouchStart = (e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+    setIsDraggingPanel(true);
+  };
+
+  const handlePanelTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingPanel) return;
+    
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - touchStartY;
+
+    // Swipe down to minimize (when not minimized)
+    if (diff > 80 && !isMinimized) {
+      setIsMinimized(true);
+      setIsDraggingPanel(false);
+      setIsFiltersExpanded(false);
+    } 
+    // Swipe up to expand (when minimized)
+    else if (diff < -50 && isMinimized) {
+      setIsMinimized(false);
+      setIsDraggingPanel(false);
+    }
+  };
+
+  const handlePanelTouchEnd = () => {
+    setIsDraggingPanel(false);
+  };
+
+  // Long press for voice (mobile)
+  const handleLongPressStart = useRef<NodeJS.Timeout | null>(null);
+  
+  const handleInputTouchStart = (e: React.TouchEvent) => {
+    handleLongPressStart.current = setTimeout(() => {
+      if (recognitionRef.current && !isListening) {
+        toggleVoice();
+        // Haptic feedback if available
+        if ('vibrate' in navigator) {
+          navigator.vibrate(50);
+        }
+      }
+    }, 500); // 500ms long press
+  };
+
+  const handleInputTouchEnd = () => {
+    if (handleLongPressStart.current) {
+      clearTimeout(handleLongPressStart.current);
     }
   };
 
@@ -763,7 +948,7 @@ const StickySearchPanel = ({
     }
   };
 
-  const applySuggestion = (suggestion: string) => {
+  const applyAISuggestion = (suggestion: string) => {
     setSearchQuery(suggestion);
     setShowAISuggestions(false);
     addToRecentSearches(suggestion);
@@ -1090,7 +1275,7 @@ const StickySearchPanel = ({
       searchName: "Search Name",
       save: "Save",
       cancel: "Cancel",
-      keyboardHint: "Press Ctrl+K to search",
+      keyboardHint: "⌘K or Ctrl+K to search • ↑↓ Navigate • Enter Apply",
       analytics: "Analytics",
       export: "Export",
       voiceSearch: "Voice Search",
@@ -1141,7 +1326,7 @@ const StickySearchPanel = ({
       searchName: "Nama Pencarian",
       save: "Simpan",
       cancel: "Batal",
-      keyboardHint: "Tekan Ctrl+K untuk mencari",
+      keyboardHint: "⌘K atau Ctrl+K untuk mencari • ↑↓ Navigasi • Enter Terapkan",
       analytics: "Analitik",
       export: "Ekspor",
       voiceSearch: "Pencarian Suara",
@@ -1186,11 +1371,19 @@ const StickySearchPanel = ({
 
   return (
     <>
-      {/* Sticky Panel with proper positioning */}
+      {/* Sticky Panel with proper positioning and mobile gestures */}
       <div
         ref={panelRef}
         className="sticky top-0 z-40 bg-background shadow-sm"
+        onTouchStart={handlePanelTouchStart}
+        onTouchMove={handlePanelTouchMove}
+        onTouchEnd={handlePanelTouchEnd}
       >
+        {/* Mobile gesture indicator - visible only on mobile */}
+        <div className="md:hidden flex justify-center py-1 bg-muted/30">
+          <div className="w-12 h-1 bg-muted-foreground/30 rounded-full" />
+        </div>
+        
         <motion.div
           initial={false}
           animate={{
@@ -1207,16 +1400,28 @@ const StickySearchPanel = ({
                  {/* Search Input with Autocomplete and Voice */}
                  <div className="relative flex-1">
                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
-                   <Input
-                     ref={searchInputRef}
-                     id="search-input"
-                     placeholder={currentText.search}
-                     value={searchQuery}
-                     onChange={(e) => setSearchQuery(e.target.value)}
-                     onKeyDown={(e) => e.key === 'Enter' && handleQuickSearch()}
-                     onFocus={() => setShowAutocomplete(true)}
-                     className="pl-10 pr-10 h-10 bg-background"
-                   />
+                    <Input
+                      ref={searchInputRef}
+                      id="search-input"
+                      placeholder={currentText.search}
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        fetchIntelligentSuggestions(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && selectedSuggestionIndex === -1) {
+                          handleQuickSearch();
+                        }
+                      }}
+                      onFocus={() => {
+                        setShowAutocomplete(true);
+                        fetchIntelligentSuggestions(searchQuery);
+                      }}
+                      onTouchStart={handleInputTouchStart}
+                      onTouchEnd={handleInputTouchEnd}
+                      className="pl-10 pr-10 h-10 bg-background"
+                    />
                    <Button
                      variant="ghost"
                      size="icon"
@@ -1227,99 +1432,80 @@ const StickySearchPanel = ({
                      <Mic className="h-4 w-4" />
                    </Button>
 
-                  {/* Autocomplete Dropdown */}
-                  <AnimatePresence>
-                    {showAutocomplete && (recentSearches.length > 0 || savedSearches.length > 0) && (
-                      <motion.div
-                        ref={autocompleteRef}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
-                      >
-                        {/* Recent Searches */}
-                        {recentSearches.length > 0 && (
-                          <div className="p-2 border-b border-border">
-                            <div className="flex items-center gap-2 px-2 py-1 text-xs font-medium text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              {currentText.recentSearches}
-                            </div>
-                            {recentSearches.slice(0, 5).map((recent) => (
-                              <button
-                                key={recent.id}
-                                onClick={() => selectRecentSearch(recent.query)}
-                                className="w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors text-sm"
-                              >
-                                {recent.query}
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                   {/* Intelligent Suggestions Dropdown with Keyboard Navigation */}
+                   <AnimatePresence>
+                     {showAutocomplete && (intelligentSuggestions.length > 0 || isLoadingSuggestions) && (
+                       <motion.div
+                         ref={autocompleteRef}
+                         initial={{ opacity: 0, y: -10 }}
+                         animate={{ opacity: 1, y: 0 }}
+                         exit={{ opacity: 0, y: -10 }}
+                         transition={{ duration: 0.2 }}
+                         className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
+                       >
+                         {isLoadingSuggestions ? (
+                           <div className="p-4 text-center text-sm text-muted-foreground">
+                             <Loader2 className="h-4 w-4 animate-spin inline-block mr-2" />
+                             Loading suggestions...
+                           </div>
+                         ) : (
+                           <>
+                             {/* Header */}
+                             <div className="p-2 border-b border-border">
+                               <div className="flex items-center gap-2 px-2 py-1 text-xs font-medium text-muted-foreground">
+                                 <Sparkles className="h-3 w-3" />
+                                 Intelligent Suggestions
+                                 <span className="text-xs text-muted-foreground ml-auto">
+                                   ↑↓ Navigate • Enter Apply • Esc Close
+                                 </span>
+                               </div>
+                             </div>
 
-                        {/* Saved Searches */}
-                        {savedSearches.length > 0 && (
-                          <div className="p-2">
-                            <div className="flex items-center gap-2 px-2 py-1 text-xs font-medium text-muted-foreground">
-                              <Save className="h-3 w-3" />
-                              {currentText.savedSearches}
-                            </div>
-                            {savedSearches.map((saved) => (
-                              <div
-                                key={saved.id}
-                                className="flex items-center justify-between px-3 py-2 hover:bg-accent rounded-md transition-colors group"
-                              >
-                                <button
-                                  onClick={() => loadSavedSearch(saved)}
-                                  className="flex-1 text-left text-sm"
-                                >
-                                  <div className="font-medium">{saved.name}</div>
-                                  <div className="text-xs text-muted-foreground">{saved.query}</div>
-                                </button>
-                                <div className="flex items-center gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      shareSearch(saved);
-                                    }}
-                                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    title={currentText.share}
-                                  >
-                                    <Share2 className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleNotifications(saved.id);
-                                    }}
-                                    className={`h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ${notificationsEnabled[saved.id] ? 'text-primary' : ''}`}
-                                    title={notificationsEnabled[saved.id] ? currentText.notificationsOn : currentText.notificationsOff}
-                                  >
-                                    <Bell className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      deleteSavedSearch(saved.id);
-                                    }}
-                                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                             {/* Suggestions List */}
+                             <div className="p-2">
+                               {intelligentSuggestions.map((suggestion, idx) => (
+                                 <button
+                                   key={idx}
+                                   onClick={() => applySuggestion(suggestion)}
+                                   onMouseEnter={() => setSelectedSuggestionIndex(idx)}
+                                   className={`w-full text-left px-3 py-2 rounded-md transition-colors text-sm ${
+                                     selectedSuggestionIndex === idx 
+                                       ? 'bg-primary text-primary-foreground' 
+                                       : 'hover:bg-accent'
+                                   }`}
+                                 >
+                                   <div className="flex items-center gap-2">
+                                     {idx === 0 && <Sparkles className="h-3 w-3 text-primary" />}
+                                     <span>{suggestion}</span>
+                                   </div>
+                                 </button>
+                               ))}
+                             </div>
+
+                             {/* Footer with recent/saved fallback */}
+                             {(recentSearches.length > 0 || savedSearches.length > 0) && (
+                               <div className="p-2 border-t border-border">
+                                 <div className="text-xs text-muted-foreground px-2 py-1">
+                                   Quick access
+                                 </div>
+                                 <div className="flex flex-wrap gap-1">
+                                   {recentSearches.slice(0, 3).map((recent) => (
+                                     <button
+                                       key={recent.id}
+                                       onClick={() => applySuggestion(recent.query)}
+                                       className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-md transition-colors"
+                                     >
+                                       {recent.query}
+                                     </button>
+                                   ))}
+                                 </div>
+                               </div>
+                             )}
+                           </>
+                         )}
+                       </motion.div>
+                     )}
+                   </AnimatePresence>
                 </div>
 
                  {/* AI Suggest Button */}
@@ -1511,6 +1697,40 @@ const StickySearchPanel = ({
       {/* Spacer to prevent layout shift */}
       <div className={isMinimized ? "h-16" : "h-0"} />
 
+      {/* Keyboard Navigation Hint Banner - Desktop only */}
+      {!isMinimized && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="hidden md:block bg-muted/50 border-b border-border"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+            <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <kbd className="px-2 py-1 bg-background border border-border rounded text-xs">⌘K</kbd>
+                <span>Focus search</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <kbd className="px-2 py-1 bg-background border border-border rounded text-xs">↑</kbd>
+                <kbd className="px-2 py-1 bg-background border border-border rounded text-xs">↓</kbd>
+                <span>Navigate suggestions</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <kbd className="px-2 py-1 bg-background border border-border rounded text-xs">Enter</kbd>
+                <span>Apply</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <kbd className="px-2 py-1 bg-background border border-border rounded text-xs">Esc</kbd>
+                <span>Close</span>
+              </div>
+              <div className="flex items-center gap-1 md:hidden">
+                <span>Long press for voice • Swipe down to minimize</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Save Search Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
         <DialogContent className="sm:max-w-md">
@@ -1678,7 +1898,7 @@ const StickySearchPanel = ({
                 key={idx}
                 variant="outline"
                 className="w-full justify-start text-left h-auto py-3"
-                onClick={() => applySuggestion(suggestion)}
+                onClick={() => applyAISuggestion(suggestion)}
               >
                 {suggestion}
               </Button>
