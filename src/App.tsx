@@ -64,6 +64,7 @@ import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
 import MarketplaceCategory from '@/pages/MarketplaceCategory';
 import VendorRegistration from '@/pages/VendorRegistration';
+import SharedSearch from '@/pages/SharedSearch';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 
@@ -138,6 +139,7 @@ const AppContent = () => {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
           <Route path="/vendor-registration" element={<VendorRegistration />} />
+          <Route path="/shared-search/:shareId" element={<SharedSearch />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
