@@ -5,12 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Search, SlidersHorizontal, Save, Clock, X, Mic, Download, BarChart3, FileText, FileJson, FileSpreadsheet, Sparkles, GitCompare, Loader2, Share2, Bell, Link, QrCode } from 'lucide-react';
+import { Search, SlidersHorizontal, Save, Clock, X, Mic, Download, BarChart3, FileText, FileJson, FileSpreadsheet, Sparkles, GitCompare, Loader2, Share2, Bell, Link, QrCode as QrCodeIcon, History, TrendingUp, Users, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import PropertyAdvancedFilters from './PropertyAdvancedFilters';
+import { QRCodeSVG } from 'qrcode.react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 
 // Schema for saved search name validation
 const savedSearchSchema = z.object({
@@ -72,6 +74,11 @@ const StickySearchPanel = ({
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifHistory, setShowNotifHistory] = useState(false);
+  const [notifFilter, setNotifFilter] = useState<'all' | 'price_drop' | 'new_match'>('all');
+  const [showShareAnalytics, setShowShareAnalytics] = useState<string | null>(null);
+  const [shareStats, setShareStats] = useState<any>(null);
+  const [collaborators, setCollaborators] = useState<{ id: string; name: string; avatar?: string }[]>([]);
   const scrollRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -968,6 +975,108 @@ const StickySearchPanel = ({
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
   };
 
+  // Mark individual notification as read
+  const markNotificationRead = async (notifId: string) => {
+    if (!user?.id) return;
+
+    await supabase
+      .from('search_notifications')
+      .update({ is_read: true })
+      .eq('id', notifId);
+
+    setNotifications(prev => prev.map(n => 
+      n.id === notifId ? { ...n, is_read: true } : n
+    ));
+    setUnreadNotifications(prev => Math.max(0, prev - 1));
+  };
+
+  // Clear all notifications
+  const clearAllNotifications = async () => {
+    if (!user?.id) return;
+
+    await supabase
+      .from('search_notifications')
+      .delete()
+      .eq('user_id', user.id);
+
+    setNotifications([]);
+    setUnreadNotifications(0);
+    
+    toast({
+      title: "Cleared",
+      description: "All notifications have been removed"
+    });
+  };
+
+  // Get filtered notifications
+  const getFilteredNotifications = () => {
+    if (notifFilter === 'all') return notifications;
+    return notifications.filter(n => n.notification_type === notifFilter);
+  };
+
+  // Load share analytics
+  const loadShareAnalytics = async (shareId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('share_analytics')
+        .select('*')
+        .eq('share_id', shareId)
+        .order('timestamp', { ascending: true });
+
+      if (error) throw error;
+
+      // Process analytics data
+      const viewCount = data?.filter(d => d.event_type === 'view').length || 0;
+      const clickCount = data?.filter(d => d.event_type === 'click').length || 0;
+      const referrers = data
+        ?.filter(d => d.event_type === 'view' && d.referrer)
+        .reduce((acc, d) => {
+          const ref = new URL(d.referrer || window.location.origin).hostname;
+          acc[ref] = (acc[ref] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
+      // Time series data (last 7 days)
+      const now = Date.now();
+      const dayMs = 24 * 60 * 60 * 1000;
+      const timeSeries = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(now - (6 - i) * dayMs);
+        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const views = data?.filter(d => {
+          const eventDate = new Date(d.timestamp);
+          return d.event_type === 'view' && eventDate.toDateString() === date.toDateString();
+        }).length || 0;
+        return { date: dateStr, views };
+      });
+
+      const topReferrers = Object.entries(referrers || {})
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5)
+        .map(([domain, count]) => ({ domain, count }));
+
+      setShareStats({
+        viewCount,
+        clickCount,
+        clickRate: viewCount > 0 ? ((clickCount / viewCount) * 100).toFixed(1) : '0',
+        timeSeries,
+        topReferrers
+      });
+      setShowShareAnalytics(shareId);
+      
+      toast({
+        title: "Analytics Loaded",
+        description: `${viewCount} views, ${clickCount} clicks`
+      });
+    } catch (error) {
+      console.error('Analytics error:', error);
+      toast({
+        title: "Analytics Error",
+        description: "Could not load share analytics",
+        variant: "destructive"
+      });
+    }
+  };
+
   const text = {
     en: {
       search: "Search properties, location, or developer...",
@@ -1005,7 +1114,20 @@ const StickySearchPanel = ({
       notificationsOn: "Notifications On",
       newMatches: "New Matches",
       priceDrops: "Price Drops",
-      markAllRead: "Mark All Read"
+      markAllRead: "Mark All Read",
+      clearAll: "Clear All",
+      filterAll: "All",
+      filterPriceDrops: "Price Drops",
+      filterNewMatches: "New Matches",
+      notificationHistory: "Notification History",
+      shareAnalytics: "Share Analytics",
+      views: "Views",
+      clicks: "Clicks",
+      clickRate: "Click Rate",
+      topReferrers: "Top Referrers",
+      viewsOverTime: "Views Over Time",
+      collaborators: "Collaborators",
+      liveEditing: "Live Editing"
     },
     id: {
       search: "Cari properti, lokasi, atau pengembang...",
@@ -1043,7 +1165,20 @@ const StickySearchPanel = ({
       notificationsOn: "Notifikasi Aktif",
       newMatches: "Hasil Baru",
       priceDrops: "Penurunan Harga",
-      markAllRead: "Tandai Semua Dibaca"
+      markAllRead: "Tandai Semua Dibaca",
+      clearAll: "Hapus Semua",
+      filterAll: "Semua",
+      filterPriceDrops: "Penurunan Harga",
+      filterNewMatches: "Hasil Baru",
+      notificationHistory: "Riwayat Notifikasi",
+      shareAnalytics: "Analitik Berbagi",
+      views: "Tampilan",
+      clicks: "Klik",
+      clickRate: "Tingkat Klik",
+      topReferrers: "Rujukan Teratas",
+      viewsOverTime: "Tampilan Seiring Waktu",
+      collaborators: "Kolaborator",
+      liveEditing: "Pengeditan Langsung"
     }
   };
 
@@ -1643,11 +1778,101 @@ const StickySearchPanel = ({
                 <Link className="h-4 w-4" />
               </Button>
             </div>
-            <div className="flex flex-col items-center gap-3 p-4 border rounded-lg">
-              <QrCode className="h-4 w-4 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">QR Code for easy sharing</p>
+            <div className="flex flex-col items-center gap-3 p-4 border rounded-lg bg-muted">
+              <QRCodeSVG 
+                value={shareUrl} 
+                size={200}
+                level="H"
+                includeMargin={true}
+              />
+              <p className="text-sm text-muted-foreground">Scan to visit shared search</p>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share Analytics Modal */}
+      <Dialog open={!!showShareAnalytics} onOpenChange={() => setShowShareAnalytics(null)}>
+        <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              {currentText.shareAnalytics}
+            </DialogTitle>
+            <DialogDescription>
+              Track performance of your shared search link
+            </DialogDescription>
+          </DialogHeader>
+          
+          {shareStats && (
+            <div className="space-y-6 py-4">
+              {/* Key Metrics */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 border rounded-lg">
+                  <p className="text-sm text-muted-foreground">{currentText.views}</p>
+                  <p className="text-3xl font-bold">{shareStats.viewCount}</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <p className="text-sm text-muted-foreground">{currentText.clicks}</p>
+                  <p className="text-3xl font-bold">{shareStats.clickCount}</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <p className="text-sm text-muted-foreground">{currentText.clickRate}</p>
+                  <p className="text-3xl font-bold">{shareStats.clickRate}%</p>
+                </div>
+              </div>
+
+              {/* Views Over Time Chart */}
+              {shareStats.timeSeries && shareStats.timeSeries.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium mb-3">{currentText.viewsOverTime}</h3>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart data={shareStats.timeSeries}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis 
+                        dataKey="date" 
+                        stroke="hsl(var(--muted-foreground))"
+                        style={{ fontSize: '12px' }}
+                      />
+                      <YAxis 
+                        stroke="hsl(var(--muted-foreground))"
+                        style={{ fontSize: '12px' }}
+                      />
+                      <Tooltip 
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--background))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }} 
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="views" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2}
+                        dot={{ fill: 'hsl(var(--primary))' }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+
+              {/* Top Referrers */}
+              {shareStats.topReferrers && shareStats.topReferrers.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium mb-3">{currentText.topReferrers}</h3>
+                  <div className="space-y-2">
+                    {shareStats.topReferrers.map((ref: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <span className="text-sm truncate flex-1">{ref.domain}</span>
+                        <Badge variant="secondary">{ref.count} views</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -1658,26 +1883,63 @@ const StickySearchPanel = ({
             <DialogTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Bell className="h-5 w-5" />
-                {currentText.notifications}
+                {currentText.notificationHistory}
               </span>
-              {notifications.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={markNotificationsRead}
-                >
-                  {currentText.markAllRead}
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {notifications.length > 0 && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={clearAllNotifications}
+                    >
+                      {currentText.clearAll}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={markNotificationsRead}
+                    >
+                      {currentText.markAllRead}
+                    </Button>
+                  </>
+                )}
+              </div>
             </DialogTitle>
           </DialogHeader>
+          
+          {/* Filter Tabs */}
+          <div className="flex gap-2 border-b pb-2">
+            <Button
+              variant={notifFilter === 'all' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setNotifFilter('all')}
+            >
+              {currentText.filterAll}
+            </Button>
+            <Button
+              variant={notifFilter === 'new_match' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setNotifFilter('new_match')}
+            >
+              {currentText.filterNewMatches}
+            </Button>
+            <Button
+              variant={notifFilter === 'price_drop' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setNotifFilter('price_drop')}
+            >
+              {currentText.filterPriceDrops}
+            </Button>
+          </div>
+
           <div className="space-y-2 py-4">
-            {notifications.length === 0 ? (
+            {getFilteredNotifications().length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 No notifications yet
               </div>
             ) : (
-              notifications.map((notif) => (
+              getFilteredNotifications().map((notif) => (
                 <div
                   key={notif.id}
                   className={`p-3 rounded-lg border ${notif.is_read ? 'bg-background' : 'bg-accent'}`}
@@ -1687,19 +1949,32 @@ const StickySearchPanel = ({
                       <p className="font-medium text-sm">{notif.title}</p>
                       <p className="text-sm text-muted-foreground">{notif.message}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(notif.created_at).toLocaleDateString()}
+                        {new Date(notif.created_at).toLocaleDateString()} at{' '}
+                        {new Date(notif.created_at).toLocaleTimeString()}
                       </p>
                     </div>
-                    {notif.notification_type === 'price_drop' && (
-                      <Badge variant="destructive" className="text-xs">
-                        {currentText.priceDrops}
-                      </Badge>
-                    )}
-                    {notif.notification_type === 'new_match' && (
-                      <Badge variant="default" className="text-xs">
-                        {currentText.newMatches}
-                      </Badge>
-                    )}
+                    <div className="flex flex-col items-end gap-1">
+                      {notif.notification_type === 'price_drop' && (
+                        <Badge variant="destructive" className="text-xs">
+                          {currentText.priceDrops}
+                        </Badge>
+                      )}
+                      {notif.notification_type === 'new_match' && (
+                        <Badge variant="default" className="text-xs">
+                          {currentText.newMatches}
+                        </Badge>
+                      )}
+                      {!notif.is_read && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => markNotificationRead(notif.id)}
+                          className="text-xs"
+                        >
+                          Mark Read
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))

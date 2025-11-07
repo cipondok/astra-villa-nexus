@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import PropertyAdvancedFilters from '@/components/search/PropertyAdvancedFilters';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Share2, Clock, MapPin, DollarSign } from 'lucide-react';
+import { Share2, Clock, MapPin, DollarSign, Users, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface SharedSearchData {
@@ -24,16 +25,27 @@ interface SharedSearchData {
 const SharedSearch = () => {
   const { shareId } = useParams<{ shareId: string }>();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [searchData, setSearchData] = useState<SharedSearchData | null>(null);
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [expired, setExpired] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState(0);
 
   useEffect(() => {
     if (!shareId) return;
 
     const fetchSharedSearch = async () => {
       try {
+        // Track analytics - view event
+        await supabase.from('share_analytics').insert({
+          share_id: shareId,
+          event_type: 'view',
+          ip_address: null,
+          user_agent: navigator.userAgent,
+          referrer: document.referrer || window.location.origin
+        });
+
         // Fetch shared search data
         const { data: sharedData, error: sharedError } = await supabase
           .from('shared_searches')
@@ -96,6 +108,33 @@ const SharedSearch = () => {
 
     fetchSharedSearch();
 
+    // Set up real-time presence for collaborative viewing
+    const presenceChannel = supabase.channel(`shared-search-presence-${shareId}`, {
+      config: { presence: { key: user?.id || `anon-${Math.random()}` } }
+    });
+
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState();
+        setOnlineUsers(Object.keys(state).length);
+      })
+      .on('presence', { event: 'join' }, () => {
+        const state = presenceChannel.presenceState();
+        setOnlineUsers(Object.keys(state).length);
+      })
+      .on('presence', { event: 'leave' }, () => {
+        const state = presenceChannel.presenceState();
+        setOnlineUsers(Object.keys(state).length);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({
+            user_id: user?.id || 'anonymous',
+            online_at: new Date().toISOString()
+          });
+        }
+      });
+
     // Set up real-time subscription for live updates
     const channel = supabase
       .channel(`shared-search-${shareId}`)
@@ -118,8 +157,9 @@ const SharedSearch = () => {
 
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(presenceChannel);
     };
-  }, [shareId]);
+  }, [shareId, user?.id]);
 
   const fetchProperties = async (filters: any) => {
     try {
@@ -188,13 +228,25 @@ const SharedSearch = () => {
                 {searchData.user_searches.query}
               </p>
             </div>
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              Expires in {expiresIn} days
-            </Badge>
+            <div className="flex items-center gap-2">
+              {onlineUsers > 0 && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Users className="h-3 w-3" />
+                  {onlineUsers} viewing
+                </Badge>
+              )}
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                Expires in {expiresIn} days
+              </Badge>
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                {searchData.access_count} views
+              </Badge>
+            </div>
           </div>
           <p className="text-sm text-muted-foreground">
-            👁️ Viewed {searchData.access_count} times • Real-time updates enabled
+            👁️ Total views: {searchData.access_count} • {onlineUsers} currently viewing • Real-time updates enabled
           </p>
         </div>
 

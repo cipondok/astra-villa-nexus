@@ -5277,6 +5277,7 @@ export type Database = {
       search_notifications: {
         Row: {
           created_at: string
+          filter_type: string | null
           id: string
           is_read: boolean
           message: string
@@ -5289,6 +5290,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          filter_type?: string | null
           id?: string
           is_read?: boolean
           message: string
@@ -5301,6 +5303,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          filter_type?: string | null
           id?: string
           is_read?: boolean
           message?: string
@@ -5447,6 +5450,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      share_analytics: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          referrer: string | null
+          share_id: string
+          timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          referrer?: string | null
+          share_id: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          referrer?: string | null
+          share_id?: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "share_analytics_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "shared_searches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shared_searches: {
         Row: {
