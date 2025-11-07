@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/PropertyCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 
 interface Property {
   id: string;
@@ -29,6 +30,7 @@ interface Property {
 }
 
 const Search = () => {
+  const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');
@@ -40,6 +42,7 @@ const Search = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const touchStartY = useRef(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const previousCountRef = useRef<number>(0);
   const PULL_THRESHOLD = 80; // Pixels to pull before triggering refresh
 
   const { data: dbProperties = [], isLoading, refetch } = useQuery({
@@ -82,6 +85,13 @@ const Search = () => {
     three_d_model_url: prop.three_d_model_url,
     virtual_tour_url: prop.virtual_tour_url,
   }));
+
+  // Track property count for refresh notifications
+  useEffect(() => {
+    if (!isRefreshing && properties.length > 0) {
+      previousCountRef.current = properties.length;
+    }
+  }, [properties.length, isRefreshing]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -141,7 +151,9 @@ const Search = () => {
       }
 
       try {
-        await refetch();
+        const result = await refetch();
+        const newCount = result.data?.length || 0;
+        const previousCount = previousCountRef.current;
         
         // Show success feedback
         setTimeout(() => {
@@ -152,11 +164,43 @@ const Search = () => {
           if ('vibrate' in navigator) {
             navigator.vibrate([30, 20, 30]);
           }
+
+          // Show toast with results
+          const difference = newCount - previousCount;
+          
+          if (difference > 0) {
+            toast({
+              title: "Search Refreshed",
+              description: `Found ${difference} new ${difference === 1 ? 'property' : 'properties'}! Total: ${newCount}`,
+            });
+          } else if (difference < 0) {
+            toast({
+              title: "Search Refreshed",
+              description: `${Math.abs(difference)} ${Math.abs(difference) === 1 ? 'property' : 'properties'} removed. Total: ${newCount}`,
+            });
+          } else if (newCount === 0) {
+            toast({
+              title: "Search Refreshed",
+              description: "No properties found matching your criteria",
+              variant: "destructive"
+            });
+          } else {
+            toast({
+              title: "Search Refreshed",
+              description: `${newCount} ${newCount === 1 ? 'property' : 'properties'} found`,
+            });
+          }
         }, 500);
       } catch (error) {
         console.error('Refresh failed:', error);
         setIsRefreshing(false);
         setPullDistance(0);
+        
+        toast({
+          title: "Refresh Failed",
+          description: "Unable to refresh search results. Please try again.",
+          variant: "destructive"
+        });
       }
     } else {
       // Didn't pull enough - reset
