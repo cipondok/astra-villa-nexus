@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
+import { Search as SearchIcon, Filter, MapPin, Home, Building2, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,8 +33,16 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || 'all');
+  
+  // Pull-to-refresh state
+  const [isPulling, setIsPulling] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const touchStartY = useRef(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const PULL_THRESHOLD = 80; // Pixels to pull before triggering refresh
 
-  const { data: dbProperties = [], isLoading } = useQuery({
+  const { data: dbProperties = [], isLoading, refetch } = useQuery({
     queryKey: ['search-properties', searchTerm, selectedType, selectedLocation],
     queryFn: async () => {
       let query = supabase.from('properties').select('*');
@@ -89,8 +98,121 @@ const Search = () => {
     setSearchParams({});
   };
 
+  // Pull-to-refresh handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // Only enable pull-to-refresh at the top of the page
+    if (window.scrollY === 0) {
+      touchStartY.current = e.touches[0].clientY;
+      setIsPulling(true);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isPulling || window.scrollY > 0) return;
+
+    const currentY = e.touches[0].clientY;
+    const distance = currentY - touchStartY.current;
+
+    // Only track downward pulls
+    if (distance > 0) {
+      // Add resistance - the further you pull, the harder it gets
+      const resistedDistance = Math.min(distance * 0.5, PULL_THRESHOLD * 1.5);
+      setPullDistance(resistedDistance);
+
+      // Prevent default scrolling when pulling
+      if (distance > 10) {
+        e.preventDefault();
+      }
+    }
+  };
+
+  const handleTouchEnd = async () => {
+    if (!isPulling) return;
+
+    setIsPulling(false);
+
+    // Trigger refresh if pulled past threshold
+    if (pullDistance >= PULL_THRESHOLD) {
+      setIsRefreshing(true);
+      
+      // Haptic feedback
+      if ('vibrate' in navigator) {
+        navigator.vibrate(50);
+      }
+
+      try {
+        await refetch();
+        
+        // Show success feedback
+        setTimeout(() => {
+          setIsRefreshing(false);
+          setPullDistance(0);
+          
+          // Success haptic
+          if ('vibrate' in navigator) {
+            navigator.vibrate([30, 20, 30]);
+          }
+        }, 500);
+      } catch (error) {
+        console.error('Refresh failed:', error);
+        setIsRefreshing(false);
+        setPullDistance(0);
+      }
+    } else {
+      // Didn't pull enough - reset
+      setPullDistance(0);
+    }
+  };
+
+  // Calculate refresh indicator opacity and rotation
+  const indicatorOpacity = Math.min(pullDistance / PULL_THRESHOLD, 1);
+  const indicatorRotation = (pullDistance / PULL_THRESHOLD) * 360;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div 
+      ref={scrollContainerRef}
+      className="min-h-screen bg-background"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Pull-to-Refresh Indicator */}
+      <AnimatePresence>
+        {(isPulling || isRefreshing) && (
+          <motion.div
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ 
+              opacity: isRefreshing ? 1 : indicatorOpacity,
+              y: isRefreshing ? 0 : Math.min(pullDistance - 40, 0)
+            }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
+          >
+            <motion.div
+              animate={{ 
+                rotate: isRefreshing ? 360 : indicatorRotation
+              }}
+              transition={{
+                duration: isRefreshing ? 1 : 0,
+                repeat: isRefreshing ? Infinity : 0,
+                ease: "linear"
+              }}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </motion.div>
+            <span className="text-sm font-medium">
+              {isRefreshing 
+                ? 'Refreshing...' 
+                : pullDistance >= PULL_THRESHOLD 
+                  ? 'Release to refresh' 
+                  : 'Pull to refresh'
+              }
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Search Header */}
       <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-16 z-40">
         <div className="container mx-auto px-4 py-4">
