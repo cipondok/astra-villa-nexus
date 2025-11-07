@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import PropertyAdvancedFilters from '@/components/search/PropertyAdvancedFilters';
+import CollaborativeCursor from '@/components/collaboration/CollaborativeCursor';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,17 @@ const SharedSearch = () => {
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [filters, setFilters] = useState<any>({});
   const [collaborators, setCollaborators] = useState<any[]>([]);
+  const [cursors, setCursors] = useState<Map<string, { x: number; y: number; name: string; color: string }>>(new Map());
+  const channelRef = useRef<any>(null);
+  const throttleRef = useRef<NodeJS.Timeout | null>(null);
+  const sessionUserId = useRef(user?.id || `guest-${Math.random().toString(36).substr(2, 9)}`).current;
+
+  // Generate consistent color for user
+  const getUserColor = (userId: string) => {
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
+    const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return colors[hash % colors.length];
+  };
 
   useEffect(() => {
     if (!shareId) return;
@@ -113,11 +125,26 @@ const SharedSearch = () => {
 
     // Set up real-time collaborative editing channel
     const collabChannel = supabase.channel(`collab-${shareId}`);
+    channelRef.current = collabChannel;
     
     collabChannel
       .on('broadcast', { event: 'filters' }, ({ payload }) => {
         setFilters(payload);
         fetchProperties(payload);
+      })
+      .on('broadcast', { event: 'cursor' }, ({ payload }) => {
+        if (payload.userId !== (user?.id || sessionUserId)) {
+          setCursors(prev => {
+            const newCursors = new Map(prev);
+            newCursors.set(payload.userId, {
+              x: payload.x,
+              y: payload.y,
+              name: payload.name,
+              color: payload.color
+            });
+            return newCursors;
+          });
+        }
       })
       .on('presence', { event: 'sync' }, () => {
         const state = collabChannel.presenceState();
@@ -131,16 +158,25 @@ const SharedSearch = () => {
         setCollaborators(users);
         setOnlineUsers(users.length);
       })
-      .on('presence', { event: 'leave' }, () => {
+      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
         const state = collabChannel.presenceState();
         const users = Object.values(state).flat();
         setCollaborators(users);
         setOnlineUsers(users.length);
+        
+        // Remove cursors of users who left
+        leftPresences.forEach((presence: any) => {
+          setCursors(prev => {
+            const newCursors = new Map(prev);
+            newCursors.delete(presence.user_id);
+            return newCursors;
+          });
+        });
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
           await collabChannel.track({
-            user_id: user?.id || `guest-${Math.random().toString(36).substr(2, 9)}`,
+            user_id: user?.id || sessionUserId,
             name: user?.email?.split('@')[0] || 'Guest',
             online_at: new Date().toISOString()
           });
@@ -148,9 +184,39 @@ const SharedSearch = () => {
       });
 
     return () => {
+      if (throttleRef.current) {
+        clearTimeout(throttleRef.current);
+      }
       supabase.removeChannel(collabChannel);
     };
   }, [shareId, user?.id]);
+
+  // Handle mouse movement with throttling
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!channelRef.current) return;
+
+    if (throttleRef.current) {
+      clearTimeout(throttleRef.current);
+    }
+
+    throttleRef.current = setTimeout(() => {
+      const userId = user?.id || sessionUserId;
+      const name = user?.email?.split('@')[0] || 'Guest';
+      const color = getUserColor(userId);
+
+      channelRef.current?.send({
+        type: 'broadcast',
+        event: 'cursor',
+        payload: {
+          userId,
+          name,
+          color,
+          x: e.clientX,
+          y: e.clientY + window.scrollY
+        }
+      });
+    }, 50);
+  }, [user?.id, user?.email, sessionUserId]);
 
   const fetchProperties = async (filters: any) => {
     try {
@@ -221,7 +287,19 @@ const SharedSearch = () => {
   const expiresIn = Math.ceil((new Date(searchData.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" onMouseMove={handleMouseMove}>
+      {/* Render collaborative cursors */}
+      {Array.from(cursors.entries()).map(([userId, cursor]) => (
+        <CollaborativeCursor
+          key={userId}
+          userId={userId}
+          x={cursor.x}
+          y={cursor.y}
+          name={cursor.name}
+          color={cursor.color}
+        />
+      ))}
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
