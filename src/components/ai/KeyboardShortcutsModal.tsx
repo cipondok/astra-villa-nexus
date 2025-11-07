@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Keyboard } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
 
 const KeyboardShortcutsModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,12 +11,6 @@ const KeyboardShortcutsModal = () => {
       if (e.key === '?' || ((e.metaKey || e.ctrlKey) && e.key === '/')) {
         e.preventDefault();
         setIsOpen(true);
-        console.log('⌨️ Keyboard Shortcuts: Help modal opened');
-        toast({
-          title: "Keyboard Shortcuts",
-          description: "Press ? or Cmd/Ctrl + / to view shortcuts",
-          duration: 2000,
-        });
       }
       
       // ESC to close
