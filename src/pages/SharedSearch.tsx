@@ -31,6 +31,8 @@ const SharedSearch = () => {
   const [loading, setLoading] = useState(true);
   const [expired, setExpired] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState(0);
+  const [filters, setFilters] = useState<any>({});
+  const [collaborators, setCollaborators] = useState<any[]>([]);
 
   useEffect(() => {
     if (!shareId) return;
@@ -85,6 +87,7 @@ const SharedSearch = () => {
         };
 
         setSearchData(combinedData as any);
+        setFilters(searchDetails.filters || {});
 
         // Increment access count
         await supabase
@@ -108,56 +111,44 @@ const SharedSearch = () => {
 
     fetchSharedSearch();
 
-    // Set up real-time presence for collaborative viewing
-    const presenceChannel = supabase.channel(`shared-search-presence-${shareId}`, {
-      config: { presence: { key: user?.id || `anon-${Math.random()}` } }
-    });
-
-    presenceChannel
-      .on('presence', { event: 'sync' }, () => {
-        const state = presenceChannel.presenceState();
-        setOnlineUsers(Object.keys(state).length);
+    // Set up real-time collaborative editing channel
+    const collabChannel = supabase.channel(`collab-${shareId}`);
+    
+    collabChannel
+      .on('broadcast', { event: 'filters' }, ({ payload }) => {
+        setFilters(payload);
+        fetchProperties(payload);
       })
-      .on('presence', { event: 'join' }, () => {
-        const state = presenceChannel.presenceState();
-        setOnlineUsers(Object.keys(state).length);
+      .on('presence', { event: 'sync' }, () => {
+        const state = collabChannel.presenceState();
+        const users = Object.values(state).flat();
+        setCollaborators(users);
+        setOnlineUsers(users.length);
+      })
+      .on('presence', { event: 'join' }, ({ newPresences }) => {
+        const state = collabChannel.presenceState();
+        const users = Object.values(state).flat();
+        setCollaborators(users);
+        setOnlineUsers(users.length);
       })
       .on('presence', { event: 'leave' }, () => {
-        const state = presenceChannel.presenceState();
-        setOnlineUsers(Object.keys(state).length);
+        const state = collabChannel.presenceState();
+        const users = Object.values(state).flat();
+        setCollaborators(users);
+        setOnlineUsers(users.length);
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
-          await presenceChannel.track({
-            user_id: user?.id || 'anonymous',
+          await collabChannel.track({
+            user_id: user?.id || `guest-${Math.random().toString(36).substr(2, 9)}`,
+            name: user?.email?.split('@')[0] || 'Guest',
             online_at: new Date().toISOString()
           });
         }
       });
 
-    // Set up real-time subscription for live updates
-    const channel = supabase
-      .channel(`shared-search-${shareId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'user_searches',
-          filter: `id=eq.${shareId}`
-        },
-        (payload) => {
-          console.log('Search updated:', payload);
-          if (payload.new) {
-            fetchProperties((payload.new as any).filters);
-          }
-        }
-      )
-      .subscribe();
-
     return () => {
-      supabase.removeChannel(channel);
-      supabase.removeChannel(presenceChannel);
+      supabase.removeChannel(collabChannel);
     };
   }, [shareId, user?.id]);
 
@@ -190,6 +181,19 @@ const SharedSearch = () => {
     } catch (error) {
       console.error('Error fetching properties:', error);
     }
+  };
+
+  const updateFilters = (newFilters: any) => {
+    setFilters(newFilters);
+    fetchProperties(newFilters);
+    
+    // Broadcast to other collaborators
+    const channel = supabase.channel(`collab-${shareId}`);
+    channel.send({
+      type: 'broadcast',
+      event: 'filters',
+      payload: newFilters
+    });
   };
 
   if (loading) {
@@ -229,11 +233,24 @@ const SharedSearch = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {onlineUsers > 0 && (
-                <Badge variant="outline" className="flex items-center gap-1">
-                  <Users className="h-3 w-3" />
-                  {onlineUsers} viewing
-                </Badge>
+              {collaborators.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="flex -space-x-2">
+                    {collaborators.slice(0, 3).map((collab: any, i: number) => (
+                      <div
+                        key={i}
+                        className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs border-2 border-background"
+                        title={collab.name}
+                      >
+                        {collab.name?.[0]?.toUpperCase() || 'G'}
+                      </div>
+                    ))}
+                  </div>
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    {collaborators.length} editing
+                  </Badge>
+                </div>
               )}
               <Badge variant="outline" className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
@@ -246,8 +263,17 @@ const SharedSearch = () => {
             </div>
           </div>
           <p className="text-sm text-muted-foreground">
-            👁️ Total views: {searchData.access_count} • {onlineUsers} currently viewing • Real-time updates enabled
+            Real-time collaborative search • {collaborators.length} users editing • Total views: {searchData.access_count}
           </p>
+        </div>
+
+        {/* Collaborative Filter Editor */}
+        <div className="mb-8">
+          <PropertyAdvancedFilters
+            language="en"
+            onFiltersChange={updateFilters}
+            onSearch={() => fetchProperties(filters)}
+          />
         </div>
 
         {/* Results */}
