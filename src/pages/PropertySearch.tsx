@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
-import PropertyAdvancedFilters from '@/components/search/PropertyAdvancedFilters';
+import StickySearchPanel from '@/components/search/StickySearchPanel';
 import AdvancedPropertyFilters, { PropertyFilters } from '@/components/search/AdvancedPropertyFilters';
 import PropertySearchResults from '@/components/search/PropertySearchResults';
 import PropertyMapView from '@/components/search/PropertyMapView';
@@ -455,9 +455,9 @@ const PropertySearch = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Search Filters */}
+        {/* Sticky Search Panel */}
         <div className="mb-8">
-          <PropertyAdvancedFilters
+          <StickySearchPanel
             language={language}
             onFiltersChange={handleFiltersChange}
             onSearch={handleSearch}
