@@ -4988,6 +4988,36 @@ export type Database = {
           },
         ]
       }
+      push_subscriptions: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          search_id: string
+          subscription: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          search_id: string
+          subscription: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          search_id?: string
+          subscription?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       rejection_codes: {
         Row: {
           auto_resubmit_allowed: boolean | null
@@ -5244,6 +5274,45 @@ export type Database = {
         }
         Relationships: []
       }
+      search_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          metadata: Json | null
+          notification_type: string
+          property_id: string | null
+          search_id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          metadata?: Json | null
+          notification_type: string
+          property_id?: string | null
+          search_id: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          metadata?: Json | null
+          notification_type?: string
+          property_id?: string | null
+          search_id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       service_area_mappings: {
         Row: {
           area_type: string
@@ -5376,6 +5445,39 @@ export type Database = {
           property_type?: string
           service_category?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      shared_searches: {
+        Row: {
+          access_count: number
+          created_at: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          owner_id: string
+          search_id: string
+          updated_at: string
+        }
+        Insert: {
+          access_count?: number
+          created_at?: string
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          owner_id: string
+          search_id: string
+          updated_at?: string
+        }
+        Update: {
+          access_count?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          owner_id?: string
+          search_id?: string
+          updated_at?: string
         }
         Relationships: []
       }

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Search, SlidersHorizontal, Save, Clock, X, Mic, Download, BarChart3, FileText, FileJson, FileSpreadsheet, Sparkles, GitCompare, Loader2 } from 'lucide-react';
+import { Search, SlidersHorizontal, Save, Clock, X, Mic, Download, BarChart3, FileText, FileJson, FileSpreadsheet, Sparkles, GitCompare, Loader2, Share2, Bell, Link, QrCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
@@ -66,6 +66,12 @@ const StickySearchPanel = ({
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [compareSearches, setCompareSearches] = useState<[SavedSearch | null, SavedSearch | null]>([null, null]);
+  const [showShareModal, setShowShareModal] = useState<string | null>(null);
+  const [shareUrl, setShareUrl] = useState('');
+  const [notificationsEnabled, setNotificationsEnabled] = useState<Record<string, boolean>>({});
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const scrollRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -194,6 +200,74 @@ const StickySearchPanel = ({
 
     return () => {
       supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
+  // Load notification preferences and listen to notifications
+  useEffect(() => {
+    if (!user?.id) return;
+
+    // Load notification preferences from localStorage
+    try {
+      const prefs = localStorage.getItem(`notifs_${user.id}`);
+      if (prefs) {
+        setNotificationsEnabled(JSON.parse(prefs));
+      }
+    } catch (error) {
+      console.error('Failed to load notification preferences:', error);
+    }
+
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // Fetch unread notifications
+    const fetchNotifications = async () => {
+      const { data } = await supabase
+        .from('search_notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_read', false)
+        .order('created_at', { ascending: false });
+
+      if (data) {
+        setNotifications(data);
+        setUnreadNotifications(data.length);
+      }
+    };
+
+    fetchNotifications();
+
+    // Set up real-time subscription for notifications
+    const notifChannel = supabase
+      .channel('user_notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'search_notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('New notification:', payload);
+          setNotifications(prev => [payload.new, ...prev]);
+          setUnreadNotifications(prev => prev + 1);
+          
+          // Show browser notification
+          if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(payload.new.title, {
+              body: payload.new.message,
+              icon: '/icon-192x192.png'
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(notifChannel);
     };
   }, [user?.id]);
 
@@ -740,6 +814,160 @@ const StickySearchPanel = ({
     return differences;
   };
 
+  // Share search functionality
+  const shareSearch = async (search: SavedSearch) => {
+    try {
+      if (!user?.id) {
+        toast({
+          title: "Sign In Required",
+          description: "Please sign in to share searches",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const shareId = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
+      const { error } = await supabase
+        .from('shared_searches')
+        .insert({
+          id: shareId,
+          search_id: search.id,
+          owner_id: user.id,
+          expires_at: expiresAt.toISOString()
+        });
+
+      if (error) throw error;
+
+      const url = `${window.location.origin}/shared-search/${shareId}`;
+      setShareUrl(url);
+      setShowShareModal(shareId);
+      
+      await navigator.clipboard.writeText(url);
+      
+      toast({
+        title: "Link Copied!",
+        description: "Share this link with anyone. Expires in 30 days."
+      });
+    } catch (error) {
+      console.error('Share error:', error);
+      toast({
+        title: "Share Failed",
+        description: "Could not create shareable link",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Toggle notifications for a search
+  const toggleNotifications = async (searchId: string) => {
+    if (!user?.id) {
+      toast({
+        title: "Sign In Required",
+        description: "Please sign in to enable notifications",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const enabled = !notificationsEnabled[searchId];
+    const newPrefs = { ...notificationsEnabled, [searchId]: enabled };
+    setNotificationsEnabled(newPrefs);
+    localStorage.setItem(`notifs_${user.id}`, JSON.stringify(newPrefs));
+
+    if (enabled) {
+      // Request notification permission
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          await subscribeToPush(searchId);
+          toast({
+            title: "Notifications Enabled",
+            description: "You'll be notified of new matches and price drops"
+          });
+        } else {
+          toast({
+            title: "Permission Denied",
+            description: "Please enable notifications in your browser settings",
+            variant: "destructive"
+          });
+        }
+      }
+    } else {
+      // Unsubscribe
+      await supabase
+        .from('push_subscriptions')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('search_id', searchId);
+      
+      toast({
+        title: "Notifications Disabled",
+        description: "You won't receive alerts for this search"
+      });
+    }
+  };
+
+  // Subscribe to push notifications
+  const subscribeToPush = async (searchId: string) => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      console.error('Push notifications not supported');
+      return;
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      await registration.update();
+
+      // In production, use actual VAPID key
+      const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib37J8Tqx9c5zVK5Y4UgP5MQ7Z3J_YRv2X1k8TqY9c5zVK5Y4UgP5MQ7Z3J';
+      
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+      });
+
+      // Save subscription to database
+      await supabase
+        .from('push_subscriptions')
+        .upsert([{
+          user_id: user?.id,
+          search_id: searchId,
+          subscription: subscription.toJSON() as any
+        }]);
+
+    } catch (error) {
+      console.error('Push subscription error:', error);
+    }
+  };
+
+  // Convert VAPID key
+  const urlBase64ToUint8Array = (base64String: string) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  };
+
+  // Mark notifications as read
+  const markNotificationsRead = async () => {
+    if (!user?.id) return;
+
+    await supabase
+      .from('search_notifications')
+      .update({ is_read: true })
+      .eq('user_id', user.id)
+      .eq('is_read', false);
+
+    setUnreadNotifications(0);
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+  };
+
   const text = {
     en: {
       search: "Search properties, location, or developer...",
@@ -765,7 +993,19 @@ const StickySearchPanel = ({
       selectFirst: "Select first search",
       selectSecond: "Select second search",
       differences: "Differences",
-      similarities: "Similarities"
+      similarities: "Similarities",
+      share: "Share",
+      notifications: "Notifications",
+      notifyMe: "Notify Me",
+      shareLink: "Share Link",
+      copyLink: "Copy Link",
+      qrCode: "QR Code",
+      expiresIn: "Expires in 30 days",
+      notificationsOff: "Notifications Off",
+      notificationsOn: "Notifications On",
+      newMatches: "New Matches",
+      priceDrops: "Price Drops",
+      markAllRead: "Mark All Read"
     },
     id: {
       search: "Cari properti, lokasi, atau pengembang...",
@@ -791,7 +1031,19 @@ const StickySearchPanel = ({
       selectFirst: "Pilih pencarian pertama",
       selectSecond: "Pilih pencarian kedua",
       differences: "Perbedaan",
-      similarities: "Kesamaan"
+      similarities: "Kesamaan",
+      share: "Bagikan",
+      notifications: "Notifikasi",
+      notifyMe: "Beritahu Saya",
+      shareLink: "Bagikan Tautan",
+      copyLink: "Salin Tautan",
+      qrCode: "Kode QR",
+      expiresIn: "Kadaluarsa dalam 30 hari",
+      notificationsOff: "Notifikasi Mati",
+      notificationsOn: "Notifikasi Aktif",
+      newMatches: "Hasil Baru",
+      priceDrops: "Penurunan Harga",
+      markAllRead: "Tandai Semua Dibaca"
     }
   };
 
@@ -894,17 +1146,43 @@ const StickySearchPanel = ({
                                   <div className="font-medium">{saved.name}</div>
                                   <div className="text-xs text-muted-foreground">{saved.query}</div>
                                 </button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteSavedSearch(saved.id);
-                                  }}
-                                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                >
-                                  <X className="h-3 w-3" />
-                                </Button>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      shareSearch(saved);
+                                    }}
+                                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title={currentText.share}
+                                  >
+                                    <Share2 className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleNotifications(saved.id);
+                                    }}
+                                    className={`h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ${notificationsEnabled[saved.id] ? 'text-primary' : ''}`}
+                                    title={notificationsEnabled[saved.id] ? currentText.notificationsOn : currentText.notificationsOff}
+                                  >
+                                    <Bell className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteSavedSearch(saved.id);
+                                    }}
+                                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -925,6 +1203,30 @@ const StickySearchPanel = ({
                  >
                    {isLoadingAI ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                  </Button>
+
+                 {/* Notifications Button */}
+                 <div className="relative">
+                   <Button
+                     variant="outline"
+                     size="default"
+                     onClick={() => {
+                       setShowNotifications(true);
+                       markNotificationsRead();
+                     }}
+                     className="h-10 px-3 sm:px-4 whitespace-nowrap"
+                     title={currentText.notifications}
+                   >
+                     <Bell className="h-4 w-4" />
+                     {unreadNotifications > 0 && (
+                       <Badge
+                         variant="destructive"
+                         className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                       >
+                         {unreadNotifications}
+                       </Badge>
+                     )}
+                   </Button>
+                 </div>
 
                  {/* Compare Button */}
                  <Button
@@ -1308,6 +1610,101 @@ const StickySearchPanel = ({
               ))}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Share Modal */}
+      <Dialog open={!!showShareModal} onOpenChange={() => setShowShareModal(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Share2 className="h-5 w-5" />
+              {currentText.shareLink}
+            </DialogTitle>
+            <DialogDescription>
+              {currentText.expiresIn}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center gap-2">
+              <Input
+                value={shareUrl}
+                readOnly
+                className="flex-1"
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  navigator.clipboard.writeText(shareUrl);
+                  toast({ title: "Copied!", description: "Link copied to clipboard" });
+                }}
+              >
+                <Link className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex flex-col items-center gap-3 p-4 border rounded-lg">
+              <QrCode className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">QR Code for easy sharing</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Notifications Modal */}
+      <Dialog open={showNotifications} onOpenChange={setShowNotifications}>
+        <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Bell className="h-5 w-5" />
+                {currentText.notifications}
+              </span>
+              {notifications.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={markNotificationsRead}
+                >
+                  {currentText.markAllRead}
+                </Button>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2 py-4">
+            {notifications.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No notifications yet
+              </div>
+            ) : (
+              notifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className={`p-3 rounded-lg border ${notif.is_read ? 'bg-background' : 'bg-accent'}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{notif.title}</p>
+                      <p className="text-sm text-muted-foreground">{notif.message}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {new Date(notif.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {notif.notification_type === 'price_drop' && (
+                      <Badge variant="destructive" className="text-xs">
+                        {currentText.priceDrops}
+                      </Badge>
+                    )}
+                    {notif.notification_type === 'new_match' && (
+                      <Badge variant="default" className="text-xs">
+                        {currentText.newMatches}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
