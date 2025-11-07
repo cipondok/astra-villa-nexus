@@ -79,7 +79,7 @@ const StickySearchPanel = ({
   const [showShareAnalytics, setShowShareAnalytics] = useState<string | null>(null);
   const [shareStats, setShareStats] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<{ id: string; name: string; avatar?: string }[]>([]);
-  const scrollRef = useRef(0);
+  const lastScrollY = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<HTMLDivElement>(null);
@@ -337,19 +337,19 @@ const StickySearchPanel = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Handle scroll behavior
+  // Handle scroll behavior - auto-minimize on scroll
   useEffect(() => {
     const handleScroll = () => {
       const current = window.scrollY;
       
-      if (current > 120 && scrollRef.current <= 120) {
+      if (current > 120 && lastScrollY.current <= 120) {
         setIsMinimized(true);
         setIsFiltersExpanded(false);
-      } else if (current < 80 && scrollRef.current >= 80) {
+      } else if (current < 80 && lastScrollY.current >= 80) {
         setIsMinimized(false);
       }
       
-      scrollRef.current = current;
+      lastScrollY.current = current;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -1186,28 +1186,23 @@ const StickySearchPanel = ({
 
   return (
     <>
-      <motion.div
+      {/* Sticky Panel with proper positioning */}
+      <div
         ref={panelRef}
-        className={`${
-          isMinimized ? 'fixed top-0 left-0 right-0 z-40' : 'relative'
-        } bg-background transition-all duration-300`}
-        initial={false}
-        animate={{
-          boxShadow: isMinimized ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : '0 0 0 0 rgba(0, 0, 0, 0)'
-        }}
+        className="sticky top-0 z-40 bg-background shadow-sm"
       >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatePresence mode="wait">
-          {isMinimized ? (
-            // Minimized View
-            <motion.div
-              key="minimized"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="py-3"
-            >
+        <motion.div
+          initial={false}
+          animate={{
+            height: isMinimized ? 64 : 'auto'
+          }}
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          className="overflow-hidden"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {isMinimized ? (
+              // Minimized View
+              <div className="py-3">
               <div className="flex items-center gap-2 sm:gap-3">
                  {/* Search Input with Autocomplete and Voice */}
                  <div className="relative flex-1">
@@ -1497,31 +1492,24 @@ const StickySearchPanel = ({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
-          ) : (
-            // Full View
-            <motion.div
-              key="full"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="py-4"
-            >
-              <PropertyAdvancedFilters
-                language={language}
-                onFiltersChange={onFiltersChange}
-                onSearch={onSearch}
-                initialFilters={initialFilters}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </div>
+            ) : (
+              // Full View
+              <div className="py-4">
+                <PropertyAdvancedFilters
+                  language={language}
+                  onFiltersChange={onFiltersChange}
+                  onSearch={onSearch}
+                  initialFilters={initialFilters}
+                />
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
 
-        {/* Spacer to prevent layout shift when sticky */}
-        {isMinimized && <div className="h-16" />}
-      </motion.div>
+      {/* Spacer to prevent layout shift */}
+      <div className={isMinimized ? "h-16" : "h-0"} />
 
       {/* Save Search Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
