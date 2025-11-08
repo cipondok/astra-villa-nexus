@@ -188,29 +188,30 @@ const AdvancedPropertyFilters = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onToggle}>
-      <DialogTrigger asChild>
-        <Button
-          onClick={onToggle}
-          variant="default"
-          className="relative group overflow-hidden bg-gradient-to-r from-primary via-primary/90 to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-full px-6 py-2.5 font-semibold animate-in zoom-in-50 duration-500"
-        >
-          {/* Animated shine effect */}
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-          
-          <div className="relative flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            <span className="hidden sm:inline">Filters</span>
-            {getActiveFiltersCount() > 0 && (
-              <Badge className="ml-1 bg-white text-primary px-2 py-0.5 text-xs font-bold animate-pulse">
-                {getActiveFiltersCount()}
-              </Badge>
-            )}
-          </div>
-        </Button>
-      </DialogTrigger>
-      
-      <DialogContent className="max-w-6xl max-h-[92vh] overflow-hidden p-0 bg-gradient-to-br from-background via-background to-muted/30 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 animate-in zoom-in-90 slide-in-from-bottom-10 duration-500">
+    <>
+      {/* Trigger Button - Rendered outside Dialog */}
+      <Button
+        onClick={onToggle}
+        variant="default"
+        className="relative group overflow-hidden bg-gradient-to-r from-primary via-primary/90 to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-full px-6 py-2.5 font-semibold animate-in zoom-in-50 duration-500"
+      >
+        {/* Animated shine effect */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+        
+        <div className="relative flex items-center gap-2">
+          <Filter className="h-4 w-4" />
+          <span className="hidden sm:inline">Filters</span>
+          {getActiveFiltersCount() > 0 && (
+            <Badge className="ml-1 bg-white text-primary px-2 py-0.5 text-xs font-bold animate-pulse">
+              {getActiveFiltersCount()}
+            </Badge>
+          )}
+        </div>
+      </Button>
+
+      {/* Dialog */}
+      <Dialog open={isOpen} onOpenChange={onToggle}>
+        <DialogContent className="max-w-6xl max-h-[92vh] overflow-hidden p-0 bg-gradient-to-br from-background via-background to-muted/30 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 animate-in zoom-in-90 slide-in-from-bottom-10 duration-500">
         {/* Decorative background blur elements */}
         <div className="absolute top-0 left-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 right-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -574,6 +575,7 @@ const AdvancedPropertyFilters = ({
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 
