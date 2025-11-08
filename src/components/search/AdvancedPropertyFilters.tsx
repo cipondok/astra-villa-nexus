@@ -7,11 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   X, Filter, RotateCcw, Search, DollarSign, MapPin, Home, 
-  Bed, Bath, Maximize2, SortAsc, Building2, Sparkles
+  Bed, Bath, Maximize2, SortAsc, Building2, Sparkles, Map, List, Save, Trash2, Loader2
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { usePropertyCount } from "@/hooks/usePropertyCount";
+import { useFilterPresets } from "@/hooks/useFilterPresets";
+import { SavePresetDialog } from "./SavePresetDialog";
+import { FilterMapView } from "./FilterMapView";
 
 export interface PropertyFilters {
   searchQuery: string;
@@ -145,6 +150,11 @@ const AdvancedPropertyFilters = ({
   onToggle 
 }: AdvancedPropertyFiltersProps) => {
   const [localFilters, setLocalFilters] = useState(filters);
+  const [activeTab, setActiveTab] = useState<"filters" | "map">("filters");
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  
+  const { count, isLoading: countLoading } = usePropertyCount(localFilters);
+  const { savedPresets, savePreset, deletePreset, loadPreset } = useFilterPresets();
 
   const updateFilter = (key: keyof PropertyFilters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
@@ -172,6 +182,19 @@ const AdvancedPropertyFilters = ({
     
     setLocalFilters(newFilters);
     onFiltersChange(newFilters);
+  };
+
+  const handleSavePreset = (name: string) => {
+    savePreset(name, localFilters);
+  };
+
+  const handleLoadPreset = (presetId: string) => {
+    const presetFilters = loadPreset(presetId);
+    if (presetFilters) {
+      const newFilters = { ...localFilters, ...presetFilters };
+      setLocalFilters(newFilters);
+      onFiltersChange(newFilters);
+    }
   };
 
   const getActiveFiltersCount = () => {
@@ -225,9 +248,18 @@ const AdvancedPropertyFilters = ({
                 <span className="font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                   Advanced Filters
                 </span>
-                <span className="text-xs font-normal text-muted-foreground">
-                  🎯 Refine your search with precision
-                </span>
+                <div className="flex items-center gap-2 text-xs font-normal text-muted-foreground">
+                  <span>🎯 Refine your search</span>
+                  {count !== null && (
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 animate-in zoom-in-50">
+                      {countLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        `${count} properties`
+                      )}
+                    </Badge>
+                  )}
+                </div>
               </div>
               {getActiveFiltersCount() > 0 && (
                 <Badge className="bg-gradient-to-r from-primary to-accent text-white px-3 py-1.5 text-sm font-bold shadow-lg animate-in zoom-in-50 duration-300 delay-200">
@@ -260,9 +292,25 @@ const AdvancedPropertyFilters = ({
               Clear All
             </Button>
           </DialogTitle>
+          
+          {/* Tab Navigation */}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "filters" | "map")} className="mt-4">
+            <TabsList className="grid w-full grid-cols-2 bg-muted/30">
+              <TabsTrigger value="filters" className="gap-2">
+                <List className="h-4 w-4" />
+                Filters
+              </TabsTrigger>
+              <TabsTrigger value="map" className="gap-2">
+                <Map className="h-4 w-4" />
+                Map View
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </DialogHeader>
 
-        <div className="relative overflow-y-auto max-h-[calc(92vh-180px)] px-6 py-6 space-y-6">
+        <div className="relative overflow-y-auto max-h-[calc(92vh-240px)]">
+          <Tabs value={activeTab} className="w-full">
+            <TabsContent value="filters" className="px-6 py-6 space-y-6 m-0">
           {/* Filter Presets */}
           <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500 delay-200">
             <div className="flex items-center gap-3 mb-4">
@@ -552,9 +600,72 @@ const AdvancedPropertyFilters = ({
               </SelectContent>
             </Select>
           </div>
+
+          {/* Saved Presets Section */}
+          {savedPresets.length > 0 && (
+            <>
+              <Separator className="my-6" />
+              <div className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-accent/5 to-transparent border border-accent/10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Save className="h-5 w-5 text-accent" />
+                    <Label className="text-base font-semibold">My Saved Presets</Label>
+                  </div>
+                  <Badge variant="secondary" className="bg-accent/10 text-accent">
+                    {savedPresets.length}
+                  </Badge>
+                </div>
+                <div className="space-y-2">
+                  {savedPresets.map((preset) => (
+                    <div
+                      key={preset.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50 hover:border-accent/40 transition-all group"
+                    >
+                      <button
+                        onClick={() => handleLoadPreset(preset.id)}
+                        className="flex-1 text-left"
+                      >
+                        <p className="font-medium text-sm group-hover:text-accent transition-colors">
+                          {preset.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(preset.createdAt).toLocaleDateString()}
+                        </p>
+                      </button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deletePreset(preset.id)}
+                        className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+            </TabsContent>
+
+            <TabsContent value="map" className="m-0 h-[calc(92vh-240px)]">
+              <div className="w-full h-full p-6">
+                <FilterMapView filters={localFilters} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
         
-        <div className="sticky bottom-0 bg-gradient-to-t from-background via-background to-transparent p-6 border-t flex gap-4">
+        <div className="sticky bottom-0 bg-gradient-to-t from-background via-background to-transparent p-6 border-t flex gap-3">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowSaveDialog(true)}
+            className="gap-2"
+          >
+            <Save className="h-4 w-4" />
+            Save
+          </Button>
           <Button 
             variant="outline" 
             size="lg"
@@ -571,6 +682,12 @@ const AdvancedPropertyFilters = ({
             Apply Filters
           </Button>
         </div>
+
+        <SavePresetDialog
+          open={showSaveDialog}
+          onOpenChange={setShowSaveDialog}
+          onSave={handleSavePreset}
+        />
         </DialogContent>
     </Dialog>
   );
