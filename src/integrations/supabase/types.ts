@@ -5352,6 +5352,51 @@ export type Database = {
         }
         Relationships: []
       }
+      security_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          description: string
+          id: string
+          ip_address: unknown
+          is_read: boolean | null
+          is_resolved: boolean | null
+          location_data: Json | null
+          metadata: Json | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          description: string
+          id?: string
+          ip_address?: unknown
+          is_read?: boolean | null
+          is_resolved?: boolean | null
+          location_data?: Json | null
+          metadata?: Json | null
+          severity?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          ip_address?: unknown
+          is_read?: boolean | null
+          is_resolved?: boolean | null
+          location_data?: Json | null
+          metadata?: Json | null
+          severity?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       service_area_mappings: {
         Row: {
           area_type: string

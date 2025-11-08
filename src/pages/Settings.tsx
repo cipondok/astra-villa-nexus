@@ -19,12 +19,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette } from 'lucide-react';
+import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette, ChevronDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { UserPreferences } from '@/components/settings/UserPreferences';
 import { PasswordChange } from '@/components/settings/PasswordChange';
 import { EmailChange } from '@/components/settings/EmailChange';
 import { ActivityLog } from '@/components/settings/ActivityLog';
+import { SecurityAlerts } from '@/components/settings/SecurityAlerts';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -37,6 +39,13 @@ const Settings = () => {
   const [clearCacheType, setClearCacheType] = useState<'all' | 'sw' | 'query'>('all');
   const [isClearing, setIsClearing] = useState(false);
   const [isLoadingCache, setIsLoadingCache] = useState(true);
+  const [sectionsOpen, setSectionsOpen] = useState({
+    security: true,
+    preferences: false,
+    activity: false,
+    theme: false,
+    cache: true,
+  });
   const [cacheStats, setCacheStats] = useState<{
     swCacheSize: number;
     swCacheMB: number;
@@ -148,120 +157,136 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <div className="max-w-lg mx-auto px-3 py-4 sm:px-4">{/* Compact mobile layout */}
+      <div className="max-w-lg mx-auto px-3 py-3">{/* Ultra compact */}
         {/* Header */}
-        <div className="mb-4">
+        <div className="mb-3">
           <Button
             variant="ghost"
-            className="mb-2 -ml-2 hover:bg-primary/10 transition-colors h-8 text-sm"
+            className="mb-1.5 -ml-2 hover:bg-primary/10 transition-colors h-7 text-xs"
             onClick={() => navigate('/profile')}
           >
-            <ArrowLeft className="h-3.5 w-3.5 mr-1.5 text-primary" />
+            <ArrowLeft className="h-3 w-3 mr-1 text-primary" />
             <span className="text-foreground">Back</span>
           </Button>
 
-          <div className="flex items-center gap-2.5 mb-1">
+          <div className="flex items-center gap-2 mb-0.5">
             {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={profile.full_name || 'User'}
-                className="w-9 h-9 rounded-lg object-cover shadow-lg border-2 border-border"
+                className="w-8 h-8 rounded-lg object-cover shadow-lg border border-border"
               />
             ) : (
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                 <User className="h-4 w-4 text-primary" />
               </div>
             )}
             <div>
-              <h1 className="text-xl font-bold gradient-text">Settings</h1>
+              <h1 className="text-lg font-bold gradient-text">Settings</h1>
               <p className="text-xs text-muted-foreground">Manage preferences</p>
             </div>
           </div>
         </div>
 
-        <div className="space-y-3">
-          {/* Account Information Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
-            <CardHeader className="pb-2 px-4 pt-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <User className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-base">Account Information</CardTitle>
-                  <CardDescription className="text-xs">Your profile details</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2 px-4 pb-3">
-              <div className="p-2.5 rounded-lg bg-muted/30 border border-border/50">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</span>
-                <p className="font-semibold text-foreground mt-0.5 text-sm break-all">{user.email}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="p-2.5 rounded-lg bg-muted/30 border border-border/50">
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</span>
-                  <p className="font-semibold text-foreground mt-0.5 text-sm">{profile?.full_name || 'Not set'}</p>
-                </div>
-                <div className="p-2.5 rounded-lg bg-muted/30 border border-border/50">
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</span>
-                  <p className="font-semibold text-foreground mt-0.5 text-sm capitalize">{profile?.role || 'User'}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="space-y-2">
+          {/* Security Alerts - Always expanded */}
+          <SecurityAlerts />
 
-          {/* Email Change */}
-          <EmailChange />
+          {/* Email & Password Security - Collapsible */}
+          <Collapsible
+            open={sectionsOpen.security}
+            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, security: open }))}
+          >
+            <Card className="professional-card border-2 overflow-hidden">
+              <CollapsibleTrigger asChild>
+                <CardHeader className="pb-2 px-3 pt-2.5 cursor-pointer hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                        <User className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-sm">Account Security</CardTitle>
+                        <CardDescription className="text-xs">Email & Password</CardDescription>
+                      </div>
+                    </div>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${sectionsOpen.security ? 'rotate-180' : ''}`} />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="px-3 pb-2.5 space-y-2">
+                  <EmailChange />
+                  <PasswordChange />
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
-          {/* Password Change */}
-          <PasswordChange />
+          {/* User Preferences - Collapsible */}
+          <Collapsible
+            open={sectionsOpen.preferences}
+            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, preferences: open }))}
+          >
+            <div onClick={() => setSectionsOpen(prev => ({ ...prev, preferences: !prev.preferences }))}>
+              <UserPreferences />
+            </div>
+          </Collapsible>
 
-          {/* User Preferences Card */}
-          <UserPreferences />
+          {/* Activity Log - Collapsible */}
+          <Collapsible
+            open={sectionsOpen.activity}
+            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, activity: open }))}
+          >
+            <div onClick={() => setSectionsOpen(prev => ({ ...prev, activity: !prev.activity }))}>
+              <ActivityLog />
+            </div>
+          </Collapsible>
 
-          {/* Activity Log */}
-          <ActivityLog />
-
-          {/* Theme Preferences Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.5s' }}>
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
-            <CardHeader className="pb-2 px-4 pt-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Palette className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div>
-                  <CardTitle className="text-base">Appearance</CardTitle>
-                  <CardDescription className="text-xs">Customize your theme</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2 px-4 pb-3">
-              <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
-                <div className="flex items-center justify-between mb-3 sm:mb-4 gap-3">
-                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-500 flex-shrink-0 ${
+          {/* Theme - Collapsible */}
+          <Collapsible
+            open={sectionsOpen.theme}
+            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, theme: open }))}
+          >
+            <Card className="professional-card border-2 overflow-hidden">
+              <CollapsibleTrigger asChild>
+                <CardHeader className="pb-2 px-3 pt-2.5 cursor-pointer hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                        <Palette className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-sm">Appearance</CardTitle>
+                        <CardDescription className="text-xs">Theme settings</CardDescription>
+                      </div>
+                    </div>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${sectionsOpen.theme ? 'rotate-180' : ''}`} />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-2 px-3 pb-2.5">
+              <div className="p-3 rounded-lg bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
+                <div className="flex items-center justify-between mb-2 gap-2">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-500 flex-shrink-0 ${
                       theme === 'dark' 
                         ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 rotate-0' 
                         : 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rotate-180'
                     }`}>
                       {theme === 'dark' ? (
-                        <Moon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400 animate-scale-in" />
+                        <Moon className="h-4 w-4 text-blue-400" />
                       ) : (
-                        <Sun className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-600 animate-scale-in" />
+                        <Sun className="h-4 w-4 text-yellow-600" />
                       )}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-bold text-foreground text-sm sm:text-base">
+                      <h3 className="font-bold text-foreground text-sm">
                         {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                       </h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                        {theme === 'dark' 
-                          ? 'Easy on the eyes' 
-                          : 'Bright interface'
-                        }
+                      <p className="text-xs text-muted-foreground truncate">
+                        {theme === 'dark' ? 'Easy on the eyes' : 'Bright interface'}
                       </p>
                     </div>
                   </div>
@@ -270,10 +295,8 @@ const Settings = () => {
                     onCheckedChange={(checked) => {
                       setTheme(checked ? 'dark' : 'light');
                       toast({
-                        title: checked ? "Dark Mode Enabled" : "Light Mode Enabled",
-                        description: checked 
-                          ? "Interface switched to dark theme" 
-                          : "Interface switched to light theme",
+                        title: checked ? "Dark Mode" : "Light Mode",
+                        description: checked ? "Dark theme enabled" : "Light theme enabled",
                       });
                     }}
                     className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500 flex-shrink-0"
@@ -281,73 +304,55 @@ const Settings = () => {
                 </div>
                 
                 {/* Theme Preview */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => {
                       setTheme('light');
-                      toast({
-                        title: "Light Mode",
-                        description: "Theme changed to light mode",
-                      });
+                      toast({ title: "Light Mode", description: "Theme changed to light mode" });
                     }}
-                    className={`p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                    className={`p-2.5 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
                       theme === 'light'
                         ? 'border-yellow-500 bg-gradient-to-br from-yellow-50 to-orange-50 shadow-lg'
                         : 'border-border bg-card hover:border-yellow-300'
                     }`}
                   >
-                    <Sun className={`h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1 sm:mb-2 ${
-                      theme === 'light' ? 'text-yellow-600' : 'text-muted-foreground'
-                    }`} />
-                    <p className={`text-xs font-semibold ${
-                      theme === 'light' ? 'text-yellow-700' : 'text-muted-foreground'
-                    }`}>
-                      Light
-                    </p>
+                    <Sun className={`h-4 w-4 mx-auto mb-1 ${theme === 'light' ? 'text-yellow-600' : 'text-muted-foreground'}`} />
+                    <p className={`text-xs font-semibold ${theme === 'light' ? 'text-yellow-700' : 'text-muted-foreground'}`}>Light</p>
                   </button>
                   
                   <button
                     onClick={() => {
                       setTheme('dark');
-                      toast({
-                        title: "Dark Mode",
-                        description: "Theme changed to dark mode",
-                      });
+                      toast({ title: "Dark Mode", description: "Theme changed to dark mode" });
                     }}
-                    className={`p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                    className={`p-2.5 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
                       theme === 'dark'
                         ? 'border-blue-500 bg-gradient-to-br from-blue-950 to-purple-950 shadow-lg'
                         : 'border-border bg-card hover:border-blue-300'
                     }`}
                   >
-                    <Moon className={`h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1 sm:mb-2 ${
-                      theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'
-                    }`} />
-                    <p className={`text-xs font-semibold ${
-                      theme === 'dark' ? 'text-blue-300' : 'text-muted-foreground'
-                    }`}>
-                      Dark
-                    </p>
+                    <Moon className={`h-4 w-4 mx-auto mb-1 ${theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'}`} />
+                    <p className={`text-xs font-semibold ${theme === 'dark' ? 'text-blue-300' : 'text-muted-foreground'}`}>Dark</p>
                   </button>
                 </div>
               </div>
             </CardContent>
-          </Card>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
-          {/* Cache Management Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.55s' }}>
+          {/* Cache Management Card - Always expanded */}
+          <Card className="professional-card border-2 overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-2 px-3 pt-2.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                    <HardDrive className="h-5 w-5 text-accent" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
+                    <HardDrive className="h-3.5 w-3.5 text-accent" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">Cache Management</CardTitle>
-                    <CardDescription className="text-sm">
-                      Clear app cache to free up space and resolve loading issues
-                    </CardDescription>
+                    <CardTitle className="text-sm">Cache Management</CardTitle>
+                    <CardDescription className="text-xs">App performance & storage</CardDescription>
                   </div>
                 </div>
                 <Button

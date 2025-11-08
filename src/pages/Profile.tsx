@@ -108,40 +108,40 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <div className="max-w-lg mx-auto px-3 py-4 sm:px-4">{/* Compact mobile layout */}
+      <div className="max-w-lg mx-auto px-3 py-3">{/* Ultra compact matching Settings */}
         {/* Header Section */}
-        <div className="mb-4 animate-fade-in">
-          <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+        <div className="mb-3 animate-fade-in">
+          <div className="flex items-center gap-2 mb-0.5">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
               <User className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h1 className="text-xl font-bold gradient-text">Profile</h1>
+              <h1 className="text-lg font-bold gradient-text">Profile</h1>
               <p className="text-xs text-muted-foreground">Your account details</p>
             </div>
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {/* Profile Card */}
           <Card className="professional-card border-2 overflow-hidden animate-fade-in">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
-            <CardHeader className="pb-2 px-4 pt-3">
+            <CardHeader className="pb-1.5 px-3 pt-2.5">
               <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
                       alt={profile.full_name || 'User'}
-                      className="w-12 h-12 rounded-xl object-cover shadow-lg border-2 border-border flex-shrink-0"
+                      className="w-11 h-11 rounded-lg object-cover shadow-lg border-2 border-border flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-lg flex-shrink-0">
-                      <User className="h-6 w-6 text-white" />
+                    <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                      <User className="h-5 w-5 text-white" />
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-base font-bold text-foreground truncate">{profile?.full_name || 'User'}</h2>
+                    <h2 className="text-sm font-bold text-foreground truncate">{profile?.full_name || 'User'}</h2>
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                   </div>
                 </div>
@@ -149,18 +149,18 @@ const Profile = () => {
                   variant="outline"
                   size="icon"
                   onClick={() => setIsEditing(!isEditing)}
-                  className={`rounded-lg transition-all h-8 w-8 flex-shrink-0 ${
+                  className={`rounded-lg transition-all h-7 w-7 flex-shrink-0 ${
                     isEditing 
                       ? 'bg-primary/10 border-primary/30 hover:bg-primary/20' 
                       : 'hover:bg-primary/5 hover:border-primary/30'
                   }`}
                   disabled={isSaving}
                 >
-                  <Edit2 className={`h-4 w-4 ${isEditing ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <Edit2 className={`h-3.5 w-3.5 ${isEditing ? 'text-primary' : 'text-muted-foreground'}`} />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="space-y-2 px-4 pb-3">
+            <CardContent className="space-y-2 px-3 pb-2.5">
               {isEditing ? (
                 <div className="space-y-2.5 animate-fade-in">
                   {/* Avatar Upload Section */}
@@ -229,22 +229,22 @@ const Profile = () => {
                     />
                   </div>
 
-                  <div className="flex gap-2 pt-1.5">
+                  <div className="flex gap-1.5 pt-1">
                     <Button
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="flex-1 gap-1.5 h-9 shadow-lg text-sm"
+                      className="flex-1 gap-1.5 h-8 shadow-lg text-xs"
                     >
-                      <Save className="h-3.5 w-3.5" />
+                      <Save className="h-3 w-3" />
                       {isSaving ? 'Saving...' : 'Save'}
                     </Button>
                     <Button
                       variant="outline"
                       onClick={handleCancel}
                       disabled={isSaving}
-                      className="flex-1 gap-1.5 h-9 text-sm"
+                      className="flex-1 gap-1.5 h-8 text-xs"
                     >
-                      <X className="h-3.5 w-3.5" />
+                      <X className="h-3 w-3" />
                       Cancel
                     </Button>
                   </div>
@@ -297,31 +297,31 @@ const Profile = () => {
           {/* Actions Card */}
           <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
-            <CardContent className="p-3 space-y-2">
+            <CardContent className="p-2.5 space-y-1.5">
               <Button 
                 variant="outline" 
-                className="w-full justify-start gap-2 h-9 hover:bg-primary/5 hover:border-primary/30 transition-all text-sm"
+                className="w-full justify-start gap-2 h-8 hover:bg-primary/5 hover:border-primary/30 transition-all text-xs"
                 onClick={() => navigate('/settings')}
               >
-                <Settings className="h-4 w-4 text-primary" />
+                <Settings className="h-3.5 w-3.5 text-primary" />
                 <span className="font-semibold">Settings</span>
               </Button>
               
               <Button 
                 variant="outline" 
-                className="w-full justify-start gap-2 h-9 hover:bg-accent/5 hover:border-accent/30 transition-all text-sm"
+                className="w-full justify-start gap-2 h-8 hover:bg-accent/5 hover:border-accent/30 transition-all text-xs"
                 onClick={() => navigate('/')}
               >
-                <Home className="h-4 w-4 text-accent" />
+                <Home className="h-3.5 w-3.5 text-accent" />
                 <span className="font-semibold">Home</span>
               </Button>
               
               <Button 
                 variant="destructive" 
-                className="w-full justify-start gap-2 h-9 shadow-lg hover:shadow-xl transition-all text-sm"
+                className="w-full justify-start gap-2 h-8 shadow-lg hover:shadow-xl transition-all text-xs"
                 onClick={handleSignOut}
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-3.5 w-3.5" />
                 <span className="font-semibold">Sign Out</span>
               </Button>
             </CardContent>
