@@ -30,6 +30,7 @@ const PropertyListView = lazy(() => import("@/components/search/PropertyListView
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
 const AdvancedPropertyFilters = lazy(() => import("@/components/search/AdvancedPropertyFilters"));
+const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
 const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
 const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
 const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
@@ -385,6 +386,33 @@ const Index = () => {
     setHasSearched(false);
   };
 
+  const handleRemoveFilter = (key: keyof PropertyFilters, value?: any) => {
+    const newFilters = { ...filters };
+    
+    if (key === 'propertyTypes' && value) {
+      newFilters.propertyTypes = newFilters.propertyTypes.filter(t => t !== value);
+    } else if (key === 'searchQuery') {
+      newFilters.searchQuery = "";
+    } else if (key === 'location') {
+      newFilters.location = "all";
+    } else if (key === 'listingType') {
+      newFilters.listingType = "all";
+    } else if (key === 'bedrooms') {
+      newFilters.bedrooms = null;
+    } else if (key === 'bathrooms') {
+      newFilters.bathrooms = null;
+    } else if (key === 'priceRange') {
+      newFilters.priceRange = [0, 50000000000];
+    } else if (key === 'minArea') {
+      newFilters.minArea = null;
+      newFilters.maxArea = null;
+    } else if (key === 'sortBy') {
+      newFilters.sortBy = "newest";
+    }
+    
+    setFilters(newFilters);
+  };
+
   // Mobile-first responsive layout wrapper
   const content = (
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative container-responsive"
@@ -509,7 +537,16 @@ const Index = () => {
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
                 <div className="p-3 md:p-4 lg:p-6">
-                  <div className="flex items-center justify-between mb-6">
+                  {/* Active Filter Pills */}
+                  <Suspense fallback={null}>
+                    <ActiveFilterPills
+                      filters={filters}
+                      onRemoveFilter={handleRemoveFilter}
+                      onClearAll={handleClearFilters}
+                    />
+                  </Suspense>
+                  
+                  <div className="flex items-center justify-between mb-6 mt-4">
                     <div>
                       <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                         {t.searchResults}

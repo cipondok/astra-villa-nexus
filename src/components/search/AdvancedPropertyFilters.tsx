@@ -8,9 +8,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { 
   X, Filter, RotateCcw, Search, DollarSign, MapPin, Home, 
-  Bed, Bath, Maximize2, SortAsc, Building2, Sparkles, Map, List, Save, Trash2, Loader2
+  Bed, Bath, Maximize2, SortAsc, Building2, Sparkles, Map, List, Save, Trash2, Loader2, ChevronDown
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { usePropertyCount } from "@/hooks/usePropertyCount";
@@ -156,6 +157,19 @@ const AdvancedPropertyFilters = ({
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
   const [currentFilterId, setCurrentFilterId] = useState<string | null>(null);
+  const [expandedSections, setExpandedSections] = useState({
+    search: true,
+    price: true,
+    location: true,
+    propertyTypes: false,
+    rooms: false,
+    area: false,
+    sort: false,
+  });
+  
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
   
   const { count, isLoading: countLoading } = usePropertyCount(localFilters);
   const { savedPresets, savePreset, deletePreset, loadPreset } = useFilterPresets();
@@ -441,233 +455,293 @@ const AdvancedPropertyFilters = ({
 
           <Separator className="my-3" />
           
-          {/* Search Query */}
-          <div className="space-y-2 p-3 rounded-lg bg-muted/30 border border-primary/10">
-            <div className="flex items-center gap-2">
-              <Search className="h-3.5 w-3.5 text-primary" />
-              <Label htmlFor="search" className="text-sm font-semibold">Search</Label>
-            </div>
-            <Input
-              id="search"
-              placeholder="e.g., Modern apartment, 3 BR villa..."
-              value={localFilters.searchQuery}
-              onChange={(e) => updateFilter('searchQuery', e.target.value)}
-              className="h-9 text-sm border-primary/20 focus:border-primary/40 bg-background"
-            />
-          </div>
+          {/* Search Query - Collapsible */}
+          <Collapsible open={expandedSections.search} onOpenChange={() => toggleSection('search')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
+                <Search className="h-3.5 w-3.5 text-primary" />
+                <Label className="text-sm font-semibold cursor-pointer">Search</Label>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.search ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-2">
+              <div className="p-3 rounded-lg bg-muted/30 border border-primary/10">
+                <Input
+                  placeholder="e.g., Modern apartment, 3 BR villa..."
+                  value={localFilters.searchQuery}
+                  onChange={(e) => updateFilter('searchQuery', e.target.value)}
+                  className="h-9 text-sm border-primary/20 focus:border-primary/40 bg-background"
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <Separator className="my-3" />
 
-          {/* Price Range */}
-          <div className="space-y-2 p-3 rounded-lg bg-muted/30 border border-border">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-3.5 w-3.5 text-green-600" />
-              <Label className="text-sm font-semibold">Price Range</Label>
-            </div>
-            <div className="px-2 py-3">
-              <Slider
-                value={localFilters.priceRange}
-                onValueChange={(value) => updateFilter('priceRange', value)}
-                max={50000000000}
-                step={100000000}
-                className="w-full"
-              />
-            </div>
-            <div className="flex justify-between items-center bg-background rounded-lg p-2 text-xs">
-              <div className="text-center flex-1">
-                <p className="text-muted-foreground">Min</p>
-                <p className="font-bold text-green-600">
-                  IDR {(localFilters.priceRange[0] / 1000000000).toFixed(1)}B
-                </p>
+          {/* Price Range - Collapsible */}
+          <Collapsible open={expandedSections.price} onOpenChange={() => toggleSection('price')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-3.5 w-3.5 text-green-600" />
+                <Label className="text-sm font-semibold cursor-pointer">Price Range</Label>
               </div>
-              <div className="h-6 w-px bg-border mx-2" />
-              <div className="text-center flex-1">
-                <p className="text-muted-foreground">Max</p>
-                <p className="font-bold text-green-600">
-                  IDR {(localFilters.priceRange[1] / 1000000000).toFixed(1)}B
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <Separator className="my-3" />
-
-          {/* Location and Listing Type */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-              <div className="flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-blue-600" />
-                <Label className="text-sm font-semibold">Location</Label>
-              </div>
-              <Select value={localFilters.location} onValueChange={(value) => updateFilter('location', value)}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Locations</SelectItem>
-                  {locations.map((location) => (
-                    <SelectItem key={location} value={location}>{location}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-              <div className="flex items-center gap-1.5">
-                <Building2 className="h-3.5 w-3.5 text-purple-600" />
-                <Label className="text-sm font-semibold">Listing Type</Label>
-              </div>
-              <Select value={localFilters.listingType} onValueChange={(value) => updateFilter('listingType', value)}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="sale">For Sale</SelectItem>
-                  <SelectItem value="rent">For Rent</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <Separator className="my-3" />
-
-          {/* Property Types */}
-          <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-            <div className="flex items-center gap-1.5">
-              <Home className="h-3.5 w-3.5 text-orange-600" />
-              <Label className="text-sm font-semibold">Property Types</Label>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
-              {propertyTypes.map((type) => (
-                <div 
-                  key={type} 
-                  className={`flex items-center space-x-1.5 p-2 rounded-md border text-xs cursor-pointer transition-all ${
-                    localFilters.propertyTypes.includes(type) 
-                      ? 'bg-orange-500/10 border-orange-500/40' 
-                      : 'bg-background border-border hover:border-orange-500/30'
-                  }`}
-                  onClick={() => togglePropertyType(type)}
-                >
-                  <Checkbox
-                    id={type}
-                    checked={localFilters.propertyTypes.includes(type)}
-                    className="h-3.5 w-3.5"
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.price ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-2">
+              <div className="p-3 rounded-lg bg-muted/30 border border-border">
+                <div className="px-2 py-3">
+                  <Slider
+                    value={localFilters.priceRange}
+                    onValueChange={(value) => updateFilter('priceRange', value)}
+                    max={50000000000}
+                    step={100000000}
+                    className="w-full"
                   />
-                  <Label 
-                    htmlFor={type} 
-                    className="text-xs font-medium capitalize cursor-pointer flex-1"
-                  >
-                    {type}
-                  </Label>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="flex justify-between items-center bg-background rounded-lg p-2 text-xs">
+                  <div className="text-center flex-1">
+                    <p className="text-muted-foreground">Min</p>
+                    <p className="font-bold text-green-600">
+                      IDR {(localFilters.priceRange[0] / 1000000000).toFixed(1)}B
+                    </p>
+                  </div>
+                  <div className="h-6 w-px bg-border mx-2" />
+                  <div className="text-center flex-1">
+                    <p className="text-muted-foreground">Max</p>
+                    <p className="font-bold text-green-600">
+                      IDR {(localFilters.priceRange[1] / 1000000000).toFixed(1)}B
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <Separator className="my-3" />
 
-          {/* Bedrooms and Bathrooms */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-              <div className="flex items-center gap-1.5">
+          {/* Location and Listing Type - Collapsible */}
+          <Collapsible open={expandedSections.location} onOpenChange={() => toggleSection('location')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-3.5 w-3.5 text-blue-600" />
+                <Label className="text-sm font-semibold cursor-pointer">Location & Type</Label>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.location ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-blue-600" />
+                    <Label className="text-sm font-semibold">Location</Label>
+                  </div>
+                  <Select value={localFilters.location} onValueChange={(value) => updateFilter('location', value)}>
+                    <SelectTrigger className="h-9 text-sm bg-background">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-[100]">
+                      <SelectItem value="all">All Locations</SelectItem>
+                      {locations.map((location) => (
+                        <SelectItem key={location} value={location}>{location}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
+                  <div className="flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5 text-purple-600" />
+                    <Label className="text-sm font-semibold">Listing Type</Label>
+                  </div>
+                  <Select value={localFilters.listingType} onValueChange={(value) => updateFilter('listingType', value)}>
+                    <SelectTrigger className="h-9 text-sm bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-[100]">
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="sale">For Sale</SelectItem>
+                      <SelectItem value="rent">For Rent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Separator className="my-3" />
+
+          {/* Property Types - Collapsible */}
+          <Collapsible open={expandedSections.propertyTypes} onOpenChange={() => toggleSection('propertyTypes')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
+                <Home className="h-3.5 w-3.5 text-orange-600" />
+                <Label className="text-sm font-semibold cursor-pointer">Property Types</Label>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.propertyTypes ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-2">
+              <div className="p-2.5 rounded-lg bg-muted/30 border border-border">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
+                  {propertyTypes.map((type) => (
+                    <div 
+                      key={type} 
+                      className={`flex items-center space-x-1.5 p-2 rounded-md border text-xs cursor-pointer transition-all ${
+                        localFilters.propertyTypes.includes(type) 
+                          ? 'bg-orange-500/10 border-orange-500/40' 
+                          : 'bg-background border-border hover:border-orange-500/30'
+                      }`}
+                      onClick={() => togglePropertyType(type)}
+                    >
+                      <Checkbox
+                        id={type}
+                        checked={localFilters.propertyTypes.includes(type)}
+                        className="h-3.5 w-3.5"
+                      />
+                      <Label 
+                        htmlFor={type} 
+                        className="text-xs font-medium capitalize cursor-pointer flex-1"
+                      >
+                        {type}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Separator className="my-3" />
+
+          {/* Bedrooms and Bathrooms - Collapsible */}
+          <Collapsible open={expandedSections.rooms} onOpenChange={() => toggleSection('rooms')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
                 <Bed className="h-3.5 w-3.5 text-pink-600" />
-                <Label className="text-sm font-semibold">Bedrooms</Label>
+                <Label className="text-sm font-semibold cursor-pointer">Bedrooms & Bathrooms</Label>
               </div>
-              <Select 
-                value={localFilters.bedrooms || ""} 
-                onValueChange={(value) => updateFilter('bedrooms', value === 'any' ? null : value)}
-              >
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue placeholder="Any" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Any</SelectItem>
-                  {[1, 2, 3, 4, 5, 6].map((num) => (
-                    <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.rooms ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
+                  <div className="flex items-center gap-1.5">
+                    <Bed className="h-3.5 w-3.5 text-pink-600" />
+                    <Label className="text-sm font-semibold">Bedrooms</Label>
+                  </div>
+                  <Select 
+                    value={localFilters.bedrooms || ""} 
+                    onValueChange={(value) => updateFilter('bedrooms', value === 'any' ? null : value)}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-background">
+                      <SelectValue placeholder="Any" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-[100]">
+                      <SelectItem value="any">Any</SelectItem>
+                      {[1, 2, 3, 4, 5, 6].map((num) => (
+                        <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-              <div className="flex items-center gap-1.5">
-                <Bath className="h-3.5 w-3.5 text-cyan-600" />
-                <Label className="text-sm font-semibold">Bathrooms</Label>
+                <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
+                  <div className="flex items-center gap-1.5">
+                    <Bath className="h-3.5 w-3.5 text-cyan-600" />
+                    <Label className="text-sm font-semibold">Bathrooms</Label>
+                  </div>
+                  <Select 
+                    value={localFilters.bathrooms || ""} 
+                    onValueChange={(value) => updateFilter('bathrooms', value === 'any' ? null : value)}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-background">
+                      <SelectValue placeholder="Any" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-[100]">
+                      <SelectItem value="any">Any</SelectItem>
+                      {[1, 2, 3, 4, 5, 6].map((num) => (
+                        <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <Select 
-                value={localFilters.bathrooms || ""} 
-                onValueChange={(value) => updateFilter('bathrooms', value === 'any' ? null : value)}
-              >
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue placeholder="Any" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Any</SelectItem>
-                  {[1, 2, 3, 4, 5, 6].map((num) => (
-                    <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <Separator className="my-3" />
 
-          {/* Area Range */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-              <div className="flex items-center gap-1.5">
+          {/* Area Range - Collapsible */}
+          <Collapsible open={expandedSections.area} onOpenChange={() => toggleSection('area')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
                 <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
-                <Label htmlFor="minArea" className="text-sm font-semibold">Min Area (sqm)</Label>
+                <Label className="text-sm font-semibold cursor-pointer">Area Range</Label>
               </div>
-              <Input
-                id="minArea"
-                type="number"
-                placeholder="0"
-                value={localFilters.minArea || ""}
-                onChange={(e) => updateFilter('minArea', e.target.value ? parseInt(e.target.value) : null)}
-                className="h-9 text-sm"
-              />
-            </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.area ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
+                  <div className="flex items-center gap-1.5">
+                    <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
+                    <Label htmlFor="minArea" className="text-sm font-semibold">Min Area (sqm)</Label>
+                  </div>
+                  <Input
+                    id="minArea"
+                    type="number"
+                    placeholder="0"
+                    value={localFilters.minArea || ""}
+                    onChange={(e) => updateFilter('minArea', e.target.value ? parseInt(e.target.value) : null)}
+                    className="h-9 text-sm bg-background"
+                  />
+                </div>
 
-            <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-              <div className="flex items-center gap-1.5">
-                <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
-                <Label htmlFor="maxArea" className="text-sm font-semibold">Max Area (sqm)</Label>
+                <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
+                  <div className="flex items-center gap-1.5">
+                    <Maximize2 className="h-3.5 w-3.5 text-teal-600" />
+                    <Label htmlFor="maxArea" className="text-sm font-semibold">Max Area (sqm)</Label>
+                  </div>
+                  <Input
+                    id="maxArea"
+                    type="number"
+                    placeholder="No limit"
+                    value={localFilters.maxArea || ""}
+                    onChange={(e) => updateFilter('maxArea', e.target.value ? parseInt(e.target.value) : null)}
+                    className="h-9 text-sm bg-background"
+                  />
+                </div>
               </div>
-              <Input
-                id="maxArea"
-                type="number"
-                placeholder="No limit"
-                value={localFilters.maxArea || ""}
-                onChange={(e) => updateFilter('maxArea', e.target.value ? parseInt(e.target.value) : null)}
-                className="h-9 text-sm"
-              />
-            </div>
-          </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <Separator className="my-3" />
 
-          {/* Sort Options */}
-          <div className="space-y-2 p-2.5 rounded-lg bg-muted/30 border border-border">
-            <div className="flex items-center gap-1.5">
-              <SortAsc className="h-3.5 w-3.5 text-indigo-600" />
-              <Label className="text-sm font-semibold">Sort By</Label>
-            </div>
-            <Select value={localFilters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
-              <SelectTrigger className="h-9 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sortOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Sort Options - Collapsible */}
+          <Collapsible open={expandedSections.sort} onOpenChange={() => toggleSection('sort')}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group">
+              <div className="flex items-center gap-2">
+                <SortAsc className="h-3.5 w-3.5 text-indigo-600" />
+                <Label className="text-sm font-semibold cursor-pointer">Sort By</Label>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expandedSections.sort ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-2">
+              <div className="p-2.5 rounded-lg bg-muted/30 border border-border">
+                <Select value={localFilters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
+                  <SelectTrigger className="h-9 text-sm bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-[100]">
+                    {sortOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Saved Presets Section */}
           {savedPresets.length > 0 && (
