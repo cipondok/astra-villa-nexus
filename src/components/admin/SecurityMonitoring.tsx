@@ -66,14 +66,14 @@ const SecurityMonitoring = () => {
     queryFn: async () => {
       try {
         const { data, error } = await supabase
-          .from('user_sessions')
-          .select('id,user_id,is_active,ip_address,user_agent,created_at,expires_at')
-          .order('created_at', { ascending: false })
+          .from('user_devices')
+          .select('id,user_id,device_name,device_type,browser_name,ip_address,last_used_at,first_seen_at,is_trusted')
+          .order('last_used_at', { ascending: false })
           .limit(50);
         if (error) throw error;
         return data ?? [];
       } catch (err) {
-        console.error('Error fetching user_sessions:', err);
+        console.error('Error fetching user_devices:', err);
         return [];
       }
     },
@@ -287,11 +287,11 @@ const SecurityMonitoring = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>User</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Trust Status</TableHead>
                       <TableHead>IP Address</TableHead>
-                      <TableHead>User Agent</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Expires</TableHead>
+                      <TableHead>Device Info</TableHead>
+                      <TableHead>First Seen</TableHead>
+                      <TableHead>Last Used</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -316,8 +316,8 @@ const SecurityMonitoring = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant={session.is_active ? 'default' : 'secondary'}>
-                              {session.is_active ? 'Active' : 'Inactive'}
+                            <Badge variant={session.is_trusted ? 'default' : 'secondary'}>
+                              {session.is_trusted ? 'Trusted' : 'Untrusted'}
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -327,17 +327,17 @@ const SecurityMonitoring = () => {
                           </TableCell>
                           <TableCell>
                             <div className="text-sm text-muted-foreground truncate max-w-xs">
-                              {session.user_agent || 'N/A'}
+                              {session.device_name || `${session.browser_name || 'Unknown'} - ${session.device_type || 'Unknown'}`}
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="text-sm">
-                              {new Date(session.created_at).toLocaleString()}
+                              {new Date(session.first_seen_at).toLocaleString()}
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="text-sm">
-                              {session.expires_at ? new Date(session.expires_at).toLocaleString() : 'N/A'}
+                              {new Date(session.last_used_at).toLocaleString()}
                             </div>
                           </TableCell>
                         </TableRow>

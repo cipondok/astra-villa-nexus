@@ -5850,6 +5850,48 @@ export type Database = {
         }
         Relationships: []
       }
+      user_2fa_settings: {
+        Row: {
+          backup_codes: string[] | null
+          created_at: string
+          id: string
+          is_enabled: boolean | null
+          last_verified_at: string | null
+          method: string
+          phone_number: string | null
+          phone_verified: boolean | null
+          secret: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backup_codes?: string[] | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          last_verified_at?: string | null
+          method?: string
+          phone_number?: string | null
+          phone_verified?: boolean | null
+          secret?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backup_codes?: string[] | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          last_verified_at?: string | null
+          method?: string
+          phone_number?: string | null
+          phone_verified?: boolean | null
+          secret?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activity_logs: {
         Row: {
           activity_type: string
@@ -5977,6 +6019,63 @@ export type Database = {
           login_time?: string | null
           session_token?: string
           user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_devices: {
+        Row: {
+          browser_name: string | null
+          browser_version: string | null
+          created_at: string
+          device_fingerprint: string
+          device_name: string | null
+          device_type: string | null
+          first_seen_at: string | null
+          id: string
+          ip_address: unknown
+          is_trusted: boolean | null
+          last_used_at: string | null
+          location_data: Json | null
+          os_name: string | null
+          os_version: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          browser_name?: string | null
+          browser_version?: string | null
+          created_at?: string
+          device_fingerprint: string
+          device_name?: string | null
+          device_type?: string | null
+          first_seen_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_trusted?: boolean | null
+          last_used_at?: string | null
+          location_data?: Json | null
+          os_name?: string | null
+          os_version?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          browser_name?: string | null
+          browser_version?: string | null
+          created_at?: string
+          device_fingerprint?: string
+          device_name?: string | null
+          device_type?: string | null
+          first_seen_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_trusted?: boolean | null
+          last_used_at?: string | null
+          location_data?: Json | null
+          os_name?: string | null
+          os_version?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -6394,50 +6493,51 @@ export type Database = {
       }
       user_sessions: {
         Row: {
-          created_at: string | null
-          device_fingerprint: string | null
-          expires_at: string | null
+          browser: string | null
+          created_at: string
+          device_name: string | null
+          device_type: string | null
+          expires_at: string
           id: string
           ip_address: unknown
-          is_active: boolean | null
+          is_current: boolean | null
+          last_activity_at: string
           location_data: Json | null
+          os: string | null
           session_token: string
-          user_agent: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
-          created_at?: string | null
-          device_fingerprint?: string | null
-          expires_at?: string | null
+          browser?: string | null
+          created_at?: string
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string
           id?: string
           ip_address?: unknown
-          is_active?: boolean | null
+          is_current?: boolean | null
+          last_activity_at?: string
           location_data?: Json | null
+          os?: string | null
           session_token: string
-          user_agent?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
-          created_at?: string | null
-          device_fingerprint?: string | null
-          expires_at?: string | null
+          browser?: string | null
+          created_at?: string
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string
           id?: string
           ip_address?: unknown
-          is_active?: boolean | null
+          is_current?: boolean | null
+          last_activity_at?: string
           location_data?: Json | null
+          os?: string | null
           session_token?: string
-          user_agent?: string | null
-          user_id?: string | null
+          user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_sessions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user_subscriptions: {
         Row: {

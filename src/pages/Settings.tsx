@@ -28,6 +28,7 @@ import { EmailChange } from '@/components/settings/EmailChange';
 import { ActivityLog } from '@/components/settings/ActivityLog';
 import { SecurityAlerts } from '@/components/settings/SecurityAlerts';
 import { TwoFactorAuth } from '@/components/settings/TwoFactorAuth';
+import { DeviceManagement } from '@/components/settings/DeviceManagement';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -216,6 +217,7 @@ const Settings = () => {
               <SecurityAlerts />
             </Card>
             <TwoFactorAuth />
+            <DeviceManagement />
           </TabsContent>
 
           {/* Account Tab - Email & Password */}
