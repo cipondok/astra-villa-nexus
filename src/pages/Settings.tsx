@@ -22,6 +22,8 @@ import {
 import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { UserPreferences } from '@/components/settings/UserPreferences';
+import { PasswordChange } from '@/components/settings/PasswordChange';
+import { EmailChange } from '@/components/settings/EmailChange';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -145,88 +147,94 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <div className="max-w-xl mx-auto px-4 py-6 sm:px-6">{/* Mobile-optimized slim layout */}
+      <div className="max-w-lg mx-auto px-3 py-4 sm:px-4">{/* Compact mobile layout */}
         {/* Header */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-4">
           <Button
             variant="ghost"
-            className="mb-3 sm:mb-4 -ml-2 hover:bg-primary/10 transition-colors h-9 sm:h-10 text-sm sm:text-base"
+            className="mb-2 -ml-2 hover:bg-primary/10 transition-colors h-8 text-sm"
             onClick={() => navigate('/profile')}
           >
-            <ArrowLeft className="h-4 w-4 mr-2 text-primary" />
-            <span className="text-foreground">Back to Profile</span>
+            <ArrowLeft className="h-3.5 w-3.5 mr-1.5 text-primary" />
+            <span className="text-foreground">Back</span>
           </Button>
 
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-2.5 mb-1">
             {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={profile.full_name || 'User'}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shadow-lg border-2 border-border"
+                className="w-9 h-9 rounded-lg object-cover shadow-lg border-2 border-border"
               />
             ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <User className="h-4 w-4 text-primary" />
               </div>
             )}
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold gradient-text">Settings</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage your preferences</p>
+              <h1 className="text-xl font-bold gradient-text">Settings</h1>
+              <p className="text-xs text-muted-foreground">Manage preferences</p>
             </div>
           </div>
         </div>
 
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3">
           {/* Account Information Card */}
           <Card className="professional-card border-2 overflow-hidden animate-fade-in">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
-            <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <CardHeader className="pb-2 px-4 pt-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <User className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-base sm:text-xl">Account Information</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Your profile details</CardDescription>
+                  <CardTitle className="text-base">Account Information</CardTitle>
+                  <CardDescription className="text-xs">Your profile details</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
-              <div className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
+            <CardContent className="space-y-2 px-4 pb-3">
+              <div className="p-2.5 rounded-lg bg-muted/30 border border-border/50">
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</span>
-                <p className="font-semibold text-foreground mt-1 text-sm sm:text-base break-all">{user.email}</p>
+                <p className="font-semibold text-foreground mt-0.5 text-sm break-all">{user.email}</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <div className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-2.5 rounded-lg bg-muted/30 border border-border/50">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</span>
-                  <p className="font-semibold text-foreground mt-1 text-sm sm:text-base">{profile?.full_name || 'Not set'}</p>
+                  <p className="font-semibold text-foreground mt-0.5 text-sm">{profile?.full_name || 'Not set'}</p>
                 </div>
-                <div className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
+                <div className="p-2.5 rounded-lg bg-muted/30 border border-border/50">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</span>
-                  <p className="font-semibold text-foreground mt-1 text-sm sm:text-base capitalize">{profile?.role || 'User'}</p>
+                  <p className="font-semibold text-foreground mt-0.5 text-sm capitalize">{profile?.role || 'User'}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Email Change */}
+          <EmailChange />
+
+          {/* Password Change */}
+          <PasswordChange />
+
           {/* User Preferences Card */}
           <UserPreferences />
 
           {/* Theme Preferences Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.35s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
-            <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Palette className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
+            <CardHeader className="pb-2 px-4 pt-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Palette className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-base sm:text-xl">Appearance</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Customize your theme</CardDescription>
+                  <CardTitle className="text-base">Appearance</CardTitle>
+                  <CardDescription className="text-xs">Customize your theme</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
+            <CardContent className="space-y-2 px-4 pb-3">
               <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
                 <div className="flex items-center justify-between mb-3 sm:mb-4 gap-3">
                   <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
@@ -323,7 +331,7 @@ const Settings = () => {
           </Card>
 
           {/* Cache Management Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
