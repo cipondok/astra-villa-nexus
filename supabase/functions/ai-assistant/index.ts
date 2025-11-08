@@ -17,6 +17,15 @@ serve(async (req) => {
   }
 
   try {
+    // Validate LOVABLE_API_KEY is configured
+    if (!lovableApiKey) {
+      console.error('LOVABLE_API_KEY is not configured');
+      return new Response(JSON.stringify({ error: 'AI service is not properly configured. Please contact support.' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const rawBody = await req.json();
     
@@ -89,6 +98,7 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
     ];
 
     // Call Lovable AI with streaming enabled
+    console.log('Calling Lovable AI gateway...');
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -186,7 +196,14 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
         });
       }
       
-      throw new Error('AI gateway error');
+      if (response.status === 503) {
+        return new Response(JSON.stringify({ error: 'AI service is temporarily unavailable. Please try again in a moment.' }), {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      throw new Error(`AI gateway error: ${response.status} ${errorText}`);
     }
 
     // Return the streaming response directly
