@@ -144,65 +144,65 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <div className="max-w-2xl mx-auto p-4 sm:p-6">{/* Slim compact layout */}
+      <div className="max-w-xl mx-auto px-4 py-6 sm:px-6">{/* Mobile-optimized slim layout */}
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Button
             variant="ghost"
-            className="mb-4 -ml-2 hover:bg-primary/10 transition-colors"
+            className="mb-3 sm:mb-4 -ml-2 hover:bg-primary/10 transition-colors h-9 sm:h-10 text-sm sm:text-base"
             onClick={() => navigate('/profile')}
           >
             <ArrowLeft className="h-4 w-4 mr-2 text-primary" />
             <span className="text-foreground">Back to Profile</span>
           </Button>
 
-          <div className="flex items-center gap-4 mb-2">
+          <div className="flex items-center gap-3 mb-2">
             {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={profile.full_name || 'User'}
-                className="w-12 h-12 rounded-xl object-cover shadow-lg border-2 border-border"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shadow-lg border-2 border-border"
               />
             ) : (
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <User className="h-6 w-6 text-primary" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               </div>
             )}
             <div>
-              <h1 className="text-4xl font-bold gradient-text">Settings</h1>
-              <p className="text-muted-foreground mt-1">Manage your preferences and cache</p>
+              <h1 className="text-2xl sm:text-4xl font-bold gradient-text">Settings</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage your preferences</p>
             </div>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Account Information Card */}
           <Card className="professional-card border-2 overflow-hidden animate-fade-in">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <User className="h-5 w-5 text-primary" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">Account Information</CardTitle>
-                  <CardDescription className="text-sm">Your profile details</CardDescription>
+                  <CardTitle className="text-base sm:text-xl">Account Information</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Your profile details</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 rounded-lg bg-muted/30 border border-border/50">
+            <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
+              <div className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</span>
-                <p className="font-semibold text-foreground mt-1">{user.email}</p>
+                <p className="font-semibold text-foreground mt-1 text-sm sm:text-base break-all">{user.email}</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg bg-muted/30 border border-border/50">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</span>
-                  <p className="font-semibold text-foreground mt-1">{profile?.full_name || 'Not set'}</p>
+                  <p className="font-semibold text-foreground mt-1 text-sm sm:text-base">{profile?.full_name || 'Not set'}</p>
                 </div>
-                <div className="p-4 rounded-lg bg-muted/30 border border-border/50">
+                <div className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</span>
-                  <p className="font-semibold text-foreground mt-1 capitalize">{profile?.role || 'User'}</p>
+                  <p className="font-semibold text-foreground mt-1 text-sm sm:text-base capitalize">{profile?.role || 'User'}</p>
                 </div>
               </div>
             </CardContent>
@@ -211,40 +211,40 @@ const Settings = () => {
           {/* Theme Preferences Card */}
           <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Palette className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Palette className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">Appearance</CardTitle>
-                  <CardDescription className="text-sm">Customize your theme preferences</CardDescription>
+                  <CardTitle className="text-base sm:text-xl">Appearance</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Customize your theme</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-5 rounded-xl bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 ${
+            <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
+              <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
+                <div className="flex items-center justify-between mb-3 sm:mb-4 gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-500 flex-shrink-0 ${
                       theme === 'dark' 
                         ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 rotate-0' 
                         : 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rotate-180'
                     }`}>
                       {theme === 'dark' ? (
-                        <Moon className="h-6 w-6 text-blue-400 animate-scale-in" />
+                        <Moon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400 animate-scale-in" />
                       ) : (
-                        <Sun className="h-6 w-6 text-yellow-600 animate-scale-in" />
+                        <Sun className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-600 animate-scale-in" />
                       )}
                     </div>
-                    <div>
-                      <h3 className="font-bold text-foreground">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-foreground text-sm sm:text-base">
                         {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground truncate">
                         {theme === 'dark' 
-                          ? 'Easy on the eyes in low light' 
-                          : 'Bright and clear interface'
+                          ? 'Easy on the eyes' 
+                          : 'Bright interface'
                         }
                       </p>
                     </div>
@@ -260,12 +260,12 @@ const Settings = () => {
                           : "Interface switched to light theme",
                       });
                     }}
-                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500"
+                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500 flex-shrink-0"
                   />
                 </div>
                 
                 {/* Theme Preview */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <button
                     onClick={() => {
                       setTheme('light');
@@ -274,13 +274,13 @@ const Settings = () => {
                         description: "Theme changed to light mode",
                       });
                     }}
-                    className={`p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                    className={`p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
                       theme === 'light'
                         ? 'border-yellow-500 bg-gradient-to-br from-yellow-50 to-orange-50 shadow-lg'
                         : 'border-border bg-card hover:border-yellow-300'
                     }`}
                   >
-                    <Sun className={`h-6 w-6 mx-auto mb-2 ${
+                    <Sun className={`h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1 sm:mb-2 ${
                       theme === 'light' ? 'text-yellow-600' : 'text-muted-foreground'
                     }`} />
                     <p className={`text-xs font-semibold ${
@@ -298,13 +298,13 @@ const Settings = () => {
                         description: "Theme changed to dark mode",
                       });
                     }}
-                    className={`p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                    className={`p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
                       theme === 'dark'
                         ? 'border-blue-500 bg-gradient-to-br from-blue-950 to-purple-950 shadow-lg'
                         : 'border-border bg-card hover:border-blue-300'
                     }`}
                   >
-                    <Moon className={`h-6 w-6 mx-auto mb-2 ${
+                    <Moon className={`h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1 sm:mb-2 ${
                       theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'
                     }`} />
                     <p className={`text-xs font-semibold ${
