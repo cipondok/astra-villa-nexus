@@ -1860,7 +1860,7 @@ const IPhoneSearchPanel = ({
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Price Range - Collapsible */}
+                  {/* Price Range - Collapsible with Slider */}
                   <Collapsible
                     open={openSections.priceRange}
                     onOpenChange={(open) => setOpenSections(prev => ({ ...prev, priceRange: open }))}
@@ -1871,24 +1871,42 @@ const IPhoneSearchPanel = ({
                         <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
                           <DollarSign className="h-3.5 w-3.5 text-primary" />
                           Price Range
-                          {filters.priceRange && <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">{filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}</Badge>}
+                          {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
+                            <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">
+                              {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
+                            </Badge>
+                          )}
                         </Label>
                         {openSections.priceRange ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-2">
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => 
-                          <Button 
-                            key={range} 
-                            variant={filters.priceRange === range ? "default" : "outline"} 
-                            size="sm" 
-                            onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} 
-                            className={cn("h-8 text-[10px] font-semibold rounded-lg", filters.priceRange === range && "shadow-md ring-2 ring-primary/20")}
-                          >
-                            {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                          </Button>
-                        )}
+                    <CollapsibleContent className="space-y-3 pt-2">
+                      <Slider 
+                        value={priceRange} 
+                        onValueChange={(value) => {
+                          setPriceRange(value);
+                          handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                          handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                        }} 
+                        min={0} 
+                        max={currentFilters.maxPrice} 
+                        step={currentFilters.priceStep} 
+                        className="w-full px-1" 
+                      />
+                      <div className="flex items-center justify-between text-[10px]">
+                        <div className="flex flex-col">
+                          <span className="text-muted-foreground mb-0.5">Min</span>
+                          <span className="font-semibold text-foreground">
+                            {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
+                          </span>
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex flex-col items-end">
+                          <span className="text-muted-foreground mb-0.5">Max</span>
+                          <span className="font-semibold text-foreground">
+                            {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
+                          </span>
+                        </div>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
@@ -3184,7 +3202,7 @@ const IPhoneSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Price Range - Collapsible */}
+                {/* Price Range - Collapsible with Slider */}
                 <Collapsible
                   open={openSections.priceRange}
                   onOpenChange={(open) => setOpenSections(prev => ({ ...prev, priceRange: open }))}
@@ -3195,24 +3213,42 @@ const IPhoneSearchPanel = ({
                       <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
                         <DollarSign className="h-4 w-4 text-primary" />
                         Price Range
-                        {filters.priceRange && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}</Badge>}
+                        {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
+                          <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+                            {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
+                          </Badge>
+                        )}
                       </Label>
                       {openSections.priceRange ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                     </Button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2">
-                    <div className="grid grid-cols-3 gap-2">
-                      {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => (
-                        <Button 
-                          key={range} 
-                          variant={filters.priceRange === range ? "default" : "outline"} 
-                          size="sm" 
-                          onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} 
-                          className={cn("h-10 text-xs font-semibold rounded-lg", filters.priceRange === range && "shadow-md ring-2 ring-primary/20")}
-                        >
-                          {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                        </Button>
-                      ))}
+                  <CollapsibleContent className="space-y-3 pt-2">
+                    <Slider 
+                      value={priceRange} 
+                      onValueChange={(value) => {
+                        setPriceRange(value);
+                        handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                        handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                      }} 
+                      min={0} 
+                      max={currentFilters.maxPrice} 
+                      step={currentFilters.priceStep} 
+                      className="w-full px-1" 
+                    />
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex flex-col">
+                        <span className="text-muted-foreground mb-1">Min</span>
+                        <span className="font-semibold text-foreground">
+                          {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
+                        </span>
+                      </div>
+                      <span className="text-muted-foreground">-</span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-muted-foreground mb-1">Max</span>
+                        <span className="font-semibold text-foreground">
+                          {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
+                        </span>
+                      </div>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
