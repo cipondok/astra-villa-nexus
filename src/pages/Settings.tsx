@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { UserPreferences } from '@/components/settings/UserPreferences';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -208,8 +209,11 @@ const Settings = () => {
             </CardContent>
           </Card>
 
+          {/* User Preferences Card */}
+          <UserPreferences />
+
           {/* Theme Preferences Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
             <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
               <div className="flex items-center gap-3">
@@ -319,7 +323,7 @@ const Settings = () => {
           </Card>
 
           {/* Cache Management Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
