@@ -1550,8 +1550,13 @@ const IPhoneSearchPanel = ({
                     >
                       <SlidersHorizontal className="h-4 w-4 text-primary" />
                       {getActiveFiltersCount() > 0 && (
-                        <Badge variant="default" className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full">
-                          {getActiveFiltersCount()}
+                        <Badge 
+                          variant="default" 
+                          className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full animate-pulse shadow-lg ring-2 ring-primary/50 bg-gradient-to-br from-primary to-accent"
+                        >
+                          <span className="animate-in zoom-in duration-200">
+                            {getActiveFiltersCount()}
+                          </span>
                         </Badge>
                       )}
                     </Button>
@@ -2406,9 +2411,11 @@ const IPhoneSearchPanel = ({
                     {getActiveFiltersCount() > 0 && (
                       <Badge 
                         variant="secondary" 
-                        className="ml-2 h-5 px-2 bg-primary-foreground/20 text-primary-foreground border border-primary-foreground/30 font-bold relative z-10"
+                        className="ml-2 h-5 px-2 bg-primary-foreground text-primary border border-primary-foreground/50 font-bold relative z-10 animate-pulse shadow-lg"
                       >
-                        {getActiveFiltersCount()}
+                        <span className="animate-in zoom-in duration-200">
+                          {getActiveFiltersCount()}
+                        </span>
                       </Badge>
                     )}
                   </Button>
