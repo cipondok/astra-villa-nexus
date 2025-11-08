@@ -19,9 +19,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette, Shield, Mail, Lock, Activity } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserPreferences } from '@/components/settings/UserPreferences';
 import { PasswordChange } from '@/components/settings/PasswordChange';
 import { EmailChange } from '@/components/settings/EmailChange';
@@ -39,13 +39,6 @@ const Settings = () => {
   const [clearCacheType, setClearCacheType] = useState<'all' | 'sw' | 'query'>('all');
   const [isClearing, setIsClearing] = useState(false);
   const [isLoadingCache, setIsLoadingCache] = useState(true);
-  const [sectionsOpen, setSectionsOpen] = useState({
-    security: true,
-    preferences: false,
-    activity: false,
-    theme: false,
-    cache: true,
-  });
   const [cacheStats, setCacheStats] = useState<{
     swCacheSize: number;
     swCacheMB: number;
@@ -157,118 +150,96 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <div className="max-w-lg mx-auto px-3 py-3">{/* Ultra compact */}
-        {/* Header */}
-        <div className="mb-3">
+      <div className="max-w-4xl mx-auto px-2 py-2">
+        {/* Compact Header */}
+        <div className="mb-2">
           <Button
             variant="ghost"
-            className="mb-1.5 -ml-2 hover:bg-primary/10 transition-colors h-7 text-xs"
+            className="mb-1 -ml-2 hover:bg-primary/10 transition-colors h-7 text-xs"
             onClick={() => navigate('/profile')}
           >
             <ArrowLeft className="h-3 w-3 mr-1 text-primary" />
             <span className="text-foreground">Back</span>
           </Button>
 
-          <div className="flex items-center gap-2 mb-0.5">
+          <div className="flex items-center gap-2">
             {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={profile.full_name || 'User'}
-                className="w-8 h-8 rounded-lg object-cover shadow-lg border border-border"
+                className="w-7 h-7 rounded-lg object-cover shadow-lg border border-border"
               />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <User className="h-4 w-4 text-primary" />
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <User className="h-3.5 w-3.5 text-primary" />
               </div>
             )}
             <div>
-              <h1 className="text-lg font-bold gradient-text">Settings</h1>
-              <p className="text-xs text-muted-foreground">Manage preferences</p>
+              <h1 className="text-base font-bold gradient-text">Settings</h1>
             </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          {/* Security Alerts - Always expanded */}
-          <SecurityAlerts />
+        {/* Tabs */}
+        <Tabs defaultValue="security" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-8 mb-2 bg-muted/50">
+            <TabsTrigger value="security" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
+              <Shield className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Security</span>
+            </TabsTrigger>
+            <TabsTrigger value="account" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
+              <Mail className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Account</span>
+            </TabsTrigger>
+            <TabsTrigger value="preferences" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
+              <User className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Preferences</span>
+            </TabsTrigger>
+            <TabsTrigger value="theme" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
+              <Palette className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Theme</span>
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
+              <Activity className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Activity</span>
+            </TabsTrigger>
+            <TabsTrigger value="cache" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
+              <Database className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Cache</span>
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Email & Password Security - Collapsible */}
-          <Collapsible
-            open={sectionsOpen.security}
-            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, security: open }))}
-          >
-            <Card className="professional-card border-2 overflow-hidden">
-              <CollapsibleTrigger asChild>
-                <CardHeader className="pb-2 px-3 pt-2.5 cursor-pointer hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                        <User className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-sm">Account Security</CardTitle>
-                        <CardDescription className="text-xs">Email & Password</CardDescription>
-                      </div>
-                    </div>
-                    <ChevronDown className={`h-4 w-4 transition-transform ${sectionsOpen.security ? 'rotate-180' : ''}`} />
-                  </div>
-                </CardHeader>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="px-3 pb-2.5 space-y-2">
-                  <EmailChange />
-                  <PasswordChange />
-                </CardContent>
-              </CollapsibleContent>
+          {/* Security Alerts Tab */}
+          <TabsContent value="security" className="mt-0">
+            <Card className="professional-card border p-2">
+              <SecurityAlerts />
             </Card>
-          </Collapsible>
+          </TabsContent>
 
-          {/* User Preferences - Collapsible */}
-          <Collapsible
-            open={sectionsOpen.preferences}
-            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, preferences: open }))}
-          >
-            <div onClick={() => setSectionsOpen(prev => ({ ...prev, preferences: !prev.preferences }))}>
+          {/* Account Tab - Email & Password */}
+          <TabsContent value="account" className="mt-0">
+            <Card className="professional-card border p-3">
+              <div className="space-y-3">
+                <EmailChange />
+                <div className="border-t pt-3">
+                  <PasswordChange />
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Preferences Tab */}
+          <TabsContent value="preferences" className="mt-0">
+            <Card className="professional-card border p-2">
               <UserPreferences />
-            </div>
-          </Collapsible>
+            </Card>
+          </TabsContent>
 
-          {/* Activity Log - Collapsible */}
-          <Collapsible
-            open={sectionsOpen.activity}
-            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, activity: open }))}
-          >
-            <div onClick={() => setSectionsOpen(prev => ({ ...prev, activity: !prev.activity }))}>
-              <ActivityLog />
-            </div>
-          </Collapsible>
-
-          {/* Theme - Collapsible */}
-          <Collapsible
-            open={sectionsOpen.theme}
-            onOpenChange={(open) => setSectionsOpen(prev => ({ ...prev, theme: open }))}
-          >
-            <Card className="professional-card border-2 overflow-hidden">
-              <CollapsibleTrigger asChild>
-                <CardHeader className="pb-2 px-3 pt-2.5 cursor-pointer hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                        <Palette className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-sm">Appearance</CardTitle>
-                        <CardDescription className="text-xs">Theme settings</CardDescription>
-                      </div>
-                    </div>
-                    <ChevronDown className={`h-4 w-4 transition-transform ${sectionsOpen.theme ? 'rotate-180' : ''}`} />
-                  </div>
-                </CardHeader>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="space-y-2 px-3 pb-2.5">
+          {/* Theme Tab */}
+          <TabsContent value="theme" className="mt-0">
+            <Card className="professional-card border p-3">
               <div className="p-3 rounded-lg bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
-                <div className="flex items-center justify-between mb-2 gap-2">
+                <div className="flex items-center justify-between mb-3 gap-2">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-500 flex-shrink-0 ${
                       theme === 'dark' 
@@ -303,7 +274,6 @@ const Settings = () => {
                   />
                 </div>
                 
-                {/* Theme Preview */}
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => {
@@ -336,142 +306,148 @@ const Settings = () => {
                   </button>
                 </div>
               </div>
-            </CardContent>
-              </CollapsibleContent>
             </Card>
-          </Collapsible>
+          </TabsContent>
 
-          {/* Cache Management Card - Always expanded */}
-          <Card className="professional-card border-2 overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
-            <CardHeader className="pb-2 px-3 pt-2.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
-                    <HardDrive className="h-3.5 w-3.5 text-accent" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-sm">Cache Management</CardTitle>
-                    <CardDescription className="text-xs">App performance & storage</CardDescription>
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={loadCacheStats}
-                  disabled={isLoadingCache}
-                  className="rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-all"
-                >
-                  <RefreshCw className={`h-4 w-4 text-primary ${isLoadingCache ? 'animate-spin' : ''}`} />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {isLoadingCache ? (
-                <div className="text-center py-12">
-                  <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary/20 border-t-primary mb-4"></div>
-                  <p className="text-muted-foreground font-medium">Loading cache statistics...</p>
-                </div>
-              ) : cacheStats ? (
-                <>
-                  {/* Service Worker Cache */}
-                  <div className="p-5 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <HardDrive className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-foreground">Service Worker Cache</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {cacheStats.swCacheMB.toFixed(2)} MB used of {cacheStats.swAvailableMB.toFixed(0)} MB available
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-bold text-primary">
-                          {cacheStats.swUsagePercent.toFixed(1)}%
-                        </span>
-                      </div>
+          {/* Activity Log Tab */}
+          <TabsContent value="activity" className="mt-0">
+            <Card className="professional-card border p-2">
+              <ActivityLog />
+            </Card>
+          </TabsContent>
+
+          {/* Cache Management Tab */}
+          <TabsContent value="cache" className="mt-0">
+            <Card className="professional-card border overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-accent via-primary to-accent"></div>
+              <CardHeader className="pb-1.5 px-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <HardDrive className="h-3 w-3 text-accent" />
                     </div>
+                    <div>
+                      <CardTitle className="text-sm">Cache Management</CardTitle>
+                      <CardDescription className="text-xs">Storage & performance</CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={loadCacheStats}
+                    disabled={isLoadingCache}
+                    className="h-7 w-7 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-all"
+                  >
+                    <RefreshCw className={`h-3 w-3 text-primary ${isLoadingCache ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3 px-3 pb-2">
+                {isLoadingCache ? (
+                  <div className="text-center py-6">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-3 border-primary/20 border-t-primary mb-2"></div>
+                    <p className="text-muted-foreground text-xs">Loading...</p>
+                  </div>
+                ) : cacheStats ? (
+                  <>
+                    {/* Service Worker Cache */}
+                    <div className="p-2.5 rounded-lg bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/10">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
+                            <HardDrive className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-foreground text-xs">Service Worker</h3>
+                            <p className="text-xs text-muted-foreground">
+                              {cacheStats.swCacheMB.toFixed(1)} MB / {cacheStats.swAvailableMB.toFixed(0)} MB
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-lg font-bold text-primary">
+                            {cacheStats.swUsagePercent.toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
                     <Progress value={cacheStats.swUsagePercent} className="h-3 bg-background" />
                   </div>
 
                   {/* React Query Cache */}
-                  <div className="p-5 rounded-xl bg-gradient-to-br from-accent/5 to-primary/5 border border-accent/10">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
-                        <Database className="h-5 w-5 text-accent" />
+                  <div className="p-2.5 rounded-lg bg-gradient-to-br from-accent/5 to-primary/5 border border-accent/10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center">
+                        <Database className="h-3.5 w-3.5 text-accent" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-foreground">React Query Cache</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {cacheStats.queryCacheCount} cached queries in memory
+                        <h3 className="font-bold text-foreground text-xs">React Query</h3>
+                        <p className="text-xs text-muted-foreground">
+                          {cacheStats.queryCacheCount} queries
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="rounded-xl border-2 border-primary/20 bg-card p-4 text-center hover:border-primary/40 transition-all">
-                        <div className="text-3xl font-bold text-primary mb-1">
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <div className="rounded-lg border border-primary/20 bg-card p-2 text-center">
+                        <div className="text-lg font-bold text-primary">
                           {cacheStats.queryCacheCount}
                         </div>
-                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total</div>
+                        <div className="text-[10px] font-semibold text-muted-foreground uppercase">Total</div>
                       </div>
-                      <div className="rounded-xl border-2 border-green-500/20 bg-card p-4 text-center hover:border-green-500/40 transition-all">
-                        <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
+                      <div className="rounded-lg border border-green-500/20 bg-card p-2 text-center">
+                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
                           {cacheStats.queryCacheActive}
                         </div>
-                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active</div>
+                        <div className="text-[10px] font-semibold text-muted-foreground uppercase">Active</div>
                       </div>
-                      <div className="rounded-xl border-2 border-amber-500/20 bg-card p-4 text-center hover:border-amber-500/40 transition-all">
-                        <div className="text-3xl font-bold text-amber-600 dark:text-amber-400 mb-1">
+                      <div className="rounded-lg border border-amber-500/20 bg-card p-2 text-center">
+                        <div className="text-lg font-bold text-amber-600 dark:text-amber-400">
                           {cacheStats.queryCacheStale}
                         </div>
-                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Stale</div>
+                        <div className="text-[10px] font-semibold text-muted-foreground uppercase">Stale</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="pt-2 space-y-3">
+                  <div className="pt-1 space-y-1.5">
                     <Button
                       variant="outline"
-                      className="w-full justify-start gap-3 h-12 hover:bg-primary/5 hover:border-primary/30 transition-all"
+                      className="w-full justify-start gap-2 h-8 text-xs hover:bg-primary/5 hover:border-primary/30"
                       onClick={() => openClearCacheDialog('sw')}
                     >
-                      <HardDrive className="h-5 w-5 text-primary" />
-                      <span className="font-semibold">Clear Service Worker Cache</span>
+                      <HardDrive className="h-3.5 w-3.5 text-primary" />
+                      <span className="font-semibold">Clear SW Cache</span>
                     </Button>
                     
                     <Button
                       variant="outline"
-                      className="w-full justify-start gap-3 h-12 hover:bg-accent/5 hover:border-accent/30 transition-all"
+                      className="w-full justify-start gap-2 h-8 text-xs hover:bg-accent/5 hover:border-accent/30"
                       onClick={() => openClearCacheDialog('query')}
                     >
-                      <Database className="h-5 w-5 text-accent" />
-                      <span className="font-semibold">Clear React Query Cache</span>
+                      <Database className="h-3.5 w-3.5 text-accent" />
+                      <span className="font-semibold">Clear Query Cache</span>
                     </Button>
                     
                     <Button
                       variant="destructive"
-                      className="w-full justify-start gap-3 h-12 shadow-lg hover:shadow-xl transition-all"
+                      className="w-full justify-start gap-2 h-8 text-xs"
                       onClick={() => openClearCacheDialog('all')}
                     >
-                      <Trash2 className="h-5 w-5" />
-                      <span className="font-semibold">Clear All Caches</span>
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span className="font-semibold">Clear All</span>
                     </Button>
                   </div>
                 </>
               ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
-                    <Database className="h-8 w-8 text-destructive" />
+                <div className="text-center py-6">
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-destructive/10 flex items-center justify-center">
+                    <Database className="h-6 w-6 text-destructive" />
                   </div>
-                  <p className="text-muted-foreground font-medium">Failed to load cache statistics</p>
+                  <p className="text-muted-foreground text-xs">Failed to load cache statistics</p>
                   <Button 
                     onClick={loadCacheStats} 
                     variant="outline" 
-                    className="mt-4"
+                    className="mt-2 h-7 text-xs"
                   >
                     Retry
                   </Button>
@@ -479,8 +455,9 @@ const Settings = () => {
               )}
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
+    </div>
 
       <AlertDialog open={showClearCacheDialog} onOpenChange={setShowClearCacheDialog}>
         <AlertDialogContent className="sm:max-w-md border-2">

@@ -108,36 +108,35 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <div className="max-w-lg mx-auto px-3 py-3">{/* Ultra compact matching Settings */}
+      <div className="max-w-4xl mx-auto px-2 py-2">{/* Even more compact */}
         {/* Header Section */}
-        <div className="mb-3 animate-fade-in">
-          <div className="flex items-center gap-2 mb-0.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <User className="h-4 w-4 text-primary" />
+        <div className="mb-2 animate-fade-in">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <User className="h-3.5 w-3.5 text-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold gradient-text">Profile</h1>
-              <p className="text-xs text-muted-foreground">Your account details</p>
+              <h1 className="text-base font-bold gradient-text">Profile</h1>
             </div>
           </div>
         </div>
 
         <div className="space-y-2">
           {/* Profile Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
-            <CardHeader className="pb-1.5 px-3 pt-2.5">
+          <Card className="professional-card border overflow-hidden animate-fade-in">
+            <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-accent to-primary"></div>
+            <CardHeader className="pb-1 px-3 pt-2">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
                       alt={profile.full_name || 'User'}
-                      className="w-11 h-11 rounded-lg object-cover shadow-lg border-2 border-border flex-shrink-0"
+                      className="w-10 h-10 rounded-lg object-cover shadow-lg border border-border flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-lg flex-shrink-0">
-                      <User className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                      <User className="h-4 w-4 text-white" />
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
@@ -156,15 +155,15 @@ const Profile = () => {
                   }`}
                   disabled={isSaving}
                 >
-                  <Edit2 className={`h-3.5 w-3.5 ${isEditing ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <Edit2 className={`h-3 w-3 ${isEditing ? 'text-primary' : 'text-muted-foreground'}`} />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="space-y-2 px-3 pb-2.5">
+            <CardContent className="space-y-2 px-3 pb-2">
               {isEditing ? (
-                <div className="space-y-2.5 animate-fade-in">
+                <div className="space-y-2 animate-fade-in">
                   {/* Avatar Upload Section */}
-                  <div className="pb-2.5 border-b border-border">
+                  <div className="pb-2 border-b border-border">
                     <AvatarUpload
                       userId={user.id}
                       currentAvatarUrl={profile?.avatar_url}
@@ -173,63 +172,63 @@ const Profile = () => {
                       }}
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <Label htmlFor="full_name" className="text-xs font-semibold">Full Name</Label>
                     <Input
                       id="full_name"
                       value={formData.full_name}
                       onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                       placeholder="Enter your full name"
-                      className="border-2 focus:border-primary h-9 text-sm"
+                      className="border focus:border-primary h-8 text-sm"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <Label htmlFor="phone" className="text-xs font-semibold">Phone Number</Label>
                     <Input
                       id="phone"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="Enter your phone number"
-                      className="border-2 focus:border-primary h-9 text-sm"
+                      className="border focus:border-primary h-8 text-sm"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <Label htmlFor="company_name" className="text-xs font-semibold">Company Name</Label>
                     <Input
                       id="company_name"
                       value={formData.company_name}
                       onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                       placeholder="Company name (optional)"
-                      className="border-2 focus:border-primary h-9 text-sm"
+                      className="border focus:border-primary h-8 text-sm"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <Label htmlFor="business_address" className="text-xs font-semibold">Business Address</Label>
                     <Input
                       id="business_address"
                       value={formData.business_address}
                       onChange={(e) => setFormData({ ...formData, business_address: e.target.value })}
                       placeholder="Business address (optional)"
-                      className="border-2 focus:border-primary h-9 text-sm"
+                      className="border focus:border-primary h-8 text-sm"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <Label htmlFor="bio" className="text-xs font-semibold">Bio</Label>
                     <Textarea
                       id="bio"
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       placeholder="Tell us about yourself (optional)"
-                      rows={3}
-                      className="border-2 focus:border-primary resize-none text-sm"
+                      rows={2}
+                      className="border focus:border-primary resize-none text-sm"
                     />
                   </div>
 
-                  <div className="flex gap-1.5 pt-1">
+                  <div className="flex gap-1.5 pt-0.5">
                     <Button
                       onClick={handleSave}
                       disabled={isSaving}
