@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { usePropertyCount } from "@/hooks/usePropertyCount";
 import { useFilterPresets } from "@/hooks/useFilterPresets";
 import { useSmartFilterSuggestions } from "@/hooks/useSmartFilterSuggestions";
+import { useCollaborativeRecommendations } from "@/hooks/useCollaborativeRecommendations";
 import { SavePresetDialog } from "./SavePresetDialog";
 import { FilterMapView } from "./FilterMapView";
 
@@ -153,10 +154,13 @@ const AdvancedPropertyFilters = ({
   const [localFilters, setLocalFilters] = useState(filters);
   const [activeTab, setActiveTab] = useState<"filters" | "map">("filters");
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [sessionId] = useState(() => Math.random().toString(36).substring(7));
+  const [currentFilterId, setCurrentFilterId] = useState<string | null>(null);
   
   const { count, isLoading: countLoading } = usePropertyCount(localFilters);
   const { savedPresets, savePreset, deletePreset, loadPreset } = useFilterPresets();
   const { suggestions, isLoading: suggestionsLoading, trackFilterUsage } = useSmartFilterSuggestions(localFilters);
+  const { recommendations, trackSequence } = useCollaborativeRecommendations(currentFilterId, sessionId);
 
   const updateFilter = (key: keyof PropertyFilters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
@@ -205,8 +209,12 @@ const AdvancedPropertyFilters = ({
     onFiltersChange(newFilters);
   };
 
-  const handleApplyFilters = () => {
-    trackFilterUsage(localFilters);
+  const handleApplyFilters = async () => {
+    const filterId = await trackFilterUsage(localFilters);
+    if (currentFilterId && filterId) {
+      await trackSequence(currentFilterId, filterId);
+    }
+    setCurrentFilterId(filterId);
     onToggle();
   };
 
@@ -384,6 +392,53 @@ const AdvancedPropertyFilters = ({
           )}
 
           {suggestions.length > 0 && <Separator className="my-8 bg-gradient-to-r from-transparent via-accent/20 to-transparent h-px" />}
+
+          {/* Collaborative Recommendations */}
+          {recommendations.length > 0 && (
+            <>
+              <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg">
+                    <Sparkles className="h-5 w-5 text-blue-600 animate-pulse" />
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-bold">Users Also Searched</Label>
+                    <p className="text-xs text-muted-foreground">Based on similar search patterns</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-xs font-semibold">
+                    Collaborative
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recommendations.map((rec, index) => (
+                    <button
+                      key={rec.id}
+                      onClick={() => handleApplySmartSuggestion(rec.filters)}
+                      className="group relative p-5 rounded-2xl border-2 border-blue-500/30 bg-gradient-to-br from-background via-background to-blue-500/5 hover:border-blue-500/60 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 text-left hover:scale-[1.03]"
+                    >
+                      <div className="relative flex items-start gap-4">
+                        <div className="text-4xl group-hover:scale-110 transition-transform">
+                          {rec.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-base mb-1.5 group-hover:text-blue-600 transition-colors">
+                            {rec.title}
+                          </h3>
+                          <p className="text-xs text-muted-foreground line-clamp-2">
+                            {rec.description}
+                          </p>
+                          <Badge variant="outline" className="mt-2 text-xs border-blue-500/30 text-blue-600">
+                            {rec.matchCount} users
+                          </Badge>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <Separator className="my-8 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent h-px" />
+            </>
+          )}
           
           {/* Filter Presets */}
           <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500 delay-200">

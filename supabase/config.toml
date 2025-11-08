@@ -49,3 +49,12 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.get-smart-filter-suggestions]
     verify_jwt = false
 
+  [functions.get-collaborative-recommendations]
+    verify_jwt = false
+
+  [functions.get-trending-searches]
+    verify_jwt = false
+
+  [functions.get-filter-analytics]
+    verify_jwt = false
+

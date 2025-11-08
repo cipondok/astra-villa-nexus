@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { PropertyFilters } from '@/components/search/AdvancedPropertyFilters';
 
 export interface SmartSuggestion {
   id: string;
@@ -52,7 +52,7 @@ export const useSmartFilterSuggestions = (
     return () => clearTimeout(timer);
   }, [currentFilters.location, currentFilters.listingType, currentFilters.propertyTypes]);
 
-  const trackFilterUsage = async (filters: PropertyFilters) => {
+  const trackFilterUsage = async (filters: PropertyFilters): Promise<string | null> => {
     try {
       // Check if similar filter combination exists
       const { data: existing } = await supabase
@@ -75,21 +75,27 @@ export const useSmartFilterSuggestions = (
             last_used_at: new Date().toISOString(),
           })
           .eq('id', existing.id);
+        return existing.id;
       } else {
         // Insert new record
-        await supabase.from('filter_usage').insert({
-          location: filters.location !== 'all' ? filters.location : null,
-          property_types: filters.propertyTypes.length > 0 ? filters.propertyTypes : null,
-          listing_type: filters.listingType !== 'all' ? filters.listingType : null,
-          price_min: filters.priceRange[0],
-          price_max: filters.priceRange[1],
-          bedrooms: filters.bedrooms ? parseInt(filters.bedrooms) : null,
-          bathrooms: filters.bathrooms ? parseInt(filters.bathrooms) : null,
-          search_query: filters.searchQuery || null,
-        });
+        const { data: newRecord } = await supabase.from('filter_usage')
+          .insert({
+            location: filters.location !== 'all' ? filters.location : null,
+            property_types: filters.propertyTypes.length > 0 ? filters.propertyTypes : null,
+            listing_type: filters.listingType !== 'all' ? filters.listingType : null,
+            price_min: filters.priceRange[0],
+            price_max: filters.priceRange[1],
+            bedrooms: filters.bedrooms ? parseInt(filters.bedrooms) : null,
+            bathrooms: filters.bathrooms ? parseInt(filters.bathrooms) : null,
+            search_query: filters.searchQuery || null,
+          })
+          .select()
+          .single();
+        return newRecord?.id || null;
       }
     } catch (error) {
       console.error('Error tracking filter usage:', error);
+      return null;
     }
   };
 

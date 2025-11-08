@@ -41,6 +41,7 @@ const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecom
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const ScrollToTopButton = lazy(() => import("@/components/ui/ScrollToTopButton"));
+const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -633,6 +634,18 @@ const Index = () => {
                     </div>
                   }>
                     <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
+                  </Suspense>
+                </div>
+
+                {/* Trending Searches Widget */}
+                <div className="section-compact mb-6">
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <TrendingSearchesWidget 
+                      onSearchClick={(trendFilters) => {
+                        setFilters(prev => ({ ...prev, ...trendFilters }));
+                        setHasSearched(true);
+                      }}
+                    />
                   </Suspense>
                 </div>
 

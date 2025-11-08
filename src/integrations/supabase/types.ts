@@ -2484,6 +2484,75 @@ export type Database = {
           },
         ]
       }
+      filter_analytics: {
+        Row: {
+          avg_price_max: number | null
+          avg_price_min: number | null
+          conversion_count: number | null
+          created_at: string
+          date: string
+          id: string
+          listing_type: string | null
+          location: string | null
+          property_type: string | null
+          search_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          avg_price_max?: number | null
+          avg_price_min?: number | null
+          conversion_count?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          listing_type?: string | null
+          location?: string | null
+          property_type?: string | null
+          search_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          avg_price_max?: number | null
+          avg_price_min?: number | null
+          conversion_count?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          listing_type?: string | null
+          location?: string | null
+          property_type?: string | null
+          search_count?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      filter_sequences: {
+        Row: {
+          created_at: string
+          current_filter_id: string | null
+          id: string
+          previous_filter_id: string | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_filter_id?: string | null
+          id?: string
+          previous_filter_id?: string | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_filter_id?: string | null
+          id?: string
+          previous_filter_id?: string | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       filter_usage: {
         Row: {
           bathrooms: number | null
@@ -9521,6 +9590,7 @@ export type Database = {
         Args: { target_date?: string }
         Returns: undefined
       }
+      aggregate_filter_analytics: { Args: never; Returns: undefined }
       can_access_financial_reward_config_strict: {
         Args: { operation?: string }
         Returns: boolean

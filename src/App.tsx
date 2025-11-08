@@ -27,6 +27,7 @@ import Services from '@/pages/Services';
 import ServiceCategory from '@/pages/ServiceCategory';
 import PropertyDetail from '@/pages/PropertyDetail';
 import AdminDashboard from '@/pages/AdminDashboard';
+import AdminAnalytics from '@/pages/AdminAnalytics';
 import AgentDashboard from '@/pages/AgentDashboard';
 import Dijual from '@/pages/Dijual';
 import Disewa from '@/pages/Disewa';
@@ -105,6 +106,7 @@ const AppContent = () => {
           <Route path="/add-property" element={<AddProperty />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           {/* Redirect other agent URLs to main dashboard */}
