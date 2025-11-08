@@ -16,25 +16,30 @@ import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
 import { useScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
 import { useDebounce } from "@/hooks/useDebounce";
-
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   resultsCount?: number;
 }
-
-const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: IPhoneSearchPanelProps) => {
+const IPhoneSearchPanel = ({
+  language,
+  onSearch,
+  onLiveSearch,
+  resultsCount
+}: IPhoneSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  
   const [isMinimized, setIsMinimized] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [useNearbyLocation, setUseNearbyLocation] = useState(false);
   const [nearbyRadius, setNearbyRadius] = useState(5); // Default 5km
-  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showLocationButtons, setShowLocationButtons] = useState(false);
@@ -43,89 +48,66 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
-  
+
   // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
   useScrollLock(showAdvancedFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
-  
+
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const advancedFiltersRef = useRef<HTMLDivElement>(null);
-  
+
   // Detect mobile and scroll behavior
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     checkMobile();
     window.addEventListener('resize', checkMobile);
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      if (window.innerWidth < 768) { // Only on mobile
+      if (window.innerWidth < 768) {
+        // Only on mobile
         if (currentScrollY > lastScrollY && currentScrollY > 100) {
           setIsMinimized(true);
         } else if (currentScrollY < lastScrollY || currentScrollY < 50) {
           setIsMinimized(false);
         }
       }
-
       setLastScrollY(currentScrollY);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
+    window.addEventListener('scroll', handleScroll, {
+      passive: true
+    });
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('scroll', handleScroll);
     };
   }, [lastScrollY, isMinimized]);
-  
+
   // Trending and smart suggestions
-  const trendingSearches = [
-    "Apartment Jakarta Selatan",
-    "Villa Bali",
-    "Rumah Bandung",
-    "Office Space Sudirman",
-    "House Menteng",
-    "Apartment Kemang",
-    "Villa Seminyak",
-    "Land Ubud"
-  ];
-  
-  const smartSuggestions = [
-    "🏠 Houses under 1B",
-    "🏢 Apartments near MRT",
-    "🏖️ Beach Villas",
-    "💼 Commercial Properties"
-  ];
+  const trendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
+  const smartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
 
   // Filter suggestions based on search query
   const getFilteredSuggestions = () => {
     if (!searchQuery || searchQuery.trim().length === 0) {
-      return { smart: smartSuggestions, trending: trendingSearches };
+      return {
+        smart: smartSuggestions,
+        trending: trendingSearches
+      };
     }
-    
     const query = searchQuery.toLowerCase().trim();
-    const filteredTrending = trendingSearches.filter(item => 
-      item.toLowerCase().includes(query)
-    );
-    const filteredSmart = smartSuggestions.filter(item => 
-      item.toLowerCase().includes(query)
-    );
-    
-    return { 
-      smart: filteredSmart.slice(0, 3), 
-      trending: filteredTrending.slice(0, 4) 
+    const filteredTrending = trendingSearches.filter(item => item.toLowerCase().includes(query));
+    const filteredSmart = smartSuggestions.filter(item => item.toLowerCase().includes(query));
+    return {
+      smart: filteredSmart.slice(0, 3),
+      trending: filteredTrending.slice(0, 4)
     };
   };
-  
   const filteredSuggestions = getFilteredSuggestions();
   const hasSuggestions = filteredSuggestions.smart.length > 0 || filteredSuggestions.trending.length > 0;
-  
-  
+
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
     location: false,
@@ -165,12 +147,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     tripPurpose: ''
   });
 
-
   // Dynamic data from database
-  const [provinces, setProvinces] = useState<{code: string, name: string}[]>([]);
-  const [cities, setCities] = useState<{code: string, name: string, type: string}[]>([]);
-  const [areas, setAreas] = useState<{code: string, name: string}[]>([]);
-  const [dynamicPropertyTypes, setDynamicPropertyTypes] = useState<{value: string, label: string}[]>([]);
+  const [provinces, setProvinces] = useState<{
+    code: string;
+    name: string;
+  }[]>([]);
+  const [cities, setCities] = useState<{
+    code: string;
+    name: string;
+    type: string;
+  }[]>([]);
+  const [areas, setAreas] = useState<{
+    code: string;
+    name: string;
+  }[]>([]);
+  const [dynamicPropertyTypes, setDynamicPropertyTypes] = useState<{
+    value: string;
+    label: string;
+  }[]>([]);
 
   // Fetch provinces on component mount
   useEffect(() => {
@@ -184,7 +178,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       fetchCities(filters.state);
     } else {
       setCities([]);
-      setFilters(prev => ({ ...prev, city: 'all', area: 'all' }));
+      setFilters(prev => ({
+        ...prev,
+        city: 'all',
+        area: 'all'
+      }));
     }
   }, [filters.state]);
 
@@ -194,22 +192,25 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       fetchAreas(filters.state, filters.city);
     } else {
       setAreas([]);
-      setFilters(prev => ({ ...prev, area: 'all' }));
+      setFilters(prev => ({
+        ...prev,
+        area: 'all'
+      }));
     }
   }, [filters.city, filters.state]);
-
   const fetchProvinces = async () => {
     try {
-      const { data, error } = await supabase
-        .from('locations')
-        .select('province_code, province_name')
-        .eq('is_active', true)
-        .order('province_name');
-
+      const {
+        data,
+        error
+      } = await supabase.from('locations').select('province_code, province_name').eq('is_active', true).order('province_name');
       if (error) throw error;
 
       // Remove duplicates
-      const uniqueProvinces = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
+      const uniqueProvinces = data?.reduce((acc: Array<{
+        code: string;
+        name: string;
+      }>, curr) => {
         if (!acc.find(p => p.code === curr.province_code)) {
           acc.push({
             code: curr.province_code,
@@ -218,26 +219,25 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
         }
         return acc;
       }, []) || [];
-
       setProvinces(uniqueProvinces);
     } catch (error) {
       console.error('Error fetching provinces:', error);
     }
   };
-
   const fetchCities = async (provinceCode: string) => {
     try {
-      const { data, error } = await supabase
-        .from('locations')
-        .select('city_code, city_name, city_type')
-        .eq('province_code', provinceCode)
-        .eq('is_active', true)
-        .order('city_name');
-
+      const {
+        data,
+        error
+      } = await supabase.from('locations').select('city_code, city_name, city_type').eq('province_code', provinceCode).eq('is_active', true).order('city_name');
       if (error) throw error;
 
       // Remove duplicates
-      const uniqueCities = data?.reduce((acc: Array<{code: string, name: string, type: string}>, curr) => {
+      const uniqueCities = data?.reduce((acc: Array<{
+        code: string;
+        name: string;
+        type: string;
+      }>, curr) => {
         if (!acc.find(c => c.code === curr.city_code)) {
           acc.push({
             code: curr.city_code,
@@ -247,27 +247,24 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
         }
         return acc;
       }, []) || [];
-
       setCities(uniqueCities);
     } catch (error) {
       console.error('Error fetching cities:', error);
     }
   };
-
   const fetchAreas = async (provinceCode: string, cityCode: string) => {
     try {
-      const { data, error } = await supabase
-        .from('locations')
-        .select('district_code, district_name')
-        .eq('province_code', provinceCode)
-        .eq('city_code', cityCode)
-        .eq('is_active', true)
-        .order('district_name');
-
+      const {
+        data,
+        error
+      } = await supabase.from('locations').select('district_code, district_name').eq('province_code', provinceCode).eq('city_code', cityCode).eq('is_active', true).order('district_name');
       if (error) throw error;
 
       // Remove duplicates
-      const uniqueAreas = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
+      const uniqueAreas = data?.reduce((acc: Array<{
+        code: string;
+        name: string;
+      }>, curr) => {
         if (!acc.find(a => a.code === curr.district_code)) {
           acc.push({
             code: curr.district_code,
@@ -276,34 +273,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
         }
         return acc;
       }, []) || [];
-
       setAreas(uniqueAreas);
     } catch (error) {
       console.error('Error fetching areas:', error);
     }
   };
-
   const fetchPropertyTypes = async () => {
     try {
-      const { data: typeData } = await supabase
-        .from('properties')
-        .select('property_type')
-        .not('property_type', 'is', null);
-
+      const {
+        data: typeData
+      } = await supabase.from('properties').select('property_type').not('property_type', 'is', null);
       if (typeData) {
-        const uniqueTypes = [...new Set(typeData.map(item => item.property_type))]
-          .filter(Boolean)
-          .map(type => ({
-            value: type,
-            label: type.charAt(0).toUpperCase() + type.slice(1)
-          }));
+        const uniqueTypes = [...new Set(typeData.map(item => item.property_type))].filter(Boolean).map(type => ({
+          value: type,
+          label: type.charAt(0).toUpperCase() + type.slice(1)
+        }));
         setDynamicPropertyTypes(uniqueTypes);
       }
     } catch (error) {
       console.error('Error fetching property types:', error);
     }
   };
-
   const text = {
     en: {
       searchPlaceholder: "Search properties, locations, or keywords...",
@@ -356,7 +346,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       // Rental-specific text
       checkIn: "Check-in Date",
       checkOut: "Check-out Date",
-      rentalDuration: "Rental Duration", 
+      rentalDuration: "Rental Duration",
       tripPurpose: "Trip Purpose",
       selectDate: "Select Date",
       days: "days",
@@ -494,36 +484,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       selectArea: "Pilih Area"
     }
   };
-
   const currentText = text[language];
-  
+
   // Get user's current location
   const getUserLocation = () => {
     setIsGettingLocation(true);
-    
     if (!navigator.geolocation) {
       alert(currentText.locationError);
       setIsGettingLocation(false);
       return;
     }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
-        setUseNearbyLocation(true);
-        setIsGettingLocation(false);
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        alert(currentText.locationError);
-        setIsGettingLocation(false);
-      }
-    );
+    navigator.geolocation.getCurrentPosition(position => {
+      setUserLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      });
+      setUseNearbyLocation(true);
+      setIsGettingLocation(false);
+    }, error => {
+      console.error('Geolocation error:', error);
+      alert(currentText.locationError);
+      setIsGettingLocation(false);
+    });
   };
-  
   const toggleSearchType = (type: 'location' | 'nearby') => {
     if (type === 'nearby') {
       if (!userLocation) {
@@ -535,244 +518,661 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       setUseNearbyLocation(false);
     }
   };
-
-
-  const staticPropertyTypes = [
-    { value: 'villa', label: currentText.villa, icon: Building },
-    { value: 'apartment', label: currentText.apartment, icon: Building },
-    { value: 'house', label: currentText.house, icon: Home },
-    { value: 'townhouse', label: currentText.townhouse, icon: Home },
-    { value: 'condo', label: currentText.condo, icon: Building },
-    { value: 'land', label: currentText.land, icon: MapPin },
-    { value: 'office', label: currentText.office, icon: Building },
-  ];
-
-  const propertyFeatures = [
-    { id: 'parking', label: currentText.parking, icon: '🚗' },
-    { id: 'swimming_pool', label: currentText.pool, icon: '🏊' },
-    { id: 'gym', label: currentText.gym, icon: '💪' },
-    { id: 'garden', label: currentText.garden, icon: '🌿' },
-    { id: 'security', label: currentText.security, icon: '🔒' },
-    { id: 'furnished', label: currentText.furnished, icon: '🛋️' },
-    { id: 'elevator', label: currentText.elevator, icon: '🛗' },
-    { id: 'cctv', label: currentText.cctv, icon: '📹' },
-    { id: 'balcony', label: currentText.balcony, icon: '🏢' },
-    { id: 'storage', label: currentText.storage, icon: '📦' },
-    { id: 'maid_room', label: currentText.maidRoom, icon: '🏠' },
-    { id: 'study_room', label: currentText.studyRoom, icon: '📚' },
-    { id: 'walk_in_closet', label: currentText.walkInCloset, icon: '👗' },
-    { id: 'intercom', label: currentText.intercom, icon: '📞' },
-    { id: 'generator', label: currentText.generator, icon: '⚡' },
-    { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
-  ];
-
+  const staticPropertyTypes = [{
+    value: 'villa',
+    label: currentText.villa,
+    icon: Building
+  }, {
+    value: 'apartment',
+    label: currentText.apartment,
+    icon: Building
+  }, {
+    value: 'house',
+    label: currentText.house,
+    icon: Home
+  }, {
+    value: 'townhouse',
+    label: currentText.townhouse,
+    icon: Home
+  }, {
+    value: 'condo',
+    label: currentText.condo,
+    icon: Building
+  }, {
+    value: 'land',
+    label: currentText.land,
+    icon: MapPin
+  }, {
+    value: 'office',
+    label: currentText.office,
+    icon: Building
+  }];
+  const propertyFeatures = [{
+    id: 'parking',
+    label: currentText.parking,
+    icon: '🚗'
+  }, {
+    id: 'swimming_pool',
+    label: currentText.pool,
+    icon: '🏊'
+  }, {
+    id: 'gym',
+    label: currentText.gym,
+    icon: '💪'
+  }, {
+    id: 'garden',
+    label: currentText.garden,
+    icon: '🌿'
+  }, {
+    id: 'security',
+    label: currentText.security,
+    icon: '🔒'
+  }, {
+    id: 'furnished',
+    label: currentText.furnished,
+    icon: '🛋️'
+  }, {
+    id: 'elevator',
+    label: currentText.elevator,
+    icon: '🛗'
+  }, {
+    id: 'cctv',
+    label: currentText.cctv,
+    icon: '📹'
+  }, {
+    id: 'balcony',
+    label: currentText.balcony,
+    icon: '🏢'
+  }, {
+    id: 'storage',
+    label: currentText.storage,
+    icon: '📦'
+  }, {
+    id: 'maid_room',
+    label: currentText.maidRoom,
+    icon: '🏠'
+  }, {
+    id: 'study_room',
+    label: currentText.studyRoom,
+    icon: '📚'
+  }, {
+    id: 'walk_in_closet',
+    label: currentText.walkInCloset,
+    icon: '👗'
+  }, {
+    id: 'intercom',
+    label: currentText.intercom,
+    icon: '📞'
+  }, {
+    id: 'generator',
+    label: currentText.generator,
+    icon: '⚡'
+  }, {
+    id: 'water_heater',
+    label: currentText.waterHeater,
+    icon: '🚿'
+  }];
   const handleStateChange = (stateCode: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
+    setFilters(prev => ({
+      ...prev,
       state: stateCode,
       city: 'all',
       area: 'all'
     }));
   };
-
   const handleCityChange = (cityCode: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
+    setFilters(prev => ({
+      ...prev,
       city: cityCode,
       area: 'all'
     }));
   };
-
   const handleAreaChange = (areaCode: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
+    setFilters(prev => ({
+      ...prev,
       area: areaCode
     }));
   };
 
   // Use different property types based on active tab
   const getFilteredPropertyTypes = () => {
-    const baseTypes = dynamicPropertyTypes.length > 0 ? 
-      dynamicPropertyTypes.map(type => ({
-        ...type,
-        icon: staticPropertyTypes.find(st => st.value === type.value)?.icon || Building
-      })) : staticPropertyTypes;
-    
+    const baseTypes = dynamicPropertyTypes.length > 0 ? dynamicPropertyTypes.map(type => ({
+      ...type,
+      icon: staticPropertyTypes.find(st => st.value === type.value)?.icon || Building
+    })) : staticPropertyTypes;
+
     // For rent, exclude land
     if (activeTab === 'rent') {
       return baseTypes.filter(type => type.value !== 'land');
     }
-    
     return baseTypes;
   };
-
   const propertyTypeOptions = getFilteredPropertyTypes();
 
   // Different filters based on active tab
   const getSaleFilters = () => ({
-    priceRanges: [
-      { value: '500000000-1000000000', label: '500jt - 1M' },
-      { value: '1000000000-2000000000', label: '1M - 2M' },
-      { value: '2000000000-5000000000', label: '2M - 5M' },
-      { value: '5000000000-10000000000', label: '5M - 10M' },
-      { value: '10000000000+', label: '10M+' },
-    ],
-    propertyTypes: propertyTypeOptions.filter(type => 
-      ['villa', 'house', 'townhouse', 'apartment', 'condo', 'land'].includes(type.value)
-    ),
-    features: [
-      { id: 'parking', label: currentText.parking, icon: '🚗' },
-      { id: 'swimming_pool', label: currentText.pool, icon: '🏊' },
-      { id: 'gym', label: currentText.gym, icon: '💪' },
-      { id: 'garden', label: currentText.garden, icon: '🌿' },
-      { id: 'security', label: currentText.security, icon: '🔒' },
-      { id: 'elevator', label: currentText.elevator, icon: '🛗' },
-      { id: 'cctv', label: currentText.cctv, icon: '📹' },
-      { id: 'balcony', label: currentText.balcony, icon: '🏢' },
-      { id: 'storage', label: currentText.storage, icon: '📦' },
-      { id: 'maid_room', label: currentText.maidRoom, icon: '🏠' },
-      { id: 'study_room', label: currentText.studyRoom, icon: '📚' },
-      { id: 'walk_in_closet', label: currentText.walkInCloset, icon: '👗' },
-      { id: 'intercom', label: currentText.intercom, icon: '📞' },
-      { id: 'generator', label: currentText.generator, icon: '⚡' },
-      { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
-    ],
-    facilities: [
-      { id: 'air_conditioning', label: 'Air Conditioning (AC)', icon: '❄️' },
-      { id: 'heating', label: 'Heating', icon: '🔥' },
-      { id: 'internet_wifi', label: 'Wi-Fi / Internet', icon: '📶' },
-      { id: 'parking_space', label: 'Parking', icon: '🚗' },
-      { id: 'elevator_lift', label: 'Elevator / Lift', icon: '🛗' },
-      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊' },
-      { id: 'gym_fitness', label: 'Gym / Fitness Center', icon: '🏋️' },
-      { id: 'laundry', label: 'Laundry', icon: '🧺' },
-      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
-      { id: 'balcony_terrace', label: 'Balcony / Terrace', icon: '🌿' },
-      { id: 'pet_friendly', label: 'Pet-Friendly', icon: '🐶' },
-      { id: 'furnished', label: 'Furnished', icon: '🛋️' },
-      { id: 'security_system', label: 'Security System', icon: '🔒' },
-      { id: 'garden_yard', label: 'Garden/Yard', icon: '🌳' },
-      { id: 'bbq_area', label: 'BBQ Area', icon: '🍖' },
-      { id: 'playground', label: 'Children\'s Playground', icon: '🎠' },
-      { id: 'cctv_surveillance', label: 'CCTV Surveillance', icon: '📹' },
-      { id: 'backup_generator', label: 'Backup Generator', icon: '⚡' },
-      { id: 'clubhouse', label: 'Clubhouse', icon: '🏛️' },
-      { id: 'tennis_court', label: 'Tennis Court', icon: '🎾' },
-      { id: 'concierge', label: 'Concierge / 24-hr Doorman', icon: '🛎️' },
-      { id: 'rooftop_lounge', label: 'Rooftop Deck / Lounge', icon: '🌆' },
-      { id: 'sauna_spa', label: 'Sauna / Spa / Steam Room', icon: '♨️' },
-      { id: 'coworking', label: 'Business Center / Co-working', icon: '💼' },
-      { id: 'ev_charging', label: 'EV Charging Station', icon: '🔌' },
-      { id: 'storage_unit', label: 'Storage Unit / Locker', icon: '📦' },
-      { id: 'bike_storage', label: 'Bike Storage', icon: '🚲' },
-      { id: 'guest_suite', label: 'Guest Suite', icon: '🏠' },
-      { id: 'wheelchair_accessible', label: 'Wheelchair Accessible', icon: '♿' },
-      { id: 'ground_floor', label: 'Ground Floor Unit', icon: '⬇️' },
-      { id: 'grab_bars', label: 'Grab Bars in Bathroom', icon: '🚿' },
-      { id: 'smoke_free', label: 'Smoke-Free Building', icon: '🚭' },
-      { id: 'gated_community', label: 'Gated Community', icon: '🚧' },
-      { id: 'utilities_included', label: 'Utilities Included', icon: '💡' },
-      { id: 'trash_recycling', label: 'Trash / Recycling', icon: '♻️' },
-      { id: 'snow_removal', label: 'Snow Removal', icon: '❄️' },
-      { id: 'pest_control', label: 'Pest Control', icon: '🐛' },
-      { id: 'onsite_maintenance', label: 'On-Site Maintenance', icon: '🔧' },
-      { id: 'near_transit', label: 'Near Public Transit', icon: '🚇' },
-      { id: 'walk_bike_score', label: 'Walk Score / Bike Score', icon: '🚶' },
-      { id: 'near_parks', label: 'Near Parks / Trails', icon: '🌲' },
-      { id: 'waterfront_view', label: 'Waterfront / Lake View', icon: '🌊' },
-      { id: 'smart_thermostat', label: 'Smart Thermostat', icon: '🌡️' },
-      { id: 'keyless_entry', label: 'Keyless Entry', icon: '🔑' },
-      { id: 'video_doorbell', label: 'Video Doorbell', icon: '📹' },
-      { id: 'smart_lighting', label: 'Smart Lighting', icon: '💡' },
-    ],
+    priceRanges: [{
+      value: '500000000-1000000000',
+      label: '500jt - 1M'
+    }, {
+      value: '1000000000-2000000000',
+      label: '1M - 2M'
+    }, {
+      value: '2000000000-5000000000',
+      label: '2M - 5M'
+    }, {
+      value: '5000000000-10000000000',
+      label: '5M - 10M'
+    }, {
+      value: '10000000000+',
+      label: '10M+'
+    }],
+    propertyTypes: propertyTypeOptions.filter(type => ['villa', 'house', 'townhouse', 'apartment', 'condo', 'land'].includes(type.value)),
+    features: [{
+      id: 'parking',
+      label: currentText.parking,
+      icon: '🚗'
+    }, {
+      id: 'swimming_pool',
+      label: currentText.pool,
+      icon: '🏊'
+    }, {
+      id: 'gym',
+      label: currentText.gym,
+      icon: '💪'
+    }, {
+      id: 'garden',
+      label: currentText.garden,
+      icon: '🌿'
+    }, {
+      id: 'security',
+      label: currentText.security,
+      icon: '🔒'
+    }, {
+      id: 'elevator',
+      label: currentText.elevator,
+      icon: '🛗'
+    }, {
+      id: 'cctv',
+      label: currentText.cctv,
+      icon: '📹'
+    }, {
+      id: 'balcony',
+      label: currentText.balcony,
+      icon: '🏢'
+    }, {
+      id: 'storage',
+      label: currentText.storage,
+      icon: '📦'
+    }, {
+      id: 'maid_room',
+      label: currentText.maidRoom,
+      icon: '🏠'
+    }, {
+      id: 'study_room',
+      label: currentText.studyRoom,
+      icon: '📚'
+    }, {
+      id: 'walk_in_closet',
+      label: currentText.walkInCloset,
+      icon: '👗'
+    }, {
+      id: 'intercom',
+      label: currentText.intercom,
+      icon: '📞'
+    }, {
+      id: 'generator',
+      label: currentText.generator,
+      icon: '⚡'
+    }, {
+      id: 'water_heater',
+      label: currentText.waterHeater,
+      icon: '🚿'
+    }],
+    facilities: [{
+      id: 'air_conditioning',
+      label: 'Air Conditioning (AC)',
+      icon: '❄️'
+    }, {
+      id: 'heating',
+      label: 'Heating',
+      icon: '🔥'
+    }, {
+      id: 'internet_wifi',
+      label: 'Wi-Fi / Internet',
+      icon: '📶'
+    }, {
+      id: 'parking_space',
+      label: 'Parking',
+      icon: '🚗'
+    }, {
+      id: 'elevator_lift',
+      label: 'Elevator / Lift',
+      icon: '🛗'
+    }, {
+      id: 'swimming_pool_facility',
+      label: 'Swimming Pool',
+      icon: '🏊'
+    }, {
+      id: 'gym_fitness',
+      label: 'Gym / Fitness Center',
+      icon: '🏋️'
+    }, {
+      id: 'laundry',
+      label: 'Laundry',
+      icon: '🧺'
+    }, {
+      id: 'dishwasher',
+      label: 'Dishwasher',
+      icon: '🍽️'
+    }, {
+      id: 'balcony_terrace',
+      label: 'Balcony / Terrace',
+      icon: '🌿'
+    }, {
+      id: 'pet_friendly',
+      label: 'Pet-Friendly',
+      icon: '🐶'
+    }, {
+      id: 'furnished',
+      label: 'Furnished',
+      icon: '🛋️'
+    }, {
+      id: 'security_system',
+      label: 'Security System',
+      icon: '🔒'
+    }, {
+      id: 'garden_yard',
+      label: 'Garden/Yard',
+      icon: '🌳'
+    }, {
+      id: 'bbq_area',
+      label: 'BBQ Area',
+      icon: '🍖'
+    }, {
+      id: 'playground',
+      label: 'Children\'s Playground',
+      icon: '🎠'
+    }, {
+      id: 'cctv_surveillance',
+      label: 'CCTV Surveillance',
+      icon: '📹'
+    }, {
+      id: 'backup_generator',
+      label: 'Backup Generator',
+      icon: '⚡'
+    }, {
+      id: 'clubhouse',
+      label: 'Clubhouse',
+      icon: '🏛️'
+    }, {
+      id: 'tennis_court',
+      label: 'Tennis Court',
+      icon: '🎾'
+    }, {
+      id: 'concierge',
+      label: 'Concierge / 24-hr Doorman',
+      icon: '🛎️'
+    }, {
+      id: 'rooftop_lounge',
+      label: 'Rooftop Deck / Lounge',
+      icon: '🌆'
+    }, {
+      id: 'sauna_spa',
+      label: 'Sauna / Spa / Steam Room',
+      icon: '♨️'
+    }, {
+      id: 'coworking',
+      label: 'Business Center / Co-working',
+      icon: '💼'
+    }, {
+      id: 'ev_charging',
+      label: 'EV Charging Station',
+      icon: '🔌'
+    }, {
+      id: 'storage_unit',
+      label: 'Storage Unit / Locker',
+      icon: '📦'
+    }, {
+      id: 'bike_storage',
+      label: 'Bike Storage',
+      icon: '🚲'
+    }, {
+      id: 'guest_suite',
+      label: 'Guest Suite',
+      icon: '🏠'
+    }, {
+      id: 'wheelchair_accessible',
+      label: 'Wheelchair Accessible',
+      icon: '♿'
+    }, {
+      id: 'ground_floor',
+      label: 'Ground Floor Unit',
+      icon: '⬇️'
+    }, {
+      id: 'grab_bars',
+      label: 'Grab Bars in Bathroom',
+      icon: '🚿'
+    }, {
+      id: 'smoke_free',
+      label: 'Smoke-Free Building',
+      icon: '🚭'
+    }, {
+      id: 'gated_community',
+      label: 'Gated Community',
+      icon: '🚧'
+    }, {
+      id: 'utilities_included',
+      label: 'Utilities Included',
+      icon: '💡'
+    }, {
+      id: 'trash_recycling',
+      label: 'Trash / Recycling',
+      icon: '♻️'
+    }, {
+      id: 'snow_removal',
+      label: 'Snow Removal',
+      icon: '❄️'
+    }, {
+      id: 'pest_control',
+      label: 'Pest Control',
+      icon: '🐛'
+    }, {
+      id: 'onsite_maintenance',
+      label: 'On-Site Maintenance',
+      icon: '🔧'
+    }, {
+      id: 'near_transit',
+      label: 'Near Public Transit',
+      icon: '🚇'
+    }, {
+      id: 'walk_bike_score',
+      label: 'Walk Score / Bike Score',
+      icon: '🚶'
+    }, {
+      id: 'near_parks',
+      label: 'Near Parks / Trails',
+      icon: '🌲'
+    }, {
+      id: 'waterfront_view',
+      label: 'Waterfront / Lake View',
+      icon: '🌊'
+    }, {
+      id: 'smart_thermostat',
+      label: 'Smart Thermostat',
+      icon: '🌡️'
+    }, {
+      id: 'keyless_entry',
+      label: 'Keyless Entry',
+      icon: '🔑'
+    }, {
+      id: 'video_doorbell',
+      label: 'Video Doorbell',
+      icon: '📹'
+    }, {
+      id: 'smart_lighting',
+      label: 'Smart Lighting',
+      icon: '💡'
+    }],
     maxPrice: 20000,
     priceStep: 500
   });
-
   const getRentFilters = () => ({
-    priceRanges: [
-      { value: '1000000-3000000', label: '1jt - 3jt/month' },
-      { value: '3000000-5000000', label: '3jt - 5jt/month' },
-      { value: '5000000-10000000', label: '5jt - 10jt/month' },
-      { value: '10000000-20000000', label: '10jt - 20jt/month' },
-      { value: '20000000+', label: '20jt+/month' },
-    ],
-    propertyTypes: propertyTypeOptions.filter(type => 
-      ['apartment', 'condo', 'villa', 'house', 'townhouse', 'office'].includes(type.value)
-    ),
-    features: [
-      { id: 'furnished', label: currentText.furnished, icon: '🛋️' },
-      { id: 'wifi', label: currentText.wifi, icon: '📶' },
-      { id: 'ac', label: currentText.ac, icon: '❄️' },
-      { id: 'parking', label: currentText.parking, icon: '🅿️' },
-      { id: 'laundry', label: currentText.laundry, icon: '👕' },
-      { id: 'kitchen', label: currentText.kitchen, icon: '🍳' },
-      { id: 'pets_allowed', label: currentText.petsAllowed, icon: '🐕' },
-      { id: 'swimming_pool', label: currentText.pool, icon: '🏊' },
-      { id: 'gym', label: currentText.gym, icon: '💪' },
-      { id: 'security', label: currentText.security, icon: '🔒' },
-      { id: 'elevator', label: currentText.elevator, icon: '🛗' },
-      { id: 'cctv', label: currentText.cctv, icon: '📹' },
-      { id: 'balcony', label: currentText.balcony, icon: '🏢' },
-      { id: 'storage', label: currentText.storage, icon: '📦' },
-      { id: 'housekeeping', label: currentText.housekeeping, icon: '🧹' },
-      { id: 'concierge', label: currentText.concierge, icon: '🛎️' },
-      { id: 'coworking', label: currentText.coworking, icon: '💻' },
-      { id: 'playground', label: currentText.playground, icon: '🎠' },
-      { id: 'bbq_area', label: currentText.bbqArea, icon: '🔥' },
-      { id: 'intercom', label: currentText.intercom, icon: '📞' },
-      { id: 'generator', label: currentText.generator, icon: '⚡' },
-      { id: 'water_heater', label: currentText.waterHeater, icon: '🚿' },
-    ],
-    facilities: [
-      { id: 'air_conditioning', label: 'Air Conditioning (AC)', icon: '❄️' },
-      { id: 'heating', label: 'Heating', icon: '🔥' },
-      { id: 'internet_wifi', label: 'Wi-Fi / Internet', icon: '📶' },
-      { id: 'parking_space', label: 'Parking', icon: '🚗' },
-      { id: 'elevator_lift', label: 'Elevator / Lift', icon: '🛗' },
-      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊' },
-      { id: 'gym_fitness', label: 'Gym / Fitness Center', icon: '🏋️' },
-      { id: 'laundry', label: 'Laundry', icon: '🧺' },
-      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
-      { id: 'balcony_terrace', label: 'Balcony / Terrace', icon: '🌿' },
-      { id: 'pet_friendly', label: 'Pet-Friendly', icon: '🐶' },
-      { id: 'furnished', label: 'Furnished', icon: '🛋️' },
-      { id: 'security_system', label: 'Security System', icon: '🔒' },
-      { id: 'washing_machine', label: 'Washing Machine', icon: '🧺' },
-      { id: 'refrigerator', label: 'Refrigerator', icon: '🧊' },
-      { id: 'stove_oven', label: 'Stove/Oven', icon: '🍳' },
-      { id: 'microwave', label: 'Microwave', icon: '🔥' },
-      { id: 'bedding_linens', label: 'Bedding/Linens', icon: '🛏️' },
-      { id: 'kitchen_utensils', label: 'Kitchen Utensils', icon: '🔪' },
-    ],
+    priceRanges: [{
+      value: '1000000-3000000',
+      label: '1jt - 3jt/month'
+    }, {
+      value: '3000000-5000000',
+      label: '3jt - 5jt/month'
+    }, {
+      value: '5000000-10000000',
+      label: '5jt - 10jt/month'
+    }, {
+      value: '10000000-20000000',
+      label: '10jt - 20jt/month'
+    }, {
+      value: '20000000+',
+      label: '20jt+/month'
+    }],
+    propertyTypes: propertyTypeOptions.filter(type => ['apartment', 'condo', 'villa', 'house', 'townhouse', 'office'].includes(type.value)),
+    features: [{
+      id: 'furnished',
+      label: currentText.furnished,
+      icon: '🛋️'
+    }, {
+      id: 'wifi',
+      label: currentText.wifi,
+      icon: '📶'
+    }, {
+      id: 'ac',
+      label: currentText.ac,
+      icon: '❄️'
+    }, {
+      id: 'parking',
+      label: currentText.parking,
+      icon: '🅿️'
+    }, {
+      id: 'laundry',
+      label: currentText.laundry,
+      icon: '👕'
+    }, {
+      id: 'kitchen',
+      label: currentText.kitchen,
+      icon: '🍳'
+    }, {
+      id: 'pets_allowed',
+      label: currentText.petsAllowed,
+      icon: '🐕'
+    }, {
+      id: 'swimming_pool',
+      label: currentText.pool,
+      icon: '🏊'
+    }, {
+      id: 'gym',
+      label: currentText.gym,
+      icon: '💪'
+    }, {
+      id: 'security',
+      label: currentText.security,
+      icon: '🔒'
+    }, {
+      id: 'elevator',
+      label: currentText.elevator,
+      icon: '🛗'
+    }, {
+      id: 'cctv',
+      label: currentText.cctv,
+      icon: '📹'
+    }, {
+      id: 'balcony',
+      label: currentText.balcony,
+      icon: '🏢'
+    }, {
+      id: 'storage',
+      label: currentText.storage,
+      icon: '📦'
+    }, {
+      id: 'housekeeping',
+      label: currentText.housekeeping,
+      icon: '🧹'
+    }, {
+      id: 'concierge',
+      label: currentText.concierge,
+      icon: '🛎️'
+    }, {
+      id: 'coworking',
+      label: currentText.coworking,
+      icon: '💻'
+    }, {
+      id: 'playground',
+      label: currentText.playground,
+      icon: '🎠'
+    }, {
+      id: 'bbq_area',
+      label: currentText.bbqArea,
+      icon: '🔥'
+    }, {
+      id: 'intercom',
+      label: currentText.intercom,
+      icon: '📞'
+    }, {
+      id: 'generator',
+      label: currentText.generator,
+      icon: '⚡'
+    }, {
+      id: 'water_heater',
+      label: currentText.waterHeater,
+      icon: '🚿'
+    }],
+    facilities: [{
+      id: 'air_conditioning',
+      label: 'Air Conditioning (AC)',
+      icon: '❄️'
+    }, {
+      id: 'heating',
+      label: 'Heating',
+      icon: '🔥'
+    }, {
+      id: 'internet_wifi',
+      label: 'Wi-Fi / Internet',
+      icon: '📶'
+    }, {
+      id: 'parking_space',
+      label: 'Parking',
+      icon: '🚗'
+    }, {
+      id: 'elevator_lift',
+      label: 'Elevator / Lift',
+      icon: '🛗'
+    }, {
+      id: 'swimming_pool_facility',
+      label: 'Swimming Pool',
+      icon: '🏊'
+    }, {
+      id: 'gym_fitness',
+      label: 'Gym / Fitness Center',
+      icon: '🏋️'
+    }, {
+      id: 'laundry',
+      label: 'Laundry',
+      icon: '🧺'
+    }, {
+      id: 'dishwasher',
+      label: 'Dishwasher',
+      icon: '🍽️'
+    }, {
+      id: 'balcony_terrace',
+      label: 'Balcony / Terrace',
+      icon: '🌿'
+    }, {
+      id: 'pet_friendly',
+      label: 'Pet-Friendly',
+      icon: '🐶'
+    }, {
+      id: 'furnished',
+      label: 'Furnished',
+      icon: '🛋️'
+    }, {
+      id: 'security_system',
+      label: 'Security System',
+      icon: '🔒'
+    }, {
+      id: 'washing_machine',
+      label: 'Washing Machine',
+      icon: '🧺'
+    }, {
+      id: 'refrigerator',
+      label: 'Refrigerator',
+      icon: '🧊'
+    }, {
+      id: 'stove_oven',
+      label: 'Stove/Oven',
+      icon: '🍳'
+    }, {
+      id: 'microwave',
+      label: 'Microwave',
+      icon: '🔥'
+    }, {
+      id: 'bedding_linens',
+      label: 'Bedding/Linens',
+      icon: '🛏️'
+    }, {
+      id: 'kitchen_utensils',
+      label: 'Kitchen Utensils',
+      icon: '🔪'
+    }],
     maxPrice: 100,
     priceStep: 5
   });
-
   const getAllFilters = () => ({
-    priceRanges: [
-      { value: '100000000-500000000', label: '100jt - 500jt' },
-      { value: '500000000-1000000000', label: '500jt - 1M' },
-      { value: '1000000000-5000000000', label: '1M - 5M' },
-      { value: '5000000000+', label: '5M+' },
-    ],
+    priceRanges: [{
+      value: '100000000-500000000',
+      label: '100jt - 500jt'
+    }, {
+      value: '500000000-1000000000',
+      label: '500jt - 1M'
+    }, {
+      value: '1000000000-5000000000',
+      label: '1M - 5M'
+    }, {
+      value: '5000000000+',
+      label: '5M+'
+    }],
     propertyTypes: propertyTypeOptions,
     features: propertyFeatures,
-    facilities: [
-      { id: 'air_conditioning', label: 'Air Conditioning (AC)', icon: '❄️' },
-      { id: 'heating', label: 'Heating', icon: '🔥' },
-      { id: 'internet_wifi', label: 'Wi-Fi / Internet', icon: '📶' },
-      { id: 'parking_space', label: 'Parking', icon: '🚗' },
-      { id: 'elevator_lift', label: 'Elevator / Lift', icon: '🛗' },
-      { id: 'swimming_pool_facility', label: 'Swimming Pool', icon: '🏊' },
-      { id: 'gym_fitness', label: 'Gym / Fitness Center', icon: '🏋️' },
-      { id: 'laundry', label: 'Laundry', icon: '🧺' },
-      { id: 'dishwasher', label: 'Dishwasher', icon: '🍽️' },
-      { id: 'balcony_terrace', label: 'Balcony / Terrace', icon: '🌿' },
-      { id: 'pet_friendly', label: 'Pet-Friendly', icon: '🐶' },
-      { id: 'furnished', label: 'Furnished', icon: '🛋️' },
-      { id: 'security_system', label: 'Security System', icon: '🔒' },
-    ],
+    facilities: [{
+      id: 'air_conditioning',
+      label: 'Air Conditioning (AC)',
+      icon: '❄️'
+    }, {
+      id: 'heating',
+      label: 'Heating',
+      icon: '🔥'
+    }, {
+      id: 'internet_wifi',
+      label: 'Wi-Fi / Internet',
+      icon: '📶'
+    }, {
+      id: 'parking_space',
+      label: 'Parking',
+      icon: '🚗'
+    }, {
+      id: 'elevator_lift',
+      label: 'Elevator / Lift',
+      icon: '🛗'
+    }, {
+      id: 'swimming_pool_facility',
+      label: 'Swimming Pool',
+      icon: '🏊'
+    }, {
+      id: 'gym_fitness',
+      label: 'Gym / Fitness Center',
+      icon: '🏋️'
+    }, {
+      id: 'laundry',
+      label: 'Laundry',
+      icon: '🧺'
+    }, {
+      id: 'dishwasher',
+      label: 'Dishwasher',
+      icon: '🍽️'
+    }, {
+      id: 'balcony_terrace',
+      label: 'Balcony / Terrace',
+      icon: '🌿'
+    }, {
+      id: 'pet_friendly',
+      label: 'Pet-Friendly',
+      icon: '🐶'
+    }, {
+      id: 'furnished',
+      label: 'Furnished',
+      icon: '🛋️'
+    }, {
+      id: 'security_system',
+      label: 'Security System',
+      icon: '🔒'
+    }],
     maxPrice: 15000,
     priceStep: 100
   });
@@ -780,62 +1180,113 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   // Get current filters based on active tab - Memoized for performance
   const currentFilters = useMemo(() => {
     switch (activeTab) {
-      case 'sale': return getSaleFilters();
-      case 'rent': return getRentFilters();
-      default: return getAllFilters();
+      case 'sale':
+        return getSaleFilters();
+      case 'rent':
+        return getRentFilters();
+      default:
+        return getAllFilters();
     }
   }, [activeTab, propertyTypeOptions]);
-
-  const sortOptions = [
-    { value: 'newest', label: currentText.newest },
-    { value: 'price_low', label: currentText.priceLow },
-    { value: 'price_high', label: currentText.priceHigh },
-    { value: 'area_large', label: currentText.areaLarge },
-  ];
-
-  const yearOptions = [
-    { value: '2024', label: '2024' },
-    { value: '2023', label: '2023' },
-    { value: '2022', label: '2022' },
-    { value: '2021', label: '2021' },
-    { value: '2020', label: '2020' },
-    { value: '2015-2019', label: '2015-2019' },
-    { value: '2010-2014', label: '2010-2014' },
-    { value: 'below-2010', label: 'Before 2010' },
-  ];
-
-  const conditionOptions = [
-    { value: 'new', label: 'New/Unoccupied' },
-    { value: 'excellent', label: 'Excellent' },
-    { value: 'good', label: 'Good' },
-    { value: 'needs_renovation', label: 'Needs Renovation' },
-  ];
-
-  const furnishingOptions = [
-    { value: 'fully', label: 'Fully Furnished' },
-    { value: 'semi', label: 'Semi-Furnished' },
-    { value: 'unfurnished', label: 'Unfurnished' },
-  ];
-
+  const sortOptions = [{
+    value: 'newest',
+    label: currentText.newest
+  }, {
+    value: 'price_low',
+    label: currentText.priceLow
+  }, {
+    value: 'price_high',
+    label: currentText.priceHigh
+  }, {
+    value: 'area_large',
+    label: currentText.areaLarge
+  }];
+  const yearOptions = [{
+    value: '2024',
+    label: '2024'
+  }, {
+    value: '2023',
+    label: '2023'
+  }, {
+    value: '2022',
+    label: '2022'
+  }, {
+    value: '2021',
+    label: '2021'
+  }, {
+    value: '2020',
+    label: '2020'
+  }, {
+    value: '2015-2019',
+    label: '2015-2019'
+  }, {
+    value: '2010-2014',
+    label: '2010-2014'
+  }, {
+    value: 'below-2010',
+    label: 'Before 2010'
+  }];
+  const conditionOptions = [{
+    value: 'new',
+    label: 'New/Unoccupied'
+  }, {
+    value: 'excellent',
+    label: 'Excellent'
+  }, {
+    value: 'good',
+    label: 'Good'
+  }, {
+    value: 'needs_renovation',
+    label: 'Needs Renovation'
+  }];
+  const furnishingOptions = [{
+    value: 'fully',
+    label: 'Fully Furnished'
+  }, {
+    value: 'semi',
+    label: 'Semi-Furnished'
+  }, {
+    value: 'unfurnished',
+    label: 'Unfurnished'
+  }];
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
   const parkingOptions = ['1', '2', '3', '4+'];
 
   // Rental duration options (1-12 months)
-  const rentalDurationOptions = Array.from({ length: 12 }, (_, i) => ({
+  const rentalDurationOptions = Array.from({
+    length: 12
+  }, (_, i) => ({
     value: String(i + 1),
     label: `${i + 1} ${i === 0 ? currentText.month : currentText.months}`
   }));
 
   // Trip purpose options
-  const tripPurposeOptions = [
-    { value: 'solo', label: currentText.solo, icon: '🧳' },
-    { value: 'business', label: currentText.business, icon: '💼' },
-    { value: 'family', label: currentText.family, icon: '👨‍👩‍👧‍👦' },
-    { value: 'group', label: currentText.group, icon: '👥' },
-    { value: 'couple', label: currentText.couple, icon: '💑' },
-    { value: 'other', label: currentText.other, icon: '🎯' },
-  ];
+  const tripPurposeOptions = [{
+    value: 'solo',
+    label: currentText.solo,
+    icon: '🧳'
+  }, {
+    value: 'business',
+    label: currentText.business,
+    icon: '💼'
+  }, {
+    value: 'family',
+    label: currentText.family,
+    icon: '👨‍👩‍👧‍👦'
+  }, {
+    value: 'group',
+    label: currentText.group,
+    icon: '👥'
+  }, {
+    value: 'couple',
+    label: currentText.couple,
+    icon: '💑'
+  }, {
+    value: 'other',
+    label: currentText.other,
+    icon: '🎯'
+  }];
 
   // Calculate days between dates
   const calculateDays = () => {
@@ -844,7 +1295,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     }
     return 0;
   };
-
 
   // Debounced search query for performance
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -855,74 +1305,64 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       onLiveSearch(debouncedSearchQuery);
     }
   }, [debouncedSearchQuery, onLiveSearch]);
-
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
   }, []);
-
   const handleFilterChange = (key: string, value: any) => {
     const actualValue = value === "all" ? "" : value;
-    setFilters(prev => ({ ...prev, [key]: actualValue }));
+    setFilters(prev => ({
+      ...prev,
+      [key]: actualValue
+    }));
   };
-
   const handleFeatureToggle = (featureId: string) => {
     setFilters(prev => ({
       ...prev,
-      features: prev.features.includes(featureId)
-        ? prev.features.filter(f => f !== featureId)
-        : [...prev.features, featureId]
+      features: prev.features.includes(featureId) ? prev.features.filter(f => f !== featureId) : [...prev.features, featureId]
     }));
   };
-
   const handleFacilityToggle = (facilityId: string) => {
     setFilters(prev => ({
       ...prev,
-      facilities: prev.facilities.includes(facilityId)
-        ? prev.facilities.filter(f => f !== facilityId)
-        : [...prev.facilities, facilityId]
+      facilities: prev.facilities.includes(facilityId) ? prev.facilities.filter(f => f !== facilityId) : [...prev.facilities, facilityId]
     }));
   };
-
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
   };
-
   const getActiveFiltersCount = () => {
     let count = 0;
-    
     Object.entries(filters).forEach(([key, value]) => {
       // Skip sortBy as it always has a default value
       if (key === 'sortBy') return;
-      
+
       // Count arrays (features, facilities) only if they have items
       if (key === 'features' || key === 'facilities') {
         if (Array.isArray(value) && value.length > 0) count++;
         return;
       }
-      
+
       // Count date fields only if they're set
       if (key === 'checkInDate' || key === 'checkOutDate') {
         if (value !== null) count++;
         return;
       }
-      
+
       // Count other fields only if they're not empty/null/undefined/'all'
       if (value && value !== '' && value !== 'all') {
         count++;
       }
     });
-    
     return count;
   };
-
   const clearAllFilters = () => {
     setFilters({
       location: '',
       state: '',
-      city: '', 
+      city: '',
       area: '',
       propertyType: '',
       priceRange: '',
@@ -955,27 +1395,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      
+
       // Close suggestions if clicking outside the suggestions dropdown
-      if (
-        suggestionsRef.current &&
-        !suggestionsRef.current.contains(target) &&
-        showSuggestions
-      ) {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(target) && showSuggestions) {
         setShowSuggestions(false);
       }
 
       // Close advanced filters if clicking outside
-      if (
-        advancedFiltersRef.current &&
-        !advancedFiltersRef.current.contains(target) &&
-        showAdvancedFilters &&
-        target.closest('.fixed.inset-0') // Only if clicking on backdrop
+      if (advancedFiltersRef.current && !advancedFiltersRef.current.contains(target) && showAdvancedFilters && target.closest('.fixed.inset-0') // Only if clicking on backdrop
       ) {
         setShowAdvancedFilters(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -984,15 +1415,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   // Removed manual scroll locking useEffect in favor of useScrollLock hook above
 
-
   const formatPrice = (price: number) => {
     if (price >= 1000) return `${price / 1000} M`;
     return `${price} Jt`;
   };
-
   const getSelectedFiltersDisplay = () => {
     const selected = [];
-    
+
     // Combine location parts with null safety
     const locationParts = [];
     if (filters.state && filters.state !== 'all') {
@@ -1008,7 +1437,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       locationParts.push(area?.name || filters.area);
     }
     if (locationParts.length > 0) selected.push(locationParts.join(', '));
-    
     if (filters.propertyType) selected.push(currentText[filters.propertyType as keyof typeof currentText] || filters.propertyType);
     if (filters.priceRange) selected.push(filters.priceRange);
     if (filters.bedrooms) selected.push(`${filters.bedrooms} bed`);
@@ -1018,22 +1446,19 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     if (filters.condition) selected.push(filters.condition);
     return selected;
   };
-
   const handleSearch = () => {
     // 🔒 CRITICAL: Preserve scroll position to prevent iPhone Safari jump
     const currentScroll = window.scrollY;
-    
+
     // 📳 PRO: Haptic feedback for search action on mobile devices
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
     }
-    
     const listingType = activeTab === 'all' ? '' : activeTab;
-    
+
     // Construct location from selected parts
     let locationValue = '';
     const locationParts = [];
-    
     if (filters.state && filters.state !== 'all') {
       const province = provinces.find(p => p.code === filters.state);
       if (province) locationParts.push(province.name);
@@ -1046,12 +1471,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       const area = areas.find(a => a.code === filters.area);
       if (area) locationParts.push(area.name);
     }
-    
+
     // Use the most specific location part for search
     if (locationParts.length > 0) {
       locationValue = locationParts[locationParts.length - 1]; // Use most specific (last) part
     }
-    
+
     // Base search data
     const searchData: any = {
       searchQuery,
@@ -1076,45 +1501,28 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       userLocation: userLocation,
       radius: nearbyRadius
     };
-
     console.log('Search data being sent:', searchData);
     onSearch(searchData);
-    
+
     // 🔒 CRITICAL: Restore scroll position after React updates
     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
   // Simple mobile view - only input and button by default
   if (isMobile) {
-    return (
-      <>
+    return <>
         <div className="w-full sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 transition-all duration-300 px-1 py-2">
           <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
             {/* Search Bar */}
             <div className="flex items-center gap-1.5 p-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-                <Input
-                  placeholder={currentText.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm"
-                />
+                <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm" />
               </div>
-              <Button
-                onClick={() => setShowAdvancedFilters(true)}
-                variant="outline"
-                size="sm"
-                className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl"
-              >
+              <Button onClick={() => setShowAdvancedFilters(true)} variant="outline" size="sm" className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl">
                 <Filter className="h-4 w-4" />
               </Button>
-              <Button
-                onClick={handleSearch}
-                variant="default"
-                size="sm"
-                className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl"
-              >
+              <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
                 <Search className="h-4 w-4" />
               </Button>
             </div>
@@ -1122,22 +1530,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
         </div>
 
         {/* Advanced Filters Modal (mobile) */}
-        {showAdvancedFilters && (
-          <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
-            <div
-              ref={advancedFiltersRef}
-              className={cn(
-                "w-full max-w-full md:max-w-2xl h-[85dvh] md:h/[75dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300",
-                "bg-card md:bg-background border-border"
-              )}
-            >
+        {showAdvancedFilters && <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center animate-in fade-in duration-200">
+            <div ref={advancedFiltersRef} className={cn("w-full max-w-full md:max-w-2xl h-[85dvh] md:h/[75dvh] rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-t md:border animate-in slide-in-from-bottom-6 md:slide-in-from-bottom-0 duration-300", "bg-card md:bg-background border-border")}>
               {/* Header */}
-              <div
-                className={cn(
-                  "flex items-center justify-between border-b border-border px-4 py-3 shrink-0",
-                  "bg-gradient-to-r from-primary/10 to-accent/5"
-                )}
-              >
+              <div className={cn("flex items-center justify-between border-b border-border px-4 py-3 shrink-0", "bg-gradient-to-r from-primary/10 to-accent/5")}>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                     <Filter className="h-4 w-4 text-primary" />
@@ -1147,12 +1543,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <p className="text-[10px] text-muted-foreground">Refine your search</p>
                   </div>
                 </div>
-                <Button
-                  onClick={() => setShowAdvancedFilters(false)}
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
-                >
+                <Button onClick={() => setShowAdvancedFilters(false)} variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -1167,20 +1558,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Price Range
                     </Label>
                     <div className="grid grid-cols-3 gap-2">
-                      {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map((range) => (
-                        <Button
-                          key={range}
-                          variant={filters.priceRange === range ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.priceRange === range && "shadow-md"
-                          )}
-                        >
+                      {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => <Button key={range} variant={filters.priceRange === range ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} className={cn("h-9 text-[11px] font-medium touch-target", filters.priceRange === range && "shadow-md")}>
                           {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1191,20 +1571,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Bedrooms
                     </Label>
                     <div className="grid grid-cols-5 gap-2">
-                      {['1', '2', '3', '4', '5+'].map((bed) => (
-                        <Button
-                          key={bed}
-                          variant={filters.bedrooms === bed ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.bedrooms === bed && "shadow-md"
-                          )}
-                        >
+                      {['1', '2', '3', '4', '5+'].map(bed => <Button key={bed} variant={filters.bedrooms === bed ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)} className={cn("h-9 text-[11px] font-medium touch-target", filters.bedrooms === bed && "shadow-md")}>
                           {bed}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1215,20 +1584,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Bathrooms
                     </Label>
                     <div className="grid grid-cols-5 gap-2">
-                      {['1', '2', '3', '4', '5+'].map((bath) => (
-                        <Button
-                          key={bath}
-                          variant={filters.bathrooms === bath ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.bathrooms === bath && "shadow-md"
-                          )}
-                        >
+                      {['1', '2', '3', '4', '5+'].map(bath => <Button key={bath} variant={filters.bathrooms === bath ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)} className={cn("h-9 text-[11px] font-medium touch-target", filters.bathrooms === bath && "shadow-md")}>
                           {bath}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1239,25 +1597,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Property Condition
                     </Label>
                     <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { value: 'new', label: 'New' },
-                        { value: 'like_new', label: 'Like New' },
-                        { value: 'good', label: 'Good' },
-                        { value: 'fair', label: 'Fair' },
-                      ].map((condition) => (
-                        <Button
-                          key={condition.value}
-                          variant={filters.condition === condition.value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.condition === condition.value && "shadow-md"
-                          )}
-                        >
+                      {[{
+                    value: 'new',
+                    label: 'New'
+                  }, {
+                    value: 'like_new',
+                    label: 'Like New'
+                  }, {
+                    value: 'good',
+                    label: 'Good'
+                  }, {
+                    value: 'fair',
+                    label: 'Fair'
+                  }].map(condition => <Button key={condition.value} variant={filters.condition === condition.value ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)} className={cn("h-9 text-[11px] font-medium touch-target", filters.condition === condition.value && "shadow-md")}>
                           {condition.label}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1268,24 +1622,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Furnishing Status
                     </Label>
                     <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { value: 'unfurnished', label: 'Unfurnished' },
-                        { value: 'semi_furnished', label: 'Semi-Furnished' },
-                        { value: 'fully_furnished', label: 'Fully Furnished' },
-                      ].map((furnishing) => (
-                        <Button
-                          key={furnishing.value}
-                          variant={filters.furnishing === furnishing.value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('furnishing', filters.furnishing === furnishing.value ? '' : furnishing.value)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.furnishing === furnishing.value && "shadow-md"
-                          )}
-                        >
+                      {[{
+                    value: 'unfurnished',
+                    label: 'Unfurnished'
+                  }, {
+                    value: 'semi_furnished',
+                    label: 'Semi-Furnished'
+                  }, {
+                    value: 'fully_furnished',
+                    label: 'Fully Furnished'
+                  }].map(furnishing => <Button key={furnishing.value} variant={filters.furnishing === furnishing.value ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('furnishing', filters.furnishing === furnishing.value ? '' : furnishing.value)} className={cn("h-9 text-[11px] font-medium touch-target", filters.furnishing === furnishing.value && "shadow-md")}>
                           {furnishing.label}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1296,20 +1644,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Parking Spaces
                     </Label>
                     <div className="grid grid-cols-4 gap-2">
-                      {['1', '2', '3', '4+'].map((parking) => (
-                        <Button
-                          key={parking}
-                          variant={filters.parking === parking ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('parking', filters.parking === parking ? '' : parking)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.parking === parking && "shadow-md"
-                          )}
-                        >
+                      {['1', '2', '3', '4+'].map(parking => <Button key={parking} variant={filters.parking === parking ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('parking', filters.parking === parking ? '' : parking)} className={cn("h-9 text-[11px] font-medium touch-target", filters.parking === parking && "shadow-md")}>
                           {parking}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1320,25 +1657,21 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Year Built
                     </Label>
                     <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { value: 'before_2000', label: 'Before 2000' },
-                        { value: '2000-2010', label: '2000-2010' },
-                        { value: '2010-2020', label: '2010-2020' },
-                        { value: 'after_2020', label: 'After 2020' },
-                      ].map((year) => (
-                        <Button
-                          key={year.value}
-                          variant={filters.yearBuilt === year.value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleFilterChange('yearBuilt', filters.yearBuilt === year.value ? '' : year.value)}
-                          className={cn(
-                            "h-9 text-[11px] font-medium touch-target",
-                            filters.yearBuilt === year.value && "shadow-md"
-                          )}
-                        >
+                      {[{
+                    value: 'before_2000',
+                    label: 'Before 2000'
+                  }, {
+                    value: '2000-2010',
+                    label: '2000-2010'
+                  }, {
+                    value: '2010-2020',
+                    label: '2010-2020'
+                  }, {
+                    value: 'after_2020',
+                    label: 'After 2020'
+                  }].map(year => <Button key={year.value} variant={filters.yearBuilt === year.value ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('yearBuilt', filters.yearBuilt === year.value ? '' : year.value)} className={cn("h-9 text-[11px] font-medium touch-target", filters.yearBuilt === year.value && "shadow-md")}>
                           {year.label}
-                        </Button>
-                      ))}
+                        </Button>)}
                     </div>
                   </div>
 
@@ -1349,46 +1682,39 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       Amenities
                     </Label>
                     <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { id: 'parking', label: 'Parking', icon: Car },
-                        { id: 'pool', label: 'Pool', icon: Droplets },
-                        { id: 'wifi', label: 'WiFi', icon: Wifi },
-                        { id: 'security', label: 'Security', icon: Shield },
-                      ].map((amenity) => {
-                        const Icon = amenity.icon;
-                        const isSelected = filters.features?.includes(amenity.id);
-                        return (
-                          <Button
-                            key={amenity.id}
-                            variant={isSelected ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => {
-                              const current = filters.features || [];
-                              const updated = isSelected 
-                                ? current.filter(f => f !== amenity.id)
-                                : [...current, amenity.id];
-                              handleFilterChange('features', updated);
-                            }}
-                            className={cn(
-                              "h-9 text-[11px] justify-start font-medium touch-target",
-                              isSelected && "shadow-md"
-                            )}
-                          >
+                      {[{
+                    id: 'parking',
+                    label: 'Parking',
+                    icon: Car
+                  }, {
+                    id: 'pool',
+                    label: 'Pool',
+                    icon: Droplets
+                  }, {
+                    id: 'wifi',
+                    label: 'WiFi',
+                    icon: Wifi
+                  }, {
+                    id: 'security',
+                    label: 'Security',
+                    icon: Shield
+                  }].map(amenity => {
+                    const Icon = amenity.icon;
+                    const isSelected = filters.features?.includes(amenity.id);
+                    return <Button key={amenity.id} variant={isSelected ? "default" : "outline"} size="sm" onClick={() => {
+                      const current = filters.features || [];
+                      const updated = isSelected ? current.filter(f => f !== amenity.id) : [...current, amenity.id];
+                      handleFilterChange('features', updated);
+                    }} className={cn("h-9 text-[11px] justify-start font-medium touch-target", isSelected && "shadow-md")}>
                             <Icon className="h-3 w-3 mr-1.5" />
                             {amenity.label}
-                          </Button>
-                        );
-                      })}
+                          </Button>;
+                  })}
                     </div>
                   </div>
 
                   {/* Clear All */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={clearAllFilters}
-                    className="w-full h-10 text-sm font-medium text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 touch-target"
-                  >
+                  <Button variant="outline" size="sm" onClick={clearAllFilters} className="w-full h-10 text-sm font-medium text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 touch-target">
                     <X className="h-4 w-4 mr-2" />
                     Clear All Filters
                   </Button>
@@ -1397,108 +1723,45 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
               {/* Footer */}
               <div className="border-t border-border bg-muted/30 px-4 py-3 shrink-0">
-                <Button
-                  onClick={() => {
-                    handleSearch();
-                    setShowAdvancedFilters(false);
-                  }}
-                  className="w-full h-10 text-sm font-medium"
-                  size="lg"
-                >
+                <Button onClick={() => {
+              handleSearch();
+              setShowAdvancedFilters(false);
+            }} className="w-full h-10 text-sm font-medium" size="lg">
                   <Search className="h-4 w-4 mr-2" />
                   Apply Filters
                 </Button>
               </div>
             </div>
-          </div>
-        )}
-      </>
-    );
+          </div>}
+      </>;
   }
-
-  return (
-    <div className={cn(
-      "w-full transition-all duration-300",
-      isMobile ? "sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 px-1 py-2" : "max-w-7xl mx-auto"
-    )}>
+  return <div className={cn("w-full transition-all duration-300", isMobile ? "sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 px-1 py-2" : "max-w-7xl mx-auto")}>
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div className={cn(
-          "space-y-1.5 backdrop-blur-md rounded-2xl shadow-lg border",
-          isMobile 
-            ? "p-1.5 bg-card/95 border-border/40" 
-            : "p-2 lg:p-3 bg-background/60 border-border/30"
-        )}>
+        <div className={cn("space-y-1.5 backdrop-blur-md rounded-2xl shadow-lg border", isMobile ? "p-1.5 bg-card/95 border-border/40" : "p-2 lg:p-3 bg-background/60 border-border/30")}>
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className={cn(
-              "inline-flex rounded-lg border-0 shadow-sm relative",
-              isMobile 
-                ? "p-0.5 bg-muted/80" 
-                : "p-0.5 bg-background/60"
-            )}>
+            <div className={cn("inline-flex rounded-lg border-0 shadow-sm relative", isMobile ? "p-0.5 bg-muted/80" : "p-0.5 bg-background/60")}>
               {/* Sliding background indicator */}
-              <div 
-                className="absolute inset-y-0.5 bg-primary rounded-md shadow-md transition-all duration-300 ease-out"
-                style={{
-                  width: 'calc(25% - 2px)',
-                  left: activeTab === 'all' ? '2px' : 
-                        activeTab === 'sale' ? 'calc(25% + 1px)' : 
-                        activeTab === 'rent' ? 'calc(50%)' : 
-                        'calc(75% - 1px)',
-                }}
-              />
+              <div className="absolute inset-y-0.5 bg-primary rounded-md shadow-md transition-all duration-300 ease-out" style={{
+              width: 'calc(25% - 2px)',
+              left: activeTab === 'all' ? '2px' : activeTab === 'sale' ? 'calc(25% + 1px)' : activeTab === 'rent' ? 'calc(50%)' : 'calc(75% - 1px)'
+            }} />
               
-              <button
-                onClick={() => setActiveTab('all')}
-                className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === 'all' 
-                    ? 'text-primary-foreground' 
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+              <button onClick={() => setActiveTab('all')} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'all' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
               </button>
-              <button
-                onClick={() => setActiveTab('sale')}
-                className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === 'sale' 
-                    ? 'text-primary-foreground' 
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+              <button onClick={() => setActiveTab('sale')} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'sale' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span>{isMobile ? "Buy" : currentText.forSale}</span>
               </button>
-              <button
-                onClick={() => setActiveTab('rent')}
-                className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === 'rent' 
-                    ? 'text-primary-foreground' 
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+              <button onClick={() => setActiveTab('rent')} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'rent' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span>{isMobile ? "Rent" : currentText.forRent}</span>
               </button>
-              <button
-                onClick={() => setActiveTab('new_project')}
-                className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === 'new_project' 
-                    ? 'text-primary-foreground' 
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+              <button onClick={() => setActiveTab('new_project')} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'new_project' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span>{isMobile ? "New" : currentText.newProject}</span>
               </button>
@@ -1509,186 +1772,86 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Compact Search Row with Location Options */}
           <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div className="flex-1 relative">
-              <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none",
-                isMobile ? "h-3 w-3 left-2" : "h-4 w-4"
-              )} />
-              <Input
-                placeholder={currentText.searchPlaceholder}
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                onFocus={() => setShowSuggestions(true)}
-                className={cn(
-                  "border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium",
-                  isMobile 
-                    ? "pl-8 pr-16 h-8 text-xs bg-background border border-border" 
-                    : "pl-10 pr-20 h-9 text-sm bg-background/60"
-                )}
-              />
+              <Search className={cn("absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none", isMobile ? "h-3 w-3 left-2" : "h-4 w-4")} />
+              <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} onFocus={() => setShowSuggestions(true)} className={cn("border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium", isMobile ? "pl-8 pr-16 h-8 text-xs bg-background border border-border" : "pl-10 pr-20 h-9 text-sm bg-background/60")} />
               
               {/* Location Options Inside Input */}
-              <div className={cn(
-                "absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center",
-                isMobile ? "gap-0.5" : "gap-1"
-              )}>
-                <Button
-                  onClick={() => toggleSearchType('location')}
-                  variant="ghost"
-                  size="sm"
-                  aria-label={currentText.location}
-                  className={cn(
-                    "p-0 rounded-md",
-                    isMobile ? "h-6 w-6" : "h-7 w-7",
-                    !useNearbyLocation 
-                      ? 'bg-primary/10 text-primary hover:bg-primary/20' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  )}
-                  title={currentText.location}
-                >
+              <div className={cn("absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
+                <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} title={currentText.location}>
                   <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 </Button>
-                <Button
-                  onClick={() => toggleSearchType('nearby')}
-                  variant="ghost"
-                  size="sm"
-                  aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
-                  className={cn(
-                    "p-0 rounded-md relative",
-                    isMobile ? "h-6 w-6" : "h-7 w-7",
-                    useNearbyLocation 
-                      ? 'bg-primary/10 text-primary hover:bg-primary/20' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  )}
-                  disabled={isGettingLocation}
-                  title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}
-                >
-                  {isGettingLocation ? (
-                    <div className="flex flex-col items-center justify-center">
+                <Button onClick={() => toggleSearchType('nearby')} variant="ghost" size="sm" aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("p-0 rounded-md relative", isMobile ? "h-6 w-6" : "h-7 w-7", useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
+                  {isGettingLocation ? <div className="flex flex-col items-center justify-center">
                       <div className="animate-spin h-3 w-3 border-2 border-blue-500 rounded-full border-t-transparent" />
-                    </div>
-                  ) : (
-                    <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />
-                  )}
+                    </div> : <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />}
                 </Button>
                 
                 {/* 🔒 FIXED: Loading overlay for geolocation - Better UX */}
-                {isGettingLocation && (
-                  <div className="absolute inset-0 bg-white/80 dark:bg-black/80 flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
+                {isGettingLocation && <div className="absolute inset-0 bg-white/80 dark:bg-black/80 flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
                     <div className="flex items-center gap-2 text-xs font-medium">
                       <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent" />
                       <span className="text-blue-600 dark:text-blue-400">{currentText.gettingLocation}</span>
                     </div>
-                  </div>
-                )}
+                  </div>}
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && (
-                <div 
-                  ref={suggestionsRef}
-                  className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg z-[100] max-h-56 overflow-y-auto"
-                >
-                  {filteredSuggestions.smart.length > 0 && (
-                    <div className="p-2 border-b border-border/50">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg z-[100] max-h-56 overflow-y-auto">
+                  {filteredSuggestions.smart.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
                           <Sparkles className="h-2.5 w-2.5 text-yellow-500" />
                           Smart Selection
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowSuggestions(false);
-                          }}
-                          className="text-muted-foreground hover:text-foreground"
-                        >
+                        <button onClick={e => {
+                    e.stopPropagation();
+                    setShowSuggestions(false);
+                  }} className="text-muted-foreground hover:text-foreground">
                           <X className="h-2.5 w-2.5" />
                         </button>
                       </div>
                       <div className="space-y-0.5">
                         {filteredSuggestions.smart.map((suggestion, i) => {
-                          const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
-                          return (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSearchQuery(cleanText);
-                                setShowSuggestions(false);
-                                handleSearch();
-                              }}
-                              className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors"
-                            >
+                    const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
+                    return <button key={i} type="button" onClick={e => {
+                      e.stopPropagation();
+                      setSearchQuery(cleanText);
+                      setShowSuggestions(false);
+                      handleSearch();
+                    }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors">
                               {suggestion}
-                            </button>
-                          );
-                        })}
+                            </button>;
+                  })}
                       </div>
-                    </div>
-                  )}
-                  {filteredSuggestions.trending.length > 0 && (
-                    <div className="p-2">
+                    </div>}
+                  {filteredSuggestions.trending.length > 0 && <div className="p-2">
                       <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
                         <TrendingUp className="h-2.5 w-2.5 text-green-500" />
                         Trending
                       </div>
                       <div className="space-y-0.5">
-                        {filteredSuggestions.trending.map((trend, i) => (
-                          <button
-                            key={i}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSearchQuery(trend);
-                              setShowSuggestions(false);
-                              handleSearch();
-                            }}
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors"
-                          >
+                        {filteredSuggestions.trending.map((trend, i) => <button key={i} type="button" onClick={e => {
+                    e.stopPropagation();
+                    setSearchQuery(trend);
+                    setShowSuggestions(false);
+                    handleSearch();
+                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors">
                             {trend}
-                          </button>
-                        ))}
+                          </button>)}
                       </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                    </div>}
+                </div>}
             </div>
-            <Button
-              onClick={() => setShowAdvancedFilters(true)}
-              variant="outline"
-              aria-label="Advanced Filters"
-              className={cn(
-                "relative rounded-xl transition-all",
-                isMobile 
-                  ? "h-8 px-2.5 bg-card border-border hover:bg-accent" 
-                  : "h-9 px-3 bg-background border-border hover:bg-muted"
-              )}
-            >
-              <Filter className={cn(isMobile ? "h-4 w-4" : "h-4 w-4")} />
-              {!isMobile && <span className="ml-1.5 text-xs">Filters</span>}
-            </Button>
-            <Button
-              onClick={handleSearch}
-              aria-label={currentText.search}
-              className={cn(
-                "bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center",
-                isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5"
-              )}
-            >
+            
+            <Button onClick={handleSearch} aria-label={currentText.search} className={cn("bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center", isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5")}>
               <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
               {!isMobile && <span className="hidden sm:inline">{currentText.search}</span>}
             </Button>
           </div>
           
           {/* Radius Selector - Shows when Near Me is active */}
-          {useNearbyLocation && userLocation && (
-            <div className="flex items-center justify-center gap-2 animate-fade-in">
-              <Select
-                value={nearbyRadius.toString()}
-                onValueChange={(value) => setNearbyRadius(parseInt(value))}
-              >
+          {useNearbyLocation && userLocation && <div className="flex items-center justify-center gap-2 animate-fade-in">
+              <Select value={nearbyRadius.toString()} onValueChange={value => setNearbyRadius(parseInt(value))}>
                 <SelectTrigger className="w-32 h-7 text-[9px] rounded-lg border-blue-300 dark:border-blue-700">
                   <MapPin className="h-2 w-2 mr-1 text-blue-500" />
                   <SelectValue />
@@ -1703,65 +1866,34 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </SelectContent>
               </Select>
               <span className="text-[9px] text-amber-600 dark:text-amber-400">⚠️ GPS Required</span>
-            </div>
-          )}
+            </div>}
 
           {/* Results Count */}
-          {resultsCount !== undefined && (
-            <div className="text-center">
-              <p className={cn(
-                "text-muted-foreground bg-muted/30 rounded-md backdrop-blur-sm inline-block",
-                isMobile ? "text-[10px] px-2 py-0.5" : "text-xs px-3 py-1"
-              )}>
+          {resultsCount !== undefined && <div className="text-center">
+              <p className={cn("text-muted-foreground bg-muted/30 rounded-md backdrop-blur-sm inline-block", isMobile ? "text-[10px] px-2 py-0.5" : "text-xs px-3 py-1")}>
                 {resultsCount} {currentText.resultsFound}
               </p>
-            </div>
-          )}
+            </div>}
 
           {/* Selected Filters Display */}
-          {getSelectedFiltersDisplay().length > 0 && (
-            <div className="flex flex-wrap gap-1 justify-center">
-              {getSelectedFiltersDisplay().map((filter, index) => (
-                <span
-                  key={index}
-                  className="text-xs px-2 py-1 bg-primary/20 text-primary rounded-md backdrop-blur-sm border border-primary/30"
-                >
+          {getSelectedFiltersDisplay().length > 0 && <div className="flex flex-wrap gap-1 justify-center">
+              {getSelectedFiltersDisplay().map((filter, index) => <span key={index} className="text-xs px-2 py-1 bg-primary/20 text-primary rounded-md backdrop-blur-sm border border-primary/30">
                   {filter}
-                </span>
-              ))}
-            </div>
-          )}
+                </span>)}
+            </div>}
 
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
             <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen} modal={true}>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "rounded-lg transition-all shadow-sm",
-                    isMobile 
-                      ? "h-7 px-2 text-[10px] bg-card border-border" 
-                      : "h-8 px-3 text-xs bg-background border-border",
-                    (filters.propertyType && filters.propertyType !== 'all') && "border-primary bg-primary/10"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("rounded-lg transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px] bg-card border-border" : "h-8 px-3 text-xs bg-background border-border", filters.propertyType && filters.propertyType !== 'all' && "border-primary bg-primary/10")}>
                   <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-primary")} />
-                  {(filters.propertyType && filters.propertyType !== 'all') 
-                    ? currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label || currentText.propertyType
-                    : currentText.propertyType}
-                  {(filters.propertyType && filters.propertyType !== 'all') && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />
-                  )}
+                  {filters.propertyType && filters.propertyType !== 'all' ? currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label || currentText.propertyType : currentText.propertyType}
+                  {filters.propertyType && filters.propertyType !== 'all' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />}
                 </Button>
               </PopoverTrigger>
-                <PopoverContent
-                  className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
-                  align="start"
-                  onCloseAutoFocus={(e) => e.preventDefault()}
-                >
+                <PopoverContent className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
@@ -1772,113 +1904,70 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   
                   {/* Property Type Grid */}
                   <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant={(!filters.propertyType || filters.propertyType === 'all') ? "default" : "outline"}
-                      size="sm"
-                      className="h-8 text-xs justify-start"
-                      onClick={() => {
-                        handleFilterChange('propertyType', 'all');
-                      }}
-                    >
+                    <Button variant={!filters.propertyType || filters.propertyType === 'all' ? "default" : "outline"} size="sm" className="h-8 text-xs justify-start" onClick={() => {
+                    handleFilterChange('propertyType', 'all');
+                  }}>
                       {currentText.any}
                     </Button>
-                    {currentFilters.propertyTypes.map((type) => (
-                      <Button
-                        key={type.value}
-                        variant={filters.propertyType === type.value ? "default" : "outline"}
-                        size="sm"
-                        className="h-8 text-xs justify-start"
-                        onClick={() => {
-                          handleFilterChange('propertyType', type.value);
-                        }}
-                      >
+                    {currentFilters.propertyTypes.map(type => <Button key={type.value} variant={filters.propertyType === type.value ? "default" : "outline"} size="sm" className="h-8 text-xs justify-start" onClick={() => {
+                    handleFilterChange('propertyType', type.value);
+                  }}>
                         {type.label}
-                      </Button>
-                    ))}
+                      </Button>)}
                   </div>
                 </div>
               </PopoverContent>
             </Popover>
 
             {/* Bedrooms +/- */}
-            <div className={cn(
-              "inline-flex items-center rounded-lg overflow-hidden shadow-sm border",
-              isMobile ? "bg-card border-border" : "bg-background border-border"
-            )}>
+            <div className={cn("inline-flex items-center rounded-lg overflow-hidden shadow-sm border", isMobile ? "bg-card border-border" : "bg-background border-border")}>
               <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
                 <Bed className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-primary")} />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
-                  onClick={() => {
-                    const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                    if (current > 0) {
-                      const next = current - 1;
-                      handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
-                    }
-                  }}
-                >
+                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
+                const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
+                if (current > 0) {
+                  const next = current - 1;
+                  handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
+                }
+              }}>
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
                 </Button>
                 <span className={cn("min-w-[20px] flex items-center justify-center font-semibold text-foreground", isMobile ? "text-[10px] px-1" : "text-xs px-1.5")}>
-                  {(!filters.bedrooms || filters.bedrooms === 'all') ? '0' : String(filters.bedrooms).replace('+','')}
+                  {!filters.bedrooms || filters.bedrooms === 'all' ? '0' : String(filters.bedrooms).replace('+', '')}
                 </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
-                  onClick={() => {
-                    const current = (!filters.bedrooms || filters.bedrooms === 'all') ? 0 : parseInt(String(filters.bedrooms).replace('+',''));
-                    if (current < 10) {
-                      handleFilterChange('bedrooms', String(current + 1));
-                    }
-                  }}
-                >
+                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
+                const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
+                if (current < 10) {
+                  handleFilterChange('bedrooms', String(current + 1));
+                }
+              }}>
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
                 </Button>
               </div>
             </div>
 
             {/* Bathrooms +/- */}
-            <div className={cn(
-              "inline-flex items-center rounded-lg overflow-hidden shadow-sm border",
-              isMobile ? "bg-card border-border" : "bg-background border-border"
-            )}>
+            <div className={cn("inline-flex items-center rounded-lg overflow-hidden shadow-sm border", isMobile ? "bg-card border-border" : "bg-background border-border")}>
               <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
                 <Bath className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-primary")} />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
-                  onClick={() => {
-                    const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                    if (current > 0) {
-                      const next = current - 1;
-                      handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
-                    }
-                  }}
-                >
+                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
+                const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
+                if (current > 0) {
+                  const next = current - 1;
+                  handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
+                }
+              }}>
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
                 </Button>
                 <span className={cn("min-w-[20px] flex items-center justify-center font-semibold text-foreground", isMobile ? "text-[10px] px-1" : "text-xs px-1.5")}>
-                  {(!filters.bathrooms || filters.bathrooms === 'all') ? '0' : String(filters.bathrooms).replace('+','')}
+                  {!filters.bathrooms || filters.bathrooms === 'all' ? '0' : String(filters.bathrooms).replace('+', '')}
                 </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")}
-                  onClick={() => {
-                    const current = (!filters.bathrooms || filters.bathrooms === 'all') ? 0 : parseInt(String(filters.bathrooms).replace('+',''));
-                    if (current < 10) {
-                      handleFilterChange('bathrooms', String(current + 1));
-                    }
-                  }}
-                >
+                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
+                const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
+                if (current < 10) {
+                  handleFilterChange('bathrooms', String(current + 1));
+                }
+              }}>
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
                 </Button>
               </div>
@@ -1887,89 +1976,47 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Price Range Slider */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "rounded-lg transition-all shadow-sm",
-                    isMobile 
-                      ? "h-7 px-2 text-[10px] bg-card border-border" 
-                      : "h-8 px-3 text-xs bg-background border-border",
-                    (filters.minPrice > 0 || filters.maxPrice > 0) && "border-primary bg-primary/10"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("rounded-lg transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px] bg-card border-border" : "h-8 px-3 text-xs bg-background border-border", (filters.minPrice > 0 || filters.maxPrice > 0) && "border-primary bg-primary/10")}>
                   <DollarSign className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-primary")} />
                   {currentText.priceRange}
-                  {(filters.minPrice > 0 || filters.maxPrice > 0) && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />
-                  )}
+                  {(filters.minPrice > 0 || filters.maxPrice > 0) && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-72 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
-                align="start"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
+              <PopoverContent className="w-72 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                       <DollarSign className="h-3.5 w-3.5 text-blue-500" />
                       {currentText.priceRange}
                     </h4>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
-                      onClick={() => {
-                        setPriceRange([0, currentFilters.maxPrice]);
-                        handleFilterChange('minPrice', 0);
-                        handleFilterChange('maxPrice', 0);
-                      }}
-                    >
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground" onClick={() => {
+                    setPriceRange([0, currentFilters.maxPrice]);
+                    handleFilterChange('minPrice', 0);
+                    handleFilterChange('maxPrice', 0);
+                  }}>
                       Reset
                     </Button>
                   </div>
                   
                   <div className="space-y-4">
-                    <Slider
-                      value={priceRange}
-                      onValueChange={(value) => {
-                        setPriceRange(value);
-                        handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                        handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                      }}
-                      min={0}
-                      max={currentFilters.maxPrice}
-                      step={currentFilters.priceStep}
-                      className="w-full"
-                    />
+                    <Slider value={priceRange} onValueChange={value => {
+                    setPriceRange(value);
+                    handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                    handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                  }} min={0} max={currentFilters.maxPrice} step={currentFilters.priceStep} className="w-full" />
                     
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex flex-col">
                         <span className="text-muted-foreground mb-1">Min</span>
                         <span className="font-semibold text-foreground">
-                          {activeTab === 'rent' 
-                            ? `${priceRange[0]}jt`
-                            : priceRange[0] >= 1000 
-                              ? `${(priceRange[0] / 1000).toFixed(1)}M`
-                              : `${priceRange[0]}jt`
-                          }
+                          {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
                         </span>
                       </div>
                       <span className="text-muted-foreground">-</span>
                       <div className="flex flex-col items-end">
                         <span className="text-muted-foreground mb-1">Max</span>
                         <span className="font-semibold text-foreground">
-                          {activeTab === 'rent'
-                            ? priceRange[1] >= currentFilters.maxPrice
-                              ? 'Any'
-                              : `${priceRange[1]}jt`
-                            : priceRange[1] >= currentFilters.maxPrice
-                              ? 'Any'
-                              : priceRange[1] >= 1000 
-                                ? `${(priceRange[1] / 1000).toFixed(1)}M`
-                                : `${priceRange[1]}jt`
-                          }
+                          {activeTab === 'rent' ? priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt` : priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`}
                         </span>
                       </div>
                     </div>
@@ -1981,47 +2028,22 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Sort Dropdown */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    filters.sortBy !== 'newest' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs", filters.sortBy !== 'newest' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20")}>
                   <TrendingUp className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.sortBy}
-                  {filters.sortBy !== 'newest' && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  )}
+                  {filters.sortBy !== 'newest' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-56 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
-                align="start"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
+              <PopoverContent className="w-56 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-1">
                   <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                     {currentText.sortBy}
                   </div>
-                  {sortOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={filters.sortBy === option.value ? "default" : "ghost"}
-                      size="sm"
-                      className={cn(
-                        "w-full justify-start h-8 text-xs",
-                        filters.sortBy === option.value && "bg-primary text-primary-foreground"
-                      )}
-                      onClick={() => {
-                        handleFilterChange('sortBy', option.value);
-                      }}
-                    >
+                  {sortOptions.map(option => <Button key={option.value} variant={filters.sortBy === option.value ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", filters.sortBy === option.value && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('sortBy', option.value);
+                }}>
                       {option.label}
-                    </Button>
-                  ))}
+                    </Button>)}
                 </div>
               </PopoverContent>
             </Popover>
@@ -2029,60 +2051,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Condition Filter */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.condition && filters.condition !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs", filters.condition && filters.condition !== 'all' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20")}>
                   <Star className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.condition}
-                  {(filters.condition && filters.condition !== 'all') && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  )}
+                  {filters.condition && filters.condition !== 'all' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
-                align="start"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
+              <PopoverContent className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-1">
                   <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                     {currentText.condition}
                   </div>
-                  <Button
-                    variant={(!filters.condition || filters.condition === 'all') ? "default" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "w-full justify-start h-8 text-xs",
-                      (!filters.condition || filters.condition === 'all') && "bg-primary text-primary-foreground"
-                    )}
-                    onClick={() => {
-                      handleFilterChange('condition', 'all');
-                    }}
-                  >
+                  <Button variant={!filters.condition || filters.condition === 'all' ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", (!filters.condition || filters.condition === 'all') && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('condition', 'all');
+                }}>
                     {currentText.any}
                   </Button>
-                  {conditionOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={filters.condition === option.value ? "default" : "ghost"}
-                      size="sm"
-                      className={cn(
-                        "w-full justify-start h-8 text-xs",
-                        filters.condition === option.value && "bg-primary text-primary-foreground"
-                      )}
-                      onClick={() => {
-                        handleFilterChange('condition', option.value);
-                      }}
-                    >
+                  {conditionOptions.map(option => <Button key={option.value} variant={filters.condition === option.value ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", filters.condition === option.value && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('condition', option.value);
+                }}>
                       {option.label}
-                    </Button>
-                  ))}
+                    </Button>)}
                 </div>
               </PopoverContent>
             </Popover>
@@ -2090,60 +2079,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Year Built Filter */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.yearBuilt && filters.yearBuilt !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs", filters.yearBuilt && filters.yearBuilt !== 'all' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20")}>
                   <CalendarIcon className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.yearBuilt}
-                  {(filters.yearBuilt && filters.yearBuilt !== 'all') && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  )}
+                  {filters.yearBuilt && filters.yearBuilt !== 'all' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
-                align="start"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
+              <PopoverContent className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-1">
                   <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                     {currentText.yearBuilt}
                   </div>
-                  <Button
-                    variant={(!filters.yearBuilt || filters.yearBuilt === 'all') ? "default" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "w-full justify-start h-8 text-xs",
-                      (!filters.yearBuilt || filters.yearBuilt === 'all') && "bg-primary text-primary-foreground"
-                    )}
-                    onClick={() => {
-                      handleFilterChange('yearBuilt', 'all');
-                    }}
-                  >
+                  <Button variant={!filters.yearBuilt || filters.yearBuilt === 'all' ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", (!filters.yearBuilt || filters.yearBuilt === 'all') && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('yearBuilt', 'all');
+                }}>
                     {currentText.any}
                   </Button>
-                  {yearOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={filters.yearBuilt === option.value ? "default" : "ghost"}
-                      size="sm"
-                      className={cn(
-                        "w-full justify-start h-8 text-xs",
-                        filters.yearBuilt === option.value && "bg-primary text-primary-foreground"
-                      )}
-                      onClick={() => {
-                        handleFilterChange('yearBuilt', option.value);
-                      }}
-                    >
+                  {yearOptions.map(option => <Button key={option.value} variant={filters.yearBuilt === option.value ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", filters.yearBuilt === option.value && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('yearBuilt', option.value);
+                }}>
                       {option.label}
-                    </Button>
-                  ))}
+                    </Button>)}
                 </div>
               </PopoverContent>
             </Popover>
@@ -2151,60 +2107,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Furnishing Filter */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.furnishing && filters.furnishing !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs", filters.furnishing && filters.furnishing !== 'all' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20")}>
                   <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.furnishing}
-                  {(filters.furnishing && filters.furnishing !== 'all') && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  )}
+                  {filters.furnishing && filters.furnishing !== 'all' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
-                align="start"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
+              <PopoverContent className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-1">
                   <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                     {currentText.furnishing}
                   </div>
-                  <Button
-                    variant={(!filters.furnishing || filters.furnishing === 'all') ? "default" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "w-full justify-start h-8 text-xs",
-                      (!filters.furnishing || filters.furnishing === 'all') && "bg-primary text-primary-foreground"
-                    )}
-                    onClick={() => {
-                      handleFilterChange('furnishing', 'all');
-                    }}
-                  >
+                  <Button variant={!filters.furnishing || filters.furnishing === 'all' ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", (!filters.furnishing || filters.furnishing === 'all') && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('furnishing', 'all');
+                }}>
                     {currentText.any}
                   </Button>
-                  {furnishingOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={filters.furnishing === option.value ? "default" : "ghost"}
-                      size="sm"
-                      className={cn(
-                        "w-full justify-start h-8 text-xs",
-                        filters.furnishing === option.value && "bg-primary text-primary-foreground"
-                      )}
-                      onClick={() => {
-                        handleFilterChange('furnishing', option.value);
-                      }}
-                    >
+                  {furnishingOptions.map(option => <Button key={option.value} variant={filters.furnishing === option.value ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", filters.furnishing === option.value && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('furnishing', option.value);
+                }}>
                       {option.label}
-                    </Button>
-                  ))}
+                    </Button>)}
                 </div>
               </PopoverContent>
             </Popover>
@@ -2212,60 +2135,27 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Parking Filter */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.parking && filters.parking !== 'all') && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs", filters.parking && filters.parking !== 'all' && "border-blue-500 bg-blue-50 dark:bg-blue-900/20")}>
                   <Car className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.parking}
-                  {(filters.parking && filters.parking !== 'all') && (
-                    <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  )}
+                  {filters.parking && filters.parking !== 'all' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-blue-500" />}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]"
-                align="start"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
+              <PopoverContent className="w-52 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
                 <div className="space-y-1">
                   <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                     {currentText.parking}
                   </div>
-                  <Button
-                    variant={(!filters.parking || filters.parking === 'all') ? "default" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "w-full justify-start h-8 text-xs",
-                      (!filters.parking || filters.parking === 'all') && "bg-primary text-primary-foreground"
-                    )}
-                    onClick={() => {
-                      handleFilterChange('parking', 'all');
-                    }}
-                  >
+                  <Button variant={!filters.parking || filters.parking === 'all' ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", (!filters.parking || filters.parking === 'all') && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('parking', 'all');
+                }}>
                     {currentText.any}
                   </Button>
-                  {parkingOptions.map((option) => (
-                    <Button
-                      key={option}
-                      variant={filters.parking === option ? "default" : "ghost"}
-                      size="sm"
-                      className={cn(
-                        "w-full justify-start h-8 text-xs",
-                        filters.parking === option && "bg-primary text-primary-foreground"
-                      )}
-                      onClick={() => {
-                        handleFilterChange('parking', option);
-                      }}
-                    >
+                  {parkingOptions.map(option => <Button key={option} variant={filters.parking === option ? "default" : "ghost"} size="sm" className={cn("w-full justify-start h-8 text-xs", filters.parking === option && "bg-primary text-primary-foreground")} onClick={() => {
+                  handleFilterChange('parking', option);
+                }}>
                       {option}
-                    </Button>
-                  ))}
+                    </Button>)}
                 </div>
               </PopoverContent>
             </Popover>
@@ -2273,30 +2163,15 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             {/* Facilities Button - Opens Popover */}
             <Popover open={isFacilitiesOpen} onOpenChange={setIsFacilitiesOpen} modal={true}>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm",
-                    isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs",
-                    (filters.facilities && filters.facilities.length > 0) && "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  )}
-                >
+                <Button variant="outline" size="sm" className={cn("bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 focus:border-blue-500 transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px]" : "h-8 px-3 text-xs", filters.facilities && filters.facilities.length > 0 && "border-blue-500 bg-blue-50 dark:bg-blue-900/20")}>
                   <Building2 className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-blue-500")} />
                   {currentText.facilities}
-                  {(filters.facilities && filters.facilities.length > 0) && (
-                    <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-blue-500 text-white">
+                  {filters.facilities && filters.facilities.length > 0 && <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-blue-500 text-white">
                       {filters.facilities.length}
-                    </span>
-                  )}
+                    </span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                  className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
-                  align="start" 
-                  onOpenAutoFocus={(e) => e.preventDefault()} 
-                  onCloseAutoFocus={(e) => e.preventDefault()}
-                >
+              <PopoverContent className="w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onOpenAutoFocus={e => e.preventDefault()} onCloseAutoFocus={e => e.preventDefault()}>
                 <div>
                   {/* Facilities Tabs */}
                   <Tabs defaultValue="outdoor" className="w-full">
@@ -2311,190 +2186,80 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     {/* Outdoor & Community */}
                     <TabsContent value="outdoor" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                        {currentFilters.facilities?.filter((f: any) => 
-                          ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'balcony_terrace', 'pet_friendly', 'clubhouse', 'tennis_court', 'parking_space', 'near_transit', 'walk_bike_score', 'near_parks', 'waterfront_view'].includes(f.id)
-                        ).map((facility: any) => (
-                          <div key={facility.id} className={cn(
-                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
-                            filters.facilities.includes(facility.id)
-                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
-                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
-                          )}>
-                            <Checkbox
-                              id={`facility-${facility.id}`}
-                              checked={filters.facilities.includes(facility.id)}
-                              onCheckedChange={(checked) => {
-                                const newFacilities = checked
-                                  ? [...filters.facilities, facility.id]
-                                  : filters.facilities.filter((f: string) => f !== facility.id);
-                                handleFilterChange('facilities', newFacilities);
-                              }}
-                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                            />
-                            <label
-                              htmlFor={`facility-${facility.id}`}
-                              className={cn(
-                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
-                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
-                              )}
-                            >
+                        {currentFilters.facilities?.filter((f: any) => ['swimming_pool_facility', 'garden_yard', 'bbq_area', 'playground', 'balcony_terrace', 'pet_friendly', 'clubhouse', 'tennis_court', 'parking_space', 'near_transit', 'walk_bike_score', 'near_parks', 'waterfront_view'].includes(f.id)).map((facility: any) => <div key={facility.id} className={cn("flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2", filters.facilities.includes(facility.id) ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm" : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800")}>
+                            <Checkbox id={`facility-${facility.id}`} checked={filters.facilities.includes(facility.id)} onCheckedChange={checked => {
+                          const newFacilities = checked ? [...filters.facilities, facility.id] : filters.facilities.filter((f: string) => f !== facility.id);
+                          handleFilterChange('facilities', newFacilities);
+                        }} className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600" />
+                            <label htmlFor={`facility-${facility.id}`} className={cn("text-xs cursor-pointer flex items-center gap-1 flex-1", filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground")}>
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
                             </label>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </TabsContent>
 
                     {/* Utility & Service */}
                     <TabsContent value="utility" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                        {currentFilters.facilities?.filter((f: any) => 
-                          ['air_conditioning', 'heating', 'internet_wifi', 'laundry', 'washing_machine', 'dishwasher', 'refrigerator', 'stove_oven', 'microwave', 'bedding_linens', 'kitchen_utensils', 'utilities_included', 'trash_recycling', 'snow_removal', 'pest_control', 'onsite_maintenance'].includes(f.id)
-                        ).map((facility: any) => (
-                          <div key={facility.id} className={cn(
-                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
-                            filters.facilities.includes(facility.id)
-                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
-                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
-                          )}>
-                            <Checkbox
-                              id={`facility-${facility.id}`}
-                              checked={filters.facilities.includes(facility.id)}
-                              onCheckedChange={(checked) => {
-                                const newFacilities = checked
-                                  ? [...filters.facilities, facility.id]
-                                  : filters.facilities.filter((f: string) => f !== facility.id);
-                                handleFilterChange('facilities', newFacilities);
-                              }}
-                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                            />
-                            <label
-                              htmlFor={`facility-${facility.id}`}
-                              className={cn(
-                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
-                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
-                              )}
-                            >
+                        {currentFilters.facilities?.filter((f: any) => ['air_conditioning', 'heating', 'internet_wifi', 'laundry', 'washing_machine', 'dishwasher', 'refrigerator', 'stove_oven', 'microwave', 'bedding_linens', 'kitchen_utensils', 'utilities_included', 'trash_recycling', 'snow_removal', 'pest_control', 'onsite_maintenance'].includes(f.id)).map((facility: any) => <div key={facility.id} className={cn("flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2", filters.facilities.includes(facility.id) ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm" : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800")}>
+                            <Checkbox id={`facility-${facility.id}`} checked={filters.facilities.includes(facility.id)} onCheckedChange={checked => {
+                          const newFacilities = checked ? [...filters.facilities, facility.id] : filters.facilities.filter((f: string) => f !== facility.id);
+                          handleFilterChange('facilities', newFacilities);
+                        }} className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600" />
+                            <label htmlFor={`facility-${facility.id}`} className={cn("text-xs cursor-pointer flex items-center gap-1 flex-1", filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground")}>
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
                             </label>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </TabsContent>
 
                     {/* Accessibility & Safety */}
                     <TabsContent value="safety" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                        {currentFilters.facilities?.filter((f: any) => 
-                          ['security_system', 'cctv_surveillance', 'elevator_lift', 'backup_generator', 'wheelchair_accessible', 'ground_floor', 'grab_bars', 'smoke_free', 'gated_community'].includes(f.id)
-                        ).map((facility: any) => (
-                          <div key={facility.id} className={cn(
-                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
-                            filters.facilities.includes(facility.id)
-                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
-                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
-                          )}>
-                            <Checkbox
-                              id={`facility-${facility.id}`}
-                              checked={filters.facilities.includes(facility.id)}
-                              onCheckedChange={(checked) => {
-                                const newFacilities = checked
-                                  ? [...filters.facilities, facility.id]
-                                  : filters.facilities.filter((f: string) => f !== facility.id);
-                                handleFilterChange('facilities', newFacilities);
-                              }}
-                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                            />
-                            <label
-                              htmlFor={`facility-${facility.id}`}
-                              className={cn(
-                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
-                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
-                              )}
-                            >
+                        {currentFilters.facilities?.filter((f: any) => ['security_system', 'cctv_surveillance', 'elevator_lift', 'backup_generator', 'wheelchair_accessible', 'ground_floor', 'grab_bars', 'smoke_free', 'gated_community'].includes(f.id)).map((facility: any) => <div key={facility.id} className={cn("flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2", filters.facilities.includes(facility.id) ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm" : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800")}>
+                            <Checkbox id={`facility-${facility.id}`} checked={filters.facilities.includes(facility.id)} onCheckedChange={checked => {
+                          const newFacilities = checked ? [...filters.facilities, facility.id] : filters.facilities.filter((f: string) => f !== facility.id);
+                          handleFilterChange('facilities', newFacilities);
+                        }} className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600" />
+                            <label htmlFor={`facility-${facility.id}`} className={cn("text-xs cursor-pointer flex items-center gap-1 flex-1", filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground")}>
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
                             </label>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </TabsContent>
 
                     {/* Premium & Lifestyle */}
                     <TabsContent value="premium" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                        {currentFilters.facilities?.filter((f: any) => 
-                          ['gym_fitness', 'furnished', 'concierge', 'rooftop_lounge', 'sauna_spa', 'coworking', 'ev_charging', 'storage_unit', 'bike_storage', 'guest_suite'].includes(f.id)
-                        ).map((facility: any) => (
-                          <div key={facility.id} className={cn(
-                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
-                            filters.facilities.includes(facility.id)
-                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
-                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
-                          )}>
-                            <Checkbox
-                              id={`facility-${facility.id}`}
-                              checked={filters.facilities.includes(facility.id)}
-                              onCheckedChange={(checked) => {
-                                const newFacilities = checked
-                                  ? [...filters.facilities, facility.id]
-                                  : filters.facilities.filter((f: string) => f !== facility.id);
-                                handleFilterChange('facilities', newFacilities);
-                              }}
-                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                            />
-                            <label
-                              htmlFor={`facility-${facility.id}`}
-                              className={cn(
-                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
-                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
-                              )}
-                            >
+                        {currentFilters.facilities?.filter((f: any) => ['gym_fitness', 'furnished', 'concierge', 'rooftop_lounge', 'sauna_spa', 'coworking', 'ev_charging', 'storage_unit', 'bike_storage', 'guest_suite'].includes(f.id)).map((facility: any) => <div key={facility.id} className={cn("flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2", filters.facilities.includes(facility.id) ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm" : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800")}>
+                            <Checkbox id={`facility-${facility.id}`} checked={filters.facilities.includes(facility.id)} onCheckedChange={checked => {
+                          const newFacilities = checked ? [...filters.facilities, facility.id] : filters.facilities.filter((f: string) => f !== facility.id);
+                          handleFilterChange('facilities', newFacilities);
+                        }} className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600" />
+                            <label htmlFor={`facility-${facility.id}`} className={cn("text-xs cursor-pointer flex items-center gap-1 flex-1", filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground")}>
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
                             </label>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </TabsContent>
 
                     {/* Tech & Smart Home */}
                     <TabsContent value="tech" className="mt-0 p-3">
                       <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                        {currentFilters.facilities?.filter((f: any) => 
-                          ['smart_thermostat', 'keyless_entry', 'video_doorbell', 'smart_lighting'].includes(f.id)
-                        ).map((facility: any) => (
-                          <div key={facility.id} className={cn(
-                            "flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2",
-                            filters.facilities.includes(facility.id)
-                              ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm"
-                              : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
-                          )}>
-                            <Checkbox
-                              id={`facility-${facility.id}`}
-                              checked={filters.facilities.includes(facility.id)}
-                              onCheckedChange={(checked) => {
-                                const newFacilities = checked
-                                  ? [...filters.facilities, facility.id]
-                                  : filters.facilities.filter((f: string) => f !== facility.id);
-                                handleFilterChange('facilities', newFacilities);
-                              }}
-                              className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                            />
-                            <label
-                              htmlFor={`facility-${facility.id}`}
-                              className={cn(
-                                "text-xs cursor-pointer flex items-center gap-1 flex-1",
-                                filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground"
-                              )}
-                            >
+                        {currentFilters.facilities?.filter((f: any) => ['smart_thermostat', 'keyless_entry', 'video_doorbell', 'smart_lighting'].includes(f.id)).map((facility: any) => <div key={facility.id} className={cn("flex items-center space-x-2 p-2 rounded-lg transition-all cursor-pointer border-2", filters.facilities.includes(facility.id) ? "bg-blue-500/20 dark:bg-blue-500/30 border-blue-500 shadow-sm" : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800")}>
+                            <Checkbox id={`facility-${facility.id}`} checked={filters.facilities.includes(facility.id)} onCheckedChange={checked => {
+                          const newFacilities = checked ? [...filters.facilities, facility.id] : filters.facilities.filter((f: string) => f !== facility.id);
+                          handleFilterChange('facilities', newFacilities);
+                        }} className="h-5 w-5 border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600" />
+                            <label htmlFor={`facility-${facility.id}`} className={cn("text-xs cursor-pointer flex items-center gap-1 flex-1", filters.facilities.includes(facility.id) ? "font-semibold text-foreground" : "font-normal text-muted-foreground")}>
                               <span>{facility.icon}</span>
                               <span className="flex-1">{facility.label}</span>
                             </label>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </TabsContent>
                   </Tabs>
@@ -2503,528 +2268,292 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </Popover>
 
             {/* Location Button - Opens Popover with 3 selects */}
-            {!useNearbyLocation && (
-              <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen} modal={true}>
+            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen} modal={true}>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "group relative overflow-hidden bg-gradient-to-r from-background to-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300",
-                      isMobile ? "h-9 px-3 text-xs" : "h-10 px-4 text-sm",
-                      ((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && "border-primary/70 bg-primary/5 shadow-md"
-                    )}
-                  >
+                  <Button variant="outline" size="sm" className={cn("group relative overflow-hidden bg-gradient-to-r from-background to-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300", isMobile ? "h-9 px-3 text-xs" : "h-10 px-4 text-sm", (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary/70 bg-primary/5 shadow-md")}>
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <MapPin className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 text-primary relative z-10 group-hover:scale-110 transition-transform duration-300")} />
                     <span className="relative z-10 font-medium">{currentText.location}</span>
-                    {((filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') || (filters.area && filters.area !== 'all')) && (
-                      <span className="ml-2 px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm animate-in zoom-in duration-200 relative z-10">
+                    {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && <span className="ml-2 px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm animate-in zoom-in duration-200 relative z-10">
                         {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
-                      </span>
-                    )}
+                      </span>}
                   </Button>
                 </PopoverTrigger>
                 
                 {/* 🔥 CRITICAL: Portal renders outside main flow, preventing scrollbar-induced shifts */}
-                  <PopoverContent
-                    className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
-                    align="start" 
-                    sideOffset={8}
-                    avoidCollisions={true}
-                    collisionPadding={8}
-                    onCloseAutoFocus={(e) => e.preventDefault()} // 🔥 Prevent focus jump
-                    style={{ 
-                      // 🔥 Compensate for removed scrollbar if needed (usually handled by body padding)
-                      paddingRight: 'var(--removed-body-scroll-bar-size, 0px)' 
-                    }}
-                  >
+                  <PopoverContent className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" align="start" sideOffset={8} avoidCollisions={true} collisionPadding={8} onCloseAutoFocus={e => e.preventDefault()} // 🔥 Prevent focus jump
+            style={{
+              // 🔥 Compensate for removed scrollbar if needed (usually handled by body padding)
+              paddingRight: 'var(--removed-body-scroll-bar-size, 0px)'
+            }}>
                   <div className="space-y-3 p-1">
                     {/* State/Province Selection */}
                     <div className="space-y-1.5">
                       <Label className="text-xs font-medium text-foreground flex items-center gap-1">
                         {currentText.selectProvince}
-                        {provinces.length === 0 && (
-                          <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
-                        )}
+                        {provinces.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
                       </Label>
                       <Select value={filters.state || "all"} onValueChange={handleStateChange}>
                         <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500">
                           <SelectValue placeholder={currentText.selectProvince}>
                             <span className="truncate">
-                              {filters.state && filters.state !== 'all' 
-                                ? provinces.find(p => p.code === filters.state)?.name 
-                                : currentText.any}
+                              {filters.state && filters.state !== 'all' ? provinces.find(p => p.code === filters.state)?.name : currentText.any}
                             </span>
                           </SelectValue>
                         </SelectTrigger>
-                         <SelectContent 
-                           className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
-                           position="popper"
-                           sideOffset={4}
-                           onCloseAutoFocus={(e) => e.preventDefault()}
-                         >
+                         <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]" position="popper" sideOffset={4} onCloseAutoFocus={e => e.preventDefault()}>
                           <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                             {currentText.any}
                           </SelectItem>
-                          {provinces.length > 0 ? (
-                            provinces.map((province) => (
-                              <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                          {provinces.length > 0 ? provinces.map(province => <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                                 {province.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
+                              </SelectItem>) : <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
                               ⚠️ No provinces found in database
-                            </SelectItem>
-                          )}
+                            </SelectItem>}
                         </SelectContent>
                       </Select>
                     </div>
 
                     {/* City Selection - Only show when state is selected */}
-                    {filters.state && filters.state !== 'all' && (
-                      <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                    {filters.state && filters.state !== 'all' && <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
                         <Label className="text-xs font-medium text-foreground flex items-center gap-1">
                           {currentText.selectCity}
-                          {cities.length === 0 && (
-                            <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
-                          )}
+                          {cities.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
                         </Label>
-                        <Select 
-                          value={filters.city || "all"} 
-                          onValueChange={handleCityChange}
-                          disabled={cities.length === 0}
-                        >
+                        <Select value={filters.city || "all"} onValueChange={handleCityChange} disabled={cities.length === 0}>
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
                             <SelectValue placeholder={currentText.selectCity}>
                               <span className="truncate">
-                                {filters.city && filters.city !== 'all' 
-                                  ? (() => {
-                                      const city = cities.find(c => c.code === filters.city);
-                                      return city ? `${city.type} ${city.name}` : currentText.any;
-                                    })()
-                                  : currentText.any}
+                                {filters.city && filters.city !== 'all' ? (() => {
+                            const city = cities.find(c => c.code === filters.city);
+                            return city ? `${city.type} ${city.name}` : currentText.any;
+                          })() : currentText.any}
                               </span>
                             </SelectValue>
                           </SelectTrigger>
-                          <SelectContent 
-                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
-                            position="popper"
-                            sideOffset={4}
-                            onCloseAutoFocus={(e) => e.preventDefault()}
-                          >
+                          <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]" position="popper" sideOffset={4} onCloseAutoFocus={e => e.preventDefault()}>
                             <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {currentText.any}
                             </SelectItem>
-                            {cities.length > 0 ? (
-                              cities.map((city) => (
-                                <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                            {cities.length > 0 ? cities.map(city => <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                                   {city.type} {city.name}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
+                                </SelectItem>) : <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
                                 ⚠️ No cities found for selected province
-                              </SelectItem>
-                            )}
+                              </SelectItem>}
                           </SelectContent>
                         </Select>
-                      </div>
-                    )}
+                      </div>}
 
                     {/* Area Selection - Only show when city is selected */}
-                    {filters.city && filters.city !== 'all' && (
-                      <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                    {filters.city && filters.city !== 'all' && <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
                         <Label className="text-xs font-medium text-foreground flex items-center gap-1">
                           {currentText.selectArea}
-                          {areas.length === 0 && (
-                            <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>
-                          )}
+                          {areas.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
                         </Label>
-                        <Select 
-                          value={filters.area || "all"} 
-                          onValueChange={handleAreaChange}
-                          disabled={areas.length === 0}
-                        >
+                        <Select value={filters.area || "all"} onValueChange={handleAreaChange} disabled={areas.length === 0}>
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
                             <SelectValue placeholder={currentText.selectArea}>
                               <span className="truncate">
-                                {filters.area && filters.area !== 'all' 
-                                  ? areas.find(a => a.code === filters.area)?.name 
-                                  : currentText.any}
+                                {filters.area && filters.area !== 'all' ? areas.find(a => a.code === filters.area)?.name : currentText.any}
                               </span>
                             </SelectValue>
                           </SelectTrigger>
-                          <SelectContent 
-                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]"
-                            position="popper"
-                            sideOffset={4}
-                          >
+                          <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]" position="popper" sideOffset={4}>
                             <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {currentText.any}
                             </SelectItem>
-                            {areas.length > 0 ? (
-                              areas.map((area) => (
-                                <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                            {areas.length > 0 ? areas.map(area => <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                                   {area.name}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
+                                </SelectItem>) : <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
                                 ⚠️ No areas found for selected city
-                              </SelectItem>
-                            )}
+                              </SelectItem>}
                           </SelectContent>
                         </Select>
-                      </div>
-                    )}
+                      </div>}
                   </div>
                 </PopoverContent>
-              </Popover>
-            )}
+              </Popover>}
           </div>
 
           {/* Active Filters Summary Bar */}
-          {(filters.bedrooms && filters.bedrooms !== 'all') || 
-           (filters.bathrooms && filters.bathrooms !== 'all') ||
-           (filters.parking && filters.parking !== 'all') ||
-           (filters.minPrice > 0 || filters.maxPrice > 0) ||
-           (filters.propertyType && filters.propertyType !== 'all') ||
-           (filters.yearBuilt && filters.yearBuilt !== 'all') ||
-           (filters.condition && filters.condition !== 'all') ||
-           (filters.furnishing && filters.furnishing !== 'all') ||
-           (filters.state && filters.state !== 'all') ||
-           (filters.city && filters.city !== 'all') ||
-           (filters.area && filters.area !== 'all') ||
-           (filters.facilities && filters.facilities.length > 0) ? (
-            <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          {filters.bedrooms && filters.bedrooms !== 'all' || filters.bathrooms && filters.bathrooms !== 'all' || filters.parking && filters.parking !== 'all' || filters.minPrice > 0 || filters.maxPrice > 0 || filters.propertyType && filters.propertyType !== 'all' || filters.yearBuilt && filters.yearBuilt !== 'all' || filters.condition && filters.condition !== 'all' || filters.furnishing && filters.furnishing !== 'all' || filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all' || filters.facilities && filters.facilities.length > 0 ? <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <ScrollArea className="w-full whitespace-nowrap">
                 <div className="flex items-center gap-1.5 pb-1">
                   {(() => {
-                    let chipIndex = 0;
-                    return (
-                      <>
+                let chipIndex = 0;
+                return <>
                         {/* Property Type */}
-                        {filters.propertyType && filters.propertyType !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.propertyType && filters.propertyType !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('propertyType', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('propertyType', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Bedrooms */}
-                        {filters.bedrooms && filters.bedrooms !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.bedrooms && filters.bedrooms !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <Bed className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {filters.bedrooms} {isMobile ? 'bd' : 'bed'}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('bedrooms', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('bedrooms', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Bathrooms */}
-                        {filters.bathrooms && filters.bathrooms !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.bathrooms && filters.bathrooms !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <Bath className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {filters.bathrooms} {isMobile ? 'ba' : 'bath'}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('bathrooms', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('bathrooms', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Parking */}
-                        {filters.parking && filters.parking !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.parking && filters.parking !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <Car className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {filters.parking} parking
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('parking', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('parking', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Price Range */}
-                        {(filters.minPrice > 0 || filters.maxPrice > 0) && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {(filters.minPrice > 0 || filters.maxPrice > 0) && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <DollarSign className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
-                              {activeTab === 'rent' 
-                                ? `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`
-                                : filters.minPrice >= 1000000000 
-                                  ? `${(filters.minPrice / 1000000000).toFixed(1)}-${(filters.maxPrice / 1000000000).toFixed(1)}M`
-                                  : `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`
-                              }
+                              {activeTab === 'rent' ? `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt` : filters.minPrice >= 1000000000 ? `${(filters.minPrice / 1000000000).toFixed(1)}-${(filters.maxPrice / 1000000000).toFixed(1)}M` : `${(filters.minPrice / 1000000).toFixed(0)}-${(filters.maxPrice / 1000000).toFixed(0)}jt`}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => {
-                                handleFilterChange('minPrice', 0);
-                                handleFilterChange('maxPrice', 0);
-                                setPriceRange([0, currentFilters.maxPrice]);
-                              }}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => {
+                      handleFilterChange('minPrice', 0);
+                      handleFilterChange('maxPrice', 0);
+                      setPriceRange([0, currentFilters.maxPrice]);
+                    }}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Year Built */}
-                        {filters.yearBuilt && filters.yearBuilt !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.yearBuilt && filters.yearBuilt !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <CalendarIcon className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {yearOptions.find(y => y.value === filters.yearBuilt)?.label}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('yearBuilt', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('yearBuilt', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Condition */}
-                        {filters.condition && filters.condition !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.condition && filters.condition !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <Star className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {conditionOptions.find(c => c.value === filters.condition)?.label}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('condition', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('condition', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Furnishing */}
-                        {filters.furnishing && filters.furnishing !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.furnishing && filters.furnishing !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <Home className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {furnishingOptions.find(f => f.value === filters.furnishing)?.label}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('furnishing', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('furnishing', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Location filters */}
-                        {filters.state && filters.state !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.state && filters.state !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {provinces.find(p => p.code === filters.state)?.name}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('state', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('state', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
-                        {filters.city && filters.city !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.city && filters.city !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {cities.find(c => c.code === filters.city)?.name}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('city', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('city', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
-                        {filters.area && filters.area !== 'all' && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.area && filters.area !== 'all' && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <MapPin className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {areas.find(a => a.code === filters.area)?.name}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('area', 'all')}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('area', 'all')}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Facilities count */}
-                        {filters.facilities && filters.facilities.length > 0 && (
-                          <div 
-                            className={cn(
-                              "inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer",
-                              isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs"
-                            )}
-                            style={{ animationDelay: `${chipIndex++ * 50}ms` }}
-                          >
+                        {filters.facilities && filters.facilities.length > 0 && <div className={cn("inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full transition-all animate-in fade-in scale-in duration-200 hover:scale-105 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-sm cursor-pointer", isMobile ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-xs")} style={{
+                    animationDelay: `${chipIndex++ * 50}ms`
+                  }}>
                             <Building2 className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             <span className="text-blue-700 dark:text-blue-300 font-medium">
                               {filters.facilities.length} {isMobile ? 'fac' : 'facilities'}
                             </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")}
-                              onClick={() => handleFilterChange('facilities', [])}
-                            >
+                            <Button variant="ghost" size="sm" className={cn("h-auto p-0 hover:bg-transparent transition-transform hover:scale-110", isMobile ? "w-3 h-3" : "w-3.5 h-3.5")} onClick={() => handleFilterChange('facilities', [])}>
                               <X className={cn("text-blue-600 dark:text-blue-400", isMobile ? "h-2 w-2" : "h-2.5 w-2.5")} />
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         
                         {/* Clear All button */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium animate-in fade-in scale-in duration-200 hover:scale-105 transition-all",
-                            isMobile ? "h-5 px-2 text-[9px]" : "h-6 px-2.5 text-xs"
-                          )}
-                          style={{ animationDelay: `${chipIndex * 50}ms` }}
-                          onClick={clearAllFilters}
-                        >
+                        <Button variant="ghost" size="sm" className={cn("text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium animate-in fade-in scale-in duration-200 hover:scale-105 transition-all", isMobile ? "h-5 px-2 text-[9px]" : "h-6 px-2.5 text-xs")} style={{
+                    animationDelay: `${chipIndex * 50}ms`
+                  }} onClick={clearAllFilters}>
                           {currentText.clearFilters}
                         </Button>
-                      </>
-                    );
-                  })()}
+                      </>;
+              })()}
                 </div>
               </ScrollArea>
-            </div>
-          ) : null}
+            </div> : null}
 
 
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default IPhoneSearchPanel;
