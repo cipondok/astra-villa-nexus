@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2, LandPlot, SlidersHorizontal } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2, LandPlot, SlidersHorizontal, Package, Briefcase, TrendingDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -1220,31 +1220,62 @@ const IPhoneSearchPanel = ({
     }
   }, [activeTab, propertyTypeOptions]);
   
-  // Get database filters for current listing type
+  // Get database filters for current listing type - only show when listing type is selected
   const currentDbFilters = useMemo(() => {
     if (!dbFilters || dbFilters.length === 0) return [];
     
-    const listingType = activeTab === 'sale' ? 'sale' : activeTab === 'rent' ? 'rent' : null;
+    // Only show filters if listing type is explicitly selected (not "all")
+    if (!filters.listingType || filters.listingType === '') return [];
     
-    // If "all" tab, return both sale and rent filters
-    if (!listingType) {
-      return dbFilters;
-    }
+    const listingType = filters.listingType === 'sale' ? 'sale' : 'rent';
     
-    // Filter by listing type
     return dbFilters.map(category => ({
       ...category,
       options: category.options.filter(opt => opt.listing_type === listingType)
     })).filter(category => category.options.length > 0);
-  }, [dbFilters, activeTab]);
+  }, [dbFilters, filters.listingType]);
   
-  // Render database filter based on type
+  // Get icon for category
+  const getCategoryIcon = (categoryName: string) => {
+    const iconMap: Record<string, any> = {
+      'specifications': Settings,
+      'facilities': Building2,
+      'investment': TrendingUp,
+      'amenities': Star,
+      'features': Sparkles,
+      'utilities': Zap,
+      'security': Shield,
+      'parking': Car,
+      'outdoor': Layers,
+      'default': Package
+    };
+    
+    const normalizedName = categoryName.toLowerCase();
+    return iconMap[normalizedName] || iconMap.default;
+  };
+
+  // Render database filter based on type with input validation
   const renderDatabaseFilter = (filter: any) => {
+    // Validation: Ensure filter has required properties
+    if (!filter || !filter.id || !filter.filter_name || !filter.filter_type) {
+      console.warn('Invalid filter configuration:', filter);
+      return null;
+    }
+    
     const filterValue = filters[filter.filter_name] || (filter.filter_type === 'checkbox' ? [] : '');
     
     switch (filter.filter_type) {
       case 'select':
-        const selectOptions = Array.isArray(filter.filter_options) ? filter.filter_options : [];
+        // Validation: Ensure filter_options exists and is an array
+        const selectOptions = Array.isArray(filter.filter_options) && filter.filter_options.length > 0 
+          ? filter.filter_options 
+          : [];
+        
+        if (selectOptions.length === 0) {
+          console.warn(`No options available for filter: ${filter.filter_name}`);
+          return null;
+        }
+        
         return (
           <div key={filter.id} className="space-y-2">
             <Label className="text-xs md:text-sm font-bold text-foreground">{filter.filter_name}</Label>
@@ -1257,8 +1288,10 @@ const IPhoneSearchPanel = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                {selectOptions.map((option: string) => (
-                  <SelectItem key={option} value={option}>{option}</SelectItem>
+                {selectOptions.map((option: string, idx: number) => (
+                  <SelectItem key={`${option}-${idx}`} value={option}>
+                    {option}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -1266,17 +1299,26 @@ const IPhoneSearchPanel = ({
         );
         
       case 'checkbox':
-        const checkboxOptions = Array.isArray(filter.filter_options) ? filter.filter_options : [];
+        // Validation: Ensure filter_options exists and is an array
+        const checkboxOptions = Array.isArray(filter.filter_options) && filter.filter_options.length > 0
+          ? filter.filter_options 
+          : [];
+        
+        if (checkboxOptions.length === 0) {
+          console.warn(`No options available for filter: ${filter.filter_name}`);
+          return null;
+        }
+        
         const selectedValues = Array.isArray(filterValue) ? filterValue : [];
         return (
           <div key={filter.id} className="space-y-2">
             <Label className="text-xs md:text-sm font-bold text-foreground">{filter.filter_name}</Label>
             <div className="flex flex-wrap gap-1.5">
-              {checkboxOptions.map((option: string) => {
+              {checkboxOptions.map((option: string, idx: number) => {
                 const isSelected = selectedValues.includes(option);
                 return (
                   <Badge 
-                    key={option}
+                    key={`${option}-${idx}`}
                     variant={isSelected ? "default" : "outline"}
                     className={cn(
                       "cursor-pointer h-7 md:h-8 px-2 md:px-3 text-[10px] md:text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
@@ -1312,6 +1354,7 @@ const IPhoneSearchPanel = ({
         );
         
       default:
+        console.warn(`Unknown filter type: ${filter.filter_type} for filter: ${filter.filter_name}`);
         return null;
     }
   };
@@ -1771,8 +1814,8 @@ const IPhoneSearchPanel = ({
               </div>
 
               {/* Content - Scrollable */}
-              <ScrollArea className="flex-1 min-h-0">
-                <div className="p-3 md:p-4 space-y-2 md:space-y-3 bg-background">
+              <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
+                <div className="p-3 md:p-4 space-y-2 md:space-y-3 bg-background pb-20">
                   
                   {/* Active Filters Summary Bar */}
                   {getActiveFiltersCount() > 0 && (
@@ -2012,9 +2055,31 @@ const IPhoneSearchPanel = ({
                   </Collapsible>
 
                   {/* Database-driven filters by category */}
-                  {!filtersLoading && currentDbFilters.map((category) => {
+                  {filtersLoading && (
+                    <div className="space-y-2 animate-pulse">
+                      <div className="h-8 bg-muted/50 rounded-lg" />
+                      <div className="h-20 bg-muted/30 rounded-lg" />
+                      <div className="h-8 bg-muted/50 rounded-lg" />
+                      <div className="h-24 bg-muted/30 rounded-lg" />
+                      <div className="h-8 bg-muted/50 rounded-lg" />
+                      <div className="h-16 bg-muted/30 rounded-lg" />
+                    </div>
+                  )}
+                  
+                  {!filtersLoading && !filters.listingType && (
+                    <div className="p-4 bg-accent/10 border border-accent/30 rounded-lg text-center">
+                      <Key className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">
+                        Please select a listing type (For Sale or For Rent) to see available filters
+                      </p>
+                    </div>
+                  )}
+                  
+                  {!filtersLoading && filters.listingType && currentDbFilters.length > 0 && currentDbFilters.map((category) => {
                     // Skip categories we're handling specially (location, price)
                     if (['location', 'price', 'search'].includes(category.name)) return null;
+                    
+                    const CategoryIcon = getCategoryIcon(category.name);
                     
                     return (
                       <Collapsible
@@ -2026,7 +2091,7 @@ const IPhoneSearchPanel = ({
                         <CollapsibleTrigger asChild>
                           <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
                             <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                              <Building className="h-3.5 w-3.5 text-primary" />
+                              <CategoryIcon className="h-3.5 w-3.5 text-primary" />
                               {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
                             </Label>
                             {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -2040,13 +2105,6 @@ const IPhoneSearchPanel = ({
                       </Collapsible>
                     );
                   })}
-                  
-                  {filtersLoading && (
-                    <div className="flex items-center justify-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                      <span className="ml-2 text-xs text-muted-foreground">Loading filters...</span>
-                    </div>
-                  )}
 
                   {/* Bedrooms - Fallback if no database filters */}
                   {!filtersLoading && currentDbFilters.length === 0 && (
@@ -3126,8 +3184,8 @@ const IPhoneSearchPanel = ({
             </div>
 
             {/* Content - Scrollable */}
-            <ScrollArea className="flex-1 min-h-0">
-              <div className="p-4 space-y-3 bg-background">
+            <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
+              <div className="p-4 space-y-3 bg-background pb-20">
                 
                 {/* Active Filters Summary Bar */}
                 {getActiveFiltersCount() > 0 && (
@@ -3367,9 +3425,31 @@ const IPhoneSearchPanel = ({
                 </Collapsible>
 
                 {/* Database-driven filters by category */}
-                {!filtersLoading && currentDbFilters.map((category) => {
+                {filtersLoading && (
+                  <div className="space-y-3 animate-pulse">
+                    <div className="h-9 bg-muted/50 rounded-lg" />
+                    <div className="h-24 bg-muted/30 rounded-lg" />
+                    <div className="h-9 bg-muted/50 rounded-lg" />
+                    <div className="h-28 bg-muted/30 rounded-lg" />
+                    <div className="h-9 bg-muted/50 rounded-lg" />
+                    <div className="h-20 bg-muted/30 rounded-lg" />
+                  </div>
+                )}
+                
+                {!filtersLoading && !filters.listingType && (
+                  <div className="p-6 bg-accent/10 border border-accent/30 rounded-lg text-center">
+                    <Key className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">
+                      Please select a listing type (For Sale or For Rent) to see available filters
+                    </p>
+                  </div>
+                )}
+                
+                {!filtersLoading && filters.listingType && currentDbFilters.length > 0 && currentDbFilters.map((category) => {
                   // Skip categories we're handling specially (location, price)
                   if (['location', 'price', 'search'].includes(category.name)) return null;
+                  
+                  const CategoryIcon = getCategoryIcon(category.name);
                   
                   return (
                     <Collapsible
@@ -3381,7 +3461,7 @@ const IPhoneSearchPanel = ({
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
                           <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
-                            <Building className="h-4 w-4 text-primary" />
+                            <CategoryIcon className="h-4 w-4 text-primary" />
                             {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
                           </Label>
                           {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -3395,13 +3475,6 @@ const IPhoneSearchPanel = ({
                     </Collapsible>
                   );
                 })}
-                
-                {filtersLoading && (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <span className="ml-2 text-sm text-muted-foreground">Loading filters...</span>
-                  </div>
-                )}
 
                 {/* Bedrooms - Fallback if no database filters */}
                 {!filtersLoading && currentDbFilters.length === 0 && (
