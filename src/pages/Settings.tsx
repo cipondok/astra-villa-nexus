@@ -183,49 +183,47 @@ const Settings = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="security" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-8 mb-2 bg-muted/50">
-            <TabsTrigger value="security" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
-              <Shield className="h-3.5 w-3.5" />
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-7 mb-3 bg-muted/50 p-0.5">
+            <TabsTrigger value="security" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
+              <Shield className="h-3 w-3" />
               <span className="hidden sm:inline">Security</span>
             </TabsTrigger>
-            <TabsTrigger value="account" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
-              <Mail className="h-3.5 w-3.5" />
+            <TabsTrigger value="account" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
+              <Mail className="h-3 w-3" />
               <span className="hidden sm:inline">Account</span>
             </TabsTrigger>
-            <TabsTrigger value="preferences" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
-              <User className="h-3.5 w-3.5" />
+            <TabsTrigger value="preferences" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
+              <User className="h-3 w-3" />
               <span className="hidden sm:inline">Preferences</span>
             </TabsTrigger>
-            <TabsTrigger value="theme" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
-              <Palette className="h-3.5 w-3.5" />
+            <TabsTrigger value="theme" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
+              <Palette className="h-3 w-3" />
               <span className="hidden sm:inline">Theme</span>
             </TabsTrigger>
-            <TabsTrigger value="activity" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
-              <Activity className="h-3.5 w-3.5" />
+            <TabsTrigger value="activity" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
+              <Activity className="h-3 w-3" />
               <span className="hidden sm:inline">Activity</span>
             </TabsTrigger>
-            <TabsTrigger value="cache" className="text-xs gap-1 px-1 data-[state=active]:bg-background">
-              <Database className="h-3.5 w-3.5" />
+            <TabsTrigger value="cache" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
+              <Database className="h-3 w-3" />
               <span className="hidden sm:inline">Cache</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Security Alerts Tab */}
-          <TabsContent value="security" className="mt-0">
-            <div className="space-y-2">
-              <Card className="professional-card border p-2">
-                <SecurityAlerts />
-              </Card>
-              <TwoFactorAuth />
-            </div>
+          <TabsContent value="security" className="space-y-2">
+            <Card className="professional-card border p-2">
+              <SecurityAlerts />
+            </Card>
+            <TwoFactorAuth />
           </TabsContent>
 
           {/* Account Tab - Email & Password */}
-          <TabsContent value="account" className="mt-0">
-            <Card className="professional-card border p-3">
-              <div className="space-y-3">
+          <TabsContent value="account" className="space-y-0">
+            <Card className="professional-card border p-2">
+              <div className="space-y-2">
                 <EmailChange />
-                <div className="border-t pt-3">
+                <div className="border-t pt-2">
                   <PasswordChange />
                 </div>
               </div>
@@ -233,15 +231,15 @@ const Settings = () => {
           </TabsContent>
 
           {/* Preferences Tab */}
-          <TabsContent value="preferences" className="mt-0">
+          <TabsContent value="preferences" className="space-y-0">
             <Card className="professional-card border p-2">
               <UserPreferences />
             </Card>
           </TabsContent>
 
           {/* Theme Tab */}
-          <TabsContent value="theme" className="mt-0">
-            <Card className="professional-card border p-3">
+          <TabsContent value="theme" className="space-y-0">
+            <Card className="professional-card border p-2">
               <div className="p-3 rounded-lg bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
                 <div className="flex items-center justify-between mb-3 gap-2">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -314,25 +312,25 @@ const Settings = () => {
           </TabsContent>
 
           {/* Activity Log Tab */}
-          <TabsContent value="activity" className="mt-0">
+          <TabsContent value="activity" className="space-y-0">
             <Card className="professional-card border p-2">
               <ActivityLog />
             </Card>
           </TabsContent>
 
           {/* Cache Management Tab */}
-          <TabsContent value="cache" className="mt-0">
-            <Card className="professional-card border overflow-hidden">
+          <TabsContent value="cache" className="space-y-0">
+            <Card className="professional-card border overflow-hidden p-2">
               <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-accent via-primary to-accent"></div>
-              <CardHeader className="pb-1.5 px-3 pt-2">
+              <CardHeader className="pb-1 px-2 pt-1.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-accent/10 flex items-center justify-center">
-                      <HardDrive className="h-3 w-3 text-accent" />
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-5 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <HardDrive className="h-2.5 w-2.5 text-accent" />
                     </div>
                     <div>
-                      <CardTitle className="text-sm">Cache Management</CardTitle>
-                      <CardDescription className="text-xs">Storage & performance</CardDescription>
+                      <CardTitle className="text-xs">Cache Management</CardTitle>
+                      <CardDescription className="text-[10px]">Storage & performance</CardDescription>
                     </div>
                   </div>
                   <Button
@@ -340,13 +338,13 @@ const Settings = () => {
                     size="icon"
                     onClick={loadCacheStats}
                     disabled={isLoadingCache}
-                    className="h-7 w-7 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-all"
+                    className="h-6 w-6 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-all"
                   >
-                    <RefreshCw className={`h-3 w-3 text-primary ${isLoadingCache ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`h-2.5 w-2.5 text-primary ${isLoadingCache ? 'animate-spin' : ''}`} />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3 px-3 pb-2">
+              <CardContent className="space-y-2 px-2 pb-1.5">
                 {isLoadingCache ? (
                   <div className="text-center py-6">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-3 border-primary/20 border-t-primary mb-2"></div>
