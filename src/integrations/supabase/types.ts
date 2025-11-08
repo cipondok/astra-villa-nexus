@@ -2484,6 +2484,54 @@ export type Database = {
           },
         ]
       }
+      filter_usage: {
+        Row: {
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string
+          id: string
+          last_used_at: string
+          listing_type: string | null
+          location: string | null
+          price_max: number | null
+          price_min: number | null
+          property_types: string[] | null
+          search_query: string | null
+          usage_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          id?: string
+          last_used_at?: string
+          listing_type?: string | null
+          location?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          property_types?: string[] | null
+          search_query?: string | null
+          usage_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          id?: string
+          last_used_at?: string
+          listing_type?: string | null
+          location?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          property_types?: string[] | null
+          search_query?: string | null
+          usage_count?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       financial_data_audit_log: {
         Row: {
           accessed_at: string | null

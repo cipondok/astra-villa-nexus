@@ -15,6 +15,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { usePropertyCount } from "@/hooks/usePropertyCount";
 import { useFilterPresets } from "@/hooks/useFilterPresets";
+import { useSmartFilterSuggestions } from "@/hooks/useSmartFilterSuggestions";
 import { SavePresetDialog } from "./SavePresetDialog";
 import { FilterMapView } from "./FilterMapView";
 
@@ -155,6 +156,7 @@ const AdvancedPropertyFilters = ({
   
   const { count, isLoading: countLoading } = usePropertyCount(localFilters);
   const { savedPresets, savePreset, deletePreset, loadPreset } = useFilterPresets();
+  const { suggestions, isLoading: suggestionsLoading, trackFilterUsage } = useSmartFilterSuggestions(localFilters);
 
   const updateFilter = (key: keyof PropertyFilters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
@@ -195,6 +197,17 @@ const AdvancedPropertyFilters = ({
       setLocalFilters(newFilters);
       onFiltersChange(newFilters);
     }
+  };
+
+  const handleApplySmartSuggestion = (suggestionFilters: Partial<PropertyFilters>) => {
+    const newFilters = { ...localFilters, ...suggestionFilters };
+    setLocalFilters(newFilters);
+    onFiltersChange(newFilters);
+  };
+
+  const handleApplyFilters = () => {
+    trackFilterUsage(localFilters);
+    onToggle();
   };
 
   const getActiveFiltersCount = () => {
@@ -311,6 +324,67 @@ const AdvancedPropertyFilters = ({
         <div className="relative overflow-y-auto max-h-[calc(92vh-240px)]">
           <Tabs value={activeTab} className="w-full">
             <TabsContent value="filters" className="px-6 py-6 space-y-6 m-0">
+          
+          {/* Smart Suggestions */}
+          {suggestions.length > 0 && (
+            <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500 delay-100">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-gradient-to-br from-accent/20 to-primary/20 rounded-lg">
+                  <Sparkles className="h-5 w-5 text-accent animate-pulse" />
+                </div>
+                <div className="flex-1">
+                  <Label className="text-lg font-bold">Smart Suggestions</Label>
+                  <p className="text-xs text-muted-foreground">Popular filters based on user searches</p>
+                </div>
+                <Badge variant="secondary" className="bg-accent/10 text-accent border-accent/20 text-xs font-semibold">
+                  AI Powered
+                </Badge>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {suggestions.map((suggestion, index) => (
+                  <button
+                    key={suggestion.id}
+                    onClick={() => handleApplySmartSuggestion(suggestion.filters)}
+                    className="group relative p-5 rounded-2xl border-2 border-accent/30 bg-gradient-to-br from-background via-background to-accent/5 hover:border-accent/60 hover:shadow-2xl hover:shadow-accent/20 transition-all duration-500 text-left hover:scale-[1.03] animate-in fade-in-0 slide-in-from-bottom-3"
+                    style={{ 
+                      animationDelay: `${200 + index * 80}ms`,
+                      animationFillMode: 'backwards'
+                    }}
+                  >
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-accent/5 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity"></div>
+                    
+                    <div className="relative flex items-start gap-4">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                        <div className="relative text-4xl p-3 bg-gradient-to-br from-background to-muted rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                          {suggestion.icon}
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base mb-1.5 group-hover:text-accent transition-colors duration-300">
+                          {suggestion.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                          {suggestion.description}
+                        </p>
+                        <Badge variant="outline" className="mt-2 text-xs border-accent/30 text-accent">
+                          {suggestion.usageCount} uses
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-1 group-hover:translate-y-0">
+                      <div className="h-7 w-7 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-lg animate-in zoom-in-50">
+                        <Sparkles className="h-3.5 w-3.5 text-white animate-pulse" />
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {suggestions.length > 0 && <Separator className="my-8 bg-gradient-to-r from-transparent via-accent/20 to-transparent h-px" />}
+          
           {/* Filter Presets */}
           <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500 delay-200">
             <div className="flex items-center gap-3 mb-4">
@@ -676,7 +750,7 @@ const AdvancedPropertyFilters = ({
           </Button>
           <Button 
             size="lg"
-            onClick={() => onToggle()}
+            onClick={handleApplyFilters}
             className="flex-1 h-12 text-base font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all"
           >
             Apply Filters

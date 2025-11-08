@@ -46,3 +46,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.ai-search-suggestions]
     verify_jwt = false
 
+  [functions.get-smart-filter-suggestions]
+    verify_jwt = false
+
