@@ -189,21 +189,49 @@ const AdvancedPropertyFilters = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onToggle}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden p-0 bg-gradient-to-br from-background to-muted/20 animate-in slide-in-from-right-5 duration-300">
-        <DialogHeader className="p-6 pb-4 sticky top-0 bg-gradient-to-r from-primary/5 to-primary/10 backdrop-blur-sm z-10 border-b border-primary/20 animate-in fade-in-0 duration-300">
-          <DialogTitle className="flex items-center justify-between text-2xl animate-in fade-in-50 slide-in-from-left-5 duration-500">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg animate-in zoom-in-50 duration-500 delay-100">
-                <Filter className="h-6 w-6 text-primary" />
+      <DialogTrigger asChild>
+        <Button
+          onClick={onToggle}
+          variant="default"
+          className="relative group overflow-hidden bg-gradient-to-r from-primary via-primary/90 to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-full px-6 py-2.5 font-semibold animate-in zoom-in-50 duration-500"
+        >
+          {/* Animated shine effect */}
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+          
+          <div className="relative flex items-center gap-2">
+            <Filter className="h-4 w-4" />
+            <span className="hidden sm:inline">Filters</span>
+            {getActiveFiltersCount() > 0 && (
+              <Badge className="ml-1 bg-white text-primary px-2 py-0.5 text-xs font-bold animate-pulse">
+                {getActiveFiltersCount()}
+              </Badge>
+            )}
+          </div>
+        </Button>
+      </DialogTrigger>
+      
+      <DialogContent className="max-w-6xl max-h-[92vh] overflow-hidden p-0 bg-gradient-to-br from-background via-background to-muted/30 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 animate-in zoom-in-90 slide-in-from-bottom-10 duration-500">
+        {/* Decorative background blur elements */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <DialogHeader className="relative p-6 pb-4 sticky top-0 bg-gradient-to-r from-background/95 via-primary/5 to-background/95 backdrop-blur-xl z-10 border-b border-primary/10 shadow-lg">
+          <DialogTitle className="flex items-center justify-between text-2xl animate-in fade-in-0 slide-in-from-left-3 duration-500">
+            <div className="flex items-center gap-4">
+              <div className="relative p-3 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl animate-in zoom-in-50 duration-500 delay-100 group">
+                <Filter className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent rounded-xl blur-md group-hover:blur-lg transition-all"></div>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold">Advanced Filters</span>
+                <span className="font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  Advanced Filters
+                </span>
                 <span className="text-xs font-normal text-muted-foreground">
-                  Refine your property search
+                  🎯 Refine your search with precision
                 </span>
               </div>
               {getActiveFiltersCount() > 0 && (
-                <Badge className="bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold animate-in zoom-in-50 duration-300 delay-200">
+                <Badge className="bg-gradient-to-r from-primary to-accent text-white px-3 py-1.5 text-sm font-bold shadow-lg animate-in zoom-in-50 duration-300 delay-200">
                   {getActiveFiltersCount()} Active
                 </Badge>
               )}
@@ -227,7 +255,7 @@ const AdvancedPropertyFilters = ({
                   sortBy: "newest"
                 });
               }}
-              className="h-10 px-4 hover:bg-destructive/10 hover:text-destructive transition-all duration-300 hover:scale-105"
+              className="h-10 px-4 hover:bg-destructive/10 hover:text-destructive transition-all duration-300 hover:scale-105 rounded-full"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               Clear All
@@ -235,41 +263,54 @@ const AdvancedPropertyFilters = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-6 py-6 space-y-8">
+        <div className="relative overflow-y-auto max-h-[calc(92vh-180px)] px-6 py-6 space-y-6">
           {/* Filter Presets */}
           <div className="space-y-4 animate-in fade-in-50 slide-in-from-bottom-5 duration-500 delay-200">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <Label className="text-base font-semibold">Quick Presets</Label>
-              <Badge variant="secondary" className="text-xs">Popular</Badge>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg">
+                <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+              </div>
+              <div className="flex-1">
+                <Label className="text-lg font-bold">Quick Presets</Label>
+                <p className="text-xs text-muted-foreground">Popular filter combinations</p>
+              </div>
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-xs font-semibold">
+                6 Presets
+              </Badge>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filterPresets.map((preset, index) => (
                 <button
                   key={preset.id}
                   onClick={() => applyPreset(preset.id)}
-                  className="group relative p-4 rounded-xl border-2 border-primary/10 bg-gradient-to-br from-background to-primary/5 hover:border-primary/30 hover:shadow-lg transition-all duration-300 text-left hover:scale-105 animate-in fade-in-0 slide-in-from-bottom-3 hover-scale"
+                  className="group relative p-5 rounded-2xl border-2 border-border/50 bg-gradient-to-br from-background via-background to-primary/5 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 text-left hover:scale-[1.03] animate-in fade-in-0 slide-in-from-bottom-3"
                   style={{ 
-                    animationDelay: `${300 + index * 100}ms`,
+                    animationDelay: `${300 + index * 80}ms`,
                     animationFillMode: 'backwards'
                   }}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
-                      {preset.icon}
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity"></div>
+                  
+                  <div className="relative flex items-start gap-4">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                      <div className="relative text-4xl p-3 bg-gradient-to-br from-background to-muted rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        {preset.icon}
+                      </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors duration-300">
+                      <h3 className="font-bold text-base mb-1.5 group-hover:text-primary transition-colors duration-300">
                         {preset.name}
                       </h3>
-                      <p className="text-xs text-muted-foreground line-clamp-2">
+                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                         {preset.description}
                       </p>
                     </div>
                   </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center animate-in zoom-in-50">
-                      <Sparkles className="h-3 w-3 text-primary" />
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-1 group-hover:translate-y-0">
+                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg animate-in zoom-in-50">
+                      <Sparkles className="h-3.5 w-3.5 text-white animate-pulse" />
                     </div>
                   </div>
                 </button>
@@ -277,19 +318,25 @@ const AdvancedPropertyFilters = ({
             </div>
           </div>
 
-          <Separator className="my-6 animate-in fade-in-0 duration-500 delay-700" />
+          <Separator className="my-8 bg-gradient-to-r from-transparent via-primary/20 to-transparent h-px animate-in fade-in-0 duration-500 delay-700" />
+          
           {/* Search Query */}
-          <div className="space-y-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 animate-in fade-in-50 slide-in-from-bottom-3 duration-500 delay-800">
-            <div className="flex items-center gap-2">
-              <Search className="h-5 w-5 text-primary" />
-              <Label htmlFor="search" className="text-base font-semibold">Search Properties</Label>
+          <div className="space-y-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-transparent to-accent/5 border-2 border-primary/10 animate-in fade-in-50 slide-in-from-bottom-3 duration-500 delay-800 shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-primary/20 to-transparent rounded-lg">
+                <Search className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <Label htmlFor="search" className="text-base font-bold">Search Properties</Label>
+                <p className="text-xs text-muted-foreground">Keywords, location, or features</p>
+              </div>
             </div>
             <Input
               id="search"
-              placeholder="Search by title, description, or location..."
+              placeholder="e.g., Modern apartment near beach, 3 bedroom villa..."
               value={localFilters.searchQuery}
               onChange={(e) => updateFilter('searchQuery', e.target.value)}
-              className="h-12 text-base border-primary/20 focus:ring-2 focus:ring-primary/20 bg-background transition-all duration-300"
+              className="h-14 text-base border-2 border-primary/20 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 bg-background/50 backdrop-blur-sm transition-all duration-300 rounded-xl placeholder:text-muted-foreground/60"
             />
           </div>
 

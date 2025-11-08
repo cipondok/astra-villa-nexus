@@ -12,7 +12,7 @@ import { BaseProperty } from "@/types/property";
 import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Camera, MessageSquare, ArrowUp } from "lucide-react";
+import { Search, Camera, MessageSquare, ArrowUp, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
@@ -398,38 +398,64 @@ const Index = () => {
       <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2">
         
         
-        {/* Hero Intro Slider Section with Integrated Search - Mobile optimized */}
-        {/* TEMPORARILY REMOVED SLIDER */}
-        <section className="relative w-full md:pt-4 lg:pt-0 bg-background">
-          {/* <HomeIntroSlider language={language} className="h-auto sm:h-[200px] md:h-[220px] lg:h-[240px] xl:h-[260px]"> */}
-            {/* Search Panel - No Background */}
-            <div className="p-1 md:p-3 w-full px-0 md:px-3">
-              <div className="mb-1.5 md:mb-2 text-center">
-                <h2 className="text-[11px] md:text-lg lg:text-xl font-bold leading-tight text-foreground mb-0.5 md:mb-1">
-                  {t.findYour}
-                </h2>
-                <p className="text-[9px] md:text-xs lg:text-sm text-muted-foreground">
-                  🔍 {t.searchPowered}
-                </p>
+        {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
+        <section className="relative w-full md:pt-4 lg:pt-0 bg-gradient-to-b from-background via-background/95 to-muted/30">
+          {/* Decorative background elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+            <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+          </div>
+          
+          <div className="relative z-10 p-2 md:p-4 w-full max-w-7xl mx-auto">
+            {/* Enhanced Header */}
+            <div className="mb-3 md:mb-4 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              <div className="inline-flex items-center gap-2 mb-2 px-4 py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
+                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
+                <span className="text-[10px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
+              </div>
+              <h2 className="text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-1">
+                {t.findYour}
+              </h2>
+              <p className="text-[10px] md:text-sm lg:text-base text-muted-foreground flex items-center justify-center gap-1.5">
+                <Search className="h-3 w-3 md:h-4 md:w-4" />
+                {t.searchPowered}
+              </p>
+            </div>
+            
+            {/* Enhanced Search Panel Container */}
+            <div className="relative">
+              {/* Glass morphism container */}
+              <div className="relative bg-gradient-to-br from-background/80 via-background/60 to-background/80 backdrop-blur-xl border border-border/50 rounded-2xl md:rounded-3xl shadow-2xl shadow-primary/5 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-5 duration-700">
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer"></div>
+                
+                <Suspense fallback={
+                  <div className="p-4 md:p-6">
+                    <div className="animate-pulse space-y-3">
+                      <div className="h-12 bg-muted/50 rounded-xl"></div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="h-10 bg-muted/50 rounded-lg"></div>
+                        <div className="h-10 bg-muted/50 rounded-lg"></div>
+                        <div className="h-10 bg-muted/50 rounded-lg"></div>
+                      </div>
+                    </div>
+                  </div>
+                }>
+                  <IPhoneSearchPanel
+                    language={language}
+                    onSearch={(searchData) => {
+                      setQuickSearch(searchData.searchQuery || "");
+                      handleQuickSearch(searchData);
+                    }}
+                    onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                    resultsCount={hasSearched ? searchResults.length : undefined}
+                  />
+                </Suspense>
               </div>
               
-              <Suspense fallback={<div className="animate-pulse h-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
-                <IPhoneSearchPanel
-                  language={language}
-                  onSearch={(searchData) => {
-                    setQuickSearch(searchData.searchQuery || "");
-                    handleQuickSearch(searchData);
-                  }}
-                  onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                  resultsCount={hasSearched ? searchResults.length : undefined}
-                />
-              </Suspense>
-              
-              {/* Image Search now in FAB menu - removed from here */}
-              
-              {/* Advanced Filters - Compact inline */}
-              <div className="mt-2 flex justify-end">
-                <Suspense fallback={<div className="animate-pulse h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+              {/* Advanced Filters Button - Floating */}
+              <div className="mt-3 md:mt-4 flex justify-center md:justify-end">
+                <Suspense fallback={<div className="animate-pulse h-10 w-32 bg-muted/50 rounded-full" />}>
                   <AdvancedPropertyFilters
                     filters={filters}
                     onFiltersChange={handleFiltersChange}
@@ -440,7 +466,7 @@ const Index = () => {
                 </Suspense>
               </div>
             </div>
-          {/* </HomeIntroSlider> */}
+          </div>
         </section>
 
         {/* Error Message - Compact */}
