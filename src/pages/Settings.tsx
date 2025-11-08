@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { useServiceWorker } from '@/hooks/useServiceWorker';
+import { useTheme } from '@/components/ThemeProvider';
 import { createCacheUtils } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Switch } from '@/components/ui/switch';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,13 +19,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Trash2, User, Database, HardDrive, RefreshCw, Sun, Moon, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Settings = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { clearCache: clearServiceWorkerCache, getCacheSize } = useServiceWorker();
+  const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [showClearCacheDialog, setShowClearCacheDialog] = useState(false);
@@ -166,7 +169,7 @@ const Settings = () => {
 
         <div className="space-y-6">
           {/* Account Information Card */}
-          <Card className="professional-card border-2 overflow-hidden">
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
@@ -197,8 +200,118 @@ const Settings = () => {
             </CardContent>
           </Card>
 
+          {/* Theme Preferences Card */}
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Palette className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Appearance</CardTitle>
+                  <CardDescription className="text-sm">Customize your theme preferences</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-5 rounded-xl bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 ${
+                      theme === 'dark' 
+                        ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 rotate-0' 
+                        : 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rotate-180'
+                    }`}>
+                      {theme === 'dark' ? (
+                        <Moon className="h-6 w-6 text-blue-400 animate-scale-in" />
+                      ) : (
+                        <Sun className="h-6 w-6 text-yellow-600 animate-scale-in" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground">
+                        {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {theme === 'dark' 
+                          ? 'Easy on the eyes in low light' 
+                          : 'Bright and clear interface'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={theme === 'dark'}
+                    onCheckedChange={(checked) => {
+                      setTheme(checked ? 'dark' : 'light');
+                      toast({
+                        title: checked ? "Dark Mode Enabled" : "Light Mode Enabled",
+                        description: checked 
+                          ? "Interface switched to dark theme" 
+                          : "Interface switched to light theme",
+                      });
+                    }}
+                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500"
+                  />
+                </div>
+                
+                {/* Theme Preview */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => {
+                      setTheme('light');
+                      toast({
+                        title: "Light Mode",
+                        description: "Theme changed to light mode",
+                      });
+                    }}
+                    className={`p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                      theme === 'light'
+                        ? 'border-yellow-500 bg-gradient-to-br from-yellow-50 to-orange-50 shadow-lg'
+                        : 'border-border bg-card hover:border-yellow-300'
+                    }`}
+                  >
+                    <Sun className={`h-6 w-6 mx-auto mb-2 ${
+                      theme === 'light' ? 'text-yellow-600' : 'text-muted-foreground'
+                    }`} />
+                    <p className={`text-xs font-semibold ${
+                      theme === 'light' ? 'text-yellow-700' : 'text-muted-foreground'
+                    }`}>
+                      Light
+                    </p>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setTheme('dark');
+                      toast({
+                        title: "Dark Mode",
+                        description: "Theme changed to dark mode",
+                      });
+                    }}
+                    className={`p-4 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                      theme === 'dark'
+                        ? 'border-blue-500 bg-gradient-to-br from-blue-950 to-purple-950 shadow-lg'
+                        : 'border-border bg-card hover:border-blue-300'
+                    }`}
+                  >
+                    <Moon className={`h-6 w-6 mx-auto mb-2 ${
+                      theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'
+                    }`} />
+                    <p className={`text-xs font-semibold ${
+                      theme === 'dark' ? 'text-blue-300' : 'text-muted-foreground'
+                    }`}>
+                      Dark
+                    </p>
+                  </button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Cache Management Card */}
-          <Card className="professional-card border-2 overflow-hidden">
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
