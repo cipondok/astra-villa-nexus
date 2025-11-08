@@ -1674,6 +1674,87 @@ const IPhoneSearchPanel = ({
               <ScrollArea className="flex-1 min-h-0">
                 <div className="p-3 md:p-4 space-y-2 md:space-y-3 bg-background">
                   
+                  {/* Active Filters Summary Bar */}
+                  {getActiveFiltersCount() > 0 && (
+                    <div className="p-2 bg-accent/20 rounded-lg border border-accent/30 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-[10px] font-bold text-muted-foreground">ACTIVE FILTERS</Label>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={clearAllFilters}
+                          className="h-5 px-2 text-[9px] text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          Clear All
+                        </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {filters.listingType && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('listingType', '')} />
+                          </Badge>
+                        )}
+                        {filters.propertyType && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.propertyType}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
+                          </Badge>
+                        )}
+                        {filters.location && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.location}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
+                          </Badge>
+                        )}
+                        {filters.priceRange && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('priceRange', '')} />
+                          </Badge>
+                        )}
+                        {filters.bedrooms && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.bedrooms} Bed
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
+                          </Badge>
+                        )}
+                        {filters.bathrooms && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.bathrooms} Bath
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
+                          </Badge>
+                        )}
+                        {filters.condition && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.condition}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => handleFilterChange('condition', '')} />
+                          </Badge>
+                        )}
+                        {(filters.minArea || filters.maxArea) && (
+                          <Badge variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => {
+                              handleFilterChange('minArea', '');
+                              handleFilterChange('maxArea', '');
+                            }} />
+                          </Badge>
+                        )}
+                        {filters.features.length > 0 && filters.features.map(feature => (
+                          <Badge key={feature} variant="secondary" className="h-6 px-2 text-[9px] gap-1">
+                            {feature}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => {
+                              setFilters(prev => ({
+                                ...prev,
+                                features: prev.features.filter(f => f !== feature)
+                              }));
+                            }} />
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Listing Type - Always visible at top */}
                   <div className="space-y-2 pb-2 border-b border-border/50">
                     <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
@@ -1878,6 +1959,133 @@ const IPhoneSearchPanel = ({
                         </Button>)}
                     </div>
                   </div>
+
+                  {/* Area/Size Filter - Collapsible */}
+                  <Collapsible
+                    open={openSections.propertySpecs}
+                    onOpenChange={(open) => setOpenSections(prev => ({ ...prev, propertySpecs: open }))}
+                    className="space-y-2"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
+                          <Square className="h-3.5 w-3.5 text-primary" />
+                          Area/Size
+                          {(filters.minArea || filters.maxArea) && (
+                            <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">
+                              {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
+                            </Badge>
+                          )}
+                        </Label>
+                        {openSections.propertySpecs ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-3 pt-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <Label className="text-[10px] text-muted-foreground">Min (sqm)</Label>
+                          <Input 
+                            type="number" 
+                            placeholder="0"
+                            value={filters.minArea}
+                            onChange={(e) => handleFilterChange('minArea', e.target.value)}
+                            className="h-8 text-xs rounded-lg"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-[10px] text-muted-foreground">Max (sqm)</Label>
+                          <Input 
+                            type="number" 
+                            placeholder="∞"
+                            value={filters.maxArea}
+                            onChange={(e) => handleFilterChange('maxArea', e.target.value)}
+                            className="h-8 text-xs rounded-lg"
+                          />
+                        </div>
+                      </div>
+                      {/* Quick selection buttons */}
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { label: '< 50', min: '', max: '50' },
+                          { label: '50-100', min: '50', max: '100' },
+                          { label: '100-200', min: '100', max: '200' },
+                          { label: '200-500', min: '200', max: '500' },
+                          { label: '500+', min: '500', max: '' }
+                        ].map(range => (
+                          <Button 
+                            key={range.label}
+                            variant={(filters.minArea === range.min && filters.maxArea === range.max) ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => {
+                              handleFilterChange('minArea', range.min);
+                              handleFilterChange('maxArea', range.max);
+                            }}
+                            className="h-7 text-[10px] font-semibold rounded-lg"
+                          >
+                            {range.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Amenities Filter - Collapsible */}
+                  <Collapsible
+                    open={openSections.amenities}
+                    onOpenChange={(open) => setOpenSections(prev => ({ ...prev, amenities: open }))}
+                    className="space-y-2"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
+                          <Star className="h-3.5 w-3.5 text-primary" />
+                          Amenities
+                          {filters.features.length > 0 && (
+                            <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">
+                              {filters.features.length}
+                            </Badge>
+                          )}
+                        </Label>
+                        {openSections.amenities ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2">
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          { value: 'pool', label: '🏊 Pool', icon: Droplets },
+                          { value: 'gym', label: '💪 Gym', icon: Users },
+                          { value: 'parking', label: '🚗 Parking', icon: Car },
+                          { value: 'security', label: '🛡️ Security', icon: Shield },
+                          { value: 'wifi', label: '📶 WiFi', icon: Wifi },
+                          { value: 'ac', label: '❄️ AC', icon: Wind },
+                          { value: 'garden', label: '🌳 Garden', icon: Layers },
+                          { value: 'balcony', label: '🏡 Balcony', icon: Home }
+                        ].map(amenity => {
+                          const isSelected = filters.features.includes(amenity.value);
+                          return (
+                            <Badge 
+                              key={amenity.value}
+                              variant={isSelected ? "default" : "outline"}
+                              className={cn(
+                                "cursor-pointer h-7 px-2 text-[10px] font-medium rounded-lg hover:bg-primary/10 transition-colors",
+                                isSelected && "shadow-md ring-1 ring-primary/30"
+                              )}
+                              onClick={() => {
+                                setFilters(prev => ({
+                                  ...prev,
+                                  features: isSelected 
+                                    ? prev.features.filter(f => f !== amenity.value)
+                                    : [...prev.features, amenity.value]
+                                }));
+                              }}
+                            >
+                              {amenity.label}
+                            </Badge>
+                          );
+                        })}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   {/* Clear All */}
                   <Button variant="outline" size="sm" onClick={clearAllFilters} className="w-full h-9 text-xs font-semibold text-destructive hover:text-destructive hover:bg-destructive/10 border-2 border-destructive/30 hover:border-destructive rounded-lg">
@@ -2802,6 +3010,87 @@ const IPhoneSearchPanel = ({
             <ScrollArea className="flex-1 min-h-0">
               <div className="p-4 space-y-3 bg-background">
                 
+                {/* Active Filters Summary Bar */}
+                {getActiveFiltersCount() > 0 && (
+                  <div className="p-3 bg-accent/20 rounded-lg border border-accent/30 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-muted-foreground">ACTIVE FILTERS</Label>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={clearAllFilters}
+                        className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        Clear All
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {filters.listingType && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('listingType', '')} />
+                        </Badge>
+                      )}
+                      {filters.propertyType && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.propertyType}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
+                        </Badge>
+                      )}
+                      {filters.location && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.location}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
+                        </Badge>
+                      )}
+                      {filters.priceRange && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('priceRange', '')} />
+                        </Badge>
+                      )}
+                      {filters.bedrooms && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.bedrooms} Bed
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
+                        </Badge>
+                      )}
+                      {filters.bathrooms && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.bathrooms} Bath
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
+                        </Badge>
+                      )}
+                      {filters.condition && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.condition}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('condition', '')} />
+                        </Badge>
+                      )}
+                      {(filters.minArea || filters.maxArea) && (
+                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
+                            handleFilterChange('minArea', '');
+                            handleFilterChange('maxArea', '');
+                          }} />
+                        </Badge>
+                      )}
+                      {filters.features.length > 0 && filters.features.map(feature => (
+                        <Badge key={feature} variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                          {feature}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
+                            setFilters(prev => ({
+                              ...prev,
+                              features: prev.features.filter(f => f !== feature)
+                            }));
+                          }} />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
                 {/* Listing Type - Always visible at top */}
                 <div className="space-y-2 pb-3 border-b border-border/50">
                   <Label className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -3029,6 +3318,133 @@ const IPhoneSearchPanel = ({
                     ))}
                   </div>
                 </div>
+
+                {/* Area/Size Filter - Collapsible */}
+                <Collapsible
+                  open={openSections.propertySpecs}
+                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, propertySpecs: open }))}
+                  className="space-y-2"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
+                        <Square className="h-4 w-4 text-primary" />
+                        Area/Size
+                        {(filters.minArea || filters.maxArea) && (
+                          <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+                            {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
+                          </Badge>
+                        )}
+                      </Label>
+                      {openSections.propertySpecs ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-3 pt-2">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-muted-foreground">Min (sqm)</Label>
+                        <Input 
+                          type="number" 
+                          placeholder="0"
+                          value={filters.minArea}
+                          onChange={(e) => handleFilterChange('minArea', e.target.value)}
+                          className="h-10 text-sm rounded-lg"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-muted-foreground">Max (sqm)</Label>
+                        <Input 
+                          type="number" 
+                          placeholder="∞"
+                          value={filters.maxArea}
+                          onChange={(e) => handleFilterChange('maxArea', e.target.value)}
+                          className="h-10 text-sm rounded-lg"
+                        />
+                      </div>
+                    </div>
+                    {/* Quick selection buttons */}
+                    <div className="grid grid-cols-5 gap-2">
+                      {[
+                        { label: '< 50', min: '', max: '50' },
+                        { label: '50-100', min: '50', max: '100' },
+                        { label: '100-200', min: '100', max: '200' },
+                        { label: '200-500', min: '200', max: '500' },
+                        { label: '500+', min: '500', max: '' }
+                      ].map(range => (
+                        <Button 
+                          key={range.label}
+                          variant={(filters.minArea === range.min && filters.maxArea === range.max) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => {
+                            handleFilterChange('minArea', range.min);
+                            handleFilterChange('maxArea', range.max);
+                          }}
+                          className="h-9 text-xs font-semibold rounded-lg"
+                        >
+                          {range.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Amenities Filter - Collapsible */}
+                <Collapsible
+                  open={openSections.amenities}
+                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, amenities: open }))}
+                  className="space-y-2"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
+                        <Star className="h-4 w-4 text-primary" />
+                        Amenities
+                        {filters.features.length > 0 && (
+                          <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+                            {filters.features.length}
+                          </Badge>
+                        )}
+                      </Label>
+                      {openSections.amenities ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { value: 'pool', label: '🏊 Pool', icon: Droplets },
+                        { value: 'gym', label: '💪 Gym', icon: Users },
+                        { value: 'parking', label: '🚗 Parking', icon: Car },
+                        { value: 'security', label: '🛡️ Security', icon: Shield },
+                        { value: 'wifi', label: '📶 WiFi', icon: Wifi },
+                        { value: 'ac', label: '❄️ AC', icon: Wind },
+                        { value: 'garden', label: '🌳 Garden', icon: Layers },
+                        { value: 'balcony', label: '🏡 Balcony', icon: Home }
+                      ].map(amenity => {
+                        const isSelected = filters.features.includes(amenity.value);
+                        return (
+                          <Badge 
+                            key={amenity.value}
+                            variant={isSelected ? "default" : "outline"}
+                            className={cn(
+                              "cursor-pointer h-8 px-3 text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
+                              isSelected && "shadow-md ring-1 ring-primary/30"
+                            )}
+                            onClick={() => {
+                              setFilters(prev => ({
+                                ...prev,
+                                features: isSelected 
+                                  ? prev.features.filter(f => f !== amenity.value)
+                                  : [...prev.features, amenity.value]
+                              }));
+                            }}
+                          >
+                            {amenity.label}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
 
                 {/* Clear All */}
                 <Button 
