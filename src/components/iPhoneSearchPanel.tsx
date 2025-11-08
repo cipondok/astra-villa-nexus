@@ -1625,12 +1625,12 @@ const IPhoneSearchPanel = ({
         </div>
 
         {/* Advanced Filters Modal (mobile) */}
-        {showAdvancedFilters && isMobile && (<div className="fixed inset-0 z-[999999] bg-black/80 backdrop-blur-md flex items-end md:items-center justify-center animate-in fade-in duration-300" onClick={() => setShowAdvancedFilters(false)}>
+        {showAdvancedFilters && isMobile && (<div className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] bg-black/80 backdrop-blur-md flex items-end md:items-center justify-center animate-in fade-in duration-300" onClick={() => setShowAdvancedFilters(false)}>
             <div 
               ref={advancedFiltersRef} 
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                "w-full max-w-full md:max-w-3xl rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-t-2 md:border-2 animate-in slide-in-from-bottom-6 md:zoom-in duration-300",
+                "w-full max-w-full md:max-w-3xl md:mx-auto rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-t-2 md:border-2 animate-in slide-in-from-bottom-6 md:zoom-in duration-300",
                 "bg-background border-primary/30",
                 "h-[90vh] md:h-[85vh]"
               )}
@@ -2616,13 +2616,13 @@ const IPhoneSearchPanel = ({
       {/* Advanced Filters Modal (desktop and tablet) */}
       {showAdvancedFilters && !isMobile && (
         <div 
-          className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300 p-4" 
+          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300 p-4" 
           onClick={() => setShowAdvancedFilters(false)}
         >
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border-2 bg-background border-primary/30 animate-in zoom-in duration-300"
+            className="w-full max-w-3xl mx-auto max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border-2 bg-background border-primary/30 animate-in zoom-in duration-300"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-border px-6 py-5 shrink-0 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15">
