@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -1621,7 +1620,7 @@ const IPhoneSearchPanel = ({
         </div>
 
         {/* Advanced Filters Modal (mobile) */}
-        {showAdvancedFilters && isMobile && createPortal(<div className="fixed inset-0 z-[1000000] bg-black/80 backdrop-blur-md flex items-end md:items-center justify-center animate-in fade-in duration-300" onClick={() => setShowAdvancedFilters(false)}>
+        {showAdvancedFilters && isMobile && (<div className="fixed inset-0 z-[999999] bg-black/80 backdrop-blur-md flex items-end md:items-center justify-center animate-in fade-in duration-300" onClick={() => setShowAdvancedFilters(false)}>
             <div 
               ref={advancedFiltersRef} 
               onClick={(e) => e.stopPropagation()}
@@ -1632,14 +1631,19 @@ const IPhoneSearchPanel = ({
               )}
             >
               {/* Header */}
-              <div className={cn("flex items-center justify-between border-b-2 border-border px-5 py-4 shrink-0", "bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15")}>
+              <div className={cn("flex items-center justify-between border-b-2 border-border px-5 py-4 shrink-0", "bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15")}> 
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
                     <SlidersHorizontal className="h-6 w-6 text-primary-foreground" />
                   </div>
-                  <div>
-                    <h3 className="text-base md:text-lg font-bold text-foreground">Advanced Filters</h3>
-                    <p className="text-xs text-muted-foreground">Refine your property search</p>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3 className="text-base md:text-lg font-bold text-foreground">Advanced Filters</h3>
+                      <p className="text-xs text-muted-foreground">Refine your property search</p>
+                    </div>
+                    <Badge variant="default" className="h-6 px-2 bg-primary text-primary-foreground text-xs font-bold animate-pulse">
+                      {getActiveFiltersCount()}
+                    </Badge>
                   </div>
                 </div>
                 <Button onClick={() => setShowAdvancedFilters(false)} variant="ghost" size="sm" className="h-10 w-10 p-0 hover:bg-destructive/10 hover:text-destructive rounded-full">
@@ -1736,7 +1740,7 @@ const IPhoneSearchPanel = ({
                 </Button>
               </div>
             </div>
-          </div>, document.body)}
+          </div>)}
       </>;
   }
   return <div className={cn("w-full transition-all duration-300", isMobile ? "sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 px-1 py-2" : "max-w-7xl mx-auto")}>
@@ -2603,7 +2607,7 @@ const IPhoneSearchPanel = ({
       </div>
       
       {/* Advanced Filters Modal (desktop and tablet) */}
-      {showAdvancedFilters && !isMobile && createPortal(
+      {showAdvancedFilters && !isMobile && (
         <div 
           className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300 p-4" 
           onClick={() => setShowAdvancedFilters(false)}
@@ -2615,7 +2619,7 @@ const IPhoneSearchPanel = ({
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-border px-6 py-5 shrink-0 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
                   <SlidersHorizontal className="h-6 w-6 text-primary-foreground" />
                 </div>
@@ -2623,6 +2627,9 @@ const IPhoneSearchPanel = ({
                   <h3 className="text-xl font-bold text-foreground">Advanced Filters</h3>
                   <p className="text-sm text-muted-foreground">Refine your property search criteria</p>
                 </div>
+                <Badge variant="default" className="h-7 px-3 bg-primary text-primary-foreground text-sm font-bold animate-pulse">
+                  {getActiveFiltersCount()} Active
+                </Badge>
               </div>
               <Button onClick={() => setShowAdvancedFilters(false)} variant="ghost" size="sm" className="h-10 w-10 p-0 hover:bg-destructive/10 hover:text-destructive rounded-full">
                 <X className="h-5 w-5" />
