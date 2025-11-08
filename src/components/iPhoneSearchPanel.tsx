@@ -1893,18 +1893,6 @@ const IPhoneSearchPanel = ({
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Bedrooms */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <DollarSign className="h-3.5 w-3.5 text-primary" />
-                      Price Range
-                    </Label>
-                    <div className="grid grid-cols-3 gap-1.5 md:gap-2">
-                      {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => <Button key={range} variant={filters.priceRange === range ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} className={cn("h-8 md:h-9 text-[10px] md:text-xs font-semibold rounded-lg", filters.priceRange === range && "shadow-md ring-2 ring-primary/20")}>
-                          {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                        </Button>)}
-                    </div>
-                  </div>
 
                   {/* Bedrooms */}
                   <div className="space-y-2">
@@ -3229,26 +3217,6 @@ const IPhoneSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Bedrooms */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold text-foreground flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-primary" />
-                    Price Range
-                  </Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => (
-                      <Button 
-                        key={range} 
-                        variant={filters.priceRange === range ? "default" : "outline"} 
-                        size="sm" 
-                        onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} 
-                        className={cn("h-10 text-xs font-semibold rounded-lg", filters.priceRange === range && "shadow-md ring-2 ring-primary/20")}
-                      >
-                        {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Bedrooms */}
                 <div className="space-y-2">
