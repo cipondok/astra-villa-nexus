@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -1620,7 +1621,7 @@ const IPhoneSearchPanel = ({
         </div>
 
         {/* Advanced Filters Modal (mobile) */}
-        {showAdvancedFilters && <div className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-end md:items-center justify-center animate-in fade-in duration-300" onClick={() => setShowAdvancedFilters(false)}>
+        {showAdvancedFilters && isMobile && createPortal(<div className="fixed inset-0 z-[1000000] bg-black/80 backdrop-blur-md flex items-end md:items-center justify-center animate-in fade-in duration-300" onClick={() => setShowAdvancedFilters(false)}>
             <div 
               ref={advancedFiltersRef} 
               onClick={(e) => e.stopPropagation()}
@@ -1735,7 +1736,7 @@ const IPhoneSearchPanel = ({
                 </Button>
               </div>
             </div>
-          </div>}
+          </div>, document.body)}
       </>;
   }
   return <div className={cn("w-full transition-all duration-300", isMobile ? "sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 px-1 py-2" : "max-w-7xl mx-auto")}>
@@ -2602,7 +2603,7 @@ const IPhoneSearchPanel = ({
       </div>
       
       {/* Advanced Filters Modal (desktop and tablet) */}
-      {showAdvancedFilters && !isMobile && (
+      {showAdvancedFilters && !isMobile && createPortal(
         <div 
           className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300 p-4" 
           onClick={() => setShowAdvancedFilters(false)}
