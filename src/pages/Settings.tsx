@@ -27,6 +27,7 @@ const Settings = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [showClearCacheDialog, setShowClearCacheDialog] = useState(false);
+  const [clearCacheType, setClearCacheType] = useState<'all' | 'sw' | 'query'>('all');
   const [isClearing, setIsClearing] = useState(false);
   const [isLoadingCache, setIsLoadingCache] = useState(true);
   const [cacheStats, setCacheStats] = useState<{
@@ -74,16 +75,28 @@ const Settings = () => {
   const handleClearCache = async () => {
     setIsClearing(true);
     try {
-      // Clear React Query cache
-      const cacheUtils = createCacheUtils(queryClient);
-      cacheUtils.clearAll();
+      let successMessage = '';
       
-      // Clear Service Worker cache
-      await clearServiceWorkerCache();
+      if (clearCacheType === 'all' || clearCacheType === 'query') {
+        // Clear React Query cache
+        const cacheUtils = createCacheUtils(queryClient);
+        cacheUtils.clearAll();
+        successMessage = clearCacheType === 'query' ? 'React Query cache cleared successfully.' : '';
+      }
+      
+      if (clearCacheType === 'all' || clearCacheType === 'sw') {
+        // Clear Service Worker cache
+        await clearServiceWorkerCache();
+        successMessage = clearCacheType === 'sw' ? 'Service Worker cache cleared successfully.' : '';
+      }
+      
+      if (clearCacheType === 'all') {
+        successMessage = 'All caches have been cleared successfully.';
+      }
       
       toast({
         title: "Cache Cleared",
-        description: "All caches have been cleared successfully.",
+        description: successMessage,
       });
       
       setShowClearCacheDialog(false);
@@ -100,6 +113,11 @@ const Settings = () => {
     } finally {
       setIsClearing(false);
     }
+  };
+
+  const openClearCacheDialog = (type: 'all' | 'sw' | 'query') => {
+    setClearCacheType(type);
+    setShowClearCacheDialog(true);
   };
 
   if (!user) {
@@ -233,11 +251,29 @@ const Settings = () => {
                     </div>
                   </div>
 
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2"
+                      onClick={() => openClearCacheDialog('sw')}
+                    >
+                      <HardDrive className="h-4 w-4" />
+                      Clear Service Worker Cache
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2"
+                      onClick={() => openClearCacheDialog('query')}
+                    >
+                      <Database className="h-4 w-4" />
+                      Clear React Query Cache
+                    </Button>
+                    
                     <Button
                       variant="destructive"
                       className="w-full justify-start gap-2"
-                      onClick={() => setShowClearCacheDialog(true)}
+                      onClick={() => openClearCacheDialog('all')}
                     >
                       <Trash2 className="h-4 w-4" />
                       Clear All Caches
@@ -257,9 +293,21 @@ const Settings = () => {
       <AlertDialog open={showClearCacheDialog} onOpenChange={setShowClearCacheDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Clear All Caches?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {clearCacheType === 'all' && 'Clear All Caches?'}
+              {clearCacheType === 'sw' && 'Clear Service Worker Cache?'}
+              {clearCacheType === 'query' && 'Clear React Query Cache?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will clear both Service Worker and React Query caches. The app will reload after clearing. This action cannot be undone.
+              {clearCacheType === 'all' && 
+                'This will clear both Service Worker and React Query caches. The app will reload after clearing. This action cannot be undone.'
+              }
+              {clearCacheType === 'sw' && 
+                'This will clear the Service Worker cache including offline assets and cached pages. The app will reload after clearing.'
+              }
+              {clearCacheType === 'query' && 
+                'This will clear all React Query cached data. You may need to reload pages to fetch fresh data.'
+              }
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
