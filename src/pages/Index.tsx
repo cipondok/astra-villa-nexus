@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useScrollLock } from "@/hooks/useScrollLock";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
@@ -29,7 +28,6 @@ const PropertyViewModeToggle = lazy(() => import("@/components/search/PropertyVi
 const PropertyListView = lazy(() => import("@/components/search/PropertyListView"));
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
-const AdvancedPropertyFilters = lazy(() => import("@/components/search/AdvancedPropertyFilters"));
 const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
 const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
 const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
@@ -82,8 +80,6 @@ const Index = () => {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [quickSearch, setQuickSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  useScrollLock(filtersOpen);
   const [filters, setFilters] = useState<PropertyFilters>({
     searchQuery: "",
     priceRange: [0, 50000000000],
@@ -478,19 +474,6 @@ const Index = () => {
                     }}
                     onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
                     resultsCount={hasSearched ? searchResults.length : undefined}
-                  />
-                </Suspense>
-              </div>
-              
-              {/* Advanced Filters Button - Floating */}
-              <div className="mt-3 md:mt-4 flex justify-center md:justify-end">
-                <Suspense fallback={<div className="animate-pulse h-10 w-32 bg-muted/50 rounded-full" />}>
-                  <AdvancedPropertyFilters
-                    filters={filters}
-                    onFiltersChange={handleFiltersChange}
-                    onClearFilters={handleClearFilters}
-                    isOpen={filtersOpen}
-                    onToggle={() => setFiltersOpen(!filtersOpen)}
                   />
                 </Suspense>
               </div>

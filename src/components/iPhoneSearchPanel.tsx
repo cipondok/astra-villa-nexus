@@ -10,6 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "@/components/ui/badge";
 import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2, LandPlot } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -1519,11 +1520,70 @@ const IPhoneSearchPanel = ({
                 <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
                 <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm" />
               </div>
-              <Button onClick={() => setShowAdvancedFilters(true)} variant="outline" size="sm" className="h-9 px-2.5 border-0 bg-background/60 shadow-sm rounded-xl">
-                <Filter className="h-4 w-4" />
-              </Button>
               <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
                 <Search className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            {/* Inline Quick Filters */}
+            <div className="px-2 pb-2 flex gap-1.5 overflow-x-auto no-scrollbar">
+              {/* Property Type Quick Filter */}
+              <Button 
+                variant={filters.propertyType && filters.propertyType !== 'all' ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => setShowAdvancedFilters(true)}
+                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60"
+              >
+                <Home className="h-3 w-3 mr-1" />
+                {filters.propertyType && filters.propertyType !== 'all' ? filters.propertyType : 'Type'}
+              </Button>
+              
+              {/* Bedrooms Quick Filter */}
+              <Button 
+                variant={filters.bedrooms && filters.bedrooms !== 'all' ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => setShowAdvancedFilters(true)}
+                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60"
+              >
+                <Bed className="h-3 w-3 mr-1" />
+                {filters.bedrooms && filters.bedrooms !== 'all' ? `${filters.bedrooms} Bed` : 'Beds'}
+              </Button>
+              
+              {/* Bathrooms Quick Filter */}
+              <Button 
+                variant={filters.bathrooms && filters.bathrooms !== 'all' ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => setShowAdvancedFilters(true)}
+                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60"
+              >
+                <Bath className="h-3 w-3 mr-1" />
+                {filters.bathrooms && filters.bathrooms !== 'all' ? `${filters.bathrooms} Bath` : 'Baths'}
+              </Button>
+              
+              {/* Price Range Quick Filter */}
+              <Button 
+                variant={filters.priceRange ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => setShowAdvancedFilters(true)}
+                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60"
+              >
+                <DollarSign className="h-3 w-3 mr-1" />
+                {filters.priceRange || 'Price'}
+              </Button>
+              
+              {/* More Filters Button */}
+              <Button 
+                onClick={() => setShowAdvancedFilters(true)} 
+                variant="outline" 
+                size="sm" 
+                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60 ml-auto"
+              >
+                <Filter className="h-3 w-3 mr-1" />
+                {getActiveFiltersCount() > 0 ? (
+                  <Badge variant="secondary" className="h-4 px-1 text-[9px] ml-1">
+                    {getActiveFiltersCount()}
+                  </Badge>
+                ) : 'All Filters'}
               </Button>
             </div>
           </div>
