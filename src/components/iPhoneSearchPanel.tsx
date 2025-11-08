@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
 import { useScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
 import { useDebounce } from "@/hooks/useDebounce";
+import { usePropertyFilters } from "@/hooks/usePropertyFilters";
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
@@ -52,6 +53,9 @@ const IPhoneSearchPanel = ({
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   const [showFilterTooltip, setShowFilterTooltip] = useState(false);
+  
+  // Fetch filters from database
+  const { filters: dbFilters, loading: filtersLoading } = usePropertyFilters();
 
   // Show tooltip for first-time users
   useEffect(() => {
@@ -1215,6 +1219,102 @@ const IPhoneSearchPanel = ({
         return getAllFilters();
     }
   }, [activeTab, propertyTypeOptions]);
+  
+  // Get database filters for current listing type
+  const currentDbFilters = useMemo(() => {
+    if (!dbFilters || dbFilters.length === 0) return [];
+    
+    const listingType = activeTab === 'sale' ? 'sale' : activeTab === 'rent' ? 'rent' : null;
+    
+    // If "all" tab, return both sale and rent filters
+    if (!listingType) {
+      return dbFilters;
+    }
+    
+    // Filter by listing type
+    return dbFilters.map(category => ({
+      ...category,
+      options: category.options.filter(opt => opt.listing_type === listingType)
+    })).filter(category => category.options.length > 0);
+  }, [dbFilters, activeTab]);
+  
+  // Render database filter based on type
+  const renderDatabaseFilter = (filter: any) => {
+    const filterValue = filters[filter.filter_name] || (filter.filter_type === 'checkbox' ? [] : '');
+    
+    switch (filter.filter_type) {
+      case 'select':
+        const selectOptions = Array.isArray(filter.filter_options) ? filter.filter_options : [];
+        return (
+          <div key={filter.id} className="space-y-2">
+            <Label className="text-xs md:text-sm font-bold text-foreground">{filter.filter_name}</Label>
+            <Select 
+              value={filterValue as string} 
+              onValueChange={(value) => handleFilterChange(filter.filter_name, value)}
+            >
+              <SelectTrigger className="h-8 md:h-9">
+                <SelectValue placeholder={`Select ${filter.filter_name}`} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {selectOptions.map((option: string) => (
+                  <SelectItem key={option} value={option}>{option}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        );
+        
+      case 'checkbox':
+        const checkboxOptions = Array.isArray(filter.filter_options) ? filter.filter_options : [];
+        const selectedValues = Array.isArray(filterValue) ? filterValue : [];
+        return (
+          <div key={filter.id} className="space-y-2">
+            <Label className="text-xs md:text-sm font-bold text-foreground">{filter.filter_name}</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {checkboxOptions.map((option: string) => {
+                const isSelected = selectedValues.includes(option);
+                return (
+                  <Badge 
+                    key={option}
+                    variant={isSelected ? "default" : "outline"}
+                    className={cn(
+                      "cursor-pointer h-7 md:h-8 px-2 md:px-3 text-[10px] md:text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
+                      isSelected && "shadow-md ring-1 ring-primary/30"
+                    )}
+                    onClick={() => {
+                      const newValues = isSelected 
+                        ? selectedValues.filter((v: string) => v !== option)
+                        : [...selectedValues, option];
+                      handleFilterChange(filter.filter_name, newValues);
+                    }}
+                  >
+                    {option}
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+        );
+        
+      case 'range':
+        return (
+          <div key={filter.id} className="space-y-2">
+            <Label className="text-xs md:text-sm font-bold text-foreground">{filter.filter_name}</Label>
+            <Input 
+              type="number"
+              placeholder={`Enter ${filter.filter_name}`}
+              value={filterValue as string}
+              onChange={(e) => handleFilterChange(filter.filter_name, e.target.value)}
+              className="h-8 md:h-9 text-xs md:text-sm"
+            />
+          </div>
+        );
+        
+      default:
+        return null;
+    }
+  };
   const sortOptions = [{
     value: 'newest',
     label: currentText.newest
@@ -1911,60 +2011,73 @@ const IPhoneSearchPanel = ({
                     </CollapsibleContent>
                   </Collapsible>
 
-
-                  {/* Bedrooms */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <Bed className="h-3.5 w-3.5 text-primary" />
-                      Bedrooms
-                    </Label>
-                    <div className="grid grid-cols-5 gap-1.5 md:gap-2">
-                      {['1', '2', '3', '4', '5+'].map(bed => <Button key={bed} variant={filters.bedrooms === bed ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)} className={cn("h-8 md:h-9 text-[10px] md:text-xs font-semibold rounded-lg", filters.bedrooms === bed && "shadow-md ring-2 ring-primary/20")}>
-                          {bed}
-                        </Button>)}
+                  {/* Database-driven filters by category */}
+                  {!filtersLoading && currentDbFilters.map((category) => {
+                    // Skip categories we're handling specially (location, price)
+                    if (['location', 'price', 'search'].includes(category.name)) return null;
+                    
+                    return (
+                      <Collapsible
+                        key={category.id}
+                        open={openSections[category.name] !== false}
+                        onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [category.name]: open }))}
+                        className="space-y-2"
+                      >
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                            <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
+                              <Building className="h-3.5 w-3.5 text-primary" />
+                              {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                            </Label>
+                            {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="space-y-2">
+                          <div className="grid grid-cols-1 gap-2">
+                            {category.options.map((filter: any) => renderDatabaseFilter(filter))}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    );
+                  })}
+                  
+                  {filtersLoading && (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                      <span className="ml-2 text-xs text-muted-foreground">Loading filters...</span>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Bathrooms */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <Bath className="h-3.5 w-3.5 text-primary" />
-                      Bathrooms
-                    </Label>
-                    <div className="grid grid-cols-5 gap-1.5 md:gap-2">
-                      {['1', '2', '3', '4', '5+'].map(bath => <Button key={bath} variant={filters.bathrooms === bath ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)} className={cn("h-8 md:h-9 text-[10px] md:text-xs font-semibold rounded-lg", filters.bathrooms === bath && "shadow-md ring-2 ring-primary/20")}>
-                          {bath}
-                        </Button>)}
-                    </div>
-                  </div>
+                  {/* Bedrooms - Fallback if no database filters */}
+                  {!filtersLoading && currentDbFilters.length === 0 && (
+                    <>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                          <Bed className="h-3.5 w-3.5 text-primary" />
+                          Bedrooms
+                        </Label>
+                        <div className="grid grid-cols-5 gap-1.5 md:gap-2">
+                          {['1', '2', '3', '4', '5+'].map(bed => <Button key={bed} variant={filters.bedrooms === bed ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)} className={cn("h-8 md:h-9 text-[10px] md:text-xs font-semibold rounded-lg", filters.bedrooms === bed && "shadow-md ring-2 ring-primary/20")}>
+                              {bed}
+                            </Button>)}
+                        </div>
+                      </div>
 
-                  {/* Property Condition */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <Star className="h-3.5 w-3.5 text-primary" />
-                      Property Condition
-                    </Label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-2">
-                      {[{
-                    value: 'new',
-                    label: 'New'
-                  }, {
-                    value: 'like_new',
-                    label: 'Like New'
-                  }, {
-                    value: 'good',
-                    label: 'Good'
-                  }, {
-                    value: 'fair',
-                    label: 'Fair'
-                  }, {
-                    value: 'needs_work',
-                    label: 'Needs Work'
-                  }].map(condition => <Button key={condition.value} variant={filters.condition === condition.value ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)} className={cn("h-8 md:h-9 text-[10px] md:text-xs font-semibold rounded-lg", filters.condition === condition.value && "shadow-md ring-2 ring-primary/20")}>
-                          {condition.label}
-                        </Button>)}
-                    </div>
-                  </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                          <Bath className="h-3.5 w-3.5 text-primary" />
+                          Bathrooms
+                        </Label>
+                        <div className="grid grid-cols-5 gap-1.5 md:gap-2">
+                          {['1', '2', '3', '4', '5+'].map(bath => <Button key={bath} variant={filters.bathrooms === bath ? "default" : "outline"} size="sm" onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)} className={cn("h-8 md:h-9 text-[10px] md:text-xs font-semibold rounded-lg", filters.bathrooms === bath && "shadow-md ring-2 ring-primary/20")}>
+                              {bath}
+                            </Button>)}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+
 
                   {/* Area/Size Filter - Collapsible */}
                   <Collapsible
@@ -3253,75 +3366,88 @@ const IPhoneSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-
-                {/* Bedrooms */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold text-foreground flex items-center gap-2">
-                    <Bed className="h-4 w-4 text-primary" />
-                    Bedrooms
-                  </Label>
-                  <div className="grid grid-cols-6 gap-2">
-                    {['1', '2', '3', '4', '5', '5+'].map(bed => (
-                      <Button 
-                        key={bed} 
-                        variant={filters.bedrooms === bed ? "default" : "outline"} 
-                        size="sm" 
-                        onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)} 
-                        className={cn("h-10 text-xs font-semibold rounded-lg", filters.bedrooms === bed && "shadow-md ring-2 ring-primary/20")}
-                      >
-                        {bed}
-                      </Button>
-                    ))}
+                {/* Database-driven filters by category */}
+                {!filtersLoading && currentDbFilters.map((category) => {
+                  // Skip categories we're handling specially (location, price)
+                  if (['location', 'price', 'search'].includes(category.name)) return null;
+                  
+                  return (
+                    <Collapsible
+                      key={category.id}
+                      open={openSections[category.name] !== false}
+                      onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [category.name]: open }))}
+                      className="space-y-2"
+                    >
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
+                          <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
+                            <Building className="h-4 w-4 text-primary" />
+                            {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                          </Label>
+                          {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="space-y-2">
+                        <div className="grid grid-cols-1 gap-2">
+                          {category.options.map((filter: any) => renderDatabaseFilter(filter))}
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
+                
+                {filtersLoading && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <span className="ml-2 text-sm text-muted-foreground">Loading filters...</span>
                   </div>
-                </div>
+                )}
 
-                {/* Bathrooms */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold text-foreground flex items-center gap-2">
-                    <Bath className="h-4 w-4 text-primary" />
-                    Bathrooms
-                  </Label>
-                  <div className="grid grid-cols-6 gap-2">
-                    {['1', '2', '3', '4', '5', '5+'].map(bath => (
-                      <Button 
-                        key={bath} 
-                        variant={filters.bathrooms === bath ? "default" : "outline"} 
-                        size="sm" 
-                        onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)} 
-                        className={cn("h-10 text-xs font-semibold rounded-lg", filters.bathrooms === bath && "shadow-md ring-2 ring-primary/20")}
-                      >
-                        {bath}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+                {/* Bedrooms - Fallback if no database filters */}
+                {!filtersLoading && currentDbFilters.length === 0 && (
+                  <>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                        <Bed className="h-4 w-4 text-primary" />
+                        Bedrooms
+                      </Label>
+                      <div className="grid grid-cols-6 gap-2">
+                        {['1', '2', '3', '4', '5', '5+'].map(bed => (
+                          <Button 
+                            key={bed} 
+                            variant={filters.bedrooms === bed ? "default" : "outline"} 
+                            size="sm" 
+                            onClick={() => handleFilterChange('bedrooms', filters.bedrooms === bed ? '' : bed)} 
+                            className={cn("h-10 text-xs font-semibold rounded-lg", filters.bedrooms === bed && "shadow-md ring-2 ring-primary/20")}
+                          >
+                            {bed}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Property Condition */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold text-foreground flex items-center gap-2">
-                    <Star className="h-4 w-4 text-primary" />
-                    Property Condition
-                  </Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { value: 'new', label: 'New' },
-                      { value: 'like_new', label: 'Like New' },
-                      { value: 'good', label: 'Good' },
-                      { value: 'fair', label: 'Fair' },
-                      { value: 'needs_work', label: 'Needs Work' }
-                    ].map(condition => (
-                      <Button 
-                        key={condition.value} 
-                        variant={filters.condition === condition.value ? "default" : "outline"} 
-                        size="sm" 
-                        onClick={() => handleFilterChange('condition', filters.condition === condition.value ? '' : condition.value)} 
-                        className={cn("h-10 text-xs font-semibold rounded-lg", filters.condition === condition.value && "shadow-md ring-2 ring-primary/20")}
-                      >
-                        {condition.label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                        <Bath className="h-4 w-4 text-primary" />
+                        Bathrooms
+                      </Label>
+                      <div className="grid grid-cols-6 gap-2">
+                        {['1', '2', '3', '4', '5', '5+'].map(bath => (
+                          <Button 
+                            key={bath} 
+                            variant={filters.bathrooms === bath ? "default" : "outline"} 
+                            size="sm" 
+                            onClick={() => handleFilterChange('bathrooms', filters.bathrooms === bath ? '' : bath)} 
+                            className={cn("h-10 text-xs font-semibold rounded-lg", filters.bathrooms === bath && "shadow-md ring-2 ring-primary/20")}
+                          >
+                            {bath}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {/* Area/Size Filter - Collapsible */}
                 <Collapsible
