@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { AvatarUpload } from '@/components/profile/AvatarUpload';
 import { useNavigate } from 'react-router-dom';
 import { User, Settings, LogOut, Home, Edit2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -128,9 +129,17 @@ const Profile = () => {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-lg">
-                    <User className="h-8 w-8 text-white" />
-                  </div>
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name || 'User'}
+                      className="w-16 h-16 rounded-2xl object-cover shadow-lg border-2 border-border"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-lg">
+                      <User className="h-8 w-8 text-white" />
+                    </div>
+                  )}
                   <div>
                     <h2 className="text-2xl font-bold text-foreground">{profile?.full_name || 'User'}</h2>
                     <p className="text-muted-foreground">{user.email}</p>
@@ -154,6 +163,16 @@ const Profile = () => {
             <CardContent className="space-y-4">
               {isEditing ? (
                 <div className="space-y-4 animate-fade-in">
+                  {/* Avatar Upload Section */}
+                  <div className="pb-4 border-b border-border">
+                    <AvatarUpload
+                      userId={user.id}
+                      currentAvatarUrl={profile?.avatar_url}
+                      onAvatarUpdate={(url) => {
+                        refreshProfile();
+                      }}
+                    />
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="full_name" className="text-sm font-semibold">Full Name</Label>
                     <Input

@@ -157,9 +157,17 @@ const Settings = () => {
           </Button>
 
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <User className="h-6 w-6 text-primary" />
-            </div>
+            {profile?.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt={profile.full_name || 'User'}
+                className="w-12 h-12 rounded-xl object-cover shadow-lg border-2 border-border"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <User className="h-6 w-6 text-primary" />
+              </div>
+            )}
             <div>
               <h1 className="text-4xl font-bold gradient-text">Settings</h1>
               <p className="text-muted-foreground mt-1">Manage your preferences and cache</p>
