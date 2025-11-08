@@ -1270,6 +1270,44 @@ const IPhoneSearchPanel = ({
     return `${category.name.charAt(0).toUpperCase() + category.name.slice(1)}: ${filterNames}${moreCount}`;
   };
 
+  // Count active filters in a category
+  const getActiveFiltersInCategory = (category: any) => {
+    if (!category || !category.options) return 0;
+    
+    let count = 0;
+    category.options.forEach((filter: any) => {
+      const filterValue = filters[filter.filter_name as keyof typeof filters];
+      
+      // Check if filter has a value
+      if (Array.isArray(filterValue)) {
+        if (filterValue.length > 0) count++;
+      } else if (filterValue && filterValue !== '' && filterValue !== 'all') {
+        count++;
+      }
+    });
+    
+    return count;
+  };
+
+  // Clear all filters in a category
+  const clearCategoryFilters = (category: any) => {
+    if (!category || !category.options) return;
+    
+    const clearedFilters: any = {};
+    category.options.forEach((filter: any) => {
+      const filterValue = filters[filter.filter_name as keyof typeof filters];
+      
+      // Reset based on type
+      if (Array.isArray(filterValue)) {
+        clearedFilters[filter.filter_name] = [];
+      } else {
+        clearedFilters[filter.filter_name] = '';
+      }
+    });
+    
+    setFilters(prev => ({ ...prev, ...clearedFilters }));
+  };
+
   // Render database filter based on type with input validation
   const renderDatabaseFilter = (filter: any) => {
     // Validation: Ensure filter has required properties
@@ -2096,6 +2134,7 @@ const IPhoneSearchPanel = ({
                     if (['location', 'price', 'search'].includes(category.name)) return null;
                     
                     const CategoryIcon = getCategoryIcon(category.name);
+                    const activeCount = getActiveFiltersInCategory(category);
                     
                     return (
                       <Collapsible
@@ -2120,8 +2159,28 @@ const IPhoneSearchPanel = ({
                                 </Tooltip>
                               </TooltipProvider>
                               <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
+                              {activeCount > 0 && (
+                                <Badge variant="default" className="ml-1 h-4 px-1.5 text-[10px] font-bold">
+                                  {activeCount}
+                                </Badge>
+                              )}
                             </Label>
-                            {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                            <div className="flex items-center gap-1">
+                              {activeCount > 0 && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    clearCategoryFilters(category);
+                                  }}
+                                  className="h-6 px-2 text-[10px] text-muted-foreground hover:text-foreground"
+                                >
+                                  Clear
+                                </Button>
+                              )}
+                              {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                            </div>
                           </Button>
                         </CollapsibleTrigger>
                         <CollapsibleContent className="space-y-2">
@@ -3477,6 +3536,7 @@ const IPhoneSearchPanel = ({
                   if (['location', 'price', 'search'].includes(category.name)) return null;
                   
                   const CategoryIcon = getCategoryIcon(category.name);
+                  const activeCount = getActiveFiltersInCategory(category);
                   
                   return (
                     <Collapsible
@@ -3501,8 +3561,28 @@ const IPhoneSearchPanel = ({
                               </Tooltip>
                             </TooltipProvider>
                             <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
+                            {activeCount > 0 && (
+                              <Badge variant="default" className="ml-1 h-5 px-2 text-xs font-bold">
+                                {activeCount}
+                              </Badge>
+                            )}
                           </Label>
-                          {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          <div className="flex items-center gap-2">
+                            {activeCount > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  clearCategoryFilters(category);
+                                }}
+                                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                            {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          </div>
                         </Button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="space-y-2">
