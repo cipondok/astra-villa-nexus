@@ -3,11 +3,11 @@ import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
@@ -126,6 +126,8 @@ const IPhoneSearchPanel = ({
 
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
+    listingType: true,
+    propertyType: false,
     location: false,
     priceRange: false,
     propertySpecs: false,
@@ -133,11 +135,20 @@ const IPhoneSearchPanel = ({
     dates: false,
     rentalDetails: false
   });
+  
+  // Popular locations for quick selection
+  const popularLocations = [
+    "Jakarta Selatan", "Jakarta Pusat", "Bandung", "Surabaya", 
+    "Bali", "Tangerang", "Bekasi", "Depok"
+  ];
+  
+  const [locationSearch, setLocationSearch] = useState("");
   const [filters, setFilters] = useState({
     location: '',
     state: '',
     city: '',
     area: '',
+    listingType: '', // Sale or Rent
     propertyType: '',
     priceRange: '',
     bedrooms: '',
@@ -1380,6 +1391,7 @@ const IPhoneSearchPanel = ({
       state: '',
       city: '',
       area: '',
+      listingType: '',
       propertyType: '',
       priceRange: '',
       bedrooms: '',
@@ -1660,8 +1672,147 @@ const IPhoneSearchPanel = ({
 
               {/* Content - Scrollable */}
               <ScrollArea className="flex-1 min-h-0">
-                <div className="p-3 md:p-4 space-y-3 md:space-y-4 bg-background">
-                  {/* Price Range */}
+                <div className="p-3 md:p-4 space-y-2 md:space-y-3 bg-background">
+                  
+                  {/* Listing Type - Always visible at top */}
+                  <div className="space-y-2 pb-2 border-b border-border/50">
+                    <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                      <Key className="h-3.5 w-3.5 text-primary" />
+                      Listing Type
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        variant={filters.listingType === 'sale' ? "default" : "outline"} 
+                        size="sm" 
+                        onClick={() => handleFilterChange('listingType', filters.listingType === 'sale' ? '' : 'sale')} 
+                        className={cn("h-9 text-xs font-semibold rounded-lg", filters.listingType === 'sale' && "shadow-md ring-2 ring-primary/20")}
+                      >
+                        For Sale
+                      </Button>
+                      <Button 
+                        variant={filters.listingType === 'rent' ? "default" : "outline"} 
+                        size="sm" 
+                        onClick={() => handleFilterChange('listingType', filters.listingType === 'rent' ? '' : 'rent')} 
+                        className={cn("h-9 text-xs font-semibold rounded-lg", filters.listingType === 'rent' && "shadow-md ring-2 ring-primary/20")}
+                      >
+                        For Rent
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Property Type - Collapsible */}
+                  <Collapsible
+                    open={openSections.propertyType}
+                    onOpenChange={(open) => setOpenSections(prev => ({ ...prev, propertyType: open }))}
+                    className="space-y-2"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
+                          <Home className="h-3.5 w-3.5 text-primary" />
+                          Property Type
+                          {filters.propertyType && <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">{filters.propertyType}</Badge>}
+                        </Label>
+                        {openSections.propertyType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2">
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
+                          <Button 
+                            key={type}
+                            variant={filters.propertyType === type ? "default" : "outline"} 
+                            size="sm" 
+                            onClick={() => handleFilterChange('propertyType', filters.propertyType === type ? '' : type)} 
+                            className={cn("h-8 text-[10px] font-semibold rounded-lg", filters.propertyType === type && "shadow-md ring-2 ring-primary/20")}
+                          >
+                            {type}
+                          </Button>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Location - Collapsible with search */}
+                  <Collapsible
+                    open={openSections.location}
+                    onOpenChange={(open) => setOpenSections(prev => ({ ...prev, location: open }))}
+                    className="space-y-2"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
+                          <MapPin className="h-3.5 w-3.5 text-primary" />
+                          Location
+                          {filters.location && <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">{filters.location}</Badge>}
+                        </Label>
+                        {openSections.location ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2">
+                      <Input 
+                        placeholder="Search location..." 
+                        value={locationSearch}
+                        onChange={(e) => setLocationSearch(e.target.value)}
+                        className="h-8 text-xs rounded-lg"
+                      />
+                      <div className="flex flex-wrap gap-1.5">
+                        {popularLocations
+                          .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
+                          .map(location => (
+                            <Badge 
+                              key={location}
+                              variant={filters.location === location ? "default" : "outline"}
+                              className={cn(
+                                "cursor-pointer h-7 px-2 text-[10px] font-medium rounded-lg hover:bg-primary/10 transition-colors",
+                                filters.location === location && "shadow-md ring-1 ring-primary/30"
+                              )}
+                              onClick={() => {
+                                handleFilterChange('location', filters.location === location ? '' : location);
+                                setLocationSearch('');
+                              }}
+                            >
+                              {location}
+                            </Badge>
+                          ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Price Range - Collapsible */}
+                  <Collapsible
+                    open={openSections.priceRange}
+                    onOpenChange={(open) => setOpenSections(prev => ({ ...prev, priceRange: open }))}
+                    className="space-y-2"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
+                          <DollarSign className="h-3.5 w-3.5 text-primary" />
+                          Price Range
+                          {filters.priceRange && <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-[9px]">{filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}</Badge>}
+                        </Label>
+                        {openSections.priceRange ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2">
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => 
+                          <Button 
+                            key={range} 
+                            variant={filters.priceRange === range ? "default" : "outline"} 
+                            size="sm" 
+                            onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} 
+                            className={cn("h-8 text-[10px] font-semibold rounded-lg", filters.priceRange === range && "shadow-md ring-2 ring-primary/20")}
+                          >
+                            {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                          </Button>
+                        )}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Bedrooms */}
                   <div className="space-y-2">
                     <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
                       <DollarSign className="h-3.5 w-3.5 text-primary" />
@@ -2649,8 +2800,147 @@ const IPhoneSearchPanel = ({
 
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0">
-              <div className="p-4 space-y-4 bg-background">
-                {/* Price Range */}
+              <div className="p-4 space-y-3 bg-background">
+                
+                {/* Listing Type - Always visible at top */}
+                <div className="space-y-2 pb-3 border-b border-border/50">
+                  <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                    <Key className="h-4 w-4 text-primary" />
+                    Listing Type
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button 
+                      variant={filters.listingType === 'sale' ? "default" : "outline"} 
+                      size="sm" 
+                      onClick={() => handleFilterChange('listingType', filters.listingType === 'sale' ? '' : 'sale')} 
+                      className={cn("h-10 text-sm font-semibold rounded-lg", filters.listingType === 'sale' && "shadow-md ring-2 ring-primary/20")}
+                    >
+                      For Sale
+                    </Button>
+                    <Button 
+                      variant={filters.listingType === 'rent' ? "default" : "outline"} 
+                      size="sm" 
+                      onClick={() => handleFilterChange('listingType', filters.listingType === 'rent' ? '' : 'rent')} 
+                      className={cn("h-10 text-sm font-semibold rounded-lg", filters.listingType === 'rent' && "shadow-md ring-2 ring-primary/20")}
+                    >
+                      For Rent
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Property Type - Collapsible */}
+                <Collapsible
+                  open={openSections.propertyType}
+                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, propertyType: open }))}
+                  className="space-y-2"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
+                        <Home className="h-4 w-4 text-primary" />
+                        Property Type
+                        {filters.propertyType && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.propertyType}</Badge>}
+                      </Label>
+                      {openSections.propertyType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-2">
+                    <div className="grid grid-cols-3 gap-2">
+                      {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
+                        <Button 
+                          key={type}
+                          variant={filters.propertyType === type ? "default" : "outline"} 
+                          size="sm" 
+                          onClick={() => handleFilterChange('propertyType', filters.propertyType === type ? '' : type)} 
+                          className={cn("h-10 text-xs font-semibold rounded-lg", filters.propertyType === type && "shadow-md ring-2 ring-primary/20")}
+                        >
+                          {type}
+                        </Button>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Location - Collapsible with search */}
+                <Collapsible
+                  open={openSections.location}
+                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, location: open }))}
+                  className="space-y-2"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        Location
+                        {filters.location && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.location}</Badge>}
+                      </Label>
+                      {openSections.location ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-2">
+                    <Input 
+                      placeholder="Search location..." 
+                      value={locationSearch}
+                      onChange={(e) => setLocationSearch(e.target.value)}
+                      className="h-9 text-sm rounded-lg"
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      {popularLocations
+                        .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
+                        .map(location => (
+                          <Badge 
+                            key={location}
+                            variant={filters.location === location ? "default" : "outline"}
+                            className={cn(
+                              "cursor-pointer h-8 px-3 text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
+                              filters.location === location && "shadow-md ring-1 ring-primary/30"
+                            )}
+                            onClick={() => {
+                              handleFilterChange('location', filters.location === location ? '' : location);
+                              setLocationSearch('');
+                            }}
+                          >
+                            {location}
+                          </Badge>
+                        ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Price Range - Collapsible */}
+                <Collapsible
+                  open={openSections.priceRange}
+                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, priceRange: open }))}
+                  className="space-y-2"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
+                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        Price Range
+                        {filters.priceRange && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}</Badge>}
+                      </Label>
+                      {openSections.priceRange ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-2">
+                    <div className="grid grid-cols-3 gap-2">
+                      {['0-1000000000', '1000000000-5000000000', '5000000000-999999999999'].map(range => (
+                        <Button 
+                          key={range} 
+                          variant={filters.priceRange === range ? "default" : "outline"} 
+                          size="sm" 
+                          onClick={() => handleFilterChange('priceRange', filters.priceRange === range ? '' : range)} 
+                          className={cn("h-10 text-xs font-semibold rounded-lg", filters.priceRange === range && "shadow-md ring-2 ring-primary/20")}
+                        >
+                          {range === '0-1000000000' ? '< 1B' : range === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                        </Button>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Bedrooms */}
                 <div className="space-y-2">
                   <Label className="text-sm font-bold text-foreground flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-primary" />
