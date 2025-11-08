@@ -1254,6 +1254,22 @@ const IPhoneSearchPanel = ({
     return iconMap[normalizedName] || iconMap.default;
   };
 
+  // Get tooltip description for category
+  const getCategoryTooltip = (category: any) => {
+    if (!category || !category.options || category.options.length === 0) {
+      return `${category.name.charAt(0).toUpperCase() + category.name.slice(1)} filters`;
+    }
+    
+    const filterNames = category.options
+      .slice(0, 5)
+      .map((opt: any) => opt.filter_name)
+      .join(', ');
+    
+    const moreCount = category.options.length > 5 ? ` +${category.options.length - 5} more` : '';
+    
+    return `${category.name.charAt(0).toUpperCase() + category.name.slice(1)}: ${filterNames}${moreCount}`;
+  };
+
   // Render database filter based on type with input validation
   const renderDatabaseFilter = (filter: any) => {
     // Validation: Ensure filter has required properties
@@ -2091,8 +2107,19 @@ const IPhoneSearchPanel = ({
                         <CollapsibleTrigger asChild>
                           <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
                             <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                              <CategoryIcon className="h-3.5 w-3.5 text-primary" />
-                              {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className="flex items-center gap-1.5">
+                                      <CategoryIcon className="h-3.5 w-3.5 text-primary" />
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="right" className="max-w-[250px]">
+                                    <p className="text-xs">{getCategoryTooltip(category)}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
                             </Label>
                             {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                           </Button>
@@ -3461,8 +3488,19 @@ const IPhoneSearchPanel = ({
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
                           <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
-                            <CategoryIcon className="h-4 w-4 text-primary" />
-                            {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center gap-2">
+                                    <CategoryIcon className="h-4 w-4 text-primary" />
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent side="right" className="max-w-[300px]">
+                                  <p className="text-sm">{getCategoryTooltip(category)}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
                           </Label>
                           {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                         </Button>
