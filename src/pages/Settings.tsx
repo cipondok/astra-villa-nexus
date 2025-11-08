@@ -27,6 +27,7 @@ import { PasswordChange } from '@/components/settings/PasswordChange';
 import { EmailChange } from '@/components/settings/EmailChange';
 import { ActivityLog } from '@/components/settings/ActivityLog';
 import { SecurityAlerts } from '@/components/settings/SecurityAlerts';
+import { TwoFactorAuth } from '@/components/settings/TwoFactorAuth';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -211,9 +212,12 @@ const Settings = () => {
 
           {/* Security Alerts Tab */}
           <TabsContent value="security" className="mt-0">
-            <Card className="professional-card border p-2">
-              <SecurityAlerts />
-            </Card>
+            <div className="space-y-2">
+              <Card className="professional-card border p-2">
+                <SecurityAlerts />
+              </Card>
+              <TwoFactorAuth />
+            </div>
           </TabsContent>
 
           {/* Account Tab - Email & Password */}
