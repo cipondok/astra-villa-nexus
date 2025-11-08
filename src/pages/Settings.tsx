@@ -24,6 +24,7 @@ import { useToast } from '@/hooks/use-toast';
 import { UserPreferences } from '@/components/settings/UserPreferences';
 import { PasswordChange } from '@/components/settings/PasswordChange';
 import { EmailChange } from '@/components/settings/EmailChange';
+import { ActivityLog } from '@/components/settings/ActivityLog';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -220,8 +221,11 @@ const Settings = () => {
           {/* User Preferences Card */}
           <UserPreferences />
 
+          {/* Activity Log */}
+          <ActivityLog />
+
           {/* Theme Preferences Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.35s' }}>
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.5s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
             <CardHeader className="pb-2 px-4 pt-3">
               <div className="flex items-center gap-2">
@@ -331,7 +335,7 @@ const Settings = () => {
           </Card>
 
           {/* Cache Management Card */}
-          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.55s' }}>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-primary to-accent"></div>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">

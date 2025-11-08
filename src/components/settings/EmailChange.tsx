@@ -47,6 +47,14 @@ export const EmailChange = () => {
 
       if (updateError) throw updateError;
 
+      // Log the email change activity
+      await supabase.from('activity_logs').insert({
+        user_id: user.id,
+        activity_type: 'email_change',
+        activity_description: `Email change requested to ${newEmail}`,
+        metadata: { new_email: newEmail, timestamp: new Date().toISOString() }
+      });
+
       toast({
         title: "Verification Email Sent",
         description: "Please check both your old and new email addresses to confirm the change",

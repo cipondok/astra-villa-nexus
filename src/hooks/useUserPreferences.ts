@@ -105,6 +105,15 @@ export const useUserPreferences = () => {
       
       if (data) {
         setPreferences(data as UserPreferences);
+        
+        // Log the settings update
+        await supabase.from('activity_logs').insert({
+          user_id: user.id,
+          activity_type: 'settings_update',
+          activity_description: 'User preferences updated',
+          metadata: { updated_fields: Object.keys(updates), timestamp: new Date().toISOString() }
+        });
+        
         toast({
           title: "Preferences Updated",
           description: "Your preferences have been saved successfully",

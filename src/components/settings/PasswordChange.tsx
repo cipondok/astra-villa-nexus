@@ -85,6 +85,14 @@ export const PasswordChange = () => {
 
       if (updateError) throw updateError;
 
+      // Log the password change activity
+      await supabase.from('activity_logs').insert({
+        user_id: user.id,
+        activity_type: 'password_change',
+        activity_description: 'Password changed successfully',
+        metadata: { timestamp: new Date().toISOString() }
+      });
+
       toast({
         title: "Password Updated",
         description: "Your password has been changed successfully",
