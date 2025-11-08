@@ -21,6 +21,7 @@ import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
 import Profile from '@/pages/Profile';
+import Settings from '@/pages/Settings';
 import Auth from '@/pages/Auth';
 import Services from '@/pages/Services';
 import ServiceCategory from '@/pages/ServiceCategory';
@@ -104,7 +105,7 @@ const AppContent = () => {
           <Route path="/add-property" element={<AddProperty />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/settings" element={<AdminDashboard />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           {/* Redirect other agent URLs to main dashboard */}
           <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
