@@ -11,7 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2, LandPlot } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users, TrendingUp, Layers, ShoppingBag, Key, Rocket, Car, Shield, Wifi, Wind, Droplets, Tv, Warehouse, Building2, LandPlot, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays } from 'date-fns';
@@ -49,6 +50,19 @@ const IPhoneSearchPanel = ({
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
+  const [showFilterTooltip, setShowFilterTooltip] = useState(false);
+
+  // Show tooltip for first-time users
+  useEffect(() => {
+    const hasSeenTooltip = localStorage.getItem('hasSeenFilterTooltip');
+    if (!hasSeenTooltip) {
+      setTimeout(() => setShowFilterTooltip(true), 1000);
+      setTimeout(() => {
+        setShowFilterTooltip(false);
+        localStorage.setItem('hasSeenFilterTooltip', 'true');
+      }, 5000);
+    }
+  }, []);
 
   // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
   useScrollLock(showAdvancedFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
@@ -1520,6 +1534,37 @@ const IPhoneSearchPanel = ({
                 <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
                 <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm" />
               </div>
+              
+              {/* Prominent All Filters Button */}
+              <TooltipProvider>
+                <Tooltip open={showFilterTooltip} onOpenChange={setShowFilterTooltip}>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      onClick={() => {
+                        setShowAdvancedFilters(true);
+                        setShowFilterTooltip(false);
+                      }} 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-9 px-3 border-2 border-primary/50 bg-primary/10 hover:bg-primary/20 shadow-sm rounded-xl relative"
+                    >
+                      <SlidersHorizontal className="h-4 w-4 text-primary" />
+                      {getActiveFiltersCount() > 0 && (
+                        <Badge variant="default" className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full">
+                          {getActiveFiltersCount()}
+                        </Badge>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent 
+                    side="bottom" 
+                    className="bg-primary text-primary-foreground font-semibold animate-bounce z-[9999]"
+                  >
+                    👆 Click here for All Filters!
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
               <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
                 <Search className="h-4 w-4" />
               </Button>
@@ -1569,21 +1614,6 @@ const IPhoneSearchPanel = ({
               >
                 <DollarSign className="h-3 w-3 mr-1" />
                 {filters.priceRange || 'Price'}
-              </Button>
-              
-              {/* More Filters Button */}
-              <Button 
-                onClick={() => setShowAdvancedFilters(true)} 
-                variant="outline" 
-                size="sm" 
-                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60 ml-auto"
-              >
-                <Filter className="h-3 w-3 mr-1" />
-                {getActiveFiltersCount() > 0 ? (
-                  <Badge variant="secondary" className="h-4 px-1 text-[9px] ml-1">
-                    {getActiveFiltersCount()}
-                  </Badge>
-                ) : 'All Filters'}
               </Button>
             </div>
           </div>
@@ -2433,6 +2463,49 @@ const IPhoneSearchPanel = ({
                   </div>
                 </PopoverContent>
               </Popover>}
+            
+            {/* Prominent All Filters Button with Tooltip */}
+            <TooltipProvider>
+              <Tooltip open={showFilterTooltip} onOpenChange={setShowFilterTooltip}>
+                <TooltipTrigger asChild>
+                  <Button 
+                    onClick={() => {
+                      setShowAdvancedFilters(true);
+                      setShowFilterTooltip(false);
+                    }} 
+                    size="sm" 
+                    className={cn(
+                      "group relative overflow-hidden rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300",
+                      isMobile ? "h-9 px-4 text-xs" : "h-10 px-5 text-sm",
+                      "bg-gradient-to-r from-primary via-primary to-accent",
+                      "hover:from-primary hover:via-accent hover:to-primary",
+                      "text-primary-foreground border-2 border-primary/30"
+                    )}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-ai-shimmer" />
+                    <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
+                    <span className="relative z-10">All Filters</span>
+                    {getActiveFiltersCount() > 0 && (
+                      <Badge 
+                        variant="secondary" 
+                        className="ml-2 h-5 px-2 bg-primary-foreground/20 text-primary-foreground border border-primary-foreground/30 font-bold relative z-10"
+                      >
+                        {getActiveFiltersCount()}
+                      </Badge>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent 
+                  side="bottom" 
+                  className="bg-primary text-primary-foreground font-semibold animate-bounce z-[9999]"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">👆</span>
+                    <span>Click here for Advanced Filters!</span>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           {/* Active Filters Summary Bar */}
