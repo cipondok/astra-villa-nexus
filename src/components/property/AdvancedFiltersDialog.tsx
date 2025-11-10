@@ -40,6 +40,8 @@ const AdvancedFiltersDialog = ({
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
   const [listingTypeCollapsed, setListingTypeCollapsed] = useState(false);
+  const [bedroomsCollapsed, setBedroomsCollapsed] = useState(false);
+  const [bathroomsCollapsed, setBathroomsCollapsed] = useState(false);
   const [initialState, setInitialState] = useState({
     listingType: initialListingType,
     minPrice: 0,
@@ -462,14 +464,43 @@ const AdvancedFiltersDialog = ({
             transition={{ delay: 0.3 }}
             className="space-y-3"
           >
-            <label className="text-sm font-semibold text-binance-orange flex items-center gap-2">
-              🛏️ {currentText.bedrooms}
-            </label>
-            <PillToggleGroup
-              options={bedroomOptions}
-              value={bedrooms}
-              onChange={(value) => setBedrooms(typeof value === 'string' ? value : value[0] || '')}
-            />
+            <button
+              onClick={() => setBedroomsCollapsed(!bedroomsCollapsed)}
+              className="w-full text-sm font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity"
+            >
+              <span className="flex items-center gap-2">
+                🛏️ {currentText.bedrooms}
+                {bedrooms && bedroomsCollapsed && (
+                  <Badge variant="secondary" className="text-xs">
+                    {bedroomOptions.find(opt => opt.value === bedrooms)?.label}
+                  </Badge>
+                )}
+              </span>
+              {bedroomsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            </button>
+            <AnimatePresence>
+              {!bedroomsCollapsed && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <PillToggleGroup
+                    options={bedroomOptions}
+                    value={bedrooms}
+                    onChange={(value) => {
+                      const newValue = typeof value === 'string' ? value : value[0] || '';
+                      setBedrooms(newValue);
+                      if (newValue) {
+                        setBedroomsCollapsed(true);
+                      }
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Bathrooms */}
@@ -479,14 +510,43 @@ const AdvancedFiltersDialog = ({
             transition={{ delay: 0.4 }}
             className="space-y-3"
           >
-            <label className="text-sm font-semibold text-binance-orange flex items-center gap-2">
-              🚿 {currentText.bathrooms}
-            </label>
-            <PillToggleGroup
-              options={bathroomOptions}
-              value={bathrooms}
-              onChange={(value) => setBathrooms(typeof value === 'string' ? value : value[0] || '')}
-            />
+            <button
+              onClick={() => setBathroomsCollapsed(!bathroomsCollapsed)}
+              className="w-full text-sm font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity"
+            >
+              <span className="flex items-center gap-2">
+                🚿 {currentText.bathrooms}
+                {bathrooms && bathroomsCollapsed && (
+                  <Badge variant="secondary" className="text-xs">
+                    {bathroomOptions.find(opt => opt.value === bathrooms)?.label}
+                  </Badge>
+                )}
+              </span>
+              {bathroomsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            </button>
+            <AnimatePresence>
+              {!bathroomsCollapsed && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <PillToggleGroup
+                    options={bathroomOptions}
+                    value={bathrooms}
+                    onChange={(value) => {
+                      const newValue = typeof value === 'string' ? value : value[0] || '';
+                      setBathrooms(newValue);
+                      if (newValue) {
+                        setBathroomsCollapsed(true);
+                      }
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
 
