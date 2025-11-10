@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, useRef } from "react";
+import { useState, useEffect, lazy, Suspense, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { logSearchError } from "@/utils/errorLogger";
+import { useConnectionSpeed } from "@/hooks/useConnectionSpeed";
 
 import { supabase } from "@/integrations/supabase/client";
 import { BaseProperty } from "@/types/property";
@@ -24,6 +25,7 @@ import { FloatingActionMenu } from "@/components/ui/FloatingActionMenu";
 import { KeyboardShortcutIndicator } from "@/components/ui/KeyboardShortcutIndicator";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -102,6 +104,8 @@ const Index = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isLoadingPanel, setIsLoadingPanel] = useState(true);
+  const [isOnline, setIsOnline] = useState(true);
+  const { speed: connectionSpeed } = useConnectionSpeed();
 
   // Wrap search function with retry logic
   const performSearch = async (searchData?: any) => {
@@ -209,6 +213,12 @@ const Index = () => {
   });
 
   const handleQuickSearch = async (searchData?: any) => {
+    // Prevent search when offline
+    if (!isOnline || connectionSpeed === 'offline') {
+      toast.error('You are offline. Please check your internet connection.');
+      return;
+    }
+
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
@@ -298,6 +308,20 @@ const Index = () => {
     backgroundRepeat: 'no-repeat',
     backgroundAttachment: isMobile ? 'scroll' : 'fixed',
   };
+
+  // Generate cache key for search results
+  const searchCacheKey = useMemo(() => {
+    return ['search-results', quickSearch, filters, JSON.stringify(filters)];
+  }, [quickSearch, filters]);
+
+  // Use cached search results when available
+  const { data: cachedSearchResults, isFetching: isSearchFetching } = useQuery({
+    queryKey: searchCacheKey,
+    queryFn: () => performSearch(filters),
+    enabled: false, // Manual trigger only
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   // Simplified featured properties query with better caching
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
@@ -398,6 +422,9 @@ const Index = () => {
   const content = (
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative container-responsive"
     >
+      {/* Network Status Indicator */}
+      <NetworkStatusIndicator onStatusChange={setIsOnline} />
+
       {/* Background Wallpaper Layer */}
       	<div 
       	  className={cn(isMobile ? "absolute" : "fixed", "inset-0 z-0 opacity-30 dark:opacity-20 pointer-events-none")}
@@ -405,7 +432,7 @@ const Index = () => {
       	/>
       
       {/* Content Layer with mobile-first responsive backdrop */}
-      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2">
+      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2 pt-12">
         
         
         {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
