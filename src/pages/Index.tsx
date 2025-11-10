@@ -12,8 +12,11 @@ import { BaseProperty } from "@/types/property";
 import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Camera, MessageSquare, ArrowUp, Sparkles } from "lucide-react";
+import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
+import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
+import { useRetrySearch } from "@/hooks/useRetrySearch";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
@@ -98,6 +101,138 @@ const Index = () => {
   const [uploadedImageBase64, setUploadedImageBase64] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [isLoadingPanel, setIsLoadingPanel] = useState(true);
+
+  // Wrap search function with retry logic
+  const performSearch = async (searchData?: any) => {
+    const rawTerm = searchData?.searchQuery ?? quickSearch ?? '';
+    const sanitize = (s: string) =>
+      String(s)
+        .replace(/[(),;]/g, ' ')
+        .replace(/%/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 100);
+    const searchTerm = sanitize(rawTerm);
+
+    console.log('Search initiated:', searchTerm, 'with filters:', searchData);
+
+    let query = supabase
+      .from('properties')
+      .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
+      .eq('status', 'active')
+      .eq('approval_status', 'approved')
+      .not('title', 'is', null);
+
+    // Apply text search if present (sanitized)
+    if (searchTerm) {
+      query = query.or(
+        `title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`
+      );
+    }
+
+    // Apply location filter if present (sanitized)
+    if (searchData?.location && searchData.location !== 'all') {
+      const safeLoc = sanitize(searchData.location);
+      if (safeLoc) {
+        query = query.or(`location.ilike.%${safeLoc}%,city.ilike.%${safeLoc}%,state.ilike.%${safeLoc}%`);
+      }
+    }
+
+    // Apply property type filter
+    if (searchData?.propertyType && searchData.propertyType !== 'all') {
+      query = query.eq('property_type', searchData.propertyType);
+    }
+
+    // Apply listing type filter
+    if (searchData?.listingType && searchData.listingType !== 'all' && searchData.listingType !== '') {
+      query = query.eq('listing_type', searchData.listingType);
+    }
+
+    // Apply price range filter
+    if (searchData?.priceRange && searchData.priceRange !== 'all') {
+      const priceRangeStr = searchData.priceRange.toString();
+      const [min, max] = priceRangeStr.split('-');
+      if (priceRangeStr.includes('+')) {
+        query = query.gte('price', parseInt(min));
+      } else if (min && max) {
+        query = query.gte('price', parseInt(min)).lte('price', parseInt(max));
+      }
+    }
+
+    // Apply bedroom filter
+    if (searchData?.bedrooms && searchData.bedrooms !== 'all' && searchData.bedrooms !== '') {
+      const bedroomsStr = searchData.bedrooms.toString();
+      if (bedroomsStr.includes('+')) {
+        query = query.gte('bedrooms', parseInt(bedroomsStr));
+      } else {
+        query = query.eq('bedrooms', parseInt(bedroomsStr));
+      }
+    }
+
+    // Apply bathroom filter
+    if (searchData?.bathrooms && searchData.bathrooms !== 'all' && searchData.bathrooms !== '') {
+      const bathroomsStr = searchData.bathrooms.toString();
+      if (bathroomsStr.includes('+')) {
+        query = query.gte('bathrooms', parseInt(bathroomsStr));
+      } else {
+        query = query.eq('bathrooms', parseInt(bathroomsStr));
+      }
+    }
+
+    // Handle nearby search
+    if (searchData?.nearbySearch && searchData?.userLocation) {
+      console.warn('Nearby search requested but properties table lacks latitude/longitude columns');
+    }
+
+    const { data, error } = await query
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) {
+      console.error('Search error:', error);
+      throw new Error(error.message || 'Search failed');
+    }
+
+    // Transform data to match BaseProperty interface
+    return (data?.map(property => ({
+      ...property,
+      listing_type: property.listing_type as "sale" | "rent" | "lease",
+      image_urls: property.images || []
+    })) || []) as BaseProperty[];
+  };
+
+  const { executeWithRetry, isRetrying, retryCount, lastError } = useRetrySearch(performSearch, {
+    maxRetries: 3,
+    initialDelay: 1000,
+    maxDelay: 5000,
+  });
+
+  const handleQuickSearch = async (searchData?: any) => {
+    setIsSearching(true);
+    setHasSearched(true);
+    setSearchError(null);
+
+    try {
+      const results = await executeWithRetry(searchData);
+      setSearchResults(results);
+      console.log('Search completed. Results:', results.length);
+    } catch (error: any) {
+      console.error('Search failed after retries:', error);
+      const errorMessage = error?.message || 'Search failed. Please try again.';
+      setSearchError(errorMessage);
+      logSearchError(error, searchData);
+      toast.error(errorMessage);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Simulate panel loading
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoadingPanel(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -204,156 +339,6 @@ const Index = () => {
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
-  const handleQuickSearch = async (searchData?: any) => {
-    const rawTerm = searchData?.searchQuery ?? quickSearch ?? '';
-    const sanitize = (s: string) =>
-      String(s)
-        .replace(/[(),;]/g, ' ') // prevent PostgREST or() parsing issues
-        .replace(/%/g, '') // avoid wildcard injection
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 100);
-    const searchTerm = sanitize(rawTerm);
-
-    // Check if we have active filters
-    const hasFilters = !!searchData && (
-      (searchData.location && searchData.location !== 'all') ||
-      (searchData.propertyType && searchData.propertyType !== 'all') ||
-      (searchData.listingType && searchData.listingType !== 'all') ||
-      (searchData.priceRange && searchData.priceRange !== 'all') ||
-      (searchData.bedrooms && searchData.bedrooms !== 'all') ||
-      (searchData.bathrooms && searchData.bathrooms !== 'all')
-    );
-
-    // Empty search term means show all results (no early return)
-
-    console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
-    console.log('Active filters:', {
-      location: searchData?.location !== 'all' ? searchData?.location : null,
-      propertyType: searchData?.propertyType !== 'all' ? searchData?.propertyType : null,
-      listingType: searchData?.listingType !== 'all' ? searchData?.listingType : null
-    });
-
-    setIsSearching(true);
-    setHasSearched(true);
-    setSearchError(null);
-
-    try {
-      let query = supabase
-        .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
-        .eq('status', 'active')
-        .eq('approval_status', 'approved')
-        .not('title', 'is', null);
-
-      // Apply text search if present (sanitized)
-      if (searchTerm) {
-        query = query.or(
-          `title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`
-        );
-      }
-
-      // Apply location filter if present (sanitized)
-      if (searchData?.location && searchData.location !== 'all') {
-        const safeLoc = sanitize(searchData.location);
-        if (safeLoc) {
-          query = query.or(`location.ilike.%${safeLoc}%,city.ilike.%${safeLoc}%,state.ilike.%${safeLoc}%`);
-        }
-      }
-
-      // Apply property type filter
-      if (searchData?.propertyType && searchData.propertyType !== 'all') {
-        console.log('Applying property type filter:', searchData.propertyType);
-        query = query.eq('property_type', searchData.propertyType);
-      }
-
-      // Apply listing type filter
-      if (searchData?.listingType && searchData.listingType !== 'all' && searchData.listingType !== '') {
-        console.log('Applying listing type filter:', searchData.listingType);
-        query = query.eq('listing_type', searchData.listingType);
-      }
-
-      // Apply price range filter
-      if (searchData?.priceRange && searchData.priceRange !== 'all') {
-        const priceRangeStr = searchData.priceRange.toString();
-        const [min, max] = priceRangeStr.split('-');
-        if (priceRangeStr.includes('+')) {
-          query = query.gte('price', parseInt(min));
-        } else if (min && max) {
-          query = query.gte('price', parseInt(min)).lte('price', parseInt(max));
-        }
-      }
-
-      // Apply bedroom filter
-      if (searchData?.bedrooms && searchData.bedrooms !== 'all' && searchData.bedrooms !== '') {
-        const bedroomsStr = searchData.bedrooms.toString();
-        if (bedroomsStr.includes('+')) {
-          query = query.gte('bedrooms', parseInt(bedroomsStr));
-        } else {
-          query = query.eq('bedrooms', parseInt(bedroomsStr));
-        }
-      }
-
-      // Apply bathroom filter
-      if (searchData?.bathrooms && searchData.bathrooms !== 'all' && searchData.bathrooms !== '') {
-        const bathroomsStr = searchData.bathrooms.toString();
-        if (bathroomsStr.includes('+')) {
-          query = query.gte('bathrooms', parseInt(bathroomsStr));
-        } else {
-          query = query.eq('bathrooms', parseInt(bathroomsStr));
-        }
-      }
-
-      // Handle nearby search (requires lat/lng columns in properties table)
-      if (searchData?.nearbySearch && searchData?.userLocation) {
-        console.warn('Nearby search requested but properties table lacks latitude/longitude columns');
-        // TODO: Add latitude, longitude columns to properties table for distance-based search
-        // For now, show message to user
-        setSearchError('Nearby search requires property GPS coordinates. Showing all results instead.');
-      }
-
-      const { data, error } = await query
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (error) {
-        console.error('❌ Search error:', error);
-        toast.error('Search failed. Please try again.');
-        setSearchError(error.message || 'Search failed. Please try again.');
-        setSearchResults([]);
-        
-        // Log error to admin panel
-        await logSearchError(error, searchData);
-      } else {
-        console.log('✅ Search results:', data?.length || 0);
-        // Transform data to match BaseProperty interface
-        const transformedResults = data?.map(property => ({
-          ...property,
-          listing_type: property.listing_type as "sale" | "rent" | "lease",
-          image_urls: property.images || []
-        })) || [];
-        setSearchResults(transformedResults);
-        setSearchError(null);
-        
-        if (transformedResults.length === 0) {
-          toast.info('No properties found matching your criteria');
-        } else {
-          toast.success(`Found ${transformedResults.length} properties`);
-        }
-      }
-    } catch (error) {
-      console.error('❌ Search error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Search failed. Please check your connection and try again.';
-      toast.error(errorMessage);
-      setSearchError(errorMessage);
-      setSearchResults([]);
-      
-      // Log error to admin panel
-      await logSearchError(error, searchData);
-    } finally {
-      setIsSearching(false);
-    }
-  };
 
   const handlePropertyClick = (property: BaseProperty) => {
     navigate(`/properties/${property.id}`);
@@ -454,35 +439,36 @@ const Index = () => {
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer"></div>
                 
-                <Suspense fallback={
-                  <div className="p-4 md:p-6">
-                    <div className="animate-pulse space-y-3">
-                      <div className="h-12 bg-muted/50 rounded-xl"></div>
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="h-10 bg-muted/50 rounded-lg"></div>
-                        <div className="h-10 bg-muted/50 rounded-lg"></div>
-                        <div className="h-10 bg-muted/50 rounded-lg"></div>
-                      </div>
-                    </div>
-                  </div>
-                }>
-                  <IPhoneSearchPanel
-                    language={language}
-                    onSearch={(searchData) => {
-                      setQuickSearch(searchData.searchQuery || "");
-                      handleQuickSearch(searchData);
-                    }}
-                    onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                    resultsCount={hasSearched ? searchResults.length : undefined}
-                  />
+                <Suspense fallback={<SearchPanelSkeleton />}>
+                  <SearchErrorBoundary>
+                    <IPhoneSearchPanel
+                      language={language}
+                      onSearch={(searchData) => {
+                        setQuickSearch(searchData.searchQuery || "");
+                        handleQuickSearch(searchData);
+                      }}
+                      onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                      resultsCount={hasSearched ? searchResults.length : undefined}
+                    />
+                  </SearchErrorBoundary>
                 </Suspense>
+                
+                {/* Retry Indicator */}
+                {isRetrying && (
+                  <div className="absolute bottom-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300">
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                    <span className="text-sm font-medium">
+                      Retrying... ({retryCount}/3)
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </section>
 
         {/* Error Message - Compact */}
-        {searchError && (
+        {(searchError || lastError) && (
           <section className={cn(isMobile ? "py-1" : "py-2")}>
             <div className={cn(
               isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-4",
@@ -495,20 +481,42 @@ const Index = () => {
                 <p className={cn(
                   "font-medium",
                   isMobile ? "text-xs" : "text-sm"
-                )}>⚠️ {searchError}</p>
-                <button 
-                  onClick={() => {
-                    setSearchError(null);
-                    setSearchResults([]);
-                    setHasSearched(false);
-                  }}
-                  className={cn(
-                    "bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors",
-                    isMobile ? "mt-1 px-2 py-0.5 text-xs" : "mt-2 px-4 py-1 text-sm"
-                  )}
-                >
-                  {t.clearError}
-                </button>
+                )}>
+                  ⚠️ {searchError || lastError?.message}
+                </p>
+                {retryCount > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Attempted {retryCount} {retryCount === 1 ? 'retry' : 'retries'}
+                  </p>
+                )}
+                <div className="flex gap-2 justify-center mt-2">
+                  <button 
+                    onClick={() => {
+                      setSearchError(null);
+                      handleQuickSearch();
+                    }}
+                    className={cn(
+                      "bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors flex items-center gap-1",
+                      isMobile ? "px-2 py-0.5 text-xs" : "px-4 py-1 text-sm"
+                    )}
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                    Retry
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setSearchError(null);
+                      setSearchResults([]);
+                      setHasSearched(false);
+                    }}
+                    className={cn(
+                      "bg-muted hover:bg-muted/80 text-foreground rounded-md transition-colors",
+                      isMobile ? "px-2 py-0.5 text-xs" : "px-4 py-1 text-sm"
+                    )}
+                  >
+                    {t.clearError}
+                  </button>
+                </div>
               </div>
             </div>
           </section>
@@ -551,7 +559,17 @@ const Index = () => {
                     </Suspense>
                   </div>
                   
-                  {viewMode === 'grid' && (
+                  {isSearching && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="animate-pulse bg-muted/50 rounded-xl h-64" 
+                          style={{ animationDelay: `${i * 100}ms` }} 
+                        />
+                      ))}
+                    </div>
+                  )}
+                  
+                  {viewMode === 'grid' && !isSearching && (
                     <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />)}</div>}>
                       <PropertyGridView
                         properties={searchResults}
@@ -578,7 +596,7 @@ const Index = () => {
                     </Suspense>
                   )}
 
-                  {viewMode === 'list' && (
+                  {viewMode === 'list' && !isSearching && (
                     <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg" />)}</div>}>
                       <PropertyListView
                         properties={searchResults}
@@ -605,7 +623,7 @@ const Index = () => {
                     </Suspense>
                   )}
 
-                  {viewMode === 'map' && (
+                  {viewMode === 'map' && !isSearching && (
                     <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                       <PropertyMapView
                         properties={searchResults}
