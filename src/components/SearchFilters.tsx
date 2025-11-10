@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import LocationSelector from "@/components/location/LocationSelector";
+import AdvancedFiltersDialog from "@/components/property/AdvancedFiltersDialog";
 
 interface SearchFiltersProps {
   language: "en" | "id";
@@ -82,6 +83,18 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
     setSelectedCity(city);
   };
 
+  const handleFiltersChange = (filters: {
+    listingType: string;
+    priceRange: string;
+    bedrooms: string;
+    bathrooms: string;
+  }) => {
+    setListingType(filters.listingType);
+    setPriceRange(filters.priceRange);
+    setBedrooms(filters.bedrooms);
+    setBathrooms(filters.bathrooms);
+  };
+
   const handleSearch = () => {
     const searchFilters = {
       query: searchQuery,
@@ -113,15 +126,17 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
             />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <LocationSelector
-              selectedProvince={selectedProvince}
-              selectedCity={selectedCity}
-              onProvinceChange={handleProvinceChange}
-              onCityChange={handleCityChange}
-              showLabel={false}
-              className="grid grid-cols-2 gap-2"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <LocationSelector
+                selectedProvince={selectedProvince}
+                selectedCity={selectedCity}
+                onProvinceChange={handleProvinceChange}
+                onCityChange={handleCityChange}
+                showLabel={false}
+                className="grid grid-cols-2 gap-2"
+              />
+            </div>
             
             <Select value={propertyType} onValueChange={setPropertyType}>
               <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
@@ -136,64 +151,23 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
             </Select>
           </div>
           
-          <Button 
-            onClick={handleSearch}
-            className="btn btn-primary h-12 font-bold text-lg glow-gold"
-          >
-            {currentText.searchBtn}
-          </Button>
-        </div>
-
-        {/* Advanced Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <Select value={listingType} onValueChange={setListingType}>
-            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
-              <SelectValue placeholder={`💰 ${currentText.listingType}`} />
-            </SelectTrigger>
-            <SelectContent className="bg-binance-dark-gray border-binance-gray">
-              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.allTypes}</SelectItem>
-              <SelectItem value="sale" className="text-binance-white hover:bg-binance-gray">💵 {currentText.forSale}</SelectItem>
-              <SelectItem value="rent" className="text-binance-white hover:bg-binance-gray">🏠 {currentText.forRent}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={priceRange} onValueChange={setPriceRange}>
-            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
-              <SelectValue placeholder={`💸 ${currentText.price}`} />
-            </SelectTrigger>
-            <SelectContent className="bg-binance-dark-gray border-binance-gray">
-              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.anyPrice}</SelectItem>
-              <SelectItem value="0-1000000000" className="text-binance-white hover:bg-binance-gray">Under Rp 1B</SelectItem>
-              <SelectItem value="1000000000-5000000000" className="text-binance-white hover:bg-binance-gray">Rp 1B - 5B</SelectItem>
-              <SelectItem value="5000000000-999999999999" className="text-binance-white hover:bg-binance-gray">Rp 5B+</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={bedrooms} onValueChange={setBedrooms}>
-            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
-              <SelectValue placeholder={`🛏️ ${currentText.bedrooms}`} />
-            </SelectTrigger>
-            <SelectContent className="bg-binance-dark-gray border-binance-gray">
-              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.anyBedroom}</SelectItem>
-              <SelectItem value="1" className="text-binance-white hover:bg-binance-gray">1</SelectItem>
-              <SelectItem value="2" className="text-binance-white hover:bg-binance-gray">2</SelectItem>
-              <SelectItem value="3" className="text-binance-white hover:bg-binance-gray">3</SelectItem>
-              <SelectItem value="4+" className="text-binance-white hover:bg-binance-gray">4+</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={bathrooms} onValueChange={setBathrooms}>
-            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
-              <SelectValue placeholder={`🚿 ${currentText.bathrooms}`} />
-            </SelectTrigger>
-            <SelectContent className="bg-binance-dark-gray border-binance-gray">
-              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.anyBathroom}</SelectItem>
-              <SelectItem value="1" className="text-binance-white hover:bg-binance-gray">1</SelectItem>
-              <SelectItem value="2" className="text-binance-white hover:bg-binance-gray">2</SelectItem>
-              <SelectItem value="3" className="text-binance-white hover:bg-binance-gray">3</SelectItem>
-              <SelectItem value="4+" className="text-binance-white hover:bg-binance-gray">4+</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <AdvancedFiltersDialog
+              language={language}
+              listingType={listingType}
+              priceRange={priceRange}
+              bedrooms={bedrooms}
+              bathrooms={bathrooms}
+              onFiltersChange={handleFiltersChange}
+            />
+            
+            <Button 
+              onClick={handleSearch}
+              className="btn btn-primary h-12 font-bold text-lg glow-gold"
+            >
+              {currentText.searchBtn}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
