@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,6 +25,15 @@ export const ImageSearchButton = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [showPulse, setShowPulse] = useState(false);
+
+  // Check if user has used image search before
+  useEffect(() => {
+    const hasUsedImageSearch = localStorage.getItem('hasUsedImageSearch');
+    if (!hasUsedImageSearch) {
+      setShowPulse(true);
+    }
+  }, []);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,6 +69,10 @@ export const ImageSearchButton = ({
         setPreviewUrl(result);
         onImageSelected(result);
         toast.success('Image uploaded! Searching for similar properties...');
+        
+        // Mark as used and stop pulse animation
+        localStorage.setItem('hasUsedImageSearch', 'true');
+        setShowPulse(false);
       };
       reader.readAsDataURL(file);
     } catch (error) {
@@ -149,9 +162,18 @@ export const ImageSearchButton = ({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isSearching}
-                className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
+                className={cn(
+                  "p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50 relative",
+                  showPulse && "animate-pulse ring-2 ring-purple-400 ring-offset-2"
+                )}
               >
                 <Camera className="h-3.5 w-3.5" />
+                {showPulse && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
+                  </span>
+                )}
               </button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="max-w-xs">

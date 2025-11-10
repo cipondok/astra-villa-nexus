@@ -21,6 +21,7 @@ import { useScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevent
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePropertyFilters } from "@/hooks/usePropertyFilters";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
+import { RecentImageSearches, addRecentSearch } from "@/components/search/RecentImageSearches";
 import { useImageSearch } from "@/hooks/useImageSearch";
 import { toast } from "sonner";
 interface IPhoneSearchPanelProps {
@@ -62,6 +63,14 @@ const IPhoneSearchPanel = ({
   
   // Image search functionality
   const { searchByImage, isSearching: isImageSearching, clearResults: clearImageSearch } = useImageSearch();
+  const [recentSearchesKey, setRecentSearchesKey] = useState(0);
+
+  // Listen for recent searches updates
+  useEffect(() => {
+    const handleUpdate = () => setRecentSearchesKey(prev => prev + 1);
+    window.addEventListener('recentSearchesUpdated', handleUpdate);
+    return () => window.removeEventListener('recentSearchesUpdated', handleUpdate);
+  }, []);
 
   // Show tooltip for first-time users
   useEffect(() => {
@@ -1625,6 +1634,9 @@ const IPhoneSearchPanel = ({
   // Image search handlers
   const handleImageSearch = async (base64Image: string) => {
     try {
+      // Add to recent searches
+      addRecentSearch(base64Image);
+      
       // Convert base64 to File object
       const base64Data = base64Image.split(',')[1];
       const byteCharacters = atob(base64Data);
@@ -1652,6 +1664,10 @@ const IPhoneSearchPanel = ({
 
   const handleClearImageSearch = () => {
     clearImageSearch();
+  };
+
+  const handleRerunSearch = async (thumbnail: string) => {
+    await handleImageSearch(thumbnail);
   };
 
   // Close filters and suggestions when clicking outside
@@ -1829,6 +1845,14 @@ const IPhoneSearchPanel = ({
               <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
                 <Search className="h-4 w-4" />
               </Button>
+            </div>
+            
+            {/* Recent Image Searches */}
+            <div className="px-2 pb-2">
+              <RecentImageSearches 
+                key={recentSearchesKey}
+                onRerunSearch={handleRerunSearch}
+              />
             </div>
             
             {/* Inline Quick Filters */}
@@ -2539,6 +2563,14 @@ const IPhoneSearchPanel = ({
               <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
               {!isMobile && <span className="hidden sm:inline">{currentText.search}</span>}
             </Button>
+          </div>
+          
+          {/* Recent Image Searches - Desktop */}
+          <div className="px-2">
+            <RecentImageSearches 
+              key={recentSearchesKey}
+              onRerunSearch={handleRerunSearch}
+            />
           </div>
           
           {/* Radius Selector - Shows when Near Me is active */}
