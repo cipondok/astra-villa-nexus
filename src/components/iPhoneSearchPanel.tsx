@@ -2175,6 +2175,90 @@ const IPhoneSearchPanel = ({
               />
             </div>
             
+            {/* Quick Preset Filters */}
+            <div className="px-2 pb-1">
+              <div className="flex items-center gap-1 mb-1">
+                <Zap className="h-2.5 w-2.5 text-yellow-500" />
+                <span className="text-[9px] font-semibold text-muted-foreground">Quick Search</span>
+              </div>
+              <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
+                {/* Under 1B Preset */}
+                <Button 
+                  variant="outline"
+                  size="sm" 
+                  onClick={() => {
+                    handleFilterChange('minPrice', 0);
+                    handleFilterChange('maxPrice', 1000000000);
+                    handleSearch();
+                  }}
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-medium animate-in fade-in duration-200"
+                >
+                  <DollarSign className="h-2.5 w-2.5 mr-0.5" />
+                  Under 1B
+                </Button>
+                
+                {/* Near MRT Preset */}
+                <Button 
+                  variant="outline"
+                  size="sm" 
+                  onClick={() => {
+                    setSearchQuery('Near MRT');
+                    setTimeout(handleSearch, 100);
+                  }}
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 font-medium animate-in fade-in duration-200"
+                  style={{ animationDelay: '50ms' }}
+                >
+                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
+                  Near MRT
+                </Button>
+                
+                {/* 2+ Beds Preset */}
+                <Button 
+                  variant="outline"
+                  size="sm" 
+                  onClick={() => {
+                    handleFilterChange('bedrooms', '2');
+                    handleSearch();
+                  }}
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 font-medium animate-in fade-in duration-200"
+                  style={{ animationDelay: '100ms' }}
+                >
+                  <Bed className="h-2.5 w-2.5 mr-0.5" />
+                  2+ Beds
+                </Button>
+                
+                {/* New Projects Preset */}
+                <Button 
+                  variant="outline"
+                  size="sm" 
+                  onClick={() => {
+                    setActiveTab('new_project');
+                    handleSearch();
+                  }}
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-medium animate-in fade-in duration-200"
+                  style={{ animationDelay: '150ms' }}
+                >
+                  <Rocket className="h-2.5 w-2.5 mr-0.5" />
+                  New
+                </Button>
+                
+                {/* Apartments Preset */}
+                <Button 
+                  variant="outline"
+                  size="sm" 
+                  onClick={() => {
+                    handleFilterChange('propertyType', 'apartment');
+                    handleSearch();
+                  }}
+                  className="h-6 px-2 text-[9px] rounded-lg shrink-0 border border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 font-medium animate-in fade-in duration-200"
+                  style={{ animationDelay: '200ms' }}
+                >
+                  <Building className="h-2.5 w-2.5 mr-0.5" />
+                  Apartments
+                </Button>
+              </div>
+            </div>
+            
             {/* Inline Quick Filters */}
             <div className="px-2 pb-2 flex gap-1.5 overflow-x-auto no-scrollbar">
               {/* Property Type Quick Filter */}
@@ -2208,17 +2292,6 @@ const IPhoneSearchPanel = ({
               >
                 <Bath className="h-3 w-3 mr-1" />
                 {filters.bathrooms && filters.bathrooms !== 'all' ? `${filters.bathrooms} Bath` : 'Baths'}
-              </Button>
-              
-              {/* Price Range Quick Filter */}
-              <Button 
-                variant={filters.priceRange ? "default" : "outline"} 
-                size="sm" 
-                onClick={() => setShowAdvancedFilters(true)}
-                className="h-7 px-2.5 text-[10px] rounded-lg shrink-0 border-0 bg-background/60"
-              >
-                <DollarSign className="h-3 w-3 mr-1" />
-                {filters.priceRange || 'Price'}
               </Button>
             </div>
           </div>
