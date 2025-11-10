@@ -284,11 +284,7 @@ const IPhoneSearchPanel = ({
       locations: locationMatches
     };
   };
-  const filteredSuggestions = getFilteredSuggestions();
-  const hasSuggestions = filteredSuggestions.recent.length > 0 || 
-                        filteredSuggestions.smart.length > 0 || 
-                        filteredSuggestions.trending.length > 0 ||
-                        filteredSuggestions.locations.length > 0;
+// moved filteredSuggestions calculation below after state initializations to avoid TDZ
 
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
@@ -358,6 +354,13 @@ const IPhoneSearchPanel = ({
     value: string;
     label: string;
   }[]>([]);
+
+  // Suggestions derived AFTER state is initialized to avoid TDZ
+  const filteredSuggestions = getFilteredSuggestions();
+  const hasSuggestions = filteredSuggestions.recent.length > 0 || 
+                        filteredSuggestions.smart.length > 0 || 
+                        filteredSuggestions.trending.length > 0 ||
+                        filteredSuggestions.locations.length > 0;
 
   // Fetch provinces on component mount
   useEffect(() => {
