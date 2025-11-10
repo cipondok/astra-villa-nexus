@@ -66,7 +66,7 @@ const IPhoneSearchPanel = ({
   const [recentSearchesKey, setRecentSearchesKey] = useState(0);
   const [currentSearchImage, setCurrentSearchImage] = useState<string | null>(null);
   const [recentSearchTerms, setRecentSearchTerms] = useState<string[]>([]);
-  const [suggestionClicks, setSuggestionClicks] = useState<Record<string, number>>({});
+  const [suggestionClicks, setSuggestionClicks] = useState<Record<string, { count: number; timestamps: number[] }>>({});
 
   // Load recent search terms and click analytics from localStorage
   useEffect(() => {
@@ -82,21 +82,64 @@ const IPhoneSearchPanel = ({
     const clickData = localStorage.getItem('suggestionClickAnalytics');
     if (clickData) {
       try {
-        setSuggestionClicks(JSON.parse(clickData));
+        const parsed = JSON.parse(clickData);
+        // Migrate old format (number) to new format ({ count, timestamps })
+        const migrated = Object.entries(parsed).reduce((acc, [key, value]) => {
+          if (typeof value === 'number') {
+            acc[key] = { count: value, timestamps: [] };
+          } else {
+            acc[key] = value as { count: number; timestamps: number[] };
+          }
+          return acc;
+        }, {} as Record<string, { count: number; timestamps: number[] }>);
+        setSuggestionClicks(migrated);
       } catch (error) {
         console.error('Failed to parse click analytics:', error);
       }
     }
   }, []);
 
-  // Track suggestion click
+  // Calculate time-weighted score for a suggestion
+  const calculateTimeWeightedScore = (suggestion: string): number => {
+    const clickData = suggestionClicks[suggestion];
+    if (!clickData || !clickData.timestamps || clickData.timestamps.length === 0) {
+      return 0;
+    }
+
+    const now = Date.now();
+    const DECAY_RATE = 0.1; // Higher = faster decay
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+
+    // Calculate weighted score: each click's weight decreases exponentially with age
+    const weightedScore = clickData.timestamps.reduce((total, timestamp) => {
+      const ageInDays = (now - timestamp) / ONE_DAY;
+      const weight = Math.exp(-DECAY_RATE * ageInDays); // Exponential decay
+      return total + weight;
+    }, 0);
+
+    return weightedScore;
+  };
+
+  // Track suggestion click with timestamp
   const trackSuggestionClick = (suggestion: string) => {
+    const now = Date.now();
+    const existing = suggestionClicks[suggestion] || { count: 0, timestamps: [] };
+    
     const updatedClicks = {
       ...suggestionClicks,
-      [suggestion]: (suggestionClicks[suggestion] || 0) + 1
+      [suggestion]: {
+        count: existing.count + 1,
+        timestamps: [...existing.timestamps, now].slice(-50) // Keep last 50 clicks to prevent unbounded growth
+      }
     };
+    
     setSuggestionClicks(updatedClicks);
     localStorage.setItem('suggestionClickAnalytics', JSON.stringify(updatedClicks));
+  };
+
+  // Get display count (total clicks)
+  const getDisplayCount = (suggestion: string): number => {
+    return suggestionClicks[suggestion]?.count || 0;
   };
 
   // Listen for recent searches updates
@@ -154,16 +197,16 @@ const IPhoneSearchPanel = ({
     };
   }, [lastScrollY, isMinimized]);
 
-  // Trending and smart suggestions - sorted by popularity
+  // Trending and smart suggestions - sorted by time-weighted popularity
   const baseTrendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
   const baseSmartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
   
-  // Sort by click count (popularity)
+  // Sort by time-weighted popularity score
   const sortByPopularity = (items: string[]) => {
     return [...items].sort((a, b) => {
-      const clicksA = suggestionClicks[a] || 0;
-      const clicksB = suggestionClicks[b] || 0;
-      return clicksB - clicksA; // Higher clicks first
+      const scoreA = calculateTimeWeightedScore(a);
+      const scoreB = calculateTimeWeightedScore(b);
+      return scoreB - scoreA; // Higher weighted score first
     });
   };
   
@@ -2008,9 +2051,9 @@ const IPhoneSearchPanel = ({
                         >
                           <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                           {term}
-                          {suggestionClicks[term] && (
+                          {getDisplayCount(term) > 0 && (
                             <span className="ml-auto text-[8px] text-muted-foreground">
-                              {suggestionClicks[term]}x
+                              {getDisplayCount(term)}x
                             </span>
                           )}
                         </button>
@@ -2042,9 +2085,9 @@ const IPhoneSearchPanel = ({
                         >
                           <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
                           {location}
-                          {suggestionClicks[location] && (
+                          {getDisplayCount(location) > 0 && (
                             <span className="ml-auto text-[8px] text-muted-foreground">
-                              {suggestionClicks[location]}x
+                              {getDisplayCount(location)}x
                             </span>
                           )}
                         </button>
@@ -2077,9 +2120,9 @@ const IPhoneSearchPanel = ({
                             className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors flex items-center justify-between"
                           >
                             <span>{suggestion}</span>
-                            {suggestionClicks[suggestion] && (
+                            {getDisplayCount(suggestion) > 0 && (
                               <span className="text-[8px] text-muted-foreground">
-                                {suggestionClicks[suggestion]}x
+                                {getDisplayCount(suggestion)}x
                               </span>
                             )}
                           </button>
@@ -2111,9 +2154,9 @@ const IPhoneSearchPanel = ({
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between"
                         >
                           <span>{trend}</span>
-                          {suggestionClicks[trend] && (
+                          {getDisplayCount(trend) > 0 && (
                             <span className="text-[8px] text-muted-foreground">
-                              {suggestionClicks[trend]}x
+                              {getDisplayCount(trend)}x
                             </span>
                           )}
                         </button>
@@ -2838,9 +2881,9 @@ const IPhoneSearchPanel = ({
                           >
                             <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                             {term}
-                            {suggestionClicks[term] && (
+                            {getDisplayCount(term) > 0 && (
                               <span className="ml-auto text-[8px] text-muted-foreground">
-                                {suggestionClicks[term]}x
+                                {getDisplayCount(term)}x
                               </span>
                             )}
                           </button>
@@ -2870,9 +2913,9 @@ const IPhoneSearchPanel = ({
                           >
                             <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
                             {location}
-                            {suggestionClicks[location] && (
+                            {getDisplayCount(location) > 0 && (
                               <span className="ml-auto text-[8px] text-muted-foreground">
-                                {suggestionClicks[location]}x
+                                {getDisplayCount(location)}x
                               </span>
                             )}
                           </button>
@@ -2905,9 +2948,9 @@ const IPhoneSearchPanel = ({
                       handleSearch();
                     }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors flex items-center justify-between">
                               <span>{suggestion}</span>
-                              {suggestionClicks[suggestion] && (
+                              {getDisplayCount(suggestion) > 0 && (
                                 <span className="text-[8px] text-muted-foreground">
-                                  {suggestionClicks[suggestion]}x
+                                  {getDisplayCount(suggestion)}x
                                 </span>
                               )}
                             </button>;
@@ -2930,9 +2973,9 @@ const IPhoneSearchPanel = ({
                     handleSearch();
                   }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
                             <span>{trend}</span>
-                            {suggestionClicks[trend] && (
+                            {getDisplayCount(trend) > 0 && (
                               <span className="text-[8px] text-muted-foreground">
-                                {suggestionClicks[trend]}x
+                                {getDisplayCount(trend)}x
                               </span>
                             )}
                           </button>)}
