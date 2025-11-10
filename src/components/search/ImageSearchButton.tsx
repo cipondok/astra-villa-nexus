@@ -74,22 +74,19 @@ export const ImageSearchButton = ({
       />
       
       {!hasImage && !previewUrl ? (
-        <Button
+        <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isSearching}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white border-0 shadow-lg"
+          className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
+          title="Search by Image"
         >
-          <Camera className="h-4 w-4" />
-          <span className="hidden sm:inline">Search by Image</span>
-          <span className="sm:hidden">Image Search</span>
-        </Button>
+          <Camera className="h-3.5 w-3.5" />
+        </button>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {previewUrl && (
-            <div className="relative h-10 w-10 rounded-lg overflow-hidden border-2 border-purple-500 shadow-md">
+            <div className="relative h-7 w-7 rounded-md overflow-hidden border border-purple-500 shadow-sm">
               <img 
                 src={previewUrl} 
                 alt="Search" 
@@ -98,37 +95,29 @@ export const ImageSearchButton = ({
             </div>
           )}
           
-          <Button
+          <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isSearching}
-            variant="outline"
-            size="sm"
-            className="gap-2"
+            className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
+            title={isSearching ? "Searching..." : "Change Image"}
           >
             {isSearching ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Searching...
-              </>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <>
-                <Camera className="h-4 w-4" />
-                Change
-              </>
+              <Camera className="h-3.5 w-3.5" />
             )}
-          </Button>
+          </button>
           
-          <Button
+          <button
             type="button"
             onClick={handleClear}
             disabled={isSearching}
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="p-0 h-7 w-7 flex items-center justify-center rounded-md text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50"
+            title="Clear Image"
           >
-            <X className="h-4 w-4" />
-          </Button>
+            <X className="h-3.5 w-3.5" />
+          </button>
         </div>
       )}
     </div>
