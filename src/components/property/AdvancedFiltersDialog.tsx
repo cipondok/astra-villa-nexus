@@ -5,7 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import PillToggleGroup from "@/components/ui/PillToggleGroup";
-import { SlidersHorizontal, X, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { SlidersHorizontal, X, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 
@@ -39,6 +39,14 @@ const AdvancedFiltersDialog = ({
   const [bathrooms, setBathrooms] = useState(initialBathrooms);
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
+  const [listingTypeCollapsed, setListingTypeCollapsed] = useState(false);
+  const [initialState, setInitialState] = useState({
+    listingType: initialListingType,
+    minPrice: 0,
+    maxPrice: 10000000000,
+    bedrooms: initialBedrooms,
+    bathrooms: initialBathrooms,
+  });
 
   const text = {
     en: {
@@ -194,7 +202,50 @@ const AdvancedFiltersDialog = ({
       bedrooms,
       bathrooms,
     });
+    
+    // Update initial state after applying
+    setInitialState({
+      listingType,
+      minPrice,
+      maxPrice,
+      bedrooms,
+      bathrooms,
+    });
+    
     setOpen(false);
+  };
+
+  const handleCancel = () => {
+    // Reset to initial state when canceling
+    setListingType(initialState.listingType);
+    setMinPrice(initialState.minPrice);
+    setMaxPrice(initialState.maxPrice);
+    setBedrooms(initialState.bedrooms);
+    setBathrooms(initialState.bathrooms);
+    setValidationWarnings([]);
+    setOpen(false);
+  };
+
+  const handleDialogOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      // Reset to initial state when closing dialog
+      setListingType(initialState.listingType);
+      setMinPrice(initialState.minPrice);
+      setMaxPrice(initialState.maxPrice);
+      setBedrooms(initialState.bedrooms);
+      setBathrooms(initialState.bathrooms);
+      setValidationWarnings([]);
+    } else {
+      // Store current state when opening
+      setInitialState({
+        listingType,
+        minPrice,
+        maxPrice,
+        bedrooms,
+        bathrooms,
+      });
+    }
+    setOpen(isOpen);
   };
 
   const handleClear = () => {
@@ -226,7 +277,7 @@ const AdvancedFiltersDialog = ({
   }, [initialListingType, initialBedrooms, initialBathrooms]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -319,14 +370,43 @@ const AdvancedFiltersDialog = ({
             transition={{ delay: 0.1 }}
             className="space-y-3"
           >
-            <label className="text-sm font-semibold text-binance-orange flex items-center gap-2">
-              💰 {currentText.listingType}
-            </label>
-            <PillToggleGroup
-              options={listingTypeOptions}
-              value={listingType}
-              onChange={(value) => setListingType(typeof value === 'string' ? value : value[0] || '')}
-            />
+            <button
+              onClick={() => setListingTypeCollapsed(!listingTypeCollapsed)}
+              className="w-full text-sm font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity"
+            >
+              <span className="flex items-center gap-2">
+                💰 {currentText.listingType}
+                {listingType && listingTypeCollapsed && (
+                  <Badge variant="secondary" className="text-xs">
+                    {listingTypeOptions.find(opt => opt.value === listingType)?.label}
+                  </Badge>
+                )}
+              </span>
+              {listingTypeCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            </button>
+            <AnimatePresence>
+              {!listingTypeCollapsed && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <PillToggleGroup
+                    options={listingTypeOptions}
+                    value={listingType}
+                    onChange={(value) => {
+                      const newValue = typeof value === 'string' ? value : value[0] || '';
+                      setListingType(newValue);
+                      if (newValue) {
+                        setListingTypeCollapsed(true);
+                      }
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Price Range */}
@@ -427,7 +507,7 @@ const AdvancedFiltersDialog = ({
           </Button>
           <Button
             variant="outline"
-            onClick={() => setOpen(false)}
+            onClick={handleCancel}
             className="h-8 text-xs border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 hover:scale-105"
           >
             {currentText.cancel}
