@@ -66,8 +66,9 @@ const IPhoneSearchPanel = ({
   const [recentSearchesKey, setRecentSearchesKey] = useState(0);
   const [currentSearchImage, setCurrentSearchImage] = useState<string | null>(null);
   const [recentSearchTerms, setRecentSearchTerms] = useState<string[]>([]);
+  const [suggestionClicks, setSuggestionClicks] = useState<Record<string, number>>({});
 
-  // Load recent search terms from localStorage
+  // Load recent search terms and click analytics from localStorage
   useEffect(() => {
     const stored = localStorage.getItem('recentSearchTerms');
     if (stored) {
@@ -77,7 +78,26 @@ const IPhoneSearchPanel = ({
         console.error('Failed to parse recent searches:', error);
       }
     }
+
+    const clickData = localStorage.getItem('suggestionClickAnalytics');
+    if (clickData) {
+      try {
+        setSuggestionClicks(JSON.parse(clickData));
+      } catch (error) {
+        console.error('Failed to parse click analytics:', error);
+      }
+    }
   }, []);
+
+  // Track suggestion click
+  const trackSuggestionClick = (suggestion: string) => {
+    const updatedClicks = {
+      ...suggestionClicks,
+      [suggestion]: (suggestionClicks[suggestion] || 0) + 1
+    };
+    setSuggestionClicks(updatedClicks);
+    localStorage.setItem('suggestionClickAnalytics', JSON.stringify(updatedClicks));
+  };
 
   // Listen for recent searches updates
   useEffect(() => {
@@ -134,9 +154,21 @@ const IPhoneSearchPanel = ({
     };
   }, [lastScrollY, isMinimized]);
 
-  // Trending and smart suggestions
-  const trendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
-  const smartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
+  // Trending and smart suggestions - sorted by popularity
+  const baseTrendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
+  const baseSmartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
+  
+  // Sort by click count (popularity)
+  const sortByPopularity = (items: string[]) => {
+    return [...items].sort((a, b) => {
+      const clicksA = suggestionClicks[a] || 0;
+      const clicksB = suggestionClicks[b] || 0;
+      return clicksB - clicksA; // Higher clicks first
+    });
+  };
+  
+  const trendingSearches = sortByPopularity(baseTrendingSearches);
+  const smartSuggestions = sortByPopularity(baseSmartSuggestions);
 
   // Get location-based suggestions
   const getLocationSuggestions = () => {
@@ -1967,6 +1999,7 @@ const IPhoneSearchPanel = ({
                           type="button" 
                           onClick={e => {
                             e.stopPropagation();
+                            trackSuggestionClick(term);
                             setSearchQuery(term);
                             setShowSuggestions(false);
                             handleSearch();
@@ -1975,6 +2008,11 @@ const IPhoneSearchPanel = ({
                         >
                           <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                           {term}
+                          {suggestionClicks[term] && (
+                            <span className="ml-auto text-[8px] text-muted-foreground">
+                              {suggestionClicks[term]}x
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -1995,6 +2033,7 @@ const IPhoneSearchPanel = ({
                           type="button" 
                           onClick={e => {
                             e.stopPropagation();
+                            trackSuggestionClick(location);
                             setSearchQuery(location);
                             setShowSuggestions(false);
                             handleSearch();
@@ -2003,6 +2042,11 @@ const IPhoneSearchPanel = ({
                         >
                           <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
                           {location}
+                          {suggestionClicks[location] && (
+                            <span className="ml-auto text-[8px] text-muted-foreground">
+                              {suggestionClicks[location]}x
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -2025,13 +2069,19 @@ const IPhoneSearchPanel = ({
                             type="button" 
                             onClick={e => {
                               e.stopPropagation();
+                              trackSuggestionClick(suggestion);
                               setSearchQuery(cleanText);
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors"
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors flex items-center justify-between"
                           >
-                            {suggestion}
+                            <span>{suggestion}</span>
+                            {suggestionClicks[suggestion] && (
+                              <span className="text-[8px] text-muted-foreground">
+                                {suggestionClicks[suggestion]}x
+                              </span>
+                            )}
                           </button>
                         );
                       })}
@@ -2053,13 +2103,19 @@ const IPhoneSearchPanel = ({
                           type="button" 
                           onClick={e => {
                             e.stopPropagation();
+                            trackSuggestionClick(trend);
                             setSearchQuery(trend);
                             setShowSuggestions(false);
                             handleSearch();
                           }} 
-                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors"
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between"
                         >
-                          {trend}
+                          <span>{trend}</span>
+                          {suggestionClicks[trend] && (
+                            <span className="text-[8px] text-muted-foreground">
+                              {suggestionClicks[trend]}x
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -2773,6 +2829,7 @@ const IPhoneSearchPanel = ({
                             type="button" 
                             onClick={e => {
                               e.stopPropagation();
+                              trackSuggestionClick(term);
                               setSearchQuery(term);
                               setShowSuggestions(false);
                               handleSearch();
@@ -2781,6 +2838,11 @@ const IPhoneSearchPanel = ({
                           >
                             <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                             {term}
+                            {suggestionClicks[term] && (
+                              <span className="ml-auto text-[8px] text-muted-foreground">
+                                {suggestionClicks[term]}x
+                              </span>
+                            )}
                           </button>
                         ))}
                       </div>
@@ -2799,6 +2861,7 @@ const IPhoneSearchPanel = ({
                             type="button" 
                             onClick={e => {
                               e.stopPropagation();
+                              trackSuggestionClick(location);
                               setSearchQuery(location);
                               setShowSuggestions(false);
                               handleSearch();
@@ -2807,6 +2870,11 @@ const IPhoneSearchPanel = ({
                           >
                             <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
                             {location}
+                            {suggestionClicks[location] && (
+                              <span className="ml-auto text-[8px] text-muted-foreground">
+                                {suggestionClicks[location]}x
+                              </span>
+                            )}
                           </button>
                         ))}
                       </div>
@@ -2831,11 +2899,17 @@ const IPhoneSearchPanel = ({
                     const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
                     return <button key={i} type="button" onClick={e => {
                       e.stopPropagation();
+                      trackSuggestionClick(suggestion);
                       setSearchQuery(cleanText);
                       setShowSuggestions(false);
                       handleSearch();
-                    }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors">
-                              {suggestion}
+                    }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors flex items-center justify-between">
+                              <span>{suggestion}</span>
+                              {suggestionClicks[suggestion] && (
+                                <span className="text-[8px] text-muted-foreground">
+                                  {suggestionClicks[suggestion]}x
+                                </span>
+                              )}
                             </button>;
                   })}
                       </div>
@@ -2850,11 +2924,17 @@ const IPhoneSearchPanel = ({
                       <div className="space-y-0.5">
                         {filteredSuggestions.trending.map((trend, i) => <button key={i} type="button" onClick={e => {
                     e.stopPropagation();
+                    trackSuggestionClick(trend);
                     setSearchQuery(trend);
                     setShowSuggestions(false);
                     handleSearch();
-                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors">
-                            {trend}
+                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between">
+                            <span>{trend}</span>
+                            {suggestionClicks[trend] && (
+                              <span className="text-[8px] text-muted-foreground">
+                                {suggestionClicks[trend]}x
+                              </span>
+                            )}
                           </button>)}
                       </div>
                     </div>}
