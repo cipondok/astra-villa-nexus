@@ -20,6 +20,9 @@ import { format, differenceInDays } from 'date-fns';
 import { useScrollLock } from "@/hooks/useScrollLock"; // 🔥 CRITICAL: Prevents layout shift
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePropertyFilters } from "@/hooks/usePropertyFilters";
+import { ImageSearchButton } from "@/components/search/ImageSearchButton";
+import { useImageSearch } from "@/hooks/useImageSearch";
+import { toast } from "sonner";
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
@@ -56,6 +59,9 @@ const IPhoneSearchPanel = ({
   
   // Fetch filters from database
   const { filters: dbFilters, loading: filtersLoading } = usePropertyFilters();
+  
+  // Image search functionality
+  const { searchByImage, isSearching: isImageSearching, clearResults: clearImageSearch } = useImageSearch();
 
   // Show tooltip for first-time users
   useEffect(() => {
@@ -1616,6 +1622,38 @@ const IPhoneSearchPanel = ({
     setAreaRange([0, 1000]);
   };
 
+  // Image search handlers
+  const handleImageSearch = async (base64Image: string) => {
+    try {
+      // Convert base64 to File object
+      const base64Data = base64Image.split(',')[1];
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/jpeg' });
+      const file = new File([blob], 'search-image.jpg', { type: 'image/jpeg' });
+
+      const results = await searchByImage(file);
+      
+      if (results && results.properties.length > 0) {
+        toast.success(`Found ${results.properties.length} similar properties`);
+        // You can handle the results here - maybe pass them to parent or navigate
+      } else {
+        toast.info('No similar properties found');
+      }
+    } catch (error) {
+      console.error('Image search error:', error);
+      toast.error('Failed to search by image');
+    }
+  };
+
+  const handleClearImageSearch = () => {
+    clearImageSearch();
+  };
+
   // Close filters and suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -1744,6 +1782,13 @@ const IPhoneSearchPanel = ({
                 <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
                 <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} className="pl-9 pr-2 h-9 text-xs bg-background/60 border-0 rounded-xl font-medium shadow-sm" />
               </div>
+              
+              <ImageSearchButton
+                onImageSelected={handleImageSearch}
+                onClear={handleClearImageSearch}
+                isSearching={isImageSearching}
+                className="shrink-0"
+              />
               
               {/* Prominent All Filters Button */}
               <TooltipProvider>
@@ -2412,10 +2457,16 @@ const IPhoneSearchPanel = ({
           <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div className="flex-1 relative">
               <Search className={cn("absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none", isMobile ? "h-3 w-3 left-2" : "h-4 w-4")} />
-              <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} onFocus={() => setShowSuggestions(true)} className={cn("border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium", isMobile ? "pl-8 pr-16 h-8 text-xs bg-background border border-border" : "pl-10 pr-20 h-9 text-sm bg-background/60")} />
+              <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} onFocus={() => setShowSuggestions(true)} className={cn("border-0 rounded-xl focus:ring-2 focus:ring-primary/50 transition-all shadow-sm font-medium", isMobile ? "pl-8 pr-16 h-8 text-xs bg-background border border-border" : "pl-10 pr-28 h-9 text-sm bg-background/60")} />
               
-              {/* Location Options Inside Input */}
+              {/* Location Options and Image Search Inside Input */}
               <div className={cn("absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
+                <ImageSearchButton
+                  onImageSelected={handleImageSearch}
+                  onClear={handleClearImageSearch}
+                  isSearching={isImageSearching}
+                  className="shrink-0"
+                />
                 <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} title={currentText.location}>
                   <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 </Button>
