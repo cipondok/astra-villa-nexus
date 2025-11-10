@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ImageSearchButtonProps {
   onImageSelected: (base64Image: string) => void;
@@ -10,6 +11,7 @@ interface ImageSearchButtonProps {
   isSearching?: boolean;
   hasImage?: boolean;
   className?: string;
+  enableDragDrop?: boolean;
 }
 
 export const ImageSearchButton = ({ 
@@ -17,15 +19,28 @@ export const ImageSearchButton = ({
   onClear,
   isSearching = false,
   hasImage = false,
-  className 
+  className,
+  enableDragDrop = false
 }: ImageSearchButtonProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    await processImageFile(file);
+  };
 
+  const handleClear = () => {
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    onClear?.();
+  };
+
+  const processImageFile = async (file: File) => {
     // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error('Please select an image file');
@@ -39,7 +54,6 @@ export const ImageSearchButton = ({
     }
 
     try {
-      // Create preview
       const reader = new FileReader();
       reader.onload = (event) => {
         const result = event.target?.result as string;
@@ -54,16 +68,50 @@ export const ImageSearchButton = ({
     }
   };
 
-  const handleClear = () => {
-    setPreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (enableDragDrop && e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      const item = e.dataTransfer.items[0];
+      if (item.kind === 'file' && item.type.startsWith('image/')) {
+        setIsDragging(true);
+      }
     }
-    onClear?.();
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (!enableDragDrop || isSearching) return;
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      await processImageFile(file);
+    }
   };
 
   return (
-    <div className={cn("relative", className)}>
+    <div 
+      className={cn("relative", className)}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <input
         ref={fileInputRef}
         type="file"
@@ -73,16 +121,44 @@ export const ImageSearchButton = ({
         disabled={isSearching}
       />
       
+      {/* Drag and Drop Overlay */}
+      {enableDragDrop && isDragging && (
+        <div className="fixed inset-0 z-[9999] pointer-events-none">
+          <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm animate-in fade-in duration-200" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-background/95 border-2 border-dashed border-primary rounded-2xl p-8 shadow-2xl animate-in zoom-in duration-200">
+              <div className="flex flex-col items-center gap-4">
+                <div className="p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600">
+                  <Camera className="h-12 w-12 text-white" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xl font-bold text-foreground mb-1">Drop your image here</p>
+                  <p className="text-sm text-muted-foreground">We'll search for similar properties</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {!hasImage && !previewUrl ? (
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isSearching}
-          className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
-          title="Search by Image"
-        >
-          <Camera className="h-3.5 w-3.5" />
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isSearching}
+                className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
+              >
+                <Camera className="h-3.5 w-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs">
+              <p>Search properties by uploading an image</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       ) : (
         <div className="flex items-center gap-1">
           {previewUrl && (
@@ -95,29 +171,45 @@ export const ImageSearchButton = ({
             </div>
           )}
           
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isSearching}
-            className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
-            title={isSearching ? "Searching..." : "Change Image"}
-          >
-            {isSearching ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Camera className="h-3.5 w-3.5" />
-            )}
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isSearching}
+                  className="p-0 h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-sm transition-all disabled:opacity-50"
+                >
+                  {isSearching ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Camera className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>{isSearching ? "Searching..." : "Change search image"}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <button
-            type="button"
-            onClick={handleClear}
-            disabled={isSearching}
-            className="p-0 h-7 w-7 flex items-center justify-center rounded-md text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50"
-            title="Clear Image"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  disabled={isSearching}
+                  className="p-0 h-7 w-7 flex items-center justify-center rounded-md text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Clear image search</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       )}
     </div>

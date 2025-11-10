@@ -1787,6 +1787,7 @@ const IPhoneSearchPanel = ({
                 onImageSelected={handleImageSearch}
                 onClear={handleClearImageSearch}
                 isSearching={isImageSearching}
+                enableDragDrop={true}
                 className="shrink-0"
               />
               
@@ -2465,6 +2466,7 @@ const IPhoneSearchPanel = ({
                   onImageSelected={handleImageSearch}
                   onClear={handleClearImageSearch}
                   isSearching={isImageSearching}
+                  enableDragDrop={true}
                   className="shrink-0"
                 />
                 <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} title={currentText.location}>
