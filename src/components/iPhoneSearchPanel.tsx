@@ -24,6 +24,15 @@ import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { RecentImageSearches, addRecentSearch } from "@/components/search/RecentImageSearches";
 import { useImageSearch } from "@/hooks/useImageSearch";
 import { toast } from "sonner";
+import {
+  calculateTimeWeightedScore,
+  sortByPopularity,
+  getLocationSuggestions as getLocationSuggestionsUtil,
+  getFilteredSuggestions as getFilteredSuggestionsUtil,
+  trackSuggestionClick as trackSuggestionClickUtil,
+  getDisplayCount as getDisplayCountUtil,
+  type FilteredSuggestions
+} from "@/utils/searchSuggestions";
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
@@ -99,47 +108,16 @@ const IPhoneSearchPanel = ({
     }
   }, []);
 
-  // Calculate time-weighted score for a suggestion
-  const calculateTimeWeightedScore = useCallback((suggestion: string): number => {
-    const clickData = suggestionClicks[suggestion];
-    if (!clickData || !clickData.timestamps || clickData.timestamps.length === 0) {
-      return 0;
-    }
-
-    const now = Date.now();
-    const DECAY_RATE = 0.1; // Higher = faster decay
-    const ONE_DAY = 24 * 60 * 60 * 1000;
-
-    // Calculate weighted score: each click's weight decreases exponentially with age
-    const weightedScore = clickData.timestamps.reduce((total, timestamp) => {
-      const ageInDays = (now - timestamp) / ONE_DAY;
-      const weight = Math.exp(-DECAY_RATE * ageInDays); // Exponential decay
-      return total + weight;
-    }, 0);
-
-    return weightedScore;
-  }, [suggestionClicks]);
-
-  // Track suggestion click with timestamp
+  // Track suggestion click with timestamp (using utility)
   const trackSuggestionClick = (suggestion: string) => {
-    const now = Date.now();
-    const existing = suggestionClicks[suggestion] || { count: 0, timestamps: [] };
-    
-    const updatedClicks = {
-      ...suggestionClicks,
-      [suggestion]: {
-        count: existing.count + 1,
-        timestamps: [...existing.timestamps, now].slice(-50) // Keep last 50 clicks to prevent unbounded growth
-      }
-    };
-    
+    const updatedClicks = trackSuggestionClickUtil(suggestion, suggestionClicks);
     setSuggestionClicks(updatedClicks);
     localStorage.setItem('suggestionClickAnalytics', JSON.stringify(updatedClicks));
   };
 
-  // Get display count (total clicks)
+  // Get display count (using utility)
   const getDisplayCount = (suggestion: string): number => {
-    return suggestionClicks[suggestion]?.count || 0;
+    return getDisplayCountUtil(suggestion, suggestionClicks);
   };
 
   // Listen for recent searches updates
@@ -201,90 +179,16 @@ const IPhoneSearchPanel = ({
   const baseTrendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
   const baseSmartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
   
-  // Sort by time-weighted popularity score (memoized to avoid re-computation)
-  const sortByPopularity = useCallback((items: string[]) => {
-    return [...items].sort((a, b) => {
-      const scoreA = calculateTimeWeightedScore(a);
-      const scoreB = calculateTimeWeightedScore(b);
-      return scoreB - scoreA; // Higher weighted score first
-    });
-  }, [suggestionClicks]);
-  
+  // Sort by time-weighted popularity score (using utility)
   const trendingSearches = useMemo(
-    () => sortByPopularity(baseTrendingSearches),
-    [sortByPopularity]
+    () => sortByPopularity(baseTrendingSearches, suggestionClicks),
+    [suggestionClicks]
   );
   
   const smartSuggestions = useMemo(
-    () => sortByPopularity(baseSmartSuggestions),
-    [sortByPopularity]
+    () => sortByPopularity(baseSmartSuggestions, suggestionClicks),
+    [suggestionClicks]
   );
-
-  // Get location-based suggestions
-  const getLocationSuggestions = () => {
-    if (!searchQuery || searchQuery.trim().length < 2) return [];
-    
-    const query = searchQuery.toLowerCase().trim();
-    const locationMatches: string[] = [];
-    
-    // Match provinces
-    provinces.forEach(province => {
-      if (province.name.toLowerCase().includes(query)) {
-        locationMatches.push(province.name);
-      }
-    });
-    
-    // Match cities
-    cities.forEach(city => {
-      if (city.name.toLowerCase().includes(query)) {
-        locationMatches.push(`${city.name}, ${provinces.find(p => p.code === filters.state)?.name || ''}`);
-      }
-    });
-    
-    // Match areas
-    areas.forEach(area => {
-      if (area.name.toLowerCase().includes(query)) {
-        const city = cities.find(c => c.code === filters.city);
-        const province = provinces.find(p => p.code === filters.state);
-        locationMatches.push(`${area.name}, ${city?.name || ''}, ${province?.name || ''}`);
-      }
-    });
-    
-    return locationMatches.slice(0, 5);
-  };
-
-  // Filter suggestions based on search query
-  const getFilteredSuggestions = () => {
-    if (!searchQuery || searchQuery.trim().length === 0) {
-      return {
-        recent: recentSearchTerms.slice(0, 3),
-        smart: smartSuggestions.slice(0, 3),
-        trending: trendingSearches.slice(0, 4),
-        locations: []
-      };
-    }
-    const query = searchQuery.toLowerCase().trim();
-    
-    // Filter recent searches
-    const filteredRecent = recentSearchTerms.filter(term => 
-      term.toLowerCase().includes(query)
-    ).slice(0, 3);
-    
-    // Filter trending and smart
-    const filteredTrending = trendingSearches.filter(item => item.toLowerCase().includes(query));
-    const filteredSmart = smartSuggestions.filter(item => item.toLowerCase().includes(query));
-    
-    // Get location matches
-    const locationMatches = getLocationSuggestions();
-    
-    return {
-      recent: filteredRecent,
-      smart: filteredSmart.slice(0, 3),
-      trending: filteredTrending.slice(0, 4),
-      locations: locationMatches
-    };
-  };
-// moved filteredSuggestions calculation below after state initializations to avoid TDZ
 
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
@@ -355,8 +259,22 @@ const IPhoneSearchPanel = ({
     label: string;
   }[]>([]);
 
-  // Suggestions derived AFTER state is initialized to avoid TDZ
-  const filteredSuggestions = getFilteredSuggestions();
+  // Suggestions derived AFTER state is initialized to avoid TDZ (using utility)
+  const filteredSuggestions = useMemo(
+    () => getFilteredSuggestionsUtil(
+      searchQuery,
+      recentSearchTerms,
+      trendingSearches,
+      smartSuggestions,
+      provinces,
+      cities,
+      areas,
+      filters.state,
+      filters.city
+    ),
+    [searchQuery, recentSearchTerms, trendingSearches, smartSuggestions, provinces, cities, areas, filters.state, filters.city]
+  );
+  
   const hasSuggestions = filteredSuggestions.recent.length > 0 || 
                         filteredSuggestions.smart.length > 0 || 
                         filteredSuggestions.trending.length > 0 ||
