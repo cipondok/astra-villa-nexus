@@ -186,6 +186,15 @@ xdg-open coverage/index.html  # Linux
 start coverage/index.html  # Windows
 
 # E2E Tests (Playwright)
+npx playwright install                    # Install browsers (first time)
+npx playwright test                       # Run all E2E tests
+npx playwright test --ui                  # Interactive UI mode
+npx playwright test e2e/property-search.spec.ts  # Specific test file
+npx playwright test e2e/mobile-search.spec.ts    # Mobile-specific tests
+npx playwright test --project="Mobile Safari"    # Specific device
+npx playwright test --headed              # See browser while testing
+npx playwright test --debug               # Debug mode
+npx playwright show-report                # View HTML report
 npx playwright test              # Run all E2E tests
 npx playwright test --ui         # Run with interactive UI
 npx playwright test --debug      # Debug mode
@@ -245,6 +254,34 @@ Current coverage thresholds (enforced in CI):
   - Keyboard shortcuts
 
 #### E2E Tests (Playwright)
+- ✅ **Property Search Flow** (`e2e/property-search.spec.ts`)
+  - Search input and suggestions
+  - Filter application
+  - Results navigation
+  - Property details page
+  - Keyboard shortcuts
+  - Accessibility compliance
+- ✅ **Mobile Search** (`e2e/mobile-search.spec.ts`)
+  - Touch interactions (tap, swipe)
+  - Mobile keyboard handling
+  - Orientation changes
+  - Pull-to-refresh
+  - Safe area insets (iOS notch)
+  - Touch target sizes (44px minimum)
+  - Quick preset filters
+  - Device-specific testing:
+    - iPhone 13 Pro (iOS)
+    - Pixel 5 (Android)
+    - iPad Pro (Tablet)
+- ✅ **Test Utilities** (`e2e/helpers/test-utils.ts`)
+  - SearchPageHelpers class
+  - MobileHelpers class
+  - AssertionHelpers class
+  - Reusable test functions
+
+See [E2E_TESTING.md](E2E_TESTING.md) for detailed E2E testing documentation.
+
+#### Visual Regression Tests (Playwright)
 - ✅ **Onboarding Flow** (`e2e/onboarding.spec.ts`)
   - First-visit tooltip display
   - Keyboard shortcut showcase
