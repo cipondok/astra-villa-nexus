@@ -12,6 +12,7 @@ interface ImageSearchButtonProps {
   hasImage?: boolean;
   className?: string;
   enableDragDrop?: boolean;
+  enablePaste?: boolean;
 }
 
 export const ImageSearchButton = ({ 
@@ -20,7 +21,8 @@ export const ImageSearchButton = ({
   isSearching = false,
   hasImage = false,
   className,
-  enableDragDrop = false
+  enableDragDrop = false,
+  enablePaste = false
 }: ImageSearchButtonProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -34,6 +36,33 @@ export const ImageSearchButton = ({
       setShowPulse(true);
     }
   }, []);
+
+  // Handle paste from clipboard
+  useEffect(() => {
+    if (!enablePaste) return;
+
+    const handlePaste = async (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            await processImageFile(file);
+            toast.success('Image pasted! Searching...');
+          }
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [enablePaste]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

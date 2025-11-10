@@ -3,11 +3,12 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye } from 'lucide-react';
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
 import PropertyRatingDisplay from './PropertyRatingDisplay';
 import PropertyRatingModal from './PropertyRatingModal';
+import { VisualComparisonModal } from '@/components/search/VisualComparisonModal';
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from '@/types/property';
 import VerificationBadge from '@/components/ui/VerificationBadge';
@@ -57,6 +58,15 @@ interface CompactPropertyCardProps {
   onSave?: (id: string) => void;
   onShare?: (id: string) => void;
   onView3D?: (property: CompactProperty) => void;
+  searchImage?: string;
+  similarityScore?: number;
+  similarityBreakdown?: {
+    propertyType?: number;
+    style?: number;
+    architecture?: number;
+    bedrooms?: number;
+    amenities?: number;
+  };
 }
 
 const CompactPropertyCard = ({ 
@@ -66,11 +76,15 @@ const CompactPropertyCard = ({
   isSaved = false,
   onSave,
   onShare,
-  onView3D
+  onView3D,
+  searchImage,
+  similarityScore,
+  similarityBreakdown
 }: CompactPropertyCardProps) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
+  const [showComparisonModal, setShowComparisonModal] = useState(false);
   const [isLiked, setIsLiked] = useState(isSaved);
 
   const { aggregate } = usePropertyRatings(property.id);
@@ -196,6 +210,14 @@ const CompactPropertyCard = ({
 
           {/* Top Badges */}
           <div className="absolute top-2 left-2 flex flex-wrap gap-1 max-w-[70%]">
+            {similarityScore && (
+              <Badge 
+                className="bg-purple-600 text-white font-bold px-2 py-0.5 text-xs shadow-md flex items-center gap-1"
+              >
+                <ScanEye className="h-2.5 w-2.5" />
+                {similarityScore.toFixed(0)}% Match
+              </Badge>
+            )}
             <Badge 
               className="bg-primary text-primary-foreground font-medium px-2 py-0.5 text-xs shadow-md"
             >
@@ -229,6 +251,20 @@ const CompactPropertyCard = ({
 
           {/* Top-right: Actions */}
           <div className="absolute top-3 right-3 flex gap-2">
+            {searchImage && similarityScore && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="bg-purple-500/90 hover:bg-purple-600 text-white shadow-lg"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowComparisonModal(true);
+                }}
+                title="Compare visually"
+              >
+                <ScanEye className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               size="sm"
               variant="ghost"
@@ -431,6 +467,19 @@ const CompactPropertyCard = ({
           propertyId={property.id}
           isOpen={showRatingModal}
           onClose={() => setShowRatingModal(false)}
+        />
+      )}
+
+      {/* Visual Comparison Modal */}
+      {showComparisonModal && searchImage && (
+        <VisualComparisonModal
+          isOpen={showComparisonModal}
+          onClose={() => setShowComparisonModal(false)}
+          searchImage={searchImage}
+          propertyImage={getImageUrl()}
+          propertyTitle={property.title}
+          similarityScore={similarityScore || 0}
+          similarityBreakdown={similarityBreakdown}
         />
       )}
     </>

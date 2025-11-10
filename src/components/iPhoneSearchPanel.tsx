@@ -62,8 +62,9 @@ const IPhoneSearchPanel = ({
   const { filters: dbFilters, loading: filtersLoading } = usePropertyFilters();
   
   // Image search functionality
-  const { searchByImage, isSearching: isImageSearching, clearResults: clearImageSearch } = useImageSearch();
+  const { searchByImage, isSearching: isImageSearching, clearResults: clearImageSearch, searchResults, imageFeatures } = useImageSearch();
   const [recentSearchesKey, setRecentSearchesKey] = useState(0);
+  const [currentSearchImage, setCurrentSearchImage] = useState<string | null>(null);
 
   // Listen for recent searches updates
   useEffect(() => {
@@ -1634,6 +1635,9 @@ const IPhoneSearchPanel = ({
   // Image search handlers
   const handleImageSearch = async (base64Image: string) => {
     try {
+      // Store the current search image
+      setCurrentSearchImage(base64Image);
+      
       // Add to recent searches
       addRecentSearch(base64Image);
       
@@ -1664,6 +1668,7 @@ const IPhoneSearchPanel = ({
 
   const handleClearImageSearch = () => {
     clearImageSearch();
+    setCurrentSearchImage(null);
   };
 
   const handleRerunSearch = async (thumbnail: string) => {
@@ -1804,6 +1809,7 @@ const IPhoneSearchPanel = ({
                 onClear={handleClearImageSearch}
                 isSearching={isImageSearching}
                 enableDragDrop={true}
+                enablePaste={true}
                 className="shrink-0"
               />
               
@@ -2491,6 +2497,7 @@ const IPhoneSearchPanel = ({
                   onClear={handleClearImageSearch}
                   isSearching={isImageSearching}
                   enableDragDrop={true}
+                  enablePaste={true}
                   className="shrink-0"
                 />
                 <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} title={currentText.location}>
