@@ -65,6 +65,19 @@ const IPhoneSearchPanel = ({
   const { searchByImage, isSearching: isImageSearching, clearResults: clearImageSearch, searchResults, imageFeatures } = useImageSearch();
   const [recentSearchesKey, setRecentSearchesKey] = useState(0);
   const [currentSearchImage, setCurrentSearchImage] = useState<string | null>(null);
+  const [recentSearchTerms, setRecentSearchTerms] = useState<string[]>([]);
+
+  // Load recent search terms from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('recentSearchTerms');
+    if (stored) {
+      try {
+        setRecentSearchTerms(JSON.parse(stored));
+      } catch (error) {
+        console.error('Failed to parse recent searches:', error);
+      }
+    }
+  }, []);
 
   // Listen for recent searches updates
   useEffect(() => {
@@ -125,24 +138,75 @@ const IPhoneSearchPanel = ({
   const trendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
   const smartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
 
+  // Get location-based suggestions
+  const getLocationSuggestions = () => {
+    if (!searchQuery || searchQuery.trim().length < 2) return [];
+    
+    const query = searchQuery.toLowerCase().trim();
+    const locationMatches: string[] = [];
+    
+    // Match provinces
+    provinces.forEach(province => {
+      if (province.name.toLowerCase().includes(query)) {
+        locationMatches.push(province.name);
+      }
+    });
+    
+    // Match cities
+    cities.forEach(city => {
+      if (city.name.toLowerCase().includes(query)) {
+        locationMatches.push(`${city.name}, ${provinces.find(p => p.code === filters.state)?.name || ''}`);
+      }
+    });
+    
+    // Match areas
+    areas.forEach(area => {
+      if (area.name.toLowerCase().includes(query)) {
+        const city = cities.find(c => c.code === filters.city);
+        const province = provinces.find(p => p.code === filters.state);
+        locationMatches.push(`${area.name}, ${city?.name || ''}, ${province?.name || ''}`);
+      }
+    });
+    
+    return locationMatches.slice(0, 5);
+  };
+
   // Filter suggestions based on search query
   const getFilteredSuggestions = () => {
     if (!searchQuery || searchQuery.trim().length === 0) {
       return {
-        smart: smartSuggestions,
-        trending: trendingSearches
+        recent: recentSearchTerms.slice(0, 3),
+        smart: smartSuggestions.slice(0, 3),
+        trending: trendingSearches.slice(0, 4),
+        locations: []
       };
     }
     const query = searchQuery.toLowerCase().trim();
+    
+    // Filter recent searches
+    const filteredRecent = recentSearchTerms.filter(term => 
+      term.toLowerCase().includes(query)
+    ).slice(0, 3);
+    
+    // Filter trending and smart
     const filteredTrending = trendingSearches.filter(item => item.toLowerCase().includes(query));
     const filteredSmart = smartSuggestions.filter(item => item.toLowerCase().includes(query));
+    
+    // Get location matches
+    const locationMatches = getLocationSuggestions();
+    
     return {
+      recent: filteredRecent,
       smart: filteredSmart.slice(0, 3),
-      trending: filteredTrending.slice(0, 4)
+      trending: filteredTrending.slice(0, 4),
+      locations: locationMatches
     };
   };
   const filteredSuggestions = getFilteredSuggestions();
-  const hasSuggestions = filteredSuggestions.smart.length > 0 || filteredSuggestions.trending.length > 0;
+  const hasSuggestions = filteredSuggestions.recent.length > 0 || 
+                        filteredSuggestions.smart.length > 0 || 
+                        filteredSuggestions.trending.length > 0 ||
+                        filteredSuggestions.locations.length > 0;
 
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
@@ -1786,6 +1850,18 @@ const IPhoneSearchPanel = ({
       radius: nearbyRadius
     };
     console.log('Search data being sent:', searchData);
+    
+    // Save to recent searches if query is not empty
+    if (searchQuery.trim()) {
+      const updatedRecent = [
+        searchQuery.trim(),
+        ...recentSearchTerms.filter(term => term !== searchQuery.trim())
+      ].slice(0, 5); // Keep only last 5 searches
+      
+      setRecentSearchTerms(updatedRecent);
+      localStorage.setItem('recentSearchTerms', JSON.stringify(updatedRecent));
+    }
+    
     onSearch(searchData);
 
     // 🔒 CRITICAL: Restore scroll position after React updates
@@ -1808,6 +1884,7 @@ const IPhoneSearchPanel = ({
                   placeholder={currentText.searchPlaceholder} 
                   value={searchQuery} 
                   onChange={e => handleSearchChange(e.target.value)} 
+                  onFocus={() => setShowSuggestions(true)}
                   className="pl-9 pr-2 h-9 text-xs bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/30 rounded-xl font-medium shadow-sm transition-all" 
                 />
               </div>
@@ -1860,6 +1937,136 @@ const IPhoneSearchPanel = ({
                 <Search className="h-4 w-4" />
               </Button>
             </div>
+            
+            {/* Mobile Suggestions Dropdown */}
+            {showSuggestions && hasSuggestions && (
+              <div className="absolute top-[52px] left-1 right-1 bg-background/95 backdrop-blur-md border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-80 overflow-y-auto">
+                {/* Recent Searches */}
+                {filteredSuggestions.recent.length > 0 && (
+                  <div className="p-2 border-b border-border/50">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
+                        <Clock className="h-2.5 w-2.5 text-blue-500" />
+                        Recent
+                      </div>
+                      <button 
+                        onClick={e => {
+                          e.stopPropagation();
+                          setRecentSearchTerms([]);
+                          localStorage.removeItem('recentSearchTerms');
+                        }} 
+                        className="text-[9px] text-muted-foreground hover:text-destructive"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <div className="space-y-0.5">
+                      {filteredSuggestions.recent.map((term, i) => (
+                        <button 
+                          key={i} 
+                          type="button" 
+                          onClick={e => {
+                            e.stopPropagation();
+                            setSearchQuery(term);
+                            setShowSuggestions(false);
+                            handleSearch();
+                          }} 
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-blue-500/10 rounded-lg transition-colors flex items-center gap-2"
+                        >
+                          <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                          {term}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Location Suggestions */}
+                {filteredSuggestions.locations.length > 0 && (
+                  <div className="p-2 border-b border-border/50">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
+                      <MapPin className="h-2.5 w-2.5 text-purple-500" />
+                      Locations
+                    </div>
+                    <div className="space-y-0.5">
+                      {filteredSuggestions.locations.map((location, i) => (
+                        <button 
+                          key={i} 
+                          type="button" 
+                          onClick={e => {
+                            e.stopPropagation();
+                            setSearchQuery(location);
+                            setShowSuggestions(false);
+                            handleSearch();
+                          }} 
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
+                        >
+                          <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
+                          {location}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Smart Selection */}
+                {filteredSuggestions.smart.length > 0 && (
+                  <div className="p-2 border-b border-border/50">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
+                      <Sparkles className="h-2.5 w-2.5 text-yellow-500" />
+                      Smart
+                    </div>
+                    <div className="space-y-0.5">
+                      {filteredSuggestions.smart.map((suggestion, i) => {
+                        const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
+                        return (
+                          <button 
+                            key={i} 
+                            type="button" 
+                            onClick={e => {
+                              e.stopPropagation();
+                              setSearchQuery(cleanText);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }} 
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors"
+                          >
+                            {suggestion}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Trending */}
+                {filteredSuggestions.trending.length > 0 && (
+                  <div className="p-2">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
+                      <TrendingUp className="h-2.5 w-2.5 text-green-500" />
+                      Trending
+                    </div>
+                    <div className="space-y-0.5">
+                      {filteredSuggestions.trending.map((trend, i) => (
+                        <button 
+                          key={i} 
+                          type="button" 
+                          onClick={e => {
+                            e.stopPropagation();
+                            setSearchQuery(trend);
+                            setShowSuggestions(false);
+                            handleSearch();
+                          }} 
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors"
+                        >
+                          {trend}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             
             {/* Recent Image Searches */}
             <div className="px-2 pb-2">
@@ -2540,7 +2747,72 @@ const IPhoneSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg z-[100] max-h-56 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-md border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-80 overflow-y-auto">
+                  {/* Recent Searches */}
+                  {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
+                          <Clock className="h-2.5 w-2.5 text-blue-500" />
+                          Recent Searches
+                        </div>
+                        <button 
+                          onClick={e => {
+                            e.stopPropagation();
+                            setRecentSearchTerms([]);
+                            localStorage.removeItem('recentSearchTerms');
+                          }} 
+                          className="text-[9px] text-muted-foreground hover:text-destructive"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                      <div className="space-y-0.5">
+                        {filteredSuggestions.recent.map((term, i) => (
+                          <button 
+                            key={i} 
+                            type="button" 
+                            onClick={e => {
+                              e.stopPropagation();
+                              setSearchQuery(term);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }} 
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-blue-500/10 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                            {term}
+                          </button>
+                        ))}
+                      </div>
+                    </div>}
+                  
+                  {/* Location Suggestions */}
+                  {filteredSuggestions.locations.length > 0 && <div className="p-2 border-b border-border/50">
+                      <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
+                        <MapPin className="h-2.5 w-2.5 text-purple-500" />
+                        Locations
+                      </div>
+                      <div className="space-y-0.5">
+                        {filteredSuggestions.locations.map((location, i) => (
+                          <button 
+                            key={i} 
+                            type="button" 
+                            onClick={e => {
+                              e.stopPropagation();
+                              setSearchQuery(location);
+                              setShowSuggestions(false);
+                              handleSearch();
+                            }} 
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
+                            {location}
+                          </button>
+                        ))}
+                      </div>
+                    </div>}
+                  
+                  {/* Smart Selection */}
                   {filteredSuggestions.smart.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
@@ -2562,12 +2834,14 @@ const IPhoneSearchPanel = ({
                       setSearchQuery(cleanText);
                       setShowSuggestions(false);
                       handleSearch();
-                    }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors">
+                    }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors">
                               {suggestion}
                             </button>;
                   })}
                       </div>
                     </div>}
+                  
+                  {/* Trending */}
                   {filteredSuggestions.trending.length > 0 && <div className="p-2">
                       <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
                         <TrendingUp className="h-2.5 w-2.5 text-green-500" />
@@ -2579,7 +2853,7 @@ const IPhoneSearchPanel = ({
                     setSearchQuery(trend);
                     setShowSuggestions(false);
                     handleSearch();
-                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-colors">
+                  }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors">
                             {trend}
                           </button>)}
                       </div>
