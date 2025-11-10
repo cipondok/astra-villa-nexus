@@ -47,6 +47,7 @@ const AdvancedFiltersDialog = ({
       bathrooms: "Bathrooms",
       apply: "Apply Filters",
       clear: "Clear All",
+      cancel: "Cancel",
       activeFilters: "Active",
       any: "Any",
     },
@@ -61,6 +62,7 @@ const AdvancedFiltersDialog = ({
       bathrooms: "Kamar Mandi",
       apply: "Terapkan Filter",
       clear: "Hapus Semua",
+      cancel: "Batal",
       activeFilters: "Aktif",
       any: "Semua",
     },
@@ -150,15 +152,14 @@ const AdvancedFiltersDialog = ({
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] bg-binance-dark-gray border-binance-light-gray text-binance-white p-0 overflow-hidden">
-        <div className="bg-gradient-to-r from-binance-orange to-yellow-500 p-6">
+        <div className="bg-gradient-to-r from-binance-orange to-yellow-500 px-6 py-3">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <SlidersHorizontal className="h-5 w-5" />
+            <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+              <div className="h-7 w-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <SlidersHorizontal className="h-4 w-4" />
               </div>
               {currentText.title}
             </DialogTitle>
-            <p className="text-white/90 mt-2">{currentText.subtitle}</p>
           </DialogHeader>
         </div>
 
@@ -237,18 +238,25 @@ const AdvancedFiltersDialog = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-binance-light-gray bg-binance-gray p-4 flex gap-3">
+        <div className="border-t border-binance-light-gray bg-binance-gray px-4 py-2 flex gap-2">
           <Button
             variant="outline"
             onClick={handleClear}
-            className="flex-1 border-binance-light-gray text-binance-white hover:bg-binance-light-gray"
+            className="h-8 text-xs border-binance-light-gray text-binance-white hover:bg-binance-light-gray"
           >
-            <X className="h-4 w-4 mr-2" />
+            <X className="h-3 w-3 mr-1" />
             {currentText.clear}
           </Button>
           <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            className="h-8 text-xs border-binance-light-gray text-binance-white hover:bg-binance-light-gray"
+          >
+            {currentText.cancel}
+          </Button>
+          <Button
             onClick={handleApply}
-            className="flex-1 bg-gradient-to-r from-binance-orange to-yellow-500 hover:from-yellow-500 hover:to-binance-orange text-white font-bold shadow-lg hover:shadow-binance-orange/50 transition-all duration-300"
+            className="flex-1 h-8 text-xs bg-gradient-to-r from-binance-orange to-yellow-500 hover:from-yellow-500 hover:to-binance-orange text-white font-semibold shadow-lg hover:shadow-binance-orange/50 transition-all duration-300"
           >
             {currentText.apply}
           </Button>
