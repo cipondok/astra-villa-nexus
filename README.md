@@ -3,6 +3,7 @@
 A responsive, animated AI chat widget with full accessibility support including `prefers-reduced-motion` compliance and developer debug tools.
 
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com)
+[![Coverage](https://img.shields.io/badge/coverage-70%25-yellow)](./coverage/index.html)
 [![E2E](https://img.shields.io/badge/e2e-playwright-green)](https://playwright.dev)
 [![Lighthouse](https://img.shields.io/badge/lighthouse-90%2B-brightgreen)](https://github.com)
 
@@ -177,7 +178,12 @@ The project includes comprehensive unit tests and E2E tests for both the hook an
 # Unit Tests (Vitest)
 npm test              # Run all unit tests
 npm run test:watch    # Run tests in watch mode
-npm run test:coverage # Generate coverage report
+npm run test:coverage # Generate coverage report with thresholds enforcement
+
+# View Coverage Report
+open coverage/index.html  # macOS
+xdg-open coverage/index.html  # Linux
+start coverage/index.html  # Windows
 
 # E2E Tests (Playwright)
 npx playwright test              # Run all E2E tests
@@ -209,6 +215,22 @@ bash scripts/ci-debug.sh                                    # Interactive CI deb
 ```
 
 ### Test Coverage
+
+Current coverage thresholds (enforced in CI):
+
+| Metric | Threshold | Status |
+|--------|-----------|--------|
+| Lines | 70% | ✅ Enforced |
+| Functions | 70% | ✅ Enforced |
+| Branches | 65% | ✅ Enforced |
+| Statements | 70% | ✅ Enforced |
+
+**Coverage Reports:**
+- HTML Report: `coverage/index.html` (interactive browser view)
+- LCOV Report: `coverage/lcov.info` (for CI tools)
+- JSON Summary: `coverage/coverage-summary.json` (machine readable)
+
+**Note**: Builds will fail in CI if coverage drops below these thresholds. See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 #### Unit Tests
 - ✅ **usePrefersReducedMotion Hook**

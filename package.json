@@ -59,6 +59,7 @@
     "@types/mapbox__mapbox-gl-draw": "^1.4.9",
     "@types/mapbox-gl": "^3.4.1",
     "@types/qrcode.react": "^3.0.0",
+    "@vitest/coverage-v8": "^4.0.8",
     "@vladmandic/face-api": "^1.7.15",
     "@web3modal/siwe": "^5.1.11",
     "@web3modal/wagmi": "^5.1.11",

@@ -1,0 +1,103 @@
+name: Test Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests with coverage
+      run: npm run test:coverage
+      
+    - name: Check coverage thresholds
+      run: |
+        echo "Checking coverage thresholds..."
+        node -e "
+          const coverage = require('./coverage/coverage-summary.json');
+          const total = coverage.total;
+          const thresholds = { lines: 70, functions: 70, branches: 65, statements: 70 };
+          
+          let failed = false;
+          Object.keys(thresholds).forEach(key => {
+            const actual = total[key].pct;
+            const threshold = thresholds[key];
+            if (actual < threshold) {
+              console.error(\`❌ ${key}: ${actual}% < ${threshold}%\`);
+              failed = true;
+            } else {
+              console.log(\`✅ ${key}: ${actual}% >= ${threshold}%\`);
+            }
+          });
+          
+          if (failed) {
+            process.exit(1);
+          }
+        "
+    
+    - name: Generate coverage badges
+      if: github.ref == 'refs/heads/main'
+      run: |
+        npm install -g coverage-badges-cli
+        coverage-badges --output coverage-badge.svg
+    
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Comment PR with coverage
+      if: github.event_name == 'pull_request'
+      uses: romeovs/lcov-reporter-action@v0.3.1
+      with:
+        lcov-file: ./coverage/lcov.info
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        delete-old-comments: true
+    
+    - name: Archive coverage report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-${{ matrix.node-version }}
+        path: coverage/
+        retention-days: 30
+    
+    - name: Summary
+      if: always()
+      run: |
+        echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        node -e "
+          const coverage = require('./coverage/coverage-summary.json');
+          const total = coverage.total;
+          console.log('| Metric | Coverage | Threshold | Status |');
+          console.log('|--------|----------|-----------|--------|');
+          console.log(\`| Lines | ${total.lines.pct}% | 70% | ${total.lines.pct >= 70 ? '✅' : '❌'} |\`);
+          console.log(\`| Functions | ${total.functions.pct}% | 70% | ${total.functions.pct >= 70 ? '✅' : '❌'} |\`);
+          console.log(\`| Branches | ${total.branches.pct}% | 65% | ${total.branches.pct >= 65 ? '✅' : '❌'} |\`);
+          console.log(\`| Statements | ${total.statements.pct}% | 70% | ${total.statements.pct >= 70 ? '✅' : '❌'} |\`);
+        " >> $GITHUB_STEP_SUMMARY
