@@ -102,7 +102,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
     <Card className="enhanced-card glow-gold border-binance-orange/30 backdrop-blur-lg">
       <CardContent className="p-8">
         {/* Main Search Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 gap-4 mb-6">
           <div className="relative">
             <Search className="absolute left-4 top-4 h-5 w-5 text-binance-orange" />
             <Input
@@ -113,7 +113,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
             />
           </div>
           
-          <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <LocationSelector
               selectedProvince={selectedProvince}
               selectedCity={selectedCity}
@@ -122,19 +122,19 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
               showLabel={false}
               className="grid grid-cols-2 gap-2"
             />
+            
+            <Select value={propertyType} onValueChange={setPropertyType}>
+              <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
+                <SelectValue placeholder={`🏠 ${currentText.propertyType}`} />
+              </SelectTrigger>
+              <SelectContent className="bg-binance-dark-gray border-binance-gray">
+                <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.allTypes}</SelectItem>
+                {propertyTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value} className="text-binance-white hover:bg-binance-gray">{type.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          
-          <Select value={propertyType} onValueChange={setPropertyType}>
-            <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
-              <SelectValue placeholder={`🏠 ${currentText.propertyType}`} />
-            </SelectTrigger>
-            <SelectContent className="bg-binance-dark-gray border-binance-gray">
-              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.allTypes}</SelectItem>
-              {propertyTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value} className="text-binance-white hover:bg-binance-gray">{type.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           
           <Button 
             onClick={handleSearch}
@@ -145,7 +145,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
         </div>
 
         {/* Advanced Filters */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Select value={listingType} onValueChange={setListingType}>
             <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
               <SelectValue placeholder={`💰 ${currentText.listingType}`} />
