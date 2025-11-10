@@ -1800,8 +1800,16 @@ const IPhoneSearchPanel = ({
             {/* Search Bar */}
             <div className="flex items-center gap-1.5 p-2">
               <div className="flex-1 relative">
-                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-                <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} className="pl-9 pr-2 h-9 text-xs bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl font-medium shadow-sm" />
+                <Search className={cn(
+                  "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-blue-500 pointer-events-none transition-all",
+                  searchQuery && "animate-pulse"
+                )} />
+                <Input 
+                  placeholder={currentText.searchPlaceholder} 
+                  value={searchQuery} 
+                  onChange={e => handleSearchChange(e.target.value)} 
+                  className="pl-9 pr-2 h-9 text-xs bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/30 rounded-xl font-medium shadow-sm transition-all" 
+                />
               </div>
               
               <ImageSearchButton
@@ -2487,8 +2495,21 @@ const IPhoneSearchPanel = ({
           {/* Compact Search Row with Location Options */}
           <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div className="flex-1 relative">
-              <Search className={cn("absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500 pointer-events-none", isMobile ? "h-3 w-3 left-2" : "h-4 w-4")} />
-              <Input placeholder={currentText.searchPlaceholder} value={searchQuery} onChange={e => handleSearchChange(e.target.value)} onFocus={() => setShowSuggestions(true)} className={cn("border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl transition-all shadow-sm font-medium", isMobile ? "pl-8 pr-16 h-8 text-xs bg-background" : "pl-10 pr-28 h-9 text-sm bg-background/60")} />
+              <Search className={cn(
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500 pointer-events-none transition-all", 
+                isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
+                searchQuery && "animate-pulse"
+              )} />
+              <Input 
+                placeholder={currentText.searchPlaceholder} 
+                value={searchQuery} 
+                onChange={e => handleSearchChange(e.target.value)} 
+                onFocus={() => setShowSuggestions(true)} 
+                className={cn(
+                  "border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/30 rounded-xl transition-all shadow-sm font-medium", 
+                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-background" : "pl-10 pr-28 h-9 text-sm bg-background/60"
+                )} 
+              />
               
               {/* Location Options and Image Search Inside Input */}
               <div className={cn("absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
