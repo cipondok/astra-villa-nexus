@@ -100,7 +100,7 @@ const IPhoneSearchPanel = ({
   }, []);
 
   // Calculate time-weighted score for a suggestion
-  const calculateTimeWeightedScore = (suggestion: string): number => {
+  const calculateTimeWeightedScore = useCallback((suggestion: string): number => {
     const clickData = suggestionClicks[suggestion];
     if (!clickData || !clickData.timestamps || clickData.timestamps.length === 0) {
       return 0;
@@ -118,7 +118,7 @@ const IPhoneSearchPanel = ({
     }, 0);
 
     return weightedScore;
-  };
+  }, [suggestionClicks]);
 
   // Track suggestion click with timestamp
   const trackSuggestionClick = (suggestion: string) => {
@@ -201,17 +201,24 @@ const IPhoneSearchPanel = ({
   const baseTrendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
   const baseSmartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
   
-  // Sort by time-weighted popularity score
-  const sortByPopularity = (items: string[]) => {
+  // Sort by time-weighted popularity score (memoized to avoid re-computation)
+  const sortByPopularity = useCallback((items: string[]) => {
     return [...items].sort((a, b) => {
       const scoreA = calculateTimeWeightedScore(a);
       const scoreB = calculateTimeWeightedScore(b);
       return scoreB - scoreA; // Higher weighted score first
     });
-  };
+  }, [suggestionClicks]);
   
-  const trendingSearches = sortByPopularity(baseTrendingSearches);
-  const smartSuggestions = sortByPopularity(baseSmartSuggestions);
+  const trendingSearches = useMemo(
+    () => sortByPopularity(baseTrendingSearches),
+    [sortByPopularity]
+  );
+  
+  const smartSuggestions = useMemo(
+    () => sortByPopularity(baseSmartSuggestions),
+    [sortByPopularity]
+  );
 
   // Get location-based suggestions
   const getLocationSuggestions = () => {
