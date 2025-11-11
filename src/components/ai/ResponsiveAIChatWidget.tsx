@@ -40,7 +40,17 @@ const ResponsiveAIChatWidget = ({
   const [conversationId, setConversationId] = useState<string>("");
   const [isListening, setIsListening] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  
+  // Position and size state with defaults
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState({ width: 420, height: 680 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
   
@@ -49,6 +59,39 @@ const ResponsiveAIChatWidget = ({
   
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
+
+  // Load saved position and size from localStorage
+  useEffect(() => {
+    if (!isMobile) {
+      const savedPosition = localStorage.getItem('chatbot-position');
+      const savedSize = localStorage.getItem('chatbot-size');
+      
+      if (savedPosition) {
+        const pos = JSON.parse(savedPosition);
+        // Validate position is within viewport
+        const maxX = window.innerWidth - 320; // min width
+        const maxY = window.innerHeight - 200; // min visible height
+        setPosition({
+          x: Math.max(0, Math.min(pos.x, maxX)),
+          y: Math.max(0, Math.min(pos.y, maxY))
+        });
+      } else {
+        // Default position: bottom-right with margins
+        setPosition({
+          x: window.innerWidth - 420 - 24,
+          y: window.innerHeight - 680 - 24
+        });
+      }
+      
+      if (savedSize) {
+        const s = JSON.parse(savedSize);
+        setSize({
+          width: Math.max(320, Math.min(s.width, 600)),
+          height: Math.max(400, Math.min(s.height, window.innerHeight - 48))
+        });
+      }
+    }
+  }, [isMobile]);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -298,6 +341,98 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     recognition.start();
   };
 
+  // Drag handlers
+  const handleDragStart = (e: React.MouseEvent) => {
+    if (isMobile || isMinimized) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+  };
+
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging) return;
+    
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    
+    // Constrain to viewport
+    const maxX = window.innerWidth - size.width;
+    const maxY = window.innerHeight - size.height;
+    
+    const constrainedPosition = {
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY))
+    };
+    
+    setPosition(constrainedPosition);
+  };
+
+  const handleDragEnd = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      // Save position to localStorage
+      localStorage.setItem('chatbot-position', JSON.stringify(position));
+    }
+  };
+
+  // Resize handlers
+  const handleResizeStart = (e: React.MouseEvent) => {
+    if (isMobile || isMinimized) return;
+    e.stopPropagation();
+    setIsResizing(true);
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: size.width,
+      height: size.height
+    });
+  };
+
+  const handleResizeMove = (e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const deltaX = e.clientX - resizeStart.x;
+    const deltaY = e.clientY - resizeStart.y;
+    
+    const newWidth = Math.max(320, Math.min(600, resizeStart.width + deltaX));
+    const newHeight = Math.max(400, Math.min(window.innerHeight - 48, resizeStart.height + deltaY));
+    
+    setSize({ width: newWidth, height: newHeight });
+  };
+
+  const handleResizeEnd = () => {
+    if (isResizing) {
+      setIsResizing(false);
+      // Save size to localStorage
+      localStorage.setItem('chatbot-size', JSON.stringify(size));
+    }
+  };
+
+  // Add global mouse event listeners for drag and resize
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
+      return () => {
+        window.removeEventListener('mousemove', handleDragMove);
+        window.removeEventListener('mouseup', handleDragEnd);
+      };
+    }
+  }, [isDragging, dragStart, position, size]);
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', handleResizeMove);
+      window.addEventListener('mouseup', handleResizeEnd);
+      return () => {
+        window.removeEventListener('mousemove', handleResizeMove);
+        window.removeEventListener('mouseup', handleResizeEnd);
+      };
+    }
+  }, [isResizing, resizeStart]);
+
   const quickActions: QuickAction[] = [
     { icon: Home, text: "Show properties", action: "I'm looking for properties to buy or rent" },
     { icon: Users, text: "Find vendors", action: "I need vendor services for property maintenance" },
@@ -309,27 +444,25 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Calculate chat window position to always stay within viewport
-  const getChatWindowPosition = () => {
+  // Calculate chat window position and size
+  const getChatWindowStyle = () => {
     if (isMobile) {
       return { 
         bottom: '0', 
         left: '0', 
         right: '0',
         top: 'auto',
-        maxHeight: '90vh'
+        height: '90vh',
+        width: '100%'
       };
     }
     
-    // Fixed position on desktop - always visible in viewport
-    // Using viewport units and max constraints to prevent overflow
+    // Desktop: use saved position and size
     return { 
-      bottom: 'max(1.5rem, env(safe-area-inset-bottom))',
-      right: 'max(1.5rem, env(safe-area-inset-right))',
-      left: 'auto',
-      top: 'auto',
-      maxHeight: 'calc(100vh - 3rem)', // Ensure it never exceeds viewport height
-      maxWidth: '420px'
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+      width: `${size.width}px`,
+      height: isMinimized ? 'auto' : `${size.height}px`
     };
   };
 
@@ -356,11 +489,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           )}
           
           <div 
+            ref={chatWindowRef}
             className={cn(
               "fixed z-[9999]",
-              "transition-all duration-300 ease-out",
-              isMinimized ? "w-[320px]" : isMobile ? "w-full" : "w-[420px]",
-              isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "min-h-[500px] max-h-[680px]",
+              isDragging || isResizing ? "" : "transition-all duration-300 ease-out",
               // Animations
               isMobile 
                 ? isClosing 
@@ -371,16 +503,24 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   : "animate-fade-in animate-scale-in",
               // Shadow and overflow
               "shadow-2xl",
-              "overflow-visible"
+              "overflow-visible",
+              isDragging && "cursor-move",
+              isResizing && "cursor-nwse-resize"
             )}
-            style={getChatWindowPosition()}
+            style={getChatWindowStyle()}
             role="dialog"
             aria-label="AI Chat Assistant"
             aria-modal="true"
           >
-          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl max-h-full">
-            {/* Header with Close, Minimize, and Sound Toggle */}
-            <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl max-h-full relative">
+            {/* Header with Close, Minimize, and Sound Toggle - Draggable */}
+            <div 
+              className={cn(
+                "flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white",
+                !isMobile && !isMinimized && "cursor-move select-none"
+              )}
+              onMouseDown={handleDragStart}
+            >
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
                 <span className="font-semibold text-sm">AI Assistant</span>
@@ -456,6 +596,16 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   />
                 </div>
               </CardContent>
+            )}
+            
+            {/* Resize handle - bottom-right corner */}
+            {!isMobile && !isMinimized && (
+              <div
+                className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize z-10 group"
+                onMouseDown={handleResizeStart}
+              >
+                <div className="absolute bottom-1 right-1 w-3 h-3 border-r-2 border-b-2 border-primary/40 group-hover:border-primary transition-colors" />
+              </div>
             )}
           </Card>
         </div>
