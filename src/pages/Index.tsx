@@ -21,8 +21,6 @@ import { useRetrySearch } from "@/hooks/useRetrySearch";
 import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 import { shareProperty } from "@/utils/shareUtils";
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
-import { FloatingActionMenu } from "@/components/ui/FloatingActionMenu";
-import { KeyboardShortcutIndicator } from "@/components/ui/KeyboardShortcutIndicator";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
@@ -757,22 +755,6 @@ const Index = () => {
         />
         </Suspense>
         
-        {/* Consolidated Floating Action Menu */}
-        <FloatingActionMenu
-          onScrollToTop={() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenChat={() => {
-            setChatOpen(true);
-            const event = new CustomEvent('openAIChat');
-            window.dispatchEvent(event);
-          }}
-          onImageSearch={() => {
-            imageInputRef.current?.click();
-          }}
-          showScrollButton={showScrollButton}
-        />
-
         {/* Command Palette (Cmd+K / Ctrl+K) */}
         <CommandPalette
           onOpenChat={() => {
@@ -791,16 +773,6 @@ const Index = () => {
             const event = new CustomEvent('toggleShortcutsPanel');
             window.dispatchEvent(event);
           }}
-        />
-
-        {/* Keyboard Shortcuts Indicator */}
-        <KeyboardShortcutIndicator
-          shortcuts={[
-            { key: 'c', description: 'Open Chat', icon: MessageSquare },
-            { key: 'i', description: 'Image Search', icon: Camera },
-            { key: 't', description: 'Scroll to Top', icon: ArrowUp },
-            { key: '?', description: 'Show Shortcuts' }
-          ]}
         />
 
         {/* Hidden Image Input for FAB */}
@@ -835,9 +807,14 @@ const Index = () => {
           className="hidden"
         />
 
-        {/* AI Chat Widget - Always visible, keyboard shortcuts: Ctrl+K to open, Esc to close */}
+        {/* AI Chat Widget - Always visible with integrated quick actions */}
         <Suspense fallback={null}>
-          <ResponsiveAIChatWidget buttonVariant="pulse" />
+          <ResponsiveAIChatWidget 
+            buttonVariant="pulse"
+            onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onImageSearch={() => imageInputRef.current?.click()}
+            showScrollButton={showScrollButton}
+          />
         </Suspense>
         
         {/* WhatsApp Inquiry Dialog */}
