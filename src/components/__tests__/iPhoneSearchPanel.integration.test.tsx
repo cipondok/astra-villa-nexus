@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/vitest';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type React from 'react';
-import IPhoneSearchPanel from '../iPhoneSearchPanel';
+import AstraSearchPanel from '../AstraSearchPanel';
 
 // Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
@@ -90,7 +90,7 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-describe('IPhoneSearchPanel Integration Tests', () => {
+describe('AstraSearchPanel Integration Tests', () => {
   let queryClient: QueryClient;
   let mockOnSearch: Mock;
   let mockOnLiveSearch: Mock;
@@ -110,7 +110,7 @@ describe('IPhoneSearchPanel Integration Tests', () => {
   const renderComponent = (props = {}) => {
     return render(
       <QueryClientProvider client={queryClient}>
-        <IPhoneSearchPanel
+        <AstraSearchPanel
           language="en"
           onSearch={mockOnSearch}
           onLiveSearch={mockOnLiveSearch}
@@ -206,7 +206,7 @@ describe('IPhoneSearchPanel Integration Tests', () => {
       
       const { container } = render(
         <QueryClientProvider client={queryClient}>
-          <IPhoneSearchPanel
+          <AstraSearchPanel
             language="en"
             onSearch={mockOnSearchWithError}
             resultsCount={0}
@@ -229,7 +229,7 @@ describe('IPhoneSearchPanel Integration Tests', () => {
       
       rerender(
         <QueryClientProvider client={queryClient}>
-          <IPhoneSearchPanel
+          <AstraSearchPanel
             language="en"
             onSearch={mockOnSearch}
             resultsCount={25}

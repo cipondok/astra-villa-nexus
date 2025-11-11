@@ -37,7 +37,7 @@ const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPil
 const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
 const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
 const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
-const IPhoneSearchPanel = lazy(() => import("@/components/iPhoneSearchPanel"));
+const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
 const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
@@ -450,10 +450,10 @@ const Index = () => {
                 <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
                 <span className="text-[10px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
               </div>
-              <h2 className="text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
+              <h2 className="hidden md:block text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
                 {t.findYour}
               </h2>
-              <p className="text-[10px] md:text-sm lg:text-base text-muted-foreground flex items-center justify-center gap-1.5">
+              <p className="hidden md:flex text-[10px] md:text-sm lg:text-base text-muted-foreground items-center justify-center gap-1.5">
                 <Search className="h-3 w-3 md:h-4 md:w-4" />
                 {t.searchPowered}
               </p>
@@ -468,7 +468,7 @@ const Index = () => {
                 
                 <Suspense fallback={<SearchPanelSkeleton />}>
                   <SearchErrorBoundary>
-                    <IPhoneSearchPanel
+                    <AstraSearchPanel
                       language={language}
                       onSearch={(searchData) => {
                         setQuickSearch(searchData.searchQuery || "");

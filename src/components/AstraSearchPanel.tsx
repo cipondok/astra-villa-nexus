@@ -33,18 +33,18 @@ import {
   getDisplayCount as getDisplayCountUtil,
   type FilteredSuggestions
 } from "@/utils/searchSuggestions";
-interface IPhoneSearchPanelProps {
+interface AstraSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
   resultsCount?: number;
 }
-const IPhoneSearchPanel = ({
+const AstraSearchPanel = ({
   language,
   onSearch,
   onLiveSearch,
   resultsCount
-}: IPhoneSearchPanelProps) => {
+}: AstraSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -4017,4 +4017,4 @@ const IPhoneSearchPanel = ({
       )}
     </div>;
 };
-export default IPhoneSearchPanel;
+export default AstraSearchPanel;
