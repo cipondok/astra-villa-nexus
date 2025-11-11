@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -49,6 +49,8 @@ const ResponsiveAIChatWidget = ({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [snapIndicator, setSnapIndicator] = useState<'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null>(null);
+  const [snapSensitivity, setSnapSensitivity] = useState<'tight' | 'normal' | 'loose'>('normal');
+  const [showSettings, setShowSettings] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -61,11 +63,12 @@ const ResponsiveAIChatWidget = ({
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
 
-  // Load saved position and size from localStorage
+  // Load saved position, size, and snap sensitivity from localStorage
   useEffect(() => {
     if (!isMobile) {
       const savedPosition = localStorage.getItem('chatbot-position');
       const savedSize = localStorage.getItem('chatbot-size');
+      const savedSensitivity = localStorage.getItem('chatbot-snap-sensitivity') as 'tight' | 'normal' | 'loose' | null;
       
       if (savedPosition) {
         const pos = JSON.parse(savedPosition);
@@ -90,6 +93,10 @@ const ResponsiveAIChatWidget = ({
           width: Math.max(320, Math.min(s.width, 600)),
           height: Math.max(400, Math.min(s.height, window.innerHeight - 48))
         });
+      }
+      
+      if (savedSensitivity) {
+        setSnapSensitivity(savedSensitivity);
       }
     }
   }, [isMobile]);
@@ -342,6 +349,37 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     recognition.start();
   };
 
+  // Get snap thresholds based on sensitivity
+  const getSnapThresholds = () => {
+    switch (snapSensitivity) {
+      case 'tight':
+        return { edge: 30, corner: 50 };
+      case 'normal':
+        return { edge: 50, corner: 80 };
+      case 'loose':
+        return { edge: 80, corner: 120 };
+      default:
+        return { edge: 50, corner: 80 };
+    }
+  };
+
+  // Reset to default position (bottom-right)
+  const resetToDefaultPosition = () => {
+    const defaultPosition = {
+      x: window.innerWidth - size.width - 24,
+      y: window.innerHeight - size.height - 24
+    };
+    setPosition(defaultPosition);
+    localStorage.setItem('chatbot-position', JSON.stringify(defaultPosition));
+  };
+
+  // Double-click handler for header
+  const handleHeaderDoubleClick = () => {
+    if (!isMobile && !isMinimized) {
+      resetToDefaultPosition();
+    }
+  };
+
   // Drag handlers with snap-to-edge and corner functionality
   const handleDragStart = (e: React.MouseEvent) => {
     if (isMobile || isMinimized) return;
@@ -370,8 +408,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     setPosition(constrainedPosition);
     
     // Detect snap zones and show indicators
-    const snapThreshold = 50;
-    const cornerThreshold = 80;
+    const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
     
     let indicator: typeof snapIndicator = null;
     
@@ -405,8 +442,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       setSnapIndicator(null);
       
       // Snap-to-edge and corner functionality
-      const snapThreshold = 50; // pixels from edge to trigger snap
-      const cornerThreshold = 80; // pixels from corner to trigger corner snap
+      const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
       const edgeMargin = 24; // margin from edge when snapped
       
       let snappedPosition = { ...position };
@@ -624,18 +660,38 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 !isMobile && !isMinimized && "cursor-move select-none"
               )}
               onMouseDown={handleDragStart}
+              onDoubleClick={handleHeaderDoubleClick}
+              title={!isMobile ? "Double-click to reset position" : undefined}
             >
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
                 <span className="font-semibold text-sm">AI Assistant</span>
               </div>
               <div className="flex items-center gap-2">
+                {/* Settings */}
+                {!isMobile && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowSettings(!showSettings);
+                    }}
+                    aria-label="Settings"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                )}
                 {/* Sound toggle */}
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                  onClick={toggleMute}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleMute();
+                  }}
                   aria-label={isMuted ? "Unmute notifications" : "Mute notifications"}
                 >
                   {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
@@ -644,7 +700,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                  onClick={() => setIsMinimized(!isMinimized)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMinimized(!isMinimized);
+                  }}
                 >
                   {isMinimized ? '□' : '−'}
                 </Button>
@@ -652,12 +711,74 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                  onClick={handleClose}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClose();
+                  }}
                 >
                   ✕
                 </Button>
               </div>
             </div>
+
+            {/* Settings panel - only show when settings is open */}
+            {showSettings && !isMinimized && (
+              <div className="p-4 border-b border-primary/10 bg-muted/50">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Snap Sensitivity</label>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={snapSensitivity === 'tight' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setSnapSensitivity('tight');
+                          localStorage.setItem('chatbot-snap-sensitivity', 'tight');
+                        }}
+                      >
+                        Tight
+                      </Button>
+                      <Button
+                        variant={snapSensitivity === 'normal' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setSnapSensitivity('normal');
+                          localStorage.setItem('chatbot-snap-sensitivity', 'normal');
+                        }}
+                      >
+                        Normal
+                      </Button>
+                      <Button
+                        variant={snapSensitivity === 'loose' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setSnapSensitivity('loose');
+                          localStorage.setItem('chatbot-snap-sensitivity', 'loose');
+                        }}
+                      >
+                        Loose
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {snapSensitivity === 'tight' && 'Snap only when very close to edges (30px)'}
+                      {snapSensitivity === 'normal' && 'Balanced snap distance (50px)'}
+                      {snapSensitivity === 'loose' && 'Snap from further away (80px)'}
+                    </p>
+                  </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="w-full"
+                    onClick={resetToDefaultPosition}
+                  >
+                    Reset to Default Position
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Chat content - only show when not minimized */}
             {!isMinimized && (
