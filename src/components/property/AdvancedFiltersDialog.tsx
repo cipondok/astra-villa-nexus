@@ -52,6 +52,23 @@ const AdvancedFiltersDialog = ({
     bathrooms: initialBathrooms,
   });
   
+  // Swipe hint state
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
+  
+  // Check if user has seen swipe hint before
+  useEffect(() => {
+    const hasSeenHint = localStorage.getItem('hasSeenSwipeHint');
+    if (!hasSeenHint && isMobile && open) {
+      setShowSwipeHint(true);
+      // Hide hint after 3 seconds
+      const timer = setTimeout(() => {
+        setShowSwipeHint(false);
+        localStorage.setItem('hasSeenSwipeHint', 'true');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [open, isMobile]);
+  
   // Swipe to close functionality
   const y = useMotionValue(0);
   const opacity = useTransform(y, [0, 150], [1, 0]);
@@ -59,6 +76,7 @@ const AdvancedFiltersDialog = ({
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (info.offset.y > 150 || info.velocity.y > 500) {
+      setShowSwipeHint(false);
       handleCancel();
     }
   };
@@ -320,13 +338,53 @@ const AdvancedFiltersDialog = ({
         >
           {/* Swipe Indicator for mobile */}
           {isMobile && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
-            >
-              <div className="w-12 h-1.5 bg-binance-light-gray/40 rounded-full" />
-            </motion.div>
+            <div className="relative">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
+              >
+                <div className="w-12 h-1.5 bg-binance-light-gray/40 rounded-full" />
+              </motion.div>
+              
+              {/* Animated Swipe Hint */}
+              <AnimatePresence>
+                {showSwipeHint && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute top-8 left-0 right-0 flex flex-col items-center gap-1 z-50 pointer-events-none"
+                  >
+                    <motion.div
+                      animate={{ y: [0, 8, 0] }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                      className="flex flex-col items-center"
+                    >
+                      <ChevronDown className="h-6 w-6 text-binance-orange drop-shadow-lg" />
+                      <ChevronDown className="h-6 w-6 text-binance-orange drop-shadow-lg -mt-4" />
+                    </motion.div>
+                    <motion.div
+                      initial={{ scale: 0.9 }}
+                      animate={{ scale: [0.9, 1, 0.9] }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                      className="bg-binance-orange/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg"
+                    >
+                      {language === "en" ? "Swipe down to close" : "Geser ke bawah untuk menutup"}
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
           
           <motion.div
