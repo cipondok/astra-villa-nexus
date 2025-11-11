@@ -48,6 +48,7 @@ const ResponsiveAIChatWidget = ({
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [snapIndicator, setSnapIndicator] = useState<'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -341,7 +342,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     recognition.start();
   };
 
-  // Drag handlers with snap-to-edge functionality
+  // Drag handlers with snap-to-edge and corner functionality
   const handleDragStart = (e: React.MouseEvent) => {
     if (isMobile || isMinimized) return;
     setIsDragging(true);
@@ -367,33 +368,76 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     };
     
     setPosition(constrainedPosition);
+    
+    // Detect snap zones and show indicators
+    const snapThreshold = 50;
+    const cornerThreshold = 80;
+    
+    let indicator: typeof snapIndicator = null;
+    
+    // Check for corner snapping first (higher priority)
+    if (constrainedPosition.x < cornerThreshold && constrainedPosition.y < cornerThreshold) {
+      indicator = 'top-left';
+    } else if (constrainedPosition.x > window.innerWidth - size.width - cornerThreshold && constrainedPosition.y < cornerThreshold) {
+      indicator = 'top-right';
+    } else if (constrainedPosition.x < cornerThreshold && constrainedPosition.y > window.innerHeight - size.height - cornerThreshold) {
+      indicator = 'bottom-left';
+    } else if (constrainedPosition.x > window.innerWidth - size.width - cornerThreshold && constrainedPosition.y > window.innerHeight - size.height - cornerThreshold) {
+      indicator = 'bottom-right';
+    }
+    // Then check for edge snapping
+    else if (constrainedPosition.x < snapThreshold) {
+      indicator = 'left';
+    } else if (constrainedPosition.x > window.innerWidth - size.width - snapThreshold) {
+      indicator = 'right';
+    } else if (constrainedPosition.y < snapThreshold) {
+      indicator = 'top';
+    } else if (constrainedPosition.y > window.innerHeight - size.height - snapThreshold) {
+      indicator = 'bottom';
+    }
+    
+    setSnapIndicator(indicator);
   };
 
   const handleDragEnd = () => {
     if (isDragging) {
       setIsDragging(false);
+      setSnapIndicator(null);
       
-      // Snap-to-edge functionality
+      // Snap-to-edge and corner functionality
       const snapThreshold = 50; // pixels from edge to trigger snap
+      const cornerThreshold = 80; // pixels from corner to trigger corner snap
       const edgeMargin = 24; // margin from edge when snapped
       
       let snappedPosition = { ...position };
       
-      // Check proximity to edges and snap
-      if (position.x < snapThreshold) {
-        // Snap to left edge
-        snappedPosition.x = edgeMargin;
-      } else if (position.x > window.innerWidth - size.width - snapThreshold) {
-        // Snap to right edge
-        snappedPosition.x = window.innerWidth - size.width - edgeMargin;
+      // Check for corner snapping first (higher priority)
+      if (position.x < cornerThreshold && position.y < cornerThreshold) {
+        // Snap to top-left corner
+        snappedPosition = { x: edgeMargin, y: edgeMargin };
+      } else if (position.x > window.innerWidth - size.width - cornerThreshold && position.y < cornerThreshold) {
+        // Snap to top-right corner
+        snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: edgeMargin };
+      } else if (position.x < cornerThreshold && position.y > window.innerHeight - size.height - cornerThreshold) {
+        // Snap to bottom-left corner
+        snappedPosition = { x: edgeMargin, y: window.innerHeight - size.height - edgeMargin };
+      } else if (position.x > window.innerWidth - size.width - cornerThreshold && position.y > window.innerHeight - size.height - cornerThreshold) {
+        // Snap to bottom-right corner
+        snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: window.innerHeight - size.height - edgeMargin };
       }
-      
-      if (position.y < snapThreshold) {
-        // Snap to top edge
-        snappedPosition.y = edgeMargin;
-      } else if (position.y > window.innerHeight - size.height - snapThreshold) {
-        // Snap to bottom edge
-        snappedPosition.y = window.innerHeight - size.height - edgeMargin;
+      // Then check for edge snapping
+      else {
+        if (position.x < snapThreshold) {
+          snappedPosition.x = edgeMargin;
+        } else if (position.x > window.innerWidth - size.width - snapThreshold) {
+          snappedPosition.x = window.innerWidth - size.width - edgeMargin;
+        }
+        
+        if (position.y < snapThreshold) {
+          snappedPosition.y = edgeMargin;
+        } else if (position.y > window.innerHeight - size.height - snapThreshold) {
+          snappedPosition.y = window.innerHeight - size.height - edgeMargin;
+        }
       }
       
       // Apply snapped position with animation
@@ -507,6 +551,39 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* Chat window - positioned fixed with backdrop */}
       {isOpen && (
         <>
+          {/* Snap indicators */}
+          {!isMobile && snapIndicator && (
+            <>
+              {/* Edge indicators */}
+              {snapIndicator === 'left' && (
+                <div className="fixed left-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+              )}
+              {snapIndicator === 'right' && (
+                <div className="fixed right-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+              )}
+              {snapIndicator === 'top' && (
+                <div className="fixed top-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+              )}
+              {snapIndicator === 'bottom' && (
+                <div className="fixed bottom-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+              )}
+              
+              {/* Corner indicators */}
+              {snapIndicator === 'top-left' && (
+                <div className="fixed top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-br-lg" />
+              )}
+              {snapIndicator === 'top-right' && (
+                <div className="fixed top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-bl-lg" />
+              )}
+              {snapIndicator === 'bottom-left' && (
+                <div className="fixed bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-tr-lg" />
+              )}
+              {snapIndicator === 'bottom-right' && (
+                <div className="fixed bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-tl-lg" />
+              )}
+            </>
+          )}
+          
           {/* Backdrop overlay for mobile */}
           {isMobile && (
             <div 
