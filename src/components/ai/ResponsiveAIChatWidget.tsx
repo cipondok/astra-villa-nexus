@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -60,6 +60,8 @@ const ResponsiveAIChatWidget = ({
   const [showSettings, setShowSettings] = useState(false);
   const [hasSeenQuickActions, setHasSeenQuickActions] = useState(false);
   const [showQuickActionsHint, setShowQuickActionsHint] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [pinnedActions, setPinnedActions] = useState<Set<string>>(new Set());
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -72,12 +74,13 @@ const ResponsiveAIChatWidget = ({
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
 
-  // Load saved position, size, snap sensitivity, and check if user has seen quick actions
+  // Load saved position, size, snap sensitivity, pinned actions, and check if user has seen quick actions
   useEffect(() => {
     if (!isMobile) {
       const savedPosition = localStorage.getItem('chatbot-position');
       const savedSize = localStorage.getItem('chatbot-size');
       const savedSensitivity = localStorage.getItem('chatbot-snap-sensitivity') as 'tight' | 'normal' | 'loose' | null;
+      const savedPinnedActions = localStorage.getItem('chatbot-pinned-actions');
       
       if (savedPosition) {
         const pos = JSON.parse(savedPosition);
@@ -107,10 +110,16 @@ const ResponsiveAIChatWidget = ({
       if (savedSensitivity) {
         setSnapSensitivity(savedSensitivity);
       }
+
+      if (savedPinnedActions) {
+        setPinnedActions(new Set(JSON.parse(savedPinnedActions)));
+      }
     }
 
     // Check if user has seen quick actions hint
     const seenQuickActions = localStorage.getItem('chatbot-seen-quick-actions');
+    const seenTooltip = localStorage.getItem('chatbot-seen-tooltip');
+    
     if (!seenQuickActions) {
       // Show quick actions after 3 seconds for first-time users
       const timer = setTimeout(() => {
@@ -126,7 +135,33 @@ const ResponsiveAIChatWidget = ({
     } else {
       setHasSeenQuickActions(true);
     }
+
+    if (!seenTooltip) {
+      setShowTooltip(true);
+    }
   }, [isMobile]);
+
+  // Handle tooltip on first hover
+  const handleFirstHover = () => {
+    if (showTooltip) {
+      setTimeout(() => {
+        setShowTooltip(false);
+        localStorage.setItem('chatbot-seen-tooltip', 'true');
+      }, 3000);
+    }
+  };
+
+  // Toggle pin action
+  const togglePinAction = (actionId: string) => {
+    const newPinned = new Set(pinnedActions);
+    if (newPinned.has(actionId)) {
+      newPinned.delete(actionId);
+    } else {
+      newPinned.add(actionId);
+    }
+    setPinnedActions(newPinned);
+    localStorage.setItem('chatbot-pinned-actions', JSON.stringify(Array.from(newPinned)));
+  };
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -604,48 +639,95 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-[9999] group">
+        <div className="fixed bottom-6 right-6 z-[9999] group" onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
           )}
           
-          {/* Quick Action Items - Show on hover or hint */}
+          {/* First-time tooltip */}
+          {showTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
+            >
+              Hover for quick actions
+              <div className="absolute -bottom-2 right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary" />
+            </motion.div>
+          )}
+          
+          {/* Quick Action Items - Show on hover, hint, or if pinned */}
           <div className={cn(
             "absolute bottom-20 right-0 transition-all duration-300 flex flex-col gap-3",
-            showQuickActionsHint 
+            showQuickActionsHint || pinnedActions.size > 0
               ? "opacity-100 pointer-events-auto" 
               : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
           )}>
             {/* Scroll to Top */}
-            {showScrollButton && onScrollToTop && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300">
-                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
+            {showScrollButton && onScrollToTop && (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 group/action">
+                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
                   Scroll to Top
                 </span>
-                <Button
-                  onClick={onScrollToTop}
-                  className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                  size="icon"
-                >
-                  <ArrowUp className="h-5 w-5 text-white" />
-                </Button>
+                <div className="relative">
+                  <Button
+                    onClick={onScrollToTop}
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                    size="icon"
+                  >
+                    <ArrowUp className="h-5 w-5 text-white" />
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePinAction('scroll-top');
+                    }}
+                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    {pinnedActions.has('scroll-top') ? (
+                      <PinOff className="h-3 w-3" />
+                    ) : (
+                      <Pin className="h-3 w-3" />
+                    )}
+                  </Button>
+                </div>
               </div>
             )}
             
             {/* Image Search */}
-            {onImageSearch && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 delay-75">
-                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
+            {onImageSearch && (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 delay-75 group/action">
+                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
                   Image Search
                 </span>
-                <Button
-                  onClick={onImageSearch}
-                  className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
-                  size="icon"
-                >
-                  <Camera className="h-5 w-5 text-white" />
-                </Button>
+                <div className="relative">
+                  <Button
+                    onClick={onImageSearch}
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                    size="icon"
+                  >
+                    <Camera className="h-5 w-5 text-white" />
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePinAction('image-search');
+                    }}
+                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    {pinnedActions.has('image-search') ? (
+                      <PinOff className="h-3 w-3" />
+                    ) : (
+                      <Pin className="h-3 w-3" />
+                    )}
+                  </Button>
+                </div>
               </div>
             )}
           </div>
