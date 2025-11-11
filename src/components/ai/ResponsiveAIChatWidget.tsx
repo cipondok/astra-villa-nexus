@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -18,18 +18,25 @@ import { useChatKeyboardShortcuts } from "@/hooks/useChatKeyboardShortcuts";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useChatPersistence } from "@/hooks/useChatPersistence";
 import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ResponsiveAIChatWidgetProps {
   propertyId?: string;
   onTourControl?: (action: string, target: string) => void;
   buttonVariant?: ChatButtonVariant;
+  onScrollToTop?: () => void;
+  onImageSearch?: () => void;
+  showScrollButton?: boolean;
 }
 
 const ResponsiveAIChatWidget = ({ 
   propertyId, 
   onTourControl,
-  buttonVariant = "pulse" 
+  buttonVariant = "pulse",
+  onScrollToTop,
+  onImageSearch,
+  showScrollButton = false
 }: ResponsiveAIChatWidgetProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -51,6 +58,7 @@ const ResponsiveAIChatWidget = ({
   const [snapIndicator, setSnapIndicator] = useState<'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null>(null);
   const [snapSensitivity, setSnapSensitivity] = useState<'tight' | 'normal' | 'loose'>('normal');
   const [showSettings, setShowSettings] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -575,13 +583,96 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Floating chat button - draggable and always visible */}
+      {/* Floating chat button with quick actions - draggable and always visible */}
       {!isOpen && (
-        <ChatButton 
-          onClick={handleOpen}
-          unreadCount={unreadCount}
-          variant={buttonVariant}
-        />
+        <div className="fixed bottom-6 right-6 z-[9999] flex flex-col-reverse items-end gap-3">
+          {/* Quick Action Menu Items */}
+          <AnimatePresence>
+            {showQuickActions && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                className="flex flex-col gap-3"
+              >
+                {/* Scroll to Top */}
+                {showScrollButton && onScrollToTop && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
+                      Scroll to Top
+                    </span>
+                    <Button
+                      onClick={() => {
+                        onScrollToTop();
+                        setShowQuickActions(false);
+                      }}
+                      className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                      size="icon"
+                    >
+                      <ArrowUp className="h-5 w-5 text-white" />
+                    </Button>
+                  </motion.div>
+                )}
+                
+                {/* Image Search */}
+                {onImageSearch && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ delay: 0.05 }}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
+                      Image Search
+                    </span>
+                    <Button
+                      onClick={() => {
+                        onImageSearch();
+                        setShowQuickActions(false);
+                      }}
+                      className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                      size="icon"
+                    >
+                      <Camera className="h-5 w-5 text-white" />
+                    </Button>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Quick Actions Toggle Button */}
+          <Button
+            onClick={() => setShowQuickActions(!showQuickActions)}
+            className={cn(
+              "h-12 w-12 rounded-full shadow-2xl transition-all duration-300 border-2 border-white/30",
+              showQuickActions
+                ? "bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700"
+                : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
+            )}
+            size="icon"
+          >
+            {showQuickActions ? (
+              <X className="h-5 w-5 text-white" />
+            ) : (
+              <Menu className="h-5 w-5 text-white" />
+            )}
+          </Button>
+          
+          {/* Main Chat Button */}
+          <ChatButton 
+            onClick={handleOpen}
+            unreadCount={unreadCount}
+            variant={buttonVariant}
+          />
+        </div>
       )}
 
       {/* Chat window - positioned fixed with backdrop */}
