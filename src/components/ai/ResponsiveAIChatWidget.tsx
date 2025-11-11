@@ -583,88 +583,43 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {/* Floating chat button with quick actions - draggable and always visible */}
+      {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-[9999] flex flex-col-reverse items-end gap-3">
-          {/* Quick Action Menu Items */}
-          <AnimatePresence>
-            {showQuickActions && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="flex flex-col gap-3"
-              >
-                {/* Scroll to Top */}
-                {showScrollButton && onScrollToTop && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center gap-2"
-                  >
-                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
-                      Scroll to Top
-                    </span>
-                    <Button
-                      onClick={() => {
-                        onScrollToTop();
-                        setShowQuickActions(false);
-                      }}
-                      className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                      size="icon"
-                    >
-                      <ArrowUp className="h-5 w-5 text-white" />
-                    </Button>
-                  </motion.div>
-                )}
-                
-                {/* Image Search */}
-                {onImageSearch && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ delay: 0.05 }}
-                    className="flex items-center gap-2"
-                  >
-                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
-                      Image Search
-                    </span>
-                    <Button
-                      onClick={() => {
-                        onImageSearch();
-                        setShowQuickActions(false);
-                      }}
-                      className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
-                      size="icon"
-                    >
-                      <Camera className="h-5 w-5 text-white" />
-                    </Button>
-                  </motion.div>
-                )}
-              </motion.div>
+        <div className="fixed bottom-6 right-6 z-[9999] group">
+          {/* Quick Action Items - Show on hover */}
+          <div className="absolute bottom-20 right-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto flex flex-col gap-3">
+            {/* Scroll to Top */}
+            {showScrollButton && onScrollToTop && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300">
+                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
+                  Scroll to Top
+                </span>
+                <Button
+                  onClick={onScrollToTop}
+                  className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                  size="icon"
+                >
+                  <ArrowUp className="h-5 w-5 text-white" />
+                </Button>
+              </div>
             )}
-          </AnimatePresence>
-
-          {/* Quick Actions Toggle Button */}
-          <Button
-            onClick={() => setShowQuickActions(!showQuickActions)}
-            className={cn(
-              "h-12 w-12 rounded-full shadow-2xl transition-all duration-300 border-2 border-white/30",
-              showQuickActions
-                ? "bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700"
-                : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
+            
+            {/* Image Search */}
+            {onImageSearch && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 delay-75">
+                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium">
+                  Image Search
+                </span>
+                <Button
+                  onClick={onImageSearch}
+                  className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                  size="icon"
+                >
+                  <Camera className="h-5 w-5 text-white" />
+                </Button>
+              </div>
             )}
-            size="icon"
-          >
-            {showQuickActions ? (
-              <X className="h-5 w-5 text-white" />
-            ) : (
-              <Menu className="h-5 w-5 text-white" />
-            )}
-          </Button>
+          </div>
           
           {/* Main Chat Button */}
           <ChatButton 
