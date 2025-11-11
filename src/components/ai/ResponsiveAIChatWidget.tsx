@@ -309,23 +309,27 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Calculate chat window position with proper margins
+  // Calculate chat window position to always stay within viewport
   const getChatWindowPosition = () => {
     if (isMobile) {
       return { 
         bottom: '0', 
         left: '0', 
         right: '0',
-        top: 'auto'
+        top: 'auto',
+        maxHeight: '90vh'
       };
     }
     
-    // Fixed position on desktop with margins
+    // Fixed position on desktop - always visible in viewport
+    // Using viewport units and max constraints to prevent overflow
     return { 
-      bottom: '1.5rem', // 24px
-      right: '1.5rem', // 24px
+      bottom: 'max(1.5rem, env(safe-area-inset-bottom))',
+      right: 'max(1.5rem, env(safe-area-inset-right))',
       left: 'auto',
-      top: 'auto'
+      top: 'auto',
+      maxHeight: 'calc(100vh - 3rem)', // Ensure it never exceeds viewport height
+      maxWidth: '420px'
     };
   };
 
@@ -356,7 +360,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               "fixed z-[9999]",
               "transition-all duration-300 ease-out",
               isMinimized ? "w-[320px]" : isMobile ? "w-full" : "w-[420px]",
-              isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "h-[680px]",
+              isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "min-h-[500px] max-h-[680px]",
               // Animations
               isMobile 
                 ? isClosing 
@@ -365,15 +369,16 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 : isClosing 
                   ? "animate-fade-out animate-scale-out" 
                   : "animate-fade-in animate-scale-in",
-              // Shadow
-              "shadow-2xl"
+              // Shadow and overflow
+              "shadow-2xl",
+              "overflow-visible"
             )}
             style={getChatWindowPosition()}
             role="dialog"
             aria-label="AI Chat Assistant"
             aria-modal="true"
           >
-          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl">
+          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl max-h-full">
             {/* Header with Close, Minimize, and Sound Toggle */}
             <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <div className="flex items-center gap-2">
