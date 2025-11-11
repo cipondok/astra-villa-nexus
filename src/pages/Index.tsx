@@ -432,25 +432,25 @@ const Index = () => {
       	/>
       
       {/* Content Layer with mobile-first responsive backdrop */}
-      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2 pt-12">
+      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2 pt-4 md:pt-6">
         
         
         {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
-        <section className="relative w-full md:pt-4 lg:pt-0 bg-gradient-to-b from-background via-background/95 to-muted/30">
+        <section className="relative w-full pt-2 md:pt-3 bg-gradient-to-b from-background via-background/95 to-muted/30">
           {/* Decorative background elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
             <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="relative z-10 p-2 md:p-4 w-full max-w-7xl mx-auto">
+          <div className="relative z-10 px-2 py-2 md:px-4 md:py-3 w-full max-w-7xl mx-auto">
             {/* Enhanced Header */}
-            <div className="mb-3 md:mb-4 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              <div className="inline-flex items-center gap-2 mb-2 px-4 py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
+            <div className="mb-2 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              <div className="inline-flex items-center gap-2 mb-1.5 px-3 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
                 <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
                 <span className="text-[10px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
               </div>
-              <h2 className="text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-1">
+              <h2 className="text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
                 {t.findYour}
               </h2>
               <p className="text-[10px] md:text-sm lg:text-base text-muted-foreground flex items-center justify-center gap-1.5">
