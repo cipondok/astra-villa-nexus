@@ -309,14 +309,24 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Calculate chat window position (no longer needed with ChatButton managing its own position)
+  // Calculate chat window position with proper margins
   const getChatWindowPosition = () => {
     if (isMobile) {
-      return { bottom: 0, left: 0, right: 0 };
+      return { 
+        bottom: '0', 
+        left: '0', 
+        right: '0',
+        top: 'auto'
+      };
     }
     
-    // Fixed position on desktop
-    return { bottom: 24, right: 24 };
+    // Fixed position on desktop with margins
+    return { 
+      bottom: '1.5rem', // 24px
+      right: '1.5rem', // 24px
+      left: 'auto',
+      top: 'auto'
+    };
   };
 
   return (
@@ -330,33 +340,40 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         />
       )}
 
-      {/* Chat window - positioned fixed */}
+      {/* Chat window - positioned fixed with backdrop */}
       {isOpen && (
-        <div 
-          className={cn(
-            "fixed z-[9999]",
-            "transition-all duration-300 ease-out",
-            isMinimized ? "w-[320px]" : isMobile ? "w-full" : "w-[420px]",
-            isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "h-[680px]",
-            // Animations
-            isMobile 
-              ? isClosing 
-                ? "animate-slide-out-bottom" 
-                : "animate-slide-in-bottom"
-              : isClosing 
-                ? "animate-slide-out-right" 
-                : "animate-slide-in-right"
+        <>
+          {/* Backdrop overlay for mobile */}
+          {isMobile && (
+            <div 
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998]"
+              onClick={handleClose}
+            />
           )}
-          style={
-            isMobile
-              ? { bottom: 0, left: 0, right: 0 }
-              : getChatWindowPosition()
-          }
-          role="dialog"
-          aria-label="AI Chat Assistant"
-          aria-modal="true"
-        >
-          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl">
+          
+          <div 
+            className={cn(
+              "fixed z-[9999]",
+              "transition-all duration-300 ease-out",
+              isMinimized ? "w-[320px]" : isMobile ? "w-full" : "w-[420px]",
+              isMinimized ? "h-auto" : isMobile ? "h-[90vh]" : "h-[680px]",
+              // Animations
+              isMobile 
+                ? isClosing 
+                  ? "animate-slide-out-bottom" 
+                  : "animate-slide-in-bottom"
+                : isClosing 
+                  ? "animate-fade-out animate-scale-out" 
+                  : "animate-fade-in animate-scale-in",
+              // Shadow
+              "shadow-2xl"
+            )}
+            style={getChatWindowPosition()}
+            role="dialog"
+            aria-label="AI Chat Assistant"
+            aria-modal="true"
+          >
+          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl">
             {/* Header with Close, Minimize, and Sound Toggle */}
             <div className="flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <div className="flex items-center gap-2">
@@ -437,6 +454,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             )}
           </Card>
         </div>
+        </>
       )}
     </>
   );
