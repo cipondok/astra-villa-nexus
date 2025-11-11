@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import PillToggleGroup from "@/components/ui/PillToggleGroup";
 import { SlidersHorizontal, X, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AdvancedFiltersDialogProps {
   language: "en" | "id";
@@ -31,6 +32,7 @@ const AdvancedFiltersDialog = ({
   bathrooms: initialBathrooms,
   onFiltersChange,
 }: AdvancedFiltersDialogProps) => {
+  const { isMobile } = useIsMobile();
   const [open, setOpen] = useState(false);
   const [listingType, setListingType] = useState(initialListingType);
   const [minPrice, setMinPrice] = useState(0);
@@ -49,6 +51,17 @@ const AdvancedFiltersDialog = ({
     bedrooms: initialBedrooms,
     bathrooms: initialBathrooms,
   });
+  
+  // Swipe to close functionality
+  const y = useMotionValue(0);
+  const opacity = useTransform(y, [0, 150], [1, 0]);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.y > 150 || info.velocity.y > 500) {
+      handleCancel();
+    }
+  };
 
   const text = {
     en: {
@@ -297,11 +310,31 @@ const AdvancedFiltersDialog = ({
       </DialogTrigger>
       <DialogContent className="w-full max-w-[95vw] sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-binance-dark-gray border-binance-light-gray text-binance-white p-0 overflow-hidden">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-gradient-to-r from-binance-orange to-yellow-500 px-4 sm:px-6 py-3 sm:py-4"
+          ref={contentRef}
+          drag={isMobile ? "y" : false}
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0, bottom: 0.5 }}
+          onDragEnd={handleDragEnd}
+          style={{ y: isMobile ? y : 0, opacity: isMobile ? opacity : 1 }}
+          className="w-full h-full"
         >
+          {/* Swipe Indicator for mobile */}
+          {isMobile && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
+            >
+              <div className="w-12 h-1.5 bg-binance-light-gray/40 rounded-full" />
+            </motion.div>
+          )}
+          
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="bg-gradient-to-r from-binance-orange to-yellow-500 px-4 sm:px-6 py-3 sm:py-4"
+          >
           <DialogHeader>
             <DialogTitle className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               <motion.div
@@ -315,9 +348,9 @@ const AdvancedFiltersDialog = ({
               {currentText.title}
             </DialogTitle>
           </DialogHeader>
-        </motion.div>
+          </motion.div>
 
-        <div className="px-4 py-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[calc(95vh-140px)] sm:max-h-[calc(90vh-140px)] overflow-y-auto touch-pan-y">
+          <div className="px-4 py-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[calc(95vh-140px)] sm:max-h-[calc(90vh-140px)] overflow-y-auto touch-pan-y">
           {/* Validation Warnings */}
           <AnimatePresence mode="wait">
             {validationWarnings.length > 0 && (
@@ -581,6 +614,7 @@ const AdvancedFiltersDialog = ({
           >
             {currentText.apply}
           </Button>
+          </motion.div>
         </motion.div>
       </DialogContent>
     </Dialog>
