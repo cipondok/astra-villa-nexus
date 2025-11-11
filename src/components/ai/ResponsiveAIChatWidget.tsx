@@ -341,7 +341,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     recognition.start();
   };
 
-  // Drag handlers
+  // Drag handlers with snap-to-edge functionality
   const handleDragStart = (e: React.MouseEvent) => {
     if (isMobile || isMinimized) return;
     setIsDragging(true);
@@ -372,8 +372,35 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   const handleDragEnd = () => {
     if (isDragging) {
       setIsDragging(false);
+      
+      // Snap-to-edge functionality
+      const snapThreshold = 50; // pixels from edge to trigger snap
+      const edgeMargin = 24; // margin from edge when snapped
+      
+      let snappedPosition = { ...position };
+      
+      // Check proximity to edges and snap
+      if (position.x < snapThreshold) {
+        // Snap to left edge
+        snappedPosition.x = edgeMargin;
+      } else if (position.x > window.innerWidth - size.width - snapThreshold) {
+        // Snap to right edge
+        snappedPosition.x = window.innerWidth - size.width - edgeMargin;
+      }
+      
+      if (position.y < snapThreshold) {
+        // Snap to top edge
+        snappedPosition.y = edgeMargin;
+      } else if (position.y > window.innerHeight - size.height - snapThreshold) {
+        // Snap to bottom edge
+        snappedPosition.y = window.innerHeight - size.height - edgeMargin;
+      }
+      
+      // Apply snapped position with animation
+      setPosition(snappedPosition);
+      
       // Save position to localStorage
-      localStorage.setItem('chatbot-position', JSON.stringify(position));
+      localStorage.setItem('chatbot-position', JSON.stringify(snappedPosition));
     }
   };
 
