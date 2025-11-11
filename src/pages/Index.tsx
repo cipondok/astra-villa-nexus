@@ -46,7 +46,6 @@ const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCaro
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const ScrollToTopButton = lazy(() => import("@/components/ui/ScrollToTopButton"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
-const QuickFiltersChipBar = lazy(() => import("@/components/property/QuickFiltersChipBar"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -552,16 +551,6 @@ const Index = () => {
 
         {/* Property Display Section - Space Optimized */}
         <div className="px-2 py-4 space-y-4">
-          {/* Quick Filters Chip Bar - Always visible */}
-          <Suspense fallback={null}>
-            <QuickFiltersChipBar
-              language={language}
-              onFilterSelect={(filters) => {
-                handleQuickSearch(filters);
-              }}
-            />
-          </Suspense>
-          
           <div className="w-full max-w-full mx-auto space-y-4">
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
