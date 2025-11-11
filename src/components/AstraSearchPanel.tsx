@@ -240,6 +240,25 @@ const AstraSearchPanel = ({
     tripPurpose: ''
   });
 
+  // Helper function to check if any filters are active
+  const hasActiveFilters = () => {
+    return (
+      (filters.bedrooms && filters.bedrooms !== 'all') ||
+      (filters.bathrooms && filters.bathrooms !== 'all') ||
+      (filters.parking && filters.parking !== 'all') ||
+      filters.minPrice > 0 ||
+      filters.maxPrice > 0 ||
+      (filters.propertyType && filters.propertyType !== 'all') ||
+      (filters.yearBuilt && filters.yearBuilt !== 'all') ||
+      (filters.condition && filters.condition !== 'all') ||
+      (filters.furnishing && filters.furnishing !== 'all') ||
+      (filters.state && filters.state !== 'all') ||
+      (filters.city && filters.city !== 'all') ||
+      (filters.area && filters.area !== 'all') ||
+      (filters.facilities && filters.facilities.length > 0)
+    );
+  };
+
   // Dynamic data from database
   const [provinces, setProvinces] = useState<{
     code: string;
@@ -3277,7 +3296,7 @@ const AstraSearchPanel = ({
           </div>
 
           {/* Active Filters Summary Bar */}
-          {filters.bedrooms && filters.bedrooms !== 'all' || filters.bathrooms && filters.bathrooms !== 'all' || filters.parking && filters.parking !== 'all' || filters.minPrice > 0 || filters.maxPrice > 0 || filters.propertyType && filters.propertyType !== 'all' || filters.yearBuilt && filters.yearBuilt !== 'all' || filters.condition && filters.condition !== 'all' || filters.furnishing && filters.furnishing !== 'all' || filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all' || filters.facilities && filters.facilities.length > 0 ? <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          {hasActiveFilters() && <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <ScrollArea className="w-full whitespace-nowrap">
                 <div className="flex items-center gap-1.5 pb-1">
                   {(() => {
@@ -3444,13 +3463,13 @@ const AstraSearchPanel = ({
                         <Button variant="ghost" size="sm" className={cn("text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium animate-in fade-in scale-in duration-200 hover:scale-105 transition-all", isMobile ? "h-5 px-2 text-[9px]" : "h-6 px-2.5 text-xs")} style={{
                     animationDelay: `${chipIndex * 50}ms`
                   }} onClick={clearAllFilters}>
-                          {currentText.clearFilters}
-                        </Button>
-                      </>;
+                        {currentText.clearFilters}
+                      </Button>
+                    </>;
               })()}
                 </div>
               </ScrollArea>
-            </div> : null}
+            </div>}
 
 
         </div>
