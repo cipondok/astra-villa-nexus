@@ -295,29 +295,29 @@ const AdvancedFiltersDialog = ({
           )}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] bg-binance-dark-gray border-binance-light-gray text-binance-white p-0 overflow-hidden">
+      <DialogContent className="w-full max-w-[95vw] sm:max-w-[600px] max-h-[95vh] sm:max-h-[90vh] bg-binance-dark-gray border-binance-light-gray text-binance-white p-0 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-gradient-to-r from-binance-orange to-yellow-500 px-6 py-3"
+          className="bg-gradient-to-r from-binance-orange to-yellow-500 px-4 sm:px-6 py-3 sm:py-4"
         >
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+            <DialogTitle className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="h-7 w-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
               >
-                <SlidersHorizontal className="h-4 w-4" />
+                <SlidersHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </motion.div>
               {currentText.title}
             </DialogTitle>
           </DialogHeader>
         </motion.div>
 
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+        <div className="px-4 py-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[calc(95vh-140px)] sm:max-h-[calc(90vh-140px)] overflow-y-auto touch-pan-y">
           {/* Validation Warnings */}
           <AnimatePresence mode="wait">
             {validationWarnings.length > 0 && (
@@ -374,17 +374,17 @@ const AdvancedFiltersDialog = ({
           >
             <button
               onClick={() => setListingTypeCollapsed(!listingTypeCollapsed)}
-              className="w-full text-sm font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity"
+              className="w-full text-sm sm:text-base font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
             >
-              <span className="flex items-center gap-2">
-                💰 {currentText.listingType}
+              <span className="flex items-center gap-2 flex-wrap">
+                <span className="text-lg sm:text-base">💰</span> {currentText.listingType}
                 {listingType && listingTypeCollapsed && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs sm:text-sm">
                     {listingTypeOptions.find(opt => opt.value === listingType)?.label}
                   </Badge>
                 )}
               </span>
-              {listingTypeCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {listingTypeCollapsed ? <ChevronDown className="h-5 w-5 sm:h-4 sm:w-4" /> : <ChevronUp className="h-5 w-5 sm:h-4 sm:w-4" />}
             </button>
             <AnimatePresence>
               {!listingTypeCollapsed && (
@@ -418,22 +418,22 @@ const AdvancedFiltersDialog = ({
             transition={{ delay: 0.2 }}
             className="space-y-4"
           >
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-semibold text-binance-orange flex items-center gap-2">
-                💸 {currentText.priceRange}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <label className="text-sm sm:text-base font-semibold text-binance-orange flex items-center gap-2">
+                <span className="text-lg sm:text-base">💸</span> {currentText.priceRange}
               </label>
               <motion.span
                 key={`${minPrice}-${maxPrice}`}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-xs text-binance-light-gray"
+                className="text-xs sm:text-sm text-binance-light-gray font-medium"
               >
                 {formatPrice(minPrice)} - {formatPrice(maxPrice)}
               </motion.span>
             </div>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs text-binance-light-gray mb-2 block">Min Price</label>
+            <div className="space-y-4 sm:space-y-5">
+              <div className="touch-pan-x">
+                <label className="text-xs sm:text-sm text-binance-light-gray mb-3 block">Min Price</label>
                 <Slider
                   value={[minPrice]}
                   onValueChange={(value) => setMinPrice(value[0])}
@@ -443,8 +443,8 @@ const AdvancedFiltersDialog = ({
                   className="w-full transition-all duration-300"
                 />
               </div>
-              <div>
-                <label className="text-xs text-binance-light-gray mb-2 block">Max Price</label>
+              <div className="touch-pan-x">
+                <label className="text-xs sm:text-sm text-binance-light-gray mb-3 block">Max Price</label>
                 <Slider
                   value={[maxPrice]}
                   onValueChange={(value) => setMaxPrice(value[0])}
@@ -466,17 +466,17 @@ const AdvancedFiltersDialog = ({
           >
             <button
               onClick={() => setBedroomsCollapsed(!bedroomsCollapsed)}
-              className="w-full text-sm font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity"
+              className="w-full text-sm sm:text-base font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
             >
-              <span className="flex items-center gap-2">
-                🛏️ {currentText.bedrooms}
+              <span className="flex items-center gap-2 flex-wrap">
+                <span className="text-lg sm:text-base">🛏️</span> {currentText.bedrooms}
                 {bedrooms && bedroomsCollapsed && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs sm:text-sm">
                     {bedroomOptions.find(opt => opt.value === bedrooms)?.label}
                   </Badge>
                 )}
               </span>
-              {bedroomsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {bedroomsCollapsed ? <ChevronDown className="h-5 w-5 sm:h-4 sm:w-4" /> : <ChevronUp className="h-5 w-5 sm:h-4 sm:w-4" />}
             </button>
             <AnimatePresence>
               {!bedroomsCollapsed && (
@@ -512,17 +512,17 @@ const AdvancedFiltersDialog = ({
           >
             <button
               onClick={() => setBathroomsCollapsed(!bathroomsCollapsed)}
-              className="w-full text-sm font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity"
+              className="w-full text-sm sm:text-base font-semibold text-binance-orange flex items-center justify-between gap-2 hover:opacity-80 transition-opacity min-h-[44px] touch-target"
             >
-              <span className="flex items-center gap-2">
-                🚿 {currentText.bathrooms}
+              <span className="flex items-center gap-2 flex-wrap">
+                <span className="text-lg sm:text-base">🚿</span> {currentText.bathrooms}
                 {bathrooms && bathroomsCollapsed && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs sm:text-sm">
                     {bathroomOptions.find(opt => opt.value === bathrooms)?.label}
                   </Badge>
                 )}
               </span>
-              {bathroomsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {bathroomsCollapsed ? <ChevronDown className="h-5 w-5 sm:h-4 sm:w-4" /> : <ChevronUp className="h-5 w-5 sm:h-4 sm:w-4" />}
             </button>
             <AnimatePresence>
               {!bathroomsCollapsed && (
@@ -555,26 +555,29 @@ const AdvancedFiltersDialog = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="border-t border-binance-light-gray bg-binance-gray px-4 py-2 flex gap-2"
+          className="border-t border-binance-light-gray bg-binance-gray px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row gap-2 sm:gap-2"
         >
-          <Button
-            variant="outline"
-            onClick={handleClear}
-            className="h-8 text-xs border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 hover:scale-105"
-          >
-            <X className="h-3 w-3 mr-1" />
-            {currentText.clear}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleCancel}
-            className="h-8 text-xs border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 hover:scale-105"
-          >
-            {currentText.cancel}
-          </Button>
+          <div className="flex gap-2 sm:contents">
+            <Button
+              variant="outline"
+              onClick={handleClear}
+              className="flex-1 sm:flex-none min-h-[44px] sm:h-10 text-xs sm:text-sm border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 active:scale-95"
+            >
+              <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden sm:inline">{currentText.clear}</span>
+              <span className="sm:hidden">Clear</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="flex-1 sm:flex-none min-h-[44px] sm:h-10 text-xs sm:text-sm border-binance-light-gray text-binance-white hover:bg-binance-light-gray transition-all duration-200 active:scale-95"
+            >
+              {currentText.cancel}
+            </Button>
+          </div>
           <Button
             onClick={handleApply}
-            className="flex-1 h-8 text-xs bg-gradient-to-r from-binance-orange to-yellow-500 hover:from-yellow-500 hover:to-binance-orange text-white font-semibold shadow-lg hover:shadow-binance-orange/50 transition-all duration-300 hover:scale-105"
+            className="w-full sm:flex-1 min-h-[44px] sm:h-10 text-sm sm:text-base bg-gradient-to-r from-binance-orange to-yellow-500 hover:from-yellow-500 hover:to-binance-orange text-white font-semibold shadow-lg hover:shadow-binance-orange/50 transition-all duration-300 active:scale-95"
           >
             {currentText.apply}
           </Button>

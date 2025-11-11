@@ -42,16 +42,16 @@ const PillToggleGroup: React.FC<PillToggleGroupProps> = ({
   const selectedValues = Array.isArray(value) ? value : [value];
 
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
+    <div className={`flex flex-wrap gap-2 sm:gap-2.5 ${className}`}>
       {options.map(opt => (
         <button
           type="button"
           key={opt.value}
           onClick={() => handleClick(opt.value)}
-          className={`px-4 py-1.5 rounded-full border-2 font-semibold text-xs transition-all duration-300 ease-in-out
+          className={`px-4 sm:px-5 py-2 sm:py-2.5 min-h-[44px] sm:min-h-[40px] rounded-full border-2 font-semibold text-sm sm:text-xs transition-all duration-300 ease-in-out touch-manipulation
             ${selectedValues.includes(opt.value)
-              ? "bg-blue-600 border-blue-600 text-white shadow-lg scale-110 ring-2 ring-blue-300 animate-in"
-              : "bg-background border-border text-foreground hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:scale-105"}
+              ? "bg-blue-600 border-blue-600 text-white shadow-lg scale-105 sm:scale-110 ring-2 ring-blue-300 animate-in"
+              : "bg-background border-border text-foreground hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:scale-105 active:scale-95"}
             `}
           aria-pressed={selectedValues.includes(opt.value)}
         >
