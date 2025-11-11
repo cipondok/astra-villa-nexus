@@ -90,14 +90,14 @@ export default function FeaturedAdsCarousel() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Auto-scroll configuration from admin settings
-useAutoHorizontalScroll(scrollRef, {
-  speed: carouselSettings ? (carouselSettings.auto_scroll ? (carouselSettings.scroll_speed || 1.5) : 0) : 1.5,
-  intervalMs: carouselSettings?.interval_ms || 25,
-  direction: (carouselSettings?.scroll_direction as 'ltr' | 'rtl') || 'rtl',
-  pauseOnHover: carouselSettings?.pause_on_hover ?? false,
-  loopMode: (carouselSettings?.loop_mode as 'stop' | 'loop' | 'seamless') || 'seamless'
-});
+  // Auto-scroll configuration from admin settings (always enabled by default)
+  useAutoHorizontalScroll(scrollRef, {
+    speed: carouselSettings?.auto_scroll === false ? 0 : (carouselSettings?.scroll_speed || 1.5),
+    intervalMs: carouselSettings?.interval_ms || 25,
+    direction: (carouselSettings?.scroll_direction as 'ltr' | 'rtl') || 'rtl',
+    pauseOnHover: carouselSettings?.pause_on_hover ?? true,
+    loopMode: (carouselSettings?.loop_mode as 'stop' | 'loop' | 'seamless') || 'seamless'
+  });
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {

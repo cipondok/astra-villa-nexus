@@ -42,17 +42,6 @@ export const FloatingActionMenu = ({
       delay: 0
     },
     {
-      icon: MessageSquare,
-      label: "AI Assistant",
-      onClick: () => {
-        onOpenChat();
-        setIsOpen(false);
-      },
-      show: true,
-      color: "from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700",
-      delay: 0.05
-    },
-    {
       icon: Camera,
       label: "Image Search",
       onClick: () => {
@@ -61,12 +50,12 @@ export const FloatingActionMenu = ({
       },
       show: true,
       color: "from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700",
-      delay: 0.1
+      delay: 0.05
     }
   ].filter(item => item.show);
 
   return (
-    <div className={cn("fixed bottom-6 right-6 z-[9999]", className)}>
+    <div className={cn("fixed bottom-6 left-6 z-[9998]", className)}>
       <input
         ref={fileInputRef}
         type="file"
