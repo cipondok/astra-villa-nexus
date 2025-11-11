@@ -58,7 +58,8 @@ const ResponsiveAIChatWidget = ({
   const [snapIndicator, setSnapIndicator] = useState<'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null>(null);
   const [snapSensitivity, setSnapSensitivity] = useState<'tight' | 'normal' | 'loose'>('normal');
   const [showSettings, setShowSettings] = useState(false);
-  const [showQuickActions, setShowQuickActions] = useState(false);
+  const [hasSeenQuickActions, setHasSeenQuickActions] = useState(false);
+  const [showQuickActionsHint, setShowQuickActionsHint] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -71,7 +72,7 @@ const ResponsiveAIChatWidget = ({
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
 
-  // Load saved position, size, and snap sensitivity from localStorage
+  // Load saved position, size, snap sensitivity, and check if user has seen quick actions
   useEffect(() => {
     if (!isMobile) {
       const savedPosition = localStorage.getItem('chatbot-position');
@@ -106,6 +107,24 @@ const ResponsiveAIChatWidget = ({
       if (savedSensitivity) {
         setSnapSensitivity(savedSensitivity);
       }
+    }
+
+    // Check if user has seen quick actions hint
+    const seenQuickActions = localStorage.getItem('chatbot-seen-quick-actions');
+    if (!seenQuickActions) {
+      // Show quick actions after 3 seconds for first-time users
+      const timer = setTimeout(() => {
+        setShowQuickActionsHint(true);
+        // Hide after 4 seconds
+        setTimeout(() => {
+          setShowQuickActionsHint(false);
+          localStorage.setItem('chatbot-seen-quick-actions', 'true');
+          setHasSeenQuickActions(true);
+        }, 4000);
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setHasSeenQuickActions(true);
     }
   }, [isMobile]);
 
@@ -586,8 +605,18 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
         <div className="fixed bottom-6 right-6 z-[9999] group">
-          {/* Quick Action Items - Show on hover */}
-          <div className="absolute bottom-20 right-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto flex flex-col gap-3">
+          {/* Pulsing glow hint animation for first-time users */}
+          {!hasSeenQuickActions && !showQuickActionsHint && (
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
+          )}
+          
+          {/* Quick Action Items - Show on hover or hint */}
+          <div className={cn(
+            "absolute bottom-20 right-0 transition-all duration-300 flex flex-col gap-3",
+            showQuickActionsHint 
+              ? "opacity-100 pointer-events-auto" 
+              : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+          )}>
             {/* Scroll to Top */}
             {showScrollButton && onScrollToTop && (
               <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300">
