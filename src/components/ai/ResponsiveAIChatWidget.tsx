@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -95,6 +95,16 @@ const ResponsiveAIChatWidget = ({
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   const [conflictData, setConflictData] = useState<any>(null);
   const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(true);
+
+  const quickActions: QuickAction[] = [
+    { icon: Search, text: "Search properties", action: "I want to search for properties" },
+    { icon: Phone, text: "Contact agent", action: "I need to contact an agent" },
+    { icon: Calendar, text: "Schedule viewing", action: "I want to schedule a property viewing" },
+    { icon: Home, text: "Property details", action: "Tell me about property features" },
+    { icon: MessageSquare, text: "Ask question", action: "I have a question about..." },
+    { icon: HelpCircle, text: "Get help", action: "How can you help me?" },
+  ];
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -592,8 +602,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     });
   };
 
-  const handleSendMessage = async () => {
-    if (!message.trim() || isLoading) return;
+  const handleSendMessage = async (quickMessage?: string) => {
+    const messageToSend = quickMessage || message;
+    if (!messageToSend.trim() || isLoading) return;
 
     // Expand if minimized
     if (isMinimized) setIsMinimized(false);
@@ -601,17 +612,20 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     // Reset activity timer and progress on message send
     setLastActivityTime(Date.now());
     setCollapseProgress(100);
+    
+    // Hide quick actions after first message
+    setShowQuickActions(false);
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: message,
+      content: messageToSend,
       timestamp: new Date()
     };
 
     const currentMessages = [...messages, userMessage];
     setMessages(currentMessages);
-    const currentMessage = message;
+    const currentMessage = messageToSend;
     setMessage("");
     setIsLoading(true);
 
@@ -1085,17 +1099,6 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       };
     }
   }, [isResizing, resizeStart]);
-
-  const quickActions: QuickAction[] = [
-    { icon: Home, text: "Show properties", action: "I'm looking for properties to buy or rent" },
-    { icon: Users, text: "Find vendors", action: "I need vendor services for property maintenance" },
-    ...(propertyId
-      ? [
-          { icon: MapPin, text: "Tour property", action: "Give me a guided tour of this property" },
-          { icon: Handshake, text: "Negotiate", action: "I'd like to negotiate the rental terms." }
-        ]
-      : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
-  ];
 
   // Calculate chat window position and size
   const getChatWindowStyle = () => {
@@ -1926,6 +1929,25 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     )}
                   </div>
                   
+                  {/* Welcome Tips */}
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Welcome Tips</label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        setShowWelcomeDialog(true);
+                        setShowSettings(false);
+                      }}
+                    >
+                      Show Welcome Tips Again
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      View chatbot features and tips anytime
+                    </p>
+                  </div>
+                  
                   {/* Custom Sounds Settings */}
                   <div>
                     <label className="text-sm font-medium mb-2 block flex items-center gap-2">
@@ -2090,11 +2112,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   </motion.div>
                 </ScrollArea>
 
-                {messages.length <= 1 && (
+                {showQuickActions && messages.length <= 1 && (
                   <div className={`${isMobile ? 'px-3 pb-2' : 'px-4 pb-2'}`}>
                     <AIChatQuickActions
                       quickActions={quickActions}
-                      onActionClick={setMessage}
+                      onActionClick={(action) => handleSendMessage(action)}
                     />
                   </div>
                 )}
