@@ -254,7 +254,14 @@ const ResponsiveAIChatWidget = ({
       setCollapseProgress(progressPercentage);
       
       // Show warning in the last 5 seconds
-      if (remainingTime <= 5000 && remainingTime > 0) {
+      const shouldShowWarning = remainingTime <= 5000 && remainingTime > 0;
+      
+      // Play sound notification when warning first appears
+      if (shouldShowWarning && !showCollapseWarning) {
+        playNotification(); // Play notification sound
+      }
+      
+      if (shouldShowWarning) {
         setShowCollapseWarning(true);
         setCollapseCountdown(Math.ceil(remainingTime / 1000));
       } else {
@@ -283,7 +290,7 @@ const ResponsiveAIChatWidget = ({
     const intervalId = setInterval(checkInactivity, 500);
     
     return () => clearInterval(intervalId);
-  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, isAutoCollapsePaused, toast]);
+  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, isAutoCollapsePaused, toast, showCollapseWarning, playNotification]);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
