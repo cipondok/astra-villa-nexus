@@ -20,6 +20,8 @@ import { useChatPersistence } from "@/hooks/useChatPersistence";
 import { useHapticFeedback } from "@/hooks/useHapticFeedback";
 import { useCustomSounds, SoundEvent } from "@/hooks/useCustomSounds";
 import { useChatbotPreferencesSync } from "@/hooks/useChatbotPreferencesSync";
+import { ChatbotConflictDialog } from "./ChatbotConflictDialog";
+import { ChatbotWelcomeDialog } from "./ChatbotWelcomeDialog";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -90,6 +92,9 @@ const ResponsiveAIChatWidget = ({
   const [collapseCountdown, setCollapseCountdown] = useState(0);
   const [isAutoCollapsePaused, setIsAutoCollapsePaused] = useState(false);
   const [collapseProgress, setCollapseProgress] = useState(100);
+  const [showConflictDialog, setShowConflictDialog] = useState(false);
+  const [conflictData, setConflictData] = useState<any>(null);
+  const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -117,12 +122,56 @@ const ResponsiveAIChatWidget = ({
     if (isSyncLoading) return;
     
     const loadPreferences = async () => {
+      // Check if user has seen welcome dialog
+      const hasSeenWelcome = localStorage.getItem('chatbot-seen-welcome');
+      if (!hasSeenWelcome && !isMobile) {
+        setShowWelcomeDialog(true);
+        localStorage.setItem('chatbot-seen-welcome', 'true');
+      }
+
       if (isAuthenticated) {
         // User is logged in - try to load from cloud first
         const cloudPrefs = await loadFromCloud();
         
         if (cloudPrefs) {
-          // Apply cloud preferences
+          // Check for conflicts with local storage
+          const localPosition = localStorage.getItem('chatbot-position');
+          const localSize = localStorage.getItem('chatbot-size');
+          const localViewMode = localStorage.getItem('chatbot-view-mode');
+          
+          if (localPosition || localSize || localViewMode) {
+            // Local preferences exist - check for conflicts
+            const localPos = localPosition ? JSON.parse(localPosition) : null;
+            const localSz = localSize ? JSON.parse(localSize) : null;
+            const localVM = localViewMode || null;
+            
+            const hasConflict = 
+              (localPos && (Math.abs(localPos.x - cloudPrefs.position.x) > 10 || Math.abs(localPos.y - cloudPrefs.position.y) > 10)) ||
+              (localSz && (Math.abs(localSz.width - cloudPrefs.size.width) > 10 || Math.abs(localSz.height - cloudPrefs.size.height) > 10)) ||
+              (localVM && localVM !== cloudPrefs.viewMode);
+            
+            if (hasConflict) {
+              // Show conflict resolution dialog
+              setConflictData({
+                local: {
+                  position: localPos || position,
+                  size: localSz || size,
+                  viewMode: localVM || viewMode,
+                  lastModified: new Date(localStorage.getItem('chatbot-last-modified') || Date.now())
+                },
+                cloud: {
+                  position: cloudPrefs.position,
+                  size: cloudPrefs.size,
+                  viewMode: cloudPrefs.viewMode,
+                  lastModified: new Date()
+                }
+              });
+              setShowConflictDialog(true);
+              return; // Wait for user to resolve conflict
+            }
+          }
+          
+          // No conflict - apply cloud preferences
           if (!isMobile) {
             const maxX = window.innerWidth - 320;
             const maxY = window.innerHeight - 200;
@@ -141,16 +190,9 @@ const ResponsiveAIChatWidget = ({
           setViewMode(cloudPrefs.viewMode);
           setAutoCollapseEnabled(cloudPrefs.autoCollapseEnabled);
           setAutoCollapseDuration(cloudPrefs.autoCollapseDuration);
-          toggleMute(); // Apply mute preference
           if (cloudPrefs.soundMute !== isMuted) {
             toggleMute();
           }
-          
-          toast({
-            title: "Settings synced",
-            description: "Your preferences have been loaded from the cloud",
-            duration: 2000,
-          });
           
           return; // Don't load from localStorage if cloud sync succeeded
         }
@@ -703,6 +745,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     };
     setPosition(defaultPosition);
     localStorage.setItem('chatbot-position', JSON.stringify(defaultPosition));
+    localStorage.setItem('chatbot-last-modified', new Date().toISOString());
   };
 
   // Reset all chatbot preferences to defaults
@@ -848,6 +891,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           setLastActivityTime(Date.now());
           setCollapseProgress(100);
           setIsAutoCollapsePaused(false);
+          
+          // Update last modified timestamp
+          localStorage.setItem('chatbot-last-modified', new Date().toISOString());
 
           toast({
             title: "Preferences imported",
@@ -977,8 +1023,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       // Apply snapped position with animation
       setPosition(snappedPosition);
       
-      // Save position to localStorage
+      // Save position to localStorage with timestamp
       localStorage.setItem('chatbot-position', JSON.stringify(snappedPosition));
+      localStorage.setItem('chatbot-last-modified', new Date().toISOString());
     }
   };
 
@@ -1010,8 +1057,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   const handleResizeEnd = () => {
     if (isResizing) {
       setIsResizing(false);
-      // Save size to localStorage
+      // Save size to localStorage with timestamp
       localStorage.setItem('chatbot-size', JSON.stringify(size));
+      localStorage.setItem('chatbot-last-modified', new Date().toISOString());
     }
   };
 
@@ -1072,6 +1120,70 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       width: viewMode === 'mini' ? `${miniModeWidth}px` : `${size.width}px`,
       height: isMinimized ? 'auto' : viewMode === 'mini' ? `${miniModeHeight}px` : `${size.height}px`
     };
+  };
+
+  // Handle conflict resolution
+  const handleConflictResolve = async (choice: 'local' | 'cloud') => {
+    if (!conflictData) return;
+
+    if (choice === 'local') {
+      // Use local preferences - update cloud
+      const localData = conflictData.local;
+      if (!isMobile) {
+        setPosition(localData.position);
+        setSize(localData.size);
+      }
+      setViewMode(localData.viewMode);
+      
+      // Save to cloud
+      const snapSensitivityValue = snapSensitivity === 'tight' ? 30 : snapSensitivity === 'loose' ? 70 : 50;
+      await saveToCloud({
+        position: localData.position,
+        size: localData.size,
+        snapSensitivity: snapSensitivityValue,
+        pinnedActions: Array.from(pinnedActions),
+        viewMode: localData.viewMode,
+        autoCollapseEnabled,
+        autoCollapseDuration,
+        soundMute: isMuted,
+        customSounds: customSounds || [],
+      });
+
+      toast({
+        title: "Preferences Updated",
+        description: "Local preferences saved to cloud",
+        duration: 2000,
+      });
+    } else {
+      // Use cloud preferences - update local
+      const cloudData = conflictData.cloud;
+      if (!isMobile) {
+        const maxX = window.innerWidth - 320;
+        const maxY = window.innerHeight - 200;
+        setPosition({
+          x: Math.max(0, Math.min(cloudData.position.x, maxX)),
+          y: Math.max(0, Math.min(cloudData.position.y, maxY))
+        });
+        setSize({
+          width: Math.max(320, Math.min(cloudData.size.width, 600)),
+          height: Math.max(400, Math.min(cloudData.size.height, window.innerHeight - 48))
+        });
+        localStorage.setItem('chatbot-position', JSON.stringify(cloudData.position));
+        localStorage.setItem('chatbot-size', JSON.stringify(cloudData.size));
+      }
+      setViewMode(cloudData.viewMode);
+      localStorage.setItem('chatbot-view-mode', cloudData.viewMode);
+      localStorage.setItem('chatbot-last-modified', new Date().toISOString());
+
+      toast({
+        title: "Preferences Updated",
+        description: "Cloud preferences applied to this device",
+        duration: 2000,
+      });
+    }
+
+    setShowConflictDialog(false);
+    setConflictData(null);
   };
 
   return (
@@ -2016,6 +2128,23 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </motion.div>
         </>
       )}
+
+      {/* Conflict Resolution Dialog */}
+      <ChatbotConflictDialog
+        open={showConflictDialog}
+        conflictData={conflictData}
+        onResolve={handleConflictResolve}
+        onCancel={() => {
+          setShowConflictDialog(false);
+          setConflictData(null);
+        }}
+      />
+
+      {/* Welcome Dialog for New Users */}
+      <ChatbotWelcomeDialog
+        open={showWelcomeDialog}
+        onClose={() => setShowWelcomeDialog(false)}
+      />
     </>
   );
 };
