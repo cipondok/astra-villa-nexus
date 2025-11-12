@@ -98,6 +98,7 @@ const ResponsiveAIChatWidget = ({
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [typingStatus, setTypingStatus] = useState("AI is thinking");
   const [showStarredMessages, setShowStarredMessages] = useState(false);
+  const [smartReplies, setSmartReplies] = useState<string[]>([]);
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
@@ -646,6 +647,40 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     }
   };
 
+  // Generate contextual smart replies based on AI message content
+  const generateSmartReplies = (aiMessage: string): string[] => {
+    const lowerMessage = aiMessage.toLowerCase();
+    const replies: string[] = [];
+
+    if (lowerMessage.includes('propert') || lowerMessage.includes('home') || lowerMessage.includes('house')) {
+      replies.push("Show me properties", "More details", "Filter results");
+    }
+    
+    if (lowerMessage.includes('view') || lowerMessage.includes('tour') || lowerMessage.includes('visit')) {
+      replies.push("Schedule viewing", "Check availability");
+    }
+    
+    if (lowerMessage.includes('agent') || lowerMessage.includes('contact')) {
+      replies.push("Contact agent", "Get phone number");
+    }
+    
+    if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('budget')) {
+      replies.push("Show price range", "Compare prices");
+    }
+    
+    if (lowerMessage.includes('location') || lowerMessage.includes('area') || lowerMessage.includes('neighborhood')) {
+      replies.push("See on map", "Nearby amenities");
+    }
+
+    // Default replies if no specific context matched
+    if (replies.length === 0) {
+      replies.push("Tell me more", "Show options", "I have a question");
+    }
+
+    // Limit to 4 suggestions max
+    return replies.slice(0, 4);
+  };
+
   const handleSendMessage = async (quickMessage?: string) => {
     const messageToSend = quickMessage || message;
     if (!messageToSend.trim() || isLoading) return;
@@ -725,6 +760,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      
+      // Generate smart replies based on AI response
+      setSmartReplies(generateSmartReplies(data.message));
       
       // Haptic feedback for new AI message
       haptic.onNewMessage();
@@ -2204,10 +2242,15 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                       messages={viewMode === 'mini' ? messages.slice(-3) : messages}
                       isLoading={false}
                       messagesEndRef={messagesEndRef}
-                      onReaction={handleReaction}
-                      onToggleStar={toggleStarMessage}
-                      typingStatus={typingStatus}
-                    />
+                  onReaction={handleReaction}
+                  onToggleStar={toggleStarMessage}
+                  typingStatus={typingStatus}
+                  smartReplies={smartReplies}
+                  onSmartReplyClick={(reply) => {
+                    setSmartReplies([]);
+                    handleSendMessage(reply);
+                  }}
+                />
                     {/* Typing indicator with animation */}
                     <AnimatePresence>
                       {isLoading && <TypingIndicator status={typingStatus} />}

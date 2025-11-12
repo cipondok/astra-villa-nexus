@@ -5,6 +5,7 @@ import { Bot, Star } from "lucide-react";
 import { Message } from "./types";
 import TypingIndicator from "./TypingIndicator";
 import MessageReactions from "./MessageReactions";
+import MessageSmartReplies from "./MessageSmartReplies";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
@@ -15,9 +16,11 @@ interface AIChatMessagesProps {
   onReaction: (messageId: string, reaction: 'positive' | 'negative') => void;
   onToggleStar?: (messageId: string) => void;
   typingStatus?: string;
+  smartReplies?: string[];
+  onSmartReplyClick?: (reply: string) => void;
 }
 
-const AIChatMessages = ({ messages, isLoading, messagesEndRef, onReaction, onToggleStar, typingStatus }: AIChatMessagesProps) => {
+const AIChatMessages = ({ messages, isLoading, messagesEndRef, onReaction, onToggleStar, typingStatus, smartReplies, onSmartReplyClick }: AIChatMessagesProps) => {
   return (
     <div className="h-96 overflow-y-auto p-4">
       <AnimatePresence mode="popLayout">
@@ -76,11 +79,19 @@ const AIChatMessages = ({ messages, isLoading, messagesEndRef, onReaction, onTog
                   </Badge>
                 )}
                 {msg.role === 'assistant' && msg.content && (
-                  <MessageReactions 
-                    messageId={msg.id} 
-                    currentReaction={msg.reaction}
-                    onReaction={onReaction}
-                  />
+                  <>
+                    <MessageReactions 
+                      messageId={msg.id} 
+                      currentReaction={msg.reaction}
+                      onReaction={onReaction}
+                    />
+                    {index === messages.length - 1 && smartReplies && smartReplies.length > 0 && onSmartReplyClick && (
+                      <MessageSmartReplies 
+                        suggestions={smartReplies}
+                        onReplyClick={onSmartReplyClick}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </div>
