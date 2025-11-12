@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2 } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -20,6 +20,13 @@ import { useChatPersistence } from "@/hooks/useChatPersistence";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface ResponsiveAIChatWidgetProps {
   propertyId?: string;
@@ -867,9 +874,19 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             {isAutoCollapsePaused && (
               <motion.div
                 initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                animate={{ 
+                  scale: 1,
+                  boxShadow: [
+                    "0 0 0 0 rgba(59, 130, 246, 0.7)",
+                    "0 0 0 10px rgba(59, 130, 246, 0)",
+                    "0 0 0 0 rgba(59, 130, 246, 0)"
+                  ]
+                }}
                 exit={{ scale: 0 }}
-                transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                transition={{ 
+                  scale: { type: "spring", stiffness: 500, damping: 25 },
+                  boxShadow: { duration: 2, repeat: Infinity, ease: "easeOut" }
+                }}
                 className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg border-2 border-white"
                 title="Auto-collapse paused"
               >
@@ -1063,6 +1080,108 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                       </motion.span>
                     )}
                   </motion.div>
+                )}
+                {/* Quick Auto-Collapse Settings */}
+                {!isMobile && autoCollapseEnabled && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label="Auto-collapse duration"
+                        title="Quick auto-collapse settings"
+                      >
+                        <Clock className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                      align="end" 
+                      className="w-48"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                        Auto-Collapse Duration
+                      </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className={cn(
+                          "cursor-pointer",
+                          autoCollapseDuration === 15000 && "bg-primary/10 text-primary font-medium"
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAutoCollapseDuration(15000);
+                          localStorage.setItem('chatbot-auto-collapse-duration', '15000');
+                          setLastActivityTime(Date.now());
+                          setCollapseProgress(100);
+                          toast({
+                            title: "Duration updated",
+                            description: "Auto-collapse set to 15 seconds",
+                            duration: 2000,
+                          });
+                        }}
+                      >
+                        15 seconds
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className={cn(
+                          "cursor-pointer",
+                          autoCollapseDuration === 30000 && "bg-primary/10 text-primary font-medium"
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAutoCollapseDuration(30000);
+                          localStorage.setItem('chatbot-auto-collapse-duration', '30000');
+                          setLastActivityTime(Date.now());
+                          setCollapseProgress(100);
+                          toast({
+                            title: "Duration updated",
+                            description: "Auto-collapse set to 30 seconds",
+                            duration: 2000,
+                          });
+                        }}
+                      >
+                        30 seconds
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className={cn(
+                          "cursor-pointer",
+                          autoCollapseDuration === 60000 && "bg-primary/10 text-primary font-medium"
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAutoCollapseDuration(60000);
+                          localStorage.setItem('chatbot-auto-collapse-duration', '60000');
+                          setLastActivityTime(Date.now());
+                          setCollapseProgress(100);
+                          toast({
+                            title: "Duration updated",
+                            description: "Auto-collapse set to 60 seconds",
+                            duration: 2000,
+                          });
+                        }}
+                      >
+                        60 seconds
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer text-muted-foreground"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleAutoCollapse();
+                          toast({
+                            title: autoCollapseEnabled ? "Auto-collapse disabled" : "Auto-collapse enabled",
+                            description: autoCollapseEnabled ? "Chat will stay open until manually closed" : "Chat will auto-collapse after inactivity",
+                            duration: 2000,
+                          });
+                        }}
+                      >
+                        Disable auto-collapse
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
                 {/* Settings */}
                 {!isMobile && (
