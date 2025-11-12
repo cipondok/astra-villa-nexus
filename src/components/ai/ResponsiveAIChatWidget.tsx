@@ -78,6 +78,7 @@ const ResponsiveAIChatWidget = ({
   const [lastTapTime, setLastTapTime] = useState(0);
   const [showCollapseWarning, setShowCollapseWarning] = useState(false);
   const [collapseCountdown, setCollapseCountdown] = useState(0);
+  const [isAutoCollapsePaused, setIsAutoCollapsePaused] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -227,7 +228,7 @@ const ResponsiveAIChatWidget = ({
 
   // Auto-collapse timer with countdown warning
   useEffect(() => {
-    if (!autoCollapseEnabled || !isOpen || viewMode === 'mini' || isMinimized || autoCollapseDuration === 0) {
+    if (!autoCollapseEnabled || !isOpen || viewMode === 'mini' || isMinimized || autoCollapseDuration === 0 || isAutoCollapsePaused) {
       setShowCollapseWarning(false);
       setCollapseCountdown(0);
       return;
@@ -267,7 +268,7 @@ const ResponsiveAIChatWidget = ({
     const intervalId = setInterval(checkInactivity, 500);
     
     return () => clearInterval(intervalId);
-  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, toast]);
+  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, isAutoCollapsePaused, toast]);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -1068,17 +1069,35 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                           Auto-collapsing in {collapseCountdown}s due to inactivity
                         </span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 px-2 text-xs text-white hover:bg-white/20"
-                        onClick={() => {
-                          setLastActivityTime(Date.now());
-                          setShowCollapseWarning(false);
-                        }}
-                      >
-                        Stay Open
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                          onClick={() => {
+                            setIsAutoCollapsePaused(true);
+                            setShowCollapseWarning(false);
+                            toast({
+                              title: "Auto-collapse paused",
+                              description: "Auto-collapse is disabled for this session",
+                              duration: 2000,
+                            });
+                          }}
+                        >
+                          Pause
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                          onClick={() => {
+                            setLastActivityTime(Date.now());
+                            setShowCollapseWarning(false);
+                          }}
+                        >
+                          Stay Open
+                        </Button>
+                      </div>
                     </div>
                     {/* Progress bar */}
                     <motion.div
@@ -1097,6 +1116,43 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                         }}
                       />
                     </motion.div>
+                  </div>
+                </motion.div>
+              )}
+              {/* Paused indicator */}
+              {isAutoCollapsePaused && !isMinimized && autoCollapseEnabled && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 py-2 bg-blue-500/90 text-white border-b border-blue-600">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">⏸️</span>
+                        <span className="font-medium">
+                          Auto-collapse paused for this session
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                        onClick={() => {
+                          setIsAutoCollapsePaused(false);
+                          setLastActivityTime(Date.now());
+                          toast({
+                            title: "Auto-collapse resumed",
+                            description: "Auto-collapse is now active",
+                            duration: 2000,
+                          });
+                        }}
+                      >
+                        Resume
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
               )}
