@@ -66,11 +66,18 @@ const ResponsiveAIChatWidget = ({
   const [showQuickActionsHint, setShowQuickActionsHint] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [pinnedActions, setPinnedActions] = useState<Set<string>>(new Set());
+  const [autoCollapseEnabled, setAutoCollapseEnabled] = useState(() => {
+    const saved = localStorage.getItem('chatbot-auto-collapse');
+    return saved === null ? true : saved === 'true';
+  });
+  const [lastActivityTime, setLastActivityTime] = useState(Date.now());
+  const [lastTapTime, setLastTapTime] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { isMobile } = useIsMobile();
+  const { toast } = useToast();
   
   // Sound notifications
   const { playNotification, isMuted, toggleMute } = useSoundNotification();
@@ -178,9 +185,69 @@ const ResponsiveAIChatWidget = ({
         navigator.vibrate(50); // Short vibration (50ms)
       }
       
+      // Reset activity timer when manually toggling
+      setLastActivityTime(Date.now());
+      
       return newValue;
     });
   };
+
+  // Toggle auto-collapse setting
+  const toggleAutoCollapse = () => {
+    setAutoCollapseEnabled(prev => {
+      const newValue = !prev;
+      localStorage.setItem('chatbot-auto-collapse', String(newValue));
+      // Reset activity timer when toggling setting
+      setLastActivityTime(Date.now());
+      return newValue;
+    });
+  };
+
+  // Handle double-tap on mobile
+  const handleHeaderTap = () => {
+    if (!isMobile) return;
+    
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastTapTime;
+    
+    // Detect double-tap (within 300ms)
+    if (timeDiff < 300) {
+      toggleViewMode();
+      setLastTapTime(0); // Reset to prevent triple-tap
+    } else {
+      setLastTapTime(currentTime);
+    }
+  };
+
+  // Auto-collapse timer
+  useEffect(() => {
+    if (!autoCollapseEnabled || !isOpen || viewMode === 'mini' || isMinimized) {
+      return;
+    }
+
+    const checkInactivity = () => {
+      const now = Date.now();
+      const inactiveTime = now - lastActivityTime;
+      
+      // Auto-collapse after 30 seconds (30000ms) of inactivity
+      if (inactiveTime >= 30000) {
+        setViewMode('mini');
+        localStorage.setItem('chatbot-view-mode', 'mini');
+        
+        // Show toast notification
+        toast({
+          title: "Chat minimized",
+          description: "Chat auto-collapsed due to inactivity",
+          duration: 2000,
+        });
+      }
+    };
+
+    // Check every 5 seconds
+    const intervalId = setInterval(checkInactivity, 5000);
+    
+    return () => clearInterval(intervalId);
+  }, [autoCollapseEnabled, isOpen, viewMode, isMinimized, lastActivityTime, toast]);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -267,8 +334,6 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     onClose: handleClose,
   });
 
-  const { toast } = useToast();
-
   const handleReaction = async (messageId: string, reaction: 'positive' | 'negative') => {
     // Find the message to get its content
     const message = messages.find(m => m.id === messageId);
@@ -316,6 +381,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
     // Expand if minimized
     if (isMinimized) setIsMinimized(false);
+
+    // Reset activity timer on message send
+    setLastActivityTime(Date.now());
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -851,7 +919,8 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               )}
               onMouseDown={handleDragStart}
               onDoubleClick={handleHeaderDoubleClick}
-              title={!isMobile ? "Double-click to reset position" : undefined}
+              onClick={isMobile ? handleHeaderTap : undefined}
+              title={isMobile ? "Double-tap to toggle view mode" : !isMobile ? "Double-click to reset position" : undefined}
             >
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
@@ -1003,6 +1072,26 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                       {snapSensitivity === 'loose' && 'Snap from further away (80px)'}
                     </p>
                   </div>
+                  
+                  {/* Auto-collapse setting */}
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Auto-Collapse</label>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {autoCollapseEnabled 
+                          ? 'Chat minimizes after 30s of inactivity' 
+                          : 'Manual control only'}
+                      </span>
+                      <Button
+                        variant={autoCollapseEnabled ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={toggleAutoCollapse}
+                      >
+                        {autoCollapseEnabled ? 'Enabled' : 'Disabled'}
+                      </Button>
+                    </div>
+                  </div>
+                  
                   <Button
                     variant="secondary"
                     size="sm"
