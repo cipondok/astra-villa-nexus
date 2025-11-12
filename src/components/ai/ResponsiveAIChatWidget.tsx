@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload, Music, Trash2, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -17,6 +17,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useChatKeyboardShortcuts } from "@/hooks/useChatKeyboardShortcuts";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useChatPersistence } from "@/hooks/useChatPersistence";
+import { useHapticFeedback } from "@/hooks/useHapticFeedback";
+import { useCustomSounds, SoundEvent } from "@/hooks/useCustomSounds";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -96,6 +98,12 @@ const ResponsiveAIChatWidget = ({
   
   // Sound notifications
   const { playNotification, isMuted, toggleMute } = useSoundNotification();
+  
+  // Custom sounds
+  const { uploadSound, removeSound, playCustomSound, hasCustomSound, getCustomSound, resetAllSounds, customSounds } = useCustomSounds();
+  
+  // Haptic feedback
+  const haptic = useHapticFeedback();
   
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
@@ -256,9 +264,17 @@ const ResponsiveAIChatWidget = ({
       // Show warning in the last 5 seconds
       const shouldShowWarning = remainingTime <= 5000 && remainingTime > 0;
       
-      // Play sound notification when warning first appears
+      // Play sound notification and haptic when warning first appears
       if (shouldShowWarning && !showCollapseWarning) {
-        playNotification(); // Play notification sound
+        // Play custom sound or default notification
+        if (hasCustomSound('countdownWarning')) {
+          playCustomSound('countdownWarning');
+        } else {
+          playNotification();
+        }
+        
+        // Trigger haptic feedback
+        haptic.onCountdownWarning();
       }
       
       if (shouldShowWarning) {
@@ -277,6 +293,14 @@ const ResponsiveAIChatWidget = ({
         setCollapseCountdown(0);
         setCollapseProgress(100);
         
+        // Haptic feedback on collapse
+        haptic.onCollapse();
+        
+        // Play custom sound if available
+        if (hasCustomSound('collapse')) {
+          playCustomSound('collapse');
+        }
+        
         // Show toast notification
         toast({
           title: "Chat minimized",
@@ -290,7 +314,7 @@ const ResponsiveAIChatWidget = ({
     const intervalId = setInterval(checkInactivity, 500);
     
     return () => clearInterval(intervalId);
-  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, isAutoCollapsePaused, toast, showCollapseWarning, playNotification]);
+  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, isAutoCollapsePaused, toast, showCollapseWarning, playNotification, haptic, hasCustomSound, playCustomSound]);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -358,11 +382,33 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     setIsClosing(false);
     setIsOpen(true);
     setIsMinimized(false);
+    setUnreadCount(0);
+    
+    // Reset activity timer on open
+    setLastActivityTime(Date.now());
+    setCollapseProgress(100);
+    
+    // Haptic feedback
+    haptic.onOpen();
+    
+    // Play custom sound if available
+    if (hasCustomSound('open')) {
+      playCustomSound('open');
+    }
   };
 
   // Handle close with animation
   const handleClose = () => {
     setIsClosing(true);
+    
+    // Haptic feedback
+    haptic.onClose();
+    
+    // Play custom sound if available
+    if (hasCustomSound('close')) {
+      playCustomSound('close');
+    }
+    
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
@@ -506,6 +552,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
       setMessages(prev => [...prev, aiMessage]);
       
+      // Haptic feedback for new AI message
+      haptic.onNewMessage();
+      
+      // Play custom sound if available
+      if (hasCustomSound('newMessage')) {
+        playCustomSound('newMessage');
+      }
+      
       if (!conversationId && data.conversationId) {
         setConversationId(data.conversationId);
       }
@@ -592,6 +646,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     localStorage.removeItem('chatbot-auto-collapse-duration');
     localStorage.removeItem('chatbot-seen-quick-actions');
     localStorage.removeItem('chatbot-seen-tooltip');
+    
+    // Reset custom sounds
+    resetAllSounds();
     
     // Reset state to defaults
     const defaultSize = { width: 420, height: 680 };
@@ -1637,6 +1694,96 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     )}
                   </div>
                   
+                  {/* Custom Sounds Settings */}
+                  <div>
+                    <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+                      <Music className="h-4 w-4" />
+                      Custom Notification Sounds
+                    </label>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Upload custom audio files for different chat events (Max 1MB per file)
+                    </p>
+                    
+                    <div className="space-y-2">
+                      {(['newMessage', 'countdownWarning', 'collapse', 'open', 'close'] as SoundEvent[]).map(event => {
+                        const soundInfo = getCustomSound(event);
+                        const eventLabels = {
+                          newMessage: 'New Message',
+                          countdownWarning: 'Countdown Warning',
+                          collapse: 'Auto-Collapse',
+                          open: 'Chat Open',
+                          close: 'Chat Close'
+                        };
+                        
+                        return (
+                          <div key={event} className="flex items-center justify-between p-2 rounded-md bg-background/50 border border-border/50">
+                            <div className="flex-1">
+                              <p className="text-xs font-medium">{eventLabels[event]}</p>
+                              {soundInfo && (
+                                <p className="text-xs text-muted-foreground truncate max-w-[180px]">
+                                  {soundInfo.fileName}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-1">
+                              {soundInfo ? (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => {
+                                    removeSound(event);
+                                    toast({
+                                      title: "Sound removed",
+                                      description: `Custom sound for ${eventLabels[event]} removed`,
+                                      duration: 2000,
+                                    });
+                                  }}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-xs h-7 px-2"
+                                  onClick={() => {
+                                    const input = document.createElement('input');
+                                    input.type = 'file';
+                                    input.accept = 'audio/*';
+                                    input.onchange = async (e) => {
+                                      const file = (e.target as HTMLInputElement).files?.[0];
+                                      if (file) {
+                                        try {
+                                          await uploadSound(event, file);
+                                          toast({
+                                            title: "Sound uploaded",
+                                            description: `Custom sound for ${eventLabels[event]} set successfully`,
+                                            duration: 2000,
+                                          });
+                                        } catch (error) {
+                                          toast({
+                                            title: "Upload failed",
+                                            description: error instanceof Error ? error.message : 'Failed to upload audio file',
+                                            variant: "destructive",
+                                            duration: 3000,
+                                          });
+                                        }
+                                      }
+                                    };
+                                    input.click();
+                                  }}
+                                >
+                                  Upload
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  
                   <Button
                     variant="secondary"
                     size="sm"
@@ -1670,9 +1817,17 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   <Button
                     variant="destructive"
                     size="sm"
-                    className="w-full"
-                    onClick={resetAllPreferences}
+                    className="w-full gap-2"
+                    onClick={() => {
+                      resetAllPreferences();
+                      toast({
+                        title: "All preferences reset",
+                        description: "All chatbot settings have been restored to defaults",
+                        duration: 2000,
+                      });
+                    }}
                   >
+                    <RotateCcw className="h-3.5 w-3.5" />
                     Reset All Preferences
                   </Button>
                 </div>
