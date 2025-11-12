@@ -79,6 +79,7 @@ const ResponsiveAIChatWidget = ({
   const [showCollapseWarning, setShowCollapseWarning] = useState(false);
   const [collapseCountdown, setCollapseCountdown] = useState(0);
   const [isAutoCollapsePaused, setIsAutoCollapsePaused] = useState(false);
+  const [collapseProgress, setCollapseProgress] = useState(100);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -192,8 +193,9 @@ const ResponsiveAIChatWidget = ({
         navigator.vibrate(50); // Short vibration (50ms)
       }
       
-      // Reset activity timer when manually toggling
+      // Reset activity timer and progress when manually toggling
       setLastActivityTime(Date.now());
+      setCollapseProgress(100);
       
       return newValue;
     });
@@ -204,8 +206,9 @@ const ResponsiveAIChatWidget = ({
     setAutoCollapseEnabled(prev => {
       const newValue = !prev;
       localStorage.setItem('chatbot-auto-collapse', String(newValue));
-      // Reset activity timer when toggling setting
+      // Reset activity timer and progress when toggling setting
       setLastActivityTime(Date.now());
+      setCollapseProgress(100);
       return newValue;
     });
   };
@@ -239,6 +242,10 @@ const ResponsiveAIChatWidget = ({
       const inactiveTime = now - lastActivityTime;
       const remainingTime = autoCollapseDuration - inactiveTime;
       
+      // Calculate progress percentage (100% = full time, 0% = time's up)
+      const progressPercentage = Math.max(0, Math.min(100, (remainingTime / autoCollapseDuration) * 100));
+      setCollapseProgress(progressPercentage);
+      
       // Show warning in the last 5 seconds
       if (remainingTime <= 5000 && remainingTime > 0) {
         setShowCollapseWarning(true);
@@ -254,6 +261,7 @@ const ResponsiveAIChatWidget = ({
         localStorage.setItem('chatbot-view-mode', 'mini');
         setShowCollapseWarning(false);
         setCollapseCountdown(0);
+        setCollapseProgress(100);
         
         // Show toast notification
         toast({
@@ -403,8 +411,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     // Expand if minimized
     if (isMinimized) setIsMinimized(false);
 
-    // Reset activity timer on message send
+    // Reset activity timer and progress on message send
     setLastActivityTime(Date.now());
+    setCollapseProgress(100);
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -960,10 +969,46 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     className="relative"
                   >
+                    {/* Circular progress ring */}
+                    {autoCollapseEnabled && !isAutoCollapsePaused && viewMode === 'full' && collapseProgress < 100 && (
+                      <svg
+                        className="absolute inset-0 w-full h-full -rotate-90"
+                        viewBox="0 0 36 36"
+                      >
+                        {/* Background circle */}
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="16"
+                          fill="none"
+                          stroke="rgba(255, 255, 255, 0.2)"
+                          strokeWidth="2"
+                        />
+                        {/* Progress circle */}
+                        <motion.circle
+                          cx="18"
+                          cy="18"
+                          r="16"
+                          fill="none"
+                          stroke={collapseProgress < 20 ? "rgb(239, 68, 68)" : "rgb(255, 255, 255)"}
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ strokeDasharray: "100 100", strokeDashoffset: 0 }}
+                          animate={{ 
+                            strokeDasharray: "100 100",
+                            strokeDashoffset: 100 - collapseProgress
+                          }}
+                          transition={{ duration: 0.3, ease: "linear" }}
+                          style={{
+                            filter: collapseProgress < 20 ? "drop-shadow(0 0 4px rgb(239, 68, 68))" : "none"
+                          }}
+                        />
+                      </svg>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                      className="h-7 w-7 text-white hover:bg-white/20 rounded-full relative z-10"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleViewMode();
@@ -986,7 +1031,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg"
+                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg z-20"
                       >
                         {messages.length - 3}
                       </motion.span>
@@ -1077,6 +1122,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                           onClick={() => {
                             setIsAutoCollapsePaused(true);
                             setShowCollapseWarning(false);
+                            setCollapseProgress(100);
                             toast({
                               title: "Auto-collapse paused",
                               description: "Auto-collapse is disabled for this session",
@@ -1093,6 +1139,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                           onClick={() => {
                             setLastActivityTime(Date.now());
                             setShowCollapseWarning(false);
+                            setCollapseProgress(100);
                           }}
                         >
                           Stay Open
@@ -1143,6 +1190,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                         onClick={() => {
                           setIsAutoCollapsePaused(false);
                           setLastActivityTime(Date.now());
+                          setCollapseProgress(100);
                           toast({
                             title: "Auto-collapse resumed",
                             description: "Auto-collapse is now active",
