@@ -23,6 +23,8 @@ interface ChatbotPreferences {
 export const useChatbotPreferencesSync = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'synced' | 'error'>('idle');
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
   const { toast } = useToast();
 
   // Check auth state
@@ -76,32 +78,44 @@ export const useChatbotPreferencesSync = () => {
   const saveToCloud = async (preferences: ChatbotPreferences) => {
     if (!userId) return;
 
+    setSyncStatus('syncing');
+
     try {
       const { error } = await supabase
         .from('chatbot_preferences')
-        .upsert({
-          user_id: userId,
-          position: preferences.position as any,
-          size: preferences.size as any,
-          snap_sensitivity: preferences.snapSensitivity,
-          pinned_actions: preferences.pinnedActions as any,
-          view_mode: preferences.viewMode,
-          auto_collapse_enabled: preferences.autoCollapseEnabled,
-          auto_collapse_duration: preferences.autoCollapseDuration,
-          sound_mute: preferences.soundMute,
-          custom_sounds: preferences.customSounds as any,
-        });
+        .upsert(
+          {
+            user_id: userId,
+            position: preferences.position as any,
+            size: preferences.size as any,
+            snap_sensitivity: preferences.snapSensitivity,
+            pinned_actions: preferences.pinnedActions as any,
+            view_mode: preferences.viewMode,
+            auto_collapse_enabled: preferences.autoCollapseEnabled,
+            auto_collapse_duration: preferences.autoCollapseDuration,
+            sound_mute: preferences.soundMute,
+            custom_sounds: preferences.customSounds as any,
+          },
+          { onConflict: 'user_id' }
+        );
 
       if (error) {
         console.error('Error saving chatbot preferences:', error);
+        setSyncStatus('error');
         toast({
           title: "Sync Error",
           description: "Failed to sync chatbot preferences to cloud",
           variant: "destructive",
         });
+      } else {
+        setSyncStatus('synced');
+        setLastSyncTime(new Date());
+        // Reset to idle after 2 seconds
+        setTimeout(() => setSyncStatus('idle'), 2000);
       }
     } catch (error) {
       console.error('Error saving chatbot preferences:', error);
+      setSyncStatus('error');
     }
   };
 
@@ -125,6 +139,8 @@ export const useChatbotPreferencesSync = () => {
   return {
     isAuthenticated: !!userId,
     isLoading,
+    syncStatus,
+    lastSyncTime,
     loadFromCloud,
     saveToCloud,
     deleteFromCloud,
