@@ -844,7 +844,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 <Bot className="h-5 w-5" />
                 <span className="font-semibold text-sm">AI Assistant</span>
                 {viewMode === 'mini' && (
-                  <span className="text-xs opacity-80 font-normal">(Mini)</span>
+                  <span className="text-xs opacity-80 font-normal">
+                    (Mini {messages.length > 3 ? `· 3 of ${messages.length}` : ''})
+                  </span>
                 )}
               </div>
               <div className="flex items-center gap-2">
