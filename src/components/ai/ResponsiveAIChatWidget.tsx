@@ -370,6 +370,20 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     onClose: handleClose,
   });
 
+  // Keyboard shortcut for view mode toggle: Ctrl+M or Cmd+M
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+M or Cmd+M to toggle view mode (only when chat is open)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm' && isOpen && !isMinimized) {
+        e.preventDefault();
+        toggleViewMode();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isMinimized]);
+
   const handleReaction = async (messageId: string, reaction: 'positive' | 'negative') => {
     // Find the message to get its content
     const message = messages.find(m => m.id === messageId);
@@ -557,6 +571,47 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     };
     setPosition(defaultPosition);
     localStorage.setItem('chatbot-position', JSON.stringify(defaultPosition));
+  };
+
+  // Reset all chatbot preferences to defaults
+  const resetAllPreferences = () => {
+    // Clear all chatbot-related localStorage items
+    localStorage.removeItem('chatbot-position');
+    localStorage.removeItem('chatbot-size');
+    localStorage.removeItem('chatbot-snap-sensitivity');
+    localStorage.removeItem('chatbot-pinned-actions');
+    localStorage.removeItem('chatbot-view-mode');
+    localStorage.removeItem('chatbot-auto-collapse');
+    localStorage.removeItem('chatbot-auto-collapse-duration');
+    localStorage.removeItem('chatbot-seen-quick-actions');
+    localStorage.removeItem('chatbot-seen-tooltip');
+    
+    // Reset state to defaults
+    const defaultSize = { width: 420, height: 680 };
+    const defaultPosition = {
+      x: window.innerWidth - defaultSize.width - 24,
+      y: window.innerHeight - defaultSize.height - 24
+    };
+    
+    setPosition(defaultPosition);
+    setSize(defaultSize);
+    setSnapSensitivity('normal');
+    setPinnedActions(new Set());
+    setViewMode('full');
+    setAutoCollapseEnabled(true);
+    setAutoCollapseDuration(30000);
+    setIsAutoCollapsePaused(false);
+    setShowSettings(false);
+    setHasSeenQuickActions(false);
+    setShowTooltip(false);
+    setLastActivityTime(Date.now());
+    setCollapseProgress(100);
+    
+    toast({
+      title: "Preferences reset",
+      description: "All chatbot settings restored to defaults",
+      duration: 3000,
+    });
   };
 
   // Double-click handler for header
@@ -1467,6 +1522,15 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     onClick={resetToDefaultPosition}
                   >
                     Reset to Default Position
+                  </Button>
+                  
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full"
+                    onClick={resetAllPreferences}
+                  >
+                    Reset All Preferences
                   </Button>
                 </div>
               </div>
