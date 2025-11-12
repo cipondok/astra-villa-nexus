@@ -172,6 +172,12 @@ const ResponsiveAIChatWidget = ({
     setViewMode(prev => {
       const newValue = prev === 'mini' ? 'full' : 'mini';
       localStorage.setItem('chatbot-view-mode', newValue);
+      
+      // Haptic feedback on mobile
+      if (isMobile && 'vibrate' in navigator) {
+        navigator.vibrate(50); // Short vibration (50ms)
+      }
+      
       return newValue;
     });
   };
@@ -862,6 +868,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   <motion.div
                     whileTap={{ scale: 0.85 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    className="relative"
                   >
                     <Button
                       variant="ghost"
@@ -883,6 +890,17 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                         {viewMode === 'mini' ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
                       </motion.div>
                     </Button>
+                    {/* Hidden message count badge */}
+                    {viewMode === 'mini' && messages.length > 3 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg"
+                      >
+                        {messages.length - 3}
+                      </motion.span>
+                    )}
                   </motion.div>
                 )}
                 {/* Settings */}
