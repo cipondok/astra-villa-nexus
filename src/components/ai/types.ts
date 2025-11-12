@@ -8,6 +8,7 @@ export interface Message {
   timestamp: Date;
   functionCall?: any;
   reaction?: 'positive' | 'negative' | null;
+  starred?: boolean;
 }
 
 export interface QuickAction {

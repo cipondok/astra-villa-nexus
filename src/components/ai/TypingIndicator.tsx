@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 
 interface TypingIndicatorProps {
   className?: string;
+  status?: string;
 }
 
-const TypingIndicator = ({ className }: TypingIndicatorProps) => {
+const TypingIndicator = ({ className, status = "AI is thinking" }: TypingIndicatorProps) => {
   const dotVariants = {
     initial: { y: 0 },
     animate: { y: -8 },
@@ -35,7 +36,15 @@ const TypingIndicator = ({ className }: TypingIndicatorProps) => {
           <span className="text-xs font-medium text-purple-600">AI Assistant</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-sm text-gray-600 dark:text-gray-400">Typing</span>
+          <motion.span 
+            className="text-sm text-gray-600 dark:text-gray-400"
+            key={status}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {status}
+          </motion.span>
           <div className="flex gap-1 ml-1">
             {[0, 1, 2].map((index) => (
               <motion.div

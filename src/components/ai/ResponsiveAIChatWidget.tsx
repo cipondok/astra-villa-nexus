@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -96,6 +96,8 @@ const ResponsiveAIChatWidget = ({
   const [conflictData, setConflictData] = useState<any>(null);
   const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const [typingStatus, setTypingStatus] = useState("AI is thinking");
+  const [showStarredMessages, setShowStarredMessages] = useState(false);
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
@@ -602,6 +604,48 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     });
   };
 
+  // Toggle star on message
+  const toggleStarMessage = (messageId: string) => {
+    setMessages(prev =>
+      prev.map(msg =>
+        msg.id === messageId ? { ...msg, starred: !msg.starred } : msg
+      )
+    );
+    
+    const message = messages.find(m => m.id === messageId);
+    const isStarred = !message?.starred;
+    
+    toast({
+      title: isStarred ? "Message starred" : "Star removed",
+      description: isStarred ? "Added to your starred messages" : "Removed from starred messages",
+      duration: 2000,
+    });
+  };
+
+  // Get starred messages
+  const starredMessages = messages.filter(msg => msg.starred);
+
+  // Get dynamic typing status based on message content
+  const getTypingStatus = (messageContent: string) => {
+    const lowerMessage = messageContent.toLowerCase();
+    
+    if (lowerMessage.includes('search') || lowerMessage.includes('find') || lowerMessage.includes('looking for')) {
+      return "Searching properties...";
+    } else if (lowerMessage.includes('schedule') || lowerMessage.includes('viewing') || lowerMessage.includes('appointment')) {
+      return "Checking availability...";
+    } else if (lowerMessage.includes('negotiate') || lowerMessage.includes('price') || lowerMessage.includes('offer')) {
+      return "Analyzing options...";
+    } else if (lowerMessage.includes('neighborhood') || lowerMessage.includes('area') || lowerMessage.includes('location')) {
+      return "Gathering location data...";
+    } else if (lowerMessage.includes('contact') || lowerMessage.includes('agent')) {
+      return "Finding agent info...";
+    } else if (lowerMessage.includes('property') || lowerMessage.includes('details') || lowerMessage.includes('features')) {
+      return "Loading property details...";
+    } else {
+      return "AI is thinking...";
+    }
+  };
+
   const handleSendMessage = async (quickMessage?: string) => {
     const messageToSend = quickMessage || message;
     if (!messageToSend.trim() || isLoading) return;
@@ -628,6 +672,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     const currentMessage = messageToSend;
     setMessage("");
     setIsLoading(true);
+    
+    // Set dynamic typing status
+    setTypingStatus(getTypingStatus(currentMessage));
 
     try {
       const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
@@ -1948,6 +1995,60 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     </p>
                   </div>
                   
+                  {/* Starred Messages */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-sm font-medium">Starred Messages</label>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowStarredMessages(!showStarredMessages)}
+                      >
+                        {starredMessages.length} starred
+                      </Button>
+                    </div>
+                    
+                    {showStarredMessages && starredMessages.length > 0 && (
+                      <div className="space-y-2 max-h-60 overflow-y-auto p-3 rounded-lg bg-background/50 border border-border/50">
+                        {starredMessages.map(msg => (
+                          <div 
+                            key={msg.id} 
+                            className="p-2 rounded-md bg-muted/50 border border-border/30 text-xs group relative"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <div className="font-medium text-primary mb-1">
+                                  {msg.role === 'user' ? 'You' : 'AI Assistant'}
+                                </div>
+                                <div className="text-muted-foreground line-clamp-3">
+                                  {msg.content}
+                                </div>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => toggleStarMessage(msg.id)}
+                              >
+                                <XIcon className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {showStarredMessages && starredMessages.length === 0 && (
+                      <p className="text-xs text-muted-foreground p-3 text-center bg-muted/30 rounded-lg">
+                        No starred messages yet. Hover over messages and click the star icon to save them.
+                      </p>
+                    )}
+                    
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Star important messages for quick access
+                    </p>
+                  </div>
+                  
                   {/* Custom Sounds Settings */}
                   <div>
                     <label className="text-sm font-medium mb-2 block flex items-center gap-2">
@@ -2104,10 +2205,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                       isLoading={false}
                       messagesEndRef={messagesEndRef}
                       onReaction={handleReaction}
+                      onToggleStar={toggleStarMessage}
+                      typingStatus={typingStatus}
                     />
                     {/* Typing indicator with animation */}
                     <AnimatePresence>
-                      {isLoading && <TypingIndicator />}
+                      {isLoading && <TypingIndicator status={typingStatus} />}
                     </AnimatePresence>
                   </motion.div>
                 </ScrollArea>
