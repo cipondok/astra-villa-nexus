@@ -70,8 +70,14 @@ const ResponsiveAIChatWidget = ({
     const saved = localStorage.getItem('chatbot-auto-collapse');
     return saved === null ? true : saved === 'true';
   });
+  const [autoCollapseDuration, setAutoCollapseDuration] = useState<number>(() => {
+    const saved = localStorage.getItem('chatbot-auto-collapse-duration');
+    return saved ? parseInt(saved) : 30000; // Default 30 seconds in milliseconds
+  });
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
   const [lastTapTime, setLastTapTime] = useState(0);
+  const [showCollapseWarning, setShowCollapseWarning] = useState(false);
+  const [collapseCountdown, setCollapseCountdown] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -219,20 +225,34 @@ const ResponsiveAIChatWidget = ({
     }
   };
 
-  // Auto-collapse timer
+  // Auto-collapse timer with countdown warning
   useEffect(() => {
-    if (!autoCollapseEnabled || !isOpen || viewMode === 'mini' || isMinimized) {
+    if (!autoCollapseEnabled || !isOpen || viewMode === 'mini' || isMinimized || autoCollapseDuration === 0) {
+      setShowCollapseWarning(false);
+      setCollapseCountdown(0);
       return;
     }
 
     const checkInactivity = () => {
       const now = Date.now();
       const inactiveTime = now - lastActivityTime;
+      const remainingTime = autoCollapseDuration - inactiveTime;
       
-      // Auto-collapse after 30 seconds (30000ms) of inactivity
-      if (inactiveTime >= 30000) {
+      // Show warning in the last 5 seconds
+      if (remainingTime <= 5000 && remainingTime > 0) {
+        setShowCollapseWarning(true);
+        setCollapseCountdown(Math.ceil(remainingTime / 1000));
+      } else {
+        setShowCollapseWarning(false);
+        setCollapseCountdown(0);
+      }
+      
+      // Auto-collapse when time is up
+      if (inactiveTime >= autoCollapseDuration) {
         setViewMode('mini');
         localStorage.setItem('chatbot-view-mode', 'mini');
+        setShowCollapseWarning(false);
+        setCollapseCountdown(0);
         
         // Show toast notification
         toast({
@@ -243,11 +263,11 @@ const ResponsiveAIChatWidget = ({
       }
     };
 
-    // Check every 5 seconds
-    const intervalId = setInterval(checkInactivity, 5000);
+    // Check more frequently (every 500ms) for accurate countdown
+    const intervalId = setInterval(checkInactivity, 500);
     
     return () => clearInterval(intervalId);
-  }, [autoCollapseEnabled, isOpen, viewMode, isMinimized, lastActivityTime, toast]);
+  }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, toast]);
 
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
@@ -1025,6 +1045,63 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               </div>
             </div>
 
+            {/* Auto-collapse warning indicator */}
+            <AnimatePresence>
+              {showCollapseWarning && !isMinimized && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 py-2 bg-orange-500/90 text-white border-b border-orange-600">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity }}
+                        >
+                          ⚠️
+                        </motion.div>
+                        <span className="font-medium">
+                          Auto-collapsing in {collapseCountdown}s due to inactivity
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs text-white hover:bg-white/20"
+                        onClick={() => {
+                          setLastActivityTime(Date.now());
+                          setShowCollapseWarning(false);
+                        }}
+                      >
+                        Stay Open
+                      </Button>
+                    </div>
+                    {/* Progress bar */}
+                    <motion.div
+                      className="h-1 bg-orange-700 mt-1.5 rounded-full overflow-hidden"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <motion.div
+                        className="h-full bg-white"
+                        initial={{ width: '100%' }}
+                        animate={{ width: '0%' }}
+                        transition={{ 
+                          duration: 5, 
+                          ease: 'linear',
+                          repeatType: 'loop'
+                        }}
+                      />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Settings panel - only show when settings is open */}
             {showSettings && !isMinimized && (
               <div className="p-4 border-b border-primary/10 bg-muted/50">
@@ -1076,10 +1153,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   {/* Auto-collapse setting */}
                   <div>
                     <label className="text-sm font-medium mb-2 block">Auto-Collapse</label>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-muted-foreground">
                         {autoCollapseEnabled 
-                          ? 'Chat minimizes after 30s of inactivity' 
+                          ? `Chat minimizes after ${autoCollapseDuration / 1000}s of inactivity` 
                           : 'Manual control only'}
                       </span>
                       <Button
@@ -1090,6 +1167,48 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                         {autoCollapseEnabled ? 'Enabled' : 'Disabled'}
                       </Button>
                     </div>
+                    
+                    {/* Duration selector */}
+                    {autoCollapseEnabled && (
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          variant={autoCollapseDuration === 15000 ? 'default' : 'outline'}
+                          size="sm"
+                          className="flex-1 text-xs"
+                          onClick={() => {
+                            setAutoCollapseDuration(15000);
+                            localStorage.setItem('chatbot-auto-collapse-duration', '15000');
+                            setLastActivityTime(Date.now());
+                          }}
+                        >
+                          15s
+                        </Button>
+                        <Button
+                          variant={autoCollapseDuration === 30000 ? 'default' : 'outline'}
+                          size="sm"
+                          className="flex-1 text-xs"
+                          onClick={() => {
+                            setAutoCollapseDuration(30000);
+                            localStorage.setItem('chatbot-auto-collapse-duration', '30000');
+                            setLastActivityTime(Date.now());
+                          }}
+                        >
+                          30s
+                        </Button>
+                        <Button
+                          variant={autoCollapseDuration === 60000 ? 'default' : 'outline'}
+                          size="sm"
+                          className="flex-1 text-xs"
+                          onClick={() => {
+                            setAutoCollapseDuration(60000);
+                            localStorage.setItem('chatbot-auto-collapse-duration', '60000');
+                            setLastActivityTime(Date.now());
+                          }}
+                        >
+                          60s
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   
                   <Button
