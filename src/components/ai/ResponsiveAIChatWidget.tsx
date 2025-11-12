@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -612,6 +612,121 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       description: "All chatbot settings restored to defaults",
       duration: 3000,
     });
+  };
+
+  // Export preferences to JSON file
+  const exportPreferences = () => {
+    const preferences = {
+      position,
+      size,
+      snapSensitivity,
+      pinnedActions: Array.from(pinnedActions),
+      viewMode,
+      autoCollapseEnabled,
+      autoCollapseDuration,
+      exportedAt: new Date().toISOString(),
+      version: '1.0'
+    };
+
+    const blob = new Blob([JSON.stringify(preferences, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chatbot-preferences-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Preferences exported",
+      description: "Settings saved to file successfully",
+      duration: 3000,
+    });
+  };
+
+  // Import preferences from JSON file
+  const importPreferences = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target?.result as string);
+          
+          // Validate imported data
+          if (!imported.version) {
+            throw new Error('Invalid preferences file');
+          }
+
+          // Apply imported preferences
+          if (imported.position) {
+            setPosition(imported.position);
+            localStorage.setItem('chatbot-position', JSON.stringify(imported.position));
+          }
+          
+          if (imported.size) {
+            setSize(imported.size);
+            localStorage.setItem('chatbot-size', JSON.stringify(imported.size));
+          }
+          
+          if (imported.snapSensitivity) {
+            setSnapSensitivity(imported.snapSensitivity);
+            localStorage.setItem('chatbot-snap-sensitivity', imported.snapSensitivity);
+          }
+          
+          if (imported.pinnedActions && Array.isArray(imported.pinnedActions)) {
+            const newPinned = new Set<string>(imported.pinnedActions);
+            setPinnedActions(newPinned);
+            localStorage.setItem('chatbot-pinned-actions', JSON.stringify(Array.from(newPinned)));
+          }
+          
+          if (imported.viewMode) {
+            setViewMode(imported.viewMode);
+            localStorage.setItem('chatbot-view-mode', imported.viewMode);
+          }
+          
+          if (typeof imported.autoCollapseEnabled === 'boolean') {
+            setAutoCollapseEnabled(imported.autoCollapseEnabled);
+            localStorage.setItem('chatbot-auto-collapse', String(imported.autoCollapseEnabled));
+          }
+          
+          if (imported.autoCollapseDuration) {
+            setAutoCollapseDuration(imported.autoCollapseDuration);
+            localStorage.setItem('chatbot-auto-collapse-duration', String(imported.autoCollapseDuration));
+          }
+          
+          // Reset activity timer
+          setLastActivityTime(Date.now());
+          setCollapseProgress(100);
+          setIsAutoCollapsePaused(false);
+
+          toast({
+            title: "Preferences imported",
+            description: "Settings restored successfully",
+            duration: 3000,
+          });
+        } catch (error) {
+          console.error('Import error:', error);
+          toast({
+            title: "Import failed",
+            description: "Invalid or corrupted preferences file",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      };
+      
+      reader.readAsText(file);
+    };
+    
+    input.click();
   };
 
   // Double-click handler for header
@@ -1523,6 +1638,27 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   >
                     Reset to Default Position
                   </Button>
+                  
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 gap-2"
+                      onClick={exportPreferences}
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      Export
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 gap-2"
+                      onClick={importPreferences}
+                    >
+                      <Upload className="h-3.5 w-3.5" />
+                      Import
+                    </Button>
+                  </div>
                   
                   <Button
                     variant="destructive"
