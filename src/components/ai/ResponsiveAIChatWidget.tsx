@@ -805,12 +805,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             />
           )}
           
-          <div 
+          <motion.div 
             ref={chatWindowRef}
             className={cn(
               "fixed z-[9999]",
-              isDragging || isResizing ? "" : "transition-all duration-300 ease-out",
-              // Animations
+              // Animations for open/close only
               isMobile 
                 ? isClosing 
                   ? "animate-slide-out-bottom" 
@@ -825,6 +824,14 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               isResizing && "cursor-nwse-resize"
             )}
             style={getChatWindowStyle()}
+            animate={{
+              width: isMobile ? '100%' : viewMode === 'mini' ? 380 : size.width,
+              height: isMobile ? '90vh' : isMinimized ? 'auto' : viewMode === 'mini' ? 450 : size.height
+            }}
+            transition={{
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1] // cubic-bezier for smooth transition
+            }}
             role="dialog"
             aria-label="AI Chat Assistant"
             aria-modal="true"
@@ -982,7 +989,13 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             {!isMinimized && (
               <CardContent className="p-0 flex-1 flex flex-col min-h-0">
                 <ScrollArea className="flex-1">
-                  <div className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}>
+                  <motion.div 
+                    className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}
+                    key={viewMode}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <AIChatMessages
                       messages={viewMode === 'mini' ? messages.slice(-3) : messages}
                       isLoading={false}
@@ -993,7 +1006,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     <AnimatePresence>
                       {isLoading && <TypingIndicator />}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                 </ScrollArea>
 
                 {messages.length <= 1 && (
@@ -1031,7 +1044,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               </div>
             )}
           </Card>
-        </div>
+        </motion.div>
         </>
       )}
     </>
