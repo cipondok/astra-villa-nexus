@@ -1,8 +1,15 @@
-import { Bot, GripVertical } from "lucide-react";
+import { Bot, GripVertical, Settings, RotateCcw, Pin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export type ChatButtonVariant = "pulse" | "glow" | "subtle";
 
@@ -11,13 +18,21 @@ interface ChatButtonProps {
   unreadCount?: number;
   variant?: ChatButtonVariant;
   className?: string;
+  onPositionReset?: () => void;
+  onOpenSettings?: () => void;
+  pinnedActions?: Set<string>;
+  onTogglePin?: (actionId: string) => void;
 }
 
 const ChatButton = ({ 
   onClick, 
   unreadCount = 0, 
   variant = "pulse",
-  className 
+  className,
+  onPositionReset,
+  onOpenSettings,
+  pinnedActions = new Set(),
+  onTogglePin
 }: ChatButtonProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -114,42 +129,88 @@ const ChatButton = ({
   };
 
   return (
-    <motion.button
-      drag={isDragging}
-      dragMomentum={false}
-      dragElastic={0}
-      onDragEnd={handleDragEnd}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      className={cn("group", baseStyles, variantStyles[variant], className)}
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-      aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition)"}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-    >
-      <div className="relative">
-        <Bot className="h-6 w-6" aria-hidden="true" />
-        {/* Drag handle indicator - shows on hover */}
-        <GripVertical 
-          className={cn(
-            "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
-            isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
-          )} 
-          aria-hidden="true"
-        />
-      </div>
-      <UnreadBadge count={unreadCount} />
-    </motion.button>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <motion.button
+          drag={isDragging}
+          dragMomentum={false}
+          dragElastic={0}
+          onDragEnd={handleDragEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          className={cn("group", baseStyles, variantStyles[variant], className)}
+          style={{
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+          }}
+          aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onClick();
+            }
+          }}
+        >
+          <div className="relative">
+            <Bot className="h-6 w-6" aria-hidden="true" />
+            {/* Drag handle indicator - shows on hover */}
+            <GripVertical 
+              className={cn(
+                "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
+                isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+              )} 
+              aria-hidden="true"
+            />
+          </div>
+          <UnreadBadge count={unreadCount} />
+        </motion.button>
+      </ContextMenuTrigger>
+      
+      <ContextMenuContent className="w-56">
+        {onOpenSettings && (
+          <>
+            <ContextMenuItem onClick={onOpenSettings} className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+          </>
+        )}
+        
+        {onPositionReset && (
+          <>
+            <ContextMenuItem onClick={onPositionReset} className="cursor-pointer">
+              <RotateCcw className="mr-2 h-4 w-4" />
+              <span>Reset Position</span>
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+          </>
+        )}
+        
+        {onTogglePin && (
+          <>
+            <ContextMenuItem 
+              onClick={() => onTogglePin('scroll-to-top')}
+              className="cursor-pointer"
+            >
+              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('scroll-to-top') && "text-primary")} />
+              <span>{pinnedActions.has('scroll-to-top') ? 'Unpin' : 'Pin'} Scroll to Top</span>
+            </ContextMenuItem>
+            
+            <ContextMenuItem 
+              onClick={() => onTogglePin('image-search')}
+              className="cursor-pointer"
+            >
+              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('image-search') && "text-primary")} />
+              <span>{pinnedActions.has('image-search') ? 'Unpin' : 'Pin'} Image Search</span>
+            </ContextMenuItem>
+          </>
+        )}
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };
 

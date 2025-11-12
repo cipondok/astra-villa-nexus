@@ -737,6 +737,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
             onClick={handleOpen}
             unreadCount={unreadCount}
             variant={buttonVariant}
+            onPositionReset={resetToDefaultPosition}
+            onOpenSettings={() => setShowSettings(true)}
+            pinnedActions={pinnedActions}
+            onTogglePin={togglePinAction}
           />
         </div>
       )}
