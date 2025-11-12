@@ -859,19 +859,31 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               <div className="flex items-center gap-2">
                 {/* View Mode Toggle */}
                 {!isMobile && !isMinimized && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleViewMode();
-                    }}
-                    aria-label={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
-                    title={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                  <motion.div
+                    whileTap={{ scale: 0.85 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    {viewMode === 'mini' ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
-                  </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleViewMode();
+                      }}
+                      aria-label={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                      title={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                    >
+                      <motion.div
+                        key={viewMode}
+                        initial={{ rotate: 0, scale: 0.8 }}
+                        animate={{ rotate: 360, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                      >
+                        {viewMode === 'mini' ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+                      </motion.div>
+                    </Button>
+                  </motion.div>
                 )}
                 {/* Settings */}
                 {!isMobile && (
