@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X, Pin, PinOff, Maximize2, Minimize2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -41,6 +41,10 @@ const ResponsiveAIChatWidget = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [viewMode, setViewMode] = useState<'mini' | 'full'>(() => {
+    const saved = localStorage.getItem('chatbot-view-mode');
+    return (saved as 'mini' | 'full') || 'full';
+  });
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -161,6 +165,15 @@ const ResponsiveAIChatWidget = ({
     }
     setPinnedActions(newPinned);
     localStorage.setItem('chatbot-pinned-actions', JSON.stringify(Array.from(newPinned)));
+  };
+
+  // Toggle view mode
+  const toggleViewMode = () => {
+    setViewMode(prev => {
+      const newValue = prev === 'mini' ? 'full' : 'mini';
+      localStorage.setItem('chatbot-view-mode', newValue);
+      return newValue;
+    });
   };
 
   // Auto-scroll to bottom when messages change
@@ -626,12 +639,15 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       };
     }
     
-    // Desktop: use saved position and size
+    // Desktop: use saved position and size, with mini mode adjustments
+    const miniModeWidth = 380;
+    const miniModeHeight = 450;
+    
     return { 
       left: `${position.x}px`,
       top: `${position.y}px`,
-      width: `${size.width}px`,
-      height: isMinimized ? 'auto' : `${size.height}px`
+      width: viewMode === 'mini' ? `${miniModeWidth}px` : `${size.width}px`,
+      height: isMinimized ? 'auto' : viewMode === 'mini' ? `${miniModeHeight}px` : `${size.height}px`
     };
   };
 
@@ -827,8 +843,27 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
                 <span className="font-semibold text-sm">AI Assistant</span>
+                {viewMode === 'mini' && (
+                  <span className="text-xs opacity-80 font-normal">(Mini)</span>
+                )}
               </div>
               <div className="flex items-center gap-2">
+                {/* View Mode Toggle */}
+                {!isMobile && !isMinimized && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleViewMode();
+                    }}
+                    aria-label={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                    title={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                  >
+                    {viewMode === 'mini' ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+                  </Button>
+                )}
                 {/* Settings */}
                 {!isMobile && (
                   <Button
@@ -947,7 +982,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 <ScrollArea className="flex-1">
                   <div className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}>
                     <AIChatMessages
-                      messages={messages}
+                      messages={viewMode === 'mini' ? messages.slice(-3) : messages}
                       isLoading={false}
                       messagesEndRef={messagesEndRef}
                       onReaction={handleReaction}
