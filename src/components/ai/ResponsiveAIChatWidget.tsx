@@ -20,6 +20,7 @@ import { useChatPersistence } from "@/hooks/useChatPersistence";
 import { useHapticFeedback } from "@/hooks/useHapticFeedback";
 import { useCustomSounds, SoundEvent } from "@/hooks/useCustomSounds";
 import { useChatbotPreferencesSync } from "@/hooks/useChatbotPreferencesSync";
+import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
 import { ChatbotConflictDialog } from "./ChatbotConflictDialog";
 import { ChatbotWelcomeDialog } from "./ChatbotWelcomeDialog";
 import { AnimatePresence } from "framer-motion";
@@ -99,6 +100,7 @@ const ResponsiveAIChatWidget = ({
   const [typingStatus, setTypingStatus] = useState("AI is thinking");
   const [showStarredMessages, setShowStarredMessages] = useState(false);
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
+  const [isProcessingVoice, setIsProcessingVoice] = useState(false);
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
@@ -123,6 +125,9 @@ const ResponsiveAIChatWidget = ({
   
   // Haptic feedback
   const haptic = useHapticFeedback();
+  
+  // Voice recording
+  const { isRecording, recordingDuration, startRecording, stopRecording, cancelRecording } = useVoiceRecorder();
   
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
@@ -820,6 +825,91 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     };
 
     recognition.start();
+  };
+
+  // Handle voice recording (record audio and transcribe)
+  const handleStartVoiceRecording = async () => {
+    try {
+      await startRecording();
+      toast({
+        title: "Recording started",
+        description: "Speak your message...",
+      });
+    } catch (error) {
+      console.error('Error starting recording:', error);
+    }
+  };
+
+  const handleStopVoiceRecording = async () => {
+    try {
+      setIsProcessingVoice(true);
+      const audioBlob = await stopRecording();
+      
+      if (!audioBlob) {
+        toast({
+          title: "Recording Error",
+          description: "Failed to capture audio",
+          variant: "destructive",
+        });
+        setIsProcessingVoice(false);
+        return;
+      }
+
+      // Convert blob to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(audioBlob);
+      reader.onloadend = async () => {
+        const base64Audio = reader.result?.toString().split(',')[1];
+        
+        if (!base64Audio) {
+          toast({
+            title: "Processing Error",
+            description: "Failed to process audio",
+            variant: "destructive",
+          });
+          setIsProcessingVoice(false);
+          return;
+        }
+
+        try {
+          // Send to transcription edge function
+          const { data, error } = await supabase.functions.invoke('transcribe-audio', {
+            body: { audio: base64Audio }
+          });
+
+          if (error) throw error;
+
+          if (data?.text) {
+            // Set the transcribed text as message and send it
+            setMessage(data.text);
+            
+            // Automatically send the message
+            setTimeout(() => {
+              handleSendMessage(data.text);
+            }, 100);
+
+            toast({
+              title: "Voice message received",
+              description: "Message transcribed successfully",
+            });
+          } else {
+            throw new Error('No transcription received');
+          }
+        } catch (error) {
+          console.error('Transcription error:', error);
+          toast({
+            title: "Transcription Error",
+            description: "Failed to transcribe audio. Please try again.",
+            variant: "destructive",
+          });
+        } finally {
+          setIsProcessingVoice(false);
+        }
+      };
+    } catch (error) {
+      console.error('Error stopping recording:', error);
+      setIsProcessingVoice(false);
+    }
   };
 
   // Get snap thresholds based on sensitivity
@@ -2278,6 +2368,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     onVoiceInput={handleVoiceInput}
                     isLoading={isLoading}
                     isListening={isListening}
+                    isRecording={isRecording}
+                    isProcessingVoice={isProcessingVoice}
+                    recordingDuration={recordingDuration}
+                    onStartRecording={handleStartVoiceRecording}
+                    onStopRecording={handleStopVoiceRecording}
                   />
                 </div>
               </CardContent>
