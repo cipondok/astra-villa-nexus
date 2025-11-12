@@ -853,15 +853,30 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           </div>
           
           {/* Main Chat Button */}
-          <ChatButton 
-            onClick={handleOpen}
-            unreadCount={unreadCount}
-            variant={buttonVariant}
-            onPositionReset={resetToDefaultPosition}
-            onOpenSettings={() => setShowSettings(true)}
-            pinnedActions={pinnedActions}
-            onTogglePin={togglePinAction}
-          />
+          <div className="relative">
+            <ChatButton 
+              onClick={handleOpen}
+              unreadCount={unreadCount}
+              variant={buttonVariant}
+              onPositionReset={resetToDefaultPosition}
+              onOpenSettings={() => setShowSettings(true)}
+              pinnedActions={pinnedActions}
+              onTogglePin={togglePinAction}
+            />
+            {/* Pause indicator badge */}
+            {isAutoCollapsePaused && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg border-2 border-white"
+                title="Auto-collapse paused"
+              >
+                <span className="text-xs">⏸️</span>
+              </motion.div>
+            )}
+          </div>
         </div>
       )}
 
@@ -967,43 +982,54 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   <motion.div
                     whileTap={{ scale: 0.85 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    className="relative"
+                    className="relative group/progress"
                   >
                     {/* Circular progress ring */}
                     {autoCollapseEnabled && !isAutoCollapsePaused && viewMode === 'full' && collapseProgress < 100 && (
-                      <svg
-                        className="absolute inset-0 w-full h-full -rotate-90"
-                        viewBox="0 0 36 36"
-                      >
-                        {/* Background circle */}
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="16"
-                          fill="none"
-                          stroke="rgba(255, 255, 255, 0.2)"
-                          strokeWidth="2"
-                        />
-                        {/* Progress circle */}
-                        <motion.circle
-                          cx="18"
-                          cy="18"
-                          r="16"
-                          fill="none"
-                          stroke={collapseProgress < 20 ? "rgb(239, 68, 68)" : "rgb(255, 255, 255)"}
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                          initial={{ strokeDasharray: "100 100", strokeDashoffset: 0 }}
-                          animate={{ 
-                            strokeDasharray: "100 100",
-                            strokeDashoffset: 100 - collapseProgress
-                          }}
-                          transition={{ duration: 0.3, ease: "linear" }}
-                          style={{
-                            filter: collapseProgress < 20 ? "drop-shadow(0 0 4px rgb(239, 68, 68))" : "none"
-                          }}
-                        />
-                      </svg>
+                      <>
+                        <svg
+                          className="absolute inset-0 w-full h-full -rotate-90"
+                          viewBox="0 0 36 36"
+                        >
+                          {/* Background circle */}
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            stroke="rgba(255, 255, 255, 0.2)"
+                            strokeWidth="2"
+                          />
+                          {/* Progress circle */}
+                          <motion.circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            stroke={collapseProgress < 20 ? "rgb(239, 68, 68)" : "rgb(255, 255, 255)"}
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            initial={{ strokeDasharray: "100 100", strokeDashoffset: 0 }}
+                            animate={{ 
+                              strokeDasharray: "100 100",
+                              strokeDashoffset: 100 - collapseProgress
+                            }}
+                            transition={{ duration: 0.3, ease: "linear" }}
+                            style={{
+                              filter: collapseProgress < 20 ? "drop-shadow(0 0 4px rgb(239, 68, 68))" : "none"
+                            }}
+                          />
+                        </svg>
+                        {/* Hover tooltip showing exact time */}
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          whileHover={{ opacity: 1, y: 0 }}
+                          className="absolute -top-10 left-1/2 -translate-x-1/2 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover/progress:opacity-100 transition-opacity z-50"
+                        >
+                          {Math.ceil((collapseProgress / 100) * (autoCollapseDuration / 1000))}s remaining
+                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-border" />
+                        </motion.div>
+                      </>
                     )}
                     <Button
                       variant="ghost"
