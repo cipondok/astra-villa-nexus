@@ -1515,6 +1515,54 @@ export type Database = {
           },
         ]
       }
+      chatbot_preferences: {
+        Row: {
+          auto_collapse_duration: number | null
+          auto_collapse_enabled: boolean | null
+          created_at: string
+          custom_sounds: Json | null
+          id: string
+          pinned_actions: Json | null
+          position: Json | null
+          size: Json | null
+          snap_sensitivity: number | null
+          sound_mute: boolean | null
+          updated_at: string
+          user_id: string
+          view_mode: string | null
+        }
+        Insert: {
+          auto_collapse_duration?: number | null
+          auto_collapse_enabled?: boolean | null
+          created_at?: string
+          custom_sounds?: Json | null
+          id?: string
+          pinned_actions?: Json | null
+          position?: Json | null
+          size?: Json | null
+          snap_sensitivity?: number | null
+          sound_mute?: boolean | null
+          updated_at?: string
+          user_id: string
+          view_mode?: string | null
+        }
+        Update: {
+          auto_collapse_duration?: number | null
+          auto_collapse_enabled?: boolean | null
+          created_at?: string
+          custom_sounds?: Json | null
+          id?: string
+          pinned_actions?: Json | null
+          position?: Json | null
+          size?: Json | null
+          snap_sensitivity?: number | null
+          sound_mute?: boolean | null
+          updated_at?: string
+          user_id?: string
+          view_mode?: string | null
+        }
+        Relationships: []
+      }
       cloudflare_audit_log: {
         Row: {
           action: string

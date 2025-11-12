@@ -19,6 +19,7 @@ import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useChatPersistence } from "@/hooks/useChatPersistence";
 import { useHapticFeedback } from "@/hooks/useHapticFeedback";
 import { useCustomSounds, SoundEvent } from "@/hooks/useCustomSounds";
+import { useChatbotPreferencesSync } from "@/hooks/useChatbotPreferencesSync";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -107,58 +108,103 @@ const ResponsiveAIChatWidget = ({
   
   // Chat persistence
   const { persistedMessages, persistedConversationId, saveChat, clearChat } = useChatPersistence(user?.id);
+  
+  // Cloud sync for preferences
+  const { isAuthenticated, isLoading: isSyncLoading, loadFromCloud, saveToCloud, deleteFromCloud } = useChatbotPreferencesSync();
 
-  // Load saved position, size, snap sensitivity, pinned actions, and check if user has seen quick actions
+  // Load preferences from cloud on auth (prioritize cloud over local)
   useEffect(() => {
-    if (!isMobile) {
-      const savedPosition = localStorage.getItem('chatbot-position');
-      const savedSize = localStorage.getItem('chatbot-size');
-      const savedSensitivity = localStorage.getItem('chatbot-snap-sensitivity') as 'tight' | 'normal' | 'loose' | null;
-      const savedPinnedActions = localStorage.getItem('chatbot-pinned-actions');
-      
-      if (savedPosition) {
-        const pos = JSON.parse(savedPosition);
-        // Validate position is within viewport
-        const maxX = window.innerWidth - 320; // min width
-        const maxY = window.innerHeight - 200; // min visible height
-        setPosition({
-          x: Math.max(0, Math.min(pos.x, maxX)),
-          y: Math.max(0, Math.min(pos.y, maxY))
-        });
-      } else {
-        // Default position: bottom-right with margins
-        setPosition({
-          x: window.innerWidth - 420 - 24,
-          y: window.innerHeight - 680 - 24
-        });
+    if (isSyncLoading) return;
+    
+    const loadPreferences = async () => {
+      if (isAuthenticated) {
+        // User is logged in - try to load from cloud first
+        const cloudPrefs = await loadFromCloud();
+        
+        if (cloudPrefs) {
+          // Apply cloud preferences
+          if (!isMobile) {
+            const maxX = window.innerWidth - 320;
+            const maxY = window.innerHeight - 200;
+            setPosition({
+              x: Math.max(0, Math.min(cloudPrefs.position.x, maxX)),
+              y: Math.max(0, Math.min(cloudPrefs.position.y, maxY))
+            });
+            setSize({
+              width: Math.max(320, Math.min(cloudPrefs.size.width, 600)),
+              height: Math.max(400, Math.min(cloudPrefs.size.height, window.innerHeight - 48))
+            });
+            setSnapSensitivity(cloudPrefs.snapSensitivity === 50 ? 'normal' : cloudPrefs.snapSensitivity === 30 ? 'tight' : 'loose');
+            setPinnedActions(new Set(cloudPrefs.pinnedActions));
+          }
+          
+          setViewMode(cloudPrefs.viewMode);
+          setAutoCollapseEnabled(cloudPrefs.autoCollapseEnabled);
+          setAutoCollapseDuration(cloudPrefs.autoCollapseDuration);
+          toggleMute(); // Apply mute preference
+          if (cloudPrefs.soundMute !== isMuted) {
+            toggleMute();
+          }
+          
+          toast({
+            title: "Settings synced",
+            description: "Your preferences have been loaded from the cloud",
+            duration: 2000,
+          });
+          
+          return; // Don't load from localStorage if cloud sync succeeded
+        }
       }
       
-      if (savedSize) {
-        const s = JSON.parse(savedSize);
-        setSize({
-          width: Math.max(320, Math.min(s.width, 600)),
-          height: Math.max(400, Math.min(s.height, window.innerHeight - 48))
-        });
-      }
-      
-      if (savedSensitivity) {
-        setSnapSensitivity(savedSensitivity);
-      }
+      // Fall back to localStorage if not authenticated or no cloud data
+      if (!isMobile) {
+        const savedPosition = localStorage.getItem('chatbot-position');
+        const savedSize = localStorage.getItem('chatbot-size');
+        const savedSensitivity = localStorage.getItem('chatbot-snap-sensitivity') as 'tight' | 'normal' | 'loose' | null;
+        const savedPinnedActions = localStorage.getItem('chatbot-pinned-actions');
+        
+        if (savedPosition) {
+          const pos = JSON.parse(savedPosition);
+          const maxX = window.innerWidth - 320;
+          const maxY = window.innerHeight - 200;
+          setPosition({
+            x: Math.max(0, Math.min(pos.x, maxX)),
+            y: Math.max(0, Math.min(pos.y, maxY))
+          });
+        } else {
+          setPosition({
+            x: window.innerWidth - 420 - 24,
+            y: window.innerHeight - 680 - 24
+          });
+        }
+        
+        if (savedSize) {
+          const s = JSON.parse(savedSize);
+          setSize({
+            width: Math.max(320, Math.min(s.width, 600)),
+            height: Math.max(400, Math.min(s.height, window.innerHeight - 48))
+          });
+        }
+        
+        if (savedSensitivity) {
+          setSnapSensitivity(savedSensitivity);
+        }
 
-      if (savedPinnedActions) {
-        setPinnedActions(new Set(JSON.parse(savedPinnedActions)));
+        if (savedPinnedActions) {
+          setPinnedActions(new Set(JSON.parse(savedPinnedActions)));
+        }
       }
-    }
+    };
+
+    loadPreferences();
 
     // Check if user has seen quick actions hint
     const seenQuickActions = localStorage.getItem('chatbot-seen-quick-actions');
     const seenTooltip = localStorage.getItem('chatbot-seen-tooltip');
     
     if (!seenQuickActions) {
-      // Show quick actions after 3 seconds for first-time users
       const timer = setTimeout(() => {
         setShowQuickActionsHint(true);
-        // Hide after 4 seconds
         setTimeout(() => {
           setShowQuickActionsHint(false);
           localStorage.setItem('chatbot-seen-quick-actions', 'true');
@@ -173,7 +219,32 @@ const ResponsiveAIChatWidget = ({
     if (!seenTooltip) {
       setShowTooltip(true);
     }
-  }, [isMobile]);
+  }, [isMobile, isAuthenticated, isSyncLoading]);
+
+  // Sync preferences to cloud when they change
+  useEffect(() => {
+    if (!isAuthenticated || isSyncLoading) return;
+    
+    const syncPreferences = async () => {
+      const snapSensitivityValue = snapSensitivity === 'tight' ? 30 : snapSensitivity === 'loose' ? 70 : 50;
+      
+      await saveToCloud({
+        position,
+        size,
+        snapSensitivity: snapSensitivityValue,
+        pinnedActions: Array.from(pinnedActions),
+        viewMode,
+        autoCollapseEnabled,
+        autoCollapseDuration,
+        soundMute: isMuted,
+        customSounds: customSounds || [],
+      });
+    };
+    
+    // Debounce sync to avoid excessive updates
+    const timeoutId = setTimeout(syncPreferences, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [isAuthenticated, position, size, snapSensitivity, pinnedActions, viewMode, autoCollapseEnabled, autoCollapseDuration, isMuted, customSounds, isSyncLoading, saveToCloud]);
 
   // Handle tooltip on first hover
   const handleFirstHover = () => {
@@ -635,7 +706,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   };
 
   // Reset all chatbot preferences to defaults
-  const resetAllPreferences = () => {
+  const resetAllPreferences = async () => {
     // Clear all chatbot-related localStorage items
     localStorage.removeItem('chatbot-position');
     localStorage.removeItem('chatbot-size');
@@ -649,6 +720,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     
     // Reset custom sounds
     resetAllSounds();
+    
+    // Delete from cloud if authenticated
+    if (isAuthenticated) {
+      await deleteFromCloud();
+    }
     
     // Reset state to defaults
     const defaultSize = { width: 420, height: 680 };
@@ -673,7 +749,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     
     toast({
       title: "Preferences reset",
-      description: "All chatbot settings restored to defaults",
+      description: isAuthenticated 
+        ? "All chatbot settings restored to defaults and cleared from cloud"
+        : "All chatbot settings restored to defaults",
       duration: 3000,
     });
   };
