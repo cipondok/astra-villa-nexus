@@ -430,7 +430,7 @@ const Index = () => {
       	/>
       
       {/* Content Layer with mobile-first responsive backdrop */}
-      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2 pt-4 md:pt-6">
+      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2">
         
         
         {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
