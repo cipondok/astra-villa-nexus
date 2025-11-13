@@ -46,16 +46,17 @@ const ChatButton = ({
       setPosition(JSON.parse(saved));
     } else {
       // Default: bottom-right corner
+      const buttonSize = window.innerWidth >= 768 ? 56 : 48;
       setPosition({
-        x: window.innerWidth - 80,
-        y: window.innerHeight - 80,
+        x: window.innerWidth - buttonSize - 20,
+        y: window.innerHeight - buttonSize - 20,
       });
     }
   }, []);
 
   const baseStyles = cn(
     "fixed z-[9999]",
-    "h-14 w-14 rounded-full",
+    "h-12 w-12 md:h-14 md:w-14 rounded-full",
     "text-white shadow-lg",
     "flex items-center justify-center",
     "transition-all duration-300 ease-out",
@@ -119,9 +120,11 @@ const ChatButton = ({
   };
 
   const handleDragEnd = (_: any, info: { point: { x: number; y: number } }) => {
+    const buttonSize = window.innerWidth >= 768 ? 56 : 48; // Match responsive size
+    const halfSize = buttonSize / 2;
     // Constrain to viewport with 20px padding
-    const newX = Math.max(20, Math.min(window.innerWidth - 76, info.point.x - 28)); // 28 = half button size
-    const newY = Math.max(20, Math.min(window.innerHeight - 76, info.point.y - 28));
+    const newX = Math.max(20, Math.min(window.innerWidth - buttonSize - 20, info.point.x - halfSize));
+    const newY = Math.max(20, Math.min(window.innerHeight - buttonSize - 20, info.point.y - halfSize));
     
     setPosition({ x: newX, y: newY });
     localStorage.setItem('chat_button_pos', JSON.stringify({ x: newX, y: newY }));
