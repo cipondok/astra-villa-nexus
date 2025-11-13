@@ -93,6 +93,7 @@ const ResponsiveAIChatWidget = ({
   const [collapseCountdown, setCollapseCountdown] = useState(0);
   const [isAutoCollapsePaused, setIsAutoCollapsePaused] = useState(false);
   const [collapseProgress, setCollapseProgress] = useState(100);
+  const [unreadCountWhileMinimized, setUnreadCountWhileMinimized] = useState(0);
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   const [conflictData, setConflictData] = useState<any>(null);
   const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
@@ -491,6 +492,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       saveChat(messages, conversationId);
     }
   }, [messages, conversationId, saveChat]);
+
+  // Track unread messages when minimized
+  useEffect(() => {
+    if (isMinimized && messages.length > 0) {
+      // Increment unread count when new messages arrive while minimized
+      setUnreadCountWhileMinimized(prev => prev + 1);
+    } else if (!isMinimized) {
+      // Reset unread count when expanded
+      setUnreadCountWhileMinimized(0);
+    }
+  }, [messages.length, isMinimized]);
 
   // Track unread messages and play sound notification
   useEffect(() => {
@@ -1849,41 +1861,92 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             </div>
 
             {/* Minimized Message Preview */}
-            {isMinimized && messages.length > 0 && (
+            {isMinimized && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="px-4 py-3 bg-muted/50 border-b border-border cursor-pointer hover:bg-muted/70 transition-colors"
+                className="px-4 py-3 bg-muted/50 border-b border-border cursor-pointer hover:bg-muted/70 transition-colors relative"
                 onClick={() => setIsMinimized(false)}
               >
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    {messages[messages.length - 1].role === 'assistant' ? (
-                      <Bot className="h-4 w-4 text-primary" />
-                    ) : (
-                      <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
-                        <span className="text-xs text-primary font-medium">
-                          {messages[messages.length - 1].role === 'user' ? 'U' : 'A'}
+                {/* Unread badge */}
+                {unreadCountWhileMinimized > 0 && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center shadow-lg z-10"
+                  >
+                    {unreadCountWhileMinimized > 9 ? '9+' : unreadCountWhileMinimized}
+                  </motion.div>
+                )}
+                
+                {isLoading ? (
+                  // Show typing indicator when AI is responding
+                  <div className="flex items-center gap-3">
+                    <Bot className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-medium text-foreground">AI Assistant</span>
+                        <span className="text-xs text-muted-foreground">· Typing...</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <motion.div
+                          className="w-2 h-2 bg-primary rounded-full"
+                          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-primary rounded-full"
+                          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-primary rounded-full"
+                          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : messages.length > 0 ? (
+                  // Show last message preview
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-0.5">
+                      {messages[messages.length - 1].role === 'assistant' ? (
+                        <Bot className="h-4 w-4 text-primary" />
+                      ) : (
+                        <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
+                          <span className="text-xs text-primary font-medium">
+                            {messages[messages.length - 1].role === 'user' ? 'U' : 'A'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-medium text-foreground">
+                          {messages[messages.length - 1].role === 'assistant' ? 'AI Assistant' : 'You'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          · Click to expand
                         </span>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium text-foreground">
-                        {messages[messages.length - 1].role === 'assistant' ? 'AI Assistant' : 'You'}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        · Click to expand
-                      </span>
+                      <p className="text-sm text-foreground/80 line-clamp-2">
+                        {messages[messages.length - 1].content}
+                      </p>
                     </div>
-                    <p className="text-sm text-foreground/80 line-clamp-2">
-                      {messages[messages.length - 1].content}
-                    </p>
                   </div>
-                </div>
+                ) : (
+                  // No messages yet
+                  <div className="flex items-center gap-3">
+                    <Bot className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="flex-1">
+                      <span className="text-xs font-medium text-foreground">No messages yet</span>
+                      <p className="text-xs text-muted-foreground">Click to start chatting</p>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 
