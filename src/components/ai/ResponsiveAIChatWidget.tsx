@@ -1848,6 +1848,45 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               </div>
             </div>
 
+            {/* Minimized Message Preview */}
+            {isMinimized && messages.length > 0 && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="px-4 py-3 bg-muted/50 border-b border-border cursor-pointer hover:bg-muted/70 transition-colors"
+                onClick={() => setIsMinimized(false)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {messages[messages.length - 1].role === 'assistant' ? (
+                      <Bot className="h-4 w-4 text-primary" />
+                    ) : (
+                      <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span className="text-xs text-primary font-medium">
+                          {messages[messages.length - 1].role === 'user' ? 'U' : 'A'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-medium text-foreground">
+                        {messages[messages.length - 1].role === 'assistant' ? 'AI Assistant' : 'You'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        · Click to expand
+                      </span>
+                    </div>
+                    <p className="text-sm text-foreground/80 line-clamp-2">
+                      {messages[messages.length - 1].content}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* Auto-collapse warning indicator */}
             <AnimatePresence>
               {showCollapseWarning && !isMinimized && (
