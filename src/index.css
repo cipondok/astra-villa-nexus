@@ -39,6 +39,20 @@ html {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   scrollbar-gutter: stable both-edges;
+  scroll-behavior: smooth;
+  scroll-padding-top: 56px; /* Mobile: 40px header + 16px spacing */
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 60px; /* Medium: 44px header + 16px spacing */
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 64px; /* Large: 48px header + 16px spacing */
+  }
 }
 
 body {
