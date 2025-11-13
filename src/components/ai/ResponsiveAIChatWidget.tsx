@@ -466,16 +466,19 @@ const ResponsiveAIChatWidget = ({
       const welcomeMessage: Message = {
         id: 'welcome',
         role: 'assistant',
-        content: `👋 Hi! I'm your AI assistant. I can help you with:
+        content: `✨ Welcome to Astra Villa!
 
-🏠 Property recommendations and details
-💰 Rental term negotiations
-🏡 Neighborhood questions
-🛠️ Vendor service bookings  
-🎯 3D property tour guidance
-💡 Real estate advice
+I'm your personal property concierge, here to make your real estate journey effortless and enjoyable.
 
-${propertyId ? "I see you're viewing a property. Feel free to ask me anything about it!" : "How can I assist you today?"}`,
+**I can help you with:**
+🏠 Find your dream property with smart recommendations
+💰 Negotiate the best rental terms for you
+🏡 Discover neighborhoods and local insights
+🛠️ Book trusted vendor services instantly
+🎯 Experience properties through immersive 3D tours
+💡 Get expert real estate advice
+
+${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it - pricing, features, neighborhood, or anything else!" : "What would you like to explore today? ✨"}`,
         timestamp: new Date()
       };
       setMessages([welcomeMessage]);
