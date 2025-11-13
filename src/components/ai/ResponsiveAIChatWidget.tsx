@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Minus, Square, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -1819,13 +1819,20 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMinimized(!isMinimized);
+                    toast({
+                      title: isMinimized ? "Chat expanded" : "Chat minimized",
+                      description: isMinimized ? "Chat window restored" : "Click the button to restore",
+                      duration: 2000,
+                    });
                   }}
+                  aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
+                  title={isMinimized ? "Expand chat" : "Minimize chat"}
                 >
-                  {isMinimized ? '□' : '−'}
+                  {isMinimized ? <Square className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
                 </Button>
                 <Button
                   variant="ghost"
