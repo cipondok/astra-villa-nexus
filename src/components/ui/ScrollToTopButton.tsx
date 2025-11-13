@@ -76,7 +76,7 @@ const ScrollToTopButton = () => {
                 cy="24"
                 r="22"
                 fill="none"
-                stroke="hsl(var(--primary))"
+                stroke="hsl(var(--accent))"
                 strokeWidth="3"
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
