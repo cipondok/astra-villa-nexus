@@ -63,6 +63,7 @@ import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
+import ResponsiveAIChatWidget from '@/components/ai/ResponsiveAIChatWidget';
 import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
 import MarketplaceCategory from '@/pages/MarketplaceCategory';
@@ -195,6 +196,7 @@ function App() {
                           <Sonner />
                           <CookieSystem />
                           <ScrollToTopButton />
+                          <ResponsiveAIChatWidget />
                         </PropertyComparisonProvider>
                       </NotificationProvider>
                     </AuthProvider>

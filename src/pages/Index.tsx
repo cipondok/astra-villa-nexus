@@ -807,15 +807,6 @@ const Index = () => {
           className="hidden"
         />
 
-        {/* AI Chat Widget - Always visible with integrated quick actions */}
-        <Suspense fallback={null}>
-          <ResponsiveAIChatWidget 
-            buttonVariant="pulse"
-            onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            onImageSearch={() => imageInputRef.current?.click()}
-            showScrollButton={showScrollButton}
-          />
-        </Suspense>
         
         {/* WhatsApp Inquiry Dialog */}
         {selectedProperty && (
