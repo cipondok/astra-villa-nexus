@@ -62,6 +62,7 @@ import PartnerBenefits from '@/pages/partners/PartnerBenefits';
 import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
 import MarketplaceCategory from '@/pages/MarketplaceCategory';
@@ -193,6 +194,7 @@ function App() {
                           <Toaster />
                           <Sonner />
                           <CookieSystem />
+                          <ScrollToTopButton />
                         </PropertyComparisonProvider>
                       </NotificationProvider>
                     </AuthProvider>
