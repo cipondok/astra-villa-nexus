@@ -1383,7 +1383,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-3 right-3 z-[9999] group" onMouseEnter={handleFirstHover}>
+        <div className="fixed bottom-3 right-3 z-[99999] group" onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
@@ -1522,30 +1522,30 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             <>
               {/* Edge indicators */}
               {snapIndicator === 'left' && (
-                <div className="fixed left-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+                <div className="fixed left-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
               )}
               {snapIndicator === 'right' && (
-                <div className="fixed right-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+                <div className="fixed right-0 top-0 bottom-0 w-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
               )}
               {snapIndicator === 'top' && (
-                <div className="fixed top-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+                <div className="fixed top-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
               )}
               {snapIndicator === 'bottom' && (
-                <div className="fixed bottom-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse" />
+                <div className="fixed bottom-0 left-0 right-0 h-1 bg-blue-500/60 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse" />
               )}
               
               {/* Corner indicators */}
               {snapIndicator === 'top-left' && (
-                <div className="fixed top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-br-lg" />
+                <div className="fixed top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-br-lg" />
               )}
               {snapIndicator === 'top-right' && (
-                <div className="fixed top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-bl-lg" />
+                <div className="fixed top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-bl-lg" />
               )}
               {snapIndicator === 'bottom-left' && (
-                <div className="fixed bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-tr-lg" />
+                <div className="fixed bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-tr-lg" />
               )}
               {snapIndicator === 'bottom-right' && (
-                <div className="fixed bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[9997] animate-pulse rounded-tl-lg" />
+                <div className="fixed bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/50 z-[99997] animate-pulse rounded-tl-lg" />
               )}
             </>
           )}
@@ -1553,7 +1553,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           {/* Backdrop overlay for mobile */}
           {isMobile && (
             <div 
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998]"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99998]"
               onClick={handleClose}
             />
           )}
@@ -1561,7 +1561,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           <motion.div 
             ref={chatWindowRef}
             className={cn(
-              "fixed z-[9999]",
+              "fixed z-[99999]",
               // Animations for open/close only
               isMobile 
                 ? isClosing 
