@@ -1875,7 +1875,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center shadow-lg z-10"
+                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center shadow-lg z-10 animate-pulse"
                   >
                     {unreadCountWhileMinimized > 9 ? '9+' : unreadCountWhileMinimized}
                   </motion.div>
