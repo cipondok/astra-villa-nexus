@@ -4,12 +4,14 @@ export interface TooltipPreferences {
   enabled: boolean;
   delay: number;
   position: 'top' | 'right' | 'bottom' | 'left';
+  theme: 'light' | 'dark' | 'colorful';
 }
 
 const DEFAULT_PREFERENCES: TooltipPreferences = {
   enabled: true,
   delay: 300,
   position: 'top',
+  theme: 'dark',
 };
 
 export const useTooltipPreferences = () => {

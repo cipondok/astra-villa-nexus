@@ -203,6 +203,29 @@ export const UserPreferences = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-3">
+              <Label htmlFor="tooltip-theme" className="text-sm font-medium">
+                Tooltip Theme
+                <div className="text-xs text-muted-foreground font-normal">Visual style of tooltips</div>
+              </Label>
+              <Select
+                value={tooltipPrefs.theme}
+                onValueChange={(value: 'light' | 'dark' | 'colorful') => 
+                  updateTooltipPrefs({ theme: value })
+                }
+                disabled={!tooltipPrefs.enabled}
+              >
+                <SelectTrigger id="tooltip-theme" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
+                  <SelectItem value="colorful">Colorful</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
