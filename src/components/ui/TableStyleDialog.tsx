@@ -3,14 +3,14 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface TableRow {
+export interface TableRow {
   label: string;
   value: ReactNode;
   icon?: LucideIcon;
   className?: string;
 }
 
-interface TableSection {
+export interface TableSection {
   title?: string;
   icon?: LucideIcon;
   rows: TableRow[];

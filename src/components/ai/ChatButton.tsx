@@ -146,16 +146,19 @@ const ChatButton = ({
       // Convert blob to file for search
       const file = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
       
+      console.log('Starting image search with file:', file.name, file.size);
       const results = await searchByImage(file);
+      console.log('Search results:', results);
       
-      if (results.properties.length > 0) {
+      if (results?.properties && results.properties.length > 0) {
         toast.success(`Found ${results.properties.length} similar properties!`);
       } else {
         toast.info('No similar properties found. Try a different image.');
       }
     } catch (error) {
       console.error('Image search error:', error);
-      toast.error('Failed to search by image. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to search by image';
+      toast.error(errorMessage);
       setShowImageSearchModal(false);
     }
   };
