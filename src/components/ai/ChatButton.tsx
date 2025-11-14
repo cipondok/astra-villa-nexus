@@ -1,7 +1,7 @@
-import { Bot, GripVertical, Settings, RotateCcw, Pin } from "lucide-react";
+import { Bot, GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import {
   ContextMenu,
@@ -37,7 +37,10 @@ const ChatButton = ({
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isLongPress, setIsLongPress] = useState(false);
+  const [isScrollingUp, setIsScrollingUp] = useState(false);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastScrollY = useRef(0);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load saved position on mount
   useEffect(() => {
@@ -52,6 +55,39 @@ const ChatButton = ({
         y: window.innerHeight - buttonSize - 20,
       });
     }
+  }, []);
+
+  // Detect scroll direction
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < lastScrollY.current && currentScrollY > 100) {
+        // Scrolling up
+        setIsScrollingUp(true);
+        
+        // Clear existing timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        
+        // Hide indicator after 2 seconds
+        scrollTimeoutRef.current = setTimeout(() => {
+          setIsScrollingUp(false);
+        }, 2000);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, []);
 
   const baseStyles = cn(
@@ -167,6 +203,19 @@ const ChatButton = ({
               )} 
               aria-hidden="true"
             />
+            {/* Scroll up indicator */}
+            <AnimatePresence>
+              {isScrollingUp && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.5, y: 10 }}
+                  className="absolute -top-1 -left-1 bg-primary rounded-full p-1 shadow-lg"
+                >
+                  <ArrowUp className="h-3 w-3 text-primary-foreground" aria-hidden="true" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           <UnreadBadge count={unreadCount} />
         </motion.button>
