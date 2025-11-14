@@ -374,9 +374,12 @@ const ChatButton = ({
               if (!isDragging) setShowFunctionMenu(false);
             }}
             onClick={() => {
-              if (!isDragging && !isLongPress) {
-                setShowFunctionMenu(!showFunctionMenu);
+              if (isDragging || isLongPress) return;
+              if (showScrollTop) {
+                scrollToTop();
+                return;
               }
+              setShowFunctionMenu(!showFunctionMenu);
             }}
             className={cn("group", baseStyles, variantStyles[variant], className)}
             style={{
@@ -394,14 +397,18 @@ const ChatButton = ({
             }}
           >
             <div className="relative">
-            {/* Main Icon - Always show Sparkles */}
+            {/* Main Icon: ArrowUp when scrolled, otherwise Sparkles */}
             <motion.div
               animate={{ 
                 rotate: showFunctionMenu ? 180 : 0,
               }}
               transition={{ duration: 0.3 }}
             >
-              <Sparkles className="w-6 h-6" />
+              {showScrollTop ? (
+                <ArrowUp className="w-6 h-6" />
+              ) : (
+                <Sparkles className="w-6 h-6" />
+              )}
             </motion.div>
               
               {/* Scroll Progress Indicator */}
