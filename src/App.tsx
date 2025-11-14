@@ -22,6 +22,7 @@ import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
 import Profile from '@/pages/Profile';
 import Settings from '@/pages/Settings';
+import DesignSystemSettings from '@/pages/admin/DesignSystemSettings';
 import Auth from '@/pages/Auth';
 import Services from '@/pages/Services';
 import ServiceCategory from '@/pages/ServiceCategory';
@@ -61,6 +62,7 @@ import BecomePartner from '@/pages/partners/BecomePartner';
 import PartnerBenefits from '@/pages/partners/PartnerBenefits';
 import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import ResponsiveAIChatWidget from '@/components/ai/ResponsiveAIChatWidget';
 import Community from '@/pages/Community';
@@ -109,6 +111,7 @@ const AppContent = () => {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/admin/design-system" element={<DesignSystemSettings />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           {/* Redirect other agent URLs to main dashboard */}
           <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
@@ -185,21 +188,23 @@ function App() {
           <Router key="app">
             <QueryClientProvider client={queryClient}>
               <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-                <LanguageProvider>
-                  <AlertProvider>
-                    <AuthProvider>
-                      <NotificationProvider>
-                        <PropertyComparisonProvider>
-                          <AppContent />
-                          <Toaster />
-                          <Sonner />
-                          <CookieSystem />
-                          <ResponsiveAIChatWidget />
-                        </PropertyComparisonProvider>
-                      </NotificationProvider>
-                    </AuthProvider>
-                  </AlertProvider>
-                </LanguageProvider>
+                <DesignSystemProvider>
+                  <LanguageProvider>
+                    <AlertProvider>
+                      <AuthProvider>
+                        <NotificationProvider>
+                          <PropertyComparisonProvider>
+                            <AppContent />
+                            <Toaster />
+                            <Sonner />
+                            <CookieSystem />
+                            <ResponsiveAIChatWidget />
+                          </PropertyComparisonProvider>
+                        </NotificationProvider>
+                      </AuthProvider>
+                    </AlertProvider>
+                  </LanguageProvider>
+                </DesignSystemProvider>
               </ThemeProvider>
             </QueryClientProvider>
           </Router>

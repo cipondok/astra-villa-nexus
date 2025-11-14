@@ -275,6 +275,13 @@ export const navigationSections = {
       description: "Configure global system settings"
     },
     {
+      key: "design-system",
+      label: "Design System",
+      icon: ImageIcon,
+      description: "Configure global design styles, colors, typography, and UI components",
+      badge: "New"
+    },
+    {
       key: "captcha-settings",
       label: "Captcha Security",
       icon: Shield,
