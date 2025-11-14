@@ -219,7 +219,7 @@ const ChatButton = ({
 
   const baseStyles = cn(
     "fixed z-[9999]",
-    "h-12 w-12 md:h-14 md:w-14 rounded-full",
+    "h-[80px] w-[80px] rounded-full",
     "text-white",
     "flex items-center justify-center",
     "transition-all duration-300 ease-out",
@@ -236,7 +236,7 @@ const ChatButton = ({
 
   const variantStyles: Record<ChatButtonVariant, string> = {
     pulse: cn(
-      "bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500",
+      "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500",
       "hover:from-pink-600 hover:via-purple-600 hover:to-cyan-600",
       "shadow-[0_0_30px_rgba(168,85,247,0.6),0_0_60px_rgba(236,72,153,0.4)]",
       !isDragging && "hover:shadow-[0_0_40px_rgba(168,85,247,0.8),0_0_80px_rgba(236,72,153,0.6)]"
@@ -310,7 +310,7 @@ const ChatButton = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative animate-bounce">
       <input
         ref={fileInputRef}
         type="file"
@@ -351,7 +351,7 @@ const ChatButton = ({
             className="fixed z-[9998] flex flex-col gap-3"
             style={{
               left: `${position.x}px`,
-              top: `${position.y - 180}px`,
+              top: `${position.y - 200}px`,
             }}
           >
             {/* Image Search */}
@@ -489,6 +489,15 @@ const ChatButton = ({
               )}
             </div>
             <UnreadBadge count={unreadCount} />
+
+            {/* AI Badge */}
+            <div className="absolute -top-2 -right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 shadow">
+              <Sparkles className="inline-block w-3 h-3 mr-1" />
+              AI
+            </div>
+
+            {/* Pulsing ring */}
+            <div className="pointer-events-none absolute inset-0 rounded-full animate-ping bg-primary/20" />
 
             {/* Pulse effect on hover */}
             {!isDragging && (
