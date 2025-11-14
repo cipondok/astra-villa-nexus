@@ -1617,7 +1617,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         strokeDasharray={2 * Math.PI * 18}
                         strokeDashoffset={2 * Math.PI * 18 - (scrollProgress / 100) * (2 * Math.PI * 18)}
                         strokeLinecap="round"
-                        className="transition-all duration-500 ease-out"
+                        className={cn(
+                          "transition-all duration-500 ease-out",
+                          scrollProgress >= 99 && "animate-pulse"
+                        )}
                         style={{ filter: 'drop-shadow(0 0 4px currentColor)' }}
                       />
                     </svg>
