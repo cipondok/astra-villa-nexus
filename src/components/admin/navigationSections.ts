@@ -240,6 +240,13 @@ export const navigationSections = {
 
   "content-settings": [
     {
+      key: "carousel-settings",
+      label: "Featured Properties Carousel",
+      icon: ImageIcon,
+      description: "Configure auto-scrolling carousel for featured properties",
+      badge: "New"
+    },
+    {
       key: "homepage-slider",
       label: "Homepage Slider",
       icon: ImageIcon,
