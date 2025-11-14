@@ -1535,7 +1535,15 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           {/* Main Chat Button */}
           <div className="relative">
             <ChatButton 
-              onClick={handleOpen}
+              onClick={() => {
+                // When scrolled down, scroll to top first
+                if (showScrollToTop) {
+                  scrollToTop();
+                } else {
+                  // When at top, open chat
+                  handleOpen();
+                }
+              }}
               unreadCount={unreadCount}
               variant={buttonVariant}
               onPositionReset={resetToDefaultPosition}
@@ -1543,31 +1551,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               pinnedActions={pinnedActions}
               onTogglePin={togglePinAction}
             />
-            {/* Pause indicator badge */}
-            {isAutoCollapsePaused && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ 
-                  scale: 1,
-                  boxShadow: [
-                    "0 0 0 0 rgba(59, 130, 246, 0.7)",
-                    "0 0 0 10px rgba(59, 130, 246, 0)",
-                    "0 0 0 0 rgba(59, 130, 246, 0)"
-                  ]
-                }}
-                exit={{ scale: 0 }}
-                transition={{ 
-                  scale: { type: "spring", stiffness: 500, damping: 25 },
-                  boxShadow: { duration: 2, repeat: Infinity, ease: "easeOut" }
-                }}
-                className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg border-2 border-white"
-                title="Auto-collapse paused"
-              >
-                <span className="text-xs">⏸️</span>
-              </motion.div>
-            )}
             
-            {/* Scroll to top button overlay */}
+            {/* Scroll to top button overlay - now integrated into main button */}
             <AnimatePresence>
               {showScrollToTop && (
                 <motion.div
@@ -1590,50 +1575,47 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     damping: 25,
                     mass: 0.8
                   }}
-                  className="absolute -top-3 -left-3"
+                  className="absolute inset-0 pointer-events-none flex items-center justify-center"
                 >
                   <div className="relative">
-                    {/* Progress ring */}
+                    {/* Progress ring overlay */}
                     <svg
-                      className="absolute inset-0 w-10 h-10 -rotate-90 pointer-events-none transition-all duration-300"
-                      viewBox="0 0 40 40"
+                      className="w-16 h-16 md:w-20 md:h-20 -rotate-90"
+                      viewBox="0 0 80 80"
                     >
                       <circle
-                        cx="20"
-                        cy="20"
-                        r="18"
+                        cx="40"
+                        cy="40"
+                        r="36"
                         fill="none"
-                        stroke="hsl(var(--primary-foreground))"
-                        strokeWidth="2.5"
-                        opacity="0.2"
+                        stroke="hsl(var(--background))"
+                        strokeWidth="4"
+                        opacity="0.3"
                       />
                       <circle
-                        cx="20"
-                        cy="20"
-                        r="18"
+                        cx="40"
+                        cy="40"
+                        r="36"
                         fill="none"
                         stroke={getScrollProgressColor(scrollProgress)}
-                        strokeWidth="2.5"
-                        strokeDasharray={2 * Math.PI * 18}
-                        strokeDashoffset={2 * Math.PI * 18 - (scrollProgress / 100) * (2 * Math.PI * 18)}
+                        strokeWidth="4"
+                        strokeDasharray={2 * Math.PI * 36}
+                        strokeDashoffset={2 * Math.PI * 36 - (scrollProgress / 100) * (2 * Math.PI * 36)}
                         strokeLinecap="round"
                         className={cn(
                           "transition-all duration-500 ease-out",
                           scrollProgress >= 99 && "animate-pulse"
                         )}
-                        style={{ filter: 'drop-shadow(0 0 4px currentColor)' }}
+                        style={{ filter: 'drop-shadow(0 0 6px currentColor)' }}
                       />
                     </svg>
                     
-                    <Button
-                      onClick={scrollToTop}
-                      className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90 shadow-xl hover:shadow-primary/25 hover:scale-110 transition-all duration-300 border-2 border-background"
-                      size="icon"
-                      aria-label="Scroll to top"
-                      title={`${Math.round(scrollProgress)}% scrolled`}
-                    >
-                      <ArrowUp className="h-4 w-4 text-primary-foreground transition-transform group-hover:translate-y-[-2px] duration-200" />
-                    </Button>
+                    {/* Scroll percentage indicator */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-primary-foreground bg-background/80 backdrop-blur-sm px-1.5 py-0.5 rounded-full border border-primary/20">
+                        {Math.round(scrollProgress)}%
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               )}
