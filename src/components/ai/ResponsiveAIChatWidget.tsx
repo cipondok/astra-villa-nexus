@@ -1485,14 +1485,14 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           
           {/* Quick Action Items - Show on hover, hint, or if pinned */}
           <div className={cn(
-            "absolute bottom-20 right-0 transition-all duration-300 flex flex-col gap-3",
+            "absolute bottom-20 right-0 transition-all duration-700 flex flex-col gap-3",
             showQuickActionsHint || pinnedActions.size > 0
               ? "opacity-100 pointer-events-auto" 
               : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
           )}>
             {/* Scroll to Top */}
             {showScrollButton && onScrollToTop && (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 group/action">
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
                 <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
                   Scroll to Top
                 </span>
@@ -1525,7 +1525,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             
             {/* Image Search */}
             {onImageSearch && (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-300 delay-75 group/action">
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 delay-150 group/action">
                 <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
                   Image Search
                 </span>
@@ -1634,7 +1634,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99998]"
               onClick={handleClose}
             />
@@ -1646,8 +1646,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1 }}
             exit={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.95, opacity: 0 }}
             transition={{
-              duration: 0.4,
-              ease: [0.16, 1, 0.3, 1] // Smooth easing curve
+              duration: 0.8,
+              ease: [0.25, 0.46, 0.45, 0.94] // Smooth slow easing curve
             }}
             className={cn(
               "fixed z-[99999]",
@@ -1939,7 +1939,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
                 className={cn(
                   "px-4 py-3 bg-muted/50 border-b border-border cursor-pointer hover:bg-muted/70 transition-colors relative",
                   unreadCountWhileMinimized > 0 && "animate-pulse"
@@ -2036,7 +2036,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
                   <div className="px-4 py-2 bg-orange-500/90 text-white border-b border-orange-600">
@@ -2110,7 +2110,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
                   <div className="px-4 py-2 bg-blue-500/90 text-white border-b border-blue-600">
@@ -2517,7 +2517,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     key={viewMode}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
                   >
                     <AIChatMessages
                       messages={viewMode === 'mini' ? messages.slice(-3) : messages}
