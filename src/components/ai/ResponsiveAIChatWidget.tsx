@@ -64,6 +64,8 @@ const ResponsiveAIChatWidget = ({
   const [conversationId, setConversationId] = useState<string>("");
   const [isListening, setIsListening] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   
   // Position and size state with defaults
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -522,6 +524,37 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       setUnreadCount(0);
     }
   }, [isOpen]);
+
+  // Scroll detection for scroll-to-top functionality
+  useEffect(() => {
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.pageYOffset;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = (scrollTop / docHeight) * 100;
+          
+          setScrollProgress(Math.min(progress, 100));
+          setShowScrollToTop(scrollTop > 300);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to top handler
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   // Handle open
   const handleOpen = () => {
@@ -1510,6 +1543,59 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <span className="text-xs">⏸️</span>
               </motion.div>
             )}
+            
+            {/* Scroll to top button overlay */}
+            <AnimatePresence>
+              {showScrollToTop && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="absolute -top-3 -left-3"
+                >
+                  <div className="relative">
+                    {/* Progress ring */}
+                    <svg
+                      className="absolute inset-0 w-10 h-10 -rotate-90 pointer-events-none"
+                      viewBox="0 0 40 40"
+                    >
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r="18"
+                        fill="none"
+                        stroke="hsl(var(--primary-foreground))"
+                        strokeWidth="2.5"
+                        opacity="0.2"
+                      />
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r="18"
+                        fill="none"
+                        stroke="hsl(var(--accent))"
+                        strokeWidth="2.5"
+                        strokeDasharray={2 * Math.PI * 18}
+                        strokeDashoffset={2 * Math.PI * 18 - (scrollProgress / 100) * (2 * Math.PI * 18)}
+                        strokeLinecap="round"
+                        className="transition-all duration-300 ease-out"
+                      />
+                    </svg>
+                    
+                    <Button
+                      onClick={scrollToTop}
+                      className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90 shadow-xl hover:shadow-primary/25 hover:scale-110 transition-all duration-300 border-2 border-background"
+                      size="icon"
+                      aria-label="Scroll to top"
+                      title={`${Math.round(scrollProgress)}% scrolled`}
+                    >
+                      <ArrowUp className="h-4 w-4 text-primary-foreground" />
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       )}
