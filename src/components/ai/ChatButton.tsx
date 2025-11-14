@@ -60,11 +60,11 @@ const ChatButton = ({
     "fixed z-[9999]",
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
     "shadow-lg",
-    "transition-all duration-300 ease-out",
+    "transition-all duration-200 ease-out",
     "border-2 border-transparent",
     "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500",
     "p-[2px]",
-    !isDragging && "transform hover:scale-110",
+    !isDragging && "transform hover:scale-110 active:scale-95",
     isDragging && "scale-105 shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
     isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
@@ -149,6 +149,12 @@ const ChatButton = ({
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
+          whileTap={{ scale: 0.92 }}
+          transition={{ 
+            type: "spring",
+            stiffness: 400,
+            damping: 17
+          }}
           className={cn("group", baseStyles, variantStyles[variant], className)}
           style={{
             left: `${position.x}px`,

@@ -1592,10 +1592,11 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       )}
 
       {/* Chat window - positioned fixed with backdrop */}
-      {isOpen && (
-        <>
-          {/* Snap indicators */}
-          {!isMobile && snapIndicator && (
+      <AnimatePresence mode="wait">
+        {isOpen && (
+          <>
+            {/* Snap indicators */}
+            {!isMobile && snapIndicator && (
             <>
               {/* Edge indicators */}
               {snapIndicator === 'left' && (
@@ -1629,7 +1630,11 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           
           {/* Backdrop overlay for mobile */}
           {isMobile && (
-            <div 
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99998]"
               onClick={handleClose}
             />
@@ -1637,16 +1642,15 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           
           <motion.div 
             ref={chatWindowRef}
+            initial={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.9, opacity: 0 }}
+            animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1 }}
+            exit={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.95, opacity: 0 }}
+            transition={{
+              duration: 0.4,
+              ease: [0.16, 1, 0.3, 1] // Smooth easing curve
+            }}
             className={cn(
               "fixed z-[99999]",
-              // Animations for open/close only
-              isMobile 
-                ? isClosing 
-                  ? "animate-slide-out-bottom" 
-                  : "animate-slide-in-bottom"
-                : isClosing 
-                  ? "animate-fade-out animate-scale-out" 
-                  : "animate-fade-in animate-scale-in",
               // Shadow and overflow
               "shadow-2xl",
               "overflow-visible",
@@ -1654,14 +1658,6 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               isResizing && "cursor-nwse-resize"
             )}
             style={getChatWindowStyle()}
-            animate={{
-              width: isMobile ? '100%' : viewMode === 'mini' ? 380 : size.width,
-              height: isMobile ? '90vh' : isMinimized ? 'auto' : viewMode === 'mini' ? 450 : size.height
-            }}
-            transition={{
-              duration: 0.3,
-              ease: [0.4, 0, 0.2, 1] // cubic-bezier for smooth transition
-            }}
             role="dialog"
             aria-label="AI Chat Assistant"
             aria-modal="true"
@@ -2586,6 +2582,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
         </motion.div>
         </>
       )}
+      </AnimatePresence>
 
       {/* Conflict Resolution Dialog */}
       <ChatbotConflictDialog
