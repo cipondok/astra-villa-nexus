@@ -1867,7 +1867,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="px-4 py-3 bg-muted/50 border-b border-border cursor-pointer hover:bg-muted/70 transition-colors relative"
+                className={cn(
+                  "px-4 py-3 bg-muted/50 border-b border-border cursor-pointer hover:bg-muted/70 transition-colors relative",
+                  unreadCountWhileMinimized > 0 && "animate-pulse"
+                )}
                 onClick={() => setIsMinimized(false)}
               >
                 {/* Unread badge */}
@@ -1875,7 +1878,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center shadow-lg z-10 animate-pulse"
+                    className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center z-10 animate-pulse"
+                    style={{
+                      boxShadow: '0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.3)'
+                    }}
                   >
                     {unreadCountWhileMinimized > 9 ? '9+' : unreadCountWhileMinimized}
                   </motion.div>
