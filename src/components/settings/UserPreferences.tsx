@@ -2,14 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUserPreferences } from '@/hooks/useUserPreferences';
-import { useTooltipPreferences } from '@/hooks/useTooltipPreferences';
-import { Settings2, Bell, Mail, Eye, Layout, Info } from 'lucide-react';
+import { Settings2, Bell, Mail, Eye, Layout } from 'lucide-react';
 
 export const UserPreferences = () => {
   const { preferences, isLoading, isSaving, updatePreferences } = useUserPreferences();
-  const { preferences: tooltipPrefs, updatePreferences: updateTooltipPrefs } = useTooltipPreferences();
 
   if (isLoading) {
     return (
@@ -132,99 +129,6 @@ export const UserPreferences = () => {
                 }
                 disabled={isSaving}
               />
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Tooltip Preferences Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Info className="h-4 w-4 text-primary" />
-            <h3 className="font-semibold text-sm sm:text-base text-foreground">Tooltip Preferences</h3>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50 hover:bg-muted/50 transition-colors">
-              <Label htmlFor="tooltips-enabled" className="flex-1 cursor-pointer">
-                <div className="font-medium text-sm">Enable Tooltips</div>
-                <div className="text-xs text-muted-foreground">Show helpful tooltips throughout the app</div>
-              </Label>
-              <Switch
-                id="tooltips-enabled"
-                checked={tooltipPrefs.enabled}
-                onCheckedChange={(checked) => updateTooltipPrefs({ enabled: checked })}
-              />
-            </div>
-
-            <div className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-3">
-              <Label htmlFor="tooltip-delay" className="text-sm font-medium">
-                Tooltip Delay (ms)
-                <div className="text-xs text-muted-foreground font-normal">Time before tooltip appears</div>
-              </Label>
-              <Select
-                value={tooltipPrefs.delay.toString()}
-                onValueChange={(value) => updateTooltipPrefs({ delay: parseInt(value) })}
-                disabled={!tooltipPrefs.enabled}
-              >
-                <SelectTrigger id="tooltip-delay" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">Instant</SelectItem>
-                  <SelectItem value="150">Fast (150ms)</SelectItem>
-                  <SelectItem value="300">Normal (300ms)</SelectItem>
-                  <SelectItem value="500">Slow (500ms)</SelectItem>
-                  <SelectItem value="700">Very Slow (700ms)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-3">
-              <Label htmlFor="tooltip-position" className="text-sm font-medium">
-                Default Position
-                <div className="text-xs text-muted-foreground font-normal">Preferred tooltip position</div>
-              </Label>
-              <Select
-                value={tooltipPrefs.position}
-                onValueChange={(value: 'top' | 'right' | 'bottom' | 'left') => 
-                  updateTooltipPrefs({ position: value })
-                }
-                disabled={!tooltipPrefs.enabled}
-              >
-                <SelectTrigger id="tooltip-position" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="top">Top</SelectItem>
-                  <SelectItem value="right">Right</SelectItem>
-                  <SelectItem value="bottom">Bottom</SelectItem>
-                  <SelectItem value="left">Left</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-3">
-              <Label htmlFor="tooltip-theme" className="text-sm font-medium">
-                Tooltip Theme
-                <div className="text-xs text-muted-foreground font-normal">Visual style of tooltips</div>
-              </Label>
-              <Select
-                value={tooltipPrefs.theme}
-                onValueChange={(value: 'light' | 'dark' | 'colorful') => 
-                  updateTooltipPrefs({ theme: value })
-                }
-                disabled={!tooltipPrefs.enabled}
-              >
-                <SelectTrigger id="tooltip-theme" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="dark">Dark</SelectItem>
-                  <SelectItem value="colorful">Colorful</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
         </div>

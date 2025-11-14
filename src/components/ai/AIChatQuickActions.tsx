@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { QuickAction } from "./types";
 
 interface AIChatQuickActionsProps {
@@ -15,24 +14,16 @@ const AIChatQuickActions = ({ quickActions, onActionClick }: AIChatQuickActionsP
       <div className="text-xs text-gray-600 mb-2">Quick actions:</div>
       <div className="flex flex-col gap-1">
         {quickActions.map((action, index) => (
-          <TooltipProvider key={index}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="justify-start text-xs h-8"
-                  onClick={() => onActionClick(action.action)}
-                >
-                  <action.icon className="h-3 w-3 mr-2" />
-                  {action.text}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                {action.text}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button
+            key={index}
+            variant="ghost"
+            size="sm"
+            className="justify-start text-xs h-8"
+            onClick={() => onActionClick(action.action)}
+          >
+            <action.icon className="h-3 w-3 mr-2" />
+            {action.text}
+          </Button>
         ))}
       </div>
     </div>

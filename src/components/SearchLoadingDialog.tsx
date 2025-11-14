@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TableStyleDialog, TableStats } from "@/components/ui/TableStyleDialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Bot, Search, Sparkles } from "lucide-react";
 
@@ -35,15 +35,19 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
 
       const interval = setInterval(() => {
         setProgress(prev => {
-          const newProgress = Math.min(prev + (100 / 30), 95);
+          const newProgress = Math.min(prev + (100 / 30), 95); // 30 intervals over 3 seconds
+          
+          // Update step based on progress
           const stepIndex = Math.floor((newProgress / 100) * searchSteps.length);
           if (stepIndex < searchSteps.length) {
             setCurrentStep(searchSteps[stepIndex]);
           }
+          
           return newProgress;
         });
-      }, 100);
+      }, 100); // Update every 100ms
 
+      // Simulate search count updates
       const countInterval = setInterval(() => {
         setSearchCount(prev => {
           if (prev === null) return Math.floor(Math.random() * 50) + 20;
@@ -51,11 +55,14 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
         });
       }, 300);
 
+      // Complete after exactly 3 seconds
       const timeout = setTimeout(() => {
         setProgress(100);
         setCurrentStep("Search completed!");
-        setTimeout(() => onOpenChange(false), 500);
-      }, 3000);
+        setTimeout(() => {
+          onOpenChange(false);
+        }, 500);
+      }, 3000); // Exactly 3 seconds
 
       return () => {
         clearInterval(interval);
@@ -66,80 +73,73 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
   }, [open, onOpenChange]);
 
   return (
-    <TableStyleDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      title="ASTRA Villa AI Search"
-      description="Intelligent Property Discovery Engine"
-      icon={Bot}
-      maxWidth="2xl"
-      showProgress={{ value: Math.round(progress) }}
-      sections={searchQuery ? [
-        {
-          rows: [
-            {
-              label: "Query",
-              value: <span className="font-medium">{searchQuery}</span>,
-              icon: Search
-            }
-          ]
-        }
-      ] : []}
-      footer={
-        <div className="flex items-center justify-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <p className="text-xs text-muted-foreground">
-            Powered by ASTRA AI • Advanced Property Matching Algorithms
-          </p>
-        </div>
-      }
-    >
-      {/* Progress Status */}
-      <div className="bg-muted/30 rounded-lg border border-border/50 overflow-hidden">
-        <table className="w-full">
-          <tbody>
-            <tr className="border-b border-border/50">
-              <td className="px-4 py-3 bg-muted/20" colSpan={2}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                    <span className="text-sm font-semibold text-foreground">Processing Status</span>
-                  </div>
-                  <span className="text-xs font-semibold text-primary px-2 py-1 bg-primary/10 rounded-full">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="px-4 py-4" colSpan={2}>
-                <div className="space-y-2">
-                  <Progress value={progress} className="h-2.5" />
-                  <p className="text-center text-sm text-muted-foreground animate-pulse font-medium">
-                    {currentStep}
-                  </p>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg bg-background/100 border border-primary/20 p-0 shadow-2xl animate-scale-in backdrop-blur-none">
+        <div className="flex flex-col items-center justify-center px-12 py-12 space-y-8">
+          {/* ASTRA AI Logo with Animation */}
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
+              <Bot className="h-8 w-8 text-primary-foreground" />
+            </div>
+            {/* Floating sparkles */}
+            <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-primary animate-bounce" />
+            <div className="absolute -top-2 -left-2 w-3 h-3 bg-primary/30 rounded-full animate-ping" />
+            <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-secondary rounded-full animate-pulse" />
+          </div>
 
-      {/* Search Statistics */}
-      {searchCount !== null && (
-        <TableStats
-          stats={[
-            {
-              label: "Properties Scanned",
-              value: <span className="text-2xl font-bold text-primary">{searchCount}</span>
-            },
-            {
-              label: "AI Confidence Score",
-              value: <span className="text-2xl font-bold text-primary">{Math.round(progress)}%</span>
-            }
-          ]}
-        />
-      )}
-    </TableStyleDialog>
+          {/* ASTRA Villa Branding */}
+          <div className="text-center space-y-2">
+            <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              ASTRA Villa
+            </h3>
+            <p className="text-sm text-muted-foreground font-medium">
+              AI-Powered Property Search
+            </p>
+          </div>
+
+          {/* Search Query Display */}
+          {searchQuery && (
+            <div className="bg-muted/50 rounded-lg px-4 py-2 border border-primary/10">
+              <div className="flex items-center gap-2 text-sm">
+                <Search className="h-3 w-3 text-primary" />
+                <span className="text-muted-foreground">Searching for:</span>
+                <span className="font-medium text-foreground">"{searchQuery}"</span>
+              </div>
+            </div>
+          )}
+
+          {/* Progress Bar */}
+          <div className="w-full space-y-3">
+            <Progress 
+              value={progress} 
+              className="h-2 bg-muted/50"
+            />
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{Math.round(progress)}% complete</span>
+              {searchCount !== null && (
+                <span className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                  {searchCount} properties found
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Current Step */}
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground animate-fade-in">
+              {currentStep}
+            </p>
+          </div>
+
+          {/* Animated dots */}
+          <div className="flex space-x-1">
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]" />
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]" />
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

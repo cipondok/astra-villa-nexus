@@ -1,7 +1,8 @@
-import { TableStyleDialog, TableFormField } from "@/components/ui/TableStyleDialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { BaseProperty } from "@/types/property";
@@ -51,92 +52,121 @@ ${message}`;
   };
 
   return (
-    <TableStyleDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      title="WhatsApp Inquiry"
-      description="Connect with us instantly via WhatsApp"
-      icon={MessageCircle}
-      maxWidth="2xl"
-      sections={[
-        {
-          title: "Property Details",
-          rows: [
-            { label: "Title", value: <span className="font-semibold">{property.title}</span> },
-            { label: "Location", value: property.location || property.city || "N/A" },
-            { 
-              label: "Type", 
-              value: (
-                <Badge variant="default" className="text-xs bg-primary text-primary-foreground">
-                  {property.property_type}
-                </Badge>
-              )
-            },
-            { 
-              label: "Price", 
-              value: <span className="text-lg font-bold text-primary">Rp {property.price?.toLocaleString('id-ID')}</span>
-            }
-          ]
-        }
-      ]}
-      footer={
-        <p className="text-xs text-center text-muted-foreground">
-          Your inquiry will be sent directly to our WhatsApp business account
-        </p>
-      }
-    >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <TableFormField label="Full Name" icon={User}>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your full name"
-            required
-            className="bg-background border-border/50"
-          />
-        </TableFormField>
-
-        <TableFormField label="Phone Number" icon={Phone}>
-          <Input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+62 812-3456-7890"
-            required
-            className="bg-background border-border/50"
-          />
-        </TableFormField>
-
-        <TableFormField label="Message" icon={MessageCircle}>
-          <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="I'm interested in this property..."
-            rows={4}
-            required
-            className="bg-background border-border/50 resize-none"
-          />
-        </TableFormField>
-
-        <div className="flex gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="flex-1 border-border/50 hover:bg-muted/50"
-          >
-            Cancel
-          </Button>
-          <Button 
-            type="submit" 
-            className="flex-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-md"
-          >
-            <MessageCircle className="h-4 w-4 mr-2" />
-            Send via WhatsApp
-          </Button>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md bg-background/60 backdrop-blur-xl border-primary/20 shadow-2xl p-0 gap-0 overflow-hidden">
+        {/* Header with gradient */}
+        <div className="bg-gradient-to-r from-primary to-primary/80 p-5 text-primary-foreground">
+          <DialogHeader className="space-y-1">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm">
+                <MessageCircle className="h-6 w-6" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-bold">Send WhatsApp Inquiry</DialogTitle>
+                <DialogDescription className="text-primary-foreground/80 text-sm">
+                  Connect with us instantly
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
         </div>
-      </form>
-    </TableStyleDialog>
+        
+        <div className="p-5 space-y-4">
+          {/* Property Info Card */}
+          <div className="rounded-lg border-2 border-primary/20 bg-gradient-to-br from-accent/30 to-accent/50 p-4 space-y-2 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <h4 className="font-bold text-base text-foreground leading-tight line-clamp-2">
+                  {property.title}
+                </h4>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {property.location || property.city}
+                </p>
+              </div>
+              <Badge variant="default" className="shrink-0 text-xs bg-primary text-primary-foreground">
+                {property.property_type}
+              </Badge>
+            </div>
+            <div className="pt-2 border-t border-border/50">
+              <p className="text-lg font-extrabold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                Rp {property.price?.toLocaleString('id-ID')}
+              </p>
+            </div>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="name" className="text-foreground font-semibold flex items-center gap-2 text-xs">
+                <User className="h-3.5 w-3.5 text-primary" />
+                Full Name
+              </Label>
+              <Input
+                id="name"
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="h-10 border-2 border-border/50 focus:border-primary bg-background text-foreground placeholder:text-muted-foreground"
+              />
+            </div>
+            
+            <div className="space-y-1.5">
+              <Label htmlFor="phone" className="text-foreground font-semibold flex items-center gap-2 text-xs">
+                <Phone className="h-3.5 w-3.5 text-primary" />
+                WhatsApp Number
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+62 812 3456 7890"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                className="h-10 border-2 border-border/50 focus:border-primary bg-background text-foreground placeholder:text-muted-foreground"
+              />
+            </div>
+            
+            <div className="space-y-1.5">
+              <Label htmlFor="message" className="text-foreground font-semibold flex items-center gap-2 text-xs">
+                <MessageCircle className="h-3.5 w-3.5 text-primary" />
+                Your Message
+              </Label>
+              <Textarea
+                id="message"
+                placeholder="Hi! I'm interested in this property..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                rows={3}
+                className="border-2 border-border/50 focus:border-primary bg-background text-foreground placeholder:text-muted-foreground resize-none text-sm"
+              />
+            </div>
+            
+            <div className="flex gap-2 pt-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+                className="flex-1 h-10 border-2 hover:bg-accent text-sm"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="flex-1 h-10 bg-[#25D366] hover:bg-[#1fb855] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
+              >
+                <MessageCircle className="h-4 w-4 mr-1.5" />
+                Send WhatsApp
+              </Button>
+            </div>
+          </form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

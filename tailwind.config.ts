@@ -238,10 +238,6 @@ const config: Config = {
             transform: "translateY(100%)",
             opacity: "0"
           }
-        },
-        "spin-slow": {
-          "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(360deg)" }
         }
       },
       animation: {
@@ -262,7 +258,6 @@ const config: Config = {
         "slide-out-right": "slide-out-right 0.3s ease-in",
         "slide-in-bottom": "slide-in-bottom 0.3s ease-out",
         "slide-out-bottom": "slide-out-bottom 0.3s ease-in",
-        "spin-slow": "spin-slow 3s linear infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Minus, Square, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -1473,46 +1472,28 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   Scroll to Top
                 </span>
                 <div className="relative">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={onScrollToTop}
-                          className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                          size="icon"
-                        >
-                          <ArrowUp className="h-5 w-5 text-white" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" sideOffset={5}>
-                        Scroll to Top
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            togglePinAction('scroll-top');
-                          }}
-                          className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          {pinnedActions.has('scroll-top') ? (
-                            <PinOff className="h-3 w-3" />
-                          ) : (
-                            <Pin className="h-3 w-3" />
-                          )}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" sideOffset={5}>
-                        {pinnedActions.has('scroll-top') ? 'Unpin Action' : 'Pin Action'}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Button
+                    onClick={onScrollToTop}
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                    size="icon"
+                  >
+                    <ArrowUp className="h-5 w-5 text-white" />
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePinAction('scroll-top');
+                    }}
+                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    {pinnedActions.has('scroll-top') ? (
+                      <PinOff className="h-3 w-3" />
+                    ) : (
+                      <Pin className="h-3 w-3" />
+                    )}
+                  </Button>
                 </div>
               </div>
             )}
@@ -1524,73 +1505,52 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   Image Search
                 </span>
                 <div className="relative">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={onImageSearch}
-                          className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
-                          size="icon"
-                        >
-                          <Camera className="h-5 w-5 text-white" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" sideOffset={5}>
-                        Image Search
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            togglePinAction('image-search');
-                          }}
-                          className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          {pinnedActions.has('image-search') ? (
-                            <PinOff className="h-3 w-3" />
-                          ) : (
-                            <Pin className="h-3 w-3" />
-                          )}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" sideOffset={5}>
-                        {pinnedActions.has('image-search') ? 'Unpin Action' : 'Pin Action'}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Button
+                    onClick={onImageSearch}
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                    size="icon"
+                  >
+                    <Camera className="h-5 w-5 text-white" />
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePinAction('image-search');
+                    }}
+                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    {pinnedActions.has('image-search') ? (
+                      <PinOff className="h-3 w-3" />
+                    ) : (
+                      <Pin className="h-3 w-3" />
+                    )}
+                  </Button>
                 </div>
               </div>
             )}
           </div>
           
           {/* Main Chat Button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="relative">
-                  <ChatButton 
-                    onClick={() => {
-                      // When scrolled down, scroll to top first
-                      if (showScrollToTop) {
-                        scrollToTop();
-                      } else {
-                        // When at top, open chat
-                        handleOpen();
-                      }
-                    }}
-                    unreadCount={unreadCount}
-                    variant={buttonVariant}
-                    onPositionReset={resetToDefaultPosition}
-                    onOpenSettings={() => setShowSettings(true)}
-                    pinnedActions={pinnedActions}
-                    onTogglePin={togglePinAction}
-                  />
+          <div className="relative">
+            <ChatButton 
+              onClick={() => {
+                // When scrolled down, scroll to top first
+                if (showScrollToTop) {
+                  scrollToTop();
+                } else {
+                  // When at top, open chat
+                  handleOpen();
+                }
+              }}
+              unreadCount={unreadCount}
+              variant={buttonVariant}
+              onPositionReset={resetToDefaultPosition}
+              onOpenSettings={() => setShowSettings(true)}
+              pinnedActions={pinnedActions}
+              onTogglePin={togglePinAction}
+            />
             
             {/* Scroll to top button overlay - now integrated into main button */}
             <AnimatePresence>
@@ -1661,12 +1621,6 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               )}
             </AnimatePresence>
           </div>
-              </TooltipTrigger>
-              <TooltipContent side="left" sideOffset={5}>
-                {showScrollToTop ? "Scroll to Top" : "Open Chat"}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
       )}
 
@@ -1769,94 +1723,111 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               <div className="flex items-center gap-2">
                 {/* View Mode Toggle */}
                 {!isMobile && !isMinimized && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <motion.div
-                          whileTap={{ scale: 0.85 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                          className="relative group/progress"
+                  <motion.div
+                    whileTap={{ scale: 0.85 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    className="relative group/progress"
+                  >
+                    {/* Circular progress ring */}
+                    {autoCollapseEnabled && !isAutoCollapsePaused && viewMode === 'full' && collapseProgress < 100 && (
+                      <>
+                        <svg
+                          className="absolute inset-0 w-full h-full -rotate-90"
+                          viewBox="0 0 36 36"
                         >
-                          {/* Circular progress ring */}
-                          {autoCollapseEnabled && !isAutoCollapsePaused && viewMode === 'full' && collapseProgress < 100 && (
-                            <>
-                              <svg
-                                className="absolute inset-0 w-full h-full -rotate-90"
-                                viewBox="0 0 36 36"
-                              >
-...
-                              </svg>
-                              {/* Hover tooltip showing exact time */}
-                              <motion.div
-                                initial={{ opacity: 0, y: -5 }}
-                                whileHover={{ opacity: 1, y: 0 }}
-                                className="absolute -top-10 left-1/2 -translate-x-1/2 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover/progress:opacity-100 transition-opacity z-50"
-                              >
-                                {Math.ceil((collapseProgress / 100) * (autoCollapseDuration / 1000))}s remaining
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-border" />
-                              </motion.div>
-                            </>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-white hover:bg-white/20 rounded-full relative z-10"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleViewMode();
+                          {/* Background circle */}
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            stroke="rgba(255, 255, 255, 0.2)"
+                            strokeWidth="2"
+                          />
+                          {/* Progress circle */}
+                          <motion.circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            stroke={collapseProgress < 20 ? "rgb(239, 68, 68)" : "rgb(255, 255, 255)"}
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            initial={{ strokeDasharray: "100 100", strokeDashoffset: 0 }}
+                            animate={{ 
+                              strokeDasharray: "100 100",
+                              strokeDashoffset: 100 - collapseProgress
                             }}
-                            aria-label={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
-                          >
-                            <motion.div
-                              key={viewMode}
-                              initial={{ rotate: 0, scale: 0.8 }}
-                              animate={{ rotate: 360, scale: 1 }}
-                              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                            >
-                              {viewMode === 'mini' ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
-                            </motion.div>
-                          </Button>
-                          {/* Hidden message count badge */}
-                          {viewMode === 'mini' && messages.length > 3 && (
-                            <motion.span
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                              className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg z-20"
-                            >
-                              {messages.length - 3}
-                            </motion.span>
-                          )}
+                            transition={{ duration: 0.3, ease: "linear" }}
+                            style={{
+                              filter: collapseProgress < 20 ? "drop-shadow(0 0 4px rgb(239, 68, 68))" : "none"
+                            }}
+                          />
+                        </svg>
+                        {/* Hover tooltip showing exact time */}
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          whileHover={{ opacity: 1, y: 0 }}
+                          className="absolute -top-10 left-1/2 -translate-x-1/2 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover/progress:opacity-100 transition-opacity z-50"
+                        >
+                          {Math.ceil((collapseProgress / 100) * (autoCollapseDuration / 1000))}s remaining
+                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-border" />
                         </motion.div>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={5}>
-                        {viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                      </>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 text-white hover:bg-white/20 rounded-full relative z-10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleViewMode();
+                      }}
+                      aria-label={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                      title={viewMode === 'mini' ? 'Expand to full view' : 'Switch to mini mode'}
+                    >
+                      <motion.div
+                        key={viewMode}
+                        initial={{ rotate: 0, scale: 0.8 }}
+                        animate={{ rotate: 360, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                      >
+                        {viewMode === 'mini' ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+                      </motion.div>
+                    </Button>
+                    {/* Hidden message count badge */}
+                    {viewMode === 'mini' && messages.length > 3 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg z-20"
+                      >
+                        {messages.length - 3}
+                      </motion.span>
+                    )}
+                  </motion.div>
                 )}
                 {/* Quick Auto-Collapse Settings */}
                 {!isMobile && autoCollapseEnabled && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                              onClick={(e) => e.stopPropagation()}
-                              aria-label="Auto-collapse duration"
-                            >
-                              <Clock className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent 
-                            align="end" 
-                            className="w-48 bg-popover/95 backdrop-blur-sm z-[99999]"
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label="Auto-collapse duration"
+                        title="Quick auto-collapse settings"
+                      >
+                        <Clock className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                      align="end" 
+                      className="w-48"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                         Auto-Collapse Duration
                       </div>
@@ -1937,106 +1908,65 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         Disable auto-collapse
                       </DropdownMenuItem>
                     </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={5}>
-                        Quick auto-collapse settings
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  </DropdownMenu>
                 )}
                 {/* Settings */}
                 {!isMobile && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowSettings(!showSettings);
-                          }}
-                          aria-label="Settings"
-                        >
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={5}>
-                        Settings
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowSettings(!showSettings);
+                    }}
+                    aria-label="Settings"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
                 )}
                 {/* Sound toggle */}
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleMute();
-                        }}
-                        aria-label={isMuted ? "Unmute notifications" : "Mute notifications"}
-                      >
-                        {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" sideOffset={5}>
-                      {isMuted ? "Unmute notifications" : "Mute notifications"}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-white hover:bg-white/20 rounded-full transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsMinimized(!isMinimized);
-                          toast({
-                            title: isMinimized ? "Chat expanded" : "Chat minimized",
-                            description: isMinimized ? "Chat window restored" : "Click the button to restore",
-                            duration: 2000,
-                          });
-                        }}
-                        aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
-                      >
-                        {isMinimized ? <Square className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" sideOffset={5}>
-                      {isMinimized ? "Expand chat" : "Minimize chat"}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleClose();
-                        }}
-                      >
-                        ✕
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" sideOffset={5}>
-                      Close chat
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleMute();
+                  }}
+                  aria-label={isMuted ? "Unmute notifications" : "Mute notifications"}
+                >
+                  {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMinimized(!isMinimized);
+                    toast({
+                      title: isMinimized ? "Chat expanded" : "Chat minimized",
+                      description: isMinimized ? "Chat window restored" : "Click the button to restore",
+                      duration: 2000,
+                    });
+                  }}
+                  aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
+                  title={isMinimized ? "Expand chat" : "Minimize chat"}
+                >
+                  {isMinimized ? <Square className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClose();
+                  }}
+                >
+                  ✕
+                </Button>
               </div>
             </div>
 
