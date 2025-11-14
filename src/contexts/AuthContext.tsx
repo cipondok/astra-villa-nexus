@@ -82,33 +82,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .select('*')
           .eq('id', userId)
           .abortSignal(controller.signal)
-          .single();
+          .maybeSingle();
 
         clearTimeout(timeoutId);
 
-        if (error) {
-          if (error.code === 'PGRST116') {
-            // Fetch primary role from user_roles
-            const { data: rolesData } = await supabase
-              .from('user_roles')
-              .select('role')
-              .eq('user_id', userId)
-              .eq('is_active', true)
-              .limit(1)
-              .single();
-            
-            const defaultProfile: Profile = {
-              id: userId,
-              email: authUser.user?.email || '',
-              full_name: authUser.user?.user_metadata?.full_name || 'User',
-              role: (rolesData?.role as UserRole) || 'general_user',
-              verification_status: 'pending'
-            };
-            setProfile(defaultProfile);
-            setLoading(false);
-            return;
-          }
-          throw error;
+        if (error || !data) {
+          // Fetch primary role from user_roles
+          const { data: rolesData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', userId)
+            .eq('is_active', true)
+            .limit(1)
+            .maybeSingle();
+          
+          const defaultProfile: Profile = {
+            id: userId,
+            email: authUser.user?.email || '',
+            full_name: authUser.user?.user_metadata?.full_name || 'User',
+            role: (rolesData?.role as UserRole) || 'general_user',
+            verification_status: 'pending'
+          };
+          setProfile(defaultProfile);
+          setLoading(false);
+          return;
         }
         
         // Fetch primary role from user_roles table (READ-ONLY, prevents privilege escalation)
