@@ -550,6 +550,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
   // Scroll to top handler
   const scrollToTop = () => {
+    // Haptic feedback
+    haptic.triggerHaptic('light');
+    
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
