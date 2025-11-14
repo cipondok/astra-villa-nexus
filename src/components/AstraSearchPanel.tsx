@@ -3261,7 +3261,7 @@ const AstraSearchPanel = ({
                     size="sm" 
                     className={cn(
                       "group relative overflow-hidden rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300",
-                      isMobile ? "h-9 px-4 text-xs" : "h-10 px-5 text-sm",
+                      "h-9 px-3 text-xs",
                       "bg-gradient-to-r from-primary via-primary to-accent",
                       "hover:from-primary hover:via-accent hover:to-primary",
                       "text-primary-foreground border-2 border-primary/30"
