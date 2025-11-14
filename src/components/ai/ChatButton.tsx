@@ -59,11 +59,11 @@ const ChatButton = ({
   const baseStyles = cn(
     "fixed z-[9999]",
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
-    "text-white shadow-lg",
-    "flex items-center justify-center",
+    "shadow-lg",
     "transition-all duration-300 ease-out",
-    "border-2 border-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-padding",
-    "relative before:absolute before:inset-0 before:rounded-full before:p-[2px] before:bg-gradient-to-r before:from-blue-500 before:via-purple-500 before:to-pink-500 before:-z-10",
+    "border-2 border-transparent",
+    "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500",
+    "p-[2px]",
     !isDragging && "transform hover:scale-110",
     isDragging && "scale-105 shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
@@ -74,17 +74,20 @@ const ChatButton = ({
     pulse: cn(
       "bg-gradient-to-r from-blue-600 to-purple-600",
       "hover:from-blue-700 hover:to-purple-700",
+      "text-white",
       !isDragging && "animate-subtle-pulse hover:shadow-xl"
     ),
     glow: cn(
       "bg-gradient-to-r from-purple-600 to-pink-600",
       "hover:from-purple-700 hover:to-pink-700",
+      "text-white",
       "shadow-[0_0_20px_rgba(168,85,247,0.5)]",
       "hover:shadow-[0_0_30px_rgba(168,85,247,0.8)]"
     ),
     subtle: cn(
       "bg-slate-700 hover:bg-slate-600",
       "dark:bg-slate-800 dark:hover:bg-slate-700",
+      "text-white",
       "shadow-md hover:shadow-lg"
     )
   };
@@ -161,36 +164,41 @@ const ChatButton = ({
             }
           }}
         >
-          <div className="relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={showScrollArrow ? 'arrow' : 'bot'}
-                initial={{ scale: 0, rotate: -180, opacity: 0 }}
-                animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                exit={{ scale: 0, rotate: 180, opacity: 0 }}
-                transition={{ 
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 20
-                }}
-              >
-                {showScrollArrow ? (
-                  <ArrowUp className="h-6 w-6 animate-bounce" aria-hidden="true" />
-                ) : (
-                  <Bot className="h-6 w-6 transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
-                )}
-              </motion.div>
-            </AnimatePresence>
-            {/* Drag handle indicator - shows on hover */}
-            <GripVertical
-              className={cn(
-                "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
-                isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
-              )} 
-              aria-hidden="true"
-            />
+          <div className={cn(
+            "h-full w-full rounded-full flex items-center justify-center",
+            variantStyles[variant]
+          )}>
+            <div className="relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={showScrollArrow ? 'arrow' : 'bot'}
+                  initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  exit={{ scale: 0, rotate: 180, opacity: 0 }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20
+                  }}
+                >
+                  {showScrollArrow ? (
+                    <ArrowUp className="h-6 w-6 animate-bounce" aria-hidden="true" />
+                  ) : (
+                    <Bot className="h-6 w-6 transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+              {/* Drag handle indicator - shows on hover */}
+              <GripVertical
+                className={cn(
+                  "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
+                  isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                )} 
+                aria-hidden="true"
+              />
+            </div>
+            <UnreadBadge count={unreadCount} />
           </div>
-          <UnreadBadge count={unreadCount} />
         </motion.button>
       </ContextMenuTrigger>
       
