@@ -1464,7 +1464,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-3 right-3 z-[99999] group" onMouseEnter={handleFirstHover}>
+        <div className="fixed bottom-3 right-3 z-[99999] pointer-events-auto group" onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />

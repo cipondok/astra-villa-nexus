@@ -45,9 +45,17 @@ const ChatButton = ({
   useEffect(() => {
     const saved = localStorage.getItem('chat_button_pos');
     if (saved) {
-      setPosition(JSON.parse(saved));
+      const savedPos = JSON.parse(saved);
+      // Ensure position is within viewport bounds
+      const buttonSize = window.innerWidth >= 768 ? 56 : 48;
+      const maxX = window.innerWidth - buttonSize - 12;
+      const maxY = window.innerHeight - buttonSize - 12;
+      setPosition({
+        x: Math.min(Math.max(12, savedPos.x), maxX),
+        y: Math.min(Math.max(12, savedPos.y), maxY),
+      });
     } else {
-      // Default: bottom-right corner
+      // Default: bottom-right corner with mobile-safe margins
       const buttonSize = window.innerWidth >= 768 ? 56 : 48;
       setPosition({
         x: window.innerWidth - buttonSize - 20,
@@ -57,13 +65,14 @@ const ChatButton = ({
   }, []);
 
   const baseStyles = cn(
-    "fixed z-[9999]",
+    "fixed z-[99999]",
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
     "shadow-lg",
     "transition-all duration-200 ease-out",
     "border-2 border-transparent",
     "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500",
     "p-[2px]",
+    "pointer-events-auto",
     !isDragging && "transform hover:scale-110 active:scale-95",
     isDragging && "scale-105 shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
@@ -159,6 +168,9 @@ const ChatButton = ({
           style={{
             left: `${position.x}px`,
             top: `${position.y}px`,
+            display: 'block',
+            visibility: 'visible',
+            opacity: 1,
           }}
           aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
           role="button"
