@@ -1,4 +1,4 @@
-import { Bot, GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
+import { Bot, GripVertical, Settings, RotateCcw, Pin, ArrowUp, Image, Search, Sparkles, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
 import { motion, AnimatePresence } from "framer-motion";
@@ -37,10 +37,11 @@ const ChatButton = ({
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isLongPress, setIsLongPress] = useState(false);
-  const [isScrollingUp, setIsScrollingUp] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showFunctionMenu, setShowFunctionMenu] = useState(false);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollY = useRef(0);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load saved position on mount
   useEffect(() => {
@@ -57,38 +58,41 @@ const ChatButton = ({
     }
   }, []);
 
-  // Detect scroll direction
+  // Detect scroll down for scroll-to-top functionality
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      if (currentScrollY < lastScrollY.current && currentScrollY > 100) {
-        // Scrolling up
-        setIsScrollingUp(true);
-        
-        // Clear existing timeout
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
-        
-        // Hide indicator after 2 seconds
-        scrollTimeoutRef.current = setTimeout(() => {
-          setIsScrollingUp(false);
-        }, 2000);
+      // Show scroll-to-top when scrolling down past 200px
+      if (currentScrollY > 200) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
       }
       
       lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleImageSearch = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onClick();
+      console.log('Image selected for search:', file);
+      // Image processing logic can be added here
+    }
+  };
 
   const baseStyles = cn(
     "fixed z-[9999]",
@@ -141,9 +145,6 @@ const ChatButton = ({
       localStorage.setItem('chat_button_pos', JSON.stringify(position));
       setIsDragging(false);
       setIsLongPress(false);
-    } else if (!isLongPress) {
-      // Short click - open chat
-      onClick();
     }
     setIsLongPress(false);
   };
@@ -153,6 +154,7 @@ const ChatButton = ({
       clearTimeout(pressTimerRef.current);
       pressTimerRef.current = null;
     }
+    setShowFunctionMenu(false);
   };
 
   const handleDragEnd = (_: any, info: { point: { x: number; y: number } }) => {
@@ -168,58 +170,156 @@ const ChatButton = ({
   };
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger asChild>
-        <motion.button
-          drag={isDragging}
-          dragMomentum={false}
-          dragElastic={0}
-          onDragEnd={handleDragEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
-          className={cn("group", baseStyles, variantStyles[variant], className)}
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-          }}
-          aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              onClick();
-            }
-          }}
-        >
-          <div className="relative">
-            <Bot className="h-6 w-6" aria-hidden="true" />
-            {/* Drag handle indicator - shows on hover */}
-            <GripVertical 
-              className={cn(
-                "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
-                isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
-              )} 
-              aria-hidden="true"
-            />
-            {/* Scroll up indicator */}
-            <AnimatePresence>
-              {isScrollingUp && (
+    <div className="relative">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      {/* Function Menu */}
+      <AnimatePresence>
+        {showFunctionMenu && !showScrollTop && !isDragging && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed z-[9998] flex flex-col gap-2"
+            style={{
+              left: `${position.x}px`,
+              top: `${position.y - 160}px`,
+            }}
+          >
+            <motion.button
+              onClick={handleImageSearch}
+              whileHover={{ scale: 1.1, x: 5 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xl hover:shadow-purple-500/50 flex items-center justify-center transition-all group"
+            >
+              <Image className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+            </motion.button>
+            
+            <motion.button
+              onClick={onClick}
+              whileHover={{ scale: 1.1, x: 5 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-xl hover:shadow-blue-500/50 flex items-center justify-center transition-all group"
+            >
+              <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            </motion.button>
+
+            <motion.button
+              onClick={onClick}
+              whileHover={{ scale: 1.1, x: 5 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xl hover:shadow-amber-500/50 flex items-center justify-center transition-all group"
+            >
+              <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <motion.button
+            drag={isDragging}
+            dragMomentum={false}
+            dragElastic={0}
+            onDragEnd={handleDragEnd}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => !isDragging && setShowFunctionMenu(true)}
+            onClick={() => {
+              if (!isDragging && !isLongPress) {
+                if (showScrollTop) {
+                  scrollToTop();
+                } else {
+                  onClick();
+                }
+              }
+            }}
+            className={cn("group", baseStyles, variantStyles[variant], className)}
+            style={{
+              left: `${position.x}px`,
+              top: `${position.y}px`,
+            }}
+            aria-label={showScrollTop ? "Scroll to top" : (isDragging ? "Dragging chat button" : "Open AI chat assistant")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (showScrollTop) {
+                  scrollToTop();
+                } else {
+                  onClick();
+                }
+              }
+            }}
+          >
+            <div className="relative">
+              {/* Main Icon with transition */}
+              <AnimatePresence mode="wait">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.5, y: 10 }}
-                  className="absolute -top-1 -left-1 bg-primary rounded-full p-1 shadow-lg"
+                  key={showScrollTop ? 'scroll' : 'bot'}
+                  initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <ArrowUp className="h-3 w-3 text-primary-foreground" aria-hidden="true" />
+                  {showScrollTop ? (
+                    <ArrowUp className="h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <motion.div
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Bot className="h-6 w-6" aria-hidden="true" />
+                    </motion.div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+              
+              {/* Drag handle indicator */}
+              <GripVertical 
+                className={cn(
+                  "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
+                  isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                )} 
+                aria-hidden="true"
+              />
+
+              {/* Function indicator dots */}
+              {!showScrollTop && !isDragging && (
+                <motion.div
+                  className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: showFunctionMenu ? 1 : 0.5 }}
+                >
+                  <div className="w-1 h-1 rounded-full bg-white/70" />
+                  <div className="w-1 h-1 rounded-full bg-white/70" />
+                  <div className="w-1 h-1 rounded-full bg-white/70" />
                 </motion.div>
               )}
-            </AnimatePresence>
-          </div>
-          <UnreadBadge count={unreadCount} />
-        </motion.button>
-      </ContextMenuTrigger>
+            </div>
+            <UnreadBadge count={unreadCount} />
+
+            {/* Pulse effect on hover */}
+            {!isDragging && (
+              <motion.div
+                className="absolute inset-0 rounded-full bg-white/20"
+                initial={{ scale: 1, opacity: 0 }}
+                whileHover={{ scale: 1.3, opacity: 0.3 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
+          </motion.button>
+        </ContextMenuTrigger>
       
       <ContextMenuContent className="w-56">
         {onOpenSettings && (
@@ -262,7 +362,8 @@ const ChatButton = ({
           </>
         )}
       </ContextMenuContent>
-    </ContextMenu>
+      </ContextMenu>
+    </div>
   );
 };
 
