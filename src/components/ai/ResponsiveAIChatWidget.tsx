@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Minus, Square, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
@@ -1533,24 +1534,27 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           </div>
           
           {/* Main Chat Button */}
-          <div className="relative">
-            <ChatButton 
-              onClick={() => {
-                // When scrolled down, scroll to top first
-                if (showScrollToTop) {
-                  scrollToTop();
-                } else {
-                  // When at top, open chat
-                  handleOpen();
-                }
-              }}
-              unreadCount={unreadCount}
-              variant={buttonVariant}
-              onPositionReset={resetToDefaultPosition}
-              onOpenSettings={() => setShowSettings(true)}
-              pinnedActions={pinnedActions}
-              onTogglePin={togglePinAction}
-            />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative">
+                  <ChatButton 
+                    onClick={() => {
+                      // When scrolled down, scroll to top first
+                      if (showScrollToTop) {
+                        scrollToTop();
+                      } else {
+                        // When at top, open chat
+                        handleOpen();
+                      }
+                    }}
+                    unreadCount={unreadCount}
+                    variant={buttonVariant}
+                    onPositionReset={resetToDefaultPosition}
+                    onOpenSettings={() => setShowSettings(true)}
+                    pinnedActions={pinnedActions}
+                    onTogglePin={togglePinAction}
+                  />
             
             {/* Scroll to top button overlay - now integrated into main button */}
             <AnimatePresence>
@@ -1621,6 +1625,12 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               )}
             </AnimatePresence>
           </div>
+              </TooltipTrigger>
+              <TooltipContent side="left" sideOffset={5}>
+                {showScrollToTop ? "Scroll to Top" : "Open Chat"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       )}
 
