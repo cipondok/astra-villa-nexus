@@ -33,6 +33,12 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ResponsiveAIChatWidgetProps {
   propertyId?: string;
@@ -1534,23 +1540,32 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           
           {/* Main Chat Button */}
           <div className="relative">
-            <ChatButton 
-              onClick={() => {
-                // When scrolled down, scroll to top first
-                if (showScrollToTop) {
-                  scrollToTop();
-                } else {
-                  // When at top, open chat
-                  handleOpen();
-                }
-              }}
-              unreadCount={unreadCount}
-              variant={buttonVariant}
-              onPositionReset={resetToDefaultPosition}
-              onOpenSettings={() => setShowSettings(true)}
-              pinnedActions={pinnedActions}
-              onTogglePin={togglePinAction}
-            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ChatButton 
+                    onClick={() => {
+                      // When scrolled down, scroll to top first
+                      if (showScrollToTop) {
+                        scrollToTop();
+                      } else {
+                        // When at top, open chat
+                        handleOpen();
+                      }
+                    }}
+                    unreadCount={unreadCount}
+                    variant={buttonVariant}
+                    onPositionReset={resetToDefaultPosition}
+                    onOpenSettings={() => setShowSettings(true)}
+                    pinnedActions={pinnedActions}
+                    onTogglePin={togglePinAction}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  <p>{showScrollToTop ? 'Scroll to Top' : 'Open Chat'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
             {/* Scroll to top button overlay - now integrated into main button */}
             <AnimatePresence>
