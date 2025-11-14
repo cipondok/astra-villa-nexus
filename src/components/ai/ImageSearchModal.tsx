@@ -9,6 +9,7 @@ import { BaseProperty } from "@/types/property";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import { PropertyComparisonView } from "./PropertyComparisonView";
 import { useState } from "react";
+import { TableStyleDialog } from "@/components/ui/TableStyleDialog";
 
 interface ImageSearchResult extends BaseProperty {
   similarityScore: number;
