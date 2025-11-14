@@ -75,7 +75,7 @@ const ChatButton = ({
       "bg-gradient-to-r from-blue-600 to-purple-600",
       "hover:from-blue-700 hover:to-purple-700",
       "text-white",
-      !isDragging && "animate-subtle-pulse hover:shadow-xl"
+      !isDragging && "animate-chat-float md:animate-chat-float hover:shadow-xl"
     ),
     glow: cn(
       "bg-gradient-to-r from-purple-600 to-pink-600",

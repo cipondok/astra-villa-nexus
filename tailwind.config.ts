@@ -179,24 +179,24 @@ const config: Config = {
             opacity: "1"
           }
         },
-        "subtle-pulse": {
+        "chat-float": {
           "0%, 100%": {
-            opacity: "1",
-            boxShadow: "0 0 20px hsla(217, 91%, 60%, 0.5), 0 0 40px hsla(271, 91%, 65%, 0.3), 0 0 60px hsla(217, 91%, 60%, 0.15)"
+            transform: "translateY(0px)",
+            boxShadow: "0 4px 20px hsla(217, 91%, 60%, 0.4), 0 8px 40px hsla(271, 91%, 65%, 0.3)"
           },
           "50%": {
-            opacity: "0.85",
-            boxShadow: "0 0 40px hsla(217, 91%, 60%, 0.9), 0 0 80px hsla(271, 91%, 65%, 0.7), 0 0 120px hsla(217, 91%, 60%, 0.4)"
+            transform: "translateY(-8px)",
+            boxShadow: "0 8px 30px hsla(217, 91%, 60%, 0.6), 0 12px 60px hsla(271, 91%, 65%, 0.5)"
           }
         },
-        "subtle-pulse-mobile": {
+        "chat-float-mobile": {
           "0%, 100%": {
-            opacity: "1",
-            boxShadow: "0 0 10px hsla(217, 91%, 60%, 0.3), 0 0 20px hsla(271, 91%, 65%, 0.2)"
+            transform: "translateY(0px)",
+            boxShadow: "0 2px 10px hsla(217, 91%, 60%, 0.3), 0 4px 20px hsla(271, 91%, 65%, 0.2)"
           },
           "50%": {
-            opacity: "0.9",
-            boxShadow: "0 0 15px hsla(217, 91%, 60%, 0.5), 0 0 30px hsla(271, 91%, 65%, 0.4)"
+            transform: "translateY(-5px)",
+            boxShadow: "0 4px 15px hsla(217, 91%, 60%, 0.5), 0 6px 30px hsla(271, 91%, 65%, 0.4)"
           }
         },
         "slide-in-right": {
@@ -252,8 +252,8 @@ const config: Config = {
         "ai-particle-float": "ai-particle-float 3s ease-in-out infinite",
         "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
         "typing-dot": "typing-dot 1.4s ease-in-out infinite",
-        "subtle-pulse": "subtle-pulse 15s ease-in-out infinite",
-        "subtle-pulse-mobile": "subtle-pulse-mobile 15s ease-in-out infinite",
+        "chat-float": "chat-float 4s ease-in-out infinite",
+        "chat-float-mobile": "chat-float-mobile 4s ease-in-out infinite",
         "slide-in-right": "slide-in-right 0.3s ease-out",
         "slide-out-right": "slide-out-right 0.3s ease-in",
         "slide-in-bottom": "slide-in-bottom 0.3s ease-out",
