@@ -1,7 +1,7 @@
 import { Bot, GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import {
   ContextMenu,
@@ -160,11 +160,25 @@ const ChatButton = ({
           }}
         >
           <div className="relative">
-            {showScrollArrow ? (
-              <ArrowUp className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Bot className="h-6 w-6" aria-hidden="true" />
-            )}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={showScrollArrow ? 'arrow' : 'bot'}
+                initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                exit={{ scale: 0, rotate: 180, opacity: 0 }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20
+                }}
+              >
+                {showScrollArrow ? (
+                  <ArrowUp className="h-6 w-6 animate-bounce" aria-hidden="true" />
+                ) : (
+                  <Bot className="h-6 w-6 transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
+                )}
+              </motion.div>
+            </AnimatePresence>
             {/* Drag handle indicator - shows on hover */}
             <GripVertical
               className={cn(
