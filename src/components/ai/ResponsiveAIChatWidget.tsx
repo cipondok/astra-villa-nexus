@@ -1548,16 +1548,31 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             <AnimatePresence>
               {showScrollToTop && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  initial={{ opacity: 0, scale: 0.5, y: 20, rotate: -15 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1, 
+                    y: 0,
+                    rotate: 0
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    scale: 0.5, 
+                    y: 20,
+                    rotate: 15
+                  }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 25,
+                    mass: 0.8
+                  }}
                   className="absolute -top-3 -left-3"
                 >
                   <div className="relative">
                     {/* Progress ring */}
                     <svg
-                      className="absolute inset-0 w-10 h-10 -rotate-90 pointer-events-none"
+                      className="absolute inset-0 w-10 h-10 -rotate-90 pointer-events-none transition-all duration-300"
                       viewBox="0 0 40 40"
                     >
                       <circle
@@ -1579,7 +1594,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         strokeDasharray={2 * Math.PI * 18}
                         strokeDashoffset={2 * Math.PI * 18 - (scrollProgress / 100) * (2 * Math.PI * 18)}
                         strokeLinecap="round"
-                        className="transition-all duration-300 ease-out"
+                        className="transition-all duration-500 ease-out"
                       />
                     </svg>
                     
@@ -1590,7 +1605,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                       aria-label="Scroll to top"
                       title={`${Math.round(scrollProgress)}% scrolled`}
                     >
-                      <ArrowUp className="h-4 w-4 text-primary-foreground" />
+                      <ArrowUp className="h-4 w-4 text-primary-foreground transition-transform group-hover:translate-y-[-2px] duration-200" />
                     </Button>
                   </div>
                 </motion.div>
