@@ -111,7 +111,9 @@ export default function CarouselSettingsManager() {
       <CardHeader>
         <CardTitle>Featured Properties Carousel Settings</CardTitle>
         <CardDescription>
-          Configure how the Featured Properties carousel behaves on the homepage
+          Configure how the Featured Properties carousel behaves on the homepage. 
+          <br />
+          <strong>Recommended:</strong> Enable with Seamless Loop mode for continuous auto-scrolling from start to end without interruption.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -191,13 +193,13 @@ export default function CarouselSettingsManager() {
             <SelectContent>
               <SelectItem value="stop">Stop at End</SelectItem>
               <SelectItem value="loop">Jump to Start</SelectItem>
-              <SelectItem value="seamless">Seamless Loop</SelectItem>
+              <SelectItem value="seamless">Seamless Loop (Recommended)</SelectItem>
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
             {currentSettings.loop_mode === 'stop' && 'Carousel stops when reaching the last item'}
-            {currentSettings.loop_mode === 'loop' && 'Carousel jumps back to the first item'}
-            {currentSettings.loop_mode === 'seamless' && 'Carousel creates a seamless infinite loop'}
+            {currentSettings.loop_mode === 'loop' && 'Carousel jumps back to the first item (visible jump)'}
+            {currentSettings.loop_mode === 'seamless' && '✓ Creates infinite loop without visible breaks - continuously scrolls from start to end'}
           </p>
         </div>
 
