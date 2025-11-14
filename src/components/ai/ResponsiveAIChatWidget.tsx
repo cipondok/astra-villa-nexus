@@ -1473,13 +1473,22 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   Scroll to Top
                 </span>
                 <div className="relative">
-                  <Button
-                    onClick={onScrollToTop}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                    size="icon"
-                  >
-                    <ArrowUp className="h-5 w-5 text-white" />
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={onScrollToTop}
+                          className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                          size="icon"
+                        >
+                          <ArrowUp className="h-5 w-5 text-white" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" sideOffset={5}>
+                        Scroll to Top
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1506,13 +1515,22 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   Image Search
                 </span>
                 <div className="relative">
-                  <Button
-                    onClick={onImageSearch}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
-                    size="icon"
-                  >
-                    <Camera className="h-5 w-5 text-white" />
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={onImageSearch}
+                          className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                          size="icon"
+                        >
+                          <Camera className="h-5 w-5 text-white" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" sideOffset={5}>
+                        Image Search
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
