@@ -76,10 +76,16 @@ export const useImageSearch = () => {
       setUploadProgress(80);
 
       if (functionError) {
-        throw functionError;
+        console.error('Edge function error:', functionError);
+        throw new Error(functionError.message || 'Failed to call search function');
+      }
+
+      if (!data) {
+        throw new Error('No response from search function');
       }
 
       if (!data.success) {
+        console.error('Search failed:', data.error);
         throw new Error(data.error || 'Search failed');
       }
 
