@@ -26,10 +26,29 @@ const TooltipContent = React.forwardRef<
 ))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-const TooltipProviderWithDelay = ({ children, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) => (
-  <TooltipPrimitive.Provider delayDuration={300} {...props}>
-    {children}
-  </TooltipPrimitive.Provider>
-)
+const TooltipProviderWithDelay = ({ children, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) => {
+  // Read tooltip preferences from localStorage
+  const getTooltipPrefs = () => {
+    try {
+      const saved = localStorage.getItem('tooltip_preferences');
+      return saved ? JSON.parse(saved) : { enabled: true, delay: 300 };
+    } catch {
+      return { enabled: true, delay: 300 };
+    }
+  };
+
+  const prefs = getTooltipPrefs();
+  
+  // If tooltips are disabled globally, don't render the provider
+  if (!prefs.enabled) {
+    return <>{children}</>;
+  }
+
+  return (
+    <TooltipPrimitive.Provider delayDuration={prefs.delay} {...props}>
+      {children}
+    </TooltipPrimitive.Provider>
+  );
+}
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, TooltipProviderWithDelay }
