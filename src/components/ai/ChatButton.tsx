@@ -10,6 +10,9 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { useImageSearch } from "@/hooks/useImageSearch";
+import { ImageSearchModal } from "./ImageSearchModal";
+import { toast } from "sonner";
 
 export type ChatButtonVariant = "pulse" | "glow" | "subtle";
 
@@ -42,6 +45,18 @@ const ChatButton = ({
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollY = useRef(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showImageSearchModal, setShowImageSearchModal] = useState(false);
+  const [searchImageUrl, setSearchImageUrl] = useState<string | null>(null);
+  
+  // Image search hook
+  const { 
+    searchByImage, 
+    isSearching: isImageSearching, 
+    searchResults, 
+    imageFeatures, 
+    uploadProgress,
+    clearResults 
+  } = useImageSearch();
 
   // Load saved position on mount
   useEffect(() => {
@@ -94,12 +109,43 @@ const ChatButton = ({
     setShowFunctionMenu(false);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onClick();
-      console.log('Image selected for search:', file);
-      // Image processing logic can be added here
+    if (!file) return;
+
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+
+    try {
+      // Convert to base64 for preview
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setSearchImageUrl(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Open modal and start search
+      setShowImageSearchModal(true);
+      
+      const results = await searchByImage(file);
+      
+      if (results.properties.length > 0) {
+        toast.success(`Found ${results.properties.length} similar properties!`);
+      } else {
+        toast.info('No similar properties found. Try a different image.');
+      }
+    } catch (error) {
+      console.error('Image search error:', error);
+      toast.error('Failed to search by image. Please try again.');
+      setShowImageSearchModal(false);
     }
   };
 
@@ -190,6 +236,16 @@ const ChatButton = ({
     setIsDragging(false);
   };
 
+  const handleCloseImageSearch = () => {
+    setShowImageSearchModal(false);
+    setSearchImageUrl(null);
+    clearResults();
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="relative">
       <input
@@ -198,6 +254,17 @@ const ChatButton = ({
         accept="image/*"
         onChange={handleFileChange}
         className="hidden"
+      />
+
+      {/* Image Search Modal */}
+      <ImageSearchModal
+        isOpen={showImageSearchModal}
+        onClose={handleCloseImageSearch}
+        searchResults={searchResults}
+        imageFeatures={imageFeatures}
+        isSearching={isImageSearching}
+        uploadProgress={uploadProgress}
+        searchImageUrl={searchImageUrl}
       />
 
       {/* Function Menu */}
