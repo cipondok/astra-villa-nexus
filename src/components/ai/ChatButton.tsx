@@ -58,13 +58,19 @@ const ChatButton = ({
     }
   }, []);
 
-  // Detect scroll down for scroll-to-top functionality
+  // Detect scroll for scroll-to-top functionality and calculate scroll progress
+  const [scrollProgress, setScrollProgress] = useState(0);
+  
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage = docHeight > 0 ? Math.round((currentScrollY / docHeight) * 100) : 0;
       
-      // Show scroll-to-top when scrolling down past 200px
-      if (currentScrollY > 200) {
+      setScrollProgress(scrollPercentage);
+      
+      // Show scroll-to-top when scrolling down past 100px
+      if (currentScrollY > 100) {
         setShowScrollTop(true);
       } else {
         setShowScrollTop(false);
@@ -74,6 +80,7 @@ const ChatButton = ({
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial call
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -194,37 +201,52 @@ const ChatButton = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed z-[9998] flex flex-col gap-2"
+            className="fixed z-[9998] flex flex-col gap-3"
             style={{
               left: `${position.x}px`,
-              top: `${position.y - 160}px`,
+              top: `${position.y - 180}px`,
             }}
           >
+            {/* Image Search */}
             <motion.button
               onClick={handleImageSearch}
               whileHover={{ scale: 1.1, x: 5 }}
               whileTap={{ scale: 0.95 }}
-              className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xl hover:shadow-purple-500/50 flex items-center justify-center transition-all group"
+              className="relative w-12 h-12 md:w-13 md:h-13 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white shadow-xl hover:shadow-purple-500/50 flex items-center justify-center transition-all group"
+              aria-label="Image Search"
             >
               <Image className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+              <span className="absolute -right-20 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Image
+              </span>
             </motion.button>
             
+            {/* AI Search */}
             <motion.button
               onClick={onClick}
               whileHover={{ scale: 1.1, x: 5 }}
               whileTap={{ scale: 0.95 }}
-              className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-xl hover:shadow-blue-500/50 flex items-center justify-center transition-all group"
+              className="relative w-12 h-12 md:w-13 md:h-13 rounded-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 text-white shadow-xl hover:shadow-blue-500/50 flex items-center justify-center transition-all group"
+              aria-label="AI Search"
             >
               <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="absolute -right-20 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Search
+              </span>
             </motion.button>
 
+            {/* AI Chat */}
             <motion.button
               onClick={onClick}
               whileHover={{ scale: 1.1, x: 5 }}
               whileTap={{ scale: 0.95 }}
-              className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xl hover:shadow-amber-500/50 flex items-center justify-center transition-all group"
+              className="relative w-12 h-12 md:w-13 md:h-13 rounded-full bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white shadow-xl hover:shadow-amber-500/50 flex items-center justify-center transition-all group"
+              aria-label="AI Assistant"
             >
-              <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+              <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="absolute -right-16 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Chat
+              </span>
             </motion.button>
           </motion.div>
         )}
@@ -291,6 +313,18 @@ const ChatButton = ({
                   )}
                 </motion.div>
               </AnimatePresence>
+              
+              {/* Scroll Progress Indicator */}
+              {showScrollTop && scrollProgress > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                  className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg whitespace-nowrap"
+                >
+                  {scrollProgress}%
+                </motion.div>
+              )}
               
               {/* Drag handle indicator */}
               <GripVertical 
