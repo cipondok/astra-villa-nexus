@@ -68,7 +68,7 @@ const ChatButton = ({
     "fixed z-[99999]",
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
     "shadow-lg",
-    "transition-all duration-200 ease-out",
+    "transition-all duration-500 ease-out",
     "border-2 border-transparent",
     "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500",
     "p-[2px]",
@@ -161,8 +161,9 @@ const ChatButton = ({
           whileTap={{ scale: 0.92 }}
           transition={{ 
             type: "spring",
-            stiffness: 400,
-            damping: 17
+            stiffness: 200,
+            damping: 25,
+            duration: 0.8
           }}
           className={cn("group", baseStyles, variantStyles[variant], className)}
           style={{
@@ -195,14 +196,15 @@ const ChatButton = ({
                   exit={{ scale: 0, rotate: 180, opacity: 0 }}
                   transition={{ 
                     type: "spring",
-                    stiffness: 260,
-                    damping: 20
+                    stiffness: 150,
+                    damping: 20,
+                    duration: 0.6
                   }}
                 >
                   {showScrollArrow ? (
                     <ArrowUp className="h-6 w-6 animate-bounce" aria-hidden="true" />
                   ) : (
-                    <Bot className="h-6 w-6 transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
+                    <Bot className="h-6 w-6 transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
                   )}
                 </motion.div>
               </AnimatePresence>
