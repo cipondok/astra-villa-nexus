@@ -1,4 +1,4 @@
-import { Bot, GripVertical, Settings, RotateCcw, Pin } from "lucide-react";
+import { Bot, GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
 import { motion } from "framer-motion";
@@ -22,6 +22,7 @@ interface ChatButtonProps {
   onOpenSettings?: () => void;
   pinnedActions?: Set<string>;
   onTogglePin?: (actionId: string) => void;
+  showScrollArrow?: boolean;
 }
 
 const ChatButton = ({ 
@@ -32,7 +33,8 @@ const ChatButton = ({
   onPositionReset,
   onOpenSettings,
   pinnedActions = new Set(),
-  onTogglePin
+  onTogglePin,
+  showScrollArrow = false
 }: ChatButtonProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -158,9 +160,13 @@ const ChatButton = ({
           }}
         >
           <div className="relative">
-            <Bot className="h-6 w-6" aria-hidden="true" />
+            {showScrollArrow ? (
+              <ArrowUp className="h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Bot className="h-6 w-6" aria-hidden="true" />
+            )}
             {/* Drag handle indicator - shows on hover */}
-            <GripVertical 
+            <GripVertical
               className={cn(
                 "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
                 isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
