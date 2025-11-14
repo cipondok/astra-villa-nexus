@@ -42,7 +42,6 @@ const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatur
 const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
-const ScrollToTopButton = lazy(() => import("@/components/ui/ScrollToTopButton"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 
 type ViewMode = 'list' | 'grid' | 'map';

@@ -62,7 +62,6 @@ import PartnerBenefits from '@/pages/partners/PartnerBenefits';
 import JointVentures from '@/pages/partners/JointVentures';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CookieSystem from '@/components/cookies/CookieSystem';
-import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import ResponsiveAIChatWidget from '@/components/ai/ResponsiveAIChatWidget';
 import Community from '@/pages/Community';
 import Marketplace from '@/pages/Marketplace';
@@ -195,7 +194,6 @@ function App() {
                           <Toaster />
                           <Sonner />
                           <CookieSystem />
-                          <ScrollToTopButton />
                           <ResponsiveAIChatWidget />
                         </PropertyComparisonProvider>
                       </NotificationProvider>
