@@ -86,10 +86,12 @@ const ChatButton = ({
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setShowFunctionMenu(false);
   };
 
   const handleImageSearch = () => {
     fileInputRef.current?.click();
+    setShowFunctionMenu(false);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +101,11 @@ const ChatButton = ({
       console.log('Image selected for search:', file);
       // Image processing logic can be added here
     }
+  };
+
+  const handleChatClick = () => {
+    onClick();
+    setShowFunctionMenu(false);
   };
 
   const baseStyles = cn(
@@ -261,15 +268,14 @@ const ChatButton = ({
             onDragEnd={handleDragEnd}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
             onMouseEnter={() => !isDragging && setShowFunctionMenu(true)}
+            onMouseLeave={() => {
+              handleMouseLeave();
+              if (!isDragging) setShowFunctionMenu(false);
+            }}
             onClick={() => {
               if (!isDragging && !isLongPress) {
-                if (showScrollTop) {
-                  scrollToTop();
-                } else {
-                  onClick();
-                }
+                setShowFunctionMenu(!showFunctionMenu);
               }
             }}
             className={cn("group", baseStyles, variantStyles[variant], className)}
@@ -277,54 +283,40 @@ const ChatButton = ({
               left: `${position.x}px`,
               top: `${position.y}px`,
             }}
-            aria-label={showScrollTop ? "Scroll to top" : (isDragging ? "Dragging chat button" : "Open AI chat assistant")}
+            aria-label={isDragging ? "Dragging chat button" : "Multi-function AI assistant"}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                if (showScrollTop) {
-                  scrollToTop();
-                } else {
-                  onClick();
-                }
+                setShowFunctionMenu(!showFunctionMenu);
               }
             }}
           >
             <div className="relative">
-              {/* Main Icon with transition */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={showScrollTop ? 'scroll' : 'bot'}
-                  initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
-                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {showScrollTop ? (
-                    <ArrowUp className="h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <motion.div
-                      animate={{ rotate: [0, 5, -5, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <Bot className="h-6 w-6" aria-hidden="true" />
-                    </motion.div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
+            {/* Main Icon - Always show Sparkles */}
+            <motion.div
+              animate={{ 
+                rotate: showFunctionMenu ? 180 : 0,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <Sparkles className="w-6 h-6" />
+            </motion.div>
               
               {/* Scroll Progress Indicator */}
-              {showScrollTop && scrollProgress > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: -10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                  className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg whitespace-nowrap"
-                >
-                  {scrollProgress}%
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {showScrollTop && scrollProgress > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                    className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg whitespace-nowrap"
+                  >
+                    {scrollProgress}%
+                  </motion.div>
+                )}
+              </AnimatePresence>
               
               {/* Drag handle indicator */}
               <GripVertical 
@@ -336,15 +328,16 @@ const ChatButton = ({
               />
 
               {/* Function indicator dots */}
-              {!showScrollTop && !isDragging && (
+              {!isDragging && (
                 <motion.div
                   className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: showFunctionMenu ? 1 : 0.5 }}
                 >
-                  <div className="w-1 h-1 rounded-full bg-white/70" />
-                  <div className="w-1 h-1 rounded-full bg-white/70" />
-                  <div className="w-1 h-1 rounded-full bg-white/70" />
+                  <div className={cn("w-1 h-1 rounded-full transition-all", showFunctionMenu ? "bg-white" : "bg-white/60")} />
+                  <div className={cn("w-1 h-1 rounded-full transition-all", showFunctionMenu ? "bg-white" : "bg-white/60")} />
+                  <div className={cn("w-1 h-1 rounded-full transition-all", showFunctionMenu ? "bg-white" : "bg-white/60")} />
+                  {showScrollTop && <div className={cn("w-1 h-1 rounded-full transition-all", showFunctionMenu ? "bg-emerald-400" : "bg-emerald-400/60")} />}
                 </motion.div>
               )}
             </div>
