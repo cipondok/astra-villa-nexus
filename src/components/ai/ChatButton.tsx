@@ -61,16 +61,11 @@ const ChatButton = ({
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
     "text-white shadow-lg",
     "flex items-center justify-center",
-    "transition-all duration-500 ease-out",
+    "transition-all duration-300 ease-out",
     !isDragging && "transform hover:scale-110",
     isDragging && "scale-105 shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
-    isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab",
-    "relative",
-    "before:absolute before:inset-0 before:rounded-full before:p-[3px]",
-    "before:bg-gradient-to-r before:from-pink-500 before:via-purple-500 before:to-blue-500",
-    "before:animate-[spin_3s_linear_infinite]",
-    "before:-z-10 before:blur-sm"
+    isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
   );
 
   const variantStyles: Record<ChatButtonVariant, string> = {
@@ -166,27 +161,14 @@ const ChatButton = ({
         >
           <div className="relative">
             {showScrollArrow ? (
-              <ArrowUp 
-                className="h-6 w-6 transition-all duration-500 ease-out" 
-                style={{
-                  filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))',
-                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                }}
-                aria-hidden="true" 
-              />
+              <ArrowUp className="h-6 w-6" aria-hidden="true" />
             ) : (
-              <Bot 
-                className="h-6 w-6 transition-all duration-500 ease-out" 
-                style={{
-                  filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))'
-                }}
-                aria-hidden="true" 
-              />
+              <Bot className="h-6 w-6" aria-hidden="true" />
             )}
             {/* Drag handle indicator - shows on hover */}
             <GripVertical
               className={cn(
-                "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity duration-300",
+                "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
                 isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
               )} 
               aria-hidden="true"
