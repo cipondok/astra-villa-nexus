@@ -97,31 +97,38 @@ const ChatButton = ({
   const baseStyles = cn(
     "fixed z-[9999]",
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
-    "text-white shadow-lg",
+    "text-white",
     "flex items-center justify-center",
     "transition-all duration-300 ease-out",
     !isDragging && "transform hover:scale-110",
-    isDragging && "scale-105 shadow-2xl",
-    "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
-    isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
+    isDragging && "scale-105",
+    "focus:outline-none",
+    isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab",
+    // Multi-color ring border effect
+    "relative before:absolute before:inset-0 before:rounded-full before:p-[3px]",
+    "before:bg-gradient-to-r before:from-pink-500 before:via-purple-500 before:to-cyan-500",
+    "before:animate-spin-slow before:-z-10",
+    "after:absolute after:inset-[3px] after:rounded-full after:bg-background after:-z-10"
   );
 
   const variantStyles: Record<ChatButtonVariant, string> = {
     pulse: cn(
-      "bg-gradient-to-r from-blue-600 to-purple-600",
-      "hover:from-blue-700 hover:to-purple-700",
-      !isDragging && "animate-subtle-pulse hover:shadow-xl"
+      "bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500",
+      "hover:from-pink-600 hover:via-purple-600 hover:to-cyan-600",
+      "shadow-[0_0_30px_rgba(168,85,247,0.6),0_0_60px_rgba(236,72,153,0.4)]",
+      !isDragging && "hover:shadow-[0_0_40px_rgba(168,85,247,0.8),0_0_80px_rgba(236,72,153,0.6)]"
     ),
     glow: cn(
-      "bg-gradient-to-r from-purple-600 to-pink-600",
-      "hover:from-purple-700 hover:to-pink-700",
-      "shadow-[0_0_20px_rgba(168,85,247,0.5)]",
-      "hover:shadow-[0_0_30px_rgba(168,85,247,0.8)]"
+      "bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500",
+      "hover:from-purple-600 hover:via-pink-600 hover:to-orange-600",
+      "shadow-[0_0_30px_rgba(168,85,247,0.6),0_0_60px_rgba(236,72,153,0.4)]",
+      "hover:shadow-[0_0_40px_rgba(168,85,247,0.8),0_0_80px_rgba(236,72,153,0.6)]"
     ),
     subtle: cn(
-      "bg-slate-700 hover:bg-slate-600",
-      "dark:bg-slate-800 dark:hover:bg-slate-700",
-      "shadow-md hover:shadow-lg"
+      "bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800",
+      "hover:from-slate-500 hover:via-slate-600 hover:to-slate-700",
+      "shadow-[0_0_20px_rgba(100,116,139,0.4)]",
+      "hover:shadow-[0_0_30px_rgba(100,116,139,0.6)]"
     )
   };
 
