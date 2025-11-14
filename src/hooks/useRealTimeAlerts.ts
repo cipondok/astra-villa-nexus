@@ -210,6 +210,50 @@ export const useRealTimeAlerts = () => {
     });
   };
 
+  const handleErrorLog = async (errorData: any) => {
+    // Only create alerts for medium, high, and critical severity errors
+    const severity = errorData.severity || 'low';
+    if (severity === 'low') return;
+
+    const severityEmoji = {
+      medium: '⚠️',
+      high: '🔴',
+      critical: '🚨'
+    }[severity] || '⚠️';
+
+    const priorityMap = {
+      medium: 'medium',
+      high: 'high',
+      critical: 'high'
+    };
+
+    const urgencyMap = {
+      medium: 2,
+      high: 4,
+      critical: 5
+    };
+
+    await createAlert({
+      title: `${severityEmoji} ${severity.toUpperCase()} Error Detected`,
+      message: `Error Type: ${errorData.error_type}\n\n${errorData.error_message}\n\nComponent: ${errorData.component_name || 'Unknown'}\nPage: ${errorData.error_page || 'Unknown'}\nUser: ${errorData.user_email || 'Anonymous'}`,
+      type: 'system_error',
+      priority: priorityMap[severity as keyof typeof priorityMap] || 'medium',
+      alert_category: 'system',
+      urgency_level: urgencyMap[severity as keyof typeof urgencyMap] || 2,
+      action_required: severity === 'critical' || severity === 'high',
+      reference_type: 'error_log',
+      reference_id: errorData.id,
+      source_table: 'error_logs',
+      source_id: errorData.id,
+      metadata: {
+        error_type: errorData.error_type,
+        severity: errorData.severity,
+        component: errorData.component_name,
+        user_id: errorData.user_id
+      }
+    });
+  };
+
   useEffect(() => {
     if (!user || profile?.role !== 'admin') return;
 
@@ -385,6 +429,29 @@ export const useRealTimeAlerts = () => {
       )
       .subscribe();
 
+    // Listen for error logs (medium, high, critical only)
+    const errorLogsChannel = supabase
+      .channel('error-logs-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'error_logs'
+        },
+        (payload) => {
+          console.log('Error log detected:', payload.new);
+          handleErrorLog(payload.new);
+          const severity = payload.new.severity || 'low';
+          if (severity !== 'low') {
+            toast.error(`${severity.toUpperCase()} Error Detected!`, {
+              description: payload.new.error_type
+            });
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       console.log('Cleaning up real-time alert monitoring...');
       supabase.removeChannel(profilesChannel);
@@ -395,6 +462,7 @@ export const useRealTimeAlerts = () => {
       supabase.removeChannel(vendorServicesChannel);
       supabase.removeChannel(securityChannel);
       supabase.removeChannel(feedbackChannel);
+      supabase.removeChannel(errorLogsChannel);
       setIsMonitoring(false);
     };
   }, [user, profile?.role]);
