@@ -81,8 +81,8 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
             transition={{ delay: 0.5 }}
             className="flex gap-3 items-start"
           >
-            <div className="bg-blue-500/10 p-2 rounded-lg flex-shrink-0">
-              <Maximize2 className="h-4 w-4 text-blue-500" />
+            <div className="bg-accent/50 p-2 rounded-lg flex-shrink-0">
+              <Maximize2 className="h-4 w-4 text-accent-foreground" />
             </div>
             <div>
               <h3 className="font-semibold text-sm mb-1">Mini & Full View</h3>
@@ -98,8 +98,8 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
             transition={{ delay: 0.6 }}
             className="flex gap-3 items-start"
           >
-            <div className="bg-green-500/10 p-2 rounded-lg flex-shrink-0">
-              <Clock className="h-4 w-4 text-green-500" />
+            <div className="bg-secondary/50 p-2 rounded-lg flex-shrink-0">
+              <Clock className="h-4 w-4 text-secondary-foreground" />
             </div>
             <div>
               <h3 className="font-semibold text-sm mb-1">Auto-Collapse</h3>
@@ -115,8 +115,8 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
             transition={{ delay: 0.7 }}
             className="flex gap-3 items-start"
           >
-            <div className="bg-purple-500/10 p-2 rounded-lg flex-shrink-0">
-              <Volume2 className="h-4 w-4 text-purple-500" />
+            <div className="bg-muted p-2 rounded-lg flex-shrink-0">
+              <Volume2 className="h-4 w-4 text-muted-foreground" />
             </div>
             <div>
               <h3 className="font-semibold text-sm mb-1">Sound Notifications</h3>
@@ -130,7 +130,7 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.8 }}
-            className="flex gap-3 items-start p-3 rounded-lg bg-gradient-to-r from-primary/10 to-blue-500/10 border border-primary/20"
+            className="flex gap-3 items-start p-3 rounded-lg bg-primary/10 border border-primary/20"
           >
             <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
             <div>
