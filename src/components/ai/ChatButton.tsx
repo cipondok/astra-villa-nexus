@@ -103,7 +103,47 @@ const ChatButton = ({
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      let didScroll = false;
+
+      const candidates: (HTMLElement | null)[] = [
+        document.scrollingElement as HTMLElement,
+        document.documentElement as HTMLElement,
+        document.body as HTMLElement,
+        document.querySelector('[data-scroll-container]') as HTMLElement,
+        document.getElementById('root'),
+        document.getElementById('app')
+      ];
+
+      for (const el of candidates) {
+        if (!el) continue;
+        if (el.scrollTop > 0) {
+          el.scrollTo({ top: 0, behavior: 'smooth' });
+          didScroll = true;
+        }
+      }
+
+      if (!didScroll) {
+        // Fallback: scan for any scrollable container in the viewport
+        const all = Array.from(document.querySelectorAll('*')) as HTMLElement[];
+        for (const el of all) {
+          const style = window.getComputedStyle(el);
+          const overflowY = style.overflowY;
+          if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight && el.scrollTop > 0) {
+            el.scrollTo({ top: 0, behavior: 'smooth' });
+            didScroll = true;
+          }
+        }
+      }
+
+      if (!didScroll) {
+        // Last resort
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (e) {
+      console.warn('Scroll to top fallback used', e);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     setShowFunctionMenu(false);
   };
 
