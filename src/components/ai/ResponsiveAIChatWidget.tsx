@@ -1489,21 +1489,30 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      togglePinAction('scroll-top');
-                    }}
-                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    {pinnedActions.has('scroll-top') ? (
-                      <PinOff className="h-3 w-3" />
-                    ) : (
-                      <Pin className="h-3 w-3" />
-                    )}
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePinAction('scroll-top');
+                          }}
+                          className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                          size="icon"
+                          variant="ghost"
+                        >
+                          {pinnedActions.has('scroll-top') ? (
+                            <PinOff className="h-3 w-3" />
+                          ) : (
+                            <Pin className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" sideOffset={5}>
+                        {pinnedActions.has('scroll-top') ? 'Unpin Action' : 'Pin Action'}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
             )}
@@ -1531,21 +1540,30 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      togglePinAction('image-search');
-                    }}
-                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    {pinnedActions.has('image-search') ? (
-                      <PinOff className="h-3 w-3" />
-                    ) : (
-                      <Pin className="h-3 w-3" />
-                    )}
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePinAction('image-search');
+                          }}
+                          className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                          size="icon"
+                          variant="ghost"
+                        >
+                          {pinnedActions.has('image-search') ? (
+                            <PinOff className="h-3 w-3" />
+                          ) : (
+                            <Pin className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" sideOffset={5}>
+                        {pinnedActions.has('image-search') ? 'Unpin Action' : 'Pin Action'}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
             )}
