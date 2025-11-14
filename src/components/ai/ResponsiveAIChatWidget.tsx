@@ -1559,6 +1559,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     onOpenSettings={() => setShowSettings(true)}
                     pinnedActions={pinnedActions}
                     onTogglePin={togglePinAction}
+                    showScrollArrow={showScrollToTop}
                   />
                 </TooltipTrigger>
                 <TooltipContent side="left">
