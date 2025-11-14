@@ -1613,41 +1613,41 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   className="absolute inset-0 pointer-events-none flex items-center justify-center"
                 >
                   <div className="relative">
-                    {/* Progress ring overlay */}
+                    {/* Progress ring overlay - sized to match chatbot button */}
                     <svg
-                      className="w-16 h-16 md:w-20 md:h-20 -rotate-90"
-                      viewBox="0 0 80 80"
+                      className="w-12 h-12 md:w-14 md:h-14 -rotate-90"
+                      viewBox="0 0 56 56"
                     >
                       <circle
-                        cx="40"
-                        cy="40"
-                        r="36"
+                        cx="28"
+                        cy="28"
+                        r="25"
                         fill="none"
                         stroke="hsl(var(--background))"
-                        strokeWidth="4"
+                        strokeWidth="3"
                         opacity="0.3"
                       />
                       <circle
-                        cx="40"
-                        cy="40"
-                        r="36"
+                        cx="28"
+                        cy="28"
+                        r="25"
                         fill="none"
                         stroke={getScrollProgressColor(scrollProgress)}
-                        strokeWidth="4"
-                        strokeDasharray={2 * Math.PI * 36}
-                        strokeDashoffset={2 * Math.PI * 36 - (scrollProgress / 100) * (2 * Math.PI * 36)}
+                        strokeWidth="3"
+                        strokeDasharray={2 * Math.PI * 25}
+                        strokeDashoffset={2 * Math.PI * 25 - (scrollProgress / 100) * (2 * Math.PI * 25)}
                         strokeLinecap="round"
                         className={cn(
                           "transition-all duration-500 ease-out",
                           scrollProgress >= 99 && "animate-pulse"
                         )}
-                        style={{ filter: 'drop-shadow(0 0 6px currentColor)' }}
+                        style={{ filter: 'drop-shadow(0 0 4px currentColor)' }}
                       />
                     </svg>
                     
                     {/* Scroll percentage indicator */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-primary-foreground bg-background/80 backdrop-blur-sm px-1.5 py-0.5 rounded-full border border-primary/20">
+                      <span className="text-[9px] font-bold text-primary-foreground bg-background/90 backdrop-blur-sm px-1 py-0.5 rounded-full border border-primary/30 shadow-sm">
                         {Math.round(scrollProgress)}%
                       </span>
                     </div>
