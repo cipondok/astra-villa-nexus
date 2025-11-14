@@ -29,95 +29,80 @@ export const ChatbotConflictDialog = ({ open, conflictData, onResolve, onCancel 
 
   return (
     <Dialog open={open} onOpenChange={onCancel}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-yellow-500" />
-            Sync Conflict Detected
+          <DialogTitle className="flex items-center gap-2 text-base">
+            <AlertCircle className="h-4 w-4 text-destructive" />
+            Sync Conflict
           </DialogTitle>
-          <DialogDescription>
-            Your chatbot preferences differ between this device and the cloud. Choose which version to keep.
+          <DialogDescription className="text-xs">
+            Choose which chatbot preferences to keep.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-4 my-4">
+        <div className="grid grid-cols-2 gap-3 my-3">
           {/* Local Version */}
-          <div className="border border-border rounded-lg p-4 bg-muted/50">
-            <div className="flex items-center gap-2 mb-3">
-              <Laptop className="h-4 w-4 text-primary" />
-              <h3 className="font-semibold">This Device</h3>
+          <div className="border border-border rounded-lg p-3 bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <Laptop className="h-3.5 w-3.5 text-primary" />
+              <h3 className="font-semibold text-sm">This Device</h3>
             </div>
-            <div className="space-y-2 text-sm">
-              <div>
-                <span className="text-muted-foreground">Position:</span>
-                <span className="ml-2">({Math.round(conflictData.local.position.x)}, {Math.round(conflictData.local.position.y)})</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Size:</span>
-                <span className="ml-2">{conflictData.local.size.width}x{conflictData.local.size.height}</span>
-              </div>
-              <div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">View:</span>
-                <span className="ml-2 capitalize">{conflictData.local.viewMode}</span>
+                <span className="font-medium capitalize">{conflictData.local.viewMode}</span>
               </div>
-              <div className="pt-2 border-t border-border">
-                <span className="text-xs text-muted-foreground">
-                  Modified: {conflictData.local.lastModified.toLocaleString()}
+              <div className="pt-1.5 border-t border-border/50">
+                <span className="text-[10px] text-muted-foreground">
+                  {conflictData.local.lastModified.toLocaleString()}
                 </span>
               </div>
             </div>
             <Button
               onClick={() => onResolve('local')}
-              className="w-full mt-4"
+              className="w-full mt-3"
               variant="default"
+              size="sm"
             >
-              Keep This Device
+              Keep This
             </Button>
           </div>
 
           {/* Cloud Version */}
-          <div className="border border-border rounded-lg p-4 bg-muted/50">
-            <div className="flex items-center gap-2 mb-3">
-              <Cloud className="h-4 w-4 text-blue-500" />
-              <h3 className="font-semibold">Cloud</h3>
+          <div className="border border-border rounded-lg p-3 bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <Cloud className="h-3.5 w-3.5 text-primary" />
+              <h3 className="font-semibold text-sm">Cloud</h3>
             </div>
-            <div className="space-y-2 text-sm">
-              <div>
-                <span className="text-muted-foreground">Position:</span>
-                <span className="ml-2">({Math.round(conflictData.cloud.position.x)}, {Math.round(conflictData.cloud.position.y)})</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Size:</span>
-                <span className="ml-2">{conflictData.cloud.size.width}x{conflictData.cloud.size.height}</span>
-              </div>
-              <div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">View:</span>
-                <span className="ml-2 capitalize">{conflictData.cloud.viewMode}</span>
+                <span className="font-medium capitalize">{conflictData.cloud.viewMode}</span>
               </div>
-              <div className="pt-2 border-t border-border">
-                <span className="text-xs text-muted-foreground">
-                  Modified: {conflictData.cloud.lastModified.toLocaleString()}
+              <div className="pt-1.5 border-t border-border/50">
+                <span className="text-[10px] text-muted-foreground">
+                  {conflictData.cloud.lastModified.toLocaleString()}
                 </span>
               </div>
             </div>
             <Button
               onClick={() => onResolve('cloud')}
-              className="w-full mt-4"
-              variant="default"
+              className="w-full mt-3"
+              variant="outline"
+              size="sm"
             >
               Keep Cloud
             </Button>
           </div>
         </div>
 
-        <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-          <AlertCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-          <p className="text-xs text-muted-foreground">
-            Your choice will update both this device and the cloud. The other version will be overwritten.
+        <div className="mt-2 p-2.5 bg-muted/50 border border-border/50 rounded-lg">
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
+            Your choice will sync across all devices.
           </p>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-3">
           <Button onClick={onCancel} variant="ghost" size="sm">
             Decide Later
           </Button>
