@@ -62,6 +62,7 @@ const ChatButton = ({
     "text-white shadow-lg",
     "flex items-center justify-center",
     "transition-all duration-300 ease-out",
+    "border-2 border-white/30",
     !isDragging && "transform hover:scale-110",
     isDragging && "scale-105 shadow-2xl",
     "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
