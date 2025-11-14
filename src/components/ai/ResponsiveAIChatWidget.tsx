@@ -556,6 +556,26 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     });
   };
 
+  // Get dynamic color for scroll progress ring based on percentage
+  const getScrollProgressColor = (progress: number) => {
+    if (progress < 33) {
+      // Green to Yellow-Green (0-33%)
+      const ratio = progress / 33;
+      const hue = 120 - (ratio * 30); // 120 (green) to 90 (yellow-green)
+      return `hsl(${hue}, 70%, 50%)`;
+    } else if (progress < 66) {
+      // Yellow-Green to Orange (33-66%)
+      const ratio = (progress - 33) / 33;
+      const hue = 90 - (ratio * 50); // 90 (yellow-green) to 40 (orange)
+      return `hsl(${hue}, 70%, 50%)`;
+    } else {
+      // Orange to Red (66-100%)
+      const ratio = (progress - 66) / 34;
+      const hue = 40 - (ratio * 40); // 40 (orange) to 0 (red)
+      return `hsl(${hue}, 80%, 50%)`;
+    }
+  };
+
   // Handle open
   const handleOpen = () => {
     setIsClosing(false);
@@ -1589,12 +1609,13 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         cy="20"
                         r="18"
                         fill="none"
-                        stroke="hsl(var(--accent))"
+                        stroke={getScrollProgressColor(scrollProgress)}
                         strokeWidth="2.5"
                         strokeDasharray={2 * Math.PI * 18}
                         strokeDashoffset={2 * Math.PI * 18 - (scrollProgress / 100) * (2 * Math.PI * 18)}
                         strokeLinecap="round"
                         className="transition-all duration-500 ease-out"
+                        style={{ filter: 'drop-shadow(0 0 4px currentColor)' }}
                       />
                     </svg>
                     
