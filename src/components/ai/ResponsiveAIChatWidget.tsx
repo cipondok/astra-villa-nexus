@@ -234,8 +234,8 @@ const ResponsiveAIChatWidget = ({
           });
         } else {
           setPosition({
-            x: window.innerWidth - 420 - 24,
-            y: window.innerHeight - 680 - 24
+            x: window.innerWidth - 420 - 12,
+            y: window.innerHeight - 680 - 12
           });
         }
         
@@ -944,8 +944,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
   // Reset to default position (bottom-right)
   const resetToDefaultPosition = () => {
     const defaultPosition = {
-      x: window.innerWidth - size.width - 24,
-      y: window.innerHeight - size.height - 24
+      x: window.innerWidth - size.width - 12,
+      y: window.innerHeight - size.height - 12
     };
     setPosition(defaultPosition);
     localStorage.setItem('chatbot-position', JSON.stringify(defaultPosition));
@@ -976,8 +976,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     // Reset state to defaults
     const defaultSize = { width: 420, height: 680 };
     const defaultPosition = {
-      x: window.innerWidth - defaultSize.width - 24,
-      y: window.innerHeight - defaultSize.height - 24
+      x: window.innerWidth - defaultSize.width - 12,
+      y: window.innerHeight - defaultSize.height - 12
     };
     
     setPosition(defaultPosition);
@@ -1191,7 +1191,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       
       // Snap-to-edge and corner functionality
       const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
-      const edgeMargin = 24; // margin from edge when snapped
+      const edgeMargin = 12; // margin from edge when snapped
       
       let snappedPosition = { ...position };
       
@@ -1383,7 +1383,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-[9999] group" onMouseEnter={handleFirstHover}>
+        <div className="fixed bottom-3 right-3 z-[9999] group" onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
