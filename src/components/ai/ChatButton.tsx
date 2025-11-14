@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/context-menu";
 import { useImageSearch } from "@/hooks/useImageSearch";
 import { ImageSearchModal } from "./ImageSearchModal";
+import { ImageCropModal } from "./ImageCropModal";
 import { toast } from "sonner";
 
 export type ChatButtonVariant = "pulse" | "glow" | "subtle";
@@ -46,6 +47,8 @@ const ChatButton = ({
   const lastScrollY = useRef(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showImageSearchModal, setShowImageSearchModal] = useState(false);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [originalImageUrl, setOriginalImageUrl] = useState<string | null>(null);
   const [searchImageUrl, setSearchImageUrl] = useState<string | null>(null);
   
   // Image search hook
@@ -124,16 +127,24 @@ const ChatButton = ({
       return;
     }
 
-    try {
-      // Convert to base64 for preview
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSearchImageUrl(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    // Convert to base64 for cropping
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const imageUrl = event.target?.result as string;
+      setOriginalImageUrl(imageUrl);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  };
 
-      // Open modal and start search
-      setShowImageSearchModal(true);
+  const handleCropComplete = async (croppedBlob: Blob, croppedUrl: string) => {
+    setShowCropModal(false);
+    setSearchImageUrl(croppedUrl);
+    setShowImageSearchModal(true);
+
+    try {
+      // Convert blob to file for search
+      const file = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
       
       const results = await searchByImage(file);
       
@@ -146,6 +157,15 @@ const ChatButton = ({
       console.error('Image search error:', error);
       toast.error('Failed to search by image. Please try again.');
       setShowImageSearchModal(false);
+    }
+  };
+
+  const handleCropCancel = () => {
+    setShowCropModal(false);
+    setOriginalImageUrl(null);
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -255,6 +275,16 @@ const ChatButton = ({
         onChange={handleFileChange}
         className="hidden"
       />
+
+      {/* Image Crop Modal */}
+      {originalImageUrl && (
+        <ImageCropModal
+          isOpen={showCropModal}
+          imageUrl={originalImageUrl}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
 
       {/* Image Search Modal */}
       <ImageSearchModal
