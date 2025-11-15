@@ -10428,9 +10428,11 @@ export type Database = {
       is_admin_user: { Args: never; Returns: boolean }
       is_authorized_support_user: { Args: never; Returns: boolean }
       is_current_user_admin: { Args: never; Returns: boolean }
+      is_super_admin: { Args: never; Returns: boolean }
       is_super_admin_by_email: { Args: never; Returns: boolean }
       is_super_admin_direct: { Args: never; Returns: boolean }
       is_super_admin_safe: { Args: { user_email?: string }; Returns: boolean }
+      is_super_admin_user: { Args: { check_user_id: string }; Returns: boolean }
       is_valid_indonesian_phone: {
         Args: { phone_number: string }
         Returns: boolean
