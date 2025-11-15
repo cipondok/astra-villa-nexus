@@ -18,12 +18,12 @@ const MetaAILogo = (props: LucideProps) => (
     {...props}
   >
     <defs>
-      <linearGradient id="metaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{ stopColor: "#0081FB", stopOpacity: 1 }} />
-        <stop offset="25%" style={{ stopColor: "#0D91FF", stopOpacity: 1 }} />
-        <stop offset="50%" style={{ stopColor: "#A855F7", stopOpacity: 1 }} />
-        <stop offset="75%" style={{ stopColor: "#E879F9", stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: "#7C3AED", stopOpacity: 1 }} />
+      <linearGradient id="metaGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" style={{ stopColor: "#00E5FF", stopOpacity: 1 }} />
+        <stop offset="25%" style={{ stopColor: "#00B8D4", stopOpacity: 1 }} />
+        <stop offset="50%" style={{ stopColor: "#7C3AED", stopOpacity: 1 }} />
+        <stop offset="75%" style={{ stopColor: "#A855F7", stopOpacity: 1 }} />
+        <stop offset="100%" style={{ stopColor: "#E879F9", stopOpacity: 1 }} />
       </linearGradient>
       
       <linearGradient id="shimmer" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -33,8 +33,9 @@ const MetaAILogo = (props: LucideProps) => (
       </linearGradient>
       
       <radialGradient id="metaGlow">
-        <stop offset="0%" style={{ stopColor: "#A855F7", stopOpacity: 0.6 }} />
-        <stop offset="100%" style={{ stopColor: "#A855F7", stopOpacity: 0 }} />
+        <stop offset="0%" style={{ stopColor: "#8B5CF6", stopOpacity: 0.8 }} />
+        <stop offset="50%" style={{ stopColor: "#06B6D4", stopOpacity: 0.4 }} />
+        <stop offset="100%" style={{ stopColor: "#00E5FF", stopOpacity: 0 }} />
       </radialGradient>
       
       <filter id="glass" x="-50%" y="-50%" width="200%" height="200%">
