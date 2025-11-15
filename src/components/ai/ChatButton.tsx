@@ -67,7 +67,7 @@ const ChatButton = ({
 
   const baseStyles = cn(
     "fixed z-[99999]",
-    "h-12 w-12 md:h-14 md:w-14 rounded-full",
+    "h-[110px] w-[110px] rounded-full",
     "shadow-lg",
     "transition-all duration-500 ease-out",
     "pointer-events-auto",
@@ -197,9 +197,9 @@ const ChatButton = ({
                   }}
                 >
                   {showScrollArrow ? (
-                    <ArrowUp className="h-11 w-11 md:h-[52px] md:w-[52px] animate-bounce" aria-hidden="true" />
+                    <ArrowUp className="h-[100px] w-[100px] animate-bounce" aria-hidden="true" />
                   ) : (
-                    <Icons.aiLogo className="h-11 w-11 md:h-[52px] md:w-[52px] transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
+                    <Icons.aiLogo className="h-[100px] w-[100px] transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
                   )}
                 </motion.div>
               </AnimatePresence>
@@ -212,7 +212,7 @@ const ChatButton = ({
                 aria-hidden="true"
               />
             </div>
-            <UnreadBadge count={unreadCount} />
+            {unreadCount > 0 && <UnreadBadge count={unreadCount} />}
           </div>
         </motion.button>
       </ContextMenuTrigger>
