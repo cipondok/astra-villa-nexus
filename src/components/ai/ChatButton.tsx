@@ -197,9 +197,9 @@ const ChatButton = ({
                   }}
                 >
                   {showScrollArrow ? (
-                    <ArrowUp className="h-11 w-11 md:h-13 md:w-13 animate-bounce" aria-hidden="true" />
+                    <ArrowUp className="h-11 w-11 md:h-[52px] md:w-[52px] animate-bounce" aria-hidden="true" />
                   ) : (
-                    <Icons.aiLogo className="h-11 w-11 md:h-13 md:w-13 transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
+                    <Icons.aiLogo className="h-11 w-11 md:h-[52px] md:w-[52px] transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
                   )}
                 </motion.div>
               </AnimatePresence>
