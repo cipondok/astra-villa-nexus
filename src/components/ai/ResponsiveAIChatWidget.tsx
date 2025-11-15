@@ -4,8 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin, Handshake, Bot, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Minus, Square, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
+import { Home, Users, MapPin, Handshake, Volume2, VolumeX, Settings, ArrowUp, Camera, Menu, X as XIcon, Pin, PinOff, Maximize2, Minimize2, Minus, Square, Clock, Download, Upload, Music, Trash2, RotateCcw, Cloud, CheckCircle2, XCircle, Loader2, Search, Phone, Calendar, MessageSquare, HelpCircle, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Icons } from "@/components/icons";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
 import AIChatInput from "./AIChatInput";
@@ -1675,8 +1676,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               title={isMobile ? "Double-tap to toggle view mode" : !isMobile ? "Double-click to reset position" : undefined}
             >
               <div className="flex items-center gap-2">
-                <Bot className="h-5 w-5" />
-                <span className="font-semibold text-sm">AI Assistant</span>
+                <Icons.aiLogo className="h-5 w-5" />
+                <span className="font-semibold text-sm bg-gradient-to-r from-primary via-purple-600 to-blue-600 bg-clip-text text-transparent">ASTRA AI</span>
                 {viewMode === 'mini' && (
                   <span className="text-xs opacity-80 font-normal">
                     (Mini {messages.length > 3 ? `· 3 of ${messages.length}` : ''})
@@ -1963,10 +1964,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 {isLoading ? (
                   // Show typing indicator when AI is responding
                   <div className="flex items-center gap-3">
-                    <Bot className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Icons.aiLogo className="h-4 w-4 text-primary flex-shrink-0" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-medium text-foreground">AI Assistant</span>
+                        <span className="text-xs font-medium text-foreground">ASTRA AI</span>
                         <span className="text-xs text-muted-foreground">· Typing...</span>
                       </div>
                       <div className="flex gap-1">
@@ -1993,7 +1994,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 mt-0.5">
                       {messages[messages.length - 1].role === 'assistant' ? (
-                        <Bot className="h-4 w-4 text-primary" />
+                        <Icons.aiLogo className="h-4 w-4 text-primary" />
                       ) : (
                         <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
                           <span className="text-xs text-primary font-medium">
@@ -2019,7 +2020,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 ) : (
                   // No messages yet
                   <div className="flex items-center gap-3">
-                    <Bot className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Icons.aiLogo className="h-4 w-4 text-primary flex-shrink-0" />
                     <div className="flex-1">
                       <span className="text-xs font-medium text-foreground">No messages yet</span>
                       <p className="text-xs text-muted-foreground">Click to start chatting</p>

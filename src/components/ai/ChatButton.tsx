@@ -1,6 +1,7 @@
-import { Bot, GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
+import { GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
+import { Icons } from "@/components/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import {
@@ -204,7 +205,7 @@ const ChatButton = ({
                   {showScrollArrow ? (
                     <ArrowUp className="h-6 w-6 animate-bounce" aria-hidden="true" />
                   ) : (
-                    <Bot className="h-6 w-6 transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
+                    <Icons.aiLogo className="h-6 w-6 transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
                   )}
                 </motion.div>
               </AnimatePresence>
