@@ -12,10 +12,10 @@ const MetaAILogo = (props: LucideProps) => (
   <img 
     src={astraLogo} 
     alt="ASTRA AI" 
-    width={props.size || 24}
-    height={props.size || 24}
+    width={props.size || 100}
+    height={props.size || 100}
     className={props.className}
-    style={{ width: props.size || 24, height: props.size || 24 }}
+    style={{ width: props.size || 100, height: props.size || 100 }}
   />
 );
 
