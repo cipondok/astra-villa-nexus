@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Bot } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 interface TypingIndicatorProps {
@@ -32,8 +32,8 @@ const TypingIndicator = ({ className, status = "AI is thinking" }: TypingIndicat
     >
       <div className="max-w-xs p-3 rounded-lg bg-white/70 dark:bg-gray-800">
         <div className="flex items-center gap-2 mb-1">
-          <Bot className="h-4 w-4 text-purple-600" />
-          <span className="text-xs font-medium text-purple-600">AI Assistant</span>
+          <Icons.aiLogo className="h-5 w-5" />
+          <span className="text-xs font-medium bg-gradient-to-r from-primary via-purple-600 to-blue-600 bg-clip-text text-transparent">ASTRA AI</span>
         </div>
         <div className="flex items-center gap-1">
           <motion.span 
