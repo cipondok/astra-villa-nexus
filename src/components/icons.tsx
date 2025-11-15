@@ -19,19 +19,38 @@ const MetaAILogo = (props: LucideProps) => (
   >
     <defs>
       <linearGradient id="metaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{ stopColor: "hsl(var(--primary))", stopOpacity: 1 }} />
-        <stop offset="50%" style={{ stopColor: "hsl(280, 100%, 60%)", stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: "hsl(200, 100%, 60%)", stopOpacity: 1 }} />
+        <stop offset="0%" style={{ stopColor: "#0081FB", stopOpacity: 1 }} />
+        <stop offset="25%" style={{ stopColor: "#0D91FF", stopOpacity: 1 }} />
+        <stop offset="50%" style={{ stopColor: "#A855F7", stopOpacity: 1 }} />
+        <stop offset="75%" style={{ stopColor: "#E879F9", stopOpacity: 1 }} />
+        <stop offset="100%" style={{ stopColor: "#7C3AED", stopOpacity: 1 }} />
       </linearGradient>
+      <radialGradient id="metaGlow">
+        <stop offset="0%" style={{ stopColor: "#A855F7", stopOpacity: 0.4 }} />
+        <stop offset="100%" style={{ stopColor: "#A855F7", stopOpacity: 0 }} />
+      </radialGradient>
     </defs>
+    
+    {/* Outer glow effect */}
     <circle
       cx="12"
       cy="12"
-      r="9"
-      stroke="url(#metaGradient)"
-      strokeWidth="2.5"
-      fill="none"
+      r="11"
+      fill="url(#metaGlow)"
     />
+    
+    {/* Main ring */}
+    <circle
+      cx="12"
+      cy="12"
+      r="8"
+      stroke="url(#metaGradient)"
+      strokeWidth="3"
+      fill="none"
+      opacity="0.9"
+    />
+    
+    {/* Inner ring */}
     <circle
       cx="12"
       cy="12"
@@ -39,16 +58,13 @@ const MetaAILogo = (props: LucideProps) => (
       stroke="url(#metaGradient)"
       strokeWidth="2"
       fill="none"
+      opacity="0.6"
     />
+    
+    {/* Center sparkle effect */}
     <circle
       cx="12"
-      cy="8"
-      r="1.5"
-      fill="url(#metaGradient)"
-    />
-    <circle
-      cx="12"
-      cy="16"
+      cy="12"
       r="1.5"
       fill="url(#metaGradient)"
     />
