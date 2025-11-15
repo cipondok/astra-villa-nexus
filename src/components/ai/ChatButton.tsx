@@ -67,7 +67,7 @@ const ChatButton = ({
 
   const baseStyles = cn(
     "fixed z-[99999]",
-    "h-[110px] w-[110px] rounded-full",
+    "h-[55px] w-[55px] rounded-full",
     "shadow-lg",
     "transition-all duration-500 ease-out",
     "pointer-events-auto",
@@ -197,9 +197,9 @@ const ChatButton = ({
                   }}
                 >
                   {showScrollArrow ? (
-                    <ArrowUp className="h-[100px] w-[100px] animate-bounce" aria-hidden="true" />
+                    <ArrowUp className="h-[50px] w-[50px] animate-bounce" aria-hidden="true" />
                   ) : (
-                    <Icons.aiLogo className="h-[100px] w-[100px] transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
+                    <Icons.aiLogo className="h-[50px] w-[50px] transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
                   )}
                 </motion.div>
               </AnimatePresence>
