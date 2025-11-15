@@ -11,9 +11,10 @@ import { cn } from "@/lib/utils";
 
 const MetaAILogo = (props: LucideProps) => (
   <div className="relative inline-flex items-center justify-center">
-    <div className="absolute inset-0 bg-gray-900 dark:bg-gray-950 rounded-full" style={{ 
+    <div className="absolute inset-0 rounded-full" style={{ 
       width: props.size || 55, 
-      height: props.size || 55 
+      height: props.size || 55,
+      backgroundColor: '#4a3c31'
     }}></div>
     <img 
       src={astraLogo} 
