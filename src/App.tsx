@@ -17,6 +17,7 @@ import AppInitializer from '@/components/AppInitializer';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
+import BackgroundRemovalTool from '@/components/BackgroundRemovalTool';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
@@ -199,6 +200,7 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
+                            <BackgroundRemovalTool />
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
