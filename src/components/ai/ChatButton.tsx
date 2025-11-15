@@ -70,34 +70,28 @@ const ChatButton = ({
     "h-12 w-12 md:h-14 md:w-14 rounded-full",
     "shadow-lg",
     "transition-all duration-500 ease-out",
-    "border-2 border-transparent",
-    "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500",
-    "p-[2px]",
     "pointer-events-auto",
     !isDragging && "transform hover:scale-110 active:scale-95",
     isDragging && "scale-105 shadow-2xl",
-    "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
+    "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2",
     isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
   );
 
   const variantStyles: Record<ChatButtonVariant, string> = {
     pulse: cn(
-      "bg-gradient-to-r from-blue-600 to-purple-600",
-      "hover:from-blue-700 hover:to-purple-700",
-      "text-white",
+      "bg-background/80 backdrop-blur-sm",
+      "hover:bg-background/90",
       !isDragging && "animate-chat-float md:animate-chat-float hover:shadow-xl"
     ),
     glow: cn(
-      "bg-gradient-to-r from-purple-600 to-pink-600",
-      "hover:from-purple-700 hover:to-pink-700",
-      "text-white",
-      "shadow-[0_0_20px_rgba(168,85,247,0.5)]",
-      "hover:shadow-[0_0_30px_rgba(168,85,247,0.8)]"
+      "bg-background/80 backdrop-blur-sm",
+      "hover:bg-background/90",
+      "shadow-[0_0_20px_rgba(168,85,247,0.3)]",
+      "hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]"
     ),
     subtle: cn(
-      "bg-slate-700 hover:bg-slate-600",
-      "dark:bg-slate-800 dark:hover:bg-slate-700",
-      "text-white",
+      "bg-background/80 backdrop-blur-sm",
+      "hover:bg-background/90",
       "shadow-md hover:shadow-lg"
     )
   };
