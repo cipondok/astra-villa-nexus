@@ -16,6 +16,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import AppInitializer from '@/components/AppInitializer';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
+import MobileFooter from '@/components/MobileFooter';
 import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
@@ -72,6 +73,7 @@ import VendorRegistration from '@/pages/VendorRegistration';
 import SharedSearch from '@/pages/SharedSearch';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 const AppContent = () => {
@@ -83,6 +85,7 @@ const AppContent = () => {
   const location = useLocation();
   const { language } = useLanguage();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
+  const { isMobile } = useIsMobile();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -150,7 +153,7 @@ const AppContent = () => {
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
-      {!isAdminRoute && <ProfessionalFooter language={language} />}
+      {!isAdminRoute && (isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />)}
     </div>
   );
 };
