@@ -173,47 +173,48 @@ const Marketplace = () => {
     : categories;
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-background pt-14 md:pt-20 pb-6 md:pb-12 px-3 md:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+        <div className="mb-4 md:mb-8">
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">
             Marketplace Services
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-xs md:text-sm text-muted-foreground">
             Connect with trusted vendors for all your property needs
           </p>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
+        <div className="mb-4 md:mb-8 flex flex-col md:flex-row gap-2 md:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
             <Input
-              placeholder="Search services or vendors..."
+              placeholder="Search services..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-8 md:pl-10 h-9 md:h-10 text-sm"
             />
           </div>
           <Button
             variant={selectedCategory ? "default" : "outline"}
             onClick={() => setSelectedCategory(null)}
-            className="md:w-auto"
+            className="md:w-auto h-9 md:h-10 text-sm"
+            size="sm"
           >
-            <Filter className="w-4 h-4 mr-2" />
-            {selectedCategory ? 'Clear Filter' : 'All Categories'}
+            <Filter className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+            {selectedCategory ? 'Clear' : 'All'}
           </Button>
         </div>
 
         {/* Category Filter Chips */}
         {!selectedCategory && (
-          <div className="mb-8 flex flex-wrap gap-2">
+          <div className="mb-4 md:mb-8 flex flex-wrap gap-1.5 md:gap-2">
             {categories.map((category) => (
               <Badge
                 key={category.id}
                 variant="outline"
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors px-3 py-1"
+                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors px-2 py-0.5 md:px-3 md:py-1 text-[10px] md:text-xs active:scale-95"
                 onClick={() => setSelectedCategory(category.id)}
               >
                 {category.title}
@@ -223,31 +224,31 @@ const Marketplace = () => {
         )}
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
           {filteredCategories.map((category) => (
             <Card
               key={category.id}
-              className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-primary/30"
+              className="cursor-pointer hover:shadow-lg transition-all duration-200 active:scale-95 md:hover:scale-105 hover:border-primary/30"
               onClick={() => navigate(`/marketplace/category/${category.id}`)}
             >
-              <CardHeader>
-                <div className={`w-14 h-14 rounded-xl ${category.bgColor} flex items-center justify-center mb-4`}>
-                  <div className={category.iconColor}>
+              <CardHeader className="p-3 md:p-6 pb-2 md:pb-3">
+                <div className={`w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl ${category.bgColor} flex items-center justify-center mb-2 md:mb-4`}>
+                  <div className={`${category.iconColor} [&>svg]:w-5 [&>svg]:h-5 md:[&>svg]:w-6 md:[&>svg]:h-6`}>
                     {category.icon}
                   </div>
                 </div>
-                <CardTitle className="text-lg">{category.title}</CardTitle>
-                <CardDescription>{category.description}</CardDescription>
+                <CardTitle className="text-sm md:text-lg leading-tight">{category.title}</CardTitle>
+                <CardDescription className="text-[10px] md:text-sm line-clamp-2">{category.description}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 md:p-6 pt-0 md:pt-0">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Store className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-primary">
-                      {category.vendorCount} vendors
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <Store className="w-3 h-3 md:w-4 md:h-4 text-primary" />
+                    <span className="text-[10px] md:text-sm font-medium text-primary">
+                      {category.vendorCount}
                     </span>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-primary">
+                  <Button variant="ghost" size="sm" className="text-primary h-6 md:h-8 px-1 md:px-2 text-[10px] md:text-xs">
                     Browse →
                   </Button>
                 </div>
@@ -274,18 +275,18 @@ const Marketplace = () => {
         )}
 
         {/* Bottom CTA */}
-        <div className="mt-12 p-8 rounded-2xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
+        <div className="mt-6 md:mt-12 p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
           <div className="text-center max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-foreground mb-2">
+            <h3 className="text-base md:text-2xl font-bold text-foreground mb-1 md:mb-2">
               Are you a service provider?
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-xs md:text-base text-muted-foreground mb-3 md:mb-6">
               Join our marketplace and connect with thousands of property owners
             </p>
             <Button
               onClick={() => navigate('/vendor-registration')}
-              size="lg"
-              className="shadow-lg"
+              size="sm"
+              className="shadow-lg md:text-base h-9 md:h-11"
             >
               Become a Vendor
             </Button>
