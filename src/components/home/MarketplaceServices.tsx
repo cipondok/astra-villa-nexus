@@ -97,26 +97,26 @@ const MarketplaceServices = () => {
 
   return (
     <div className="relative">
-      {/* Section Header - Compact */}
-      <div className="flex items-center justify-between mb-3 md:mb-4">
+      {/* Section Header - Ultra Compact Mobile */}
+      <div className="flex items-center justify-between mb-2 md:mb-4">
         <div>
-          <h2 className="text-sm md:text-lg lg:text-xl font-bold text-foreground">
+          <h2 className="text-xs md:text-base lg:text-xl font-bold text-foreground">
             Marketplace Services
           </h2>
-          <p className="text-[10px] md:text-xs text-muted-foreground">
+          <p className="text-[9px] md:text-xs text-muted-foreground hidden sm:block">
             Trusted vendors for your property needs
           </p>
         </div>
         <button
           onClick={() => navigate('/marketplace')}
-          className="text-[10px] md:text-xs lg:text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+          className="text-[9px] md:text-xs lg:text-sm font-medium text-primary hover:text-primary/80 transition-colors active:scale-95"
         >
           View All →
         </button>
       </div>
 
       {/* Services Grid - 3 columns mobile/tablet, 4 on desktop */}
-      <div className="grid grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+      <div className="grid grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-3">
         {services.map((service, index) => (
           <ServiceCard
             key={index}
@@ -126,20 +126,20 @@ const MarketplaceServices = () => {
         ))}
       </div>
 
-      {/* CTA Banner - Slim */}
-      <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+      {/* CTA Banner - Ultra Compact Mobile */}
+      <div className="mt-3 md:mt-4 p-2.5 md:p-4 rounded-lg md:rounded-xl bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/20 dark:border-primary/30">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-3">
           <div className="text-center md:text-left">
-            <h3 className="text-sm md:text-base font-semibold text-foreground">
+            <h3 className="text-[11px] md:text-base font-semibold text-foreground">
               Are you a service provider?
             </h3>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[9px] md:text-xs text-muted-foreground">
               Join our marketplace and grow your business
             </p>
           </div>
           <button
             onClick={() => navigate('/vendor-registration')}
-            className="px-4 py-2 text-sm bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors"
+            className="px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-sm bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors active:scale-95"
           >
             Become a Vendor
           </button>
@@ -158,29 +158,29 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="group cursor-pointer"
+      className="group cursor-pointer active:scale-95 transition-transform"
     >
-      <div className="relative overflow-hidden rounded-lg bg-card border border-border p-2 md:p-3 h-full flex flex-col transition-all duration-300 hover:shadow-md hover:scale-105 hover:border-primary/30">
-        {/* Icon Container - Smaller */}
-        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg ${service.bgColor} flex items-center justify-center mb-1.5 md:mb-2 group-hover:scale-110 transition-transform duration-300`}>
+      <div className="relative overflow-hidden rounded-lg bg-card border border-border p-1.5 md:p-3 h-full flex flex-col transition-all duration-200 hover:shadow-md md:hover:scale-105 hover:border-primary/30">
+        {/* Icon Container - Extra Small Mobile */}
+        <div className={`w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg ${service.bgColor} flex items-center justify-center mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-200`}>
           <div className={service.iconColor}>
-            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-4 h-4 md:w-5 md:h-5' })}
+            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-3.5 h-3.5 md:w-5 md:h-5' })}
           </div>
         </div>
 
-        {/* Content - Compact */}
+        {/* Content - Ultra Compact Mobile */}
         <div className="flex-1">
-          <h3 className="text-[10px] md:text-xs lg:text-sm font-semibold text-foreground mb-0.5 md:mb-1 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-[9px] md:text-xs lg:text-sm font-semibold text-foreground mb-0.5 md:mb-1 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
             {service.title}
           </h3>
-          <p className="text-[8px] md:text-[10px] text-muted-foreground mb-1 md:mb-2 line-clamp-1 hidden md:block">
+          <p className="text-[7px] md:text-[10px] text-muted-foreground mb-1 md:mb-2 line-clamp-1 hidden md:block">
             {service.description}
           </p>
           
-          {/* Vendor Count Badge - Smaller */}
+          {/* Vendor Count Badge - Extra Small */}
           <div className="inline-flex items-center gap-0.5 md:gap-1 px-1 md:px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-primary/20">
-            <Store className="w-2 h-2 md:w-2.5 md:h-2.5 text-primary" />
-            <span className="text-[8px] md:text-[10px] font-medium text-primary">
+            <Store className="w-1.5 h-1.5 md:w-2.5 md:h-2.5 text-primary" />
+            <span className="text-[7px] md:text-[10px] font-medium text-primary">
               {service.vendorCount}+
             </span>
           </div>
