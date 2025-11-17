@@ -478,6 +478,69 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
             }`}>
               <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 
+                {/* Mobile-only Quick Filters */}
+                <div className="md:hidden space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    Quick Filters
+                  </h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    {/* State Selection */}
+                    <Select value={filters.state || "all"} onValueChange={(value) => handleFilterChange('state', value)}>
+                      <SelectTrigger className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <SelectValue placeholder={currentText.location} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50 max-h-60 overflow-y-auto">
+                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                        {Object.keys(locationsByProvince).map((province) => (
+                          <SelectItem key={province} value={province} className="text-gray-900 dark:text-gray-100">
+                            📍 {province}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Property Type */}
+                    <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
+                      <SelectTrigger className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <SelectValue placeholder={currentText.propertyType} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                        {propertyTypes.map((type) => (
+                          <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                            {type.icon} {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Listing Type */}
+                    <Select value={filters.listingType || "all"} onValueChange={(value) => handleFilterChange('listingType', value)}>
+                      <SelectTrigger className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <SelectValue placeholder={currentText.listingType} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                        {listingTypes.map((type) => (
+                          <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                            {type.icon} {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
                 {/* Basic Filters Category */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
