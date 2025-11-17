@@ -2123,7 +2123,7 @@ const AstraSearchPanel = ({
             </div>
             
             {/* Quick Preset Filters */}
-            <div className="px-2 pb-1">
+            <div className="hidden px-2 pb-1">
               <div className="flex items-center gap-1 mb-1">
                 <Zap className="h-2.5 w-2.5 text-yellow-500" />
                 <span className="text-[9px] font-semibold text-muted-foreground">Quick Search</span>
@@ -2279,7 +2279,7 @@ const AstraSearchPanel = ({
 
               {/* Content - Scrollable */}
               <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-                <div className="p-3 md:p-4 space-y-2 md:space-y-3 bg-background pb-20">
+                <div className="p-3 md:p-4 space-y-2 md:space-y-3 bg-background pb-8 md:pb-10 lg:pb-12">
                   
                   {/* Active Filters Summary Bar */}
                   {getActiveFiltersCount() > 0 && (
@@ -2866,7 +2866,7 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-md border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-80 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-background border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-80 overflow-y-auto">
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
@@ -3507,7 +3507,7 @@ const AstraSearchPanel = ({
 
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-4 space-y-3 bg-background pb-20">
+              <div className="p-4 space-y-3 bg-background pb-8 md:pb-10 lg:pb-12">
                 
                 {/* Active Filters Summary Bar */}
                 {getActiveFiltersCount() > 0 && (
