@@ -140,7 +140,7 @@ const AstraSearchPanel = ({
   }, []);
 
   // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
-  useScrollLock(showAdvancedFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
+  useScrollLock(showSuggestions || showAdvancedFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
 
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1955,7 +1955,7 @@ const AstraSearchPanel = ({
             
             {/* Mobile Suggestions Dropdown */}
             {showSuggestions && hasSuggestions && (
-              <div className="absolute left-1 right-1 top-full mt-1 bg-background/95 backdrop-blur-md border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-[60vh] overflow-y-auto">
+              <div ref={suggestionsRef} className="absolute left-1 right-1 top-full mt-1 bg-popover border border-border rounded-xl shadow-lg z-[999] max-h-[60vh] overflow-y-auto">
                 {/* Recent Searches */}
                 {filteredSuggestions.recent.length > 0 && (
                   <div className="p-2 border-b border-border/50">
