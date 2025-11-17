@@ -47,26 +47,29 @@ const ProgressPopup = ({
   return (
     <div
       className={cn(
-        "fixed z-[100000] w-[calc(100%-2rem)] max-w-md",
+        "fixed z-[9999] w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] max-w-sm sm:max-w-md",
         "transition-all duration-300 ease-out",
         isVisible ? "animate-fade-in translate-y-0" : "animate-fade-out translate-y-4"
       )}
-      style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))', right: 'calc(1rem + env(safe-area-inset-right))' }}
+      style={{ 
+        bottom: 'calc(0.5rem + env(safe-area-inset-bottom))', 
+        right: 'calc(0.5rem + env(safe-area-inset-right))' 
+      }}
     >
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-2xl border border-white/20 overflow-hidden backdrop-blur-xl">
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-              <TrendingUp className="h-5 w-5 text-white animate-pulse" />
+        <div className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+            <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-white animate-pulse" />
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h4 className="text-white font-semibold text-sm">{title}</h4>
-                <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h4 className="text-white font-semibold text-xs sm:text-sm truncate">{title}</h4>
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-300 animate-pulse flex-shrink-0" />
               </div>
-              <p className="text-white/80 text-xs mt-0.5">{description}</p>
+              <p className="text-white/80 text-[10px] sm:text-xs mt-0.5 truncate">{description}</p>
             </div>
-            <div className="text-white font-bold text-lg tabular-nums">
+            <div className="text-white font-bold text-sm sm:text-lg tabular-nums flex-shrink-0">
               {Math.round(progress)}%
             </div>
           </div>
