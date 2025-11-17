@@ -399,6 +399,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               </Button>
             </div>
 
+            <div className="hidden md:flex justify-end">
               <Button
                 onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
                 variant="outline"
@@ -414,8 +415,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                 )}
                 <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-300 ${showAdvanced ? 'rotate-180' : ''}`} />
               </Button>
-
-            {/* Advanced Filters with Smooth Animation and Categories */}
+            </div>
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
               showAdvanced && !isClosing
                 ? 'max-h-[800px] opacity-100 transform translate-y-0' 
@@ -698,7 +698,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
             {/* Active Filters Summary */}
             {activeFiltersCount > 0 && (
-              <div className="text-xs text-gray-600 dark:text-gray-400 text-center animate-fade-in">
+              <div className="hidden md:block text-xs text-gray-600 dark:text-gray-400 text-center animate-fade-in">
                 {activeFiltersCount} {currentText.filtersApplied}
               </div>
             )}
