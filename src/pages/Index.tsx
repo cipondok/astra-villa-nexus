@@ -429,23 +429,23 @@ const Index = () => {
       	/>
       
       {/* Content Layer with mobile-first responsive backdrop */}
-      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2">
+      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2 pb-1 md:pb-2">
         
         
         {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
-        <section className="relative w-full pt-2 md:pt-3 bg-gradient-to-b from-background via-background/95 to-muted/30">
+        <section className="relative w-full pt-1 md:pt-3 bg-gradient-to-b from-background via-background/95 to-muted/30">
           {/* Decorative background elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
             <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="relative z-10 px-2 py-2 md:px-4 md:py-3 w-full max-w-7xl mx-auto">
+          <div className="relative z-10 px-2 py-1 md:px-4 md:py-3 w-full max-w-7xl mx-auto">
             {/* Enhanced Header */}
-            <div className="mb-2 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              <div className="inline-flex items-center gap-2 mb-1.5 px-3 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
-                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
-                <span className="text-[10px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
+            <div className="mb-1.5 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              <div className="inline-flex items-center gap-1.5 mb-1 px-2.5 py-0.5 md:px-4 md:py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
+                <Sparkles className="h-2.5 w-2.5 md:h-4 md:w-4 text-primary animate-pulse" />
+                <span className="text-[9px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
               </div>
               <h2 className="hidden md:block text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
                 {t.findYour}
@@ -493,7 +493,7 @@ const Index = () => {
 
         {/* Error Message - Compact */}
         {(searchError || lastError) && (
-          <section className={cn(isMobile ? "py-1" : "py-2")}>
+          <section className={cn(isMobile ? "py-0.5" : "py-2")}>
             <div className={cn(
               isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-4",
               "mx-auto"
@@ -547,11 +547,11 @@ const Index = () => {
         )}
 
         {/* Property Display Section - Space Optimized */}
-        <div className="px-2 py-4 space-y-4">
-          <div className="w-full max-w-full mx-auto space-y-4">
+        <div className="px-2 py-2 md:py-4 space-y-3 md:space-y-4">
+          <div className="w-full max-w-full mx-auto space-y-3 md:space-y-4">
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
-                <div className="p-3 md:p-4 lg:p-6">
+                <div className="p-2 md:p-4 lg:p-6">
                   {/* Active Filter Pills */}
                   <Suspense fallback={null}>
                     <ActiveFilterPills
@@ -561,12 +561,12 @@ const Index = () => {
                     />
                   </Suspense>
                   
-                  <div className="flex items-center justify-between mb-6 mt-4">
+                  <div className="flex items-center justify-between mb-4 md:mb-6 mt-2 md:mt-4">
                     <div>
-                      <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg md:text-2xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                         {t.searchResults}
                       </h2>
-                      <p className="text-muted-foreground">
+                      <p className="text-xs md:text-sm text-muted-foreground">
                         {isSearching ? t.searching : `${searchResults.length} ${t.propertiesFound}`}
                         {quickSearch && (
                           <span className="ml-2 text-primary font-medium">
@@ -674,22 +674,22 @@ const Index = () => {
                 </div>
 
                 {/* AI Recommended Properties - Lazy Loaded */}
-                <div className="section-compact mb-6">
+                <div className="section-compact mb-3 md:mb-6">
                   <Suspense fallback={
-                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20 p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg animate-pulse" />
+                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20 p-3 md:p-6">
+                      <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg animate-pulse" />
                         <div className="flex-1">
-                          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2 animate-pulse" />
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-64 animate-pulse" />
+                          <div className="h-5 md:h-6 bg-gray-200 dark:bg-gray-700 rounded w-32 md:w-48 mb-1.5 md:mb-2 animate-pulse" />
+                          <div className="h-3 md:h-4 bg-gray-200 dark:bg-gray-700 rounded w-48 md:w-64 animate-pulse" />
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                         {[...Array(3)].map((_, i) => (
                           <div key={i} className="animate-pulse">
-                            <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-2" />
-                            <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4 mb-2" />
-                            <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-1/2" />
+                            <div className="bg-gray-200 dark:bg-gray-700 h-40 md:h-48 rounded-lg mb-2" />
+                            <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-3/4 mb-1.5 md:mb-2" />
+                            <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-1/2" />
                           </div>
                         ))}
                       </div>
@@ -700,8 +700,8 @@ const Index = () => {
                 </div>
 
                 {/* Trending Searches Widget */}
-                <div className="section-compact mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                <div className="section-compact mb-3 md:mb-6">
+                  <Suspense fallback={<div className="animate-pulse h-48 md:h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <TrendingSearchesWidget 
                       onSearchClick={(trendFilters) => {
                         setFilters(prev => ({ ...prev, ...trendFilters }));
@@ -712,8 +712,8 @@ const Index = () => {
                 </div>
 
                 {/* ASTRA Villa Features Section */}
-                <div className="w-full max-w-full mx-auto mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                <div className="w-full max-w-full mx-auto mb-3 md:mb-6">
+                  <Suspense fallback={<div className="animate-pulse h-24 md:h-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <AstraVillaFeatures />
                   </Suspense>
                 </div>

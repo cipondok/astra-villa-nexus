@@ -27,9 +27,9 @@ const MobileFirstLayout: React.FC<MobileFirstLayoutProps> = ({
 
   const paddingClasses = {
     none: '',
-    small: 'p-4 md:p-6',
-    medium: 'p-4 md:p-6 lg:p-8',
-    large: 'p-6 md:p-8 lg:p-12'
+    small: 'p-2 md:p-6',
+    medium: 'p-3 md:p-6 lg:p-8',
+    large: 'p-4 md:p-8 lg:p-12'
   };
 
   return (
