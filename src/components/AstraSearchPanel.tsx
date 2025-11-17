@@ -1894,7 +1894,7 @@ const AstraSearchPanel = ({
   if (isMobile) {
     return <>
         <div className="w-full sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 transition-all duration-300 px-1 py-2">
-          <div className="backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
+        <div className="relative overscroll-contain backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
             {/* Search Bar */}
             <div className="flex items-center gap-1.5 p-2">
               <div className="flex-1 relative">
@@ -1907,7 +1907,7 @@ const AstraSearchPanel = ({
                   value={searchQuery} 
                   onChange={e => handleSearchChange(e.target.value)} 
                   onFocus={() => setShowSuggestions(true)}
-                  className="pl-9 pr-2 h-9 text-xs bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/30 rounded-xl font-medium shadow-sm transition-all" 
+                  className="pl-9 pr-2 h-10 text-base bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-md rounded-xl font-medium shadow-sm transition-all" 
                 />
               </div>
               
@@ -1962,7 +1962,7 @@ const AstraSearchPanel = ({
             
             {/* Mobile Suggestions Dropdown */}
             {showSuggestions && hasSuggestions && (
-              <div className="absolute top-[52px] left-1 right-1 bg-background/95 backdrop-blur-md border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-80 overflow-y-auto">
+              <div className="absolute left-1 right-1 top-full mt-1 bg-background/95 backdrop-blur-md border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-[60vh] overflow-y-auto">
                 {/* Recent Searches */}
                 {filteredSuggestions.recent.length > 0 && (
                   <div className="p-2 border-b border-border/50">
