@@ -66,8 +66,9 @@ const AstraSearchPanel = ({
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   const [showFilterTooltip, setShowFilterTooltip] = useState(false);
-  
-  // Fetch filters from database
+  // Anchor for mobile suggestions positioning
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+  const [suggestionsTop, setSuggestionsTop] = useState<number>(0);
   const { filters: dbFilters, loading: filtersLoading } = usePropertyFilters();
   
   // Image search functionality
@@ -1776,6 +1777,26 @@ const AstraSearchPanel = ({
     };
   }, [showSuggestions, showAdvancedFilters]);
 
+  // Keep mobile dropdown aligned to input on scroll/resize
+  useEffect(() => {
+    if (!isMobile) return;
+    const updateTop = () => {
+      if (anchorRef.current) {
+        const rect = anchorRef.current.getBoundingClientRect();
+        setSuggestionsTop(rect.bottom);
+      }
+    };
+    if (showSuggestions) {
+      updateTop();
+      window.addEventListener('resize', updateTop);
+      window.addEventListener('scroll', updateTop, true);
+    }
+    return () => {
+      window.removeEventListener('resize', updateTop);
+      window.removeEventListener('scroll', updateTop, true);
+    };
+  }, [showSuggestions, isMobile]);
+
   // Removed manual scroll locking useEffect in favor of useScrollLock hook above
 
   const formatPrice = (price: number) => {
@@ -1890,7 +1911,7 @@ const AstraSearchPanel = ({
         <div className="relative overscroll-contain backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
             {/* Search Bar */}
             <div className="flex items-center gap-1.5 p-2">
-              <div className="flex-1 relative">
+              <div ref={anchorRef} className="flex-1 relative">
                 <Search className={cn(
                   "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-blue-500 pointer-events-none transition-all",
                   searchQuery && "animate-pulse"
@@ -1899,7 +1920,7 @@ const AstraSearchPanel = ({
                   placeholder={currentText.searchPlaceholder} 
                   value={searchQuery} 
                   onChange={e => handleSearchChange(e.target.value)} 
-                  onFocus={() => setShowSuggestions(true)}
+                  onFocus={() => { setShowSuggestions(true); if (anchorRef.current) { const rect = anchorRef.current.getBoundingClientRect(); setSuggestionsTop(rect.bottom); } }}
                   className="pl-9 pr-2 h-10 text-base bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-md rounded-xl font-medium shadow-sm transition-all" 
                 />
               </div>
@@ -1955,7 +1976,7 @@ const AstraSearchPanel = ({
             
             {/* Mobile Suggestions Dropdown */}
             {showSuggestions && hasSuggestions && (
-              <div ref={suggestionsRef} className="absolute left-1 right-1 top-full mt-1 bg-popover border border-border rounded-xl shadow-lg z-[999] max-h-[60vh] overflow-y-auto">
+              <div ref={suggestionsRef} className="fixed left-2 right-2 rounded-xl shadow-lg z-[1000] max-h-[60vh] overflow-y-auto bg-popover border border-border" style={{ top: suggestionsTop }}>
                 {/* Recent Searches */}
                 {filteredSuggestions.recent.length > 0 && (
                   <div className="p-2 border-b border-border/50">
