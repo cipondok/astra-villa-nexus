@@ -175,18 +175,12 @@ const AstraSearchPanel = ({
     };
   }, [lastScrollY, isMinimized]);
 
-  // Trending and smart suggestions - sorted by time-weighted popularity
+  // Trending suggestions - sorted by time-weighted popularity
   const baseTrendingSearches = ["Apartment Jakarta Selatan", "Villa Bali", "Rumah Bandung", "Office Space Sudirman", "House Menteng", "Apartment Kemang", "Villa Seminyak", "Land Ubud"];
-  const baseSmartSuggestions = ["🏠 Houses under 1B", "🏢 Apartments near MRT", "🏖️ Beach Villas", "💼 Commercial Properties"];
   
   // Sort by time-weighted popularity score (using utility)
   const trendingSearches = useMemo(
     () => sortByPopularity(baseTrendingSearches, suggestionClicks),
-    [suggestionClicks]
-  );
-  
-  const smartSuggestions = useMemo(
-    () => sortByPopularity(baseSmartSuggestions, suggestionClicks),
     [suggestionClicks]
   );
 
@@ -284,18 +278,17 @@ const AstraSearchPanel = ({
       searchQuery,
       recentSearchTerms,
       trendingSearches,
-      smartSuggestions,
+      [],
       provinces,
       cities,
       areas,
       filters.state,
       filters.city
     ),
-    [searchQuery, recentSearchTerms, trendingSearches, smartSuggestions, provinces, cities, areas, filters.state, filters.city]
+    [searchQuery, recentSearchTerms, trendingSearches, provinces, cities, areas, filters.state, filters.city]
   );
   
   const hasSuggestions = filteredSuggestions.recent.length > 0 || 
-                        filteredSuggestions.smart.length > 0 || 
                         filteredSuggestions.trending.length > 0 ||
                         filteredSuggestions.locations.length > 0;
 
@@ -2043,42 +2036,6 @@ const AstraSearchPanel = ({
                   </div>
                 )}
                 
-                {/* Smart Selection */}
-                {filteredSuggestions.smart.length > 0 && (
-                  <div className="p-2 border-b border-border/50">
-                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground mb-1.5">
-                      <Sparkles className="h-2.5 w-2.5 text-yellow-500" />
-                      Smart
-                    </div>
-                    <div className="space-y-0.5">
-                      {filteredSuggestions.smart.map((suggestion, i) => {
-                        const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
-                        return (
-                          <button 
-                            key={i} 
-                            type="button" 
-                            onClick={e => {
-                              e.stopPropagation();
-                              trackSuggestionClick(suggestion);
-                              setSearchQuery(cleanText);
-                              setShowSuggestions(false);
-                              handleSearch();
-                            }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors flex items-center justify-between"
-                          >
-                            <span>{suggestion}</span>
-                            {getDisplayCount(suggestion) > 0 && (
-                              <span className="text-[8px] text-muted-foreground">
-                                {getDisplayCount(suggestion)}x
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                
                 {/* Trending */}
                 {filteredSuggestions.trending.length > 0 && (
                   <div className="p-2">
@@ -2940,41 +2897,6 @@ const AstraSearchPanel = ({
                             )}
                           </button>
                         ))}
-                      </div>
-                    </div>}
-                  
-                  {/* Smart Selection */}
-                  {filteredSuggestions.smart.length > 0 && <div className="p-2 border-b border-border/50">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
-                          <Sparkles className="h-2.5 w-2.5 text-yellow-500" />
-                          Smart Selection
-                        </div>
-                        <button onClick={e => {
-                    e.stopPropagation();
-                    setShowSuggestions(false);
-                  }} className="text-muted-foreground hover:text-foreground">
-                          <X className="h-2.5 w-2.5" />
-                        </button>
-                      </div>
-                      <div className="space-y-0.5">
-                        {filteredSuggestions.smart.map((suggestion, i) => {
-                    const cleanText = suggestion.replace(/[🏠🏢🏖️💼]\s/, '');
-                    return <button key={i} type="button" onClick={e => {
-                      e.stopPropagation();
-                      trackSuggestionClick(suggestion);
-                      setSearchQuery(cleanText);
-                      setShowSuggestions(false);
-                      handleSearch();
-                    }} className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-yellow-500/10 rounded-lg transition-colors flex items-center justify-between">
-                              <span>{suggestion}</span>
-                              {getDisplayCount(suggestion) > 0 && (
-                                <span className="text-[8px] text-muted-foreground">
-                                  {getDisplayCount(suggestion)}x
-                                </span>
-                              )}
-                            </button>;
-                  })}
                       </div>
                     </div>}
                   
