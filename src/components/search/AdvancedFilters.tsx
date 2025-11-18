@@ -1,23 +1,23 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { X, Filter, Search } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface AdvancedFiltersProps {
   language: "en" | "id";
   onFiltersChange: (filters: any) => void;
   onSearch: (searchData: any) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFiltersProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChange }: AdvancedFiltersProps) => {
   const [filters, setFilters] = useState({
     propertyType: 'all',
     listingType: 'all',
@@ -28,10 +28,18 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
     location: '',
     features: [] as string[],
   });
+  
+  const [expandedSections, setExpandedSections] = useState({
+    propertyType: true,
+    listingType: true,
+    price: true,
+    rooms: true,
+    area: true,
+    features: true,
+  });
 
   const text = {
     en: {
-      search: "Search properties...",
       advancedFilters: "Advanced Filters",
       propertyType: "Property Type",
       listingType: "Listing Type",
@@ -39,10 +47,12 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
       areaRange: "Area (sqm)",
-      location: "Location",
       features: "Features",
-      searchBtn: "Search Properties",
+      apply: "Apply Filters",
+      cancel: "Cancel",
       clearFilters: "Clear All",
+      filtersApplied: "Filters applied successfully",
+      filtersCleared: "All filters cleared",
       villa: "Villa",
       apartment: "Apartment",
       house: "House",
@@ -62,7 +72,6 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
       gym: "Gym"
     },
     id: {
-      search: "Cari properti...",
       advancedFilters: "Filter Lanjutan",
       propertyType: "Tipe Properti",
       listingType: "Tipe Listing",
@@ -70,10 +79,12 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
       bedrooms: "Kamar Tidur",
       bathrooms: "Kamar Mandi",
       areaRange: "Luas (sqm)",
-      location: "Lokasi",
       features: "Fasilitas",
-      searchBtn: "Cari Properti",
+      apply: "Terapkan Filter",
+      cancel: "Batal",
       clearFilters: "Hapus Semua",
+      filtersApplied: "Filter berhasil diterapkan",
+      filtersCleared: "Semua filter dihapus",
       villa: "Villa",
       apartment: "Apartemen",
       house: "Rumah",
