@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CollapsibleSearchPanelMobile } from "@/components/CollapsibleSearchPanelMobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
@@ -1907,93 +1908,73 @@ const AstraSearchPanel = ({
 
   // Simple mobile view - only input and button by default
   if (isMobile) {
-    return <>
-        <div className="w-full fixed top-[60px] md:top-[64px] lg:top-[68px] left-0 right-0 z-40 transition-all duration-300">
-          <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b-2 border-border/40 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
-            
-            <Collapsible open={!isHeaderCollapsed} onOpenChange={(open) => setIsHeaderCollapsed(!open)}>
-              <CollapsibleTrigger asChild>
-                <button className="w-full flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/15 hover:to-primary/10 transition-all duration-300 border-b border-border/20 relative z-10">
-                  <div className="flex items-center gap-2">
-                    <Search className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-semibold text-foreground">Search Properties</span>
-                    {getActiveFiltersCount() > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                        {getActiveFiltersCount()}
-                      </span>
-                    )}
-                  </div>
-                  <ChevronDown className={`h-5 w-5 text-primary transition-transform duration-300 ${isHeaderCollapsed ? '' : 'rotate-180'}`} />
-                </button>
-              </CollapsibleTrigger>
-              
-              <CollapsibleContent>
-                <div className="relative z-[1]">
-            {/* Search Bar */}
-            <div className="flex items-center gap-1.5 p-2">
-              <div ref={anchorRef} className="flex-1 relative">
-                <Search className={cn(
-                  "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-blue-500 pointer-events-none transition-all",
-                  searchQuery && "animate-pulse"
-                )} />
-                <Input 
-                  placeholder={currentText.searchPlaceholder} 
-                  value={searchQuery} 
-                  onChange={e => handleSearchChange(e.target.value)} 
-                  onFocus={() => { setShowSuggestions(true); if (anchorRef.current) { const rect = anchorRef.current.getBoundingClientRect(); setSuggestionsTop(rect.bottom); } }}
-                  className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-sm transition-all duration-300" 
-                />
-              </div>
-              
-              <ImageSearchButton
-                onImageSelected={handleImageSearch}
-                onClear={handleClearImageSearch}
-                isSearching={isImageSearching}
-                enableDragDrop={true}
-                enablePaste={true}
-                className="shrink-0"
-              />
-              
-              {/* Prominent All Filters Button */}
-              <TooltipProvider>
-                <Tooltip open={showFilterTooltip} onOpenChange={setShowFilterTooltip}>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={() => {
-                        setShowAdvancedFilters(true);
-                        setShowFilterTooltip(false);
-                      }} 
-                      variant="outline" 
-                      size="sm" 
-                      className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg rounded-2xl relative transition-all duration-300"
-                    >
-                      <SlidersHorizontal className="h-4 w-4 text-primary" />
-                      {getActiveFiltersCount() > 0 && (
-                        <Badge 
-                          variant="default" 
-                          className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full animate-pulse shadow-lg ring-2 ring-primary/50 bg-gradient-to-br from-primary to-accent"
-                        >
-                          <span className="animate-in zoom-in duration-200">
-                            {getActiveFiltersCount()}
-                          </span>
-                        </Badge>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent 
-                    side="bottom" 
-                    className="bg-primary text-primary-foreground font-semibold animate-bounce z-[9999]"
+    return <CollapsibleSearchPanelMobile
+      activeFiltersCount={getActiveFiltersCount()}
+    >
+      {/* Search Bar */}
+      <div className="flex items-center gap-1.5 p-2">
+        <div ref={anchorRef} className="flex-1 relative">
+          <Search className={cn(
+            "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-blue-500 pointer-events-none transition-all",
+            searchQuery && "animate-pulse"
+          )} />
+          <Input 
+            placeholder={currentText.searchPlaceholder} 
+            value={searchQuery} 
+            onChange={e => handleSearchChange(e.target.value)} 
+            onFocus={() => { setShowSuggestions(true); if (anchorRef.current) { const rect = anchorRef.current.getBoundingClientRect(); setSuggestionsTop(rect.bottom); } }}
+            className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-sm transition-all duration-300" 
+          />
+        </div>
+        
+        <ImageSearchButton
+          onImageSelected={handleImageSearch}
+          onClear={handleClearImageSearch}
+          isSearching={isImageSearching}
+          enableDragDrop={true}
+          enablePaste={true}
+          className="shrink-0"
+        />
+        
+        {/* Prominent All Filters Button */}
+        <TooltipProvider>
+          <Tooltip open={showFilterTooltip} onOpenChange={setShowFilterTooltip}>
+            <TooltipTrigger asChild>
+              <Button 
+                onClick={() => {
+                  setShowAdvancedFilters(true);
+                  setShowFilterTooltip(false);
+                }} 
+                variant="outline" 
+                size="sm" 
+                className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg rounded-2xl relative transition-all duration-300"
+              >
+                <SlidersHorizontal className="h-4 w-4 text-primary" />
+                {getActiveFiltersCount() > 0 && (
+                  <Badge 
+                    variant="default" 
+                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full animate-pulse shadow-lg ring-2 ring-primary/50 bg-gradient-to-br from-primary to-accent"
                   >
-                    👆 Click here for All Filters!
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              
-              <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
-                <Search className="h-4 w-4" />
+                    <span className="animate-in zoom-in duration-200">
+                      {getActiveFiltersCount()}
+                    </span>
+                  </Badge>
+                )}
               </Button>
-            </div>
+            </TooltipTrigger>
+            <TooltipContent 
+              side="bottom" 
+              className="bg-primary text-primary-foreground font-semibold animate-bounce z-[9999]"
+            >
+              👆 Click here for All Filters!
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        
+        <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
+          <Search className="h-4 w-4" />
+        </Button>
+      </div>
             
             {/* Mobile Suggestions Dropdown */}
             {showSuggestions && hasSuggestions && (
@@ -2240,11 +2221,7 @@ const AstraSearchPanel = ({
                 {filters.bathrooms && filters.bathrooms !== 'all' ? `${filters.bathrooms} Bath` : 'Baths'}
               </Button>
             </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  </div>
+          </CollapsibleSearchPanelMobile>
 
         {/* Advanced Filters Modal (mobile) */}
         {showAdvancedFilters && isMobile && createPortal(
@@ -2784,7 +2761,6 @@ const AstraSearchPanel = ({
           </div>,
           document.body
         )}
-    </>
   }
   return <div className="w-full transition-all duration-300">
     <div className={cn("sticky z-30 transition-all duration-300", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 max-w-7xl mx-auto")}>
