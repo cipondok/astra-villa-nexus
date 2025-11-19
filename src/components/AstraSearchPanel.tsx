@@ -48,6 +48,7 @@ const AstraSearchPanel = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<'all' | 'sale' | 'rent' | 'new_project'>('all');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
@@ -2240,11 +2241,10 @@ const AstraSearchPanel = ({
               </Button>
             </div>
           </div>
-        </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
+  </div>
 
         {/* Advanced Filters Modal (mobile) */}
         {showAdvancedFilters && isMobile && createPortal(
@@ -2784,7 +2784,7 @@ const AstraSearchPanel = ({
           </div>,
           document.body
         )}
-      </>;
+      </>
   }
   return <div className={cn("w-full transition-all duration-300", isMobile ? "sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 px-1 py-2" : "max-w-7xl mx-auto")}>
       {/* Modern Slim Glass Container */}
@@ -4001,6 +4001,6 @@ const AstraSearchPanel = ({
         </div>,
         document.body
       )}
-    </div>;
-};
+    </div>
+}
 export default AstraSearchPanel;
