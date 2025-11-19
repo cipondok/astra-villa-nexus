@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -138,11 +137,10 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
     handleFilterChange('features', newFeatures);
   };
 
-  const handleSearch = () => {
-    onSearch({
-      query: searchQuery,
-      ...filters
-    });
+  const handleApply = () => {
+    onSearch(filters);
+    toast.success(currentText.filtersApplied);
+    onOpenChange(false);
   };
 
   const clearFilters = () => {
@@ -157,8 +155,12 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
       features: [],
     };
     setFilters(clearedFilters);
-    setSearchQuery('');
     onFiltersChange(clearedFilters);
+    toast.success(currentText.filtersCleared);
+  };
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   const formatPrice = (price: number) => {
@@ -171,197 +173,272 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            Property Search
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            {currentText.advancedFilters}
-          </Button>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Main Search */}
-        <div className="flex gap-2">
-          <Input
-            placeholder={currentText.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1"
-          />
-          <Button onClick={handleSearch} className="px-6">
-            <Search className="h-4 w-4 mr-2" />
-            {currentText.searchBtn}
-          </Button>
-        </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-3">
+          <DialogTitle className="text-lg">{currentText.advancedFilters}</DialogTitle>
+        </DialogHeader>
 
-        {/* Advanced Filters */}
-        {isExpanded && (
-          <div className="space-y-6 pt-4 border-t">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Property Type */}
-              <div className="space-y-2">
-                <Label>{currentText.propertyType}</Label>
-                <Select value={filters.propertyType} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={currentText.any} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{currentText.any}</SelectItem>
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Listing Type */}
-              <div className="space-y-2">
-                <Label>{currentText.listingType}</Label>
-                <Select value={filters.listingType} onValueChange={(value) => handleFilterChange('listingType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={currentText.any} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{currentText.any}</SelectItem>
-                    {listingTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Location */}
-              <div className="space-y-2">
-                <Label>{currentText.location}</Label>
-                <Input
-                  placeholder={currentText.location}
-                  value={filters.location}
-                  onChange={(e) => handleFilterChange('location', e.target.value)}
-                />
-              </div>
-
-              {/* Bedrooms */}
-              <div className="space-y-2">
-                <Label>{currentText.bedrooms}</Label>
-                <Select value={filters.bedrooms} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={currentText.any} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{currentText.any}</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                    <SelectItem value="4">4+</SelectItem>
-                    <SelectItem value="5">5+</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Bathrooms */}
-              <div className="space-y-2">
-                <Label>{currentText.bathrooms}</Label>
-                <Select value={filters.bathrooms} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={currentText.any} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{currentText.any}</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                    <SelectItem value="4">4+</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        <div className="space-y-4">
+          {/* Property Type */}
+          <div className="space-y-2">
+            <div 
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => toggleSection('propertyType')}
+            >
+              <Label className="text-sm font-medium">{currentText.propertyType}</Label>
+              {expandedSections.propertyType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </div>
-
-            {/* Price Range */}
-            <div className="space-y-3">
-              <Label>{currentText.priceRange}</Label>
-              <div className="px-2">
-                <Slider
-                  value={filters.priceRange}
-                  onValueChange={(value) => handleFilterChange('priceRange', value)}
-                  max={10000000000}
-                  min={0}
-                  step={100000000}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                  <span>{formatPrice(filters.priceRange[0])}</span>
-                  <span>{formatPrice(filters.priceRange[1])}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Area Range */}
-            <div className="space-y-3">
-              <Label>{currentText.areaRange}</Label>
-              <div className="px-2">
-                <Slider
-                  value={filters.areaRange}
-                  onValueChange={(value) => handleFilterChange('areaRange', value)}
-                  max={1000}
-                  min={0}
-                  step={50}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                  <span>{filters.areaRange[0]} sqm</span>
-                  <span>{filters.areaRange[1]} sqm</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-3">
-              <Label>{currentText.features}</Label>
-              <div className="flex flex-wrap gap-2">
-                {availableFeatures.map((feature) => (
+            <AnimatePresence>
+              {expandedSections.propertyType && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-wrap gap-2"
+                >
                   <Badge
-                    key={feature}
-                    variant={filters.features.includes(feature) ? "default" : "outline"}
-                    className="cursor-pointer hover:bg-primary/10"
-                    onClick={() => handleFeatureToggle(feature)}
+                    variant={filters.propertyType === 'all' ? 'default' : 'outline'}
+                    className="cursor-pointer"
+                    onClick={() => handleFilterChange('propertyType', 'all')}
                   >
-                    {currentText[feature as keyof typeof currentText]}
-                    {filters.features.includes(feature) && (
-                      <X className="h-3 w-3 ml-1" />
-                    )}
+                    {currentText.any}
                   </Badge>
-                ))}
+                  {propertyTypes.map((type) => (
+                    <Badge
+                      key={type.value}
+                      variant={filters.propertyType === type.value ? 'default' : 'outline'}
+                      className="cursor-pointer"
+                      onClick={() => handleFilterChange('propertyType', type.value)}
+                    >
+                      {type.label}
+                    </Badge>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Listing Type */}
+          <div className="space-y-2">
+            <div 
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => toggleSection('listingType')}
+            >
+              <Label className="text-sm font-medium">{currentText.listingType}</Label>
+              {expandedSections.listingType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
+            <AnimatePresence>
+              {expandedSections.listingType && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-wrap gap-2"
+                >
+                  <Badge
+                    variant={filters.listingType === 'all' ? 'default' : 'outline'}
+                    className="cursor-pointer"
+                    onClick={() => handleFilterChange('listingType', 'all')}
+                  >
+                    {currentText.any}
+                  </Badge>
+                  {listingTypes.map((type) => (
+                    <Badge
+                      key={type.value}
+                      variant={filters.listingType === type.value ? 'default' : 'outline'}
+                      className="cursor-pointer"
+                      onClick={() => handleFilterChange('listingType', type.value)}
+                    >
+                      {type.label}
+                    </Badge>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Bedrooms & Bathrooms */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => toggleSection('rooms')}
+              >
+                <Label className="text-sm font-medium">{currentText.bedrooms}</Label>
+                {expandedSections.rooms ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </div>
+              <AnimatePresence>
+                {expandedSections.rooms && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-wrap gap-1.5"
+                  >
+                    {['all', '1', '2', '3', '4', '5'].map((num) => (
+                      <Badge
+                        key={num}
+                        variant={filters.bedrooms === num ? 'default' : 'outline'}
+                        className="cursor-pointer text-xs"
+                        onClick={() => handleFilterChange('bedrooms', num)}
+                      >
+                        {num === 'all' ? currentText.any : `${num}+`}
+                      </Badge>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
-              <Button onClick={handleSearch} className="flex-1">
-                <Search className="h-4 w-4 mr-2" />
-                {currentText.searchBtn}
-              </Button>
-              <Button variant="outline" onClick={clearFilters}>
-                {currentText.clearFilters}
-              </Button>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">{currentText.bathrooms}</Label>
+              <AnimatePresence>
+                {expandedSections.rooms && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-wrap gap-1.5"
+                  >
+                    {['all', '1', '2', '3', '4'].map((num) => (
+                      <Badge
+                        key={num}
+                        variant={filters.bathrooms === num ? 'default' : 'outline'}
+                        className="cursor-pointer text-xs"
+                        onClick={() => handleFilterChange('bathrooms', num)}
+                      >
+                        {num === 'all' ? currentText.any : `${num}+`}
+                      </Badge>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {/* Price Range */}
+          <div className="space-y-3">
+            <div 
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => toggleSection('price')}
+            >
+              <Label className="text-sm font-medium">{currentText.priceRange}</Label>
+              {expandedSections.price ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
+            <AnimatePresence>
+              {expandedSections.price && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Slider
+                    value={filters.priceRange}
+                    onValueChange={(value) => handleFilterChange('priceRange', value)}
+                    max={10000000000}
+                    min={0}
+                    step={100000000}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <span>{formatPrice(filters.priceRange[0])}</span>
+                    <span>{formatPrice(filters.priceRange[1])}</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Area Range */}
+          <div className="space-y-3">
+            <div 
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => toggleSection('area')}
+            >
+              <Label className="text-sm font-medium">{currentText.areaRange}</Label>
+              {expandedSections.area ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
+            <AnimatePresence>
+              {expandedSections.area && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Slider
+                    value={filters.areaRange}
+                    onValueChange={(value) => handleFilterChange('areaRange', value)}
+                    max={1000}
+                    min={0}
+                    step={50}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <span>{filters.areaRange[0]} sqm</span>
+                    <span>{filters.areaRange[1]} sqm</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-3">
+            <div 
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => toggleSection('features')}
+            >
+              <Label className="text-sm font-medium">{currentText.features}</Label>
+              {expandedSections.features ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
+            <AnimatePresence>
+              {expandedSections.features && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-wrap gap-2"
+                >
+                  {availableFeatures.map((feature) => (
+                    <Badge
+                      key={feature}
+                      variant={filters.features.includes(feature) ? "default" : "outline"}
+                      className="cursor-pointer"
+                      onClick={() => handleFeatureToggle(feature)}
+                    >
+                      {currentText[feature as keyof typeof currentText]}
+                      {filters.features.includes(feature) && (
+                        <X className="h-3 w-3 ml-1" />
+                      )}
+                    </Badge>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <DialogFooter className="flex gap-2 pt-4">
+          <Button variant="outline" onClick={clearFilters} size="sm">
+            {currentText.clearFilters}
+          </Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)} size="sm">
+            {currentText.cancel}
+          </Button>
+          <Button onClick={handleApply} size="sm" className="flex-1">
+            {currentText.apply}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
