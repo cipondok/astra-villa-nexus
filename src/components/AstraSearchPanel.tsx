@@ -1908,7 +1908,9 @@ const AstraSearchPanel = ({
   if (isMobile) {
     return <>
         <div className="w-full sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 transition-all duration-300 px-1 py-2">
-        <div className="relative overscroll-contain backdrop-blur-xl bg-background/95 border-b border-border/30 shadow-lg rounded-b-xl">
+        <div className="relative overscroll-contain backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b border-border/30 shadow-2xl rounded-2xl">
+          {/* Subtle shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/3 to-transparent opacity-60 animate-shimmer rounded-2xl" />
             {/* Search Bar */}
             <div className="flex items-center gap-1.5 p-2">
               <div ref={anchorRef} className="flex-1 relative">
@@ -1921,7 +1923,7 @@ const AstraSearchPanel = ({
                   value={searchQuery} 
                   onChange={e => handleSearchChange(e.target.value)} 
                   onFocus={() => { setShowSuggestions(true); if (anchorRef.current) { const rect = anchorRef.current.getBoundingClientRect(); setSuggestionsTop(rect.bottom); } }}
-                  className="pl-9 pr-2 h-10 text-base bg-background/60 border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-md rounded-xl font-medium shadow-sm transition-all" 
+                  className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-sm transition-all duration-300" 
                 />
               </div>
               
@@ -1945,7 +1947,7 @@ const AstraSearchPanel = ({
                       }} 
                       variant="outline" 
                       size="sm" 
-                      className="h-9 px-3 border-2 border-primary/50 bg-primary/10 hover:bg-primary/20 shadow-sm rounded-xl relative"
+                      className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg rounded-2xl relative transition-all duration-300"
                     >
                       <SlidersHorizontal className="h-4 w-4 text-primary" />
                       {getActiveFiltersCount() > 0 && (
@@ -2532,7 +2534,7 @@ const AstraSearchPanel = ({
                         className="space-y-2"
                       >
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" className="w-full justify-between h-8 px-2 hover:bg-accent/50">
+                        <Button variant="ghost" className="w-full justify-between h-10 px-3 hover:bg-accent/60 rounded-xl transition-all duration-300 group">
                             <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
                               <TooltipProvider>
                                 <Tooltip>
@@ -3960,13 +3962,13 @@ const AstraSearchPanel = ({
             </ScrollArea>
 
             {/* Footer - Sticky */}
-            <div className="border-t-2 border-border bg-gradient-to-r from-muted/50 to-muted/30 px-4 py-3 shrink-0 shadow-lg">
+            <div className="border-t-2 border-border/50 bg-gradient-to-r from-background/90 via-muted/40 to-background/90 backdrop-blur-xl px-4 py-3 shrink-0 shadow-2xl">
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowAdvancedFilters(false);
                 }} 
-                className="w-full h-11 text-sm font-bold shadow-lg rounded-lg" 
+                className="w-full h-11 text-sm font-bold shadow-lg rounded-2xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300" 
                 size="lg"
               >
                 <Search className="h-4 w-4 mr-2" />
