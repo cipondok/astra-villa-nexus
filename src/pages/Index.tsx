@@ -35,7 +35,7 @@ const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPil
 const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
 const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
 const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
-const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
+const CollapsibleSearchPanel = lazy(() => import("@/components/search/CollapsibleSearchPanel"));
 const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
@@ -465,14 +465,12 @@ const Index = () => {
                 
                 <Suspense fallback={<SearchPanelSkeleton />}>
                   <SearchErrorBoundary>
-                    <AstraSearchPanel
+                    <CollapsibleSearchPanel
                       language={language}
                       onSearch={(searchData) => {
-                        setQuickSearch(searchData.searchQuery || "");
+                        setQuickSearch(searchData.query || "");
                         handleQuickSearch(searchData);
                       }}
-                      onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                      resultsCount={hasSearched ? searchResults.length : undefined}
                     />
                   </SearchErrorBoundary>
                 </Suspense>
