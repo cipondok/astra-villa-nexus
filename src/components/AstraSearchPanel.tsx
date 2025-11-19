@@ -1908,10 +1908,9 @@ const AstraSearchPanel = ({
   // Simple mobile view - only input and button by default
   if (isMobile) {
     return <>
-        <div className="w-full">
-          <div className="sticky top-[60px] md:top-[64px] lg:top-[68px] left-0 right-0 z-40 transition-all duration-300">
-            <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b-2 border-border/40 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
+        <div className="w-full fixed top-[60px] md:top-[64px] lg:top-[68px] left-0 right-0 z-40 transition-all duration-300">
+          <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b-2 border-border/40 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
             
             <Collapsible open={!isHeaderCollapsed} onOpenChange={(open) => setIsHeaderCollapsed(!open)}>
               <CollapsibleTrigger asChild>
@@ -2246,7 +2245,6 @@ const AstraSearchPanel = ({
       </Collapsible>
     </div>
   </div>
-</div>
 
         {/* Advanced Filters Modal (mobile) */}
         {showAdvancedFilters && isMobile && createPortal(
