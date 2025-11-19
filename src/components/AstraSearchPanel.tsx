@@ -1908,9 +1908,10 @@ const AstraSearchPanel = ({
   // Simple mobile view - only input and button by default
   if (isMobile) {
     return <>
-        <div className="w-full sticky top-[60px] md:top-[64px] lg:top-[68px] left-0 right-0 z-40 transition-all duration-300">
-          <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b-2 border-border/40 shadow-2xl animate-in slide-in-from-top duration-300">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
+        <div className="w-full">
+          <div className="sticky top-[60px] md:top-[64px] lg:top-[68px] left-0 right-0 z-40 transition-all duration-300">
+            <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b-2 border-border/40 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
             
             <Collapsible open={!isHeaderCollapsed} onOpenChange={(open) => setIsHeaderCollapsed(!open)}>
               <CollapsibleTrigger asChild>
@@ -2245,6 +2246,7 @@ const AstraSearchPanel = ({
       </Collapsible>
     </div>
   </div>
+</div>
 
         {/* Advanced Filters Modal (mobile) */}
         {showAdvancedFilters && isMobile && createPortal(
@@ -2786,7 +2788,8 @@ const AstraSearchPanel = ({
         )}
     </>
   }
-  return <div className={cn("w-full transition-all duration-300", isMobile ? "sticky top-[60px] md:top-[64px] lg:top-[68px] z-30 px-1 py-2" : "max-w-7xl mx-auto")}>
+  return <div className="w-full transition-all duration-300">
+    <div className={cn("sticky z-30 transition-all duration-300", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 max-w-7xl mx-auto")}>
       {/* Modern Slim Glass Container */}
       <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
         <div className={cn("space-y-1.5 backdrop-blur-md rounded-2xl shadow-lg border", isMobile ? "p-1.5 bg-card/95 border-border/40" : "p-2 lg:p-3 bg-background/60 border-border/30")}>
@@ -4002,5 +4005,6 @@ const AstraSearchPanel = ({
         document.body
       )}
     </div>
+  </div>
 }
 export default AstraSearchPanel;
