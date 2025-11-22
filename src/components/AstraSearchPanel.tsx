@@ -63,7 +63,7 @@ const AstraSearchPanel = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showLocationButtons, setShowLocationButtons] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
