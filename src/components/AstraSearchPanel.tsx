@@ -2720,7 +2720,14 @@ const AstraSearchPanel = ({
                         {currentText.selectProvince}
                         {provinces.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
                       </Label>
-                      <Select value={filters.state || "all"} onValueChange={handleStateChange}>
+                      <Select 
+                        value={filters.state || "all"} 
+                        onValueChange={(value) => {
+                          const currentScroll = window.scrollY;
+                          handleFilterChange('state', value);
+                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                        }}
+                      >
                         <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500">
                           <SelectValue placeholder={currentText.selectProvince}>
                             <span className="truncate">
@@ -2728,7 +2735,14 @@ const AstraSearchPanel = ({
                             </span>
                           </SelectValue>
                         </SelectTrigger>
-                         <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]" position="popper" sideOffset={4} onCloseAutoFocus={e => e.preventDefault()}>
+                         <SelectContent 
+                          className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000] overscroll-contain" 
+                          position="popper" 
+                          sideOffset={4} 
+                          onCloseAutoFocus={(e) => e.preventDefault()}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          onTouchMove={(e) => e.stopPropagation()}
+                        >
                           <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                             {currentText.any}
                           </SelectItem>
@@ -2747,7 +2761,15 @@ const AstraSearchPanel = ({
                           {currentText.selectCity}
                           {cities.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
                         </Label>
-                        <Select value={filters.city || "all"} onValueChange={handleCityChange} disabled={cities.length === 0}>
+                        <Select 
+                          value={filters.city || "all"} 
+                          onValueChange={(value) => {
+                            const currentScroll = window.scrollY;
+                            handleFilterChange('city', value);
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }} 
+                          disabled={cities.length === 0}
+                        >
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
                             <SelectValue placeholder={currentText.selectCity}>
                               <span className="truncate">
@@ -2758,7 +2780,14 @@ const AstraSearchPanel = ({
                               </span>
                             </SelectValue>
                           </SelectTrigger>
-                          <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]" position="popper" sideOffset={4} onCloseAutoFocus={e => e.preventDefault()}>
+                          <SelectContent 
+                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000] overscroll-contain" 
+                            position="popper" 
+                            sideOffset={4} 
+                            onCloseAutoFocus={(e) => e.preventDefault()}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            onTouchMove={(e) => e.stopPropagation()}
+                          >
                             <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {currentText.any}
                             </SelectItem>
@@ -2777,7 +2806,15 @@ const AstraSearchPanel = ({
                           {currentText.selectArea}
                           {areas.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
                         </Label>
-                        <Select value={filters.area || "all"} onValueChange={handleAreaChange} disabled={areas.length === 0}>
+                        <Select 
+                          value={filters.area || "all"} 
+                          onValueChange={(value) => {
+                            const currentScroll = window.scrollY;
+                            handleFilterChange('area', value);
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }} 
+                          disabled={areas.length === 0}
+                        >
                           <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
                             <SelectValue placeholder={currentText.selectArea}>
                               <span className="truncate">
@@ -2785,7 +2822,13 @@ const AstraSearchPanel = ({
                               </span>
                             </SelectValue>
                           </SelectTrigger>
-                          <SelectContent className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000]" position="popper" sideOffset={4}>
+                          <SelectContent 
+                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000] overscroll-contain" 
+                            position="popper" 
+                            sideOffset={4}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            onTouchMove={(e) => e.stopPropagation()}
+                          >
                             <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
                               {currentText.any}
                             </SelectItem>
