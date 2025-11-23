@@ -174,20 +174,20 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="pb-3">
-          <DialogTitle className="text-lg">{currentText.advancedFilters}</DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-3 sm:p-4">
+        <DialogHeader className="pb-1.5">
+          <DialogTitle className="text-xs sm:text-sm font-semibold">{currentText.advancedFilters}</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-2 sm:space-y-2.5">
           {/* Property Type */}
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div 
-              className="flex items-center justify-between cursor-pointer"
+              className="flex items-center justify-between cursor-pointer py-0.5"
               onClick={() => toggleSection('propertyType')}
             >
-              <Label className="text-sm font-medium">{currentText.propertyType}</Label>
-              {expandedSections.propertyType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <Label className="text-[10px] sm:text-xs font-medium">{currentText.propertyType}</Label>
+              {expandedSections.propertyType ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </div>
             <AnimatePresence>
               {expandedSections.propertyType && (
@@ -196,11 +196,11 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-1 sm:gap-1.5"
                 >
                   <Badge
                     variant={filters.propertyType === 'all' ? 'default' : 'outline'}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                     onClick={() => handleFilterChange('propertyType', 'all')}
                   >
                     {currentText.any}
@@ -209,7 +209,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     <Badge
                       key={type.value}
                       variant={filters.propertyType === type.value ? 'default' : 'outline'}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                       onClick={() => handleFilterChange('propertyType', type.value)}
                     >
                       {type.label}
@@ -221,13 +221,13 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </div>
 
           {/* Listing Type */}
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div 
-              className="flex items-center justify-between cursor-pointer"
+              className="flex items-center justify-between cursor-pointer py-0.5"
               onClick={() => toggleSection('listingType')}
             >
-              <Label className="text-sm font-medium">{currentText.listingType}</Label>
-              {expandedSections.listingType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <Label className="text-[10px] sm:text-xs font-medium">{currentText.listingType}</Label>
+              {expandedSections.listingType ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </div>
             <AnimatePresence>
               {expandedSections.listingType && (
@@ -236,11 +236,11 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-1 sm:gap-1.5"
                 >
                   <Badge
                     variant={filters.listingType === 'all' ? 'default' : 'outline'}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                     onClick={() => handleFilterChange('listingType', 'all')}
                   >
                     {currentText.any}
@@ -249,7 +249,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     <Badge
                       key={type.value}
                       variant={filters.listingType === type.value ? 'default' : 'outline'}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                       onClick={() => handleFilterChange('listingType', type.value)}
                     >
                       {type.label}
@@ -261,14 +261,14 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </div>
 
           {/* Bedrooms & Bathrooms */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="space-y-1">
               <div 
-                className="flex items-center justify-between cursor-pointer"
+                className="flex items-center justify-between cursor-pointer py-0.5"
                 onClick={() => toggleSection('rooms')}
               >
-                <Label className="text-sm font-medium">{currentText.bedrooms}</Label>
-                {expandedSections.rooms ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                <Label className="text-[10px] sm:text-xs font-medium">{currentText.bedrooms}</Label>
+                {expandedSections.rooms ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
               </div>
               <AnimatePresence>
                 {expandedSections.rooms && (
@@ -277,13 +277,13 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-wrap gap-1.5"
+                    className="flex flex-wrap gap-1"
                   >
                     {['all', '1', '2', '3', '4', '5'].map((num) => (
                       <Badge
                         key={num}
                         variant={filters.bedrooms === num ? 'default' : 'outline'}
-                        className="cursor-pointer text-xs"
+                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                         onClick={() => handleFilterChange('bedrooms', num)}
                       >
                         {num === 'all' ? currentText.any : `${num}+`}
@@ -294,8 +294,8 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
               </AnimatePresence>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">{currentText.bathrooms}</Label>
+            <div className="space-y-1">
+              <Label className="text-[10px] sm:text-xs font-medium">{currentText.bathrooms}</Label>
               <AnimatePresence>
                 {expandedSections.rooms && (
                   <motion.div
@@ -303,13 +303,13 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-wrap gap-1.5"
+                    className="flex flex-wrap gap-1"
                   >
                     {['all', '1', '2', '3', '4'].map((num) => (
                       <Badge
                         key={num}
                         variant={filters.bathrooms === num ? 'default' : 'outline'}
-                        className="cursor-pointer text-xs"
+                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                         onClick={() => handleFilterChange('bathrooms', num)}
                       >
                         {num === 'all' ? currentText.any : `${num}+`}
@@ -322,13 +322,13 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </div>
 
           {/* Price Range */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             <div 
-              className="flex items-center justify-between cursor-pointer"
+              className="flex items-center justify-between cursor-pointer py-0.5"
               onClick={() => toggleSection('price')}
             >
-              <Label className="text-sm font-medium">{currentText.priceRange}</Label>
-              {expandedSections.price ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <Label className="text-[10px] sm:text-xs font-medium">{currentText.priceRange}</Label>
+              {expandedSections.price ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </div>
             <AnimatePresence>
               {expandedSections.price && (
@@ -344,9 +344,9 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     max={10000000000}
                     min={0}
                     step={100000000}
-                    className="w-full"
+                    className="w-full h-1"
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                  <div className="flex justify-between text-[9px] sm:text-[10px] text-muted-foreground mt-1">
                     <span>{formatPrice(filters.priceRange[0])}</span>
                     <span>{formatPrice(filters.priceRange[1])}</span>
                   </div>
@@ -356,13 +356,13 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </div>
 
           {/* Area Range */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             <div 
-              className="flex items-center justify-between cursor-pointer"
+              className="flex items-center justify-between cursor-pointer py-0.5"
               onClick={() => toggleSection('area')}
             >
-              <Label className="text-sm font-medium">{currentText.areaRange}</Label>
-              {expandedSections.area ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <Label className="text-[10px] sm:text-xs font-medium">{currentText.areaRange}</Label>
+              {expandedSections.area ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </div>
             <AnimatePresence>
               {expandedSections.area && (
@@ -378,9 +378,9 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     max={1000}
                     min={0}
                     step={50}
-                    className="w-full"
+                    className="w-full h-1"
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                  <div className="flex justify-between text-[9px] sm:text-[10px] text-muted-foreground mt-1">
                     <span>{filters.areaRange[0]} sqm</span>
                     <span>{filters.areaRange[1]} sqm</span>
                   </div>
@@ -390,13 +390,13 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </div>
 
           {/* Features */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             <div 
-              className="flex items-center justify-between cursor-pointer"
+              className="flex items-center justify-between cursor-pointer py-0.5"
               onClick={() => toggleSection('features')}
             >
-              <Label className="text-sm font-medium">{currentText.features}</Label>
-              {expandedSections.features ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <Label className="text-[10px] sm:text-xs font-medium">{currentText.features}</Label>
+              {expandedSections.features ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </div>
             <AnimatePresence>
               {expandedSections.features && (
@@ -405,18 +405,18 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-1 sm:gap-1.5"
                 >
                   {availableFeatures.map((feature) => (
                     <Badge
                       key={feature}
                       variant={filters.features.includes(feature) ? "default" : "outline"}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
                       onClick={() => handleFeatureToggle(feature)}
                     >
                       {currentText[feature as keyof typeof currentText]}
                       {filters.features.includes(feature) && (
-                        <X className="h-3 w-3 ml-1" />
+                        <X className="h-2.5 w-2.5 ml-0.5" />
                       )}
                     </Badge>
                   ))}
@@ -426,14 +426,14 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </div>
         </div>
 
-        <DialogFooter className="flex gap-2 pt-4">
-          <Button variant="outline" onClick={clearFilters} size="sm">
+        <DialogFooter className="flex gap-1.5 sm:gap-2 pt-2">
+          <Button variant="outline" onClick={clearFilters} className="h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3">
             {currentText.clearFilters}
           </Button>
-          <Button variant="outline" onClick={() => onOpenChange(false)} size="sm">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3">
             {currentText.cancel}
           </Button>
-          <Button onClick={handleApply} size="sm" className="flex-1">
+          <Button onClick={handleApply} className="flex-1 h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3">
             {currentText.apply}
           </Button>
         </DialogFooter>
