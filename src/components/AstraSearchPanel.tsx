@@ -143,8 +143,8 @@ const AstraSearchPanel = ({
     }
   }, []);
 
-  // 🔒 CRITICAL: Lock body scroll for ALL overlays to eliminate layout shift on iPhone Safari
-  useScrollLock(showSuggestions || showAdvancedFilters || isLocationOpen || isPropertyTypeOpen || isFacilitiesOpen);
+  // Only lock scroll for modal dialogs, not for suggestions dropdown
+  useScrollLock(showAdvancedFilters);
 
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -1923,7 +1923,19 @@ const AstraSearchPanel = ({
             placeholder={currentText.searchPlaceholder} 
             value={searchQuery} 
             onChange={e => handleSearchChange(e.target.value)} 
-            onFocus={() => { setShowSuggestions(true); if (anchorRef.current) { const rect = anchorRef.current.getBoundingClientRect(); setSuggestionsTop(rect.bottom); } }}
+            onFocus={(e) => { 
+              e.preventDefault();
+              const currentScroll = window.scrollY;
+              setShowSuggestions(true); 
+              if (anchorRef.current) { 
+                const rect = anchorRef.current.getBoundingClientRect(); 
+                setSuggestionsTop(rect.bottom); 
+              }
+              requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+            }}
             className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-sm transition-all duration-300" 
           />
         </div>
@@ -1979,7 +1991,13 @@ const AstraSearchPanel = ({
             
             {/* Mobile Suggestions Dropdown */}
             {showSuggestions && hasSuggestions && (
-              <div ref={suggestionsRef} className="fixed left-2 right-2 rounded-xl shadow-lg z-[1000] max-h-[60vh] overflow-y-auto bg-popover border border-border" style={{ top: suggestionsTop }}>
+              <div 
+                ref={suggestionsRef} 
+                className="fixed left-2 right-2 rounded-xl shadow-lg z-[1000] max-h-[60vh] overflow-y-auto overscroll-contain bg-popover border border-border" 
+                style={{ top: suggestionsTop }}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchMove={(e) => e.stopPropagation()}
+              >
                 {/* Recent Searches */}
                 {filteredSuggestions.recent.length > 0 && (
                   <div className="p-2 border-b border-border/50">
@@ -1990,10 +2008,14 @@ const AstraSearchPanel = ({
                       </div>
                       <button 
                         onClick={e => {
+                          e.preventDefault();
                           e.stopPropagation();
+                          const currentScroll = window.scrollY;
                           setRecentSearchTerms([]);
                           localStorage.removeItem('recentSearchTerms');
-                        }} 
+                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                        }}
+                        onTouchStart={(e) => e.stopPropagation()}
                         className="text-[9px] text-muted-foreground hover:text-destructive"
                       >
                         Clear
@@ -2005,12 +2027,16 @@ const AstraSearchPanel = ({
                           key={i} 
                           type="button" 
                           onClick={e => {
+                            e.preventDefault();
                             e.stopPropagation();
+                            const currentScroll = window.scrollY;
                             trackSuggestionClick(term);
                             setSearchQuery(term);
                             setShowSuggestions(false);
                             handleSearch();
-                          }} 
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }}
+                          onTouchStart={(e) => e.stopPropagation()}
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-blue-500/10 rounded-lg transition-colors flex items-center gap-2"
                         >
                           <Clock className="h-2.5 w-2.5 text-muted-foreground" />
@@ -2039,12 +2065,16 @@ const AstraSearchPanel = ({
                           key={i} 
                           type="button" 
                           onClick={e => {
+                            e.preventDefault();
                             e.stopPropagation();
+                            const currentScroll = window.scrollY;
                             trackSuggestionClick(location);
                             setSearchQuery(location);
                             setShowSuggestions(false);
                             handleSearch();
-                          }} 
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }}
+                          onTouchStart={(e) => e.stopPropagation()}
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-purple-500/10 rounded-lg transition-colors flex items-center gap-2"
                         >
                           <MapPin className="h-2.5 w-2.5 text-muted-foreground" />
@@ -2073,12 +2103,16 @@ const AstraSearchPanel = ({
                           key={i} 
                           type="button" 
                           onClick={e => {
+                            e.preventDefault();
                             e.stopPropagation();
+                            const currentScroll = window.scrollY;
                             trackSuggestionClick(trend);
                             setSearchQuery(trend);
                             setShowSuggestions(false);
                             handleSearch();
-                          }} 
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }}
+                          onTouchStart={(e) => e.stopPropagation()}
                           className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between"
                         >
                           <span>{trend}</span>
