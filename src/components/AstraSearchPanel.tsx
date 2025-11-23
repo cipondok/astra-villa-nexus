@@ -68,7 +68,6 @@ const AstraSearchPanel = ({
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
-  const [showFilterTooltip, setShowFilterTooltip] = useState(false);
   // Anchor for mobile suggestions positioning
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [suggestionsTop, setSuggestionsTop] = useState<number>(0);
@@ -134,18 +133,6 @@ const AstraSearchPanel = ({
     const handleUpdate = () => setRecentSearchesKey(prev => prev + 1);
     window.addEventListener('recentSearchesUpdated', handleUpdate);
     return () => window.removeEventListener('recentSearchesUpdated', handleUpdate);
-  }, []);
-
-  // Show tooltip for first-time users
-  useEffect(() => {
-    const hasSeenTooltip = localStorage.getItem('hasSeenFilterTooltip');
-    if (!hasSeenTooltip) {
-      setTimeout(() => setShowFilterTooltip(true), 1000);
-      setTimeout(() => {
-        setShowFilterTooltip(false);
-        localStorage.setItem('hasSeenFilterTooltip', 'true');
-      }, 5000);
-    }
   }, []);
 
   // Only lock scroll for modal dialogs, not for suggestions dropdown
@@ -1971,39 +1958,26 @@ const AstraSearchPanel = ({
         />
         
         {/* Prominent All Filters Button */}
-        <TooltipProvider>
-          <Tooltip open={showFilterTooltip} onOpenChange={setShowFilterTooltip}>
-            <TooltipTrigger asChild>
-              <Button 
-                onClick={() => {
-                  setShowAdvancedFilters(true);
-                  setShowFilterTooltip(false);
-                }} 
-                variant="outline" 
-                size="sm" 
-                className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg rounded-2xl relative transition-all duration-300"
-              >
-                <SlidersHorizontal className="h-4 w-4 text-primary" />
-                {getActiveFiltersCount() > 0 && (
-                  <Badge 
-                    variant="default" 
-                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full animate-pulse shadow-lg ring-2 ring-primary/50 bg-gradient-to-br from-primary to-accent"
-                  >
-                    <span className="animate-in zoom-in duration-200">
-                      {getActiveFiltersCount()}
-                    </span>
-                  </Badge>
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent 
-              side="bottom" 
-              className="bg-primary text-primary-foreground font-semibold animate-bounce z-[9999]"
+        <Button 
+          onClick={() => {
+            setShowAdvancedFilters(true);
+          }} 
+          variant="outline" 
+          size="sm" 
+          className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg rounded-2xl relative transition-all duration-300"
+        >
+          <SlidersHorizontal className="h-4 w-4 text-primary" />
+          {getActiveFiltersCount() > 0 && (
+            <Badge 
+              variant="default" 
+              className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full animate-pulse shadow-lg ring-2 ring-primary/50 bg-gradient-to-br from-primary to-accent"
             >
-              👆 Click here for All Filters!
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+              <span className="animate-in zoom-in duration-200">
+                {getActiveFiltersCount()}
+              </span>
+            </Badge>
+          )}
+        </Button>
         
         <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
           <Search className="h-4 w-4" />
@@ -3013,50 +2987,34 @@ const AstraSearchPanel = ({
                 </PopoverContent>
               </Popover>}
             
-            {/* Prominent All Filters Button with Tooltip */}
-            <TooltipProvider>
-              <Tooltip open={showFilterTooltip} onOpenChange={setShowFilterTooltip}>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={() => {
-                      setShowAdvancedFilters(true);
-                      setShowFilterTooltip(false);
-                    }} 
-                    size="sm" 
-                    className={cn(
-                      "group relative overflow-hidden rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300",
-                      "h-9 px-3 text-xs",
-                      "bg-gradient-to-r from-primary via-primary to-accent",
-                      "hover:from-primary hover:via-accent hover:to-primary",
-                      "text-primary-foreground border-2 border-primary/30"
-                    )}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-ai-shimmer" />
-                    <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
-                    <span className="relative z-10">All Filters</span>
-                    {getActiveFiltersCount() > 0 && (
-                      <Badge 
-                        variant="secondary" 
-                        className="ml-2 h-5 px-2 bg-primary-foreground text-primary border border-primary-foreground/50 font-bold relative z-10 animate-pulse shadow-lg"
-                      >
-                        <span className="animate-in zoom-in duration-200">
-                          {getActiveFiltersCount()}
-                        </span>
-                      </Badge>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent 
-                  side="bottom" 
-                  className="bg-primary text-primary-foreground font-semibold animate-bounce z-[9999]"
+            {/* Prominent All Filters Button */}
+            <Button 
+              onClick={() => {
+                setShowAdvancedFilters(true);
+              }} 
+              size="sm" 
+              className={cn(
+                "group relative overflow-hidden rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300",
+                "h-9 px-3 text-xs",
+                "bg-gradient-to-r from-primary via-primary to-accent",
+                "hover:from-primary hover:via-accent hover:to-primary",
+                "text-primary-foreground border-2 border-primary/30"
+              )}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-ai-shimmer" />
+              <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
+              <span className="relative z-10">All Filters</span>
+              {getActiveFiltersCount() > 0 && (
+                <Badge 
+                  variant="secondary" 
+                  className="ml-2 h-5 px-2 bg-primary-foreground text-primary border border-primary-foreground/50 font-bold relative z-10 animate-pulse shadow-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">👆</span>
-                    <span>Click here for Advanced Filters!</span>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                  <span className="animate-in zoom-in duration-200">
+                    {getActiveFiltersCount()}
+                  </span>
+                </Badge>
+              )}
+            </Button>
           </div>
 
           {/* Active Filters Summary Bar */}
