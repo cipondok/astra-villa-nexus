@@ -2995,19 +2995,19 @@ const AstraSearchPanel = ({
               size="sm" 
               className={cn(
                 "group relative overflow-hidden rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300",
-                "h-9 px-3 text-xs",
+                "h-8 px-2.5 text-[11px]",
                 "bg-gradient-to-r from-primary via-primary to-accent",
                 "hover:from-primary hover:via-accent hover:to-primary",
                 "text-primary-foreground border-2 border-primary/30"
               )}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-ai-shimmer" />
-              <SlidersHorizontal className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
+              <SlidersHorizontal className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1.5 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
               <span className="relative z-10">All Filters</span>
               {getActiveFiltersCount() > 0 && (
                 <Badge 
                   variant="secondary" 
-                  className="ml-2 h-5 px-2 bg-primary-foreground text-primary border border-primary-foreground/50 font-bold relative z-10 animate-pulse shadow-lg"
+                  className="ml-1.5 h-4 px-1.5 text-[10px] bg-primary-foreground text-primary border border-primary-foreground/50 font-bold relative z-10 animate-pulse shadow-lg"
                 >
                   <span className="animate-in zoom-in duration-200">
                     {getActiveFiltersCount()}
