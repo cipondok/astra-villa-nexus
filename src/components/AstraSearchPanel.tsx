@@ -85,9 +85,6 @@ const AstraSearchPanel = ({
   const [provinceSearch, setProvinceSearch] = useState('');
   const [citySearch, setCitySearch] = useState('');
   const [areaSearch, setAreaSearch] = useState('');
-  
-  // Filters popup state
-  const [showFiltersPopup, setShowFiltersPopup] = useState(false);
 
   // Load recent search terms and click analytics from localStorage
   useEffect(() => {
@@ -2311,19 +2308,19 @@ const AstraSearchPanel = ({
               left: activeTab === 'all' ? '2px' : activeTab === 'sale' ? 'calc(25% + 1px)' : activeTab === 'rent' ? 'calc(50%)' : 'calc(75% - 1px)'
             }} />
               
-              <button onClick={() => { setActiveTab('all'); setShowFiltersPopup(true); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'all' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
+              <button onClick={() => { setActiveTab('all'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'all' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
               </button>
-              <button onClick={() => { setActiveTab('sale'); setShowFiltersPopup(true); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'sale' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
+              <button onClick={() => { setActiveTab('sale'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'sale' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span>{isMobile ? "Buy" : currentText.forSale}</span>
               </button>
-              <button onClick={() => { setActiveTab('rent'); setShowFiltersPopup(true); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'rent' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
+              <button onClick={() => { setActiveTab('rent'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'rent' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span>{isMobile ? "Rent" : currentText.forRent}</span>
               </button>
-              <button onClick={() => { setActiveTab('new_project'); setShowFiltersPopup(true); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'new_project' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
+              <button onClick={() => { setActiveTab('new_project'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'new_project' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
                 <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
                 <span>{isMobile ? "New" : currentText.newProject}</span>
               </button>
@@ -2600,241 +2597,6 @@ const AstraSearchPanel = ({
                       </Button>)}
                   </div>
                 </div>
-              </PopoverContent>
-            </Popover>
-
-            {/* Related Filters Popup based on Listing Type */}
-            <Popover open={showFiltersPopup} onOpenChange={setShowFiltersPopup}>
-              <PopoverTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className={cn("h-9 px-3 text-xs font-semibold", isMobile && "h-8 px-2 text-[10px]")}
-                >
-                  <Filter className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5", "mr-1.5")} />
-                  Quick Filters
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent 
-                className="w-72 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain bg-background"
-                align="start"
-                sideOffset={8}
-                onOpenAutoFocus={(e) => e.preventDefault()}
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
-                <Tabs defaultValue="location" className="w-full">
-                  <TabsList className="w-full grid grid-cols-3 h-9 bg-muted/30 p-0.5">
-                    <TabsTrigger value="location" className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      Location
-                    </TabsTrigger>
-                    <TabsTrigger value="specs" className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Home className="h-3 w-3 mr-1" />
-                      Specs
-                    </TabsTrigger>
-                    <TabsTrigger value="price" className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <DollarSign className="h-3 w-3 mr-1" />
-                      Price
-                    </TabsTrigger>
-                  </TabsList>
-
-                  {/* Location Tab */}
-                  <TabsContent value="location" className="mt-3 space-y-2">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold">Province</Label>
-                      <Select value={filters.state} onValueChange={(value) => handleFilterChange('state', value)}>
-                        <SelectTrigger className="h-9 text-xs bg-background">
-                          <SelectValue placeholder="Select Province" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-[999999]">
-                          <SelectItem value="all">Any</SelectItem>
-                          {filteredProvinces.map(p => (
-                            <SelectItem key={p.code} value={p.code}>{p.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold">City</Label>
-                      <Select value={filters.city} onValueChange={(value) => handleFilterChange('city', value)} disabled={!filters.state || filters.state === 'all'}>
-                        <SelectTrigger className="h-9 text-xs bg-background">
-                          <SelectValue placeholder="Select City" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-[999999]">
-                          <SelectItem value="all">Any</SelectItem>
-                          {filteredCities.map(c => (
-                            <SelectItem key={c.code} value={c.code}>{c.type} {c.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold">Area</Label>
-                      <Select value={filters.area} onValueChange={(value) => handleFilterChange('area', value)} disabled={!filters.city || filters.city === 'all'}>
-                        <SelectTrigger className="h-9 text-xs bg-background">
-                          <SelectValue placeholder="Select Area" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-[999999]">
-                          <SelectItem value="all">Any</SelectItem>
-                          {filteredAreas.map(a => (
-                            <SelectItem key={a.code} value={a.code}>{a.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </TabsContent>
-
-                  {/* Specs Tab */}
-                  <TabsContent value="specs" className="mt-3 space-y-2">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold">Property Type</Label>
-                      <Select value={filters.propertyType} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-                        <SelectTrigger className="h-9 text-xs bg-background">
-                          <SelectValue placeholder="Any Type" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-[999999]">
-                          <SelectItem value="all">Any</SelectItem>
-                          {dynamicPropertyTypes.map(type => (
-                            <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold flex items-center gap-2">
-                        <Bed className="h-3 w-3" />
-                        Bedrooms: {!filters.bedrooms || filters.bedrooms === 'all' ? 'Any' : filters.bedrooms}
-                      </Label>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-3"
-                          onClick={() => {
-                            const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
-                            if (current > 0) handleFilterChange('bedrooms', current - 1 === 0 ? 'all' : String(current - 1));
-                          }}
-                        >
-                          −
-                        </Button>
-                        <div className="flex-1 text-center text-sm font-semibold">
-                          {!filters.bedrooms || filters.bedrooms === 'all' ? 'Any' : filters.bedrooms}
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-3"
-                          onClick={() => {
-                            const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
-                            if (current < 10) handleFilterChange('bedrooms', String(current + 1));
-                          }}
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold flex items-center gap-2">
-                        <Bath className="h-3 w-3" />
-                        Bathrooms: {!filters.bathrooms || filters.bathrooms === 'all' ? 'Any' : filters.bathrooms}
-                      </Label>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-3"
-                          onClick={() => {
-                            const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
-                            if (current > 0) handleFilterChange('bathrooms', current - 1 === 0 ? 'all' : String(current - 1));
-                          }}
-                        >
-                          −
-                        </Button>
-                        <div className="flex-1 text-center text-sm font-semibold">
-                          {!filters.bathrooms || filters.bathrooms === 'all' ? 'Any' : filters.bathrooms}
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-3"
-                          onClick={() => {
-                            const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
-                            if (current < 10) handleFilterChange('bathrooms', String(current + 1));
-                          }}
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </div>
-
-                    {activeTab === 'rent' && (
-                      <div className="space-y-1.5 pt-2 border-t">
-                        <Label className="text-xs font-semibold">Rental Duration</Label>
-                        <Select value={filters.rentalDuration} onValueChange={(value) => handleFilterChange('rentalDuration', value)}>
-                          <SelectTrigger className="h-9 text-xs bg-background">
-                            <SelectValue placeholder="Any Duration" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-background z-[999999]">
-                            <SelectItem value="all">Any</SelectItem>
-                            <SelectItem value="daily">Daily</SelectItem>
-                            <SelectItem value="weekly">Weekly</SelectItem>
-                            <SelectItem value="monthly">Monthly</SelectItem>
-                            <SelectItem value="yearly">Yearly</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  {/* Price Tab */}
-                  <TabsContent value="price" className="mt-3 space-y-3">
-                    <div className="space-y-2">
-                      <Label className="text-xs font-semibold">Price Range</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <Label className="text-[10px] text-muted-foreground">Min Price</Label>
-                          <Input
-                            type="number"
-                            placeholder="0"
-                            value={filters.minPrice || ''}
-                            onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value) || 0)}
-                            className="h-9 text-xs bg-background"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-[10px] text-muted-foreground">Max Price</Label>
-                          <Input
-                            type="number"
-                            placeholder="Any"
-                            value={filters.maxPrice || ''}
-                            onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value) || 0)}
-                            className="h-9 text-xs bg-background"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="pt-2 border-t">
-                      <Button
-                        onClick={() => {
-                          handleSearch();
-                          setShowFiltersPopup(false);
-                        }}
-                        className="w-full h-9 text-xs font-semibold"
-                      >
-                        Apply Filters
-                      </Button>
-                    </div>
-                  </TabsContent>
-                </Tabs>
               </PopoverContent>
             </Popover>
 
