@@ -174,12 +174,20 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-3 sm:p-4">
-        <DialogHeader className="pb-1.5">
+      <DialogContent 
+        className="max-w-2xl max-h-[90vh] p-3 sm:p-4 flex flex-col"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
+        <DialogHeader className="pb-1.5 shrink-0">
           <DialogTitle className="text-xs sm:text-sm font-semibold">{currentText.advancedFilters}</DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-2 sm:space-y-2.5">
+        
+        <div className="flex-1 overflow-y-auto overscroll-contain"
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
+          <div className="space-y-2 sm:space-y-2.5 pb-2">
           {/* Property Type */}
           <div className="space-y-1">
             <div 
@@ -191,18 +199,22 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
             </div>
             <AnimatePresence>
               {expandedSections.propertyType && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex flex-wrap gap-1 sm:gap-1.5"
-                >
-                  <Badge
-                    variant={filters.propertyType === 'all' ? 'default' : 'outline'}
-                    className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
-                    onClick={() => handleFilterChange('propertyType', 'all')}
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-wrap gap-1 sm:gap-1.5"
                   >
+                    <Badge
+                      variant={filters.propertyType === 'all' ? 'default' : 'outline'}
+                      className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleFilterChange('propertyType', 'all');
+                      }}
+                    >
                     {currentText.any}
                   </Badge>
                   {propertyTypes.map((type) => (
@@ -210,7 +222,11 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                       key={type.value}
                       variant={filters.propertyType === type.value ? 'default' : 'outline'}
                       className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 h-5 sm:h-6 min-h-0 active:scale-95 transition-transform"
-                      onClick={() => handleFilterChange('propertyType', type.value)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleFilterChange('propertyType', type.value);
+                      }}
                     >
                       {type.label}
                     </Badge>
@@ -425,8 +441,9 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
             </AnimatePresence>
           </div>
         </div>
-
-        <DialogFooter className="flex gap-1.5 sm:gap-2 pt-2">
+        </div>
+        
+        <DialogFooter className="flex gap-1.5 sm:gap-2 pt-2 shrink-0 border-t border-border/50 mt-2">
           <Button variant="outline" onClick={clearFilters} className="h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3">
             {currentText.clearFilters}
           </Button>
