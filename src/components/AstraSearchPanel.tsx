@@ -299,6 +299,28 @@ const AstraSearchPanel = ({
                         filteredSuggestions.trending.length > 0 ||
                         filteredSuggestions.locations.length > 0;
 
+  // Filtered location lists based on search inputs
+  const filteredProvinces = useMemo(() => {
+    if (!provinceSearch.trim()) return provinces;
+    const search = provinceSearch.toLowerCase();
+    return provinces.filter(p => p.name.toLowerCase().includes(search));
+  }, [provinces, provinceSearch]);
+
+  const filteredCities = useMemo(() => {
+    if (!citySearch.trim()) return cities;
+    const search = citySearch.toLowerCase();
+    return cities.filter(c => 
+      c.name.toLowerCase().includes(search) || 
+      c.type.toLowerCase().includes(search)
+    );
+  }, [cities, citySearch]);
+
+  const filteredAreas = useMemo(() => {
+    if (!areaSearch.trim()) return areas;
+    const search = areaSearch.toLowerCase();
+    return areas.filter(a => a.name.toLowerCase().includes(search));
+  }, [areas, areaSearch]);
+
   // Fetch provinces on component mount
   useEffect(() => {
     fetchProvinces();
