@@ -2759,8 +2759,28 @@ const AstraSearchPanel = ({
                     </TabsList>
 
                     <TabsContent value="province" className="mt-2 overscroll-contain">
+                      <div className="mb-2">
+                        <Input
+                          placeholder="Type to search province..."
+                          className="h-9 text-xs"
+                          onChange={(e) => {
+                            const value = e.target.value.toLowerCase();
+                            const filtered = provinces.filter(p => 
+                              p.name.toLowerCase().includes(value)
+                            );
+                            e.currentTarget.setAttribute('data-filtered', filtered.length.toString());
+                          }}
+                          onFocus={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const currentScroll = window.scrollY;
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }}
+                          onTouchStart={(e) => e.stopPropagation()}
+                        />
+                      </div>
                       <ScrollArea 
-                        className="h-56 pr-3 overscroll-contain" 
+                        className="h-48 pr-3 overscroll-contain" 
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -2784,7 +2804,7 @@ const AstraSearchPanel = ({
                             <Button
                               key={province.code}
                               variant={filters.state === province.code ? 'default' : 'ghost'}
-                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform province-item"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -2793,6 +2813,7 @@ const AstraSearchPanel = ({
                                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
+                              data-province-name={province.name.toLowerCase()}
                             >
                               {province.name}
                             </Button>
@@ -2806,8 +2827,33 @@ const AstraSearchPanel = ({
                     </TabsContent>
 
                     <TabsContent value="city" className="mt-2 overscroll-contain">
+                      <div className="mb-2">
+                        <Input
+                          placeholder="Type to search city..."
+                          className="h-9 text-xs"
+                          onChange={(e) => {
+                            const value = e.target.value.toLowerCase();
+                            const buttons = document.querySelectorAll('.city-item');
+                            buttons.forEach(btn => {
+                              const cityName = btn.getAttribute('data-city-name') || '';
+                              if (cityName.includes(value)) {
+                                (btn as HTMLElement).style.display = 'flex';
+                              } else {
+                                (btn as HTMLElement).style.display = 'none';
+                              }
+                            });
+                          }}
+                          onFocus={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const currentScroll = window.scrollY;
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }}
+                          onTouchStart={(e) => e.stopPropagation()}
+                        />
+                      </div>
                       <ScrollArea 
-                        className="h-56 pr-3 overscroll-contain"
+                        className="h-48 pr-3 overscroll-contain"
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -2831,7 +2877,7 @@ const AstraSearchPanel = ({
                             <Button
                               key={city.code}
                               variant={filters.city === city.code ? 'default' : 'ghost'}
-                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform city-item"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -2840,6 +2886,7 @@ const AstraSearchPanel = ({
                                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
+                              data-city-name={`${city.type} ${city.name}`.toLowerCase()}
                             >
                               {city.type} {city.name}
                             </Button>
@@ -2853,8 +2900,33 @@ const AstraSearchPanel = ({
                     </TabsContent>
 
                     <TabsContent value="area" className="mt-2 overscroll-contain">
+                      <div className="mb-2">
+                        <Input
+                          placeholder="Type to search area..."
+                          className="h-9 text-xs"
+                          onChange={(e) => {
+                            const value = e.target.value.toLowerCase();
+                            const buttons = document.querySelectorAll('.area-item');
+                            buttons.forEach(btn => {
+                              const areaName = btn.getAttribute('data-area-name') || '';
+                              if (areaName.includes(value)) {
+                                (btn as HTMLElement).style.display = 'flex';
+                              } else {
+                                (btn as HTMLElement).style.display = 'none';
+                              }
+                            });
+                          }}
+                          onFocus={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const currentScroll = window.scrollY;
+                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                          }}
+                          onTouchStart={(e) => e.stopPropagation()}
+                        />
+                      </div>
                       <ScrollArea 
-                        className="h-56 pr-3 overscroll-contain"
+                        className="h-48 pr-3 overscroll-contain"
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -2878,7 +2950,7 @@ const AstraSearchPanel = ({
                             <Button
                               key={area.code}
                               variant={filters.area === area.code ? 'default' : 'ghost'}
-                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform area-item"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -2887,6 +2959,7 @@ const AstraSearchPanel = ({
                                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
+                              data-area-name={area.name.toLowerCase()}
                             >
                               {area.name}
                             </Button>
