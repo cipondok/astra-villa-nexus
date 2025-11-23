@@ -69,6 +69,9 @@ const AstraSearchPanel = ({
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(false);
   const [showFilterTooltip, setShowFilterTooltip] = useState(false);
+  const [provinceSearch, setProvinceSearch] = useState("");
+  const [citySearch, setCitySearch] = useState("");
+  const [areaSearch, setAreaSearch] = useState("");
   // Anchor for mobile suggestions positioning
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [suggestionsTop, setSuggestionsTop] = useState<number>(0);
