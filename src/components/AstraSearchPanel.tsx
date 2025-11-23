@@ -3526,10 +3526,10 @@ const AstraSearchPanel = ({
                       </Button>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {filters.listingType && (
+                      {activeTab && activeTab !== 'all' && (
                         <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.listingType === 'sale' ? 'For Sale' : 'For Rent'}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('listingType', '')} />
+                          {activeTab === 'sale' ? 'For Sale' : activeTab === 'rent' ? 'For Rent' : activeTab === 'new_project' ? 'New Project' : 'All'}
+                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => setActiveTab('all')} />
                         </Badge>
                       )}
                       {filters.propertyType && (
