@@ -3486,10 +3486,10 @@ const AstraSearchPanel = ({
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg mx-auto max-h-[70vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border-2 bg-background border-primary/30 animate-in zoom-in duration-300"
+            className="w-full max-w-lg mx-auto max-h-[70vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-3 py-2 shrink-0 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15">
+            <div className="flex items-center justify-between border-b border-border/30 px-3 py-2 shrink-0 backdrop-blur-xl bg-primary/5">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
                   <SlidersHorizontal className="h-3.5 w-3.5 text-primary-foreground" />
@@ -4078,7 +4078,7 @@ const AstraSearchPanel = ({
             </ScrollArea>
 
             {/* Footer - Sticky */}
-            <div className="border-t border-border/50 bg-gradient-to-r from-background/90 via-muted/40 to-background/90 backdrop-blur-xl px-2 py-1.5 shrink-0 shadow-lg">
+            <div className="border-t border-border/30 backdrop-blur-xl bg-primary/5 px-2 py-1.5 shrink-0 shadow-lg">
               <Button 
                 onClick={() => {
                   handleSearch();
