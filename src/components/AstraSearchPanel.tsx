@@ -3618,23 +3618,14 @@ const AstraSearchPanel = ({
                   </div>
                 </div>
 
-                {/* Property Type - Collapsible */}
-                <Collapsible
-                  open={openSections.propertyType}
-                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, propertyType: open }))}
-                  className="space-y-2"
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
-                        <Home className="h-4 w-4 text-primary" />
-                        Property Type
-                        {filters.propertyType && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.propertyType}</Badge>}
-                      </Label>
-                      {openSections.propertyType ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2">
+                {/* Property Type - Always visible when listing type selected */}
+                {filters.listingType && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                      <Home className="h-4 w-4 text-primary" />
+                      Property Type
+                      {filters.propertyType && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.propertyType}</Badge>}
+                    </Label>
                     <div className="grid grid-cols-3 gap-2">
                       {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
                         <Button 
@@ -3648,26 +3639,17 @@ const AstraSearchPanel = ({
                         </Button>
                       ))}
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                  </div>
+                )}
 
-                {/* Location - Collapsible with search */}
-                <Collapsible
-                  open={openSections.location}
-                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, location: open }))}
-                  className="space-y-2"
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        Location
-                        {filters.location && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.location}</Badge>}
-                      </Label>
-                      {openSections.location ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2">
+                {/* Location - Always visible when listing type selected */}
+                {filters.listingType && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      Location
+                      {filters.location && <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">{filters.location}</Badge>}
+                    </Label>
                     <Input 
                       placeholder="Search location..." 
                       value={locationSearch}
@@ -3694,59 +3676,52 @@ const AstraSearchPanel = ({
                           </Badge>
                         ))}
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                  </div>
+                )}
 
-                {/* Price Range - Collapsible with Slider */}
-                <Collapsible
-                  open={openSections.priceRange}
-                  onOpenChange={(open) => setOpenSections(prev => ({ ...prev, priceRange: open }))}
-                  className="space-y-2"
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                      <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
-                        <DollarSign className="h-4 w-4 text-primary" />
-                        Price Range
-                        {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
-                          <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
-                            {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
-                          </Badge>
-                        )}
-                      </Label>
-                      {openSections.priceRange ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-3 pt-2">
-                    <Slider 
-                      value={priceRange} 
-                      onValueChange={(value) => {
-                        setPriceRange(value);
-                        handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                        handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                      }} 
-                      min={0} 
-                      max={currentFilters.maxPrice} 
-                      step={currentFilters.priceStep} 
-                      className="w-full px-1" 
-                    />
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex flex-col">
-                        <span className="text-muted-foreground mb-1">Min</span>
-                        <span className="font-semibold text-foreground">
-                          {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
-                        </span>
-                      </div>
-                      <span className="text-muted-foreground">-</span>
-                      <div className="flex flex-col items-end">
-                        <span className="text-muted-foreground mb-1">Max</span>
-                        <span className="font-semibold text-foreground">
-                          {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
-                        </span>
+                {/* Price Range - Always visible when listing type selected */}
+                {filters.listingType && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                      <DollarSign className="h-4 w-4 text-primary" />
+                      Price Range
+                      {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
+                        <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+                          {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
+                        </Badge>
+                      )}
+                    </Label>
+                    <div className="space-y-3 pt-2">
+                      <Slider 
+                        value={priceRange} 
+                        onValueChange={(value) => {
+                          setPriceRange(value);
+                          handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                          handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                        }} 
+                        min={0} 
+                        max={currentFilters.maxPrice} 
+                        step={currentFilters.priceStep} 
+                        className="w-full px-1" 
+                      />
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex flex-col">
+                          <span className="text-muted-foreground mb-1">Min</span>
+                          <span className="font-semibold text-foreground">
+                            {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
+                          </span>
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex flex-col items-end">
+                          <span className="text-muted-foreground mb-1">Max</span>
+                          <span className="font-semibold text-foreground">
+                            {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                  </div>
+                )}
 
                 {/* Database-driven filters by category */}
                 {filtersLoading && (
@@ -3777,58 +3752,46 @@ const AstraSearchPanel = ({
                   const activeCount = getActiveFiltersInCategory(category);
                   
                   return (
-                    <Collapsible
-                      key={category.id}
-                      open={openSections[category.name] !== false}
-                      onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [category.name]: open }))}
-                      className="space-y-2"
-                    >
-                      <CollapsibleTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                          <Label className="text-sm font-bold text-foreground flex items-center gap-2 cursor-pointer">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div className="flex items-center gap-2">
-                                    <CategoryIcon className="h-4 w-4 text-primary" />
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent side="right" className="max-w-[300px]">
-                                  <p className="text-sm">{getCategoryTooltip(category)}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
-                            {activeCount > 0 && (
-                              <Badge variant="default" className="ml-1 h-5 px-2 text-xs font-bold">
-                                {activeCount}
-                              </Badge>
-                            )}
-                          </Label>
-                          <div className="flex items-center gap-2">
-                            {activeCount > 0 && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  clearCategoryFilters(category);
-                                }}
-                                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-                              >
-                                Clear
-                              </Button>
-                            )}
-                            {openSections[category.name] !== false ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                          </div>
-                        </Button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="space-y-2">
-                        <div className="grid grid-cols-1 gap-2">
-                          {category.options.map((filter: any) => renderDatabaseFilter(filter))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
+                    <div key={category.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-2">
+                                  <CategoryIcon className="h-4 w-4 text-primary" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="right" className="max-w-[300px]">
+                                <p className="text-sm">{getCategoryTooltip(category)}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</span>
+                          {activeCount > 0 && (
+                            <Badge variant="default" className="ml-1 h-5 px-2 text-xs font-bold">
+                              {activeCount}
+                            </Badge>
+                          )}
+                        </Label>
+                        {activeCount > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              clearCategoryFilters(category);
+                            }}
+                            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {category.options.map((filter: any) => renderDatabaseFilter(filter))}
+                      </div>
+                    </div>
                   );
                 })}
 
