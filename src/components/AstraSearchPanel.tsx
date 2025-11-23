@@ -3507,90 +3507,90 @@ const AstraSearchPanel = ({
               </Button>
             </div>
 
+            {/* Active Filters Summary Bar - Moved to Header */}
+            {getActiveFiltersCount() > 0 && (
+              <div className="px-6 py-3 bg-accent/20 border-b border-accent/30 space-y-2 shrink-0">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-bold text-muted-foreground">ACTIVE FILTERS</Label>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={clearAllFilters}
+                    className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    Clear All
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {activeTab && activeTab !== 'all' && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {activeTab === 'sale' ? 'For Sale' : activeTab === 'rent' ? 'For Rent' : activeTab === 'new_project' ? 'New Project' : 'All'}
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => setActiveTab('all')} />
+                    </Badge>
+                  )}
+                  {filters.propertyType && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.propertyType}
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
+                    </Badge>
+                  )}
+                  {filters.location && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.location}
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
+                    </Badge>
+                  )}
+                  {filters.priceRange && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('priceRange', '')} />
+                    </Badge>
+                  )}
+                  {filters.bedrooms && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.bedrooms} Bed
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
+                    </Badge>
+                  )}
+                  {filters.bathrooms && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.bathrooms} Bath
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
+                    </Badge>
+                  )}
+                  {filters.condition && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.condition}
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('condition', '')} />
+                    </Badge>
+                  )}
+                  {(filters.minArea || filters.maxArea) && (
+                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
+                        handleFilterChange('minArea', '');
+                        handleFilterChange('maxArea', '');
+                      }} />
+                    </Badge>
+                  )}
+                  {filters.features.length > 0 && filters.features.map(feature => (
+                    <Badge key={feature} variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                      {feature}
+                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
+                        setFilters(prev => ({
+                          ...prev,
+                          features: prev.features.filter(f => f !== feature)
+                        }));
+                      }} />
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
               <div className="p-4 space-y-3 bg-background pb-8 md:pb-10 lg:pb-12">
-                
-                {/* Active Filters Summary Bar */}
-                {getActiveFiltersCount() > 0 && (
-                  <div className="p-3 bg-accent/20 rounded-lg border border-accent/30 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xs font-bold text-muted-foreground">ACTIVE FILTERS</Label>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={clearAllFilters}
-                        className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        Clear All
-                      </Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {activeTab && activeTab !== 'all' && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {activeTab === 'sale' ? 'For Sale' : activeTab === 'rent' ? 'For Rent' : activeTab === 'new_project' ? 'New Project' : 'All'}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => setActiveTab('all')} />
-                        </Badge>
-                      )}
-                      {filters.propertyType && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.propertyType}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
-                        </Badge>
-                      )}
-                      {filters.location && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.location}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
-                        </Badge>
-                      )}
-                      {filters.priceRange && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('priceRange', '')} />
-                        </Badge>
-                      )}
-                      {filters.bedrooms && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.bedrooms} Bed
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
-                        </Badge>
-                      )}
-                      {filters.bathrooms && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.bathrooms} Bath
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
-                        </Badge>
-                      )}
-                      {filters.condition && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.condition}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('condition', '')} />
-                        </Badge>
-                      )}
-                      {(filters.minArea || filters.maxArea) && (
-                        <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
-                            handleFilterChange('minArea', '');
-                            handleFilterChange('maxArea', '');
-                          }} />
-                        </Badge>
-                      )}
-                      {filters.features.length > 0 && filters.features.map(feature => (
-                        <Badge key={feature} variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                          {feature}
-                          <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
-                            setFilters(prev => ({
-                              ...prev,
-                              features: prev.features.filter(f => f !== feature)
-                            }));
-                          }} />
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
                 
                 {/* Listing Type - Always visible at top */}
                 <div className="space-y-2 pb-3 border-b border-border/50">
