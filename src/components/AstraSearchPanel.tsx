@@ -3002,7 +3002,7 @@ const AstraSearchPanel = ({
               )}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-ai-shimmer" />
-              <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
+              <SlidersHorizontal className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300")} />
               <span className="relative z-10">All Filters</span>
               {getActiveFiltersCount() > 0 && (
                 <Badge 
