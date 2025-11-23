@@ -3486,16 +3486,16 @@ const AstraSearchPanel = ({
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-xl mx-auto max-h-[75vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border-2 bg-background border-primary/30 animate-in zoom-in duration-300"
+            className="w-full max-w-lg mx-auto max-h-[70vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border-2 bg-background border-primary/30 animate-in zoom-in duration-300"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-4 py-3 shrink-0 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-                  <SlidersHorizontal className="h-4 w-4 text-primary-foreground" />
+            <div className="flex items-center justify-between border-b border-border px-3 py-2 shrink-0 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
+                  <SlidersHorizontal className="h-3.5 w-3.5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-foreground">Advanced Filters</h3>
+                  <h3 className="text-sm font-bold text-foreground">Advanced Filters</h3>
                   <p className="text-xs text-muted-foreground">Refine search</p>
                 </div>
                 <Badge variant="default" className="h-6 px-2 bg-primary text-primary-foreground text-xs font-bold animate-pulse">
@@ -3590,7 +3590,7 @@ const AstraSearchPanel = ({
 
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-3 space-y-2.5 bg-background pb-4">
+              <div className="p-2 space-y-2 bg-background pb-3">
                 
                 {/* Listing Type - Always visible at top */}
                 <div className="space-y-1.5 pb-2 border-b border-border/50">
@@ -4078,13 +4078,13 @@ const AstraSearchPanel = ({
             </ScrollArea>
 
             {/* Footer - Sticky */}
-            <div className="border-t border-border/50 bg-gradient-to-r from-background/90 via-muted/40 to-background/90 backdrop-blur-xl px-3 py-2 shrink-0 shadow-lg">
+            <div className="border-t border-border/50 bg-gradient-to-r from-background/90 via-muted/40 to-background/90 backdrop-blur-xl px-2 py-1.5 shrink-0 shadow-lg">
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowAdvancedFilters(false);
                 }} 
-                className="w-full h-9 text-xs font-bold shadow-md rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300" 
+                className="w-full h-8 text-xs font-bold shadow-md rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300" 
                 size="sm"
               >
                 <Search className="h-3.5 w-3.5 mr-1.5" />
