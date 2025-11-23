@@ -2508,15 +2508,33 @@ const AstraSearchPanel = ({
           {/* Compact Filter Row - Property Type + Bedrooms + Bathrooms + Location Button */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Property Type Button - Opens Popover */}
-            <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen} modal={true}>
+            <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className={cn("rounded-lg transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px] bg-card border-border" : "h-8 px-3 text-xs bg-background border-border", filters.propertyType && filters.propertyType !== 'all' && "border-primary bg-primary/10")}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentScroll = window.scrollY;
+                    setIsPropertyTypeOpen(!isPropertyTypeOpen);
+                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  className={cn("rounded-lg transition-all shadow-sm", isMobile ? "h-7 px-2 text-[10px] bg-card border-border" : "h-8 px-3 text-xs bg-background border-border", filters.propertyType && filters.propertyType !== 'all' && "border-primary bg-primary/10")}
+                >
                   <Home className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "mr-1 text-primary")} />
                   {filters.propertyType && filters.propertyType !== 'all' ? currentFilters.propertyTypes.find(t => t.value === filters.propertyType)?.label || currentText.propertyType : currentText.propertyType}
                   {filters.propertyType && filters.propertyType !== 'all' && <span className="ml-1 w-1.5 h-1.5 rounded-full bg-primary" />}
                 </Button>
               </PopoverTrigger>
-                <PopoverContent className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" align="start" onCloseAutoFocus={e => e.preventDefault()}>
+                <PopoverContent 
+                  className="w-64 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[99999]" 
+                  align="start" 
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                  onCloseAutoFocus={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onTouchMove={(e) => e.stopPropagation()}
+                >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
@@ -2527,14 +2545,33 @@ const AstraSearchPanel = ({
                   
                   {/* Property Type Grid */}
                   <div className="grid grid-cols-2 gap-2">
-                    <Button variant={!filters.propertyType || filters.propertyType === 'all' ? "default" : "outline"} size="sm" className="h-8 text-xs justify-start" onClick={() => {
-                    handleFilterChange('propertyType', 'all');
-                  }}>
+                    <Button 
+                      variant={!filters.propertyType || filters.propertyType === 'all' ? "default" : "outline"} 
+                      size="sm" 
+                      className="h-8 text-xs justify-start" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const currentScroll = window.scrollY;
+                        handleFilterChange('propertyType', 'all');
+                        requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                    >
                       {currentText.any}
                     </Button>
-                    {currentFilters.propertyTypes.map(type => <Button key={type.value} variant={filters.propertyType === type.value ? "default" : "outline"} size="sm" className="h-8 text-xs justify-start" onClick={() => {
-                    handleFilterChange('propertyType', type.value);
-                  }}>
+                    {currentFilters.propertyTypes.map(type => <Button 
+                      key={type.value} 
+                      variant={filters.propertyType === type.value ? "default" : "outline"} 
+                      size="sm" 
+                      className="h-8 text-xs justify-start" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const currentScroll = window.scrollY;
+                        handleFilterChange('propertyType', type.value);
+                        requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                    >
                         {type.label}
                       </Button>)}
                   </div>
@@ -2546,24 +2583,44 @@ const AstraSearchPanel = ({
             <div className={cn("inline-flex items-center rounded-lg overflow-hidden shadow-sm border", isMobile ? "bg-card border-border" : "bg-background border-border")}>
               <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
                 <Bed className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-primary")} />
-                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
-                const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
-                if (current > 0) {
-                  const next = current - 1;
-                  handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
-                }
-              }}>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentScroll = window.scrollY;
+                    const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
+                    if (current > 0) {
+                      const next = current - 1;
+                      handleFilterChange('bedrooms', next === 0 ? 'all' : String(next));
+                    }
+                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
                 </Button>
                 <span className={cn("min-w-[20px] flex items-center justify-center font-semibold text-foreground", isMobile ? "text-[10px] px-1" : "text-xs px-1.5")}>
                   {!filters.bedrooms || filters.bedrooms === 'all' ? '0' : String(filters.bedrooms).replace('+', '')}
                 </span>
-                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
-                const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
-                if (current < 10) {
-                  handleFilterChange('bedrooms', String(current + 1));
-                }
-              }}>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentScroll = window.scrollY;
+                    const current = !filters.bedrooms || filters.bedrooms === 'all' ? 0 : parseInt(String(filters.bedrooms).replace('+', ''));
+                    if (current < 10) {
+                      handleFilterChange('bedrooms', String(current + 1));
+                    }
+                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
                 </Button>
               </div>
@@ -2573,33 +2630,64 @@ const AstraSearchPanel = ({
             <div className={cn("inline-flex items-center rounded-lg overflow-hidden shadow-sm border", isMobile ? "bg-card border-border" : "bg-background border-border")}>
               <div className={cn("flex items-center gap-0.5 px-1", isMobile ? "h-7" : "h-8")}>
                 <Bath className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "text-primary")} />
-                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
-                const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
-                if (current > 0) {
-                  const next = current - 1;
-                  handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
-                }
-              }}>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentScroll = window.scrollY;
+                    const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
+                    if (current > 0) {
+                      const next = current - 1;
+                      handleFilterChange('bathrooms', next === 0 ? 'all' : String(next));
+                    }
+                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>−</span>
                 </Button>
                 <span className={cn("min-w-[20px] flex items-center justify-center font-semibold text-foreground", isMobile ? "text-[10px] px-1" : "text-xs px-1.5")}>
                   {!filters.bathrooms || filters.bathrooms === 'all' ? '0' : String(filters.bathrooms).replace('+', '')}
                 </span>
-                <Button type="button" variant="ghost" size="sm" className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} onClick={() => {
-                const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
-                if (current < 10) {
-                  handleFilterChange('bathrooms', String(current + 1));
-                }
-              }}>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn("p-0 hover:bg-muted rounded", isMobile ? "h-5 w-5" : "h-6 w-6")} 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentScroll = window.scrollY;
+                    const current = !filters.bathrooms || filters.bathrooms === 'all' ? 0 : parseInt(String(filters.bathrooms).replace('+', ''));
+                    if (current < 10) {
+                      handleFilterChange('bathrooms', String(current + 1));
+                    }
+                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
                   <span className={cn("font-bold", isMobile ? "text-xs" : "text-sm")}>+</span>
                 </Button>
               </div>
             </div>
 
             {/* Location Button - Opens Popover with 3 selects */}
-            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen} modal={true}>
+            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className={cn("group relative overflow-hidden bg-gradient-to-r from-background to-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300", isMobile ? "h-9 px-3 text-xs" : "h-10 px-4 text-sm", (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary/70 bg-primary/5 shadow-md")}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const currentScroll = window.scrollY;
+                      setIsLocationOpen(!isLocationOpen);
+                      requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                    }}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    className={cn("group relative overflow-hidden bg-gradient-to-r from-background to-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300", isMobile ? "h-9 px-3 text-xs" : "h-10 px-4 text-sm", (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary/70 bg-primary/5 shadow-md")}
+                  >
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <MapPin className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "mr-2 text-primary relative z-10 group-hover:scale-110 transition-transform duration-300")} />
                     <span className="relative z-10 font-medium">{currentText.location}</span>
@@ -2610,11 +2698,21 @@ const AstraSearchPanel = ({
                 </PopoverTrigger>
                 
                 {/* 🔥 CRITICAL: Portal renders outside main flow, preventing scrollbar-induced shifts */}
-                  <PopoverContent className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" align="start" sideOffset={8} avoidCollisions={true} collisionPadding={8} onCloseAutoFocus={e => e.preventDefault()} // 🔥 Prevent focus jump
-            style={{
-              // 🔥 Compensate for removed scrollbar if needed (usually handled by body padding)
-              paddingRight: 'var(--removed-body-scroll-bar-size, 0px)'
-            }}>
+                  <PopoverContent 
+                    className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
+                    align="start" 
+                    sideOffset={8} 
+                    avoidCollisions={true} 
+                    collisionPadding={8} 
+                    onOpenAutoFocus={(e) => e.preventDefault()}
+                    onCloseAutoFocus={(e) => e.preventDefault()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchMove={(e) => e.stopPropagation()}
+                    style={{
+                      // 🔥 Compensate for removed scrollbar if needed (usually handled by body padding)
+                      paddingRight: 'var(--removed-body-scroll-bar-size, 0px)'
+                    }}
+                  >
                   <div className="space-y-3 p-1">
                     {/* State/Province Selection */}
                     <div className="space-y-1.5">
