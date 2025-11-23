@@ -2784,17 +2784,12 @@ const AstraSearchPanel = ({
                     </TabsList>
 
                     <TabsContent value="province" className="mt-2 overscroll-contain">
-                      <div className="mb-2">
+                      <div className="mb-2 space-y-1">
                         <Input
                           placeholder="Type to search province..."
-                          className="h-9 text-xs"
-                          onChange={(e) => {
-                            const value = e.target.value.toLowerCase();
-                            const filtered = provinces.filter(p => 
-                              p.name.toLowerCase().includes(value)
-                            );
-                            e.currentTarget.setAttribute('data-filtered', filtered.length.toString());
-                          }}
+                          className="h-9 text-xs border-primary/20 focus:border-primary"
+                          value={provinceSearch}
+                          onChange={(e) => setProvinceSearch(e.target.value)}
                           onFocus={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -2803,14 +2798,27 @@ const AstraSearchPanel = ({
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
                         />
+                        {provinceSearch && (
+                          <div className="text-xs text-muted-foreground px-1 flex items-center justify-between">
+                            <span>{filteredProvinces.length} matches</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 px-2 text-xs"
+                              onClick={() => setProvinceSearch("")}
+                            >
+                              Clear
+                            </Button>
+                          </div>
+                        )}
                       </div>
                       <ScrollArea 
-                        className="h-48 pr-3 overscroll-contain" 
+                        className="h-48 pr-3 overscroll-contain border border-border/30 rounded-lg bg-muted/5" 
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
                       >
-                        <div className="space-y-1">
+                        <div className="space-y-1 p-2">
                           <Button
                             variant={!filters.state || filters.state === 'all' ? 'default' : 'ghost'}
                             className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
@@ -2825,11 +2833,11 @@ const AstraSearchPanel = ({
                           >
                             {currentText.any}
                           </Button>
-                          {provinces.length > 0 ? provinces.map(province => (
+                          {filteredProvinces.length > 0 ? filteredProvinces.map(province => (
                             <Button
                               key={province.code}
                               variant={filters.state === province.code ? 'default' : 'ghost'}
-                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform province-item"
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -2838,13 +2846,12 @@ const AstraSearchPanel = ({
                                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
-                              data-province-name={province.name.toLowerCase()}
                             >
                               {province.name}
                             </Button>
                           )) : (
                             <div className="text-xs text-muted-foreground italic py-4 text-center">
-                              ⚠️ No provinces found
+                              {provinceSearch ? `No provinces matching "${provinceSearch}"` : '⚠️ No provinces found'}
                             </div>
                           )}
                         </div>
