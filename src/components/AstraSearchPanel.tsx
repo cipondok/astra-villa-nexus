@@ -2699,7 +2699,7 @@ const AstraSearchPanel = ({
                 
                 {/* 🔥 CRITICAL: Portal renders outside main flow, preventing scrollbar-induced shifts */}
                   <PopoverContent 
-                    className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200" 
+                    className="w-80 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
                     align="start" 
                     sideOffset={8} 
                     avoidCollisions={true} 
@@ -2708,139 +2708,197 @@ const AstraSearchPanel = ({
                     onCloseAutoFocus={(e) => e.preventDefault()}
                     onTouchStart={(e) => e.stopPropagation()}
                     onTouchMove={(e) => e.stopPropagation()}
+                    onWheel={(e) => e.stopPropagation()}
                     style={{
-                      // 🔥 Compensate for removed scrollbar if needed (usually handled by body padding)
                       paddingRight: 'var(--removed-body-scroll-bar-size, 0px)'
                     }}
                   >
-                  <div className="space-y-3 p-1">
-                    {/* State/Province Selection */}
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-foreground flex items-center gap-1">
-                        {currentText.selectProvince}
-                        {provinces.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
-                      </Label>
-                      <Select 
-                        value={filters.state || "all"} 
-                        onValueChange={(value) => {
+                  <Tabs defaultValue="province" className="w-full overscroll-contain">
+                    <TabsList className="w-full grid grid-cols-3 h-9 bg-muted/30 p-0.5">
+                      <TabsTrigger 
+                        value="province" 
+                        className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           const currentScroll = window.scrollY;
-                          handleFilterChange('state', value);
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
+                        onTouchStart={(e) => e.stopPropagation()}
                       >
-                        <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg transition-colors focus:ring-2 focus:ring-blue-500">
-                          <SelectValue placeholder={currentText.selectProvince}>
-                            <span className="truncate">
-                              {filters.state && filters.state !== 'all' ? provinces.find(p => p.code === filters.state)?.name : currentText.any}
-                            </span>
-                          </SelectValue>
-                        </SelectTrigger>
-                         <SelectContent 
-                          className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000] overscroll-contain" 
-                          position="popper" 
-                          sideOffset={4} 
-                          onCloseAutoFocus={(e) => e.preventDefault()}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          onTouchMove={(e) => e.stopPropagation()}
-                        >
-                          <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
+                        {currentText.selectProvince.replace('Select ', '')}
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="city" 
+                        disabled={!filters.state || filters.state === 'all'}
+                        className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground disabled:opacity-40"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const currentScroll = window.scrollY;
+                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                        }}
+                        onTouchStart={(e) => e.stopPropagation()}
+                      >
+                        {currentText.selectCity.replace('Select ', '')}
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="area" 
+                        disabled={!filters.city || filters.city === 'all'}
+                        className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground disabled:opacity-40"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const currentScroll = window.scrollY;
+                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                        }}
+                        onTouchStart={(e) => e.stopPropagation()}
+                      >
+                        {currentText.selectArea.replace('Select ', '')}
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="province" className="mt-2 overscroll-contain">
+                      <ScrollArea 
+                        className="h-56 pr-3 overscroll-contain" 
+                        onTouchStart={(e) => e.stopPropagation()}
+                        onTouchMove={(e) => e.stopPropagation()}
+                        onWheel={(e) => e.stopPropagation()}
+                      >
+                        <div className="space-y-1">
+                          <Button
+                            variant={!filters.state || filters.state === 'all' ? 'default' : 'ghost'}
+                            className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const currentScroll = window.scrollY;
+                              handleFilterChange('state', 'all');
+                              requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                            }}
+                            onTouchStart={(e) => e.stopPropagation()}
+                          >
                             {currentText.any}
-                          </SelectItem>
-                          {provinces.length > 0 ? provinces.map(province => <SelectItem key={province.code} value={province.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                                {province.name}
-                              </SelectItem>) : <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
-                              ⚠️ No provinces found in database
-                            </SelectItem>}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                          </Button>
+                          {provinces.length > 0 ? provinces.map(province => (
+                            <Button
+                              key={province.code}
+                              variant={filters.state === province.code ? 'default' : 'ghost'}
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const currentScroll = window.scrollY;
+                                handleFilterChange('state', province.code);
+                                requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                              }}
+                              onTouchStart={(e) => e.stopPropagation()}
+                            >
+                              {province.name}
+                            </Button>
+                          )) : (
+                            <div className="text-xs text-muted-foreground italic py-4 text-center">
+                              ⚠️ No provinces found
+                            </div>
+                          )}
+                        </div>
+                      </ScrollArea>
+                    </TabsContent>
 
-                    {/* City Selection - Only show when state is selected */}
-                    {filters.state && filters.state !== 'all' && <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <Label className="text-xs font-medium text-foreground flex items-center gap-1">
-                          {currentText.selectCity}
-                          {cities.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
-                        </Label>
-                        <Select 
-                          value={filters.city || "all"} 
-                          onValueChange={(value) => {
-                            const currentScroll = window.scrollY;
-                            handleFilterChange('city', value);
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                          }} 
-                          disabled={cities.length === 0}
-                        >
-                          <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
-                            <SelectValue placeholder={currentText.selectCity}>
-                              <span className="truncate">
-                                {filters.city && filters.city !== 'all' ? (() => {
-                            const city = cities.find(c => c.code === filters.city);
-                            return city ? `${city.type} ${city.name}` : currentText.any;
-                          })() : currentText.any}
-                              </span>
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent 
-                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000] overscroll-contain" 
-                            position="popper" 
-                            sideOffset={4} 
-                            onCloseAutoFocus={(e) => e.preventDefault()}
+                    <TabsContent value="city" className="mt-2 overscroll-contain">
+                      <ScrollArea 
+                        className="h-56 pr-3 overscroll-contain"
+                        onTouchStart={(e) => e.stopPropagation()}
+                        onTouchMove={(e) => e.stopPropagation()}
+                        onWheel={(e) => e.stopPropagation()}
+                      >
+                        <div className="space-y-1">
+                          <Button
+                            variant={!filters.city || filters.city === 'all' ? 'default' : 'ghost'}
+                            className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const currentScroll = window.scrollY;
+                              handleFilterChange('city', 'all');
+                              requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                            }}
                             onTouchStart={(e) => e.stopPropagation()}
-                            onTouchMove={(e) => e.stopPropagation()}
                           >
-                            <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                              {currentText.any}
-                            </SelectItem>
-                            {cities.length > 0 ? cities.map(city => <SelectItem key={city.code} value={city.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                                  {city.type} {city.name}
-                                </SelectItem>) : <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
-                                ⚠️ No cities found for selected province
-                              </SelectItem>}
-                          </SelectContent>
-                        </Select>
-                      </div>}
+                            {currentText.any}
+                          </Button>
+                          {cities.length > 0 ? cities.map(city => (
+                            <Button
+                              key={city.code}
+                              variant={filters.city === city.code ? 'default' : 'ghost'}
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const currentScroll = window.scrollY;
+                                handleFilterChange('city', city.code);
+                                requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                              }}
+                              onTouchStart={(e) => e.stopPropagation()}
+                            >
+                              {city.type} {city.name}
+                            </Button>
+                          )) : (
+                            <div className="text-xs text-muted-foreground italic py-4 text-center">
+                              ⚠️ No cities found
+                            </div>
+                          )}
+                        </div>
+                      </ScrollArea>
+                    </TabsContent>
 
-                    {/* Area Selection - Only show when city is selected */}
-                    {filters.city && filters.city !== 'all' && <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <Label className="text-xs font-medium text-foreground flex items-center gap-1">
-                          {currentText.selectArea}
-                          {areas.length === 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">(⚠️ No data)</span>}
-                        </Label>
-                        <Select 
-                          value={filters.area || "all"} 
-                          onValueChange={(value) => {
-                            const currentScroll = window.scrollY;
-                            handleFilterChange('area', value);
-                            requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                          }} 
-                          disabled={areas.length === 0}
-                        >
-                          <SelectTrigger className="h-9 text-xs bg-background hover:bg-accent/50 border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:ring-2 focus:ring-blue-500">
-                            <SelectValue placeholder={currentText.selectArea}>
-                              <span className="truncate">
-                                {filters.area && filters.area !== 'all' ? areas.find(a => a.code === filters.area)?.name : currentText.any}
-                              </span>
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent 
-                            className="bg-background dark:bg-gray-900 border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto z-[100000] overscroll-contain" 
-                            position="popper" 
-                            sideOffset={4}
+                    <TabsContent value="area" className="mt-2 overscroll-contain">
+                      <ScrollArea 
+                        className="h-56 pr-3 overscroll-contain"
+                        onTouchStart={(e) => e.stopPropagation()}
+                        onTouchMove={(e) => e.stopPropagation()}
+                        onWheel={(e) => e.stopPropagation()}
+                      >
+                        <div className="space-y-1">
+                          <Button
+                            variant={!filters.area || filters.area === 'all' ? 'default' : 'ghost'}
+                            className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const currentScroll = window.scrollY;
+                              handleFilterChange('area', 'all');
+                              requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                            }}
                             onTouchStart={(e) => e.stopPropagation()}
-                            onTouchMove={(e) => e.stopPropagation()}
                           >
-                            <SelectItem value="all" className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                              {currentText.any}
-                            </SelectItem>
-                            {areas.length > 0 ? areas.map(area => <SelectItem key={area.code} value={area.code} className="text-xs hover:bg-accent rounded cursor-pointer transition-colors">
-                                  {area.name}
-                                </SelectItem>) : <SelectItem value="no-data" disabled className="text-xs text-muted-foreground italic">
-                                ⚠️ No areas found for selected city
-                              </SelectItem>}
-                          </SelectContent>
-                        </Select>
-                      </div>}
-                  </div>
+                            {currentText.any}
+                          </Button>
+                          {areas.length > 0 ? areas.map(area => (
+                            <Button
+                              key={area.code}
+                              variant={filters.area === area.code ? 'default' : 'ghost'}
+                              className="w-full justify-start text-xs h-9 active:scale-95 transition-transform"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const currentScroll = window.scrollY;
+                                handleFilterChange('area', area.code);
+                                requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                              }}
+                              onTouchStart={(e) => e.stopPropagation()}
+                            >
+                              {area.name}
+                            </Button>
+                          )) : (
+                            <div className="text-xs text-muted-foreground italic py-4 text-center">
+                              ⚠️ No areas found
+                            </div>
+                          )}
+                        </div>
+                      </ScrollArea>
+                    </TabsContent>
+                  </Tabs>
                 </PopoverContent>
               </Popover>}
             
