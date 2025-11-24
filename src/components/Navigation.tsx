@@ -352,17 +352,18 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* Enhanced Mobile Navigation - Slim & Compact with Open Effect */}
+          {/* Enhanced Mobile Navigation - Slim & Compact with Smooth Open Effect */}
           {isMenuOpen && (
             <>
-              {/* Overlay backdrop - click to close */}
+              {/* Overlay backdrop - click to close - positioned relative to nav */}
               <div 
-                className="lg:hidden fixed inset-0 bg-black/20 dark:bg-black/40 z-[9998] animate-fade-in"
+                className="lg:hidden fixed inset-0 top-[2.5rem] md:top-[2.75rem] bg-black/30 dark:bg-black/50 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
                 onClick={toggleMenu}
+                style={{ marginTop: '0' }}
               />
               
-              {/* Menu content */}
-              <div className="lg:hidden absolute top-full right-0 w-44 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-l border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] transform-gpu will-change-transform rounded-bl-2xl animate-[slide-in-right_0.25s_ease-out,fade-in_0.2s_ease-out] origin-top-right">
+              {/* Menu content with smooth slide and scale animation */}
+              <div className="lg:hidden absolute top-full right-0 w-44 bg-white dark:bg-gray-900 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-300 origin-top-right">
                 <div className="px-1.5 py-1.5 space-y-0.5">
                 <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-3 w-3 mr-1.5" />
