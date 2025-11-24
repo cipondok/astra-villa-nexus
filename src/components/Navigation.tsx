@@ -354,8 +354,16 @@ const Navigation = () => {
 
           {/* Enhanced Mobile Navigation - Slim & Compact with Open Effect */}
           {isMenuOpen && (
-            <div className="lg:hidden absolute top-full right-0 w-44 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-l border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] transform-gpu will-change-transform rounded-bl-2xl animate-[slide-in-right_0.25s_ease-out,fade-in_0.2s_ease-out] origin-top-right">
-              <div className="px-1.5 py-1.5 space-y-0.5">
+            <>
+              {/* Overlay backdrop - click to close */}
+              <div 
+                className="lg:hidden fixed inset-0 bg-black/20 dark:bg-black/40 z-[9998] animate-fade-in"
+                onClick={toggleMenu}
+              />
+              
+              {/* Menu content */}
+              <div className="lg:hidden absolute top-full right-0 w-44 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-l border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] transform-gpu will-change-transform rounded-bl-2xl animate-[slide-in-right_0.25s_ease-out,fade-in_0.2s_ease-out] origin-top-right">
+                <div className="px-1.5 py-1.5 space-y-0.5">
                 <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-3 w-3 mr-1.5" />
                   {currentText.home}
@@ -445,7 +453,8 @@ const Navigation = () => {
                   </Button>
                 )}
               </div>
-            </div>
+              </div>
+            </>
           )}
         </div>
       </nav>
