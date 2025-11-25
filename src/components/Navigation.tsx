@@ -157,7 +157,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-background/90 supports-[backdrop-filter]:bg-background/70 backdrop-blur-xl border-b border-border shadow-lg h-10 md:h-11 lg:h-12">
+      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-background/30 backdrop-blur-2xl border-b border-primary/10 shadow-2xl shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-700">
         <div className="w-full mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation */}
@@ -165,12 +165,12 @@ const Navigation = () => {
               className="flex items-center space-x-2 cursor-pointer group flex-shrink-0" 
               onClick={() => navigate('/')}
             >
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <Brain className="h-4 w-4 text-white animate-pulse" />
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/40 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                <Brain className="h-4 w-4 text-background animate-pulse group-hover:text-primary-foreground transition-colors duration-500" />
               </div>
               <div className="hidden sm:flex items-center space-x-1">
-                <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
-                <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
+                <span className="text-lg font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">ASTRA</span>
+                <span className="text-lg font-bold bg-gradient-to-r from-accent via-primary to-foreground bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">Villa</span>
               </div>
             </div>
 
@@ -179,10 +179,10 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 border border-transparent hover:border-primary/20"
                 onClick={() => navigate('/')}
               >
-                <HomeIcon className="h-3.5 w-3.5 xl:mr-1.5" />
+                <HomeIcon className="h-3.5 w-3.5 xl:mr-1.5 transition-all duration-500" />
                 <span className="hidden xl:inline text-xs">{currentText.home}</span>
               </Button>
 
@@ -192,14 +192,14 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="h-10 w-10 p-0 hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 text-gray-900 dark:text-white/90"
+                    className="h-10 w-10 p-0 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 text-foreground/80 hover:text-primary border border-transparent hover:border-primary/20"
                     onClick={() => navigate(item.path)}
                   >
-                    <item.icon className="h-3.5 w-3.5" />
+                    <item.icon className="h-3.5 w-3.5 transition-all duration-500" />
                   </Button>
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                     {item.label}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
                   </div>
                 </div>
               ))}
@@ -208,14 +208,14 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-10 w-10 p-0 hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200 text-gray-900 dark:text-white/90"
+                  className="h-10 w-10 p-0 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 text-foreground/80 hover:text-primary border border-transparent hover:border-primary/20"
                   onClick={() => navigate('/services')}
                 >
-                  <Settings2 className="h-4 w-4" />
+                  <Settings2 className="h-4 w-4 transition-all duration-500" />
                 </Button>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                   {currentText.services}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
                 </div>
               </div>
 
@@ -223,9 +223,9 @@ const Navigation = () => {
               <Button 
                 size="sm"
                 onClick={() => navigate('/add-property')}
-                className="h-10 px-4 text-xs font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-105 rounded-xl transition-all duration-200"
+                className="h-10 px-4 text-xs font-medium bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-110 rounded-xl transition-all duration-500 border border-primary/20 backdrop-blur-sm animate-gradient"
               >
-                <Plus className="h-4 w-4 mr-1.5" />
+                <Plus className="h-4 w-4 mr-1.5 transition-transform duration-500 group-hover:rotate-90" />
                 Add Property
               </Button>
 
@@ -235,19 +235,19 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                    className="h-10 px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 hover:scale-110 hover:shadow-lg hover:shadow-primary/20 rounded-xl transition-all duration-500 border border-transparent hover:border-primary/20"
                   >
-                    <TrendingUp className="h-4 w-4 xl:mr-1.5" />
+                    <TrendingUp className="h-4 w-4 xl:mr-1.5 transition-all duration-500" />
                     <span className="hidden xl:inline text-xs">Investment</span>
-                    <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline" />
+                    <ChevronDown className="h-3 w-3 ml-1 hidden xl:inline transition-transform duration-500 group-hover:rotate-180" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl z-[10001]">
+                <DropdownMenuContent align="end" className="w-56 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[10001]">
                   <DropdownMenuItem 
                     onClick={() => navigate('/foreign-investment')}
-                    className="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    className="cursor-pointer text-foreground/80 hover:text-primary hover:bg-primary/10 transition-all duration-500 rounded-lg"
                   >
-                    <Building className="h-4 w-4 mr-2" />
+                    <Building className="h-4 w-4 mr-2 transition-all duration-500" />
                     Foreign Investment
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -302,12 +302,12 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-yellow-500/30 hover:bg-white/20 dark:hover:bg-yellow-500/10 hover:border-white/30 dark:hover:border-yellow-500/40 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-9 h-9 p-0 rounded-xl backdrop-blur-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 hover:rotate-12"
               >
                 {theme === "light" ? (
-                  <Moon className="h-4 w-4 text-blue-500 dark:text-yellow-500" />
+                  <Moon className="h-4 w-4 text-primary transition-all duration-500" />
                 ) : (
-                  <Sun className="h-4 w-4 text-yellow-500" />
+                  <Sun className="h-4 w-4 text-primary transition-all duration-500" />
                 )}
               </Button>
 
@@ -328,13 +328,13 @@ const Navigation = () => {
                     onClick={() => setShowAuthModal(true)}
                     variant="ghost"
                     size="sm"
-                    className="w-9 h-9 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg"
+                    className="w-9 h-9 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary"
                   >
-                    <User className="h-4 w-4" />
+                    <User className="h-4 w-4 transition-all duration-500" />
                   </Button>
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1.5 bg-black/90 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 glass-popup text-foreground text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap pointer-events-none z-[10001] shadow-2xl shadow-primary/30 border border-primary/30">
                     {currentText.signIn}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary/20 rotate-45 -mb-1"></div>
                   </div>
                 </div>
               )}
@@ -343,11 +343,11 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden w-8 h-8 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg animate-scale-in"
+                className="lg:hidden w-8 h-8 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary animate-scale-in"
                 style={{ animationDelay: '400ms' }}
                 onClick={toggleMenu}
               >
-                {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                {isMenuOpen ? <X className="h-4 w-4 transition-all duration-500" /> : <Menu className="h-4 w-4 transition-all duration-500" />}
               </Button>
             </div>
           </div>
@@ -363,7 +363,7 @@ const Navigation = () => {
               />
               
               {/* Menu content with smooth slide and scale animation */}
-              <div className="lg:hidden absolute top-full right-0 w-44 bg-white dark:bg-gray-900 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 shadow-2xl z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-300 origin-top-right">
+              <div className="lg:hidden absolute top-full right-0 w-44 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-500 origin-top-right">
                 <div className="px-1.5 py-1.5 space-y-0.5">
                 <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-3 w-3 mr-1.5" />
