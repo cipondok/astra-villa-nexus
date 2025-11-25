@@ -1944,7 +1944,7 @@ const AstraSearchPanel = ({
             onTouchStart={(e) => {
               e.stopPropagation();
             }}
-            className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-sm transition-all duration-300" 
+            className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-md transition-all duration-500 hover:border-primary/60 hover:shadow-primary/20" 
           />
         </div>
         
@@ -1958,14 +1958,14 @@ const AstraSearchPanel = ({
         />
         
         {/* Prominent All Filters Button */}
-        <Button 
-          onClick={() => {
-            setShowAdvancedFilters(true);
-          }} 
-          variant="outline" 
-          size="sm" 
-          className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg rounded-2xl relative transition-all duration-300"
-        >
+          <Button 
+            onClick={() => {
+              setShowAdvancedFilters(true);
+            }} 
+            variant="outline" 
+            size="sm" 
+            className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg hover:shadow-primary/20 rounded-2xl relative transition-all duration-500 hover:scale-110"
+          >
           <SlidersHorizontal className="h-4 w-4 text-primary" />
           {getActiveFiltersCount() > 0 && (
             <Badge 
@@ -1979,8 +1979,8 @@ const AstraSearchPanel = ({
           )}
         </Button>
         
-        <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-primary shadow-sm rounded-xl">
-          <Search className="h-4 w-4" />
+        <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-110 rounded-xl transition-all duration-500 animate-gradient">
+          <Search className="h-4 w-4 transition-all duration-500" />
         </Button>
       </div>
             
@@ -1988,7 +1988,7 @@ const AstraSearchPanel = ({
             {showSuggestions && hasSuggestions && (
               <div 
                 ref={suggestionsRef} 
-                className="fixed left-2 right-2 rounded-xl shadow-lg z-[1000] max-h-[60vh] overflow-y-auto overscroll-contain bg-popover border border-border" 
+                className="fixed left-2 right-2 rounded-xl shadow-2xl shadow-primary/30 z-[1000] max-h-[60vh] overflow-y-auto overscroll-contain glass-popup backdrop-blur-2xl border-primary/20" 
                 style={{ top: suggestionsTop }}
                 onTouchStart={(e) => e.stopPropagation()}
                 onTouchMove={(e) => e.stopPropagation()}
@@ -2032,7 +2032,7 @@ const AstraSearchPanel = ({
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-blue-500/10 rounded-lg transition-colors flex items-center gap-2"
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
                         >
                           <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                           {term}
@@ -2108,7 +2108,7 @@ const AstraSearchPanel = ({
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-between"
+                          className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center justify-between hover:scale-105"
                         >
                           <span>{trend}</span>
                           {getDisplayCount(trend) > 0 && (
@@ -2267,35 +2267,35 @@ const AstraSearchPanel = ({
           onOpenChange={setShowAdvancedFilters}
         />
   }
-  return <div className="w-full transition-all duration-300">
-    <div className={cn("sticky z-30 transition-all duration-300", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 max-w-7xl mx-auto")}>
-      {/* Modern Slim Glass Container */}
-      <div className="backdrop-blur-xl border-0 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div className={cn("space-y-1.5 backdrop-blur-md rounded-2xl shadow-lg border", isMobile ? "p-1.5 bg-card/95 border-border/40" : "p-2 lg:p-3 bg-background/60 border-border/30")}>
+  return <div className="w-full transition-all duration-500">
+    <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 max-w-7xl mx-auto")}>
+      {/* Glassmorphic Luxury Container */}
+      <div className="glass-popup backdrop-blur-2xl border-primary/20 rounded-2xl shadow-2xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-500 overflow-hidden">
+        <div className={cn("space-y-1.5 backdrop-blur-md rounded-2xl shadow-lg border-primary/10", isMobile ? "p-1.5 bg-background/80 border" : "p-2 lg:p-3 bg-background/50 border")}>
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className={cn("inline-flex rounded-lg border-0 shadow-sm relative", isMobile ? "p-0.5 bg-muted/80" : "p-0.5 bg-background/60")}>
-              {/* Sliding background indicator */}
-              <div className="absolute inset-y-0.5 bg-primary rounded-md shadow-md transition-all duration-300 ease-out" style={{
+            <div className={cn("inline-flex rounded-lg border-0 shadow-md shadow-primary/10 relative", isMobile ? "p-0.5 bg-muted/60" : "p-0.5 bg-background/40 backdrop-blur-xl")}>
+              {/* Sliding gold gradient background indicator */}
+              <div className="absolute inset-y-0.5 bg-gradient-to-r from-primary via-accent to-primary rounded-md shadow-lg shadow-primary/30 transition-all duration-500 ease-out animate-gradient" style={{
               width: 'calc(25% - 2px)',
               left: activeTab === 'all' ? '2px' : activeTab === 'sale' ? 'calc(25% + 1px)' : activeTab === 'rent' ? 'calc(50%)' : 'calc(75% - 1px)'
             }} />
               
-              <button onClick={() => { setActiveTab('all'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'all' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
-                <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+              <button onClick={() => { setActiveTab('all'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'all' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+                <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
               </button>
-              <button onClick={() => { setActiveTab('sale'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'sale' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
-                <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+              <button onClick={() => { setActiveTab('sale'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'sale' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+                <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span>{isMobile ? "Buy" : currentText.forSale}</span>
               </button>
-              <button onClick={() => { setActiveTab('rent'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'rent' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
-                <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+              <button onClick={() => { setActiveTab('rent'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'rent' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+                <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span>{isMobile ? "Rent" : currentText.forRent}</span>
               </button>
-              <button onClick={() => { setActiveTab('new_project'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 flex-1 flex items-center justify-center gap-0.5", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'new_project' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground')}>
-                <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+              <button onClick={() => { setActiveTab('new_project'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'new_project' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+                <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span>{isMobile ? "New" : currentText.newProject}</span>
               </button>
             </div>
@@ -2306,7 +2306,7 @@ const AstraSearchPanel = ({
           <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
             <div className="flex-1 relative">
               <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500 pointer-events-none transition-all", 
+                "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none transition-all duration-500", 
                 isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
                 searchQuery && "animate-pulse"
               )} />
@@ -2316,8 +2316,8 @@ const AstraSearchPanel = ({
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => setShowSuggestions(true)} 
                 className={cn(
-                  "border-2 border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/30 rounded-xl transition-all shadow-sm font-medium", 
-                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-background" : "pl-10 pr-28 h-9 text-sm bg-background/60"
+                  "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20", 
+                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-background/80 backdrop-blur-sm" : "pl-10 pr-28 h-9 text-sm bg-background/70 backdrop-blur-md"
                 )} 
               />
               
@@ -2331,31 +2331,31 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
-                <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} title={currentText.location}>
-                  <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} />
+                <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} title={currentText.location}>
+                  <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 </Button>
-                <Button onClick={() => toggleSearchType('nearby')} variant="ghost" size="sm" aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("p-0 rounded-md relative", isMobile ? "h-6 w-6" : "h-7 w-7", useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-muted')} disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
+                <Button onClick={() => toggleSearchType('nearby')} variant="ghost" size="sm" aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("p-0 rounded-md relative transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
                   {isGettingLocation ? <div className="flex flex-col items-center justify-center">
-                      <div className="animate-spin h-3 w-3 border-2 border-blue-500 rounded-full border-t-transparent" />
-                    </div> : <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3")} fill={useNearbyLocation ? "currentColor" : "none"} />}
+                      <div className="animate-spin h-3 w-3 border-2 border-primary rounded-full border-t-transparent" />
+                    </div> : <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} fill={useNearbyLocation ? "currentColor" : "none"} />}
                 </Button>
                 
                 {/* 🔒 FIXED: Loading overlay for geolocation - Better UX */}
-                {isGettingLocation && <div className="absolute inset-0 bg-white/80 dark:bg-black/80 flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
+                {isGettingLocation && <div className="absolute inset-0 glass-effect flex items-center justify-center rounded-xl z-10 backdrop-blur-sm border border-primary/20">
                     <div className="flex items-center gap-2 text-xs font-medium">
-                      <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent" />
-                      <span className="text-blue-600 dark:text-blue-400">{currentText.gettingLocation}</span>
+                      <div className="animate-spin h-4 w-4 border-2 border-primary rounded-full border-t-transparent" />
+                      <span className="text-primary">{currentText.gettingLocation}</span>
                     </div>
                   </div>}
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-background border-2 border-blue-500/20 rounded-xl shadow-lg z-[100] max-h-80 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 glass-popup backdrop-blur-2xl border-primary/20 rounded-xl shadow-2xl shadow-primary/30 z-[100] max-h-80 overflow-y-auto">
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-1.5 text-[10px] font-semibold text-foreground">
-                          <Clock className="h-2.5 w-2.5 text-blue-500" />
+                          <Clock className="h-2.5 w-2.5 text-primary" />
                           Recent Searches
                         </div>
                         <button 
@@ -2381,7 +2381,7 @@ const AstraSearchPanel = ({
                               setShowSuggestions(false);
                               handleSearch();
                             }} 
-                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-blue-500/10 rounded-lg transition-colors flex items-center gap-2"
+                            className="w-full text-left px-2 py-1.5 text-[10px] text-foreground hover:bg-primary/10 rounded-lg transition-all duration-500 flex items-center gap-2 hover:scale-105"
                           >
                             <Clock className="h-2.5 w-2.5 text-muted-foreground" />
                             {term}
@@ -2453,8 +2453,8 @@ const AstraSearchPanel = ({
                 </div>}
             </div>
             
-            <Button onClick={handleSearch} aria-label={currentText.search} className={cn("bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center", isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5")}>
-              <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />
+            <Button onClick={handleSearch} aria-label={currentText.search} className={cn("bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent text-primary-foreground font-medium rounded-xl shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 transition-all duration-500 flex items-center hover:scale-110 animate-gradient", isMobile ? "h-8 px-2.5 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5")}>
+              <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "transition-all duration-500")} />
               {!isMobile && <span className="hidden sm:inline">{currentText.search}</span>}
             </Button>
           </div>
