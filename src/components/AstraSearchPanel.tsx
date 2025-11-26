@@ -1514,6 +1514,41 @@ const AstraSearchPanel = ({
           </div>
         );
         
+      case 'radio':
+        // Handle radio button filters similar to select
+        const radioOptions = Array.isArray(filter.filter_options) && filter.filter_options.length > 0 
+          ? filter.filter_options 
+          : [];
+        
+        if (radioOptions.length === 0) {
+          console.warn(`No options available for filter: ${filter.filter_name}`);
+          return null;
+        }
+        
+        return (
+          <div key={filter.id} className="space-y-2">
+            <Label className="text-xs md:text-sm font-bold text-foreground">{filter.filter_name}</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {radioOptions.map((option: string, idx: number) => {
+                const isSelected = filterValue === option;
+                return (
+                  <Badge 
+                    key={`${option}-${idx}`}
+                    variant={isSelected ? "default" : "outline"}
+                    className={cn(
+                      "cursor-pointer h-7 md:h-8 px-2 md:px-3 text-[10px] md:text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
+                      isSelected && "shadow-md ring-1 ring-primary/30"
+                    )}
+                    onClick={() => handleFilterChange(filter.filter_name, option)}
+                  >
+                    {option}
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+        );
+        
       default:
         console.warn(`Unknown filter type: ${filter.filter_type} for filter: ${filter.filter_name}`);
         return null;
@@ -3197,16 +3232,19 @@ const AstraSearchPanel = ({
         </div>
       </div>
       
-      {/* Advanced Filters Modal (desktop and tablet) */}
-      {showAdvancedFilters && !isMobile && createPortal(
+      {/* Advanced Filters Modal (mobile, tablet and desktop) */}
+      {showAdvancedFilters && createPortal(
         <div 
-          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300 p-4" 
+          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300 p-2 md:p-4" 
           onClick={() => setShowAdvancedFilters(false)}
         >
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg mx-auto max-h-[70vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300"
+            className={cn(
+              "w-full mx-auto rounded-2xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300",
+              isMobile ? "max-h-[85vh]" : "max-w-lg max-h-[70vh]"
+            )}
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-border/30 px-3 py-2 shrink-0 backdrop-blur-xl bg-primary/5">
