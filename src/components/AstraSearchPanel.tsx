@@ -2298,7 +2298,7 @@ const AstraSearchPanel = ({
             onSearch(searchData);
             setShowAdvancedFilters(false);
           }}
-          open={showAdvancedFilters && isMobile}
+          open={showAdvancedFilters}
           onOpenChange={setShowAdvancedFilters}
         />
   }
