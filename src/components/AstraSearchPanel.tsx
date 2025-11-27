@@ -1952,9 +1952,11 @@ const AstraSearchPanel = ({
 
   // Simple mobile view - only input and button by default
   if (isMobile) {
-    return <CollapsibleSearchPanelMobile
-      activeFiltersCount={getActiveFiltersCount()}
-    >
+    return (
+      <>
+        <CollapsibleSearchPanelMobile
+          activeFiltersCount={getActiveFiltersCount()}
+        >
       {/* Search Bar */}
       <div className="flex items-center gap-1.5 p-2">
         <div ref={anchorRef} className="flex-1 relative">
@@ -2301,6 +2303,8 @@ const AstraSearchPanel = ({
           open={showAdvancedFilters}
           onOpenChange={setShowAdvancedFilters}
         />
+      </>
+    );
   }
   return <div className="w-full transition-all duration-500">
     <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 max-w-7xl mx-auto")}>
