@@ -765,7 +765,7 @@ const Index = () => {
             imageInputRef.current?.click();
           }}
           onScrollToTop={() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
           }}
           onShowShortcuts={() => {
             setShowShortcutsPanel(true);
