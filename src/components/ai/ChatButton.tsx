@@ -153,12 +153,10 @@ const ChatButton = ({
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
-          whileTap={{ scale: 0.92 }}
+          whileTap={{ scale: 0.95 }}
           transition={{ 
-            type: "spring",
-            stiffness: 200,
-            damping: 25,
-            duration: 0.8
+            duration: 0.1,
+            ease: "easeOut"
           }}
           className={cn("group", baseStyles, variantStyles[variant], className)}
           style={{
@@ -186,20 +184,18 @@ const ChatButton = ({
               <AnimatePresence mode="wait">
                 <motion.div
                   key={showScrollArrow ? 'arrow' : 'bot'}
-                  initial={{ scale: 0, rotate: -180, opacity: 0 }}
-                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                  exit={{ scale: 0, rotate: 180, opacity: 0 }}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ 
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 20,
-                    duration: 0.6
+                    duration: 0.15,
+                    ease: "easeOut"
                   }}
                 >
                   {showScrollArrow ? (
-                    <ArrowUp className="h-[55px] w-[55px] animate-bounce" aria-hidden="true" />
+                    <ArrowUp className="h-[55px] w-[55px]" aria-hidden="true" />
                   ) : (
-                    <Icons.aiLogo className="h-[55px] w-[55px] transition-transform duration-700 hover:rotate-12" aria-hidden="true" />
+                    <Icons.aiLogo className="h-[55px] w-[55px] transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
                   )}
                 </motion.div>
               </AnimatePresence>
