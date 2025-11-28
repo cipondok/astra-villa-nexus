@@ -68,12 +68,12 @@ const ChatButton = ({
   const baseStyles = cn(
     "fixed z-[99999]",
     "h-[55px] w-[55px] rounded-full",
-    "shadow-lg",
+    "shadow-none",
     "transition-all duration-500 ease-out",
     "pointer-events-auto",
     !isDragging && "transform hover:scale-110 active:scale-95",
-    isDragging && "scale-105 shadow-2xl",
-    "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2",
+    isDragging && "scale-105",
+    "focus:outline-none focus:ring-0 ring-0",
     isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
   );
 
@@ -81,18 +81,15 @@ const ChatButton = ({
     pulse: cn(
       "bg-background/80 backdrop-blur-sm",
       "hover:bg-background/90",
-      !isDragging && "animate-chat-float md:animate-chat-float hover:shadow-xl"
+      !isDragging && "animate-chat-float md:animate-chat-float"
     ),
     glow: cn(
       "bg-background/80 backdrop-blur-sm",
-      "hover:bg-background/90",
-      "shadow-[0_0_20px_rgba(168,85,247,0.3)]",
-      "hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+      "hover:bg-background/90"
     ),
     subtle: cn(
       "bg-background/80 backdrop-blur-sm",
-      "hover:bg-background/90",
-      "shadow-md hover:shadow-lg"
+      "hover:bg-background/90"
     )
   };
 
@@ -193,7 +190,7 @@ const ChatButton = ({
                   }}
                 >
                   {showScrollArrow ? (
-                    <ArrowUp className="h-[55px] w-[55px]" aria-hidden="true" />
+                    <ArrowUp className="h-7 w-7 text-foreground" aria-hidden="true" />
                   ) : (
                     <Icons.aiLogo className="h-[55px] w-[55px] transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
                   )}
