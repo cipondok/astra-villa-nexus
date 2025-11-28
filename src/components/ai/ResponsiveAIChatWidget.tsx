@@ -24,6 +24,7 @@ import { useChatbotPreferencesSync } from "@/hooks/useChatbotPreferencesSync";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
 import { ChatbotConflictDialog } from "./ChatbotConflictDialog";
 import { ChatbotWelcomeDialog } from "./ChatbotWelcomeDialog";
+import ChatbotTipsPopup from "./ChatbotTipsPopup";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -111,6 +112,10 @@ const ResponsiveAIChatWidget = ({
   const [showStarredMessages, setShowStarredMessages] = useState(false);
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
   const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+  const [showTipsPopup, setShowTipsPopup] = useState(() => {
+    const hasSeenTips = localStorage.getItem('chatbot-seen-tips');
+    return !hasSeenTips;
+  });
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
@@ -1556,11 +1561,25 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           
           {/* Main Chat Button */}
           <div className="relative">
+            {/* Tips Popup */}
+            <ChatbotTipsPopup
+              isVisible={showTipsPopup && !isOpen}
+              onClose={() => {
+                setShowTipsPopup(false);
+                localStorage.setItem('chatbot-seen-tips', 'true');
+              }}
+            />
+            
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <ChatButton 
                     onClick={() => {
+                      // Hide tips when button is clicked
+                      if (showTipsPopup) {
+                        setShowTipsPopup(false);
+                        localStorage.setItem('chatbot-seen-tips', 'true');
+                      }
                       // When scrolled down, scroll to top first
                       if (showScrollToTop) {
                         scrollToTop();
