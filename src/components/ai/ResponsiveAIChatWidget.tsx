@@ -555,11 +555,30 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll to top handler - instant for better UX
+  // Scroll to top handler - smooth but fast
   const scrollToTop = () => {
     // Haptic feedback
     haptic.triggerHaptic('light');
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    
+    const startPosition = window.pageYOffset;
+    const duration = 400; // 400ms for smooth but fast scroll
+    const startTime = performance.now();
+
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animateScroll = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = easeOutCubic(progress);
+      
+      window.scrollTo(0, startPosition * (1 - ease));
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
   };
 
   // Get dynamic color for scroll progress ring based on percentage
