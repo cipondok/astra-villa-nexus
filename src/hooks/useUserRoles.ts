@@ -26,7 +26,8 @@ export const useUserRoles = () => {
       return (data?.map((r) => r.role as UserRole) || []) as UserRole[];
     },
     enabled: !!user?.id,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    staleTime: 30 * 1000, // Cache for 30 seconds - shorter for role changes
+    refetchOnMount: true, // Always refetch on mount for protected routes
   });
 };
 
