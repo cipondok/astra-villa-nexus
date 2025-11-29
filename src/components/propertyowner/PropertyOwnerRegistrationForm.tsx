@@ -376,17 +376,19 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
 
     setSubmitting(true);
     try {
-      // Update profile (without role - roles are in separate table)
+      // Update profile (use update, not upsert - profile already exists for logged-in users)
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
-          email: user.email!,
+        .update({
           full_name: formData.full_name,
           phone: formData.phone
-        });
+        })
+        .eq('id', user.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        // Continue even if profile update fails - it's not critical
+      }
 
       // Insert role request into user_roles table
       const { error: roleError } = await supabase
