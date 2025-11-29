@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -16,10 +16,10 @@ import {
   Bath, 
   Square, 
   Heart,
-  Share2,
-  Eye,
-  TrendingUp,
-  Search
+  Search,
+  ArrowLeft,
+  SlidersHorizontal,
+  ChevronRight
 } from "lucide-react";
 
 interface Property {
@@ -61,11 +61,16 @@ interface SearchFilters {
 const Dijual = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [properties, setProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Check if user came from dashboard
+  const fromDashboard = location.state?.from === 'dashboard' || 
+    document.referrer.includes('/dashboard');
 
   const [filters, setFilters] = useState<SearchFilters>({
     searchTerm: '',
@@ -111,7 +116,7 @@ const Dijual = () => {
       console.error('Error fetching properties:', error);
       toast({
         title: "Error",
-        description: "Gagal memuat properti. Silakan coba lagi.",
+        description: "Gagal memuat properti.",
         variant: "destructive",
       });
     } finally {
@@ -121,37 +126,29 @@ const Dijual = () => {
 
   const applyFilters = () => {
     let filtered = properties.filter(property => {
-      // Search term filter
       const matchesSearch = !filters.searchTerm || 
-        property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        property.title?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        property.location?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
         property.city?.toLowerCase().includes(filters.searchTerm.toLowerCase());
       
-      // Property type filter
       const matchesType = !filters.propertyType || filters.propertyType === "all" || 
         property.property_type === filters.propertyType;
       
-      // City filter
       const matchesCity = !filters.city || filters.city === "all" || 
         property.city === filters.city;
       
-      // Area filter
       const matchesArea = !filters.area || filters.area === "all" || 
         property.area === filters.area;
       
-      // Price range filter
       const price = property.price || 0;
       const matchesPrice = price >= filters.minPrice && price <= filters.maxPrice;
       
-      // Area size filter
       const area = property.area_sqm || 0;
       const matchesAreaSize = area >= filters.minArea && area <= filters.maxArea;
       
-      // Bedrooms filter
       const matchesBedrooms = !filters.bedrooms || filters.bedrooms === "all" || 
         (filters.bedrooms === "5+" ? property.bedrooms >= 5 : property.bedrooms === parseInt(filters.bedrooms));
       
-      // Bathrooms filter
       const matchesBathrooms = !filters.bathrooms || filters.bathrooms === "all" || 
         (filters.bathrooms === "4+" ? property.bathrooms >= 4 : property.bathrooms === parseInt(filters.bathrooms));
       
@@ -159,7 +156,6 @@ const Dijual = () => {
              matchesPrice && matchesAreaSize && matchesBedrooms && matchesBathrooms;
     });
 
-    // Apply sorting
     switch (filters.sortBy) {
       case 'price_low':
         filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
@@ -180,29 +176,19 @@ const Dijual = () => {
   };
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `Rp ${(price / 1000000000).toFixed(1)} M`;
-    } else if (price >= 1000000) {
-      return `Rp ${(price / 1000000).toFixed(0)} Jt`;
-    } else {
-      return `Rp ${price.toLocaleString('id-ID')}`;
-    }
+    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
+    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
+    return `Rp ${price.toLocaleString('id-ID')}`;
   };
 
   const handleSaveProperty = (propertyId: string) => {
     const newSaved = new Set(savedProperties);
     if (newSaved.has(propertyId)) {
       newSaved.delete(propertyId);
-      toast({
-        title: "Dihapus dari favorit",
-        description: "Properti telah dihapus dari daftar favorit Anda.",
-      });
+      toast({ title: "Dihapus dari favorit" });
     } else {
       newSaved.add(propertyId);
-      toast({
-        title: "Ditambah ke favorit",
-        description: "Properti telah ditambahkan ke daftar favorit Anda.",
-      });
+      toast({ title: "Ditambah ke favorit" });
     }
     setSavedProperties(newSaved);
   };
@@ -213,353 +199,265 @@ const Dijual = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="container mx-auto px-4 pt-8 pb-4">
-        <div className="text-center mb-6">
-          <h1 className="text-5xl font-bold gradient-text mb-4">
-            Properti Dijual
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Temukan properti impian Anda dengan sistem pencarian canggih dan filter yang komprehensif
-          </p>
-        </div>
-      </div>
-
-      {/* Main Search Panel */}
-      <div className="container mx-auto px-4 mb-8">
-        <Card className="shadow-lg border-0 bg-card/95 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 items-end">
-              {/* Search Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Cari Properti</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Lokasi, tipe properti..."
-                    value={filters.searchTerm}
-                    onChange={(e) => updateFilter('searchTerm', e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              {/* Property Type */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Tipe Properti</label>
-                <Select value={filters.propertyType} onValueChange={(value) => updateFilter('propertyType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Tipe" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Semua Tipe</SelectItem>
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Location */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Lokasi</label>
-                <Select value={filters.city} onValueChange={(value) => updateFilter('city', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Kota" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Semua Kota</SelectItem>
-                    {cities.map((city) => (
-                      <SelectItem key={city} value={city}>{city}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Price Range */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Harga Max</label>
-                <Select 
-                  value={filters.maxPrice.toString()} 
-                  onValueChange={(value) => updateFilter('maxPrice', parseInt(value))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Budget" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="10000000000">Semua Harga</SelectItem>
-                    <SelectItem value="500000000">&lt; Rp 500 Jt</SelectItem>
-                    <SelectItem value="1000000000">&lt; Rp 1 M</SelectItem>
-                    <SelectItem value="2000000000">&lt; Rp 2 M</SelectItem>
-                    <SelectItem value="5000000000">&lt; Rp 5 M</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Search Button */}
-              <Button 
-                onClick={applyFilters}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground h-10"
-              >
-                <Search className="h-4 w-4 mr-2" />
-                Cari
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Layout */}
-      <div className="container mx-auto px-4">
-        {/* Filter Button and Results Summary */}
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <PropertySidebarFilters
-            filters={filters}
-            onFiltersChange={setFilters}
-            onSearch={applyFilters}
-            propertyTypes={propertyTypes}
-            cities={cities}
-            areas={areas}
-            isOpen={isFilterOpen}
-            onToggle={() => setIsFilterOpen(!isFilterOpen)}
-          />
-          
-          <div className="professional-card border-l-4 border-primary flex-1 ml-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-lg font-semibold text-foreground">
-                  Menampilkan {filteredProperties.length} properti
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  dari total {properties.length} properti dijual
-                </p>
-              </div>
-              {filteredProperties.length > 0 && (
-                <Badge variant="secondary" className="badge-primary">
-                  {Math.round((filteredProperties.length / properties.length) * 100)}% hasil
-                </Badge>
-              )}
+      {/* Compact Header */}
+      <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+        <div className="px-2 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 text-primary-foreground hover:bg-white/20"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-sm font-bold">Properti Dijual</h1>
+              <p className="text-[9px] text-primary-foreground/80">
+                {filteredProperties.length} dari {properties.length} listing
+              </p>
             </div>
           </div>
+          <Button 
+            size="sm"
+            variant="ghost"
+            className="h-7 px-2 text-[10px] text-primary-foreground hover:bg-white/20"
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+          >
+            <SlidersHorizontal className="h-3 w-3 mr-1" />
+            Filter
+          </Button>
         </div>
+      </div>
 
-        {/* Properties Grid */}
+      {/* Compact Search */}
+      <div className="p-2 bg-background border-b border-border/50">
+        <div className="flex gap-1.5">
+          <div className="relative flex-1">
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+            <Input
+              placeholder="Cari lokasi, tipe..."
+              value={filters.searchTerm}
+              onChange={(e) => updateFilter('searchTerm', e.target.value)}
+              className="h-8 pl-7 text-xs"
+            />
+          </div>
+          <Select value={filters.propertyType} onValueChange={(value) => updateFilter('propertyType', value)}>
+            <SelectTrigger className="h-8 w-24 text-[10px]">
+              <SelectValue placeholder="Tipe" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="text-xs">Semua</SelectItem>
+              {propertyTypes.map((type) => (
+                <SelectItem key={type} value={type} className="text-xs">{type}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filters.city} onValueChange={(value) => updateFilter('city', value)}>
+            <SelectTrigger className="h-8 w-24 text-[10px]">
+              <SelectValue placeholder="Kota" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="text-xs">Semua</SelectItem>
+              {cities.map((city) => (
+                <SelectItem key={city} value={city} className="text-xs">{city}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Advanced Filters Sidebar */}
+      <PropertySidebarFilters
+        filters={filters}
+        onFiltersChange={setFilters}
+        onSearch={applyFilters}
+        propertyTypes={propertyTypes}
+        cities={cities}
+        areas={areas}
+        isOpen={isFilterOpen}
+        onToggle={() => setIsFilterOpen(!isFilterOpen)}
+      />
+
+      {/* Properties List */}
+      <div className="p-2 space-y-1.5">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse shadow-lg">
-                <div className="aspect-video bg-gray-300 rounded-t-lg"></div>
-                <CardContent className="p-6">
-                  <div className="h-6 bg-gray-300 rounded mb-3"></div>
-                  <div className="h-4 bg-gray-300 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mb-4"></div>
-                  <div className="h-8 bg-gray-300 rounded"></div>
-                </CardContent>
+          <div className="space-y-1.5">
+            {[...Array(5)].map((_, i) => (
+              <Card key={i} className="p-2 animate-pulse">
+                <div className="flex gap-2">
+                  <div className="h-16 w-16 bg-muted rounded-lg"></div>
+                  <div className="flex-1 space-y-1">
+                    <div className="h-3 bg-muted rounded w-3/4"></div>
+                    <div className="h-2 bg-muted rounded w-1/2"></div>
+                    <div className="h-3 bg-muted rounded w-1/4"></div>
+                  </div>
+                </div>
               </Card>
             ))}
           </div>
         ) : filteredProperties.length === 0 ? (
-          <div className="text-center py-16 professional-card">
-            <Home className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
-            <h3 className="text-2xl font-semibold text-foreground mb-3">
-              Tidak ada properti ditemukan
-            </h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Coba sesuaikan filter pencarian Anda atau hapus beberapa filter untuk melihat lebih banyak hasil.
-            </p>
-            <Button 
-              onClick={() => setFilters({
-                searchTerm: '',
-                propertyType: 'all',
-                city: 'all',
-                area: 'all',
-                minPrice: 0,
-                maxPrice: 10000000000,
-                bedrooms: 'all',
-                bathrooms: 'all',
-                minArea: 0,
-                maxArea: 1000,
-                yearBuilt: '',
-                condition: '',
-                features: [],
-                sortBy: 'newest'
-              })}
-              className="btn-primary"
-            >
-              Reset Filter
-            </Button>
-          </div>
+          <Card className="p-4">
+            <div className="text-center py-6">
+              <Home className="h-10 w-10 mx-auto mb-2 text-muted-foreground/50" />
+              <p className="text-xs font-medium mb-1">Tidak ada properti ditemukan</p>
+              <p className="text-[9px] text-muted-foreground mb-3">
+                Coba sesuaikan filter pencarian
+              </p>
+              <Button 
+                size="sm"
+                variant="outline"
+                className="h-7 text-[10px]"
+                onClick={() => setFilters({
+                  ...filters,
+                  searchTerm: '',
+                  propertyType: 'all',
+                  city: 'all',
+                  area: 'all',
+                  minPrice: 0,
+                  maxPrice: 10000000000,
+                  bedrooms: 'all',
+                  bathrooms: 'all'
+                })}
+              >
+                Reset Filter
+              </Button>
+            </div>
+          </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProperties.map((property) => (
-              <Card key={property.id} className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1">
-                <div className="relative group">
-                  <div className="aspect-video bg-gradient-to-r from-gray-200 to-gray-300 rounded-t-lg overflow-hidden">
-                    {property.image_urls?.[0] || property.images?.[0] ? (
-                      <img 
-                        src={property.image_urls?.[0] || property.images?.[0]} 
-                        alt={property.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        onClick={() => navigate(`/properties/${property.id}`)}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-                        <Building className="h-16 w-16 text-gray-400" />
-                      </div>
-                    )}
+          filteredProperties.map((property) => (
+            <Card 
+              key={property.id} 
+              className="p-1.5 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/50"
+              onClick={() => navigate(`/properties/${property.id}`)}
+            >
+              <div className="flex gap-2">
+                {/* Thumbnail */}
+                <div className="relative h-20 w-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                  {property.image_urls?.[0] || property.images?.[0] ? (
+                    <img 
+                      src={property.image_urls?.[0] || property.images?.[0]} 
+                      alt={property.title}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <Building className="h-6 w-6 text-muted-foreground" />
+                    </div>
+                  )}
+                  {/* Save Button */}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="absolute top-0.5 right-0.5 h-5 w-5 p-0 bg-white/80 hover:bg-white rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSaveProperty(property.id);
+                    }}
+                  >
+                    <Heart 
+                      className={`h-2.5 w-2.5 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`}
+                    />
+                  </Button>
+                  {/* Price Badge */}
+                  <Badge className="absolute bottom-0.5 left-0.5 text-[8px] px-1 py-0 h-4 bg-primary/90">
+                    {formatPrice(property.price || 0)}
+                  </Badge>
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-1 mb-0.5">
+                    <h3 className="text-[11px] font-semibold truncate flex-1 leading-tight">
+                      {property.title || 'Untitled'}
+                    </h3>
+                    <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3.5 flex-shrink-0 capitalize">
+                      {property.property_type}
+                    </Badge>
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-10 h-10 p-0 bg-white/90 hover:bg-white backdrop-blur-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSaveProperty(property.id);
-                      }}
-                    >
-                      <Heart 
-                        className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
-                      />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-10 h-10 p-0 bg-white/90 hover:bg-white backdrop-blur-sm"
-                    >
-                      <Share2 className="h-4 w-4 text-gray-600" />
-                    </Button>
-                  </div>
+                  <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mb-1">
+                    <MapPin className="h-2.5 w-2.5" />
+                    <span className="truncate">
+                      {property.location}{property.city && `, ${property.city}`}
+                    </span>
+                  </p>
 
-                  {/* Status Badge */}
-                  <div className="absolute top-4 left-4">
-                    <Badge className="status-success font-medium">
-                      Dijual
-                    </Badge>
-                  </div>
-
-                  {/* Price Badge */}
-                  <div className="absolute bottom-4 left-4">
-                    <Badge variant="secondary" className="bg-card/90 text-foreground font-bold text-lg px-3 py-1">
-                      {formatPrice(property.price || 0)}
-                    </Badge>
-                  </div>
-                </div>
-
-                <CardHeader className="pb-3">
-                  <CardTitle 
-                    className="text-xl hover:text-primary cursor-pointer line-clamp-2 transition-colors"
-                    onClick={() => navigate(`/properties/${property.id}`)}
-                  >
-                    {property.title}
-                  </CardTitle>
-                  <div className="flex items-center text-muted-foreground text-sm">
-                    <MapPin className="h-4 w-4 mr-1 text-primary" />
-                    {property.location}
-                    {property.city && `, ${property.city}`}
-                  </div>
-                </CardHeader>
-
-                <CardContent className="pt-0">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                      <Eye className="h-4 w-4" />
-                      <span>245 views</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-6 text-sm text-muted-foreground mb-6">
+                  {/* Specs */}
+                  <div className="flex items-center gap-2 text-[8px] text-muted-foreground mb-1">
                     {property.bedrooms && (
-                      <div className="flex items-center">
-                        <Bed className="h-4 w-4 mr-1 text-primary" />
-                        <span className="font-medium">{property.bedrooms} KT</span>
-                      </div>
+                      <span className="flex items-center gap-0.5">
+                        <Bed className="h-2.5 w-2.5" />
+                        {property.bedrooms}
+                      </span>
                     )}
                     {property.bathrooms && (
-                      <div className="flex items-center">
-                        <Bath className="h-4 w-4 mr-1 text-primary" />
-                        <span className="font-medium">{property.bathrooms} KM</span>
-                      </div>
+                      <span className="flex items-center gap-0.5">
+                        <Bath className="h-2.5 w-2.5" />
+                        {property.bathrooms}
+                      </span>
                     )}
                     {property.area_sqm && (
-                      <div className="flex items-center">
-                        <Square className="h-4 w-4 mr-1 text-primary" />
-                        <span className="font-medium">{property.area_sqm} m²</span>
-                      </div>
+                      <span className="flex items-center gap-0.5">
+                        <Square className="h-2.5 w-2.5" />
+                        {property.area_sqm}m²
+                      </span>
                     )}
                   </div>
 
-                  <div className="flex space-x-3">
+                  {/* Actions */}
+                  <div className="flex gap-1">
                     <Button 
-                      className="flex-1 btn-primary"
-                      onClick={() => navigate(`/properties/${property.id}`)}
+                      size="sm"
+                      className="h-5 px-2 text-[8px]"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/properties/${property.id}`);
+                      }}
                     >
-                      Lihat Detail
+                      Detail
                     </Button>
-                    <Button variant="outline" className="flex-1">
-                      Hubungi Agen
+                    <Button 
+                      size="sm"
+                      variant="outline"
+                      className="h-5 px-2 text-[8px]"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Hubungi
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                </div>
+
+                <ChevronRight className="h-4 w-4 text-muted-foreground self-center flex-shrink-0" />
+              </div>
+            </Card>
+          ))
         )}
 
-        {/* Market Insights */}
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="shadow-lg border-0">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <TrendingUp className="h-6 w-6 text-blue-600" />
-                Statistik Pasar
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{properties.length}</div>
-                  <div className="text-sm text-gray-600">Total Properti</div>
-                </div>
-                <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    {properties.length > 0 
-                      ? formatPrice(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length)
-                      : 'Rp 0'
-                    }
-                  </div>
-                  <div className="text-sm text-gray-600">Harga Rata-rata</div>
-                </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">+12%</div>
-                  <div className="text-sm text-gray-600">Pertumbuhan</div>
-                </div>
+        {/* Quick Stats */}
+        {!loading && filteredProperties.length > 0 && (
+          <Card className="p-2 mt-3">
+            <div className="flex items-center justify-between text-[9px]">
+              <div className="text-center">
+                <p className="font-bold text-primary">{properties.length}</p>
+                <p className="text-muted-foreground">Total</p>
               </div>
-            </CardContent>
+              <div className="text-center">
+                <p className="font-bold text-green-600">
+                  {properties.length > 0 
+                    ? formatPrice(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length)
+                    : 'Rp 0'
+                  }
+                </p>
+                <p className="text-muted-foreground">Avg Price</p>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-blue-600">{cities.length}</p>
+                <p className="text-muted-foreground">Cities</p>
+              </div>
+            </div>
           </Card>
-
-          <Card className="shadow-lg border-0">
-            <CardHeader>
-              <CardTitle className="text-xl">Tips Pencarian</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                <p className="text-sm text-gray-600">Gunakan filter harga untuk menyesuaikan dengan budget Anda</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                <p className="text-sm text-gray-600">Pilih lokasi berdasarkan akses transportasi dan fasilitas</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                <p className="text-sm text-gray-600">Pertimbangkan fasilitas yang sesuai dengan kebutuhan keluarga</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        )}
       </div>
     </div>
   );

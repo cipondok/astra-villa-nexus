@@ -103,10 +103,10 @@ const PropertyOwnerOverview = () => {
       {/* Quick Actions - Slim */}
       <div className="grid grid-cols-4 gap-1">
         {[
-          { icon: PlusCircle, label: 'Add', color: 'text-primary', action: () => navigate('/add-property') },
-          { icon: Search, label: 'Browse', color: 'text-blue-500', action: () => navigate('/dijual') },
+          { icon: PlusCircle, label: 'Add', color: 'text-primary', action: () => navigate('/add-property', { state: { from: 'dashboard' } }) },
+          { icon: Search, label: 'Browse', color: 'text-blue-500', action: () => navigate('/dijual', { state: { from: 'dashboard' } }) },
           { icon: TrendingUp, label: 'Stats', color: 'text-green-500', action: () => navigate('/dashboard/property-owner?tab=insights') },
-          { icon: Settings, label: 'Settings', color: 'text-muted-foreground', action: () => navigate('/settings') },
+          { icon: Settings, label: 'Settings', color: 'text-muted-foreground', action: () => navigate('/settings', { state: { from: 'dashboard' } }) },
         ].map((item, i) => (
           <Button 
             key={i}
