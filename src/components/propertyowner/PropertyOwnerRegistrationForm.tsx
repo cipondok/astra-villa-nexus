@@ -319,39 +319,95 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields with specific error messages
+    const errors: string[] = [];
+    
     if (!user) {
       toast({ title: "Authentication Required", description: "You must be logged in.", variant: "destructive" });
       return;
     }
-    if (!formData.owner_type) {
-      toast({ title: "Owner Type Required", description: "Please select Individual or Business.", variant: "destructive" });
-      return;
+    
+    if (!formData.full_name.trim()) {
+      errors.push("Full Name is required");
     }
-    if (!formData.province || !formData.city) {
-      toast({ title: "Location Required", description: "Please select property location.", variant: "destructive" });
+    
+    if (!formData.phone.trim()) {
+      errors.push("Phone Number is required");
+    }
+    
+    if (!formData.owner_type) {
+      errors.push("Registration Type (Individual/Business) is required");
+    }
+    
+    if (formData.property_types.length === 0) {
+      errors.push("At least one Property Type must be selected");
+    }
+    
+    if (!formData.province) {
+      errors.push("Province is required");
+    }
+    
+    if (!formData.city) {
+      errors.push("City is required");
+    }
+    
+    // Business validation
+    if (formData.owner_type === 'business') {
+      if (!formData.business_name.trim()) {
+        errors.push("Business Name is required");
+      }
+      if (!formData.business_province) {
+        errors.push("Business Province is required");
+      }
+      if (!formData.business_city) {
+        errors.push("Business City is required");
+      }
+    }
+    
+    if (errors.length > 0) {
+      toast({ 
+        title: "Please fix the following errors:", 
+        description: errors.join("\n• "), 
+        variant: "destructive" 
+      });
       return;
     }
 
     setSubmitting(true);
     try {
+      // Update profile (without role - roles are in separate table)
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
           email: user.email!,
           full_name: formData.full_name,
-          phone: formData.phone,
-          role: 'property_owner',
-          verification_status: 'pending'
+          phone: formData.phone
         });
 
       if (profileError) throw profileError;
+
+      // Insert role request into user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .upsert({
+          user_id: user.id,
+          role: 'property_owner',
+          is_active: false // Pending approval
+        }, { onConflict: 'user_id,role' });
+
+      if (roleError) {
+        console.error('Role insert error:', roleError);
+        // Continue even if role insert fails - it might already exist
+      }
 
       const activeSocialMedia = Object.fromEntries(
         Object.entries(formData.social_media).filter(([_, value]) => value.trim() !== '')
       );
 
-      await supabase.from('activity_logs').insert({
+      // Log activity
+      const { error: activityError } = await supabase.from('activity_logs').insert({
         user_id: user.id,
         activity_type: 'role_upgrade_request',
         activity_description: `User requested upgrade to property_owner role (${formData.owner_type})`,
@@ -386,10 +442,19 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
         }
       });
 
-      toast({ title: "Application Submitted", description: "Your property owner application has been submitted!" });
+      if (activityError) {
+        console.error('Activity log error:', activityError);
+      }
+
+      toast({ title: "Application Submitted!", description: "Your property owner application is pending review." });
       onSuccess();
     } catch (error: any) {
-      toast({ title: "Registration Failed", description: error.message || "Please try again.", variant: "destructive" });
+      console.error('Submission error:', error);
+      toast({ 
+        title: "Registration Failed", 
+        description: error.message || "An error occurred. Please try again.", 
+        variant: "destructive" 
+      });
     } finally {
       setSubmitting(false);
     }
