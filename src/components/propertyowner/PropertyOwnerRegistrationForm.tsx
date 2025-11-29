@@ -129,6 +129,134 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
     { key: 'youtube', label: 'YouTube', placeholder: 'youtube.com/@channel' }
   ];
 
+  // Reverse geocode and match to database locations
+  const reverseGeocodeAndMatch = async (lat: number, lng: number, type: 'property' | 'business') => {
+    try {
+      // Use Mapbox Geocoding API
+      const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTgzZnN0In0.JfxWbLcAYW83y5b-A5hLUQ';
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&types=region,district,locality,place&country=id`
+      );
+      const data = await response.json();
+      
+      if (data.features && data.features.length > 0) {
+        let detectedProvince = '';
+        let detectedCity = '';
+        let detectedArea = '';
+        let streetAddress = '';
+
+        // Parse the response to extract location components
+        for (const feature of data.features) {
+          const placeType = feature.place_type?.[0];
+          const text = feature.text || '';
+          
+          if (placeType === 'region') {
+            detectedProvince = text;
+          } else if (placeType === 'place' || placeType === 'district') {
+            if (!detectedCity) detectedCity = text;
+            else if (!detectedArea) detectedArea = text;
+          } else if (placeType === 'locality') {
+            detectedArea = text;
+          }
+        }
+
+        // Get full address from first result
+        if (data.features[0]?.place_name) {
+          streetAddress = data.features[0].place_name;
+        }
+
+        // Try to match with database locations
+        if (locations && locations.length > 0) {
+          // Find matching province (case insensitive)
+          const matchedProvince = provinces.find(p => 
+            p.toLowerCase().includes(detectedProvince.toLowerCase()) ||
+            detectedProvince.toLowerCase().includes(p.toLowerCase())
+          );
+
+          if (matchedProvince) {
+            const citiesForProvince = [...new Set(locations
+              .filter(loc => loc.province_name === matchedProvince)
+              .map(loc => loc.city_name)
+              .filter(Boolean))];
+
+            // Find matching city
+            const matchedCity = citiesForProvince.find(c =>
+              c.toLowerCase().includes(detectedCity.toLowerCase()) ||
+              detectedCity.toLowerCase().includes(c.toLowerCase())
+            );
+
+            if (type === 'property') {
+              setFormData(prev => ({
+                ...prev,
+                province: matchedProvince,
+                city: matchedCity || '',
+                area: '',
+                street_address: streetAddress
+              }));
+
+              // If city matched, try to find area
+              if (matchedCity) {
+                const areasForCity = [...new Set(locations
+                  .filter(loc => loc.province_name === matchedProvince && loc.city_name === matchedCity)
+                  .map(loc => loc.area_name)
+                  .filter(Boolean))];
+
+                const matchedArea = areasForCity.find(a =>
+                  a.toLowerCase().includes(detectedArea.toLowerCase()) ||
+                  detectedArea.toLowerCase().includes(a.toLowerCase())
+                );
+
+                if (matchedArea) {
+                  setFormData(prev => ({ ...prev, area: matchedArea }));
+                }
+              }
+            } else {
+              setFormData(prev => ({
+                ...prev,
+                business_province: matchedProvince,
+                business_city: matchedCity || '',
+                business_area: '',
+                business_street_address: streetAddress
+              }));
+
+              if (matchedCity) {
+                const areasForCity = [...new Set(locations
+                  .filter(loc => loc.province_name === matchedProvince && loc.city_name === matchedCity)
+                  .map(loc => loc.area_name)
+                  .filter(Boolean))];
+
+                const matchedArea = areasForCity.find(a =>
+                  a.toLowerCase().includes(detectedArea.toLowerCase()) ||
+                  detectedArea.toLowerCase().includes(a.toLowerCase())
+                );
+
+                if (matchedArea) {
+                  setFormData(prev => ({ ...prev, business_area: matchedArea }));
+                }
+              }
+            }
+
+            toast({ 
+              title: "Location Auto-filled", 
+              description: `Detected: ${matchedProvince}${matchedCity ? ', ' + matchedCity : ''}` 
+            });
+            return;
+          }
+        }
+
+        // If no match found, just fill the street address
+        if (type === 'property') {
+          setFormData(prev => ({ ...prev, street_address: streetAddress }));
+        } else {
+          setFormData(prev => ({ ...prev, business_street_address: streetAddress }));
+        }
+        toast({ title: "Address Detected", description: "Please select province/city manually." });
+      }
+    } catch (error) {
+      console.error('Reverse geocoding error:', error);
+    }
+  };
+
   // Get GPS location for property
   const getPropertyGPSLocation = () => {
     if (!navigator.geolocation) {
@@ -137,13 +265,18 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
     }
     setGettingPropertyLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
         setFormData(prev => ({
           ...prev,
-          gps_lat: position.coords.latitude.toFixed(6),
-          gps_lng: position.coords.longitude.toFixed(6)
+          gps_lat: lat.toFixed(6),
+          gps_lng: lng.toFixed(6)
         }));
-        toast({ title: "Location Captured", description: `GPS: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}` });
+        
+        // Auto-detect and fill location fields
+        await reverseGeocodeAndMatch(lat, lng, 'property');
         setGettingPropertyLocation(false);
       },
       () => {
@@ -162,13 +295,18 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
     }
     setGettingBusinessLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
         setFormData(prev => ({
           ...prev,
-          business_gps_lat: position.coords.latitude.toFixed(6),
-          business_gps_lng: position.coords.longitude.toFixed(6)
+          business_gps_lat: lat.toFixed(6),
+          business_gps_lng: lng.toFixed(6)
         }));
-        toast({ title: "Business Location Captured", description: `GPS: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}` });
+        
+        // Auto-detect and fill location fields
+        await reverseGeocodeAndMatch(lat, lng, 'business');
         setGettingBusinessLocation(false);
       },
       () => {
@@ -493,7 +631,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     className="h-6 text-[10px] px-2"
                   >
                     {gettingPropertyLocation ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Navigation className="h-3 w-3 mr-1" />}
-                    {gettingPropertyLocation ? "Getting..." : "Use GPS"}
+                    {gettingPropertyLocation ? "Detecting..." : "Auto-detect Location"}
                   </Button>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -637,7 +775,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                         className="h-6 text-[10px] px-2"
                       >
                         {gettingBusinessLocation ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Navigation className="h-3 w-3 mr-1" />}
-                        {gettingBusinessLocation ? "Getting..." : "Use GPS"}
+                        {gettingBusinessLocation ? "Detecting..." : "Auto-detect Location"}
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
