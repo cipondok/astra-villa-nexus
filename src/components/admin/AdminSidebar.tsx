@@ -46,7 +46,12 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   // Close when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      console.log('Click detected, sidebarRef:', sidebarRef.current);
+      console.log('Target:', event.target);
+      console.log('Contains:', sidebarRef.current?.contains(event.target as Node));
+      
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        console.log('Closing sidebar - clicked outside');
         setOpenCategory(null);
       }
     };
