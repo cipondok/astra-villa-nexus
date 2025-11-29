@@ -301,146 +301,82 @@ const Settings = () => {
 
           {/* Cache Management Tab */}
           <TabsContent value="cache" className="space-y-0">
-            <Card className="professional-card border overflow-hidden p-2">
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-accent via-primary to-accent"></div>
-              <CardHeader className="pb-1 px-2 pt-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-5 h-5 rounded-lg bg-accent/10 flex items-center justify-center">
-                      <HardDrive className="h-2.5 w-2.5 text-accent" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xs">Cache Management</CardTitle>
-                      <CardDescription className="text-[10px]">Storage & performance</CardDescription>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={loadCacheStats}
-                    disabled={isLoadingCache}
-                    className="h-6 w-6 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-all"
-                  >
-                    <RefreshCw className={`h-2.5 w-2.5 text-primary ${isLoadingCache ? 'animate-spin' : ''}`} />
-                  </Button>
+            <Card className="professional-card border p-2">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <HardDrive className="h-3.5 w-3.5 text-accent" />
+                  <span className="text-xs font-semibold">Cache</span>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-2 px-2 pb-1.5">
-                {isLoadingCache ? (
-                  <div className="text-center py-6">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-3 border-primary/20 border-t-primary mb-2"></div>
-                    <p className="text-muted-foreground text-xs">Loading...</p>
-                  </div>
-                ) : cacheStats ? (
-                  <>
-                    {/* Service Worker Cache */}
-                    <div className="p-2.5 rounded-lg bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/10">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
-                            <HardDrive className="h-3.5 w-3.5 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-foreground text-xs">Service Worker</h3>
-                            <p className="text-xs text-muted-foreground">
-                              {cacheStats.swCacheMB.toFixed(1)} MB / {cacheStats.swAvailableMB.toFixed(0)} MB
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-lg font-bold text-primary">
-                            {cacheStats.swUsagePercent.toFixed(1)}%
-                          </span>
-                        </div>
+                <Button variant="ghost" size="icon" onClick={loadCacheStats} disabled={isLoadingCache} className="h-5 w-5">
+                  <RefreshCw className={`h-3 w-3 ${isLoadingCache ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+
+              {isLoadingCache ? (
+                <div className="flex items-center justify-center py-3">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary/20 border-t-primary"></div>
+                  <span className="ml-2 text-xs text-muted-foreground">Loading...</span>
+                </div>
+              ) : cacheStats ? (
+                <div className="space-y-1.5">
+                  {/* SW Cache */}
+                  <div className="p-1.5 rounded-md bg-muted/30 border">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-1.5">
+                        <HardDrive className="h-3 w-3 text-primary" />
+                        <span className="text-[10px] font-medium">Service Worker</span>
                       </div>
-                    <Progress value={cacheStats.swUsagePercent} className="h-3 bg-background" />
+                      <span className="text-[10px] font-bold text-primary">{cacheStats.swUsagePercent.toFixed(0)}%</span>
+                    </div>
+                    <Progress value={cacheStats.swUsagePercent} className="h-1.5" />
+                    <p className="text-[9px] text-muted-foreground mt-0.5">{cacheStats.swCacheMB.toFixed(1)}MB / {cacheStats.swAvailableMB.toFixed(0)}MB</p>
                   </div>
 
-                  {/* React Query Cache */}
-                  <div className="p-2.5 rounded-lg bg-gradient-to-br from-accent/5 to-primary/5 border border-accent/10">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center">
-                        <Database className="h-3.5 w-3.5 text-accent" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-foreground text-xs">React Query</h3>
-                        <p className="text-xs text-muted-foreground">
-                          {cacheStats.queryCacheCount} queries
-                        </p>
-                      </div>
+                  {/* Query Cache */}
+                  <div className="p-1.5 rounded-md bg-muted/30 border">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Database className="h-3 w-3 text-accent" />
+                      <span className="text-[10px] font-medium">Query Cache</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      <div className="rounded-lg border border-primary/20 bg-card p-2 text-center">
-                        <div className="text-lg font-bold text-primary">
-                          {cacheStats.queryCacheCount}
-                        </div>
-                        <div className="text-[10px] font-semibold text-muted-foreground uppercase">Total</div>
+                    <div className="grid grid-cols-3 gap-1 text-center">
+                      <div className="p-1 rounded bg-background border">
+                        <p className="text-sm font-bold text-primary">{cacheStats.queryCacheCount}</p>
+                        <p className="text-[8px] text-muted-foreground">Total</p>
                       </div>
-                      <div className="rounded-lg border border-green-500/20 bg-card p-2 text-center">
-                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                          {cacheStats.queryCacheActive}
-                        </div>
-                        <div className="text-[10px] font-semibold text-muted-foreground uppercase">Active</div>
+                      <div className="p-1 rounded bg-background border">
+                        <p className="text-sm font-bold text-green-500">{cacheStats.queryCacheActive}</p>
+                        <p className="text-[8px] text-muted-foreground">Active</p>
                       </div>
-                      <div className="rounded-lg border border-amber-500/20 bg-card p-2 text-center">
-                        <div className="text-lg font-bold text-amber-600 dark:text-amber-400">
-                          {cacheStats.queryCacheStale}
-                        </div>
-                        <div className="text-[10px] font-semibold text-muted-foreground uppercase">Stale</div>
+                      <div className="p-1 rounded bg-background border">
+                        <p className="text-sm font-bold text-amber-500">{cacheStats.queryCacheStale}</p>
+                        <p className="text-[8px] text-muted-foreground">Stale</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="pt-1 space-y-1.5">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2 h-8 text-xs hover:bg-primary/5 hover:border-primary/30"
-                      onClick={() => openClearCacheDialog('sw')}
-                    >
-                      <HardDrive className="h-3.5 w-3.5 text-primary" />
-                      <span className="font-semibold">Clear SW Cache</span>
+                  {/* Actions */}
+                  <div className="grid grid-cols-3 gap-1">
+                    <Button variant="outline" size="sm" onClick={() => openClearCacheDialog('sw')} className="h-6 text-[9px] px-1">
+                      <HardDrive className="h-2.5 w-2.5 mr-0.5" />SW
                     </Button>
-                    
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2 h-8 text-xs hover:bg-accent/5 hover:border-accent/30"
-                      onClick={() => openClearCacheDialog('query')}
-                    >
-                      <Database className="h-3.5 w-3.5 text-accent" />
-                      <span className="font-semibold">Clear Query Cache</span>
+                    <Button variant="outline" size="sm" onClick={() => openClearCacheDialog('query')} className="h-6 text-[9px] px-1">
+                      <Database className="h-2.5 w-2.5 mr-0.5" />Query
                     </Button>
-                    
-                    <Button
-                      variant="destructive"
-                      className="w-full justify-start gap-2 h-8 text-xs"
-                      onClick={() => openClearCacheDialog('all')}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                      <span className="font-semibold">Clear All</span>
+                    <Button variant="destructive" size="sm" onClick={() => openClearCacheDialog('all')} className="h-6 text-[9px] px-1">
+                      <Trash2 className="h-2.5 w-2.5 mr-0.5" />All
                     </Button>
                   </div>
-                </>
+                </div>
               ) : (
-                <div className="text-center py-6">
-                  <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-destructive/10 flex items-center justify-center">
-                    <Database className="h-6 w-6 text-destructive" />
-                  </div>
-                  <p className="text-muted-foreground text-xs">Failed to load cache statistics</p>
-                  <Button 
-                    onClick={loadCacheStats} 
-                    variant="outline" 
-                    className="mt-2 h-7 text-xs"
-                  >
-                    Retry
-                  </Button>
+                <div className="text-center py-2">
+                  <p className="text-[10px] text-muted-foreground">Failed to load</p>
+                  <Button onClick={loadCacheStats} variant="outline" size="sm" className="mt-1 h-5 text-[9px]">Retry</Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
 
       <AlertDialog open={showClearCacheDialog} onOpenChange={setShowClearCacheDialog}>
         <AlertDialogContent className="sm:max-w-md border-2">

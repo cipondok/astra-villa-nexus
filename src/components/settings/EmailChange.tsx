@@ -73,72 +73,40 @@ export const EmailChange = () => {
   };
 
   return (
-    <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.3s' }}>
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500"></div>
-      <CardHeader className="pb-3 px-4 pt-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-            <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-          </div>
-          <div>
-            <CardTitle className="text-base">Change Email</CardTitle>
-            <CardDescription className="text-xs">Update your email address</CardDescription>
-          </div>
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5 mb-1">
+        <Mail className="h-3.5 w-3.5 text-blue-500" />
+        <span className="text-xs font-semibold">Email</span>
+      </div>
+      
+      <div className="p-1.5 rounded-md bg-muted/30 border text-[10px]">
+        <span className="text-muted-foreground">Current: </span>
+        <span className="font-medium break-all">{user?.email}</span>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-1.5">
+        <div>
+          <Label htmlFor="newEmail" className="text-[10px]">New Email</Label>
+          <Input
+            id="newEmail"
+            type="email"
+            value={newEmail}
+            onChange={(e) => { setNewEmail(e.target.value); if (error) setError(''); }}
+            className={`h-7 text-xs ${error ? 'border-destructive' : ''}`}
+            placeholder="Enter new email"
+          />
+          {error && <p className="text-[10px] text-destructive mt-0.5">{error}</p>}
         </div>
-      </CardHeader>
-      <CardContent className="px-4 pb-4">
-        {/* Current Email Display */}
-        <div className="mb-3 p-2.5 rounded-lg bg-muted/30 border border-border/50">
-          <span className="text-xs font-medium text-muted-foreground">Current Email</span>
-          <p className="text-sm font-semibold text-foreground mt-0.5 break-all">{user?.email}</p>
+
+        <div className="flex items-start gap-1 p-1.5 rounded-md bg-blue-500/5 border border-blue-500/20 text-[10px] text-blue-600 dark:text-blue-400">
+          <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
+          <span>Verify from both old & new email</span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="newEmail" className="text-xs font-medium">New Email Address</Label>
-            <Input
-              id="newEmail"
-              type="email"
-              value={newEmail}
-              onChange={(e) => {
-                setNewEmail(e.target.value);
-                if (error) setError('');
-              }}
-              className={`h-9 text-sm ${error ? 'border-destructive' : ''}`}
-              placeholder="Enter new email address"
-            />
-            {error && (
-              <p className="text-xs text-destructive">{error}</p>
-            )}
-          </div>
-
-          {/* Info Notice */}
-          <div className="p-2.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/30 dark:border-blue-500/20">
-            <div className="flex gap-2">
-              <AlertCircle className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-blue-700 dark:text-blue-300">
-                You'll receive verification emails at both your current and new email addresses. 
-                You must confirm the change from both emails.
-              </p>
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            disabled={isChanging || !newEmail}
-            className="w-full h-9 text-sm"
-          >
-            {isChanging ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-background/30 border-t-background mr-2"></div>
-                Sending...
-              </>
-            ) : (
-              'Send Verification Email'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button type="submit" disabled={isChanging || !newEmail} className="w-full h-6 text-[10px]">
+          {isChanging ? 'Sending...' : 'Send Verification'}
+        </Button>
+      </form>
+    </div>
   );
 };

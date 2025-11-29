@@ -116,134 +116,82 @@ export const PasswordChange = () => {
   };
 
   return (
-    <Card className="professional-card border-2 overflow-hidden animate-fade-in" style={{ animationDelay: '0.25s' }}>
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
-      <CardHeader className="pb-3 px-4 pt-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-            <Lock className="h-4 w-4 text-red-600 dark:text-red-400" />
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5 mb-1">
+        <Lock className="h-3.5 w-3.5 text-orange-500" />
+        <span className="text-xs font-semibold">Password</span>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-1.5">
+        <div>
+          <Label htmlFor="currentPassword" className="text-[10px]">Current</Label>
+          <div className="relative">
+            <Input
+              id="currentPassword"
+              name="currentPassword"
+              type={showCurrentPassword ? "text" : "password"}
+              value={formData.currentPassword}
+              onChange={handleChange}
+              className={`pr-7 h-7 text-xs ${errors.currentPassword ? 'border-destructive' : ''}`}
+              placeholder="Current password"
+            />
+            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-7 w-7" onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
+              {showCurrentPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+            </Button>
           </div>
-          <div>
-            <CardTitle className="text-base">Change Password</CardTitle>
-            <CardDescription className="text-xs">Update your account password</CardDescription>
-          </div>
+          {errors.currentPassword && <p className="text-[10px] text-destructive">{errors.currentPassword}</p>}
         </div>
-      </CardHeader>
-      <CardContent className="px-4 pb-4">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Current Password */}
-          <div className="space-y-1.5">
-            <Label htmlFor="currentPassword" className="text-xs font-medium">Current Password</Label>
-            <div className="relative">
-              <Input
-                id="currentPassword"
-                name="currentPassword"
-                type={showCurrentPassword ? "text" : "password"}
-                value={formData.currentPassword}
-                onChange={handleChange}
-                className={`pr-9 h-9 text-sm ${errors.currentPassword ? 'border-destructive' : ''}`}
-                placeholder="Enter current password"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-9 w-9 hover:bg-transparent"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-              >
-                {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            {errors.currentPassword && (
-              <p className="text-xs text-destructive">{errors.currentPassword}</p>
-            )}
-          </div>
 
-          {/* New Password */}
-          <div className="space-y-1.5">
-            <Label htmlFor="newPassword" className="text-xs font-medium">New Password</Label>
-            <div className="relative">
-              <Input
-                id="newPassword"
-                name="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                value={formData.newPassword}
-                onChange={handleChange}
-                className={`pr-9 h-9 text-sm ${errors.newPassword ? 'border-destructive' : ''}`}
-                placeholder="Enter new password"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-9 w-9 hover:bg-transparent"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-              >
-                {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            {errors.newPassword && (
-              <p className="text-xs text-destructive">{errors.newPassword}</p>
-            )}
+        <div>
+          <Label htmlFor="newPassword" className="text-[10px]">New</Label>
+          <div className="relative">
+            <Input
+              id="newPassword"
+              name="newPassword"
+              type={showNewPassword ? "text" : "password"}
+              value={formData.newPassword}
+              onChange={handleChange}
+              className={`pr-7 h-7 text-xs ${errors.newPassword ? 'border-destructive' : ''}`}
+              placeholder="New password"
+            />
+            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-7 w-7" onClick={() => setShowNewPassword(!showNewPassword)}>
+              {showNewPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+            </Button>
           </div>
+          {errors.newPassword && <p className="text-[10px] text-destructive">{errors.newPassword}</p>}
+        </div>
 
-          {/* Confirm Password */}
-          <div className="space-y-1.5">
-            <Label htmlFor="confirmPassword" className="text-xs font-medium">Confirm New Password</Label>
-            <div className="relative">
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className={`pr-9 h-9 text-sm ${errors.confirmPassword ? 'border-destructive' : ''}`}
-                placeholder="Confirm new password"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-9 w-9 hover:bg-transparent"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-xs text-destructive">{errors.confirmPassword}</p>
-            )}
+        <div>
+          <Label htmlFor="confirmPassword" className="text-[10px]">Confirm</Label>
+          <div className="relative">
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={`pr-7 h-7 text-xs ${errors.confirmPassword ? 'border-destructive' : ''}`}
+              placeholder="Confirm password"
+            />
+            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-7 w-7" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+              {showConfirmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+            </Button>
           </div>
+          {errors.confirmPassword && <p className="text-[10px] text-destructive">{errors.confirmPassword}</p>}
+        </div>
 
-          {/* Password Requirements */}
-          <div className="p-2.5 rounded-lg bg-muted/40 border border-border/50">
-            <div className="flex items-center gap-2 mb-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">Password Requirements:</span>
-            </div>
-            <ul className="space-y-0.5 text-xs text-muted-foreground ml-5">
-              <li>• At least 8 characters long</li>
-              <li>• Contains uppercase and lowercase letters</li>
-              <li>• Contains at least one number</li>
-            </ul>
+        <div className="p-1.5 rounded-md bg-muted/30 border text-[9px] text-muted-foreground">
+          <div className="flex items-center gap-1 mb-0.5">
+            <ShieldCheck className="h-2.5 w-2.5 text-primary" />
+            <span className="font-medium text-foreground">Requirements:</span>
           </div>
+          <span>8+ chars, uppercase, lowercase, number</span>
+        </div>
 
-          <Button
-            type="submit"
-            disabled={isChanging}
-            className="w-full h-9 text-sm"
-          >
-            {isChanging ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-background/30 border-t-background mr-2"></div>
-                Updating...
-              </>
-            ) : (
-              'Update Password'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button type="submit" disabled={isChanging} className="w-full h-6 text-[10px]">
+          {isChanging ? 'Updating...' : 'Update Password'}
+        </Button>
+      </form>
+    </div>
   );
 };
