@@ -37,7 +37,10 @@ import BookingPage from '@/pages/BookingPage';
 import BookingSuccessPage from '@/pages/BookingSuccessPage';
 import VendorKYCDashboard from '@/pages/VendorKYCDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
+import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import VendorOnlyRoute from '@/components/VendorOnlyRoute';
+import AgentOnlyRoute from '@/components/AgentOnlyRoute';
+import PropertyOwnerOnlyRoute from '@/components/PropertyOwnerOnlyRoute';
 import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
 import ProfileEditPage from '@/pages/ProfileEditPage';
@@ -124,6 +127,12 @@ const AppContent = () => {
           <Route element={<VendorOnlyRoute />}>
             <Route path="/dashboard/vendor" element={<VendorDashboard />} />
             <Route path="/vendor" element={<VendorDashboard />} />
+          </Route>
+          <Route element={<AgentOnlyRoute />}>
+            <Route path="/dashboard/agent" element={<AgentDashboard />} />
+          </Route>
+          <Route element={<PropertyOwnerOnlyRoute />}>
+            <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
           </Route>
           <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
           <Route path="/dashboard/user" element={<UserDashboardPage />} />

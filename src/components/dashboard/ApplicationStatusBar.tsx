@@ -80,25 +80,31 @@ const ApplicationStatusBar = () => {
     }
   };
 
-  const getTypeConfig = (type: ApplicationStatus['type']) => {
+  const getTypeConfig = (type: ApplicationStatus['type'], status: ApplicationStatus['status']) => {
+    // When approved, route to the new dashboard
+    const isApproved = status === 'approved';
+    
     switch (type) {
       case 'property_owner':
         return {
           icon: Home,
           label: 'Property Owner',
-          route: '/vendor-registration'
+          route: isApproved ? '/dashboard/property-owner' : '/vendor-registration',
+          dashboardLabel: 'Property Owner Dashboard'
         };
       case 'vendor':
         return {
           icon: Building2,
           label: 'Vendor',
-          route: '/vendor-registration'
+          route: isApproved ? '/dashboard/vendor' : '/vendor-registration',
+          dashboardLabel: 'Vendor Dashboard'
         };
       case 'agent':
         return {
           icon: Users,
           label: 'Agent',
-          route: '/vendor-registration'
+          route: isApproved ? '/dashboard/agent' : '/vendor-registration',
+          dashboardLabel: 'Agent Dashboard'
         };
     }
   };
@@ -114,9 +120,10 @@ const ApplicationStatusBar = () => {
       <CardContent className="p-3 sm:p-4 pt-0 space-y-3">
         {applications.map((app) => {
           const statusConfig = getStatusConfig(app.status);
-          const typeConfig = getTypeConfig(app.type);
+          const typeConfig = getTypeConfig(app.type, app.status);
           const StatusIcon = statusConfig.icon;
           const TypeIcon = typeConfig.icon;
+          const isApproved = app.status === 'approved';
 
           return (
             <div 
@@ -138,9 +145,15 @@ const ApplicationStatusBar = () => {
                     {statusConfig.label}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Submitted {formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}
-                </p>
+                {isApproved ? (
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-0.5 font-medium">
+                    🎉 Congratulations! You now have access to {typeConfig.dashboardLabel}
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Submitted {formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}
+                  </p>
+                )}
                 {app.review_notes && app.status === 'rejected' && (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-1">
                     Note: {app.review_notes}
@@ -148,14 +161,26 @@ const ApplicationStatusBar = () => {
                 )}
               </div>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 flex-shrink-0"
-                onClick={() => navigate(typeConfig.route)}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              {isApproved ? (
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="flex-shrink-0 bg-green-600 hover:bg-green-700"
+                  onClick={() => navigate(typeConfig.route)}
+                >
+                  Go to Dashboard
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 flex-shrink-0"
+                  onClick={() => navigate(typeConfig.route)}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           );
         })}
