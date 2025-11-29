@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Home, CheckCircle, Building, MapPin, User, Briefcase, MessageCircle, Navigation, Loader2, AlertCircle } from "lucide-react";
-import { notifyPropertyOwnerApplication } from "@/utils/adminNotifications";
+
 
 interface PropertyOwnerRegistrationFormProps {
   onSuccess: () => void;
@@ -447,14 +447,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
         }
       });
 
-      // Send admin notification
-      if (requestData?.id) {
-        await notifyPropertyOwnerApplication(
-          user.id,
-          formData.full_name,
-          requestData.id
-        );
-      }
+      // Admin notification is sent automatically via database trigger
 
       toast({ title: "Application Submitted!", description: "Your property owner application is pending review. You'll be notified once reviewed." });
       onSuccess();
