@@ -60,6 +60,7 @@ import CloudflareSettings from "./CloudflareSettings";
 import PropertyFiltersManagement from "./PropertyFiltersManagement";
 import SocialMediaSettings from "./SocialMediaSettings";
 import VerificationManagement from "./VerificationManagement";
+import UserUpgradeApplications from "./UserUpgradeApplications";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -79,6 +80,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <EnhancedUserManagement />;
       case "verification-management":
         return <VerificationManagement />;
+      case "upgrade-applications":
+        return <UserUpgradeApplications />;
       case "property-management":
       case "property-management-hub":
         return <AdminPropertyManagement />;
@@ -176,7 +179,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "algorithm-dashboard":
         return <AlgorithmDashboard />;
       case "notifications-center":
-        return <AdminNotificationsCenter />;
+        return <AdminNotificationsCenter onSectionChange={onSectionChange} />;
       case "ai-feedback-analytics":
         return <AIFeedbackAnalytics />;
       case "project-map":

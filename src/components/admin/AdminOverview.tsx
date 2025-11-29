@@ -25,7 +25,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Server,
-  Cpu
+  Cpu,
+  UserCheck
 } from "lucide-react";
 import AdminQuickActions from "./AdminQuickActions";
 import AdminQuickAccess from "./AdminQuickAccess";
@@ -106,7 +107,41 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
     refetchInterval: 60000,
   });
 
+  // Fetch pending upgrade applications
+  const { data: pendingUpgrades } = useQuery({
+    queryKey: ['pending-upgrade-applications'],
+    queryFn: async () => {
+      try {
+        const [propertyOwner, vendor, agent] = await Promise.all([
+          supabase.from('property_owner_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
+          supabase.from('vendor_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
+          supabase.from('agent_registration_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review'])
+        ]);
+        
+        return {
+          propertyOwner: propertyOwner.count || 0,
+          vendor: vendor.count || 0,
+          agent: agent.count || 0,
+          total: (propertyOwner.count || 0) + (vendor.count || 0) + (agent.count || 0)
+        };
+      } catch (error) {
+        console.error('Error fetching pending upgrades:', error);
+        return { propertyOwner: 0, vendor: 0, agent: 0, total: 0 };
+      }
+    },
+    refetchInterval: 30000,
+  });
+
   const quickManagementActions = [
+    {
+      title: "Upgrade Applications",
+      description: `${pendingUpgrades?.total || 0} pending applications to review`,
+      icon: UserCheck,
+      action: "upgrade-applications",
+      priority: pendingUpgrades?.total ? "critical" : "medium",
+      color: pendingUpgrades?.total ? "bg-red-500/10 text-red-600" : "bg-green-500/10 text-green-600",
+      badge: pendingUpgrades?.total || 0
+    },
     {
       title: "User Management",
       description: "Manage user accounts, roles, and permissions",
@@ -420,6 +455,11 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                 className="group relative overflow-hidden rounded-xl border border-border/50 p-6 text-left transition-all hover:shadow-lg hover:border-primary/50 hover:-translate-y-1 bg-gradient-to-br from-background to-accent/5"
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+                {action.badge !== undefined && action.badge > 0 && (
+                  <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                    {action.badge}
+                  </div>
+                )}
                 <div className="relative">
                   <div className={`inline-flex p-3 rounded-lg mb-4 ${action.color}`}>
                     <action.icon className="h-6 w-6" />

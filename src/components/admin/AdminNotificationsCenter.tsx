@@ -5,10 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle } from 'lucide-react';
+import { Bell, CheckCheck, Trash2, Eye, AlertTriangle, Info, XCircle, Home, Building2, UserPlus, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function AdminNotificationsCenter() {
+interface AdminNotificationsCenterProps {
+  onSectionChange?: (section: string) => void;
+}
+
+export function AdminNotificationsCenter({ onSectionChange }: AdminNotificationsCenterProps) {
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
   const queryClient = useQueryClient();
 
@@ -98,8 +102,27 @@ export function AdminNotificationsCenter() {
         return <XCircle className="h-5 w-5 text-red-500" />;
       case 'warning':
         return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+      case 'property_owner_application':
+        return <Home className="h-5 w-5 text-blue-500" />;
+      case 'vendor_application':
+        return <Building2 className="h-5 w-5 text-purple-500" />;
+      case 'agent_application':
+        return <UserPlus className="h-5 w-5 text-green-500" />;
       default:
         return <Info className="h-5 w-5 text-blue-500" />;
+    }
+  };
+
+  const isApplicationNotification = (type: string) => {
+    return ['property_owner_application', 'vendor_application', 'agent_application'].includes(type);
+  };
+
+  const handleViewApplication = (notification: any) => {
+    // Mark as read first
+    markAsReadMutation.mutate(notification.id);
+    // Navigate to upgrade applications
+    if (onSectionChange) {
+      onSectionChange('upgrade-applications');
     }
   };
 
@@ -230,6 +253,17 @@ export function AdminNotificationsCenter() {
                               )}
                             </div>
                             <div className="flex items-center gap-2">
+                              {isApplicationNotification(notification.type) && (
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => handleViewApplication(notification)}
+                                  className="bg-primary"
+                                >
+                                  <ExternalLink className="h-4 w-4 mr-1" />
+                                  View Application
+                                </Button>
+                              )}
                               {!notification.is_read && (
                                 <Button
                                   variant="ghost"
