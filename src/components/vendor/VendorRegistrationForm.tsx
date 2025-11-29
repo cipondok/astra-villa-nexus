@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAlert } from "@/contexts/AlertContext";
 import { Building2, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import BPJSVerification from "./BPJSVerification";
-import { notifyVendorApplication } from "@/utils/adminNotifications";
+
 
 interface VendorRegistrationFormProps {
   onSuccess: () => void;
@@ -147,15 +147,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
         }
       });
 
-      // Send admin notification
-      if (requestData?.id) {
-        await notifyVendorApplication(
-          user.id,
-          formData.full_name,
-          formData.business_name,
-          requestData.id
-        );
-      }
+      // Admin notification is sent automatically via database trigger
 
       showSuccess("Application Submitted", "Your vendor application has been submitted successfully and is pending review. You'll be notified once reviewed.");
       onSuccess();

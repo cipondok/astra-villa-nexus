@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserPlus, Building2, FileText, AlertCircle } from "lucide-react";
-import { notifyAgentApplication } from "@/utils/adminNotifications";
+
 
 interface AgentRegistrationModalProps {
   isOpen: boolean;
@@ -55,17 +55,8 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
       if (error) throw error;
       return insertedData;
     },
-    onSuccess: async (data) => {
-      // Send admin notification
-      if (data?.id && profile?.id) {
-        await notifyAgentApplication(
-          profile.id,
-          formData.full_name,
-          formData.company_name || undefined,
-          data.id
-        );
-      }
-      
+    onSuccess: () => {
+      // Admin notification is sent automatically via database trigger
       showSuccess("Success", "Agent registration request submitted successfully. You'll be notified once reviewed.");
       onClose();
       setFormData({
