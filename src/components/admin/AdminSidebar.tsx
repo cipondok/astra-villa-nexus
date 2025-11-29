@@ -43,15 +43,10 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     setOpenCategory(null);
   };
 
-  // Close when clicking outside
+  // Close when clicking outside sidebar
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('Click detected, sidebarRef:', sidebarRef.current);
-      console.log('Target:', event.target);
-      console.log('Contains:', sidebarRef.current?.contains(event.target as Node));
-      
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        console.log('Closing sidebar - clicked outside');
         setOpenCategory(null);
       }
     };
@@ -59,6 +54,17 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Update open category when active section changes
+  useEffect(() => {
+    for (const category of categories) {
+      const sections = navigationSections[category as keyof typeof navigationSections];
+      if (sections?.some((section) => section.key === activeSection)) {
+        setOpenCategory(category);
+        return;
+      }
+    }
+  }, [activeSection]);
 
   return (
     <div ref={sidebarRef}>
