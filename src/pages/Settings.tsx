@@ -190,30 +190,30 @@ const Settings = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="security" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-7 mb-3 bg-muted/50 p-0.5">
-            <TabsTrigger value="security" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
-              <Shield className="h-3 w-3" />
-              <span className="hidden sm:inline">Security</span>
+          <TabsList className="flex w-full h-9 mb-3 bg-muted/50 p-1 rounded-lg overflow-x-auto gap-1">
+            <TabsTrigger value="security" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
+              <Shield className="h-3.5 w-3.5" />
+              <span>Security</span>
             </TabsTrigger>
-            <TabsTrigger value="account" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
-              <Mail className="h-3 w-3" />
-              <span className="hidden sm:inline">Account</span>
+            <TabsTrigger value="account" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
+              <Mail className="h-3.5 w-3.5" />
+              <span>Account</span>
             </TabsTrigger>
-            <TabsTrigger value="preferences" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
-              <User className="h-3 w-3" />
-              <span className="hidden sm:inline">Preferences</span>
+            <TabsTrigger value="preferences" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
+              <User className="h-3.5 w-3.5" />
+              <span>Prefs</span>
             </TabsTrigger>
-            <TabsTrigger value="theme" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
-              <Palette className="h-3 w-3" />
-              <span className="hidden sm:inline">Theme</span>
+            <TabsTrigger value="theme" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
+              <Palette className="h-3.5 w-3.5" />
+              <span>Theme</span>
             </TabsTrigger>
-            <TabsTrigger value="activity" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
-              <Activity className="h-3 w-3" />
-              <span className="hidden sm:inline">Activity</span>
+            <TabsTrigger value="activity" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
+              <Activity className="h-3.5 w-3.5" />
+              <span>Activity</span>
             </TabsTrigger>
-            <TabsTrigger value="cache" className="text-[10px] gap-0.5 px-0.5 py-1 data-[state=active]:bg-background h-6">
-              <Database className="h-3 w-3" />
-              <span className="hidden sm:inline">Cache</span>
+            <TabsTrigger value="cache" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
+              <Database className="h-3.5 w-3.5" />
+              <span>Cache</span>
             </TabsTrigger>
           </TabsList>
 
