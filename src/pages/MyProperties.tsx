@@ -3,27 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Eye, Edit, Plus, MapPin, DollarSign, TrendingUp, Activity } from "lucide-react";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
-import { useState } from "react";
+import { Building2, Eye, Edit, Plus, MapPin, ArrowLeft, ChevronRight } from "lucide-react";
 
 const MyProperties = () => {
   const { isAuthenticated, profile, user } = useAuth();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "id">("en");
-  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/?auth=true');
     }
-    if (isAuthenticated && profile?.role === 'general_user') {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, profile, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const { data: properties, isLoading } = useQuery({
     queryKey: ['my-properties', user?.id],
@@ -42,18 +35,6 @@ const MyProperties = () => {
     enabled: !!user,
   });
 
-  const handleCreateProperty = () => {
-    navigate('/add-property');
-  };
-
-  const handleViewProperty = (propertyId: string) => {
-    navigate(`/property/${propertyId}`);
-  };
-
-  const handleEditProperty = (propertyId: string) => {
-    navigate(`/property/${propertyId}/edit`);
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'default';
@@ -63,186 +44,160 @@ const MyProperties = () => {
     }
   };
 
-  const formatPrice = (price: number, listingType: string) => {
-    if (listingType === 'rent') {
-      return `Rp ${price?.toLocaleString()}/month`;
-    }
+  const formatPrice = (price: number) => {
+    if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}B`;
+    if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}M`;
     return `Rp ${price?.toLocaleString()}`;
   };
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  if (!isAuthenticated) return null;
 
   return (
-    <div className="min-h-screen relative">
-      {/* Background with 60% transparency */}
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-50/60 via-purple-50/60 to-pink-50/60 backdrop-blur-sm -z-10"></div>
-      
-      {/* Header Section */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-        <AuthenticatedNavigation
-          language={language}
-          onLanguageToggle={() => setLanguage(prev => prev === "en" ? "id" : "en")}
-          theme={theme}
-          onThemeToggle={() => setTheme(prev => prev === "light" ? "dark" : "light")}
-        />
-      </div>
-
-      {/* Main Content */}
-      <div className="relative py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white rounded-2xl overflow-hidden shadow-2xl mb-8">
-            <div className="relative p-8">
-              <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"></div>
-              <div className="relative z-10">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <Building2 className="h-8 w-8" />
-                      </div>
-                      <div>
-                        <h1 className="text-3xl lg:text-4xl font-bold mb-2">My Properties</h1>
-                        <p className="text-blue-100 text-lg">Property Portfolio Management</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <Badge className="bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
-                        <Activity className="h-4 w-4 mr-2" />
-                        {properties?.length || 0} Properties
-                      </Badge>
-                      <Badge variant="outline" className="bg-white/10 border-white/30 text-white">
-                        {profile?.role?.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    onClick={handleCreateProperty}
-                    size="lg"
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25"
-                  >
-                    <Plus className="h-5 w-5 mr-2" />
-                    Add New Property
-                  </Button>
-                </div>
-              </div>
+    <div className="min-h-screen bg-background">
+      {/* Compact Header */}
+      <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+        <div className="px-2 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 text-primary-foreground hover:bg-white/20"
+              onClick={() => navigate('/dashboard/property-owner')}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-sm font-bold">My Properties</h1>
+              <p className="text-[9px] text-primary-foreground/80">
+                {properties?.length || 0} listings
+              </p>
             </div>
           </div>
+          <Button 
+            size="sm"
+            className="h-7 px-2 text-[10px] bg-white/20 hover:bg-white/30"
+            onClick={() => navigate('/add-property')}
+          >
+            <Plus className="h-3 w-3 mr-1" />
+            Add
+          </Button>
+        </div>
+      </div>
 
-          {/* Properties Grid */}
-          {isLoading ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p>Loading your properties...</p>
+      {/* Content */}
+      <div className="p-2 space-y-1.5">
+        {isLoading ? (
+          <Card className="p-4">
+            <div className="flex items-center justify-center py-6">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          </Card>
+        ) : properties?.length === 0 ? (
+          <Card className="p-3">
+            <div className="text-center py-6">
+              <Building2 className="h-10 w-10 mx-auto mb-2 text-muted-foreground/50" />
+              <p className="text-xs font-medium mb-1">No properties yet</p>
+              <p className="text-[9px] text-muted-foreground mb-3">
+                Start by adding your first property
+              </p>
+              <Button size="sm" className="h-7 text-[10px]" onClick={() => navigate('/add-property')}>
+                <Plus className="h-3 w-3 mr-1" />
+                Add Property
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          properties?.map((property) => (
+            <Card 
+              key={property.id} 
+              className="p-1.5 active:scale-[0.99] transition-transform cursor-pointer"
+              onClick={() => navigate(`/property/${property.id}`)}
+            >
+              <div className="flex gap-2">
+                {/* Thumbnail */}
+                <div className="h-16 w-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                  {property.images?.[0] ? (
+                    <img 
+                      src={property.images[0]} 
+                      alt={property.title}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          ) : properties?.length === 0 ? (
-            <Card className="text-center py-12">
-              <CardContent>
-                <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
-                <h3 className="text-2xl font-semibold mb-4">No Properties Listed</h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Start building your property portfolio by creating your first listing
-                </p>
-                <Button onClick={handleCreateProperty} size="lg">
-                  <Plus className="h-5 w-5 mr-2" />
-                  Create First Property
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {properties?.map((property) => (
-                <Card key={property.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-                  <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-                    {property.images?.[0] ? (
-                      <img 
-                        src={property.images[0]} 
-                        alt={property.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Building2 className="h-12 w-12 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3 flex gap-2">
-                      <Badge variant={getStatusColor(property.status)} className="shadow-lg">
-                        {property.status?.replace('_', ' ')}
-                      </Badge>
-                    </div>
-                    <div className="absolute bottom-3 left-3">
-                      <Badge variant="outline" className="bg-white/90 backdrop-blur-sm capitalize">
-                        {property.listing_type}
-                      </Badge>
-                    </div>
+
+                {/* Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-1 mb-0.5">
+                    <h3 className="text-[11px] font-semibold truncate flex-1 leading-tight">
+                      {property.title || 'Untitled'}
+                    </h3>
+                    <Badge 
+                      variant={getStatusColor(property.status)}
+                      className="text-[7px] px-1 py-0 h-3.5 flex-shrink-0"
+                    >
+                      {property.status?.replace('_', ' ')}
+                    </Badge>
                   </div>
                   
-                  <CardContent className="p-5">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="font-bold text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                          {property.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                          <MapPin className="h-3 w-3 flex-shrink-0" />
-                          <span className="line-clamp-1">{property.location}</span>
-                        </p>
-                      </div>
-                      
-                      <div className="text-xl font-bold text-primary">
-                        {property.price ? formatPrice(property.price, property.listing_type) : 'Price not set'}
-                      </div>
-                      
-                      <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-                        <div className="text-center">
-                          <div className="font-bold text-foreground">{property.bedrooms || 'N/A'}</div>
-                          <div className="text-xs">Bedrooms</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-bold text-foreground">{property.bathrooms || 'N/A'}</div>
-                          <div className="text-xs">Bathrooms</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-bold text-foreground">{property.area_sqm || 'N/A'}</div>
-                          <div className="text-xs">m²</div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-2 pt-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="flex-1"
-                          onClick={() => handleViewProperty(property.id)}
+                  <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mb-1">
+                    <MapPin className="h-2.5 w-2.5" />
+                    <span className="truncate">{property.location || 'No location'}</span>
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-primary">
+                      {property.price ? formatPrice(property.price) : 'Price TBD'}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <Badge variant="outline" className="text-[7px] px-1 py-0 h-3.5 capitalize">
+                        {property.listing_type}
+                      </Badge>
+                      <div className="flex gap-0.5">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-5 w-5 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/property/${property.id}`);
+                          }}
                         >
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
+                          <Eye className="h-3 w-3 text-muted-foreground" />
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="flex-1"
-                          onClick={() => handleEditProperty(property.id)}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-5 w-5 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/property/${property.id}/edit`);
+                          }}
                         >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
+                          <Edit className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
+                  </div>
+
+                  {/* Quick Stats */}
+                  <div className="flex items-center gap-2 mt-1 text-[8px] text-muted-foreground">
+                    <span>{property.bedrooms || 0} bed</span>
+                    <span>•</span>
+                    <span>{property.bathrooms || 0} bath</span>
+                    <span>•</span>
+                    <span>{property.area_sqm || 0} m²</span>
+                  </div>
+                </div>
+
+                <ChevronRight className="h-4 w-4 text-muted-foreground self-center flex-shrink-0" />
+              </div>
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );
