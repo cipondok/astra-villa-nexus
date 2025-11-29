@@ -16,8 +16,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 const ApplicationStatusBar = () => {
-  const { data: applications, isLoading } = usePendingApplications();
+  const { data, isLoading } = usePendingApplications();
   const navigate = useNavigate();
+  
+  const applications = data?.applications || [];
 
   if (isLoading) {
     return (
@@ -29,7 +31,7 @@ const ApplicationStatusBar = () => {
     );
   }
 
-  if (!applications || applications.length === 0) {
+  if (applications.length === 0) {
     return null;
   }
 
