@@ -1,288 +1,343 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { usePropertyOwnerData } from "@/hooks/usePropertyOwnerData";
+import { formatDistanceToNow } from "date-fns";
 import { 
   Building, 
   Eye, 
   Heart, 
   MessageSquare, 
-  TrendingUp, 
-  DollarSign,
-  Calendar,
-  Award,
-  Crown,
   PlusCircle,
-  BarChart3,
-  Settings,
   Activity,
-  Target
+  Target,
+  Home,
+  TrendingUp,
+  Clock,
+  ChevronRight,
+  Settings,
+  ArrowLeft
 } from "lucide-react";
-import QuickActions from "./QuickActions";
-import RecentActivity from "./RecentActivity";
-import UpcomingTasks from "./UpcomingTasks";
-import PropertyInsights from "./PropertyInsights";
-import DemoPropertyList from "./DemoPropertyList";
 
 const PropertyOwnerOverview = () => {
   const navigate = useNavigate();
+  const { profile } = useAuth();
+  const { properties, stats, recentActivity, isLoading } = usePropertyOwnerData();
 
-  // Sample data for demonstration
-  const stats = {
-    totalProperties: 3,
-    activeListings: 2,
-    totalViews: 156,
-    totalInquiries: 8,
-    monthlyRevenue: 45000000,
-    pendingApprovals: 1
-  };
-
-  const membership = {
-    currentLevel: {
-      name: "Bronze",
-      level: 1,
-      icon: Award,
-      color: "bg-gradient-to-r from-amber-600 to-orange-600",
-      textColor: "text-amber-600"
-    },
-    nextLevel: {
-      name: "Silver", 
-      level: 2,
-      icon: Crown
-    },
-    progress: {
-      current: 3,
-      required: 5,
-      percentage: 60
-    },
-    benefits: [
-      "Listing hingga 5 properti",
-      "Dukungan dasar",
-      "Analytics dasar",
-      "1 Featured listing/bulan"
-    ]
-  };
-
-  const CurrentIcon = membership.currentLevel.icon;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Professional Property Owner Header */}
-      <div className="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-800 text-white rounded-2xl overflow-hidden shadow-2xl">
-        <div className="relative p-8">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"></div>
-          
-          <div className="relative z-10">
-            {/* Header Content */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
-              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                    <Building className="h-8 w-8" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl lg:text-4xl font-bold mb-2">Property Owner Dashboard</h1>
-                    <p className="text-blue-100 text-lg">Kelola properti Anda dan pantau performa listing</p>
-                  </div>
-                </div>
-                
-                {/* Owner Status */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-100 text-sm font-medium">Active Owner</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${membership.currentLevel.color} px-4 py-2 rounded-full`}>
-                    <CurrentIcon className="h-4 w-4 text-white" />
-                    <span className="text-white text-sm font-medium">{membership.currentLevel.name} Member</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Main Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  onClick={() => navigate('/add-property')}
-                  size="lg"
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
-                >
-                  <PlusCircle className="h-5 w-5 mr-2" />
-                  Tambah Properti
-                </Button>
-                <Button 
-                  onClick={() => navigate('/dijual')}
-                  size="lg"
-                  variant="outline"
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
-                >
-                  <Building className="h-5 w-5 mr-2" />
-                  Lihat Semua
-                </Button>
+    <div className="space-y-3">
+      {/* Compact Header */}
+      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-3 py-3 rounded-xl">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="h-10 w-10 bg-primary-foreground/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Building className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-base font-bold truncate">
+                Hi, {profile?.full_name?.split(' ')[0] || 'Owner'}!
+              </h1>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-[10px] sm:text-xs text-primary-foreground/80">Property Owner</span>
               </div>
             </div>
-            
-            {/* Performance Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <Building className="h-5 w-5 text-blue-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.totalProperties}</div>
-                    <div className="text-blue-100 text-sm">Total Properti</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <Activity className="h-5 w-5 text-green-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.activeListings}</div>
-                    <div className="text-blue-100 text-sm">Listing Aktif</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <Eye className="h-5 w-5 text-purple-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.totalViews}</div>
-                    <div className="text-blue-100 text-sm">Total Views</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                    <MessageSquare className="h-5 w-5 text-yellow-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.totalInquiries}</div>
-                    <div className="text-blue-100 text-sm">Inquiries</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                    <DollarSign className="h-5 w-5 text-emerald-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">45M</div>
-                    <div className="text-blue-100 text-sm">Pendapatan</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                    <Target className="h-5 w-5 text-orange-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-                    <div className="text-blue-100 text-sm">Menunggu</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div className="flex gap-1.5">
+            <Button 
+              size="sm"
+              variant="secondary"
+              className="h-8 px-2 text-xs"
+              onClick={() => navigate('/dashboard/user')}
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </Button>
+            <Button 
+              size="sm"
+              className="h-8 px-2.5 text-xs bg-white/20 hover:bg-white/30"
+              onClick={() => navigate('/add-property')}
+            >
+              <PlusCircle className="h-3.5 w-3.5 mr-1" />
+              Add
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Membership Level Card */}
-      <Card className="border-l-4 border-l-amber-500 shadow-lg">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl ${membership.currentLevel.color} flex items-center justify-center shadow-lg`}>
-                <CurrentIcon className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <CardTitle className="text-xl">
-                  Level {membership.currentLevel.level}: {membership.currentLevel.name} Owner
-                </CardTitle>
-                <CardDescription className="text-base">
-                  Progress ke {membership.nextLevel.name}: {membership.progress.current}/{membership.progress.required} properti
-                </CardDescription>
-              </div>
+      {/* Stats Grid - 2x3 Mobile */}
+      <div className="grid grid-cols-3 gap-2">
+        <Card className="p-2.5">
+          <div className="flex flex-col items-center text-center">
+            <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-1">
+              <Building className="h-4 w-4 text-blue-600" />
             </div>
-            <Badge className={`${membership.currentLevel.color} text-white px-4 py-2 text-sm`}>
-              {membership.currentLevel.name}
-            </Badge>
+            <span className="text-lg font-bold">{stats.totalProperties}</span>
+            <span className="text-[9px] text-muted-foreground">Properties</span>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div>
-              <div className="flex justify-between text-sm mb-3">
-                <span className="font-medium">Progress ke level berikutnya</span>
-                <span className="font-bold">{membership.progress.percentage}%</span>
-              </div>
-              <Progress value={membership.progress.percentage} className="h-3" />
-              <p className="text-xs text-muted-foreground mt-2">
-                {membership.progress.required - membership.progress.current} properti lagi untuk mencapai level {membership.nextLevel.name}
-              </p>
+        </Card>
+        
+        <Card className="p-2.5">
+          <div className="flex flex-col items-center text-center">
+            <div className="h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-1">
+              <Activity className="h-4 w-4 text-green-600" />
             </div>
-            <div>
-              <h4 className="font-semibold mb-3">Benefit Saat Ini</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {membership.benefits.map((benefit, index) => (
-                  <Badge key={index} variant="outline" className="text-xs justify-center py-2">
-                    {benefit}
-                  </Badge>
-                ))}
-              </div>
-            </div>
+            <span className="text-lg font-bold">{stats.activeListings}</span>
+            <span className="text-[9px] text-muted-foreground">Active</span>
           </div>
-        </CardContent>
-      </Card>
+        </Card>
+        
+        <Card className="p-2.5">
+          <div className="flex flex-col items-center text-center">
+            <div className="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-1">
+              <Target className="h-4 w-4 text-orange-600" />
+            </div>
+            <span className="text-lg font-bold">{stats.pendingApprovals}</span>
+            <span className="text-[9px] text-muted-foreground">Pending</span>
+          </div>
+        </Card>
+        
+        <Card className="p-2.5">
+          <div className="flex flex-col items-center text-center">
+            <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-1">
+              <Eye className="h-4 w-4 text-purple-600" />
+            </div>
+            <span className="text-lg font-bold">{stats.totalViews}</span>
+            <span className="text-[9px] text-muted-foreground">Views</span>
+          </div>
+        </Card>
+        
+        <Card className="p-2.5">
+          <div className="flex flex-col items-center text-center">
+            <div className="h-8 w-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-1">
+              <Heart className="h-4 w-4 text-red-600" />
+            </div>
+            <span className="text-lg font-bold">{stats.savedCount}</span>
+            <span className="text-[9px] text-muted-foreground">Saved</span>
+          </div>
+        </Card>
+        
+        <Card className="p-2.5">
+          <div className="flex flex-col items-center text-center">
+            <div className="h-8 w-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center mb-1">
+              <MessageSquare className="h-4 w-4 text-yellow-600" />
+            </div>
+            <span className="text-lg font-bold">{stats.totalInquiries}</span>
+            <span className="text-[9px] text-muted-foreground">Inquiries</span>
+          </div>
+        </Card>
+      </div>
 
       {/* Quick Actions */}
-      <QuickActions />
+      <div className="grid grid-cols-4 gap-2">
+        <Button 
+          variant="outline" 
+          className="h-auto py-2.5 flex flex-col items-center gap-1 text-[10px] active:scale-95"
+          onClick={() => navigate('/add-property')}
+        >
+          <PlusCircle className="h-4 w-4 text-primary" />
+          Add New
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-auto py-2.5 flex flex-col items-center gap-1 text-[10px] active:scale-95"
+          onClick={() => navigate('/dijual')}
+        >
+          <Building className="h-4 w-4 text-blue-500" />
+          Browse
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-auto py-2.5 flex flex-col items-center gap-1 text-[10px] active:scale-95"
+        >
+          <TrendingUp className="h-4 w-4 text-green-500" />
+          Analytics
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-auto py-2.5 flex flex-col items-center gap-1 text-[10px] active:scale-95"
+        >
+          <Settings className="h-4 w-4 text-gray-500" />
+          Settings
+        </Button>
+      </div>
 
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="properties" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-muted/50">
-          <TabsTrigger value="properties" className="text-sm font-medium">Properti Saya</TabsTrigger>
-          <TabsTrigger value="analytics" className="text-sm font-medium">Analytics</TabsTrigger>
-          <TabsTrigger value="activity" className="text-sm font-medium">Aktivitas</TabsTrigger>
-          <TabsTrigger value="tasks" className="text-sm font-medium">Tugas</TabsTrigger>
+      {/* Content Tabs */}
+      <Tabs defaultValue="properties" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-3 h-9 p-0.5">
+          <TabsTrigger value="properties" className="text-[10px] sm:text-xs h-8">
+            <Home className="h-3.5 w-3.5 mr-1" />
+            My Properties
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="text-[10px] sm:text-xs h-8">
+            <Activity className="h-3.5 w-3.5 mr-1" />
+            Activity
+          </TabsTrigger>
+          <TabsTrigger value="insights" className="text-[10px] sm:text-xs h-8">
+            <TrendingUp className="h-3.5 w-3.5 mr-1" />
+            Insights
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="properties" className="space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h2 className="text-2xl font-bold">Portfolio Properti</h2>
-              <p className="text-muted-foreground">Kelola dan pantau performa listing properti Anda</p>
-            </div>
-          </div>
-          <DemoPropertyList />
+        <TabsContent value="properties" className="space-y-2 mt-2">
+          {properties.length === 0 ? (
+            <Card className="p-4">
+              <div className="text-center py-6">
+                <Building className="h-10 w-10 mx-auto mb-3 text-muted-foreground/50" />
+                <p className="text-sm font-medium">No properties yet</p>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Start by adding your first property
+                </p>
+                <Button size="sm" onClick={() => navigate('/add-property')}>
+                  <PlusCircle className="h-4 w-4 mr-1.5" />
+                  Add Property
+                </Button>
+              </div>
+            </Card>
+          ) : (
+            properties.map((property) => (
+              <Card key={property.id} className="p-2.5 active:scale-[0.99] transition-transform">
+                <div className="flex gap-2.5">
+                  <div className="h-16 w-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                    {property.thumbnail_url || property.images?.[0] ? (
+                      <img 
+                        src={property.thumbnail_url || property.images?.[0]} 
+                        alt={property.title}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center">
+                        <Building className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-1">
+                      <h3 className="text-xs font-medium truncate flex-1">{property.title || 'Untitled'}</h3>
+                      <Badge 
+                        variant={property.status === 'active' ? 'default' : 'secondary'}
+                        className="text-[8px] px-1.5 py-0 h-4 flex-shrink-0"
+                      >
+                        {property.status}
+                      </Badge>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground truncate">
+                      {property.city}, {property.state}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-xs font-semibold text-primary">
+                        Rp {(property.price / 1000000).toFixed(0)}M
+                      </span>
+                      <Badge variant="outline" className="text-[8px] px-1.5 py-0 h-4">
+                        {property.listing_type}
+                      </Badge>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground self-center flex-shrink-0" />
+                </div>
+              </Card>
+            ))
+          )}
         </TabsContent>
 
-        <TabsContent value="analytics">
-          <PropertyInsights />
+        <TabsContent value="activity" className="space-y-2 mt-2">
+          {recentActivity.length === 0 ? (
+            <Card className="p-4">
+              <div className="text-center py-6">
+                <Activity className="h-10 w-10 mx-auto mb-3 text-muted-foreground/50" />
+                <p className="text-sm font-medium">No activity yet</p>
+                <p className="text-xs text-muted-foreground">
+                  Your recent actions will appear here
+                </p>
+              </div>
+            </Card>
+          ) : (
+            recentActivity.map((activity: any) => (
+              <Card key={activity.id} className="p-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Activity className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">
+                      {activity.activity_type?.replace(/_/g, ' ')}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground truncate">
+                      {activity.activity_description}
+                    </p>
+                  </div>
+                  <span className="text-[9px] text-muted-foreground flex-shrink-0">
+                    {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
+                  </span>
+                </div>
+              </Card>
+            ))
+          )}
         </TabsContent>
 
-        <TabsContent value="activity">
-          <RecentActivity />
-        </TabsContent>
+        <TabsContent value="insights" className="space-y-2 mt-2">
+          <Card className="p-3">
+            <CardHeader className="p-0 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-green-500" />
+                Performance Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 space-y-2">
+              <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                <span className="text-xs">Total Properties</span>
+                <span className="text-sm font-bold">{stats.totalProperties}</span>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                <span className="text-xs">Active Listings</span>
+                <span className="text-sm font-bold text-green-600">{stats.activeListings}</span>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                <span className="text-xs">Pending Approval</span>
+                <span className="text-sm font-bold text-orange-600">{stats.pendingApprovals}</span>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                <span className="text-xs">Times Saved by Users</span>
+                <span className="text-sm font-bold text-red-600">{stats.savedCount}</span>
+              </div>
+            </CardContent>
+          </Card>
 
-        <TabsContent value="tasks">
-          <UpcomingTasks />
+          <Card className="p-3">
+            <CardHeader className="p-0 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Clock className="h-4 w-4 text-blue-500" />
+                Tips to Improve
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 space-y-1.5">
+              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-[10px] text-blue-700 dark:text-blue-300">
+                  💡 Add high-quality photos to increase views by up to 40%
+                </p>
+              </div>
+              <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p className="text-[10px] text-green-700 dark:text-green-300">
+                  📝 Complete property descriptions get 2x more inquiries
+                </p>
+              </div>
+              <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <p className="text-[10px] text-purple-700 dark:text-purple-300">
+                  🏷️ Competitive pricing helps properties sell faster
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
