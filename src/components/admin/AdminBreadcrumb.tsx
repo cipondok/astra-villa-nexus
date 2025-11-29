@@ -23,25 +23,25 @@ export function AdminBreadcrumb({ activeSection, onSectionChange }: AdminBreadcr
   }
 
   return (
-    <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+    <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
       <button
         onClick={() => onSectionChange('overview')}
         className="flex items-center gap-1 hover:text-foreground transition-colors"
       >
-        <Home className="h-4 w-4" />
-        <span className="hidden sm:inline">Dashboard</span>
+        <Home className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">Admin</span>
       </button>
       
       {categoryName && (
         <>
-          <ChevronRight className="h-4 w-4" />
-          <span className="hidden md:inline">{categoryName}</span>
+          <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
+          <span className="hidden md:inline text-muted-foreground/80">{categoryName}</span>
         </>
       )}
       
       {sectionInfo && (
         <>
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
           <span className="font-medium text-foreground">{sectionInfo.label}</span>
         </>
       )}

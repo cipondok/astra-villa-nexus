@@ -29,8 +29,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   };
 
   return (
-    <Sidebar className="border-r border-border/50">
-      <SidebarContent className="px-2">
+    <Sidebar className="border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
+      <SidebarContent className="px-1.5 py-2">
         {categories.map((category) => {
           const sections = navigationSections[category as keyof typeof navigationSections];
           if (!sections || sections.length === 0) return null;
@@ -43,21 +43,21 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               defaultOpen={hasActiveSection || category === 'overview'}
               className="group/collapsible"
             >
-              <SidebarGroup>
+              <SidebarGroup className="py-1">
                 <CollapsibleTrigger asChild>
-                  <SidebarGroupLabel className="group/label flex items-center justify-between cursor-pointer hover:bg-accent/50 rounded-lg px-2 py-2 transition-all">
-                    <span className="text-xs font-semibold uppercase tracking-wider">
+                  <SidebarGroupLabel className="group/label flex items-center justify-between cursor-pointer hover:bg-accent/30 rounded-md px-2 py-1.5 transition-all text-[10px]">
+                    <span className="font-semibold uppercase tracking-wider text-muted-foreground">
                       {sectionTitles[category as keyof typeof sectionTitles]}
                     </span>
                     {!isCollapsed && (
-                      <ChevronRight className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                      <ChevronRight className="h-3 w-3 transition-transform text-muted-foreground/60 group-data-[state=open]/collapsible:rotate-90" />
                     )}
                   </SidebarGroupLabel>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent>
                   <SidebarGroupContent>
-                    <SidebarMenu>
+                    <SidebarMenu className="gap-0.5">
                       {sections.map((section) => {
                         const Icon = section.icon;
                         const isActive = section.key === activeSection;
@@ -68,22 +68,22 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                               onClick={() => handleNavClick(section.key)}
                               isActive={isActive}
                               className={`
-                                relative group/item transition-all duration-200
+                                relative group/item transition-all duration-200 h-8 text-xs
                                 ${isActive 
-                                  ? 'bg-primary text-primary-foreground shadow-md hover:bg-primary/90' 
-                                  : 'hover:bg-accent/50'
+                                  ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-sm hover:from-primary/90 hover:to-primary/70' 
+                                  : 'hover:bg-accent/40'
                                 }
                               `}
                               tooltip={isCollapsed ? section.label : undefined}
                             >
-                              <Icon className={`h-4 w-4 ${isActive ? 'text-primary-foreground' : ''}`} />
+                              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
                               {!isCollapsed && (
-                                <span className="flex-1 text-sm font-medium">
+                                <span className="flex-1 font-medium truncate">
                                   {section.label}
                                 </span>
                               )}
                               {!isCollapsed && section.badge && (
-                                <span className="text-[10px] bg-accent text-accent-foreground px-2 py-0.5 rounded-full">
+                                <span className="text-[9px] bg-destructive/20 text-destructive px-1.5 py-0.5 rounded-full font-medium">
                                   {section.badge}
                                 </span>
                               )}

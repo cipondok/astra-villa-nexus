@@ -40,21 +40,21 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
       <button
         onClick={() => setOpen(true)}
         className="
-          flex items-center gap-2 px-3 py-2 rounded-lg
+          flex items-center gap-1.5 px-2.5 py-1.5 rounded-md
           bg-muted/50 hover:bg-muted transition-all
-          border border-border text-sm text-muted-foreground
-          hover:text-foreground
+          border border-border/50 text-xs text-muted-foreground
+          hover:text-foreground h-8
         "
       >
-        <Search className="h-4 w-4" />
-        <span className="hidden md:inline">Search sections...</span>
-        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 text-[10px] font-medium text-muted-foreground">
-          <span className="text-xs">⌘</span>K
+        <Search className="h-3.5 w-3.5" />
+        <span className="hidden md:inline">Search...</span>
+        <kbd className="hidden md:inline-flex h-4 items-center gap-0.5 rounded border bg-background px-1 text-[9px] font-medium text-muted-foreground ml-1">
+          <span className="text-[9px]">⌘</span>K
         </kbd>
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a section name to search..." />
+        <CommandInput placeholder="Type a section name to search..." className="text-sm" />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           {Object.entries(navigationSections).map(([category, sections], index) => (
@@ -66,12 +66,12 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                     <CommandItem
                       key={section.key}
                       onSelect={() => handleSelect(section.key)}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex items-center gap-2 cursor-pointer text-sm py-2"
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-3.5 w-3.5" />
                       <span>{section.label}</span>
                       {section.badge && (
-                        <span className="ml-auto text-xs text-muted-foreground">
+                        <span className="ml-auto text-[10px] text-muted-foreground">
                           {section.badge}
                         </span>
                       )}
