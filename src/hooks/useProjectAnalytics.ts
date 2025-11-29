@@ -2,13 +2,31 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ProjectAnalytics, DatabaseTableInfo, ProjectStatistics } from '@/types/projectAnalytics';
 
+export interface ExtendedAnalytics extends ProjectAnalytics {
+  realtimeStats: {
+    totalUsers: number;
+    totalProperties: number;
+    totalVendors: number;
+    pendingUpgrades: number;
+    activeAlerts: number;
+    recentActivity: number;
+  };
+  upgradeApplications: {
+    propertyOwner: number;
+    vendor: number;
+    agent: number;
+  };
+  activityTrends: Array<{ date: string; count: number }>;
+}
+
 const fetchDatabaseStatistics = async (): Promise<DatabaseTableInfo[]> => {
   const tableNames = [
     'profiles', 'properties', 'vendor_business_profiles', 'rental_bookings',
     'user_roles', 'api_settings', 'admin_alerts', 'vendor_services',
     'inquiries', 'system_settings', 'user_notifications', 'payment_logs',
     'vendor_subcategories', 'property_categories', 'market_trends',
-    'live_chat_sessions', 'user_subscriptions', 'payment_logs'
+    'live_chat_sessions', 'user_subscriptions', 'activity_logs',
+    'property_owner_requests', 'vendor_requests', 'agent_registration_requests'
   ];
   
   const results = await Promise.allSettled(
@@ -47,6 +65,54 @@ const fetchDatabaseStatistics = async (): Promise<DatabaseTableInfo[]> => {
     .map(r => r.value);
 };
 
+const fetchRealtimeStats = async () => {
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  
+  const [users, properties, vendors, propertyOwner, vendorReq, agent, alerts, activity] = await Promise.all([
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
+    supabase.from('properties').select('*', { count: 'exact', head: true }),
+    supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true),
+    supabase.from('property_owner_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
+    supabase.from('vendor_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
+    supabase.from('agent_registration_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
+    supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
+    supabase.from('activity_logs').select('*', { count: 'exact', head: true }).gte('created_at', yesterday)
+  ]);
+
+  return {
+    totalUsers: users.count || 0,
+    totalProperties: properties.count || 0,
+    totalVendors: vendors.count || 0,
+    pendingUpgrades: (propertyOwner.count || 0) + (vendorReq.count || 0) + (agent.count || 0),
+    activeAlerts: alerts.count || 0,
+    recentActivity: activity.count || 0,
+    upgradeApplications: {
+      propertyOwner: propertyOwner.count || 0,
+      vendor: vendorReq.count || 0,
+      agent: agent.count || 0
+    }
+  };
+};
+
+const fetchActivityTrends = async () => {
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  
+  const { data } = await supabase
+    .from('activity_logs')
+    .select('created_at')
+    .gte('created_at', sevenDaysAgo)
+    .order('created_at', { ascending: true });
+
+  // Group by date
+  const grouped: Record<string, number> = {};
+  (data || []).forEach(item => {
+    const date = new Date(item.created_at).toLocaleDateString('en-US', { weekday: 'short' });
+    grouped[date] = (grouped[date] || 0) + 1;
+  });
+
+  return Object.entries(grouped).map(([date, count]) => ({ date, count }));
+};
+
 const calculateProjectStatistics = (tables: DatabaseTableInfo[]): ProjectStatistics => {
   const totalRows = tables.reduce((sum, table) => sum + table.rows, 0);
   const tablesWithRLS = tables.filter(t => t.hasRLS).length;
@@ -67,19 +133,34 @@ const calculateProjectStatistics = (tables: DatabaseTableInfo[]): ProjectStatist
 };
 
 export const useProjectAnalytics = () => {
-  return useQuery<ProjectAnalytics>({
+  return useQuery<ExtendedAnalytics>({
     queryKey: ['project-analytics'],
     queryFn: async () => {
-      const databaseTables = await fetchDatabaseStatistics();
+      const [databaseTables, realtimeData, activityTrends] = await Promise.all([
+        fetchDatabaseStatistics(),
+        fetchRealtimeStats(),
+        fetchActivityTrends()
+      ]);
+      
       const statistics = calculateProjectStatistics(databaseTables);
       
       return {
         statistics,
         databaseTables: databaseTables.sort((a, b) => b.rows - a.rows),
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
+        realtimeStats: {
+          totalUsers: realtimeData.totalUsers,
+          totalProperties: realtimeData.totalProperties,
+          totalVendors: realtimeData.totalVendors,
+          pendingUpgrades: realtimeData.pendingUpgrades,
+          activeAlerts: realtimeData.activeAlerts,
+          recentActivity: realtimeData.recentActivity
+        },
+        upgradeApplications: realtimeData.upgradeApplications,
+        activityTrends
       };
     },
-    refetchInterval: 30000, // Auto-refresh every 30 seconds
+    refetchInterval: 30000,
     staleTime: 15000,
   });
 };
