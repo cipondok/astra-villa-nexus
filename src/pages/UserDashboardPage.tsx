@@ -9,6 +9,7 @@ import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDash
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
 import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
 import { useUserDashboardData } from '@/hooks/useUserDashboardData';
+import { useUserRoles } from '@/hooks/useUserRoles';
 import { formatDistanceToNow } from 'date-fns';
 import { 
   User, 
@@ -29,6 +30,13 @@ const UserDashboardPage = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const { stats, savedProperties, recentActivity, isLoading } = useUserDashboardData();
+  const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
+
+  // Get the primary display role from user_roles table
+  const primaryRole = userRoles.find(role => role !== 'general_user') || userRoles[0] || 'general_user';
+  const hasUpgradedRole = userRoles.some(role => 
+    ['property_owner', 'agent', 'vendor'].includes(role)
+  );
 
   useEffect(() => {
     if (!loading && !user) {
@@ -36,7 +44,7 @@ const UserDashboardPage = () => {
     }
   }, [user, loading, navigate]);
 
-  if (loading) {
+  if (loading || rolesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
@@ -52,7 +60,7 @@ const UserDashboardPage = () => {
   }
 
   // Render Customer Service Dashboard for CS users
-  if (profile?.role === 'customer_service') {
+  if (userRoles.includes('customer_service')) {
     return (
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 pt-16 sm:pt-20">
         <CustomerServiceDashboard />
@@ -71,7 +79,7 @@ const UserDashboardPage = () => {
                 Welcome, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
               </h1>
               <Badge variant="secondary" className="text-[9px] sm:text-[10px] px-1.5 py-0.5">
-                {profile?.role?.replace('_', ' ') || 'User'}
+                {primaryRole?.replace('_', ' ') || 'User'}
               </Badge>
             </div>
             <p className="text-primary-foreground/80 text-[10px] sm:text-xs">
@@ -138,8 +146,8 @@ const UserDashboardPage = () => {
       {/* Application Status - Show for all users with pending applications */}
       <ApplicationStatusBar />
 
-      {/* Upgrade Card for General Users */}
-      {profile?.role === 'general_user' && (
+      {/* Upgrade Card for General Users Only */}
+      {!hasUpgradedRole && (
         <ProfileUpgradeCard />
       )}
 
@@ -268,7 +276,7 @@ const UserDashboardPage = () => {
                 </div>
                 <div className="p-2 sm:p-3 bg-muted/50 rounded-lg">
                   <label className="text-[10px] sm:text-xs font-medium text-muted-foreground">Role</label>
-                  <p className="text-xs sm:text-sm font-medium capitalize">{profile?.role?.replace('_', ' ') || 'User'}</p>
+                  <p className="text-xs sm:text-sm font-medium capitalize">{primaryRole?.replace('_', ' ') || 'User'}</p>
                 </div>
                 <div className="p-2 sm:p-3 bg-muted/50 rounded-lg">
                   <label className="text-[10px] sm:text-xs font-medium text-muted-foreground">Status</label>
@@ -288,7 +296,21 @@ const UserDashboardPage = () => {
                   <User className="h-3.5 w-3.5 mr-1.5" />
                   Edit Profile
                 </Button>
-                {profile?.role === 'general_user' && (
+                {hasUpgradedRole && (
+                  <Button 
+                    variant="default"
+                    onClick={() => {
+                      if (userRoles.includes('property_owner')) navigate('/dashboard/property-owner');
+                      else if (userRoles.includes('agent')) navigate('/dashboard/agent');
+                      else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
+                    }} 
+                    className="h-8 sm:h-9 text-xs sm:text-sm flex-1 bg-green-600 hover:bg-green-700"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5 mr-1.5" />
+                    Go to {primaryRole?.replace('_', ' ')} Dashboard
+                  </Button>
+                )}
+                {!hasUpgradedRole && (
                   <Button 
                     variant="outline"
                     onClick={() => navigate('/dashboard/user')} 
