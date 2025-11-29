@@ -92,6 +92,38 @@ const UserDashboardPage = () => {
         </div>
       </div>
 
+      {/* Prominent Role Dashboard Card - For Upgraded Users */}
+      {hasUpgradedRole && (
+        <Card 
+          className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0 cursor-pointer hover:shadow-lg transition-all active:scale-[0.99]"
+          onClick={() => {
+            if (userRoles.includes('property_owner')) navigate('/dashboard/property-owner');
+            else if (userRoles.includes('agent')) navigate('/dashboard/agent');
+            else if (userRoles.includes('vendor')) navigate('/dashboard/vendor');
+          }}
+        >
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-white/20 flex items-center justify-center">
+                  <Home className="h-5 w-5 sm:h-6 sm:w-6" />
+                </div>
+                <div>
+                  <p className="text-[10px] sm:text-xs text-white/80">Your Dashboard</p>
+                  <h3 className="text-sm sm:text-lg font-bold capitalize">
+                    {primaryRole?.replace('_', ' ')} Portal
+                  </h3>
+                  <p className="text-[9px] sm:text-xs text-white/70">
+                    Manage listings, view stats & more
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-white/80" />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Stats Grid - Mobile 2x2 */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
         <Card className="p-3 sm:p-4">
