@@ -7,6 +7,7 @@ export interface ApplicationStatus {
   type: 'property_owner' | 'vendor' | 'agent';
   status: 'pending' | 'approved' | 'rejected' | 'under_review';
   created_at: string;
+  reviewed_at?: string;
   review_notes?: string;
   business_name?: string;
 }
@@ -51,7 +52,7 @@ export const usePendingApplications = () => {
       // Fetch property owner requests
       const { data: propertyOwnerData } = await supabase
         .from('property_owner_requests')
-        .select('id, status, created_at, review_notes')
+        .select('id, status, created_at, reviewed_at, review_notes')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1);
@@ -62,6 +63,7 @@ export const usePendingApplications = () => {
           type: 'property_owner',
           status: propertyOwnerData[0].status as ApplicationStatus['status'],
           created_at: propertyOwnerData[0].created_at,
+          reviewed_at: propertyOwnerData[0].reviewed_at || undefined,
           review_notes: propertyOwnerData[0].review_notes || undefined
         });
         if (propertyOwnerData[0].status === 'pending' || propertyOwnerData[0].status === 'under_review') {
@@ -69,7 +71,7 @@ export const usePendingApplications = () => {
         }
       }
 
-      // Fetch vendor requests
+      // Fetch vendor requests (no reviewed_at column)
       const { data: vendorData } = await supabase
         .from('vendor_requests')
         .select('id, status, created_at, review_notes, business_name')
@@ -94,7 +96,7 @@ export const usePendingApplications = () => {
       // Fetch agent registration requests
       const { data: agentData } = await supabase
         .from('agent_registration_requests')
-        .select('id, status, created_at, review_notes, company_name')
+        .select('id, status, created_at, reviewed_at, review_notes, company_name')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1);
@@ -105,6 +107,7 @@ export const usePendingApplications = () => {
           type: 'agent',
           status: agentData[0].status as ApplicationStatus['status'],
           created_at: agentData[0].created_at,
+          reviewed_at: agentData[0].reviewed_at || undefined,
           review_notes: agentData[0].review_notes || undefined,
           business_name: agentData[0].company_name || undefined
         });
