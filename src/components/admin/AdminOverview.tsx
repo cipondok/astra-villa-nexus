@@ -177,31 +177,31 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-4 animate-in fade-in duration-500">
       {/* Welcome Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-border/50 p-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-border/30 p-4 md:p-5">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl -translate-y-24 translate-x-24"></div>
         <div className="relative">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-2xl font-bold mb-1 bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
                 Admin Dashboard
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Welcome back! Here's what's happening with your platform.
+              <p className="text-muted-foreground text-xs md:text-sm">
+                Platform overview and system status
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${
+              <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs ${
                 systemHealth?.systemStatus === 'healthy' 
-                  ? 'bg-green-500/10 border border-green-500/20' 
-                  : 'bg-orange-500/10 border border-orange-500/20'
+                  ? 'bg-green-500/10 border border-green-500/20 text-green-600' 
+                  : 'bg-orange-500/10 border border-orange-500/20 text-orange-600'
               }`}>
-                <div className={`w-2 h-2 rounded-full ${
+                <div className={`w-1.5 h-1.5 rounded-full ${
                   systemHealth?.systemStatus === 'healthy' ? 'bg-green-500 animate-pulse' : 'bg-orange-500 animate-pulse'
                 }`}></div>
-                <span className="text-sm font-medium">
-                  {systemHealth?.systemStatus === 'healthy' ? 'All Systems Operational' : 'Needs Attention'}
+                <span className="font-medium">
+                  {systemHealth?.systemStatus === 'healthy' ? 'Operational' : 'Attention'}
                 </span>
               </div>
             </div>
@@ -210,159 +210,146 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
       </div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Active Users Metric */}
-        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-blue-500/5 to-background hover:shadow-lg transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-blue-500/5 to-background hover:shadow-md transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
+            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
               Active Users
             </CardTitle>
-            <Users className="h-5 w-5 text-blue-500" />
+            <Users className="h-4 w-4 text-blue-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold mb-2">{systemHealth?.activeUsers || 0}</div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="flex items-center gap-1 text-green-500">
-                <ArrowUpRight className="h-3 w-3" />
+          <CardContent className="p-3 pt-0">
+            <div className="text-2xl font-bold mb-1">{systemHealth?.activeUsers || 0}</div>
+            <div className="flex items-center gap-1 text-[10px]">
+              <div className="flex items-center gap-0.5 text-green-500">
+                <ArrowUpRight className="h-2.5 w-2.5" />
                 <span>12%</span>
               </div>
-              <span className="text-muted-foreground">vs last 24h</span>
+              <span className="text-muted-foreground">vs 24h</span>
             </div>
-            <Progress value={75} className="mt-3 h-1" />
+            <Progress value={75} className="mt-2 h-1" />
           </CardContent>
         </Card>
 
         {/* Database Status Metric */}
-        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-green-500/5 to-background hover:shadow-lg transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Database Health
+        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-green-500/5 to-background hover:shadow-md transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
+            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+              Database
             </CardTitle>
-            <Database className="h-5 w-5 text-green-500" />
+            <Database className="h-4 w-4 text-green-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold mb-2">
-              {systemHealth?.dbErrors === 0 ? 'Healthy' : `${systemHealth?.dbErrors} Issues`}
+          <CardContent className="p-3 pt-0">
+            <div className="text-2xl font-bold mb-1">
+              {systemHealth?.dbErrors === 0 ? '✓' : systemHealth?.dbErrors}
             </div>
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-1 text-[10px]">
               <span className={systemHealth?.dbErrors === 0 ? "text-green-500" : "text-orange-500"}>
-                {systemHealth?.dbErrors === 0 ? '✓ No errors detected' : '⚠ Requires attention'}
+                {systemHealth?.dbErrors === 0 ? 'Healthy' : 'Issues'}
               </span>
             </div>
-            <Progress value={systemHealth?.dbErrors === 0 ? 100 : 60} className="mt-3 h-1" />
+            <Progress value={systemHealth?.dbErrors === 0 ? 100 : 60} className="mt-2 h-1" />
           </CardContent>
         </Card>
 
         {/* Pending Vendors Metric */}
-        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-orange-500/5 to-background hover:shadow-lg transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Pending Reviews
+        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-orange-500/5 to-background hover:shadow-md transition-all duration-300 group cursor-pointer"
+          onClick={() => handleQuickAction('vendors-hub')}
+        >
+          <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
+            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+              Pending
             </CardTitle>
-            <Clock className="h-5 w-5 text-orange-500" />
+            <Clock className="h-4 w-4 text-orange-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold mb-2">{systemHealth?.pendingVendors || 0}</div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-orange-500">Vendor applications</span>
+          <CardContent className="p-3 pt-0">
+            <div className="text-2xl font-bold mb-1">{systemHealth?.pendingVendors || 0}</div>
+            <div className="flex items-center gap-1 text-[10px]">
+              <span className="text-orange-500">Reviews</span>
             </div>
-            {systemHealth?.pendingVendors && systemHealth.pendingVendors > 0 && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="mt-3 w-full text-xs"
-                onClick={() => handleQuickAction('vendors-hub')}
-              >
-                Review Now →
-              </Button>
-            )}
+            <Progress value={30} className="mt-2 h-1" />
           </CardContent>
         </Card>
 
         {/* System Performance Metric */}
-        <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-purple-500/5 to-background hover:shadow-lg transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              System Load
+        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-purple-500/5 to-background hover:shadow-md transition-all duration-300 group">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
+          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
+            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+              Uptime
             </CardTitle>
-            <Activity className="h-5 w-5 text-purple-500" />
+            <Activity className="h-4 w-4 text-purple-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold mb-2">99.9%</div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="flex items-center gap-1 text-green-500">
-                <CheckCircle className="h-3 w-3" />
-                <span>Optimal</span>
-              </div>
-              <span className="text-muted-foreground">uptime</span>
+          <CardContent className="p-3 pt-0">
+            <div className="text-2xl font-bold mb-1">99.9%</div>
+            <div className="flex items-center gap-1 text-[10px]">
+              <CheckCircle className="h-2.5 w-2.5 text-green-500" />
+              <span className="text-muted-foreground">Optimal</span>
             </div>
-            <Progress value={99.9} className="mt-3 h-1" />
+            <Progress value={99.9} className="mt-2 h-1" />
           </CardContent>
         </Card>
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Recent Alerts */}
-        <Card className="lg:col-span-2 border-border/50">
-          <CardHeader>
+        <Card className="lg:col-span-2 border-border/30 bg-background/50 backdrop-blur-sm">
+          <CardHeader className="p-3 pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-orange-500" />
-                <CardTitle>Recent Alerts</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-orange-500" />
+                <CardTitle className="text-sm">Recent Alerts</CardTitle>
               </div>
               <Button 
                 variant="ghost" 
                 size="sm"
+                className="h-7 text-xs"
                 onClick={() => handleQuickAction('admin-alerts')}
               >
                 View All
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+          <CardContent className="p-3 pt-0">
+            <div className="space-y-2">
               {recentAlerts && recentAlerts.length > 0 ? (
-                recentAlerts.slice(0, 5).map((alert) => (
+                recentAlerts.slice(0, 4).map((alert) => (
                   <div 
                     key={alert.id}
-                    className="flex items-start gap-3 p-4 rounded-lg border border-border/50 hover:bg-accent/5 transition-colors cursor-pointer"
+                    className="flex items-start gap-2 p-2.5 rounded-lg border border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
                     onClick={() => handleQuickAction('admin-alerts')}
                   >
-                    <div className={`p-2 rounded-lg ${
-                      alert.priority === 'high' ? 'bg-red-500/10' :
+                    <div className={`p-1.5 rounded-md ${
+                      alert.priority === 'high' ? 'bg-destructive/10' :
                       alert.priority === 'medium' ? 'bg-orange-500/10' :
-                      'bg-blue-500/10'
+                      'bg-primary/10'
                     }`}>
-                      <AlertTriangle className={`h-4 w-4 ${
-                        alert.priority === 'high' ? 'text-red-500' :
+                      <AlertTriangle className={`h-3 w-3 ${
+                        alert.priority === 'high' ? 'text-destructive' :
                         alert.priority === 'medium' ? 'text-orange-500' :
-                        'text-blue-500'
+                        'text-primary'
                       }`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium text-sm truncate">{alert.title}</p>
-                        <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="ml-2">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <p className="font-medium text-xs truncate">{alert.title}</p>
+                        <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="ml-1 text-[9px] h-4 px-1.5">
                           {alert.priority}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-1">{alert.message}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(alert.created_at).toLocaleString()}
-                      </p>
+                      <p className="text-[10px] text-muted-foreground line-clamp-1">{alert.message}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-12">
-                  <CheckCircle className="h-12 w-12 mx-auto text-green-500 mb-3 opacity-50" />
-                  <p className="text-muted-foreground">No active alerts</p>
-                  <p className="text-sm text-muted-foreground mt-1">All systems operating normally</p>
+                <div className="text-center py-8">
+                  <CheckCircle className="h-8 w-8 mx-auto text-green-500 mb-2 opacity-50" />
+                  <p className="text-xs text-muted-foreground">No active alerts</p>
                 </div>
               )}
             </div>
@@ -370,112 +357,107 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         </Card>
 
         {/* System Resources */}
-        <Card className="border-border/50">
-          <CardHeader>
+        <Card className="border-border/30 bg-background/50 backdrop-blur-sm">
+          <CardHeader className="p-3 pb-2">
             <div className="flex items-center gap-2">
-              <Server className="h-5 w-5 text-primary" />
-              <CardTitle>System Resources</CardTitle>
+              <Server className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm">Resources</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="p-3 pt-0 space-y-3">
             {/* CPU Usage */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Cpu className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">CPU Usage</span>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-1.5">
+                  <Cpu className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-medium">CPU</span>
                 </div>
-                <span className="text-sm text-muted-foreground">42%</span>
+                <span className="text-[10px] text-muted-foreground">42%</span>
               </div>
-              <Progress value={42} className="h-2" />
+              <Progress value={42} className="h-1" />
             </div>
 
             {/* Memory Usage */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Database className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Memory</span>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-1.5">
+                  <Database className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-medium">Memory</span>
                 </div>
-                <span className="text-sm text-muted-foreground">2.1 / 4.0 GB</span>
+                <span className="text-[10px] text-muted-foreground">2.1/4GB</span>
               </div>
-              <Progress value={52.5} className="h-2" />
+              <Progress value={52.5} className="h-1" />
             </div>
 
             {/* Storage */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Server className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Storage</span>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-1.5">
+                  <Server className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-medium">Storage</span>
                 </div>
-                <span className="text-sm text-muted-foreground">68.4 / 100 GB</span>
+                <span className="text-[10px] text-muted-foreground">68/100GB</span>
               </div>
-              <Progress value={68.4} className="h-2" />
+              <Progress value={68.4} className="h-1" />
             </div>
 
             {/* Network */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Network</span>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-1.5">
+                  <Activity className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-medium">Network</span>
                 </div>
-                <span className="text-sm text-muted-foreground">↓ 1.2 MB/s</span>
+                <span className="text-[10px] text-muted-foreground">↓1.2MB/s</span>
               </div>
-              <Progress value={30} className="h-2" />
+              <Progress value={30} className="h-1" />
             </div>
 
             <Button 
               variant="outline" 
-              className="w-full mt-4"
+              size="sm"
+              className="w-full h-7 text-xs mt-2"
               onClick={() => handleQuickAction('diagnostic')}
             >
-              <Activity className="h-4 w-4 mr-2" />
-              Full Diagnostics
+              <Activity className="h-3 w-3 mr-1.5" />
+              Diagnostics
             </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Quick Access Panel */}
-      <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
+      {/* Quick Actions */}
+      <Card className="border-border/30 bg-background/50 backdrop-blur-sm">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <Zap className="h-4 w-4 text-primary" />
             Quick Actions
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <CardContent className="p-3 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
             {quickManagementActions.map((action, index) => (
               <button
                 key={index}
                 onClick={() => handleQuickAction(action.action)}
-                className="group relative overflow-hidden rounded-xl border border-border/50 p-6 text-left transition-all hover:shadow-lg hover:border-primary/50 hover:-translate-y-1 bg-gradient-to-br from-background to-accent/5"
+                className="group relative overflow-hidden rounded-lg border border-border/30 p-3 text-left transition-all hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5 bg-gradient-to-br from-background to-accent/5"
               >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+                <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
                 {action.badge !== undefined && action.badge > 0 && (
-                  <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                  <div className="absolute top-2 right-2 bg-destructive text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
                     {action.badge}
                   </div>
                 )}
                 <div className="relative">
-                  <div className={`inline-flex p-3 rounded-lg mb-4 ${action.color}`}>
-                    <action.icon className="h-6 w-6" />
+                  <div className={`inline-flex p-1.5 rounded-md mb-2 ${action.color}`}>
+                    <action.icon className="h-4 w-4" />
                   </div>
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="font-medium text-xs mb-0.5 group-hover:text-primary transition-colors truncate">
                     {action.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-[9px] text-muted-foreground line-clamp-1">
                     {action.description}
                   </p>
-                  <Badge 
-                    variant={action.priority === 'critical' ? 'destructive' : 'secondary'}
-                    className="mt-3"
-                  >
-                    {action.priority}
-                  </Badge>
                 </div>
               </button>
             ))}

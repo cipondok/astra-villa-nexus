@@ -250,52 +250,52 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <Card className="admin-card gold-glow-hover border shadow-sm bg-gradient-to-br from-primary/5 to-accent/5">
-        <CardHeader>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+      <Card className="border-border/30 bg-gradient-to-br from-primary/5 to-accent/5 backdrop-blur-sm">
+        <CardHeader className="p-3 pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Quick Statistics & Actions
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              Quick Statistics
             </CardTitle>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => navigate('/')}
-              className="flex items-center gap-2"
+              className="h-6 text-[10px] px-2"
             >
-              <Home className="h-4 w-4" />
+              <Home className="h-3 w-3 mr-1" />
               Home
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="p-3 pt-0 space-y-2">
           {quickActions.map((action, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 admin-card border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer gold-glow-hover"
+              className="flex items-center justify-between p-2 border border-border/30 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer"
               onClick={action.onClick}
             >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <action.icon className="h-5 w-5 text-primary" />
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-md bg-primary/10">
+                  <action.icon className="h-3.5 w-3.5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-medium text-foreground">{action.title}</div>
-                  <div className="text-xs text-muted-foreground">{action.description}</div>
+                  <div className="font-medium text-xs">{action.title}</div>
+                  <div className="text-[9px] text-muted-foreground">{action.description}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <Badge 
                   variant="secondary"
-                  className="bg-primary/10 text-primary border-primary/20"
+                  className="bg-primary/10 text-primary border-primary/20 text-[10px] h-5 px-1.5"
                 >
                   {action.count}
                 </Badge>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="gold-glow-hover"
+                  className="h-6 text-[9px] px-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     action.onClick();
@@ -309,33 +309,33 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
         </CardContent>
       </Card>
 
-      <Card className="admin-card gold-glow-hover">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
+      <Card className="border-border/30 bg-background/50 backdrop-blur-sm">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <Clock className="h-4 w-4" />
             Today's Activity
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="p-3 pt-0 space-y-1.5">
           {todayActivity && todayActivity.length > 0 ? (
             todayActivity.map((activity, index) => (
-              <div key={index} className="flex items-center gap-3 p-2">
-                <activity.icon className={`h-4 w-4 ${
+              <div key={index} className="flex items-center gap-2 p-1.5 rounded-md hover:bg-muted/30">
+                <activity.icon className={`h-3.5 w-3.5 ${
                   activity.type === 'success' ? 'text-green-500' :
                   activity.type === 'warning' ? 'text-orange-500' :
-                  'text-blue-500'
+                  'text-primary'
                 }`} />
-                <div className="flex-1">
-                  <div className="text-sm">{activity.action}</div>
-                  <div className="text-xs text-muted-foreground">{activity.user}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs truncate">{activity.action}</div>
+                  <div className="text-[9px] text-muted-foreground truncate">{activity.user}</div>
                 </div>
-                <div className="text-xs text-muted-foreground">{activity.time}</div>
+                <div className="text-[9px] text-muted-foreground">{activity.time}</div>
               </div>
             ))
           ) : (
-            <div className="text-center py-4 text-muted-foreground">
-              <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No activity today yet</p>
+            <div className="text-center py-6 text-muted-foreground">
+              <Clock className="h-6 w-6 mx-auto mb-1.5 opacity-50" />
+              <p className="text-xs">No activity today</p>
             </div>
           )}
         </CardContent>

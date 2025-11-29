@@ -92,46 +92,41 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-xl font-bold">Quick Access</h3>
-          <p className="text-muted-foreground">Jump to frequently used admin sections</p>
+          <h3 className="text-sm font-semibold">Quick Access</h3>
+          <p className="text-[10px] text-muted-foreground">Jump to admin sections</p>
         </div>
         <Button 
           onClick={handleDirectTokenAccess}
-          className="bg-purple-600 hover:bg-purple-700 text-white"
+          size="sm"
+          className="h-7 text-xs bg-purple-600 hover:bg-purple-700 text-white"
         >
-          <Coins className="h-4 w-4 mr-2" />
+          <Coins className="h-3 w-3 mr-1.5" />
           Token Settings
-          <ExternalLink className="h-4 w-4 ml-2" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
         {quickAccessItems.map((item, index) => {
           const IconComponent = item.icon;
           return (
             <Card 
               key={index}
-              className="hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-transparent hover:border-l-primary group"
+              className="hover:shadow-md transition-all duration-200 cursor-pointer border-border/30 hover:border-primary/40 group bg-background/50"
               onClick={() => handleQuickAccess(item.action, item.title)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <IconComponent className={`h-6 w-6 ${item.color}`} />
-                  <Badge variant="secondary" className="text-xs">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <IconComponent className={`h-4 w-4 ${item.color}`} />
+                  <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4">
                     {item.badge}
                   </Badge>
                 </div>
-                <CardTitle className="text-base group-hover:text-primary transition-colors">
+                <CardTitle className="text-xs font-medium group-hover:text-primary transition-colors line-clamp-1">
                   {item.title}
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
               </CardContent>
             </Card>
           );
@@ -139,43 +134,42 @@ const AdminQuickAccess: React.FC<AdminQuickAccessProps> = ({ onSectionChange }) 
       </div>
 
       {/* Direct Token Settings Access */}
-      <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
-            <Coins className="h-5 w-5" />
-            ASTRA Token Management
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-purple-600 dark:text-purple-400 mb-4">
-            Configure all aspects of the ASTRA token system including welcome bonuses, 
-            daily check-in rewards, transaction bonuses, and transfer settings.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => handleQuickAccess('settings', 'System Settings')}
-            >
-              <Settings className="h-4 w-4 mr-2" />
-              System Settings
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => handleQuickAccess('astra-tokens', 'ASTRA Tokens')}
-            >
-              <Coins className="h-4 w-4 mr-2" />
-              Token Hub
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => handleQuickAccess('analytics', 'Analytics')}
-            >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Analytics
-            </Button>
+      <Card className="border-purple-500/20 bg-gradient-to-r from-purple-500/5 to-indigo-500/5">
+        <CardContent className="p-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Coins className="h-4 w-4 text-purple-500" />
+              <span className="text-xs font-medium text-purple-700 dark:text-purple-300">ASTRA Token Management</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="h-6 text-[10px] px-2"
+                onClick={() => handleQuickAccess('settings', 'System Settings')}
+              >
+                <Settings className="h-3 w-3 mr-1" />
+                Settings
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="h-6 text-[10px] px-2"
+                onClick={() => handleQuickAccess('astra-tokens', 'ASTRA Tokens')}
+              >
+                <Coins className="h-3 w-3 mr-1" />
+                Token Hub
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="h-6 text-[10px] px-2"
+                onClick={() => handleQuickAccess('analytics', 'Analytics')}
+              >
+                <BarChart3 className="h-3 w-3 mr-1" />
+                Analytics
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
