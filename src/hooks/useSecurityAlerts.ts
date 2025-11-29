@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -23,16 +23,14 @@ export const useSecurityAlerts = () => {
   const [alerts, setAlerts] = useState<SecurityAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
-
-  useEffect(() => {
-    if (user) {
-      loadAlerts();
-      setupRealtimeSubscription();
-    }
-  }, [user]);
+  const subscriptionRef = useRef<any>(null);
+  const isSubscribedRef = useRef(false);
 
   const loadAlerts = async () => {
-    if (!user) return;
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -50,45 +48,60 @@ export const useSecurityAlerts = () => {
       setUnreadCount(typedAlerts.filter(a => !a.is_read).length);
     } catch (error) {
       console.error('Error loading security alerts:', error);
+      setAlerts([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const setupRealtimeSubscription = () => {
-    if (!user) return;
+  useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
 
-    const channel = supabase
-      .channel('security-alerts')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'security_alerts',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const newAlert = payload.new as SecurityAlert;
-          setAlerts(prev => [newAlert, ...prev]);
-          setUnreadCount(prev => prev + 1);
-          
-          // Show toast notification for high/critical alerts
-          if (newAlert.severity === 'high' || newAlert.severity === 'critical') {
-            toast({
-              title: "⚠️ Security Alert",
-              description: newAlert.title,
-              variant: "destructive",
-            });
+    loadAlerts();
+
+    // Only set up subscription if not already subscribed
+    if (!isSubscribedRef.current) {
+      isSubscribedRef.current = true;
+      
+      const channelName = `security-alerts-${user.id}`;
+      subscriptionRef.current = supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'security_alerts',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            const newAlert = payload.new as SecurityAlert;
+            setAlerts(prev => [newAlert, ...prev]);
+            setUnreadCount(prev => prev + 1);
+            
+            if (newAlert.severity === 'high' || newAlert.severity === 'critical') {
+              toast({
+                title: "⚠️ Security Alert",
+                description: newAlert.title,
+                variant: "destructive",
+              });
+            }
           }
-        }
-      )
-      .subscribe();
+        )
+        .subscribe();
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+        isSubscribedRef.current = false;
+      }
     };
-  };
+  }, [user?.id]);
 
   const markAsRead = async (alertId: string) => {
     try {
