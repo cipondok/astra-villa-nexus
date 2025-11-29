@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { Building2, FileText, CheckCircle } from "lucide-react";
+import { Building2, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import BPJSVerification from "./BPJSVerification";
+import { notifyVendorApplication } from "@/utils/adminNotifications";
 
 interface VendorRegistrationFormProps {
   onSuccess: () => void;
@@ -36,6 +37,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
     bpjs_kesehatan_number: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const businessTypes = [
     'Home Maintenance',
@@ -53,8 +55,41 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Clear previous errors
+    const newErrors: Record<string, string> = {};
+    
     if (!user) {
       showError("Authentication Required", "You must be logged in to register as a vendor.");
+      return;
+    }
+
+    // Field-level validation
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = "Full Name is required";
+    }
+    
+    if (!formData.business_name.trim()) {
+      newErrors.business_name = "Business Name is required";
+    }
+    
+    if (!formData.business_type) {
+      newErrors.business_type = "Business Type is required";
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone Number is required";
+    }
+    
+    if (formData.property_type === 'commercial' && !formData.surat_izin_usaha.trim()) {
+      newErrors.surat_izin_usaha = "Surat Izin Usaha is required for commercial";
+    }
+    
+    setFieldErrors(newErrors);
+    
+    if (Object.keys(newErrors).length > 0) {
+      const errorList = Object.values(newErrors).slice(0, 3).join(", ");
+      showError("Please fix the errors", errorList);
       return;
     }
 
@@ -62,42 +97,35 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
     try {
       console.log('Starting vendor registration for user:', user.id);
 
-      // Step 1: Update user profile to vendor role
+      // Update profile (use update, not upsert to avoid RLS issues)
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
-          email: user.email!,
+        .update({
           full_name: formData.full_name,
           phone: formData.phone,
-          role: 'vendor',
           company_name: formData.company_name,
-          license_number: formData.license_number,
-          verification_status: 'pending'
-        });
+          license_number: formData.license_number
+        })
+        .eq('id', user.id);
 
       if (profileError) {
         console.error('Profile update error:', profileError);
-        throw profileError;
+        // Continue even if profile update fails
       }
 
       console.log('Profile updated successfully');
 
-      // Step 2: Create vendor application with property type and BPJS data
-      const { error: requestError } = await supabase
-        .from('vendor_applications')
+      // Create vendor request in vendor_requests table
+      const { data: requestData, error: requestError } = await supabase
+        .from('vendor_requests')
         .insert([{
           user_id: user.id,
           business_name: formData.business_name,
           business_type: formData.business_type,
-          vendor_type: 'individual',
-          application_status: 'pending',
-          property_type: formData.property_type,
-          business_documents: formData.verification_documents || [],
-          // Add property type and conditional requirements
-          compliance_region: 'ID', // Indonesia
-          nomor_skt: formData.property_type === 'commercial' ? formData.surat_izin_usaha : null
-        }]);
+          status: 'pending'
+        }])
+        .select('id')
+        .single();
 
       if (requestError) {
         console.error('Vendor request error:', requestError);
@@ -106,39 +134,30 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Vendor request created successfully');
 
-      // Step 3: Create vendor business profile with property type adjustments and BPJS data
-      const baseRate = 100000; // Base residential rate
-      const commercialMultiplier = formData.property_type === 'commercial' ? 1.5 : 1.0;
-      
-      const { error: businessProfileError } = await supabase
-        .from('vendor_business_profiles')
-        .insert([{
-          vendor_id: user.id,
+      // Log activity
+      await supabase.from('activity_logs').insert({
+        user_id: user.id,
+        activity_type: 'role_upgrade_request',
+        activity_description: `User requested upgrade to vendor role (${formData.business_type})`,
+        metadata: {
+          request_id: requestData?.id,
           business_name: formData.business_name,
           business_type: formData.business_type,
-          business_phone: formData.phone,
-          business_email: formData.email,
-          // Apply property type pricing
-          tarif_harian_min: baseRate * commercialMultiplier,
-          tarif_harian_max: (baseRate * 2) * commercialMultiplier,
-          // BPJS verification status
-          bpjs_ketenagakerjaan_status: formData.bpjs_ketenagakerjaan_status,
-          bpjs_kesehatan_status: formData.bpjs_kesehatan_status,
-          bpjs_ketenagakerjaan_verified: formData.bpjs_ketenagakerjaan_status === 'verified',
-          bpjs_kesehatan_verified: formData.bpjs_kesehatan_status === 'verified',
-          bpjs_verification_method: 'registration_form',
-          is_active: false, // Will be activated when approved
-          is_verified: false
-        }]);
+          property_type: formData.property_type
+        }
+      });
 
-      if (businessProfileError) {
-        console.error('Business profile error:', businessProfileError);
-        throw businessProfileError;
+      // Send admin notification
+      if (requestData?.id) {
+        await notifyVendorApplication(
+          user.id,
+          formData.full_name,
+          formData.business_name,
+          requestData.id
+        );
       }
 
-      console.log('Business profile created successfully');
-
-      showSuccess("Application Submitted", "Your vendor application has been submitted successfully and is pending review.");
+      showSuccess("Application Submitted", "Your vendor application has been submitted successfully and is pending review. You'll be notified once reviewed.");
       onSuccess();
     } catch (error: any) {
       console.error('Vendor registration error:', error);
