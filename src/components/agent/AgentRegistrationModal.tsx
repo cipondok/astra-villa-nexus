@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserPlus, Building2, FileText } from "lucide-react";
+import { UserPlus, Building2, FileText, AlertCircle } from "lucide-react";
+import { notifyAgentApplication } from "@/utils/adminNotifications";
 
 interface AgentRegistrationModalProps {
   isOpen: boolean;
@@ -28,13 +29,14 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
     business_type: "",
     additional_info: ""
   });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const { showSuccess, showError } = useAlert();
   const { profile } = useAuth();
 
   const registrationMutation = useMutation({
     mutationFn: async (data: any) => {
-      const { error } = await supabase
+      const { data: insertedData, error } = await supabase
         .from('agent_registration_requests')
         .insert([{
           user_id: profile?.id,
@@ -47,11 +49,24 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
           registration_documents: {
             additional_info: data.additional_info
           }
-        }]);
+        }])
+        .select('id')
+        .single();
       if (error) throw error;
+      return insertedData;
     },
-    onSuccess: () => {
-      showSuccess("Success", "Agent registration request submitted successfully. Please wait for admin approval.");
+    onSuccess: async (data) => {
+      // Send admin notification
+      if (data?.id && profile?.id) {
+        await notifyAgentApplication(
+          profile.id,
+          formData.full_name,
+          formData.company_name || undefined,
+          data.id
+        );
+      }
+      
+      showSuccess("Success", "Agent registration request submitted successfully. You'll be notified once reviewed.");
       onClose();
       setFormData({
         full_name: "",
@@ -62,6 +77,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
         business_type: "",
         additional_info: ""
       });
+      setFieldErrors({});
     },
     onError: (error) => {
       showError("Error", `Failed to submit registration: ${error.message}`);
@@ -71,8 +87,30 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.full_name || !formData.email || !formData.business_type) {
-      showError("Error", "Please fill in all required fields");
+    // Clear previous errors
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = "Full Name is required";
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    }
+    
+    if (!formData.business_type) {
+      newErrors.business_type = "Business Type is required";
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone Number is required";
+    }
+    
+    setFieldErrors(newErrors);
+    
+    if (Object.keys(newErrors).length > 0) {
+      const errorList = Object.values(newErrors).join(", ");
+      showError("Please fix the errors", errorList);
       return;
     }
 
@@ -108,39 +146,61 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Full Name */}
                 <div>
-                  <Label htmlFor="full_name">Full Name *</Label>
+                  <Label htmlFor="full_name" className="flex items-center gap-1">
+                    Full Name <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="full_name"
                     value={formData.full_name}
                     onChange={(e) => handleInputChange('full_name', e.target.value)}
                     placeholder="John Doe"
-                    required
+                    className={fieldErrors.full_name ? 'border-red-500' : ''}
                   />
+                  {fieldErrors.full_name && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" /> {fieldErrors.full_name}
+                    </p>
+                  )}
                 </div>
 
                 {/* Email */}
                 <div>
-                  <Label htmlFor="email">Email Address *</Label>
+                  <Label htmlFor="email" className="flex items-center gap-1">
+                    Email Address <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     placeholder="john@example.com"
-                    required
+                    className={fieldErrors.email ? 'border-red-500' : ''}
                   />
+                  {fieldErrors.email && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" /> {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone" className="flex items-center gap-1">
+                    Phone Number <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder="+1234567890"
+                    className={fieldErrors.phone ? 'border-red-500' : ''}
                   />
+                  {fieldErrors.phone && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" /> {fieldErrors.phone}
+                    </p>
+                  )}
                 </div>
 
                 {/* License Number */}
@@ -167,9 +227,11 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
 
                 {/* Business Type */}
                 <div>
-                  <Label htmlFor="business_type">Business Type *</Label>
+                  <Label htmlFor="business_type" className="flex items-center gap-1">
+                    Business Type <span className="text-red-500">*</span>
+                  </Label>
                   <Select value={formData.business_type} onValueChange={(value) => handleInputChange('business_type', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className={fieldErrors.business_type ? 'border-red-500' : ''}>
                       <SelectValue placeholder="Select business type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -178,6 +240,11 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                       <SelectItem value="developer">Property Developer</SelectItem>
                     </SelectContent>
                   </Select>
+                  {fieldErrors.business_type && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" /> {fieldErrors.business_type}
+                    </p>
+                  )}
                 </div>
               </div>
 

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDashboard';
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
+import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
 import { useUserDashboardData } from '@/hooks/useUserDashboardData';
 import { formatDistanceToNow } from 'date-fns';
 import { 
@@ -133,6 +134,9 @@ const UserDashboardPage = () => {
           </div>
         </Card>
       </div>
+
+      {/* Application Status - Show for all users with pending applications */}
+      <ApplicationStatusBar />
 
       {/* Upgrade Card for General Users */}
       {profile?.role === 'general_user' && (

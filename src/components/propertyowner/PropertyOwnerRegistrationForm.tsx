@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Home, CheckCircle, Building, MapPin, User, Briefcase, MessageCircle, Navigation, Loader2 } from "lucide-react";
+import { Home, CheckCircle, Building, MapPin, User, Briefcase, MessageCircle, Navigation, Loader2, AlertCircle } from "lucide-react";
+import { notifyPropertyOwnerApplication } from "@/utils/adminNotifications";
 
 interface PropertyOwnerRegistrationFormProps {
   onSuccess: () => void;
@@ -54,6 +55,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
   const [submitting, setSubmitting] = useState(false);
   const [gettingPropertyLocation, setGettingPropertyLocation] = useState(false);
   const [gettingBusinessLocation, setGettingBusinessLocation] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Fetch locations from database
   const { data: locations, isLoading: locationsLoading } = useQuery({
@@ -320,55 +322,59 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate required fields with specific error messages
-    const errors: string[] = [];
+    // Clear previous errors
+    const newErrors: Record<string, string> = {};
     
     if (!user) {
       toast({ title: "Authentication Required", description: "You must be logged in.", variant: "destructive" });
       return;
     }
     
+    // Field-level validation
     if (!formData.full_name.trim()) {
-      errors.push("Full Name is required");
+      newErrors.full_name = "Full Name is required";
     }
     
     if (!formData.phone.trim()) {
-      errors.push("Phone Number is required");
+      newErrors.phone = "Phone Number is required";
     }
     
     if (!formData.owner_type) {
-      errors.push("Registration Type (Individual/Business) is required");
+      newErrors.owner_type = "Registration Type is required";
     }
     
     if (formData.property_types.length === 0) {
-      errors.push("At least one Property Type must be selected");
+      newErrors.property_types = "Select at least one property type";
     }
     
     if (!formData.province) {
-      errors.push("Province is required");
+      newErrors.province = "Province is required";
     }
     
     if (!formData.city) {
-      errors.push("City is required");
+      newErrors.city = "City is required";
     }
     
     // Business validation
     if (formData.owner_type === 'business') {
       if (!formData.business_name.trim()) {
-        errors.push("Business Name is required");
+        newErrors.business_name = "Business Name is required";
       }
       if (!formData.business_province) {
-        errors.push("Business Province is required");
+        newErrors.business_province = "Business Province is required";
       }
       if (!formData.business_city) {
-        errors.push("Business City is required");
+        newErrors.business_city = "Business City is required";
       }
     }
     
-    if (errors.length > 0) {
+    setFieldErrors(newErrors);
+    
+    if (Object.keys(newErrors).length > 0) {
+      const errorList = Object.values(newErrors).slice(0, 3).join(", ");
       toast({ 
-        title: "Please fix the following errors:", 
-        description: errors.join("\n• "), 
+        title: "Please fix the errors", 
+        description: errorList + (Object.keys(newErrors).length > 3 ? `... and ${Object.keys(newErrors).length - 3} more` : ''),
         variant: "destructive" 
       });
       return;
@@ -376,7 +382,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
 
     setSubmitting(true);
     try {
-      // Update profile (use update, not upsert - profile already exists for logged-in users)
+      // Update profile
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -387,68 +393,70 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
 
       if (profileError) {
         console.error('Profile update error:', profileError);
-        // Continue even if profile update fails - it's not critical
-      }
-
-      // Insert role request into user_roles table
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .upsert({
-          user_id: user.id,
-          role: 'property_owner',
-          is_active: false // Pending approval
-        }, { onConflict: 'user_id,role' });
-
-      if (roleError) {
-        console.error('Role insert error:', roleError);
-        // Continue even if role insert fails - it might already exist
       }
 
       const activeSocialMedia = Object.fromEntries(
         Object.entries(formData.social_media).filter(([_, value]) => value.trim() !== '')
       );
 
+      // Insert into property_owner_requests table
+      const { data: requestData, error: requestError } = await supabase
+        .from('property_owner_requests')
+        .insert({
+          user_id: user.id,
+          full_name: formData.full_name,
+          phone: formData.phone,
+          owner_type: formData.owner_type,
+          property_types: formData.property_types,
+          property_count: formData.property_count,
+          province: formData.province,
+          city: formData.city,
+          area: formData.area || null,
+          street_address: formData.street_address || null,
+          gps_coordinates: formData.gps_lat && formData.gps_lng ? `${formData.gps_lat},${formData.gps_lng}` : null,
+          business_name: formData.owner_type === 'business' ? formData.business_name : null,
+          business_registration_number: formData.owner_type === 'business' ? formData.business_registration_number : null,
+          business_province: formData.owner_type === 'business' ? formData.business_province : null,
+          business_city: formData.owner_type === 'business' ? formData.business_city : null,
+          business_area: formData.owner_type === 'business' ? formData.business_area : null,
+          business_street_address: formData.owner_type === 'business' ? formData.business_street_address : null,
+          business_gps_coordinates: formData.business_gps_lat && formData.business_gps_lng 
+            ? `${formData.business_gps_lat},${formData.business_gps_lng}` : null,
+          social_media: Object.keys(activeSocialMedia).length > 0 ? activeSocialMedia : {},
+          additional_notes: formData.additional_info || null,
+          status: 'pending'
+        })
+        .select('id')
+        .single();
+
+      if (requestError) {
+        console.error('Request insert error:', requestError);
+        throw requestError;
+      }
+
       // Log activity
-      const { error: activityError } = await supabase.from('activity_logs').insert({
+      await supabase.from('activity_logs').insert({
         user_id: user.id,
         activity_type: 'role_upgrade_request',
         activity_description: `User requested upgrade to property_owner role (${formData.owner_type})`,
         metadata: {
+          request_id: requestData?.id,
           owner_type: formData.owner_type,
           property_count: formData.property_count,
-          property_types: formData.property_types,
-          property_location: {
-            province: formData.province,
-            city: formData.city,
-            area: formData.area,
-            street_address: formData.street_address,
-            gps: formData.gps_lat && formData.gps_lng ? { lat: formData.gps_lat, lng: formData.gps_lng } : null
-          },
-          phone: formData.phone,
-          whatsapp_available: formData.whatsapp_available,
-          ...(formData.owner_type === 'business' && {
-            business_info: {
-              name: formData.business_name,
-              registration_number: formData.business_registration_number,
-              location: {
-                province: formData.business_province,
-                city: formData.business_city,
-                area: formData.business_area,
-                street_address: formData.business_street_address,
-                gps: formData.business_gps_lat && formData.business_gps_lng 
-                  ? { lat: formData.business_gps_lat, lng: formData.business_gps_lng } : null
-              }
-            }
-          }),
-          social_media: Object.keys(activeSocialMedia).length > 0 ? activeSocialMedia : null
+          property_types: formData.property_types
         }
       });
 
-      if (activityError) {
-        console.error('Activity log error:', activityError);
+      // Send admin notification
+      if (requestData?.id) {
+        await notifyPropertyOwnerApplication(
+          user.id,
+          formData.full_name,
+          requestData.id
+        );
       }
 
-      toast({ title: "Application Submitted!", description: "Your property owner application is pending review." });
+      toast({ title: "Application Submitted!", description: "Your property owner application is pending review. You'll be notified once reviewed." });
       onSuccess();
     } catch (error: any) {
       console.error('Submission error:', error);
@@ -495,13 +503,18 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Owner Type Selection */}
             <div className="space-y-2">
-              <Label className="text-xs sm:text-sm font-medium">Registration Type *</Label>
+              <Label className="text-xs sm:text-sm font-medium flex items-center gap-1">
+                Registration Type <span className="text-red-500">*</span>
+              </Label>
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   type="button"
                   variant={formData.owner_type === 'individual' ? "default" : "outline"}
-                  onClick={() => setFormData({ ...formData, owner_type: 'individual' })}
-                  className="h-12 sm:h-14 flex flex-col gap-1"
+                  onClick={() => {
+                    setFormData({ ...formData, owner_type: 'individual' });
+                    setFieldErrors(prev => ({ ...prev, owner_type: '' }));
+                  }}
+                  className={`h-12 sm:h-14 flex flex-col gap-1 ${fieldErrors.owner_type ? 'border-red-500' : ''}`}
                 >
                   <User className="h-4 w-4" />
                   <span className="text-xs">Individual Sale</span>
@@ -509,27 +522,44 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                 <Button
                   type="button"
                   variant={formData.owner_type === 'business' ? "default" : "outline"}
-                  onClick={() => setFormData({ ...formData, owner_type: 'business' })}
-                  className="h-12 sm:h-14 flex flex-col gap-1"
+                  onClick={() => {
+                    setFormData({ ...formData, owner_type: 'business' });
+                    setFieldErrors(prev => ({ ...prev, owner_type: '' }));
+                  }}
+                  className={`h-12 sm:h-14 flex flex-col gap-1 ${fieldErrors.owner_type ? 'border-red-500' : ''}`}
                 >
                   <Briefcase className="h-4 w-4" />
                   <span className="text-xs">Business</span>
                 </Button>
               </div>
+              {fieldErrors.owner_type && (
+                <p className="text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" /> {fieldErrors.owner_type}
+                </p>
+              )}
             </div>
 
             {/* Personal Information */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label htmlFor="full_name" className="text-xs">Full Name *</Label>
+                <Label htmlFor="full_name" className="text-xs flex items-center gap-1">
+                  Full Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, full_name: e.target.value });
+                    if (e.target.value.trim()) setFieldErrors(prev => ({ ...prev, full_name: '' }));
+                  }}
                   placeholder="Your full name"
-                  required
-                  className="h-8 sm:h-9 text-xs sm:text-sm"
+                  className={`h-8 sm:h-9 text-xs sm:text-sm ${fieldErrors.full_name ? 'border-red-500' : ''}`}
                 />
+                {fieldErrors.full_name && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> {fieldErrors.full_name}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -544,15 +574,24 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="phone" className="text-xs">Phone Number *</Label>
+                <Label htmlFor="phone" className="text-xs flex items-center gap-1">
+                  Phone Number <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="phone"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, phone: e.target.value });
+                    if (e.target.value.trim()) setFieldErrors(prev => ({ ...prev, phone: '' }));
+                  }}
                   placeholder="+62..."
-                  required
-                  className="h-8 sm:h-9 text-xs sm:text-sm"
+                  className={`h-8 sm:h-9 text-xs sm:text-sm ${fieldErrors.phone ? 'border-red-500' : ''}`}
                 />
+                {fieldErrors.phone && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> {fieldErrors.phone}
+                  </p>
+                )}
                 <div className="flex items-center gap-2 mt-1.5">
                   <Checkbox
                     id="whatsapp"

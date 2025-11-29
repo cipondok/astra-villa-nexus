@@ -4660,6 +4660,96 @@ export type Database = {
           },
         ]
       }
+      property_owner_requests: {
+        Row: {
+          additional_notes: string | null
+          area: string | null
+          business_area: string | null
+          business_city: string | null
+          business_gps_coordinates: string | null
+          business_name: string | null
+          business_province: string | null
+          business_registration_number: string | null
+          business_street_address: string | null
+          city: string
+          created_at: string | null
+          full_name: string
+          gps_coordinates: string | null
+          id: string
+          owner_type: string
+          phone: string | null
+          property_count: string | null
+          property_types: string[] | null
+          province: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          social_media: Json | null
+          status: string
+          street_address: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          area?: string | null
+          business_area?: string | null
+          business_city?: string | null
+          business_gps_coordinates?: string | null
+          business_name?: string | null
+          business_province?: string | null
+          business_registration_number?: string | null
+          business_street_address?: string | null
+          city: string
+          created_at?: string | null
+          full_name: string
+          gps_coordinates?: string | null
+          id?: string
+          owner_type: string
+          phone?: string | null
+          property_count?: string | null
+          property_types?: string[] | null
+          province: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          social_media?: Json | null
+          status?: string
+          street_address?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          area?: string | null
+          business_area?: string | null
+          business_city?: string | null
+          business_gps_coordinates?: string | null
+          business_name?: string | null
+          business_province?: string | null
+          business_registration_number?: string | null
+          business_street_address?: string | null
+          city?: string
+          created_at?: string | null
+          full_name?: string
+          gps_coordinates?: string | null
+          id?: string
+          owner_type?: string
+          phone?: string | null
+          property_count?: string | null
+          property_types?: string[] | null
+          province?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          social_media?: Json | null
+          status?: string
+          street_address?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       property_rating_aggregates: {
         Row: {
           average_rating: number | null
