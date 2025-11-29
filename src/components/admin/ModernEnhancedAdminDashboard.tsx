@@ -80,7 +80,7 @@ const ModernEnhancedAdminDashboard = () => {
   const unreadCount = notifications.length;
 
   return (
-    <SidebarProvider defaultOpen>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-muted/20">
         {/* Sidebar */}
         <AdminSidebar 
