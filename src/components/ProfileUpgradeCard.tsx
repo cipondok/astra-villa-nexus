@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserPlus, Building2, Home, Star, AlertCircle } from "lucide-react";
+import { UserPlus, Building2, Home, Star, Key } from "lucide-react";
 import RoleUpgradeModal from "./RoleUpgradeModal";
 
 const ProfileUpgradeCard = () => {
@@ -16,61 +16,49 @@ const ProfileUpgradeCard = () => {
 
   return (
     <>
-      <Card className="border-orange-200 bg-gradient-to-br from-orange-50 to-blue-50 dark:from-orange-900/20 dark:to-blue-900/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-orange-600" />
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+        <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-lg">
+            <Star className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             Upgrade Your Account
           </CardTitle>
-          <CardDescription>
-            Unlock professional features by becoming a vendor or agent
+          <CardDescription className="text-xs sm:text-sm">
+            Unlock professional features
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <AlertCircle className="h-5 w-5 text-blue-600" />
-            <div>
-              <p className="text-sm text-blue-800 dark:text-blue-200">
-                Current Status: <Badge variant="outline">{profile.role}</Badge>
+        <CardContent className="p-3 sm:p-4 pt-0 space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-2 p-2 sm:p-3 bg-background/50 rounded-lg">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm text-foreground">
+                Current: <Badge variant="outline" className="text-[10px] sm:text-xs">{profile.role}</Badge>
               </p>
-              <p className="text-xs text-blue-600 dark:text-blue-300">
-                Limited access to basic features only
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                Limited access to basic features
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="p-3 border rounded-lg bg-white/50 dark:bg-black/20">
-              <div className="flex items-center gap-2 mb-2">
-                <Building2 className="h-4 w-4 text-orange-600" />
-                <h4 className="font-medium text-sm">Vendor</h4>
-              </div>
-              <ul className="space-y-1 text-xs text-muted-foreground">
-                <li>• Offer services</li>
-                <li>• Earn income</li>
-                <li>• Build business profile</li>
-              </ul>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="p-2 border rounded-lg bg-background/50 text-center">
+              <Key className="h-4 w-4 mx-auto mb-1 text-green-600" />
+              <p className="text-[10px] sm:text-xs font-medium">Owner</p>
             </div>
-
-            <div className="p-3 border rounded-lg bg-white/50 dark:bg-black/20">
-              <div className="flex items-center gap-2 mb-2">
-                <Home className="h-4 w-4 text-blue-600" />
-                <h4 className="font-medium text-sm">Agent</h4>
-              </div>
-              <ul className="space-y-1 text-xs text-muted-foreground">
-                <li>• List properties</li>
-                <li>• Manage clients</li>
-                <li>• Professional tools</li>
-              </ul>
+            <div className="p-2 border rounded-lg bg-background/50 text-center">
+              <Home className="h-4 w-4 mx-auto mb-1 text-blue-600" />
+              <p className="text-[10px] sm:text-xs font-medium">Agent</p>
+            </div>
+            <div className="p-2 border rounded-lg bg-background/50 text-center">
+              <Building2 className="h-4 w-4 mx-auto mb-1 text-orange-600" />
+              <p className="text-[10px] sm:text-xs font-medium">Vendor</p>
             </div>
           </div>
 
           <Button 
             onClick={() => setShowUpgradeModal(true)}
-            className="w-full bg-gradient-to-r from-orange-600 to-blue-600 hover:from-orange-700 hover:to-blue-700"
+            className="w-full h-9 sm:h-10 text-xs sm:text-sm bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
           >
-            <UserPlus className="h-4 w-4 mr-2" />
-            Apply for Professional Account
+            <UserPlus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+            Upgrade Account
           </Button>
         </CardContent>
       </Card>
