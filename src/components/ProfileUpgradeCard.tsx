@@ -3,23 +3,35 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserPlus, Building2, Home, Star, Key, Clock, AlertCircle, Lock } from "lucide-react";
+import { UserPlus, Building2, Home, Star, Key, Clock, Lock } from "lucide-react";
 import RoleUpgradeModal from "./RoleUpgradeModal";
 import { useUpgradeRestrictions } from "@/hooks/usePendingApplications";
+import { useUserRoles } from "@/hooks/useUserRoles";
 
 const ProfileUpgradeCard = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { profile } = useAuth();
-  const { data: restrictions, isLoading } = useUpgradeRestrictions();
+  const { data: restrictions, isLoading: restrictionsLoading } = useUpgradeRestrictions();
+  const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
 
-  if (profile?.role !== 'general_user') {
+  // Check if user has any upgraded roles from user_roles table
+  const hasUpgradedRole = userRoles.some(role => 
+    ['property_owner', 'agent', 'vendor', 'admin', 'super_admin', 'customer_service'].includes(role)
+  );
+
+  // Don't show this card if user already has an upgraded role
+  if (hasUpgradedRole) {
     return null;
   }
 
+  const isLoading = restrictionsLoading || rolesLoading;
   const canUpgrade = restrictions?.canUpgrade ?? true;
   const restrictionReason = restrictions?.restrictionReason;
   const hasPendingApplication = restrictions?.hasPendingApplication;
   const daysUntilCanUpgrade = restrictions?.daysUntilCanUpgrade || 0;
+
+  // Get the primary display role
+  const displayRole = userRoles.length > 0 ? userRoles[0] : 'general_user';
 
   return (
     <>
@@ -37,7 +49,7 @@ const ProfileUpgradeCard = () => {
           <div className="flex items-center gap-2 p-2 sm:p-3 bg-background/50 rounded-lg">
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-foreground">
-                Current: <Badge variant="outline" className="text-[10px] sm:text-xs">{profile.role}</Badge>
+                Current: <Badge variant="outline" className="text-[10px] sm:text-xs">{displayRole}</Badge>
               </p>
               <p className="text-[10px] sm:text-xs text-muted-foreground">
                 Limited access to basic features
