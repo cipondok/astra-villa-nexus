@@ -105,8 +105,8 @@ const PropertyOwnerOverview = () => {
         {[
           { icon: PlusCircle, label: 'Add', color: 'text-primary', action: () => navigate('/add-property') },
           { icon: Search, label: 'Browse', color: 'text-blue-500', action: () => navigate('/dijual') },
-          { icon: TrendingUp, label: 'Stats', color: 'text-green-500', action: () => {} },
-          { icon: Settings, label: 'Settings', color: 'text-muted-foreground', action: () => {} },
+          { icon: TrendingUp, label: 'Stats', color: 'text-green-500', action: () => navigate('/dashboard/property-owner?tab=insights') },
+          { icon: Settings, label: 'Settings', color: 'text-muted-foreground', action: () => navigate('/settings') },
         ].map((item, i) => (
           <Button 
             key={i}
@@ -154,7 +154,11 @@ const PropertyOwnerOverview = () => {
             </Card>
           ) : (
             properties.map((property) => (
-              <Card key={property.id} className="p-1.5 active:scale-[0.99] transition-transform">
+              <Card 
+                key={property.id} 
+                className="p-1.5 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/50"
+                onClick={() => navigate(`/property/${property.id}`)}
+              >
                 <div className="flex gap-2">
                   <div className="h-12 w-12 rounded bg-muted flex-shrink-0 overflow-hidden">
                     {property.thumbnail_url || property.images?.[0] ? (
