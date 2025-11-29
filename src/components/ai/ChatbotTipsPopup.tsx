@@ -49,7 +49,7 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
           transition={{ duration: 0.2, ease: "easeOut" }}
           onClick={onClose}
           className={cn(
-            "absolute top-1/2 -translate-y-1/2 right-full mr-3 cursor-pointer",
+            "absolute bottom-full left-1/2 -translate-x-1/2 mb-3 cursor-pointer",
             className
           )}
         >
@@ -69,8 +69,8 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
               </AnimatePresence>
             </div>
 
-            {/* Chat bubble tail pointing right */}
-            <div className="absolute top-1/2 -translate-y-1/2 -right-1.5 w-3 h-3 bg-foreground/70 rotate-45" />
+            {/* Chat bubble tail pointing down */}
+            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-foreground/70 rotate-45" />
           </div>
         </motion.div>
       )}
