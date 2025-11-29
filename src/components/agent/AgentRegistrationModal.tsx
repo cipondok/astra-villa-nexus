@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserPlus, Building2, FileText, AlertCircle } from "lucide-react";
+import { UserPlus, Building2, FileText, AlertCircle, Check } from "lucide-react";
 
 
 interface AgentRegistrationModalProps {
@@ -29,10 +29,39 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
     business_type: "",
     additional_info: ""
   });
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   const { showSuccess, showError } = useAlert();
   const { profile } = useAuth();
+
+  // Live validation state
+  const fieldValidation = useMemo(() => {
+    return {
+      full_name: formData.full_name.trim().length >= 2,
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()),
+      phone: formData.phone.trim().length >= 8,
+      business_type: !!formData.business_type
+    };
+  }, [formData]);
+
+  const getFieldStatus = (field: keyof typeof fieldValidation) => {
+    const isValid = fieldValidation[field];
+    const isTouched = touchedFields[field];
+    
+    if (!isTouched) return 'neutral';
+    return isValid ? 'valid' : 'invalid';
+  };
+
+  const renderFieldIndicator = (field: keyof typeof fieldValidation) => {
+    const status = getFieldStatus(field);
+    if (status === 'valid') {
+      return <Check className="h-4 w-4 text-green-500" />;
+    }
+    if (status === 'invalid') {
+      return <AlertCircle className="h-4 w-4 text-red-500" />;
+    }
+    return null;
+  };
 
   const registrationMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -56,7 +85,6 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
       return insertedData;
     },
     onSuccess: () => {
-      // Admin notification is sent automatically via database trigger
       showSuccess("Success", "Agent registration request submitted successfully. You'll be notified once reviewed.");
       onClose();
       setFormData({
@@ -68,48 +96,45 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
         business_type: "",
         additional_info: ""
       });
-      setFieldErrors({});
+      setTouchedFields({});
     },
     onError: (error) => {
       showError("Error", `Failed to submit registration: ${error.message}`);
     }
   });
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+  };
+
+  const handleSelectChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Clear previous errors
-    const newErrors: Record<string, string> = {};
+    // Mark all required fields as touched
+    setTouchedFields({
+      full_name: true,
+      email: true,
+      phone: true,
+      business_type: true
+    });
     
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = "Full Name is required";
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    }
-    
-    if (!formData.business_type) {
-      newErrors.business_type = "Business Type is required";
-    }
-    
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone Number is required";
-    }
-    
-    setFieldErrors(newErrors);
-    
-    if (Object.keys(newErrors).length > 0) {
-      const errorList = Object.values(newErrors).join(", ");
-      showError("Please fix the errors", errorList);
+    // Check all validations
+    const invalidFields = Object.entries(fieldValidation)
+      .filter(([_, isValid]) => !isValid)
+      .map(([field]) => field);
+
+    if (invalidFields.length > 0) {
+      showError("Please fix the errors", "Fill in all required fields correctly");
       return;
     }
 
     registrationMutation.mutate(formData);
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -137,59 +162,65 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Full Name */}
                 <div>
-                  <Label htmlFor="full_name" className="flex items-center gap-1">
+                  <Label htmlFor="full_name" className="flex items-center gap-2">
                     Full Name <span className="text-red-500">*</span>
+                    {renderFieldIndicator('full_name')}
                   </Label>
                   <Input
                     id="full_name"
                     value={formData.full_name}
                     onChange={(e) => handleInputChange('full_name', e.target.value)}
+                    onBlur={() => setTouchedFields(prev => ({ ...prev, full_name: true }))}
                     placeholder="John Doe"
-                    className={fieldErrors.full_name ? 'border-red-500' : ''}
+                    className={getFieldStatus('full_name') === 'invalid' ? 'border-red-500' : getFieldStatus('full_name') === 'valid' ? 'border-green-500' : ''}
                   />
-                  {fieldErrors.full_name && (
+                  {getFieldStatus('full_name') === 'invalid' && (
                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> {fieldErrors.full_name}
+                      <AlertCircle className="h-3 w-3" /> Full Name is required (min 2 characters)
                     </p>
                   )}
                 </div>
 
                 {/* Email */}
                 <div>
-                  <Label htmlFor="email" className="flex items-center gap-1">
+                  <Label htmlFor="email" className="flex items-center gap-2">
                     Email Address <span className="text-red-500">*</span>
+                    {renderFieldIndicator('email')}
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
+                    onBlur={() => setTouchedFields(prev => ({ ...prev, email: true }))}
                     placeholder="john@example.com"
-                    className={fieldErrors.email ? 'border-red-500' : ''}
+                    className={getFieldStatus('email') === 'invalid' ? 'border-red-500' : getFieldStatus('email') === 'valid' ? 'border-green-500' : ''}
                   />
-                  {fieldErrors.email && (
+                  {getFieldStatus('email') === 'invalid' && (
                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> {fieldErrors.email}
+                      <AlertCircle className="h-3 w-3" /> Please enter a valid email address
                     </p>
                   )}
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <Label htmlFor="phone" className="flex items-center gap-1">
+                  <Label htmlFor="phone" className="flex items-center gap-2">
                     Phone Number <span className="text-red-500">*</span>
+                    {renderFieldIndicator('phone')}
                   </Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
+                    onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                     placeholder="+1234567890"
-                    className={fieldErrors.phone ? 'border-red-500' : ''}
+                    className={getFieldStatus('phone') === 'invalid' ? 'border-red-500' : getFieldStatus('phone') === 'valid' ? 'border-green-500' : ''}
                   />
-                  {fieldErrors.phone && (
+                  {getFieldStatus('phone') === 'invalid' && (
                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> {fieldErrors.phone}
+                      <AlertCircle className="h-3 w-3" /> Phone Number is required (min 8 digits)
                     </p>
                   )}
                 </div>
@@ -200,7 +231,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                   <Input
                     id="license_number"
                     value={formData.license_number}
-                    onChange={(e) => handleInputChange('license_number', e.target.value)}
+                    onChange={(e) => setFormData(prev => ({ ...prev, license_number: e.target.value }))}
                     placeholder="RE123456"
                   />
                 </div>
@@ -211,18 +242,22 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                   <Input
                     id="company_name"
                     value={formData.company_name}
-                    onChange={(e) => handleInputChange('company_name', e.target.value)}
+                    onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
                     placeholder="Real Estate Company LLC"
                   />
                 </div>
 
                 {/* Business Type */}
                 <div>
-                  <Label htmlFor="business_type" className="flex items-center gap-1">
+                  <Label htmlFor="business_type" className="flex items-center gap-2">
                     Business Type <span className="text-red-500">*</span>
+                    {renderFieldIndicator('business_type')}
                   </Label>
-                  <Select value={formData.business_type} onValueChange={(value) => handleInputChange('business_type', value)}>
-                    <SelectTrigger className={fieldErrors.business_type ? 'border-red-500' : ''}>
+                  <Select 
+                    value={formData.business_type} 
+                    onValueChange={(value) => handleSelectChange('business_type', value)}
+                  >
+                    <SelectTrigger className={getFieldStatus('business_type') === 'invalid' ? 'border-red-500' : getFieldStatus('business_type') === 'valid' ? 'border-green-500' : ''}>
                       <SelectValue placeholder="Select business type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -231,9 +266,9 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                       <SelectItem value="developer">Property Developer</SelectItem>
                     </SelectContent>
                   </Select>
-                  {fieldErrors.business_type && (
+                  {getFieldStatus('business_type') === 'invalid' && (
                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> {fieldErrors.business_type}
+                      <AlertCircle className="h-3 w-3" /> Please select a business type
                     </p>
                   )}
                 </div>
@@ -248,7 +283,7 @@ const AgentRegistrationModal = ({ isOpen, onClose }: AgentRegistrationModalProps
                 <Textarea
                   id="additional_info"
                   value={formData.additional_info}
-                  onChange={(e) => handleInputChange('additional_info', e.target.value)}
+                  onChange={(e) => setFormData(prev => ({ ...prev, additional_info: e.target.value }))}
                   placeholder="Tell us about your experience, specializations, or any other relevant information..."
                   rows={4}
                 />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Home, CheckCircle, Building, MapPin, User, Briefcase, MessageCircle, Navigation, Loader2, AlertCircle } from "lucide-react";
+import { Home, CheckCircle, Building, MapPin, User, Briefcase, MessageCircle, Navigation, Loader2, AlertCircle, Check } from "lucide-react";
 
 
 interface PropertyOwnerRegistrationFormProps {
@@ -56,6 +56,50 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
   const [gettingPropertyLocation, setGettingPropertyLocation] = useState(false);
   const [gettingBusinessLocation, setGettingBusinessLocation] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+
+  // Live validation state
+  const fieldValidation = useMemo(() => {
+    return {
+      full_name: formData.full_name.trim().length >= 2,
+      phone: formData.phone.trim().length >= 8,
+      owner_type: !!formData.owner_type,
+      property_types: formData.property_types.length > 0,
+      province: !!formData.province,
+      city: !!formData.city,
+      business_name: formData.owner_type !== 'business' || formData.business_name.trim().length >= 2,
+      business_province: formData.owner_type !== 'business' || !!formData.business_province,
+      business_city: formData.owner_type !== 'business' || !!formData.business_city
+    };
+  }, [formData]);
+
+  const getFieldStatus = (field: keyof typeof fieldValidation) => {
+    const isValid = fieldValidation[field];
+    const isTouched = touchedFields[field];
+    
+    if (!isTouched) return 'neutral';
+    return isValid ? 'valid' : 'invalid';
+  };
+
+  const renderFieldIndicator = (field: keyof typeof fieldValidation) => {
+    const status = getFieldStatus(field);
+    if (status === 'valid') {
+      return <Check className="h-3 w-3 text-green-500" />;
+    }
+    if (status === 'invalid') {
+      return <AlertCircle className="h-3 w-3 text-red-500" />;
+    }
+    return null;
+  };
+
+  const handleFieldChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+    // Clear error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
 
   // Fetch locations from database
   const { data: locations, isLoading: locationsLoading } = useQuery({
@@ -322,6 +366,19 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Mark all required fields as touched
+    setTouchedFields({
+      full_name: true,
+      phone: true,
+      owner_type: true,
+      property_types: true,
+      province: true,
+      city: true,
+      business_name: true,
+      business_province: true,
+      business_city: true
+    });
+    
     // Clear previous errors
     const newErrors: Record<string, string> = {};
     
@@ -330,51 +387,15 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
       return;
     }
     
-    // Field-level validation
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = "Full Name is required";
-    }
-    
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone Number is required";
-    }
-    
-    if (!formData.owner_type) {
-      newErrors.owner_type = "Registration Type is required";
-    }
-    
-    if (formData.property_types.length === 0) {
-      newErrors.property_types = "Select at least one property type";
-    }
-    
-    if (!formData.province) {
-      newErrors.province = "Province is required";
-    }
-    
-    if (!formData.city) {
-      newErrors.city = "City is required";
-    }
-    
-    // Business validation
-    if (formData.owner_type === 'business') {
-      if (!formData.business_name.trim()) {
-        newErrors.business_name = "Business Name is required";
-      }
-      if (!formData.business_province) {
-        newErrors.business_province = "Business Province is required";
-      }
-      if (!formData.business_city) {
-        newErrors.business_city = "Business City is required";
-      }
-    }
-    
-    setFieldErrors(newErrors);
-    
-    if (Object.keys(newErrors).length > 0) {
-      const errorList = Object.values(newErrors).slice(0, 3).join(", ");
+    // Check all validations using fieldValidation
+    const invalidFields = Object.entries(fieldValidation)
+      .filter(([_, isValid]) => !isValid)
+      .map(([field]) => field);
+
+    if (invalidFields.length > 0) {
       toast({ 
         title: "Please fix the errors", 
-        description: errorList + (Object.keys(newErrors).length > 3 ? `... and ${Object.keys(newErrors).length - 3} more` : ''),
+        description: "Fill in all required fields correctly",
         variant: "destructive" 
       });
       return;
@@ -498,16 +519,19 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             <div className="space-y-2">
               <Label className="text-xs sm:text-sm font-medium flex items-center gap-1">
                 Registration Type <span className="text-red-500">*</span>
+                {renderFieldIndicator('owner_type')}
               </Label>
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   type="button"
                   variant={formData.owner_type === 'individual' ? "default" : "outline"}
                   onClick={() => {
-                    setFormData({ ...formData, owner_type: 'individual' });
-                    setFieldErrors(prev => ({ ...prev, owner_type: '' }));
+                    handleFieldChange('owner_type', 'individual');
                   }}
-                  className={`h-12 sm:h-14 flex flex-col gap-1 ${fieldErrors.owner_type ? 'border-red-500' : ''}`}
+                  className={`h-12 sm:h-14 flex flex-col gap-1 ${
+                    getFieldStatus('owner_type') === 'invalid' ? 'border-red-500' : 
+                    formData.owner_type === 'individual' ? 'border-green-500' : ''
+                  }`}
                 >
                   <User className="h-4 w-4" />
                   <span className="text-xs">Individual Sale</span>
@@ -516,18 +540,20 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                   type="button"
                   variant={formData.owner_type === 'business' ? "default" : "outline"}
                   onClick={() => {
-                    setFormData({ ...formData, owner_type: 'business' });
-                    setFieldErrors(prev => ({ ...prev, owner_type: '' }));
+                    handleFieldChange('owner_type', 'business');
                   }}
-                  className={`h-12 sm:h-14 flex flex-col gap-1 ${fieldErrors.owner_type ? 'border-red-500' : ''}`}
+                  className={`h-12 sm:h-14 flex flex-col gap-1 ${
+                    getFieldStatus('owner_type') === 'invalid' ? 'border-red-500' : 
+                    formData.owner_type === 'business' ? 'border-green-500' : ''
+                  }`}
                 >
                   <Briefcase className="h-4 w-4" />
                   <span className="text-xs">Business</span>
                 </Button>
               </div>
-              {fieldErrors.owner_type && (
+              {getFieldStatus('owner_type') === 'invalid' && (
                 <p className="text-xs text-red-500 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" /> {fieldErrors.owner_type}
+                  <AlertCircle className="h-3 w-3" /> Please select a registration type
                 </p>
               )}
             </div>
@@ -537,52 +563,59 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
               <div className="space-y-1">
                 <Label htmlFor="full_name" className="text-xs flex items-center gap-1">
                   Full Name <span className="text-red-500">*</span>
+                  {renderFieldIndicator('full_name')}
                 </Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
-                  onChange={(e) => {
-                    setFormData({ ...formData, full_name: e.target.value });
-                    if (e.target.value.trim()) setFieldErrors(prev => ({ ...prev, full_name: '' }));
-                  }}
+                  onChange={(e) => handleFieldChange('full_name', e.target.value)}
+                  onBlur={() => setTouchedFields(prev => ({ ...prev, full_name: true }))}
                   placeholder="Your full name"
-                  className={`h-8 sm:h-9 text-xs sm:text-sm ${fieldErrors.full_name ? 'border-red-500' : ''}`}
+                  className={`h-8 sm:h-9 text-xs sm:text-sm ${
+                    getFieldStatus('full_name') === 'invalid' ? 'border-red-500' : 
+                    getFieldStatus('full_name') === 'valid' ? 'border-green-500' : ''
+                  }`}
                 />
-                {fieldErrors.full_name && (
+                {getFieldStatus('full_name') === 'invalid' && (
                   <p className="text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> {fieldErrors.full_name}
+                    <AlertCircle className="h-3 w-3" /> Full Name is required (min 2 characters)
                   </p>
                 )}
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="email" className="text-xs">Email *</Label>
+                <Label htmlFor="email" className="text-xs flex items-center gap-1">
+                  Email *
+                  <Check className="h-3 w-3 text-green-500" />
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   disabled
-                  className="h-8 sm:h-9 text-xs sm:text-sm bg-muted"
+                  className="h-8 sm:h-9 text-xs sm:text-sm bg-muted border-green-500"
                 />
               </div>
 
               <div className="space-y-1">
                 <Label htmlFor="phone" className="text-xs flex items-center gap-1">
                   Phone Number <span className="text-red-500">*</span>
+                  {renderFieldIndicator('phone')}
                 </Label>
                 <Input
                   id="phone"
                   value={formData.phone}
-                  onChange={(e) => {
-                    setFormData({ ...formData, phone: e.target.value });
-                    if (e.target.value.trim()) setFieldErrors(prev => ({ ...prev, phone: '' }));
-                  }}
+                  onChange={(e) => handleFieldChange('phone', e.target.value)}
+                  onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                   placeholder="+62..."
-                  className={`h-8 sm:h-9 text-xs sm:text-sm ${fieldErrors.phone ? 'border-red-500' : ''}`}
+                  className={`h-8 sm:h-9 text-xs sm:text-sm ${
+                    getFieldStatus('phone') === 'invalid' ? 'border-red-500' : 
+                    getFieldStatus('phone') === 'valid' ? 'border-green-500' : ''
+                  }`}
                 />
-                {fieldErrors.phone && (
+                {getFieldStatus('phone') === 'invalid' && (
                   <p className="text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> {fieldErrors.phone}
+                    <AlertCircle className="h-3 w-3" /> Phone Number is required (min 8 digits)
                   </p>
                 )}
                 <div className="flex items-center gap-2 mt-1.5">
@@ -622,7 +655,10 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
 
             {/* Property Types */}
             <div className="space-y-1.5">
-              <Label className="text-xs">Property Types *</Label>
+              <Label className="text-xs flex items-center gap-1">
+                Property Types <span className="text-red-500">*</span>
+                {renderFieldIndicator('property_types')}
+              </Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                 {propertyTypes.map((type) => (
                   <Button
@@ -630,14 +666,24 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                     type="button"
                     variant={formData.property_types.includes(type.value) ? "default" : "outline"}
                     size="sm"
-                    onClick={() => togglePropertyType(type.value)}
-                    className="h-7 sm:h-8 text-[10px] sm:text-xs justify-start px-2"
+                    onClick={() => {
+                      togglePropertyType(type.value);
+                      setTouchedFields(prev => ({ ...prev, property_types: true }));
+                    }}
+                    className={`h-7 sm:h-8 text-[10px] sm:text-xs justify-start px-2 ${
+                      formData.property_types.includes(type.value) ? 'border-green-500' : ''
+                    }`}
                   >
                     <Building className="h-3 w-3 mr-1" />
                     {type.label}
                   </Button>
                 ))}
               </div>
+              {getFieldStatus('property_types') === 'invalid' && (
+                <p className="text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" /> Select at least one property type
+                </p>
+              )}
             </div>
 
             {/* Property Location - INLINE, NOT A SEPARATE COMPONENT */}
@@ -645,16 +691,28 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
               <Label className="text-xs font-medium flex items-center gap-1">
                 <MapPin className="h-3 w-3 text-primary" />
                 Property Location *
+                {(getFieldStatus('province') === 'valid' && getFieldStatus('city') === 'valid') && (
+                  <Check className="h-3 w-3 text-green-500" />
+                )}
               </Label>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Province *</Label>
+                  <Label className="text-[10px] text-muted-foreground flex items-center gap-1">
+                    Province *
+                    {renderFieldIndicator('province')}
+                  </Label>
                   <Select 
                     value={formData.province} 
-                    onValueChange={(value) => setFormData({ ...formData, province: value, city: '', area: '' })}
+                    onValueChange={(value) => {
+                      setFormData({ ...formData, province: value, city: '', area: '' });
+                      setTouchedFields(prev => ({ ...prev, province: true }));
+                    }}
                   >
-                    <SelectTrigger className="h-8 text-xs">
+                    <SelectTrigger className={`h-8 text-xs ${
+                      getFieldStatus('province') === 'invalid' ? 'border-red-500' : 
+                      getFieldStatus('province') === 'valid' ? 'border-green-500' : ''
+                    }`}>
                       <SelectValue placeholder={locationsLoading ? "Loading..." : "Select Province"} />
                     </SelectTrigger>
                     <SelectContent>
@@ -665,16 +723,30 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                       ))}
                     </SelectContent>
                   </Select>
+                  {getFieldStatus('province') === 'invalid' && (
+                    <p className="text-[10px] text-red-500 flex items-center gap-1">
+                      <AlertCircle className="h-2.5 w-2.5" /> Required
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">City *</Label>
+                  <Label className="text-[10px] text-muted-foreground flex items-center gap-1">
+                    City *
+                    {renderFieldIndicator('city')}
+                  </Label>
                   <Select 
                     value={formData.city} 
-                    onValueChange={(value) => setFormData({ ...formData, city: value, area: '' })}
+                    onValueChange={(value) => {
+                      setFormData({ ...formData, city: value, area: '' });
+                      setTouchedFields(prev => ({ ...prev, city: true }));
+                    }}
                     disabled={!formData.province}
                   >
-                    <SelectTrigger className="h-8 text-xs">
+                    <SelectTrigger className={`h-8 text-xs ${
+                      getFieldStatus('city') === 'invalid' ? 'border-red-500' : 
+                      getFieldStatus('city') === 'valid' ? 'border-green-500' : ''
+                    }`}>
                       <SelectValue placeholder="Select City" />
                     </SelectTrigger>
                     <SelectContent>
@@ -685,6 +757,11 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                       ))}
                     </SelectContent>
                   </Select>
+                  {getFieldStatus('city') === 'invalid' && (
+                    <p className="text-[10px] text-red-500 flex items-center gap-1">
+                      <AlertCircle className="h-2.5 w-2.5" /> Required
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1">

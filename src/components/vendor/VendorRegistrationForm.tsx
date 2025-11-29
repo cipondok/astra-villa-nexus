@@ -1,15 +1,14 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { Building2, FileText, CheckCircle, AlertCircle } from "lucide-react";
+import { Building2, CheckCircle, AlertCircle, Check } from "lucide-react";
 import BPJSVerification from "./BPJSVerification";
 
 
@@ -23,13 +22,13 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
   const [formData, setFormData] = useState({
     business_name: '',
     business_type: '',
-    property_type: 'residential', // New field for commercial/residential toggle
+    property_type: 'residential',
     full_name: '',
     email: user?.email || '',
     phone: '',
     company_name: '',
     license_number: '',
-    surat_izin_usaha: '', // Required for commercial
+    surat_izin_usaha: '',
     verification_documents: null,
     bpjs_ketenagakerjaan_status: 'unregistered',
     bpjs_kesehatan_status: 'unregistered',
@@ -37,7 +36,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
     bpjs_kesehatan_number: ''
   });
   const [submitting, setSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   const businessTypes = [
     'Home Maintenance',
@@ -53,43 +52,74 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
     'Other'
   ];
 
+  // Live validation state
+  const fieldValidation = useMemo(() => {
+    return {
+      full_name: formData.full_name.trim().length >= 2,
+      business_name: formData.business_name.trim().length >= 2,
+      business_type: !!formData.business_type,
+      phone: formData.phone.trim().length >= 8,
+      surat_izin_usaha: formData.property_type !== 'commercial' || formData.surat_izin_usaha.trim().length >= 3,
+      property_type: !!formData.property_type
+    };
+  }, [formData]);
+
+  const handleFieldChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+  };
+
+  const handleSelectChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+  };
+
+  const getFieldStatus = (field: keyof typeof fieldValidation) => {
+    const isValid = fieldValidation[field];
+    const isTouched = touchedFields[field];
+    
+    if (!isTouched) return 'neutral';
+    return isValid ? 'valid' : 'invalid';
+  };
+
+  const renderFieldIndicator = (field: keyof typeof fieldValidation) => {
+    const status = getFieldStatus(field);
+    if (status === 'valid') {
+      return <Check className="h-4 w-4 text-green-500" />;
+    }
+    if (status === 'invalid') {
+      return <AlertCircle className="h-4 w-4 text-red-500" />;
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Clear previous errors
-    const newErrors: Record<string, string> = {};
-    
+    // Mark all required fields as touched
+    setTouchedFields({
+      full_name: true,
+      business_name: true,
+      business_type: true,
+      phone: true,
+      surat_izin_usaha: true,
+      property_type: true
+    });
+
     if (!user) {
       showError("Authentication Required", "You must be logged in to register as a vendor.");
       return;
     }
 
-    // Field-level validation
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = "Full Name is required";
+    // Check all validations
+    const requiredFields: (keyof typeof fieldValidation)[] = ['full_name', 'business_name', 'business_type', 'phone'];
+    if (formData.property_type === 'commercial') {
+      requiredFields.push('surat_izin_usaha');
     }
-    
-    if (!formData.business_name.trim()) {
-      newErrors.business_name = "Business Name is required";
-    }
-    
-    if (!formData.business_type) {
-      newErrors.business_type = "Business Type is required";
-    }
-    
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone Number is required";
-    }
-    
-    if (formData.property_type === 'commercial' && !formData.surat_izin_usaha.trim()) {
-      newErrors.surat_izin_usaha = "Surat Izin Usaha is required for commercial";
-    }
-    
-    setFieldErrors(newErrors);
-    
-    if (Object.keys(newErrors).length > 0) {
-      const errorList = Object.values(newErrors).slice(0, 3).join(", ");
-      showError("Please fix the errors", errorList);
+
+    const invalidFields = requiredFields.filter(field => !fieldValidation[field]);
+    if (invalidFields.length > 0) {
+      showError("Please fix the errors", "Fill in all required fields correctly");
       return;
     }
 
@@ -97,7 +127,6 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
     try {
       console.log('Starting vendor registration for user:', user.id);
 
-      // Update profile (use update, not upsert to avoid RLS issues)
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -110,12 +139,10 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       if (profileError) {
         console.error('Profile update error:', profileError);
-        // Continue even if profile update fails
       }
 
       console.log('Profile updated successfully');
 
-      // Create vendor request in vendor_requests table
       const { data: requestData, error: requestError } = await supabase
         .from('vendor_requests')
         .insert([{
@@ -134,7 +161,6 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Vendor request created successfully');
 
-      // Log activity
       await supabase.from('activity_logs').insert({
         user_id: user.id,
         activity_type: 'role_upgrade_request',
@@ -146,8 +172,6 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
           property_type: formData.property_type
         }
       });
-
-      // Admin notification is sent automatically via database trigger
 
       showSuccess("Application Submitted", "Your vendor application has been submitted successfully and is pending review. You'll be notified once reviewed.");
       onSuccess();
@@ -177,13 +201,15 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Property Type Toggle */}
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="property_type">Tipe Properti / Property Type *</Label>
+                <Label htmlFor="property_type" className="flex items-center gap-2">
+                  Tipe Properti / Property Type *
+                  {renderFieldIndicator('property_type')}
+                </Label>
                 <Select
                   value={formData.property_type}
-                  onValueChange={(value) => setFormData({ ...formData, property_type: value })}
-                  required
+                  onValueChange={(value) => handleSelectChange('property_type', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={getFieldStatus('property_type') === 'invalid' ? 'border-red-500' : getFieldStatus('property_type') === 'valid' ? 'border-green-500' : ''}>
                     <SelectValue placeholder="Pilih tipe properti" />
                   </SelectTrigger>
                   <SelectContent>
@@ -200,58 +226,89 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name *</Label>
+                <Label htmlFor="full_name" className="flex items-center gap-2">
+                  Full Name *
+                  {renderFieldIndicator('full_name')}
+                </Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  onChange={(e) => handleFieldChange('full_name', e.target.value)}
+                  onBlur={() => setTouchedFields(prev => ({ ...prev, full_name: true }))}
                   placeholder="Enter your full name"
-                  required
+                  className={getFieldStatus('full_name') === 'invalid' ? 'border-red-500' : getFieldStatus('full_name') === 'valid' ? 'border-green-500' : ''}
                 />
+                {getFieldStatus('full_name') === 'invalid' && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Full Name is required (min 2 characters)
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email" className="flex items-center gap-2">
+                  Email *
+                  <Check className="h-4 w-4 text-green-500" />
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="Enter your email"
-                  required
                   disabled
+                  className="border-green-500 bg-muted"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="flex items-center gap-2">
+                  Phone Number *
+                  {renderFieldIndicator('phone')}
+                </Label>
                 <Input
                   id="phone"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => handleFieldChange('phone', e.target.value)}
+                  onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                   placeholder="Enter your phone number"
+                  className={getFieldStatus('phone') === 'invalid' ? 'border-red-500' : getFieldStatus('phone') === 'valid' ? 'border-green-500' : ''}
                 />
+                {getFieldStatus('phone') === 'invalid' && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Phone Number is required (min 8 digits)
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="business_name">Business Name *</Label>
+                <Label htmlFor="business_name" className="flex items-center gap-2">
+                  Business Name *
+                  {renderFieldIndicator('business_name')}
+                </Label>
                 <Input
                   id="business_name"
                   value={formData.business_name}
-                  onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
+                  onChange={(e) => handleFieldChange('business_name', e.target.value)}
+                  onBlur={() => setTouchedFields(prev => ({ ...prev, business_name: true }))}
                   placeholder="Enter your business name"
-                  required
+                  className={getFieldStatus('business_name') === 'invalid' ? 'border-red-500' : getFieldStatus('business_name') === 'valid' ? 'border-green-500' : ''}
                 />
+                {getFieldStatus('business_name') === 'invalid' && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Business Name is required (min 2 characters)
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="business_type">Business Type *</Label>
+                <Label htmlFor="business_type" className="flex items-center gap-2">
+                  Business Type *
+                  {renderFieldIndicator('business_type')}
+                </Label>
                 <Select
                   value={formData.business_type}
-                  onValueChange={(value) => setFormData({ ...formData, business_type: value })}
-                  required
+                  onValueChange={(value) => handleSelectChange('business_type', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={getFieldStatus('business_type') === 'invalid' ? 'border-red-500' : getFieldStatus('business_type') === 'valid' ? 'border-green-500' : ''}>
                     <SelectValue placeholder="Select business type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -260,6 +317,11 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {getFieldStatus('business_type') === 'invalid' && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Please select a business type
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -275,14 +337,23 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
               {/* Commercial-only requirement */}
               {formData.property_type === 'commercial' && (
                 <div className="space-y-2">
-                  <Label htmlFor="surat_izin_usaha">Surat Izin Usaha *</Label>
+                  <Label htmlFor="surat_izin_usaha" className="flex items-center gap-2">
+                    Surat Izin Usaha *
+                    {renderFieldIndicator('surat_izin_usaha')}
+                  </Label>
                   <Input
                     id="surat_izin_usaha"
                     value={formData.surat_izin_usaha}
-                    onChange={(e) => setFormData({ ...formData, surat_izin_usaha: e.target.value })}
+                    onChange={(e) => handleFieldChange('surat_izin_usaha', e.target.value)}
+                    onBlur={() => setTouchedFields(prev => ({ ...prev, surat_izin_usaha: true }))}
                     placeholder="Nomor surat izin usaha"
-                    required
+                    className={getFieldStatus('surat_izin_usaha') === 'invalid' ? 'border-red-500' : getFieldStatus('surat_izin_usaha') === 'valid' ? 'border-green-500' : ''}
                   />
+                  {getFieldStatus('surat_izin_usaha') === 'invalid' && (
+                    <p className="text-xs text-red-500 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" /> Surat Izin Usaha is required for commercial
+                    </p>
+                  )}
                   <p className="text-sm text-orange-600">
                     📋 Wajib untuk layanan komersial
                   </p>
