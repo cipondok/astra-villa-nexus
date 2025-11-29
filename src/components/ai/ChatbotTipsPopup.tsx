@@ -43,24 +43,24 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 5 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 5 }}
+          initial={{ opacity: 0, scale: 0.9, x: 10 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          exit={{ opacity: 0, scale: 0.9, x: 10 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           onClick={onClose}
           className={cn(
-            "absolute bottom-full right-0 mb-3 cursor-pointer",
+            "absolute top-1/2 -translate-y-1/2 right-full mr-3 cursor-pointer",
             className
           )}
         >
           <div className="relative">
-            <div className="bg-foreground/70 backdrop-blur-sm rounded-xl px-4 py-3 max-w-[280px]">
+            <div className="bg-foreground/70 backdrop-blur-sm rounded-xl px-4 py-2.5 whitespace-nowrap">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={currentTipIndex}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
                   transition={{ duration: 0.2 }}
                   className="text-xs text-background leading-relaxed"
                 >
@@ -69,8 +69,8 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
               </AnimatePresence>
             </div>
 
-            {/* Chat bubble tail */}
-            <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-foreground/70 rotate-45" />
+            {/* Chat bubble tail pointing right */}
+            <div className="absolute top-1/2 -translate-y-1/2 -right-1.5 w-3 h-3 bg-foreground/70 rotate-45" />
           </div>
         </motion.div>
       )}
