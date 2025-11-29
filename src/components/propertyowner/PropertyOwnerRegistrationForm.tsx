@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Home, CheckCircle, Building, MapPin, User, Briefcase, Phone, MessageCircle } from "lucide-react";
+import { Home, CheckCircle, Building, MapPin, User, Briefcase, MessageCircle, Navigation, Loader2 } from "lucide-react";
 
 interface PropertyOwnerRegistrationFormProps {
   onSuccess: () => void;
@@ -32,12 +32,18 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
     city: '',
     area: '',
     street_address: '',
+    // GPS coordinates
+    gps_lat: '',
+    gps_lng: '',
     // Business fields (conditional)
     business_name: '',
     business_registration_number: '',
-    business_address: '',
-    business_city: '',
     business_province: '',
+    business_city: '',
+    business_area: '',
+    business_street_address: '',
+    business_gps_lat: '',
+    business_gps_lng: '',
     // Social media (optional)
     social_media: {
       facebook: '',
@@ -50,39 +56,63 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
     additional_info: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [gettingPropertyLocation, setGettingPropertyLocation] = useState(false);
+  const [gettingBusinessLocation, setGettingBusinessLocation] = useState(false);
 
   // Fetch locations from database
-  const { data: locations } = useQuery({
-    queryKey: ['locations'],
+  const { data: locations, isLoading: locationsLoading } = useQuery({
+    queryKey: ['locations-list'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('locations')
-        .select('*')
+        .select('province_name, city_name, area_name')
         .eq('is_active', true)
         .order('province_name', { ascending: true })
         .order('city_name', { ascending: true })
         .order('area_name', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching locations:', error);
+        throw error;
+      }
       return data || [];
     },
   });
 
   // Get unique provinces
-  const provinces = locations ? [...new Set(locations.map(loc => loc.province_name))] : [];
+  const provinces = locations 
+    ? [...new Set(locations.map(loc => loc.province_name).filter(Boolean))]
+    : [];
 
   // Get cities for selected province
   const cities = locations 
     ? [...new Set(locations
         .filter(loc => loc.province_name === formData.province)
-        .map(loc => loc.city_name))]
+        .map(loc => loc.city_name)
+        .filter(Boolean))]
     : [];
 
   // Get areas for selected province and city
   const areas = locations
-    ? locations
+    ? [...new Set(locations
         .filter(loc => loc.province_name === formData.province && loc.city_name === formData.city)
         .map(loc => loc.area_name)
+        .filter(Boolean))]
+    : [];
+
+  // Business location options
+  const businessCities = locations 
+    ? [...new Set(locations
+        .filter(loc => loc.province_name === formData.business_province)
+        .map(loc => loc.city_name)
+        .filter(Boolean))]
+    : [];
+
+  const businessAreas = locations
+    ? [...new Set(locations
+        .filter(loc => loc.province_name === formData.business_province && loc.city_name === formData.business_city)
+        .map(loc => loc.area_name)
+        .filter(Boolean))]
     : [];
 
   const propertyTypes = [
@@ -120,6 +150,99 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
     }));
   };
 
+  const handleBusinessProvinceChange = (province: string) => {
+    setFormData(prev => ({
+      ...prev,
+      business_province: province,
+      business_city: '',
+      business_area: ''
+    }));
+  };
+
+  const handleBusinessCityChange = (city: string) => {
+    setFormData(prev => ({
+      ...prev,
+      business_city: city,
+      business_area: ''
+    }));
+  };
+
+  // Get GPS location for property
+  const getPropertyGPSLocation = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "GPS Not Available",
+        description: "Your browser doesn't support GPS location.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setGettingPropertyLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData(prev => ({
+          ...prev,
+          gps_lat: position.coords.latitude.toFixed(6),
+          gps_lng: position.coords.longitude.toFixed(6)
+        }));
+        toast({
+          title: "Location Captured",
+          description: `GPS: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+        });
+        setGettingPropertyLocation(false);
+      },
+      (error) => {
+        console.error('GPS error:', error);
+        toast({
+          title: "Location Error",
+          description: "Unable to get your location. Please enable GPS or enter manually.",
+          variant: "destructive"
+        });
+        setGettingPropertyLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  // Get GPS location for business
+  const getBusinessGPSLocation = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "GPS Not Available",
+        description: "Your browser doesn't support GPS location.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setGettingBusinessLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData(prev => ({
+          ...prev,
+          business_gps_lat: position.coords.latitude.toFixed(6),
+          business_gps_lng: position.coords.longitude.toFixed(6)
+        }));
+        toast({
+          title: "Business Location Captured",
+          description: `GPS: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+        });
+        setGettingBusinessLocation(false);
+      },
+      (error) => {
+        console.error('GPS error:', error);
+        toast({
+          title: "Location Error",
+          description: "Unable to get your location. Please enable GPS or enter manually.",
+          variant: "destructive"
+        });
+        setGettingBusinessLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -135,6 +258,15 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
       toast({
         title: "Owner Type Required",
         description: "Please select if you are registering as Individual or Business.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.province || !formData.city) {
+      toast({
+        title: "Location Required",
+        description: "Please select property location (province and city).",
         variant: "destructive"
       });
       return;
@@ -170,11 +302,14 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
           owner_type: formData.owner_type,
           property_count: formData.property_count,
           property_types: formData.property_types,
-          location: {
+          property_location: {
             province: formData.province,
             city: formData.city,
             area: formData.area,
-            street_address: formData.street_address
+            street_address: formData.street_address,
+            gps: formData.gps_lat && formData.gps_lng 
+              ? { lat: formData.gps_lat, lng: formData.gps_lng } 
+              : null
           },
           phone: formData.phone,
           whatsapp_available: formData.whatsapp_available,
@@ -182,9 +317,15 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             business_info: {
               name: formData.business_name,
               registration_number: formData.business_registration_number,
-              address: formData.business_address,
-              city: formData.business_city,
-              province: formData.business_province
+              location: {
+                province: formData.business_province,
+                city: formData.business_city,
+                area: formData.business_area,
+                street_address: formData.business_street_address,
+                gps: formData.business_gps_lat && formData.business_gps_lng 
+                  ? { lat: formData.business_gps_lat, lng: formData.business_gps_lng } 
+                  : null
+              }
             }
           }),
           social_media: Object.keys(activeSocialMedia).length > 0 ? activeSocialMedia : null
@@ -226,6 +367,157 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
       }
     }));
   };
+
+  // Location selector component (reusable for property and business)
+  const LocationSelector = ({ 
+    type, 
+    province, 
+    city, 
+    area, 
+    streetAddress,
+    gpsLat,
+    gpsLng,
+    onProvinceChange, 
+    onCityChange, 
+    onAreaChange,
+    onStreetChange,
+    onGpsLatChange,
+    onGpsLngChange,
+    onGetGPS,
+    isGettingGPS,
+    availableCities,
+    availableAreas
+  }: {
+    type: 'property' | 'business';
+    province: string;
+    city: string;
+    area: string;
+    streetAddress: string;
+    gpsLat: string;
+    gpsLng: string;
+    onProvinceChange: (v: string) => void;
+    onCityChange: (v: string) => void;
+    onAreaChange: (v: string) => void;
+    onStreetChange: (v: string) => void;
+    onGpsLatChange: (v: string) => void;
+    onGpsLngChange: (v: string) => void;
+    onGetGPS: () => void;
+    isGettingGPS: boolean;
+    availableCities: string[];
+    availableAreas: string[];
+  }) => (
+    <div className="space-y-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground">Province *</Label>
+          <Select value={province} onValueChange={onProvinceChange}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder={locationsLoading ? "Loading..." : "Select Province"} />
+            </SelectTrigger>
+            <SelectContent className="max-h-60">
+              {provinces.map((prov) => (
+                <SelectItem key={prov} value={prov} className="text-xs">
+                  {prov}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground">City *</Label>
+          <Select 
+            value={city} 
+            onValueChange={onCityChange}
+            disabled={!province}
+          >
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select City" />
+            </SelectTrigger>
+            <SelectContent className="max-h-60">
+              {availableCities.map((c) => (
+                <SelectItem key={c} value={c} className="text-xs">
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-[10px] text-muted-foreground">Area</Label>
+          <Select 
+            value={area} 
+            onValueChange={onAreaChange}
+            disabled={!city}
+          >
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select Area" />
+            </SelectTrigger>
+            <SelectContent className="max-h-60">
+              {availableAreas.map((a) => (
+                <SelectItem key={a} value={a} className="text-xs">
+                  {a}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="space-y-1">
+        <Label className="text-[10px] text-muted-foreground">Street Address</Label>
+        <Input
+          value={streetAddress}
+          onChange={(e) => onStreetChange(e.target.value)}
+          placeholder="Street name, building number, etc."
+          className="h-8 text-xs"
+        />
+      </div>
+
+      {/* GPS Location */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between">
+          <Label className="text-[10px] text-muted-foreground">GPS Coordinates</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onGetGPS}
+            disabled={isGettingGPS}
+            className="h-6 text-[10px] px-2"
+          >
+            {isGettingGPS ? (
+              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+            ) : (
+              <Navigation className="h-3 w-3 mr-1" />
+            )}
+            {isGettingGPS ? "Getting..." : "Use GPS"}
+          </Button>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Input
+            value={gpsLat}
+            onChange={(e) => onGpsLatChange(e.target.value)}
+            placeholder="Latitude (e.g., -6.2088)"
+            className="h-7 text-[10px]"
+          />
+          <Input
+            value={gpsLng}
+            onChange={(e) => onGpsLngChange(e.target.value)}
+            placeholder="Longitude (e.g., 106.8456)"
+            className="h-7 text-[10px]"
+          />
+        </div>
+        {gpsLat && gpsLng && (
+          <p className="text-[9px] text-green-600 flex items-center gap-1">
+            <CheckCircle className="h-2.5 w-2.5" />
+            GPS location captured
+          </p>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
@@ -294,16 +586,14 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
 
               <div className="space-y-1">
                 <Label htmlFor="phone" className="text-xs">Phone Number *</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+62..."
-                    required
-                    className="h-8 sm:h-9 text-xs sm:text-sm flex-1"
-                  />
-                </div>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+62..."
+                  required
+                  className="h-8 sm:h-9 text-xs sm:text-sm"
+                />
                 <div className="flex items-center gap-2 mt-1.5">
                   <Checkbox
                     id="whatsapp"
@@ -314,7 +604,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                   />
                   <Label htmlFor="whatsapp" className="text-[10px] sm:text-xs flex items-center gap-1 cursor-pointer">
                     <MessageCircle className="h-3 w-3 text-green-600" />
-                    WhatsApp available on this number
+                    WhatsApp available
                   </Label>
                 </div>
               </div>
@@ -367,82 +657,35 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                 <MapPin className="h-3 w-3 text-primary" />
                 Property Location *
               </Label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Province</Label>
-                  <Select value={formData.province} onValueChange={handleProvinceChange}>
-                    <SelectTrigger className="h-8 text-xs">
-                      <SelectValue placeholder="Select Province" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {provinces.map((province) => (
-                        <SelectItem key={province} value={province} className="text-xs">
-                          {province}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">City</Label>
-                  <Select 
-                    value={formData.city} 
-                    onValueChange={handleCityChange}
-                    disabled={!formData.province}
-                  >
-                    <SelectTrigger className="h-8 text-xs">
-                      <SelectValue placeholder="Select City" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city} value={city} className="text-xs">
-                          {city}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Area</Label>
-                  <Select 
-                    value={formData.area} 
-                    onValueChange={(value) => setFormData({ ...formData, area: value })}
-                    disabled={!formData.city}
-                  >
-                    <SelectTrigger className="h-8 text-xs">
-                      <SelectValue placeholder="Select Area" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {areas.map((area) => (
-                        <SelectItem key={area} value={area} className="text-xs">
-                          {area}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <Label className="text-[10px] text-muted-foreground">Street Address (Optional)</Label>
-                <Input
-                  value={formData.street_address}
-                  onChange={(e) => setFormData({ ...formData, street_address: e.target.value })}
-                  placeholder="Street name, building, etc."
-                  className="h-8 text-xs"
-                />
-              </div>
+              <LocationSelector
+                type="property"
+                province={formData.province}
+                city={formData.city}
+                area={formData.area}
+                streetAddress={formData.street_address}
+                gpsLat={formData.gps_lat}
+                gpsLng={formData.gps_lng}
+                onProvinceChange={handleProvinceChange}
+                onCityChange={handleCityChange}
+                onAreaChange={(v) => setFormData({ ...formData, area: v })}
+                onStreetChange={(v) => setFormData({ ...formData, street_address: v })}
+                onGpsLatChange={(v) => setFormData({ ...formData, gps_lat: v })}
+                onGpsLngChange={(v) => setFormData({ ...formData, gps_lng: v })}
+                onGetGPS={getPropertyGPSLocation}
+                isGettingGPS={gettingPropertyLocation}
+                availableCities={cities}
+                availableAreas={areas}
+              />
             </div>
 
             {/* Business Information (Conditional) */}
             {formData.owner_type === 'business' && (
-              <div className="space-y-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <div className="space-y-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
                 <Label className="text-xs font-medium flex items-center gap-1">
                   <Briefcase className="h-3 w-3 text-primary" />
                   Business Information *
                 </Label>
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div className="space-y-1">
                     <Label className="text-[10px] text-muted-foreground">Business Name *</Label>
@@ -464,49 +707,39 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                       className="h-8 text-xs"
                     />
                   </div>
+                </div>
 
-                  <div className="space-y-1 sm:col-span-2">
-                    <Label className="text-[10px] text-muted-foreground">Business Address *</Label>
-                    <Input
-                      value={formData.business_address}
-                      onChange={(e) => setFormData({ ...formData, business_address: e.target.value })}
-                      placeholder="Business street address"
-                      required={formData.owner_type === 'business'}
-                      className="h-8 text-xs"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">Business City *</Label>
-                    <Input
-                      value={formData.business_city}
-                      onChange={(e) => setFormData({ ...formData, business_city: e.target.value })}
-                      placeholder="City"
-                      required={formData.owner_type === 'business'}
-                      className="h-8 text-xs"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">Business Province *</Label>
-                    <Input
-                      value={formData.business_province}
-                      onChange={(e) => setFormData({ ...formData, business_province: e.target.value })}
-                      placeholder="Province"
-                      required={formData.owner_type === 'business'}
-                      className="h-8 text-xs"
-                    />
-                  </div>
+                {/* Business Location */}
+                <div className="pt-2 border-t">
+                  <Label className="text-[10px] font-medium text-muted-foreground mb-2 block">
+                    Business Address *
+                  </Label>
+                  <LocationSelector
+                    type="business"
+                    province={formData.business_province}
+                    city={formData.business_city}
+                    area={formData.business_area}
+                    streetAddress={formData.business_street_address}
+                    gpsLat={formData.business_gps_lat}
+                    gpsLng={formData.business_gps_lng}
+                    onProvinceChange={handleBusinessProvinceChange}
+                    onCityChange={handleBusinessCityChange}
+                    onAreaChange={(v) => setFormData({ ...formData, business_area: v })}
+                    onStreetChange={(v) => setFormData({ ...formData, business_street_address: v })}
+                    onGpsLatChange={(v) => setFormData({ ...formData, business_gps_lat: v })}
+                    onGpsLngChange={(v) => setFormData({ ...formData, business_gps_lng: v })}
+                    onGetGPS={getBusinessGPSLocation}
+                    isGettingGPS={gettingBusinessLocation}
+                    availableCities={businessCities}
+                    availableAreas={businessAreas}
+                  />
                 </div>
               </div>
             )}
 
             {/* Social Media (Optional) */}
             <div className="space-y-2">
-              <Label className="text-xs font-medium flex items-center gap-1">
-                <Phone className="h-3 w-3" />
-                Social Media (Optional)
-              </Label>
+              <Label className="text-xs font-medium">Social Media (Optional)</Label>
               <p className="text-[10px] text-muted-foreground">
                 Add your social media profiles for better connectivity
               </p>
