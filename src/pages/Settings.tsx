@@ -154,30 +154,36 @@ const Settings = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
       <div className="max-w-4xl mx-auto px-2 py-2">
         {/* Compact Header */}
-        <div className="mb-2">
-          <Button
-            variant="ghost"
-            className="mb-1 -ml-2 hover:bg-primary/10 transition-colors h-7 text-xs"
-            onClick={() => navigate('/profile')}
-          >
-            <ArrowLeft className="h-3 w-3 mr-1 text-primary" />
-            <span className="text-foreground">Back</span>
-          </Button>
-
-          <div className="flex items-center gap-2">
-            {profile?.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt={profile.full_name || 'User'}
-                className="w-7 h-7 rounded-lg object-cover shadow-lg border border-border"
-              />
-            ) : (
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <User className="h-3.5 w-3.5 text-primary" />
+        <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-accent text-primary-foreground px-2 py-2 -mx-2 mb-2 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0 text-primary-foreground hover:bg-white/20"
+                onClick={() => navigate(-1)}
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div className="flex items-center gap-2">
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile?.full_name || 'User'}
+                    className="w-7 h-7 rounded-lg object-cover border border-white/20"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                    <User className="h-3.5 w-3.5" />
+                  </div>
+                )}
+                <div>
+                  <h1 className="text-sm font-bold">Settings</h1>
+                  <p className="text-[9px] text-primary-foreground/80">
+                    {user?.email?.split('@')[0] || 'User'}
+                  </p>
+                </div>
               </div>
-            )}
-            <div>
-              <h1 className="text-base font-bold gradient-text">Settings</h1>
             </div>
           </div>
         </div>
