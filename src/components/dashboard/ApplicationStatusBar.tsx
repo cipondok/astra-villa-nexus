@@ -14,10 +14,14 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/contexts/AuthContext';
 
 const ApplicationStatusBar = () => {
   const { data, isLoading } = usePendingApplications();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   
   const applications = data?.applications || [];
 
@@ -166,7 +170,11 @@ const ApplicationStatusBar = () => {
                   variant="default"
                   size="sm"
                   className="flex-shrink-0 bg-green-600 hover:bg-green-700"
-                  onClick={() => navigate(typeConfig.route)}
+                  onClick={async () => {
+                    // Invalidate user roles cache to ensure fresh data
+                    await queryClient.invalidateQueries({ queryKey: ['user-roles', user?.id] });
+                    navigate(typeConfig.route);
+                  }}
                 >
                   Go to Dashboard
                   <ChevronRight className="h-4 w-4 ml-1" />
