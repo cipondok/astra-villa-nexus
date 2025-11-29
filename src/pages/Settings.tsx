@@ -248,73 +248,46 @@ const Settings = () => {
           {/* Theme Tab */}
           <TabsContent value="theme" className="space-y-0">
             <Card className="professional-card border p-2">
-              <div className="p-3 rounded-lg bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/30 dark:border-purple-500/20">
-                <div className="flex items-center justify-between mb-3 gap-2">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-500 flex-shrink-0 ${
-                      theme === 'dark' 
-                        ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 rotate-0' 
-                        : 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rotate-180'
-                    }`}>
-                      {theme === 'dark' ? (
-                        <Moon className="h-4 w-4 text-blue-400" />
-                      ) : (
-                        <Sun className="h-4 w-4 text-yellow-600" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-foreground text-sm">
-                        {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-                      </h3>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {theme === 'dark' ? 'Easy on the eyes' : 'Bright interface'}
-                      </p>
-                    </div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-1.5">
+                  <div className={`w-6 h-6 rounded-md flex items-center justify-center ${
+                    theme === 'dark' ? 'bg-blue-500/10' : 'bg-yellow-500/10'
+                  }`}>
+                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 text-blue-400" /> : <Sun className="h-3.5 w-3.5 text-yellow-500" />}
                   </div>
-                  <Switch
-                    checked={theme === 'dark'}
-                    onCheckedChange={(checked) => {
-                      setTheme(checked ? 'dark' : 'light');
-                      toast({
-                        title: checked ? "Dark Mode" : "Light Mode",
-                        description: checked ? "Dark theme enabled" : "Light theme enabled",
-                      });
-                    }}
-                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500 flex-shrink-0"
-                  />
+                  <div>
+                    <p className="text-xs font-semibold">{theme === 'dark' ? 'Dark' : 'Light'} Mode</p>
+                    <p className="text-[10px] text-muted-foreground">{theme === 'dark' ? 'Eye comfort' : 'Bright view'}</p>
+                  </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => {
-                      setTheme('light');
-                      toast({ title: "Light Mode", description: "Theme changed to light mode" });
-                    }}
-                    className={`p-2.5 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
-                      theme === 'light'
-                        ? 'border-yellow-500 bg-gradient-to-br from-yellow-50 to-orange-50 shadow-lg'
-                        : 'border-border bg-card hover:border-yellow-300'
-                    }`}
-                  >
-                    <Sun className={`h-4 w-4 mx-auto mb-1 ${theme === 'light' ? 'text-yellow-600' : 'text-muted-foreground'}`} />
-                    <p className={`text-xs font-semibold ${theme === 'light' ? 'text-yellow-700' : 'text-muted-foreground'}`}>Light</p>
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      setTheme('dark');
-                      toast({ title: "Dark Mode", description: "Theme changed to dark mode" });
-                    }}
-                    className={`p-2.5 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
-                      theme === 'dark'
-                        ? 'border-blue-500 bg-gradient-to-br from-blue-950 to-purple-950 shadow-lg'
-                        : 'border-border bg-card hover:border-blue-300'
-                    }`}
-                  >
-                    <Moon className={`h-4 w-4 mx-auto mb-1 ${theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'}`} />
-                    <p className={`text-xs font-semibold ${theme === 'dark' ? 'text-blue-300' : 'text-muted-foreground'}`}>Dark</p>
-                  </button>
-                </div>
+                <Switch
+                  checked={theme === 'dark'}
+                  onCheckedChange={(checked) => {
+                    setTheme(checked ? 'dark' : 'light');
+                    toast({ title: checked ? "Dark Mode" : "Light Mode" });
+                  }}
+                  className="h-5 w-9 data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-yellow-500"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  onClick={() => { setTheme('light'); toast({ title: "Light Mode" }); }}
+                  className={`p-2 rounded-md border transition-all ${
+                    theme === 'light' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20' : 'border-border bg-muted/30'
+                  }`}
+                >
+                  <Sun className={`h-4 w-4 mx-auto ${theme === 'light' ? 'text-yellow-500' : 'text-muted-foreground'}`} />
+                  <p className="text-[10px] font-medium mt-0.5">Light</p>
+                </button>
+                <button
+                  onClick={() => { setTheme('dark'); toast({ title: "Dark Mode" }); }}
+                  className={`p-2 rounded-md border transition-all ${
+                    theme === 'dark' ? 'border-blue-500 bg-blue-950/20' : 'border-border bg-muted/30'
+                  }`}
+                >
+                  <Moon className={`h-4 w-4 mx-auto ${theme === 'dark' ? 'text-blue-400' : 'text-muted-foreground'}`} />
+                  <p className="text-[10px] font-medium mt-0.5">Dark</p>
+                </button>
               </div>
             </Card>
           </TabsContent>

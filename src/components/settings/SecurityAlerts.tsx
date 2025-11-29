@@ -11,132 +11,75 @@ export const SecurityAlerts = () => {
 
   if (isLoading) {
     return (
-      <Card className="professional-card border-2 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
-        <CardContent className="py-8">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary/20 border-t-primary mb-3"></div>
-            <p className="text-muted-foreground text-xs">Loading alerts...</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center py-3">
+        <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary/20 border-t-primary"></div>
+        <span className="ml-2 text-xs text-muted-foreground">Loading...</span>
+      </div>
     );
   }
 
   if (alerts.length === 0) {
     return (
-      <Card className="professional-card border-2 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
-        <CardHeader className="pb-2 px-4 pt-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
-              <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />
-            </div>
-            <div>
-              <CardTitle className="text-base">Security Alerts</CardTitle>
-              <CardDescription className="text-xs">No security concerns</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="px-4 pb-3">
-          <div className="text-center py-4">
-            <CheckCircle2 className="h-10 w-10 text-green-500 mx-auto mb-2" />
-            <p className="text-sm font-medium text-foreground">All Clear!</p>
-            <p className="text-xs text-muted-foreground mt-1">No security alerts detected</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center gap-2 py-2">
+        <div className="w-7 h-7 rounded-md bg-green-500/10 flex items-center justify-center flex-shrink-0">
+          <CheckCircle2 className="h-4 w-4 text-green-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-foreground">All Clear</p>
+          <p className="text-[10px] text-muted-foreground">No security alerts</p>
+        </div>
+        <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-600 border-green-500/20">
+          Secure
+        </Badge>
+      </div>
     );
   }
 
   return (
-    <Card className="professional-card border-2 overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
-      <CardHeader className="pb-2 px-4 pt-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-              <Shield className="h-4 w-4 text-red-600 dark:text-red-400" />
-            </div>
-            <div>
-              <CardTitle className="text-base">Security Alerts</CardTitle>
-              <CardDescription className="text-xs">
-                {unreadCount > 0 ? `${unreadCount} unread alert${unreadCount > 1 ? 's' : ''}` : 'All alerts reviewed'}
-              </CardDescription>
-            </div>
-          </div>
-          {unreadCount > 0 && (
-            <Badge variant="destructive" className="text-xs px-2 py-0.5">
-              {unreadCount}
-            </Badge>
-          )}
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-1.5">
+          <Shield className="h-3.5 w-3.5 text-red-500" />
+          <span className="text-xs font-semibold">Security Alerts</span>
         </div>
-      </CardHeader>
-      <CardContent className="px-4 pb-3">
-        <ScrollArea className="h-[200px] pr-3">
-          <div className="space-y-2">
-            {alerts.map((alert) => (
-              <div
-                key={alert.id}
-                className={`p-2.5 rounded-lg border transition-colors ${
-                  alert.is_resolved
-                    ? 'bg-muted/20 border-muted opacity-60'
-                    : alert.is_read
-                    ? 'bg-muted/30 border-border/50'
-                    : 'bg-muted/50 border-border shadow-sm'
-                }`}
-              >
-                <div className="flex items-start gap-2">
-                  <AlertTriangle className={`h-4 w-4 flex-shrink-0 mt-0.5 ${
-                    alert.severity === 'critical' ? 'text-red-600' :
-                    alert.severity === 'high' ? 'text-orange-600' :
-                    alert.severity === 'medium' ? 'text-yellow-600' :
-                    'text-blue-600'
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="text-sm font-semibold text-foreground leading-tight">
-                        {alert.title}
-                      </p>
-                      <Badge variant="outline" className={`text-xs flex-shrink-0 ${getSeverityColor(alert.severity)}`}>
-                        {alert.severity}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground mb-1.5">{alert.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground/60">
-                        {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
-                      </span>
-                      <div className="flex gap-1">
-                        {!alert.is_read && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => markAsRead(alert.id)}
-                            className="h-6 px-2 text-xs"
-                          >
-                            Mark Read
-                          </Button>
-                        )}
-                        {!alert.is_resolved && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => markAsResolved(alert.id)}
-                            className="h-6 px-2 text-xs"
-                          >
-                            <CheckCircle2 className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+        {unreadCount > 0 && (
+          <Badge variant="destructive" className="text-[10px] h-4 px-1.5">
+            {unreadCount}
+          </Badge>
+        )}
+      </div>
+      <ScrollArea className="h-[120px]">
+        <div className="space-y-1">
+          {alerts.map((alert) => (
+            <div
+              key={alert.id}
+              className={`p-1.5 rounded-md border text-[10px] ${
+                alert.is_resolved ? 'opacity-50' : alert.is_read ? 'bg-muted/20' : 'bg-muted/40'
+              }`}
+            >
+              <div className="flex items-center gap-1.5">
+                <AlertTriangle className={`h-3 w-3 flex-shrink-0 ${
+                  alert.severity === 'critical' ? 'text-red-500' :
+                  alert.severity === 'high' ? 'text-orange-500' : 'text-yellow-500'
+                }`} />
+                <span className="font-medium truncate flex-1">{alert.title}</span>
+                <div className="flex gap-0.5">
+                  {!alert.is_read && (
+                    <Button variant="ghost" size="sm" onClick={() => markAsRead(alert.id)} className="h-5 px-1 text-[9px]">
+                      Read
+                    </Button>
+                  )}
+                  {!alert.is_resolved && (
+                    <Button variant="ghost" size="sm" onClick={() => markAsResolved(alert.id)} className="h-5 w-5 p-0">
+                      <CheckCircle2 className="h-2.5 w-2.5" />
+                    </Button>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
