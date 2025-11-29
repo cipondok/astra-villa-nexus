@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Sidebar,
@@ -23,24 +23,52 @@ interface AdminSidebarProps {
 export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === 'collapsed';
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  
+  // Track which category is currently open
+  const [openCategory, setOpenCategory] = useState<string | null>(() => {
+    // Find category containing active section on mount
+    for (const category of categories) {
+      const sections = navigationSections[category as keyof typeof navigationSections];
+      if (sections?.some((section) => section.key === activeSection)) {
+        return category;
+      }
+    }
+    return 'overview';
+  });
 
   const handleNavClick = (key: string) => {
     onSectionChange(key);
+    // Auto-close after selection
+    setOpenCategory(null);
   };
 
+  // Close when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        setOpenCategory(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <Sidebar className="border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
+    <Sidebar ref={sidebarRef} className="border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
       <SidebarContent className="px-1.5 py-2">
         {categories.map((category) => {
           const sections = navigationSections[category as keyof typeof navigationSections];
           if (!sections || sections.length === 0) return null;
 
-          const hasActiveSection = sections.some((section) => section.key === activeSection);
+          const isOpen = openCategory === category;
 
           return (
             <Collapsible
               key={category}
-              defaultOpen={hasActiveSection || category === 'overview'}
+              open={isOpen}
+              onOpenChange={(open) => setOpenCategory(open ? category : null)}
               className="group/collapsible"
             >
               <SidebarGroup className="py-1">
