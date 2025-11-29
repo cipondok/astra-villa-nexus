@@ -74,7 +74,10 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative isolate z-[9999999] max-h-80 min-w-[8rem] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-2xl overscroll-contain overflow-y-auto",
+          "relative isolate max-h-80 min-w-[8rem] overflow-hidden rounded-lg border shadow-2xl overscroll-contain overflow-y-auto",
+          // Force solid background and maximum z-index for visibility in modals
+          "bg-background dark:bg-gray-900 text-foreground",
+          "!z-[99999999]",
           // Use only transform and opacity for animations to prevent layout shifts
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -84,6 +87,7 @@ const SelectContent = React.forwardRef<
           className
         )}
         position={position}
+        style={{ pointerEvents: 'auto' }}
         onCloseAutoFocus={(e) => {
           if (onCloseAutoFocus) return onCloseAutoFocus(e);
           e.preventDefault();
