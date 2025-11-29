@@ -414,7 +414,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             <SelectTrigger className="h-8 text-xs">
               <SelectValue placeholder={locationsLoading ? "Loading..." : "Select Province"} />
             </SelectTrigger>
-            <SelectContent className="max-h-60">
+            <SelectContent className="max-h-60 z-[9999]" position="popper" sideOffset={4}>
               {provinces.map((prov) => (
                 <SelectItem key={prov} value={prov} className="text-xs">
                   {prov}
@@ -434,7 +434,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             <SelectTrigger className="h-8 text-xs">
               <SelectValue placeholder="Select City" />
             </SelectTrigger>
-            <SelectContent className="max-h-60">
+            <SelectContent className="max-h-60 z-[9999]" position="popper" sideOffset={4}>
               {availableCities.map((c) => (
                 <SelectItem key={c} value={c} className="text-xs">
                   {c}
@@ -454,7 +454,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
             <SelectTrigger className="h-8 text-xs">
               <SelectValue placeholder="Select Area" />
             </SelectTrigger>
-            <SelectContent className="max-h-60">
+            <SelectContent className="max-h-60 z-[9999]" position="popper" sideOffset={4}>
               {availableAreas.map((a) => (
                 <SelectItem key={a} value={a} className="text-xs">
                   {a}
@@ -618,7 +618,7 @@ const PropertyOwnerRegistrationForm = ({ onSuccess }: PropertyOwnerRegistrationF
                   <SelectTrigger className="h-8 sm:h-9 text-xs sm:text-sm">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]" position="popper" sideOffset={4}>
                     <SelectItem value="1">1 property</SelectItem>
                     <SelectItem value="2">2 properties</SelectItem>
                     <SelectItem value="3">3 properties</SelectItem>
