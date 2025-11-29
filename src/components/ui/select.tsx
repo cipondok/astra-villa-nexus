@@ -74,7 +74,7 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative isolate z-[110000] max-h-80 min-w-[8rem] overflow-hidden rounded-lg border bg-background text-foreground shadow-2xl overscroll-contain overflow-y-auto",
+          "relative isolate z-[9999999] max-h-80 min-w-[8rem] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-2xl overscroll-contain overflow-y-auto",
           // Use only transform and opacity for animations to prevent layout shifts
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
