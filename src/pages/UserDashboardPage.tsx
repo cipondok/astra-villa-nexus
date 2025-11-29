@@ -60,23 +60,25 @@ const UserDashboardPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 pt-16 sm:pt-20 space-y-4 sm:space-y-6">
-      {/* Welcome Header - Mobile Optimized */}
-      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground p-4 sm:p-6 rounded-xl shadow-lg">
-        <div className="flex items-center justify-between gap-3">
+    <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-4 pt-2 sm:pt-4 space-y-3 sm:space-y-4">
+      {/* Welcome Header - Slim Mobile Optimized */}
+      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-3 py-2 sm:px-4 sm:py-3 rounded-lg shadow-md">
+        <div className="flex items-center justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <h1 className="text-lg sm:text-2xl md:text-3xl font-bold truncate">
-              Welcome, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
-            </h1>
-            <p className="text-primary-foreground/80 text-xs sm:text-sm mt-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm sm:text-lg md:text-xl font-bold truncate">
+                Welcome, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
+              </h1>
+              <Badge variant="secondary" className="text-[9px] sm:text-[10px] px-1.5 py-0.5">
+                {profile?.role?.replace('_', ' ') || 'User'}
+              </Badge>
+            </div>
+            <p className="text-primary-foreground/80 text-[10px] sm:text-xs">
               Manage your profile and properties
             </p>
-            <Badge variant="secondary" className="mt-2 text-[10px] sm:text-xs">
-              {profile?.role?.replace('_', ' ') || 'User'}
-            </Badge>
           </div>
-          <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-primary-foreground/20 flex items-center justify-center flex-shrink-0">
-            <User className="h-5 w-5 sm:h-7 sm:w-7" />
+          <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center flex-shrink-0">
+            <User className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
         </div>
       </div>
