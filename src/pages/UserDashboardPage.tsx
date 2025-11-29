@@ -279,12 +279,12 @@ const UserDashboardPage = () => {
                   <p className="text-xs sm:text-sm font-medium capitalize">{primaryRole?.replace('_', ' ') || 'User'}</p>
                 </div>
                 <div className="p-2 sm:p-3 bg-muted/50 rounded-lg">
-                  <label className="text-[10px] sm:text-xs font-medium text-muted-foreground">Status</label>
+                  <label className="text-[10px] sm:text-xs font-medium text-muted-foreground">Account Status</label>
                   <Badge 
-                    variant={profile?.verification_status === 'verified' ? 'default' : 'secondary'}
-                    className="text-[10px] sm:text-xs mt-0.5"
+                    variant={hasUpgradedRole ? 'default' : 'secondary'}
+                    className={`text-[10px] sm:text-xs mt-0.5 ${hasUpgradedRole ? 'bg-green-600' : ''}`}
                   >
-                    {profile?.verification_status || 'pending'}
+                    {hasUpgradedRole ? 'Active' : 'Basic'}
                   </Badge>
                 </div>
               </div>
