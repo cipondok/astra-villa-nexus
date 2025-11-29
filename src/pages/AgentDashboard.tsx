@@ -2,26 +2,26 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useTheme } from "@/components/ThemeProvider";
 import { AlertProvider } from "@/contexts/AlertContext";
 import AgentOverview from "@/components/agent/AgentOverview";
+import { useHasRole } from "@/hooks/useUserRoles";
 
 const AgentDashboard = () => {
-  const { isAuthenticated, loading, profile } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const { hasRole: isAgent, isLoading: rolesLoading } = useHasRole('agent');
   const navigate = useNavigate();
 
-  console.log('AgentDashboard - Auth state:', { isAuthenticated, loading, profile });
-
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate('/?auth=true');
+    if (!loading && !rolesLoading) {
+      if (!isAuthenticated) {
+        navigate('/?auth=true');
+      } else if (!isAgent) {
+        navigate('/');
+      }
     }
-    if (!loading && isAuthenticated && profile?.role !== 'agent') {
-      navigate('/');
-    }
-  }, [isAuthenticated, loading, profile, navigate]);
+  }, [isAuthenticated, loading, isAgent, rolesLoading, navigate]);
 
-  if (loading) {
+  if (loading || rolesLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -32,7 +32,7 @@ const AgentDashboard = () => {
     );
   }
 
-  if (!isAuthenticated || profile?.role !== 'agent') {
+  if (!isAuthenticated || !isAgent) {
     return null;
   }
 

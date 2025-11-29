@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
 import { formatIDR } from '@/utils/currency';
+import { useHasRole } from '@/hooks/useUserRoles';
 import { 
   Store, 
   Users, 
@@ -49,13 +50,11 @@ import ThemeSwitcher from '@/components/ui/theme-switcher';
 import { useVendorCategoryStatus } from '@/hooks/useVendorCategoryStatus';
 
 const VendorDashboard = () => {
-  const { user, profile, signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const { hasRole: isVendor, isLoading: rolesLoading } = useHasRole('vendor');
   const navigate = useNavigate();
   const { hasMainCategory, isLoading: categoryLoading } = useVendorCategoryStatus();
   const [activeTab, setActiveTab] = useState('overview');
-
-  // Check if user is a vendor only (not admin)
-  const isVendor = profile?.role === 'vendor';
 
   const handleHomeClick = () => {
     navigate('/', { replace: true });
@@ -96,6 +95,17 @@ const VendorDashboard = () => {
             Please sign in to access the vendor dashboard
           </AlertDescription>
         </Alert>
+      </div>
+    );
+  }
+
+  if (rolesLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
+        </div>
       </div>
     );
   }

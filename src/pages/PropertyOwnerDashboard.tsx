@@ -4,21 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import PropertyOwnerOverview from "@/components/propertyowner/PropertyOwnerOverview";
+import { useHasRole } from "@/hooks/useUserRoles";
 
 const PropertyOwnerDashboard = () => {
-  const { isAuthenticated, loading, profile } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const { hasRole: isPropertyOwner, isLoading: rolesLoading } = useHasRole('property_owner');
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate('/?auth=true');
+    if (!loading && !rolesLoading) {
+      if (!isAuthenticated) {
+        navigate('/?auth=true');
+      } else if (!isPropertyOwner) {
+        navigate('/dashboard');
+      }
     }
-    if (!loading && isAuthenticated && profile?.role !== 'property_owner') {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, loading, profile, navigate]);
+  }, [isAuthenticated, loading, isPropertyOwner, rolesLoading, navigate]);
 
-  if (loading) {
+  if (loading || rolesLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -29,7 +32,7 @@ const PropertyOwnerDashboard = () => {
     );
   }
 
-  if (!isAuthenticated || profile?.role !== 'property_owner') {
+  if (!isAuthenticated || !isPropertyOwner) {
     return null;
   }
 
