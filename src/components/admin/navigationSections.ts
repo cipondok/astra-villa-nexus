@@ -115,6 +115,13 @@ export const navigationSections = {
       description: "Manage user accounts, roles, and authentication"
     },
     {
+      key: "upgrade-applications",
+      label: "Upgrade Applications",
+      icon: UserCheck,
+      description: "Review and approve user role upgrade requests (Property Owner, Vendor, Agent)",
+      badge: "New"
+    },
+    {
       key: "verification-management",
       label: "Verification Management",
       icon: ShieldCheck,
