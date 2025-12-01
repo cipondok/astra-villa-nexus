@@ -1705,6 +1705,22 @@ const AstraSearchPanel = ({
       // Skip sortBy as it always has a default value
       if (key === 'sortBy') return;
 
+      // Skip priceRange and areaRange if they're at default cleared values
+      if (key === 'priceRange' && Array.isArray(value) && value.length === 2) {
+        const [min, max] = value;
+        if (typeof min === 'number' && typeof max === 'number' && (min !== 0 || max !== 10000000000)) {
+          count++;
+        }
+        return;
+      }
+      if (key === 'areaRange' && Array.isArray(value) && value.length === 2) {
+        const [min, max] = value;
+        if (typeof min === 'number' && typeof max === 'number' && (min !== 0 || max !== 1000)) {
+          count++;
+        }
+        return;
+      }
+
       // Count arrays (features, facilities) only if they have items
       if (key === 'features' || key === 'facilities') {
         if (Array.isArray(value) && value.length > 0) count++;
