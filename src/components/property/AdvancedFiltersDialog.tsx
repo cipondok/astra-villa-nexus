@@ -288,6 +288,24 @@ const AdvancedFiltersDialog = ({
     setBedrooms("");
     setBathrooms("");
     setValidationWarnings([]);
+    
+    // Notify parent component to clear filters
+    onFiltersChange({
+      listingType: "",
+      priceRange: "",
+      bedrooms: "",
+      bathrooms: "",
+    });
+    
+    // Update initial state to reflect cleared filters
+    setInitialState({
+      listingType: "",
+      minPrice: 0,
+      maxPrice: 10000000000,
+      bedrooms: "",
+      bathrooms: "",
+    });
+    
     toast({
       title: language === "en" ? "Filters Cleared" : "Filter Dihapus",
       description: language === "en" 
