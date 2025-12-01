@@ -176,6 +176,35 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
 
   const clearFilters = () => {
     const clearedFilters = {
+      location: '',
+      state: '',
+      city: '',
+      area: '',
+      propertyType: 'all',
+      listingType: 'all',
+      priceRange: [0, 10000000000],
+      bedrooms: 'all',
+      bathrooms: 'all',
+      parking: '',
+      minArea: '',
+      maxArea: '',
+      minPrice: 0,
+      maxPrice: 0,
+      areaRange: [0, 1000],
+      features: [],
+      facilities: [],
+      yearBuilt: '',
+      condition: '',
+      floorLevel: '',
+      landSize: '',
+      stories: '',
+      furnishing: '',
+      checkInDate: null,
+      checkOutDate: null,
+      rentalDuration: 'all',
+      tripPurpose: '',
+    };
+    setFilters({
       propertyType: 'all',
       listingType: 'all',
       priceRange: [0, 10000000000],
@@ -185,8 +214,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
       location: '',
       features: [],
       rentalDuration: 'all',
-    };
-    setFilters(clearedFilters);
+    });
     onFiltersChange(clearedFilters);
     toast.success(currentText.filtersCleared);
   };
