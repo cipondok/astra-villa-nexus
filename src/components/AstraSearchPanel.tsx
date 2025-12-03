@@ -1966,13 +1966,11 @@ const AstraSearchPanel = ({
     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
-  // Simple mobile view - only input and button by default
+  // Simple mobile view - sticky search panel
   if (isMobile) {
     return (
       <>
-        <CollapsibleSearchPanelMobile
-          activeFiltersCount={getActiveFiltersCount()}
-        >
+        <div className="sticky top-[56px] z-40 w-full bg-gradient-to-b from-background/98 via-background/95 to-background/90 backdrop-blur-xl border-b border-primary/20 shadow-lg shadow-primary/10">
       {/* Search Bar */}
       <div className="flex items-center gap-1.5 p-2">
         <div ref={anchorRef} className="flex-1 relative">
@@ -2304,7 +2302,7 @@ const AstraSearchPanel = ({
                 {filters.bathrooms && filters.bathrooms !== 'all' ? `${filters.bathrooms} Bath` : 'Baths'}
               </Button>
             </div>
-          </CollapsibleSearchPanelMobile>
+          </div>
 
         {/* Advanced Filters Modal using slim component */}
         <AdvancedFilters 
