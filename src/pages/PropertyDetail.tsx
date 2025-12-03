@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useIsAdmin } from '@/hooks/useUserRoles';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
+import { UserMembershipBadge } from '@/components/user/UserMembershipBadge';
 import { 
   MapPin, 
   Bed, 
@@ -148,30 +149,56 @@ const PropertyDetail: React.FC = () => {
 
       setProperty(propertyData);
 
-      // Load owner information with extended profile data
+      // Load owner information with extended profile data including membership level
       if (propertyData.owner_id) {
         const { data: owner } = await supabase
           .from('profiles')
-          .select('full_name, email, phone, avatar_url, verification_status, created_at')
+          .select(`
+            full_name, 
+            email, 
+            phone, 
+            avatar_url, 
+            verification_status, 
+            created_at,
+            user_level_id,
+            user_levels (
+              name
+            )
+          `)
           .eq('id', propertyData.owner_id)
           .single();
         
         if (owner) {
+          // Get user level name from joined data
+          const userLevel = owner.user_levels 
+            ? (Array.isArray(owner.user_levels) ? owner.user_levels[0] : owner.user_levels)
+            : null;
+          
+          // Map user level to membership tier
+          const getMembershipLevel = (levelName?: string) => {
+            if (!levelName) return 'verified';
+            const name = levelName.toLowerCase();
+            if (name.includes('diamond')) return 'diamond';
+            if (name.includes('platinum')) return 'platinum';
+            if (name.includes('gold')) return 'gold';
+            if (name.includes('vip')) return 'vip';
+            return 'verified';
+          };
+          
           // Enhanced agent/poster data with comprehensive information
           const posterInfo = {
             id: propertyData.owner_id,
             name: owner.full_name || 'Anonymous User',
             avatar_url: owner.avatar_url,
-            rating: 4.8, // This would come from actual ratings
-            user_level: 'Premium Agent', // This would be calculated based on activity
+            rating: 4.8,
+            user_level: getMembershipLevel(userLevel?.name),
             verification_status: owner.verification_status || 'verified',
-            total_properties: 25, // This would be counted from actual properties
+            total_properties: 25,
             joining_date: owner.created_at,
             customer_feedback_rating: 4.9,
             customer_feedback_count: 47,
-            // Enhanced agent information - Use actual owner data
-            whatsapp_number: owner.phone || undefined, // Use actual phone from profile
-            phone_number: owner.phone || undefined, // Use actual phone from profile
+            whatsapp_number: owner.phone || undefined,
+            phone_number: owner.phone || undefined,
             company_name: 'UNITED PROPERTY',
             company_logo: '/placeholder.svg',
             company_pt_name: 'PT Bumi Serpong Damai Tbk',
@@ -335,7 +362,7 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/20">
-      {/* Agent/Developer Header - Compact Mobile */}
+      {/* Agent/Developer Header - Compact Mobile with Membership Badge */}
       {property?.posted_by && (
         <div className="relative bg-gradient-to-r from-primary/5 via-accent/3 to-secondary/5 backdrop-blur-sm border-b border-border/10">
           <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-4">
@@ -349,8 +376,8 @@ const PropertyDetail: React.FC = () => {
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-background shadow-md"
                   />
                   {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-accent rounded-full flex items-center justify-center border border-background">
-                      <Shield className="w-2 h-2 text-accent-foreground" />
+                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center border border-background">
+                      <Shield className="w-2 h-2 text-white" />
                     </div>
                   )}
                 </div>
@@ -360,16 +387,23 @@ const PropertyDetail: React.FC = () => {
                     <h3 className="font-semibold text-xs sm:text-sm text-foreground truncate">
                       {property.posted_by.name}
                     </h3>
-                    <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-medium whitespace-nowrap">
-                      {property.posted_by.position || 'Developer'}
-                    </span>
+                    {/* Membership Level Badge */}
+                    <UserMembershipBadge 
+                      membershipLevel={property.posted_by.user_level || 'verified'} 
+                      size="xs" 
+                      variant="pill"
+                      showIcon={true}
+                    />
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-medium">
+                      {property.posted_by.position || 'Developer'}
+                    </span>
                     <div className="flex items-center gap-0.5">
                       <Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />
                       <span className="text-[10px] font-medium">{property.posted_by.customer_feedback_rating}</span>
                     </div>
-                    <span className="text-[9px] text-muted-foreground">• {property.posted_by.experience_years}y exp</span>
+                    <span className="text-[9px] text-muted-foreground">• {property.posted_by.experience_years}y</span>
                   </div>
                 </div>
               </div>
