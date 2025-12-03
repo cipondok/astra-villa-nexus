@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import Navigation from '@/components/Navigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 import DeveloperPartnerModal from '@/components/development/DeveloperPartnerModal';
 
 // Import project images
@@ -550,8 +549,6 @@ const AstraDevelopment = () => {
           </div>
         </div>
       </section>
-
-      <ProfessionalFooter language="en" />
       
       <DeveloperPartnerModal
         isOpen={isPartnerModalOpen} 
