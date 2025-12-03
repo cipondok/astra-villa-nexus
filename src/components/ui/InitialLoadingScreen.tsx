@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import astraLogo from '@/assets/astra-logo.png';
 
 const InitialLoadingScreen = () => {
   const [progress, setProgress] = useState(0);
@@ -34,40 +33,40 @@ const InitialLoadingScreen = () => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/20"
     >
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Floating particles */}
-        {[...Array(30)].map((_, i) => (
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-amber-400/30 rounded-full"
+            className="absolute w-1 h-1 bg-primary/40 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
             }}
             animate={{
-              y: [0, -30, 0],
-              opacity: [0.2, 0.6, 0.2],
-              scale: [1, 1.5, 1],
+              y: [0, -20, 0],
+              opacity: [0.3, 0.7, 0.3],
+              scale: [1, 1.3, 1],
             }}
             transition={{
               duration: 3 + Math.random() * 2,
               repeat: Infinity,
-              delay: i * 0.1,
+              delay: i * 0.15,
             }}
           />
         ))}
         
         {/* Ambient glow effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 text-center px-6">
-        {/* Logo */}
+        {/* Logo Section */}
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -77,7 +76,7 @@ const InitialLoadingScreen = () => {
             damping: 20,
             duration: 0.8
           }}
-          className="mb-6 flex justify-center"
+          className="mb-8 flex justify-center"
         >
           <div className="relative">
             {/* Outer rotating ring */}
@@ -88,7 +87,7 @@ const InitialLoadingScreen = () => {
                 repeat: Infinity, 
                 ease: "linear" 
               }}
-              className="absolute -inset-3 rounded-full border-2 border-amber-400/30 border-t-amber-400"
+              className="absolute -inset-4 rounded-full border-2 border-primary/30 border-t-primary"
             />
             
             {/* Inner pulsing ring */}
@@ -102,32 +101,35 @@ const InitialLoadingScreen = () => {
                 repeat: Infinity, 
                 ease: "easeInOut" 
               }}
-              className="absolute -inset-1 rounded-full bg-gradient-to-r from-amber-400/20 to-amber-600/20"
+              className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20"
             />
             
-            {/* Logo container */}
-            <div className="relative bg-gradient-to-br from-[#4a3c31] to-[#2d241c] rounded-full p-4 shadow-2xl shadow-amber-500/20">
-              <img 
-                src={astraLogo} 
-                alt="ASTRA Villa" 
-                className="w-16 h-16 object-contain"
-              />
+            {/* Logo container with ASTRA text */}
+            <div className="relative bg-gradient-to-br from-primary/20 to-primary/10 rounded-full p-6 shadow-2xl shadow-primary/20 border border-primary/20">
+              <div className="flex flex-col items-center justify-center w-16 h-16">
+                <span className="text-2xl font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                  A
+                </span>
+                <span className="text-[8px] font-medium text-primary/80 tracking-widest">
+                  VILLA
+                </span>
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* App Name */}
+        {/* App Name - ASTRA Villa */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-1"
+          className="mb-2"
         >
-          <h1 className="text-3xl md:text-4xl font-bold tracking-wider">
-            <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-wider">
+            <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
               ASTRA
             </span>
-            <span className="text-white/90 ml-2">Villa</span>
+            <span className="text-foreground ml-3">Villa</span>
           </h1>
         </motion.div>
         
@@ -135,7 +137,7 @@ const InitialLoadingScreen = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="text-amber-200/60 text-sm mb-8 tracking-widest uppercase"
+          className="text-muted-foreground text-sm mb-10 tracking-widest uppercase"
         >
           Luxury Property Portal
         </motion.p>
@@ -148,15 +150,15 @@ const InitialLoadingScreen = () => {
             transition={{ delay: 0.5 }}
           >
             {/* Progress Text */}
-            <div className="text-amber-200/80 text-xs mb-2 font-medium tracking-wide">
+            <div className="text-muted-foreground text-xs mb-2 font-medium tracking-wide">
               {loadingText}
             </div>
 
             {/* Progress Bar Container */}
-            <div className="relative h-1.5 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
+            <div className="relative h-1.5 bg-muted rounded-full overflow-hidden">
               {/* Animated Progress Fill */}
               <motion.div
-                className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 rounded-full"
+                className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary via-primary to-accent rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
@@ -164,7 +166,7 @@ const InitialLoadingScreen = () => {
               
               {/* Shimmer Effect */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                 animate={{
                   x: ['-100%', '200%'],
                 }}
@@ -177,7 +179,7 @@ const InitialLoadingScreen = () => {
             </div>
 
             {/* Percentage */}
-            <div className="text-amber-300/60 text-[10px] mt-1.5 font-medium">
+            <div className="text-primary/70 text-[10px] mt-1.5 font-medium">
               {progress}%
             </div>
           </motion.div>
@@ -193,7 +195,7 @@ const InitialLoadingScreen = () => {
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 bg-amber-400 rounded-full"
+              className="w-1.5 h-1.5 bg-primary rounded-full"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.4, 1, 0.4],
