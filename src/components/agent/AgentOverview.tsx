@@ -153,23 +153,24 @@ const AgentOverview = () => {
 
   return (
     <div className="space-y-3">
-      {/* Compact Agent Control Panel - Template Colors */}
-      <div className="glass-card bg-gradient-to-r from-primary/10 via-background to-accent/10 dark:from-primary/20 dark:via-background dark:to-accent/20 rounded-lg overflow-hidden shadow-lg border border-primary/20">
+      {/* Unified Agent Control Panel with Membership Status */}
+      <div className="glass-card bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 rounded-lg overflow-hidden shadow-lg shadow-teal-500/20 border border-teal-200/50 dark:border-teal-800/50 hover:shadow-xl hover:shadow-teal-500/30 transition-all duration-300">
         <div className="p-2.5">
+          {/* Header Row */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary/20 dark:bg-primary/30 rounded-lg flex items-center justify-center">
-                <Users className="h-3.5 w-3.5 text-primary" />
+              <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-md shadow-teal-500/40">
+                <Users className="h-4 w-4 text-white" />
               </div>
               <div>
-                <h1 className="text-xs font-bold text-foreground">Agent Control Panel</h1>
+                <h1 className="text-xs font-bold text-teal-900 dark:text-teal-100">Agent Control Panel</h1>
                 <div className="flex items-center gap-1">
                   <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-[9px] text-muted-foreground">Online</span>
-                  <div className={`flex items-center gap-0.5 ml-1 bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[8px] font-medium`}>
-                    <CurrentIcon className="h-2 w-2" />
-                    <span>{agentMembership.currentLevel.name}</span>
-                  </div>
+                  <span className="text-[9px] text-teal-600 dark:text-teal-400">Online</span>
+                  <Badge className="ml-1 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-1.5 py-0 text-[8px] shadow-sm">
+                    <CurrentIcon className="h-2 w-2 mr-0.5" />
+                    {agentMembership.currentLevel.name}
+                  </Badge>
                 </div>
               </div>
             </div>
@@ -177,79 +178,57 @@ const AgentOverview = () => {
             <Button 
               onClick={handleAddListing}
               size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground h-6 text-[9px] px-2 shadow-md"
+              className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-6 text-[9px] px-2 shadow-md"
             >
               <PlusCircle className="h-2.5 w-2.5 mr-0.5" />
               Add
             </Button>
           </div>
           
-          {/* Stats Row - Compact Mobile Style */}
-          <div className="grid grid-cols-4 gap-1.5 mt-2 pt-2 border-t border-border/50">
-            <div className="text-center p-1.5 bg-muted/30 rounded-md">
-              <div className="text-sm font-bold text-foreground">{stats.totalListings}</div>
-              <div className="text-[8px] text-muted-foreground">Properties</div>
+          {/* Stats + Membership Progress Row */}
+          <div className="grid grid-cols-5 gap-1.5 mt-2 pt-2 border-t border-teal-200/50 dark:border-teal-800/50">
+            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
+              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.totalListings}</div>
+              <div className="text-[8px] text-teal-600 dark:text-teal-400">Properties</div>
             </div>
-            <div className="text-center p-1.5 bg-muted/30 rounded-md">
-              <div className="text-sm font-bold text-foreground">{stats.activeListings}</div>
-              <div className="text-[8px] text-muted-foreground">Active</div>
+            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
+              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.activeListings}</div>
+              <div className="text-[8px] text-teal-600 dark:text-teal-400">Active</div>
             </div>
-            <div className="text-center p-1.5 bg-muted/30 rounded-md">
-              <div className="text-sm font-bold text-foreground">{stats.pendingListings}</div>
-              <div className="text-[8px] text-muted-foreground">Pending</div>
+            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
+              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.pendingListings}</div>
+              <div className="text-[8px] text-teal-600 dark:text-teal-400">Pending</div>
             </div>
-            <div className="text-center p-1.5 bg-muted/30 rounded-md">
-              <div className="text-sm font-bold text-foreground">{stats.totalClients}</div>
-              <div className="text-[8px] text-muted-foreground">Clients</div>
+            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
+              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.totalClients}</div>
+              <div className="text-[8px] text-teal-600 dark:text-teal-400">Clients</div>
             </div>
+            {/* Membership Progress Mini */}
+            <div className="p-1.5 bg-gradient-to-br from-teal-200/50 to-cyan-200/50 dark:from-teal-800/50 dark:to-cyan-800/50 rounded-md">
+              <div className="flex items-center justify-between mb-0.5">
+                <span className="text-[8px] text-teal-700 dark:text-teal-300 font-medium">Lv.{agentMembership.currentLevel.level}</span>
+                <span className="text-[8px] font-bold text-teal-800 dark:text-teal-200">{agentMembership.progress.percentage}%</span>
+              </div>
+              <Progress value={agentMembership.progress.percentage} className="h-1" />
+              <div className="text-[7px] text-teal-600 dark:text-teal-400 mt-0.5 text-center">
+                {agentMembership.progress.current}/{agentMembership.progress.required} → {agentMembership.nextLevel.name}
+              </div>
+            </div>
+          </div>
+          
+          {/* Benefits Row */}
+          <div className="flex flex-wrap gap-0.5 mt-1.5">
+            {agentMembership.benefits.slice(0, 3).map((benefit, index) => (
+              <Badge key={index} variant="outline" className="text-[7px] px-1 py-0 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-900/30">
+                {benefit}
+              </Badge>
+            ))}
+            <Badge variant="outline" className="text-[7px] px-1 py-0 text-teal-500 border-teal-300/50">
+              +{agentMembership.benefits.length - 3}
+            </Badge>
           </div>
         </div>
       </div>
-
-      {/* Agent Membership Progress Card - Marine Elevated Box */}
-      <Card className="border-l-2 border-l-teal-500 shadow-lg shadow-teal-500/20 bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5 transition-all duration-300">
-        <CardHeader className="p-2.5 pb-1.5">
-          <div className="flex items-center justify-between gap-1.5">
-            <div className="flex items-center gap-1.5">
-              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-md shadow-teal-500/40">
-                <CurrentIcon className="h-3.5 w-3.5 text-white" />
-              </div>
-              <div>
-                <CardTitle className="text-xs text-teal-900 dark:text-teal-100">
-                  Lv.{agentMembership.currentLevel.level} {agentMembership.currentLevel.name}
-                </CardTitle>
-                <CardDescription className="text-[9px] text-teal-600 dark:text-teal-400">
-                  {agentMembership.progress.current}/{agentMembership.progress.required} → {agentMembership.nextLevel.name}
-                </CardDescription>
-              </div>
-            </div>
-            <Badge className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-1.5 py-0.5 text-[9px] shadow-sm">
-              {agentMembership.currentLevel.name}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="p-2.5 pt-0">
-          <div className="space-y-1.5">
-            <div>
-              <div className="flex justify-between text-[9px] mb-0.5">
-                <span className="text-teal-600 dark:text-teal-400">Progress</span>
-                <span className="font-bold text-teal-700 dark:text-teal-300">{agentMembership.progress.percentage}%</span>
-              </div>
-              <Progress value={agentMembership.progress.percentage} multiColor className="h-1" />
-            </div>
-            <div className="flex flex-wrap gap-0.5">
-              {agentMembership.benefits.slice(0, 2).map((benefit, index) => (
-                <Badge key={index} variant="outline" className="text-[8px] px-1 py-0 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-900/30">
-                  {benefit}
-                </Badge>
-              ))}
-              <Badge variant="outline" className="text-[8px] px-1 py-0 text-teal-500 border-teal-300/50">
-                +{agentMembership.benefits.length - 2}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Main Dashboard Tabs - Mobile App Style */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-2">
