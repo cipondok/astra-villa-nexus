@@ -115,6 +115,13 @@ export const navigationSections = {
       description: "Manage user accounts, roles, and authentication"
     },
     {
+      key: "user-levels",
+      label: "User Levels & Membership",
+      icon: Crown,
+      description: "Manage user membership levels (Basic, Verified, VIP, Gold, Platinum, Diamond)",
+      badge: "New"
+    },
+    {
       key: "upgrade-applications",
       label: "Upgrade Applications",
       icon: UserCheck,

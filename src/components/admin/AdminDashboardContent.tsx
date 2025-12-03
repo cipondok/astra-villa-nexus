@@ -61,6 +61,7 @@ import PropertyFiltersManagement from "./PropertyFiltersManagement";
 import SocialMediaSettings from "./SocialMediaSettings";
 import VerificationManagement from "./VerificationManagement";
 import UserUpgradeApplications from "./UserUpgradeApplications";
+import UserLevelManagement from "./UserLevelManagement";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -78,6 +79,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ProjectProgressReport />;
       case "user-management":
         return <EnhancedUserManagement />;
+      case "user-levels":
+        return <UserLevelManagement />;
       case "verification-management":
         return <VerificationManagement />;
       case "upgrade-applications":
