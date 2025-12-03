@@ -1966,11 +1966,11 @@ const AstraSearchPanel = ({
     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
-  // Simple mobile view - sticky search panel
+  // Simple mobile view - fixed search panel at top
   if (isMobile) {
     return (
-      <>
-        <div className="sticky top-[56px] z-40 w-full bg-gradient-to-b from-background/98 via-background/95 to-background/90 backdrop-blur-xl border-b border-primary/20 shadow-lg shadow-primary/10">
+      <div className="w-full">
+        <div className="fixed top-[56px] left-0 right-0 z-40 bg-gradient-to-b from-background/98 via-background/95 to-background/90 backdrop-blur-xl border-b border-primary/20 shadow-lg shadow-primary/10">
       {/* Search Bar */}
       <div className="flex items-center gap-1.5 p-2">
         <div ref={anchorRef} className="flex-1 relative">
@@ -2317,7 +2317,9 @@ const AstraSearchPanel = ({
           open={showAdvancedFilters}
           onOpenChange={setShowAdvancedFilters}
         />
-      </>
+        {/* Spacer for fixed search panel */}
+        <div className="h-14" />
+      </div>
     );
   }
   return <div className="w-full transition-all duration-500">

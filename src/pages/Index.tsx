@@ -464,38 +464,54 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Enhanced Search Panel Container */}
-            <div className="relative">
-              {/* Glass morphism container */}
-              <div className="relative bg-gradient-to-br from-background/80 via-background/60 to-background/80 backdrop-blur-xl border border-border/50 rounded-2xl md:rounded-3xl shadow-2xl shadow-primary/5 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-5 duration-700">
-                {/* Shine effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer"></div>
-                
-                <Suspense fallback={<SearchPanelSkeleton />}>
-                  <SearchErrorBoundary>
-                    <AstraSearchPanel
-                      language={language}
-                      onSearch={(searchData) => {
-                        setQuickSearch(searchData.searchQuery || "");
-                        handleQuickSearch(searchData);
-                      }}
-                      onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                      resultsCount={hasSearched ? searchResults.length : undefined}
-                    />
-                  </SearchErrorBoundary>
-                </Suspense>
-                
-                {/* Retry Indicator */}
-                {isRetrying && (
-                  <div className="absolute bottom-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300">
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    <span className="text-sm font-medium">
-                      Retrying... ({retryCount}/3)
-                    </span>
-                  </div>
-                )}
+            {/* Enhanced Search Panel Container - No overflow-hidden on mobile for sticky */}
+            {isMobile ? (
+              <Suspense fallback={<SearchPanelSkeleton />}>
+                <SearchErrorBoundary>
+                  <AstraSearchPanel
+                    language={language}
+                    onSearch={(searchData) => {
+                      setQuickSearch(searchData.searchQuery || "");
+                      handleQuickSearch(searchData);
+                    }}
+                    onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                    resultsCount={hasSearched ? searchResults.length : undefined}
+                  />
+                </SearchErrorBoundary>
+              </Suspense>
+            ) : (
+              <div className="relative">
+                {/* Glass morphism container - Desktop only */}
+                <div className="relative bg-gradient-to-br from-background/80 via-background/60 to-background/80 backdrop-blur-xl border border-border/50 rounded-2xl md:rounded-3xl shadow-2xl shadow-primary/5 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-5 duration-700">
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer"></div>
+                  
+                  <Suspense fallback={<SearchPanelSkeleton />}>
+                    <SearchErrorBoundary>
+                      <AstraSearchPanel
+                        language={language}
+                        onSearch={(searchData) => {
+                          setQuickSearch(searchData.searchQuery || "");
+                          handleQuickSearch(searchData);
+                        }}
+                        onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                        resultsCount={hasSearched ? searchResults.length : undefined}
+                      />
+                    </SearchErrorBoundary>
+                  </Suspense>
+                  
+                  {/* Retry Indicator */}
+                  {isRetrying && (
+                    <div className="absolute bottom-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300">
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      <span className="text-sm font-medium">
+                        Retrying... ({retryCount}/3)
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
 
