@@ -47,101 +47,97 @@ const MobileFooter = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-b from-background to-muted/20 border-t border-border/50 backdrop-blur-sm mt-2">
-      {/* Quick Contact Actions - App Style */}
-      <div className="px-4 py-3 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
-        <div className="flex justify-around items-center gap-2 max-w-md mx-auto">
+    <footer className="bg-gradient-to-b from-background to-muted/10 border-t border-border/30 backdrop-blur-sm">
+      {/* Quick Contact Actions - Ultra Compact */}
+      <div className="px-3 py-2 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
+        <div className="flex justify-around items-center gap-1.5 max-w-sm mx-auto">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2.5 px-2 rounded-2xl border-2 active:scale-95 transition-transform bg-background/80 backdrop-blur-sm"
+            className="flex-1 flex flex-col items-center gap-0.5 h-auto py-1.5 px-1.5 rounded-xl active:scale-95 transition-transform"
             onClick={() => window.open('tel:+62812345678')}
           >
-            <Phone className="h-4 w-4 text-primary" />
-            <span className="text-[10px] font-medium">Call</span>
+            <Phone className="h-3.5 w-3.5 text-primary" />
+            <span className="text-[9px] font-medium">Call</span>
           </Button>
           
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2.5 px-2 rounded-2xl border-2 active:scale-95 transition-transform bg-background/80 backdrop-blur-sm"
+            className="flex-1 flex flex-col items-center gap-0.5 h-auto py-1.5 px-1.5 rounded-xl active:scale-95 transition-transform"
             onClick={() => window.open('https://wa.me/62812345678')}
           >
-            <MessageCircle className="h-4 w-4 text-green-600" />
-            <span className="text-[10px] font-medium">WhatsApp</span>
+            <MessageCircle className="h-3.5 w-3.5 text-green-600" />
+            <span className="text-[9px] font-medium">WhatsApp</span>
           </Button>
           
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2.5 px-2 rounded-2xl border-2 active:scale-95 transition-transform bg-background/80 backdrop-blur-sm"
+            className="flex-1 flex flex-col items-center gap-0.5 h-auto py-1.5 px-1.5 rounded-xl active:scale-95 transition-transform"
             onClick={() => window.open('mailto:info@astravilla.com')}
           >
-            <Mail className="h-4 w-4 text-primary" />
-            <span className="text-[10px] font-medium">Email</span>
+            <Mail className="h-3.5 w-3.5 text-primary" />
+            <span className="text-[9px] font-medium">Email</span>
           </Button>
         </div>
       </div>
 
-      {/* Main Content - Ultra Compact */}
-      <div className="px-4 py-4 space-y-3">
-        {/* Company Branding */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 mb-1">
-            <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-              <Home className="h-3.5 w-3.5 text-primary-foreground" />
+      {/* Main Content - Ultra Slim */}
+      <div className="px-3 py-2 space-y-1.5">
+        {/* Brand + Contact Row */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Home className="h-2.5 w-2.5 text-primary-foreground" />
             </div>
-            <span className="text-base font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-xs font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               ASTRA Villa
             </span>
           </div>
-        </div>
-
-        {/* Contact Info - Minimal */}
-        <div className="flex flex-col items-center gap-1 text-[11px] text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <MapPin className="h-3 w-3 text-primary" />
-            <span>{currentText.address}</span>
+          
+          {/* Social Icons - Inline */}
+          <div className="flex items-center gap-0.5">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-6 h-6 p-0 rounded-full hover:bg-primary/10 active:scale-95"
+              onClick={() => window.open('https://facebook.com')}
+            >
+              <Facebook className="h-3 w-3 text-muted-foreground" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-6 h-6 p-0 rounded-full hover:bg-primary/10 active:scale-95"
+              onClick={() => window.open('https://instagram.com')}
+            >
+              <Instagram className="h-3 w-3 text-muted-foreground" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-6 h-6 p-0 rounded-full hover:bg-primary/10 active:scale-95"
+              onClick={() => window.open('https://twitter.com')}
+            >
+              <Twitter className="h-3 w-3 text-muted-foreground" />
+            </Button>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Phone className="h-3 w-3 text-primary" />
-            <span>{currentText.phone}</span>
+        </div>
+
+        {/* Contact Info + Copyright - Single Line */}
+        <div className="flex items-center justify-between text-[8px] text-muted-foreground/70 border-t border-border/20 pt-1.5">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-0.5">
+              <MapPin className="h-2 w-2" />
+              <span>Jakarta</span>
+            </div>
+            <div className="flex items-center gap-0.5">
+              <Phone className="h-2 w-2" />
+              <span>+62 812-345-6789</span>
+            </div>
           </div>
-        </div>
-
-        {/* Social Media - Modern Pills */}
-        <div className="flex justify-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-9 h-9 p-0 rounded-full hover:bg-primary/10 active:scale-95 transition-all"
-            onClick={() => window.open('https://facebook.com')}
-          >
-            <Facebook className="h-4 w-4 text-primary" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-9 h-9 p-0 rounded-full hover:bg-primary/10 active:scale-95 transition-all"
-            onClick={() => window.open('https://instagram.com')}
-          >
-            <Instagram className="h-4 w-4 text-primary" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-9 h-9 p-0 rounded-full hover:bg-primary/10 active:scale-95 transition-all"
-            onClick={() => window.open('https://twitter.com')}
-          >
-            <Twitter className="h-4 w-4 text-primary" />
-          </Button>
-        </div>
-
-        {/* Copyright - Minimal */}
-        <div className="text-center pt-2 border-t border-border/30">
-          <p className="text-[10px] text-muted-foreground/60">
-            {currentText.copyright}
-          </p>
+          <span>© 2024 ASTRA Villa</span>
         </div>
       </div>
     </footer>
