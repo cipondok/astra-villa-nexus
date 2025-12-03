@@ -1,19 +1,88 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Building2, Palette, Wrench, Globe, Users, CheckCircle2, 
   ArrowRight, Sparkles, Home, Lightbulb, TreePine, Cpu,
-  Eye, Headphones, Award, Handshake, Mail, ChevronRight
+  Eye, Headphones, Award, Handshake, Mail, ChevronRight,
+  MapPin, Calendar, TrendingUp, Play, ExternalLink, Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import DeveloperPartnerModal from '@/components/development/DeveloperPartnerModal';
 
+// Import project images
+import baliVillaImg from '@/assets/development/bali-villa-project.jpg';
+import jakartaPenthouseImg from '@/assets/development/jakarta-penthouse-project.jpg';
+import lombokBeachImg from '@/assets/development/lombok-beach-villa.jpg';
+import ubudEcoImg from '@/assets/development/ubud-eco-villa.jpg';
+
 const AstraDevelopment = () => {
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<number | null>(null);
+
+  // Demo Projects in Indonesia
+  const demoProjects = [
+    {
+      id: 1,
+      title: "Canggu Sunset Villa",
+      location: "Canggu, Bali",
+      image: baliVillaImg,
+      status: "Completed",
+      progress: 100,
+      price: "IDR 12.5 B",
+      area: "850 m²",
+      completion: "Dec 2024",
+      features: ["Infinity Pool", "Rice Field View", "Smart Home", "4 Bedrooms"],
+      description: "Luxury tropical villa with traditional Balinese elements and modern smart home integration.",
+      category: "Luxury Villa"
+    },
+    {
+      id: 2,
+      title: "Sudirman Sky Penthouse",
+      location: "SCBD, Jakarta",
+      image: jakartaPenthouseImg,
+      status: "In Progress",
+      progress: 75,
+      price: "IDR 28 B",
+      area: "420 m²",
+      completion: "Mar 2025",
+      features: ["City View", "Private Elevator", "Rooftop Terrace", "Smart Security"],
+      description: "Premium penthouse with panoramic Jakarta skyline views and contemporary luxury design.",
+      category: "Penthouse"
+    },
+    {
+      id: 3,
+      title: "Senggigi Beach Resort",
+      location: "Senggigi, Lombok",
+      image: lombokBeachImg,
+      status: "New Project",
+      progress: 25,
+      price: "IDR 8.5 B",
+      area: "650 m²",
+      completion: "Sep 2025",
+      features: ["Beachfront", "Private Beach", "Ocean View", "3 Bedrooms"],
+      description: "Beachfront villa with direct beach access and stunning ocean panorama.",
+      category: "Beach Villa"
+    },
+    {
+      id: 4,
+      title: "Ubud Rainforest Retreat",
+      location: "Ubud, Bali",
+      image: ubudEcoImg,
+      status: "In Progress",
+      progress: 60,
+      price: "IDR 9.8 B",
+      area: "720 m²",
+      completion: "Jun 2025",
+      features: ["Eco-Friendly", "Jungle View", "Bamboo Design", "Yoga Pavilion"],
+      description: "Sustainable eco-villa surrounded by pristine rainforest with bamboo architecture.",
+      category: "Eco Villa"
+    }
+  ];
 
   const buildServices = [
     {
@@ -172,6 +241,157 @@ const AstraDevelopment = () => {
                 </motion.div>
               ))}
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Demo Projects Showcase Section */}
+      <section className="py-8 md:py-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-accent/3" />
+        
+        <div className="container mx-auto px-3 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-6"
+          >
+            <Badge className="mb-2 px-3 py-1 text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Featured Projects
+            </Badge>
+            <h2 className="text-lg md:text-2xl font-bold mb-2">Our Projects in Indonesia</h2>
+            <p className="text-xs md:text-sm text-muted-foreground">Discover our latest premium developments across Indonesia's most prestigious locations</p>
+          </motion.div>
+
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
+            {demoProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15, duration: 0.5 }}
+                whileHover={{ y: -5 }}
+                className="group"
+              >
+                <Card className="h-full overflow-hidden bg-background/60 backdrop-blur-sm border-border/40 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all duration-500">
+                  {/* Image Container */}
+                  <div className="relative h-40 md:h-48 overflow-hidden">
+                    <motion.img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.6 }}
+                    />
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    
+                    {/* Status Badge */}
+                    <Badge 
+                      className={`absolute top-2 left-2 text-[10px] px-2 py-0.5 ${
+                        project.status === 'Completed' 
+                          ? 'bg-emerald-500/90 text-white' 
+                          : project.status === 'New Project'
+                          ? 'bg-blue-500/90 text-white animate-pulse'
+                          : 'bg-amber-500/90 text-white'
+                      }`}
+                    >
+                      {project.status}
+                    </Badge>
+
+                    {/* Category Badge */}
+                    <Badge className="absolute top-2 right-2 text-[10px] px-2 py-0.5 bg-black/50 text-white backdrop-blur-sm">
+                      {project.category}
+                    </Badge>
+
+                    {/* Price & Location */}
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <h3 className="text-white font-bold text-sm mb-0.5 drop-shadow-lg">{project.title}</h3>
+                      <div className="flex items-center gap-1 text-white/90 text-[10px]">
+                        <MapPin className="h-3 w-3" />
+                        <span>{project.location}</span>
+                      </div>
+                    </div>
+
+                    {/* Play Button for Virtual Tour */}
+                    <motion.button
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/30"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Play className="h-5 w-5 text-white fill-white" />
+                    </motion.button>
+                  </div>
+
+                  {/* Content */}
+                  <CardContent className="p-3">
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{project.description}</p>
+
+                    {/* Progress Bar */}
+                    <div className="mb-3">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[10px] text-muted-foreground">Project Progress</span>
+                        <span className="text-[10px] font-semibold text-primary">{project.progress}%</span>
+                      </div>
+                      <Progress value={project.progress} multiColor className="h-1.5" />
+                    </div>
+
+                    {/* Features */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {project.features.slice(0, 4).map((feature, idx) => (
+                        <Badge key={idx} variant="outline" className="text-[9px] px-1.5 py-0.5 bg-muted/50">
+                          {feature}
+                        </Badge>
+                      ))}
+                    </div>
+
+                    {/* Stats Row */}
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border/50">
+                      <div className="text-center">
+                        <p className="text-[10px] text-muted-foreground">Price</p>
+                        <p className="text-xs font-bold text-primary">{project.price}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-muted-foreground">Area</p>
+                        <p className="text-xs font-semibold">{project.area}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-muted-foreground">Completion</p>
+                        <p className="text-xs font-semibold">{project.completion}</p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 mt-3">
+                      <Button size="sm" variant="outline" className="flex-1 h-7 text-[10px]">
+                        <Eye className="h-3 w-3 mr-1" />
+                        View Details
+                      </Button>
+                      <Button size="sm" className="flex-1 h-7 text-[10px] bg-gradient-to-r from-primary to-primary/80">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        Schedule Visit
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* View All Projects CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-6"
+          >
+            <Button variant="outline" className="border-primary/30 hover:bg-primary/5">
+              View All Projects
+              <ExternalLink className="h-4 w-4 ml-1.5" />
+            </Button>
           </motion.div>
         </div>
       </section>
