@@ -411,22 +411,33 @@ const MultiStepPropertyForm = () => {
 
       {/* Tabs */}
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6 h-9 p-0.5 gap-0.5 bg-muted/30 border border-border/30">
+        <TabsList className="grid w-full grid-cols-6 h-10 p-1 gap-1 bg-gradient-to-r from-muted/40 via-muted/20 to-muted/40 backdrop-blur-sm border border-border/40 rounded-xl shadow-inner">
           {steps.map((step, index) => {
             const Icon = step.icon;
             const stepIndex = steps.findIndex(s => s.id === step.id);
             const isCompleted = stepIndex < getCurrentStepIndex();
+            const isCurrent = currentTab === step.id;
             
             return (
               <TabsTrigger
                 key={step.id}
                 value={step.id}
-                className="flex items-center justify-center gap-1 py-1 px-1 text-[10px] relative data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all duration-200"
+                className={`
+                  flex items-center justify-center gap-1 py-1.5 px-1.5 text-[10px] font-medium relative rounded-lg
+                  transition-all duration-300 ease-out
+                  hover:bg-accent/50 hover:scale-[1.02]
+                  data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/80
+                  data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/25
+                  data-[state=active]:scale-[1.02] data-[state=active]:ring-1 data-[state=active]:ring-primary/30
+                  ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : ''}
+                `}
               >
                 {isCompleted && (
-                  <CheckCircle2 className="h-2.5 w-2.5 absolute -top-0.5 -right-0.5 text-emerald-500" />
+                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-emerald-500 rounded-full flex items-center justify-center shadow-sm">
+                    <CheckCircle2 className="h-2 w-2 text-white" />
+                  </span>
                 )}
-                <Icon className="h-3 w-3" />
+                <Icon className={`h-3.5 w-3.5 ${isCurrent ? 'animate-pulse' : ''}`} />
                 <span className="hidden sm:inline truncate">{step.label}</span>
               </TabsTrigger>
             );
