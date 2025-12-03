@@ -24,6 +24,7 @@ import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
+import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -443,6 +444,13 @@ const Index = () => {
           <div className="relative z-10 px-2 py-1 md:px-4 md:py-3 w-full max-w-7xl mx-auto">
             {/* Enhanced Header */}
             <div className="mb-1.5 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              {/* User Membership Status - Shows when logged in */}
+              {user && (
+                <div className="flex justify-center mb-2">
+                  <UserProfileHeader variant="minimal" showActions={false} />
+                </div>
+              )}
+              
               <div className="inline-flex items-center gap-1.5 mb-1 px-2.5 py-0.5 md:px-4 md:py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
                 <Sparkles className="h-2.5 w-2.5 md:h-4 md:w-4 text-primary animate-pulse" />
                 <span className="text-[9px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
