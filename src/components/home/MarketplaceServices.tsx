@@ -123,18 +123,18 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   onClick
 }) => {
   return <div onClick={onClick} className="group cursor-pointer active:scale-95 transition-transform">
-      <div className="relative overflow-hidden rounded bg-card border border-border/40 p-1 md:p-3 h-full flex flex-col items-center text-center hover:border-primary/30">
-        {/* Icon - Big */}
-        <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg ${service.bgColor} flex items-center justify-center mb-0.5 md:mb-2`}>
+      <div className="relative overflow-hidden rounded bg-card border border-border/40 p-0.5 md:p-3 h-full flex flex-col items-center text-center hover:border-primary/30">
+        {/* Icon */}
+        <div className={`w-6 h-6 md:w-12 md:h-12 rounded ${service.bgColor} flex items-center justify-center mb-0.5 md:mb-2`}>
           <div className={service.iconColor}>
             {React.cloneElement(service.icon as React.ReactElement, {
-            className: 'w-4 h-4 md:w-6 md:h-6'
+            className: 'w-3 h-3 md:w-6 md:h-6'
           })}
           </div>
         </div>
 
-        {/* Title - Small */}
-        <h3 className="text-[5px] md:text-xs font-medium text-foreground leading-tight text-center truncate w-full">
+        {/* Title */}
+        <h3 className="text-[6px] md:text-xs font-medium text-foreground leading-none text-center truncate w-full px-0.5">
           {service.title}
         </h3>
         
