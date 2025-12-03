@@ -214,193 +214,134 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
   const incompleteFields = completionData.fields.filter(field => !field.completed);
 
   return (
-    <div className="space-y-6">
-      {/* Profile Completion Header */}
-      <Card className={`border-l-4 ${completionData.percentage < 70 ? 'border-l-destructive' : 'border-l-accent'}`}>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`w-16 h-16 rounded-2xl ${getLevelColor(completionData.level)} flex items-center justify-center shadow-lg`}>
-                <Award className="h-8 w-8 text-white" />
+    <div className="space-y-2">
+      {/* Profile Completion Header - Compact */}
+      <Card className={`border-l-2 ${completionData.percentage < 70 ? 'border-l-destructive' : 'border-l-primary'} bg-card/80`}>
+        <CardHeader className="p-2 pb-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-lg ${getLevelColor(completionData.level)} flex items-center justify-center shadow-sm`}>
+                <Award className="h-4 w-4 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-2xl">
-                  Profile Completion: {completionData.percentage}%
+                <CardTitle className="text-xs">
+                  Profile: {completionData.percentage}%
                 </CardTitle>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge className={`${getLevelColor(completionData.level)} text-white`}>
-                    {completionData.level} Agent
+                <div className="flex items-center gap-1 mt-0.5">
+                  <Badge className={`${getLevelColor(completionData.level)} text-primary-foreground text-[8px] px-1 py-0`}>
+                    {completionData.level}
                   </Badge>
                   {completionData.percentage < 70 && (
-                    <Badge variant="destructive">Action Required</Badge>
+                    <Badge variant="destructive" className="text-[8px] px-1 py-0">Action</Badge>
                   )}
                 </div>
               </div>
             </div>
             {completionData.percentage < 100 && (
               <Button 
-                onClick={() => {
-                  onEditProfile();
-                  // Scroll to edit profile area
-                  setTimeout(() => {
-                    const editSection = document.querySelector('[data-edit-profile]');
-                    if (editSection) {
-                      editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }, 100);
-                }} 
-                className="bg-primary hover:bg-primary/90"
+                onClick={onEditProfile} 
+                size="sm"
+                className="bg-primary hover:bg-primary/90 h-6 text-[9px] px-2"
               >
-                Complete Profile
-                <ChevronRight className="h-4 w-4 ml-1" />
+                Complete
+                <ChevronRight className="h-2.5 w-2.5 ml-0.5" />
               </Button>
             )}
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-2 pt-0">
+          <div className="space-y-1.5">
             {/* Progress Bar */}
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="font-medium">Overall Progress</span>
-                <span className="font-bold">{completionData.percentage}%</span>
+              <div className="flex justify-between text-[9px] mb-0.5">
+                <span className="text-muted-foreground">Progress</span>
+                <span className="font-bold text-primary">{completionData.percentage}%</span>
               </div>
-              <Progress 
-                value={completionData.percentage} 
-                className={`h-3 ${getProgressColor(completionData.percentage)}`}
-              />
+              <Progress value={completionData.percentage} className="h-1" />
             </div>
 
-            {/* Completion Alert */}
+            {/* Completion Alert - Compact */}
             {completionData.percentage < 70 && (
-              <Alert className="status-warning">
-                <TrendingUp className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>Complete your profile to unlock premium benefits!</strong> 
-                  Agents with complete profiles receive 3x more leads and higher client trust ratings.
-                </AlertDescription>
+              <Alert className="py-1.5 px-2 bg-primary/10 border-primary/30">
+                <div className="flex items-center gap-1.5">
+                  <TrendingUp className="h-3 w-3 text-primary" />
+                  <AlertDescription className="text-[9px]">
+                    Complete profile for 3x more leads!
+                  </AlertDescription>
+                </div>
               </Alert>
             )}
 
-            {/* Level Benefits */}
-            <div>
-              <h4 className="font-semibold mb-2 text-sm">Current {completionData.level} Benefits:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {completionData.benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm">
-                    <Star className="h-3 w-3 text-primary" />
-                    <span>{benefit}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Level Benefits - Compact */}
+            <div className="flex flex-wrap gap-0.5">
+              {completionData.benefits.slice(0, 2).map((benefit, index) => (
+                <Badge key={index} variant="outline" className="text-[8px] px-1 py-0 border-primary/30">
+                  <Star className="h-2 w-2 mr-0.5 text-primary" />
+                  {benefit}
+                </Badge>
+              ))}
+              {completionData.benefits.length > 2 && (
+                <Badge variant="outline" className="text-[8px] px-1 py-0 text-muted-foreground">
+                  +{completionData.benefits.length - 2}
+                </Badge>
+              )}
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Profile Fields Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
+      {/* Profile Fields Status - Compact Grid */}
+      <Card className="bg-card/80">
+        <CardHeader className="p-2 pb-1.5">
+          <CardTitle className="flex items-center gap-1 text-xs">
+            <User className="h-3 w-3 text-primary" />
             Profile Checklist
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-2 pt-0">
+          <div className="grid grid-cols-2 gap-1">
             {completionData.fields.map((field) => (
-              <div key={field.key} className={`p-4 rounded-lg border-2 transition-all duration-200 ${
-                field.completed ? 'status-success' : 'status-warning'
+              <div key={field.key} className={`p-1.5 rounded-md border transition-all duration-200 ${
+                field.completed ? 'bg-primary/5 border-primary/30' : 'bg-muted/30 border-border/50'
               }`}>
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    {field.completed ? (
-                      <CheckCircle className="h-5 w-5 text-accent" />
-                    ) : (
-                      <Circle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <field.icon className="h-4 w-4" />
-                      <span className="font-medium">{field.label}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {field.weight}% weight
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {field.description}
-                    </p>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 text-primary" />
-                      <span className="text-xs font-medium text-accent">
-                        {field.benefit}
-                      </span>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-1">
+                  {field.completed ? (
+                    <CheckCircle className="h-3 w-3 text-primary flex-shrink-0" />
+                  ) : (
+                    <Circle className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                  )}
+                  <span className="text-[9px] font-medium truncate">{field.label}</span>
                 </div>
               </div>
             ))}
           </div>
 
           {incompleteFields.length > 0 && (
-            <div className="mt-6 pt-4 border-t border-border">
-              <h4 className="font-semibold mb-3 text-destructive">
-                Complete {incompleteFields.length} remaining field{incompleteFields.length > 1 ? 's' : ''} to unlock:
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="h-4 w-4 text-accent" />
-                  <span>3x more qualified leads</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Award className="h-4 w-4 text-primary" />
-                  <span>Premium agent verification</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Star className="h-4 w-4 text-primary" />
-                  <span>Higher search ranking</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Building className="h-4 w-4 text-accent" />
-                  <span>Commission rate discounts</span>
-                </div>
-              </div>
+            <div className="mt-2 pt-2 border-t border-border/50">
               <Button 
-                onClick={() => {
-                  onEditProfile();
-                  // Scroll to edit profile area
-                  setTimeout(() => {
-                    const editSection = document.querySelector('[data-edit-profile]');
-                    if (editSection) {
-                      editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }, 100);
-                }} 
-                className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+                onClick={onEditProfile} 
+                size="sm"
+                className="w-full bg-primary hover:bg-primary/90 h-6 text-[9px]"
               >
-                Complete Profile Now - Get 3x More Leads!
+                Complete {incompleteFields.length} Fields → Get 3x Leads!
               </Button>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Achievement Card for 100% completion */}
+      {/* Achievement Card for 100% completion - Compact */}
       {completionData.percentage === 100 && (
-        <Card className="border-2 border-accent bg-gradient-to-r from-accent/10 to-primary/10">
-          <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-accent to-primary rounded-full flex items-center justify-center mx-auto mb-4">
-              <Award className="h-8 w-8 text-white" />
+        <Card className="border border-primary bg-gradient-to-r from-primary/10 to-accent/10">
+          <CardContent className="p-2 text-center">
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mx-auto mb-1.5">
+              <Award className="h-4 w-4 text-primary-foreground" />
             </div>
-            <h3 className="text-xl font-bold text-accent mb-2">
-              🎉 Profile Complete! You're a Platinum Agent!
+            <h3 className="text-xs font-bold text-primary mb-1">
+              🎉 Platinum Agent!
             </h3>
-            <p className="text-muted-foreground mb-4">
-              Congratulations! You now receive priority leads, premium placement, and maximum commission discounts.
-            </p>
-            <Badge className="bg-gradient-to-r from-accent to-primary text-white px-6 py-2">
-              Elite Agent Status Unlocked
+            <Badge className="bg-primary text-primary-foreground text-[8px] px-2 py-0">
+              Elite Status
             </Badge>
           </CardContent>
         </Card>

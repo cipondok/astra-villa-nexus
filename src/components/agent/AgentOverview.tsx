@@ -153,21 +153,21 @@ const AgentOverview = () => {
 
   return (
     <div className="space-y-3">
-      {/* Compact Agent Control Panel */}
-      <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-lg overflow-hidden shadow-md">
-        <div className="p-3">
+      {/* Compact Agent Control Panel - Template Colors */}
+      <div className="glass-card bg-gradient-to-r from-primary/10 via-background to-accent/10 dark:from-primary/20 dark:via-background dark:to-accent/20 rounded-lg overflow-hidden shadow-lg border border-primary/20">
+        <div className="p-2.5">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
-                <Users className="h-4 w-4" />
+              <div className="w-8 h-8 bg-primary/20 dark:bg-primary/30 rounded-lg flex items-center justify-center">
+                <Users className="h-3.5 w-3.5 text-primary" />
               </div>
               <div>
-                <h1 className="text-sm font-bold">Agent Control Panel</h1>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-                  <span className="text-[10px] text-slate-300">Online</span>
-                  <div className={`flex items-center gap-0.5 ml-1 ${agentMembership.currentLevel.color} px-1.5 py-0.5 rounded text-[9px]`}>
-                    <CurrentIcon className="h-2.5 w-2.5" />
+                <h1 className="text-xs font-bold text-foreground">Agent Control Panel</h1>
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-[9px] text-muted-foreground">Online</span>
+                  <div className={`flex items-center gap-0.5 ml-1 bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[8px] font-medium`}>
+                    <CurrentIcon className="h-2 w-2" />
                     <span>{agentMembership.currentLevel.name}</span>
                   </div>
                 </div>
@@ -177,158 +177,158 @@ const AgentOverview = () => {
             <Button 
               onClick={handleAddListing}
               size="sm"
-              className="bg-orange-600 hover:bg-orange-700 h-7 text-[10px] px-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground h-6 text-[9px] px-2 shadow-md"
             >
-              <PlusCircle className="h-3 w-3 mr-1" />
-              Add Property
+              <PlusCircle className="h-2.5 w-2.5 mr-0.5" />
+              Add
             </Button>
           </div>
           
-          {/* Stats Row */}
-          <div className="grid grid-cols-4 gap-2 mt-2 pt-2 border-t border-white/10">
-            <div className="text-center">
-              <div className="text-base font-bold">{stats.totalListings}</div>
-              <div className="text-[9px] text-slate-300">Properties</div>
+          {/* Stats Row - Compact Mobile Style */}
+          <div className="grid grid-cols-4 gap-1.5 mt-2 pt-2 border-t border-border/50">
+            <div className="text-center p-1.5 bg-muted/30 rounded-md">
+              <div className="text-sm font-bold text-foreground">{stats.totalListings}</div>
+              <div className="text-[8px] text-muted-foreground">Properties</div>
             </div>
-            <div className="text-center">
-              <div className="text-base font-bold">{stats.activeListings}</div>
-              <div className="text-[9px] text-slate-300">Active</div>
+            <div className="text-center p-1.5 bg-muted/30 rounded-md">
+              <div className="text-sm font-bold text-foreground">{stats.activeListings}</div>
+              <div className="text-[8px] text-muted-foreground">Active</div>
             </div>
-            <div className="text-center">
-              <div className="text-base font-bold">{stats.pendingListings}</div>
-              <div className="text-[9px] text-slate-300">Pending</div>
+            <div className="text-center p-1.5 bg-muted/30 rounded-md">
+              <div className="text-sm font-bold text-foreground">{stats.pendingListings}</div>
+              <div className="text-[8px] text-muted-foreground">Pending</div>
             </div>
-            <div className="text-center">
-              <div className="text-base font-bold">{stats.totalClients}</div>
-              <div className="text-[9px] text-slate-300">Clients</div>
+            <div className="text-center p-1.5 bg-muted/30 rounded-md">
+              <div className="text-sm font-bold text-foreground">{stats.totalClients}</div>
+              <div className="text-[8px] text-muted-foreground">Clients</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Agent Membership Progress Card */}
-      <Card className="border-l-2 border-l-yellow-500 shadow-sm">
-        <CardHeader className="p-3 pb-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className={`w-9 h-9 rounded-lg ${agentMembership.currentLevel.color} flex items-center justify-center shadow`}>
-                <CurrentIcon className="h-4 w-4 text-white" />
+      {/* Agent Membership Progress Card - Template Styled */}
+      <Card className="border-l-2 border-l-primary shadow-sm bg-card/80">
+        <CardHeader className="p-2.5 pb-1.5">
+          <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shadow-sm">
+                <CurrentIcon className="h-3.5 w-3.5 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-sm">
-                  Level {agentMembership.currentLevel.level}: {agentMembership.currentLevel.name}
+                <CardTitle className="text-xs">
+                  Lv.{agentMembership.currentLevel.level} {agentMembership.currentLevel.name}
                 </CardTitle>
-                <CardDescription className="text-[10px]">
-                  {agentMembership.progress.current}/{agentMembership.progress.required} to {agentMembership.nextLevel.name}
+                <CardDescription className="text-[9px]">
+                  {agentMembership.progress.current}/{agentMembership.progress.required} → {agentMembership.nextLevel.name}
                 </CardDescription>
               </div>
             </div>
-            <Badge className={`${agentMembership.currentLevel.color} text-white px-2 py-0.5 text-[10px]`}>
+            <Badge className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[9px]">
               {agentMembership.currentLevel.name}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="p-3 pt-0">
-          <div className="space-y-2">
+        <CardContent className="p-2.5 pt-0">
+          <div className="space-y-1.5">
             <div>
-              <div className="flex justify-between text-[10px] mb-1">
-                <span>Progress</span>
-                <span className="font-bold">{agentMembership.progress.percentage}%</span>
+              <div className="flex justify-between text-[9px] mb-0.5">
+                <span className="text-muted-foreground">Progress</span>
+                <span className="font-bold text-primary">{agentMembership.progress.percentage}%</span>
               </div>
-              <Progress value={agentMembership.progress.percentage} multiColor className="h-1.5" />
+              <Progress value={agentMembership.progress.percentage} multiColor className="h-1" />
             </div>
-            <div className="flex flex-wrap gap-1">
-              {agentMembership.benefits.slice(0, 3).map((benefit, index) => (
-                <Badge key={index} variant="outline" className="text-[9px] px-1.5 py-0.5">
+            <div className="flex flex-wrap gap-0.5">
+              {agentMembership.benefits.slice(0, 2).map((benefit, index) => (
+                <Badge key={index} variant="outline" className="text-[8px] px-1 py-0 border-primary/30">
                   {benefit}
                 </Badge>
               ))}
-              <Badge variant="outline" className="text-[9px] px-1.5 py-0.5 text-muted-foreground">
-                +{agentMembership.benefits.length - 3} more
+              <Badge variant="outline" className="text-[8px] px-1 py-0 text-muted-foreground">
+                +{agentMembership.benefits.length - 2}
               </Badge>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Main Dashboard Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-        <TabsList className="flex w-full h-9 p-0.5 bg-muted/50 rounded-lg overflow-x-auto gap-0.5">
-          <TabsTrigger value="overview" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Overview</TabsTrigger>
-          <TabsTrigger value="add-property" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Add</TabsTrigger>
-          <TabsTrigger value="my-properties" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Properties</TabsTrigger>
-          <TabsTrigger value="clients" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Clients</TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Analytics</TabsTrigger>
-          <TabsTrigger value="bookings" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Bookings</TabsTrigger>
-          <TabsTrigger value="payouts" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Payouts</TabsTrigger>
-          <TabsTrigger value="feedback" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Feedback</TabsTrigger>
-          <TabsTrigger value="support" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Support</TabsTrigger>
-          <TabsTrigger value="tools" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Tools</TabsTrigger>
-          <TabsTrigger value="settings" className="flex-1 min-w-fit text-[10px] px-2 py-1.5">Settings</TabsTrigger>
+      {/* Main Dashboard Tabs - Mobile App Style */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-2">
+        <TabsList className="flex w-full h-8 p-0.5 bg-muted/30 border border-border/50 rounded-lg overflow-x-auto gap-0.5 scrollbar-hide">
+          <TabsTrigger value="overview" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+          <TabsTrigger value="add-property" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Add</TabsTrigger>
+          <TabsTrigger value="my-properties" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
+          <TabsTrigger value="clients" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
+          <TabsTrigger value="analytics" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
+          <TabsTrigger value="bookings" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
+          <TabsTrigger value="payouts" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
+          <TabsTrigger value="feedback" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
+          <TabsTrigger value="support" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Support</TabsTrigger>
+          <TabsTrigger value="tools" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
+          <TabsTrigger value="settings" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-3">
+        <TabsContent value="overview" className="space-y-2">
           {/* Profile Progress Section - Prominent Display */}
           <AgentProfileProgress onEditProfile={() => {
             // Switch to settings tab when clicked
             setActiveTab("settings");
           }} />
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
             {/* Agent Performance Summary */}
-            <Card className="lg:col-span-2">
-              <CardHeader className="p-3 pb-2">
-                <CardTitle className="flex items-center gap-1.5 text-sm">
-                  <Users className="h-4 w-4" />
+            <Card className="lg:col-span-2 bg-card/80">
+              <CardHeader className="p-2 pb-1.5">
+                <CardTitle className="flex items-center gap-1 text-xs">
+                  <Users className="h-3 w-3 text-primary" />
                   Performance
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0">
-                <div className="grid grid-cols-4 gap-2">
-                  <div className="text-center p-2 bg-muted/50 rounded-lg">
-                    <Calendar className="h-4 w-4 mx-auto mb-1 text-primary" />
-                    <div className="text-[9px] text-muted-foreground">Member</div>
-                    <div className="text-xs font-bold">Jan 2024</div>
+              <CardContent className="p-2 pt-0">
+                <div className="grid grid-cols-4 gap-1.5">
+                  <div className="text-center p-1.5 bg-muted/30 rounded-md">
+                    <Calendar className="h-3 w-3 mx-auto mb-0.5 text-primary" />
+                    <div className="text-[8px] text-muted-foreground">Member</div>
+                    <div className="text-[10px] font-bold">Jan 2024</div>
                   </div>
-                  <div className="text-center p-2 bg-muted/50 rounded-lg">
-                    <TrendingUp className="h-4 w-4 mx-auto mb-1 text-green-600" />
-                    <div className="text-[9px] text-muted-foreground">Sales</div>
-                    <div className="text-xs font-bold">Rp 2.5B</div>
+                  <div className="text-center p-1.5 bg-muted/30 rounded-md">
+                    <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-green-600" />
+                    <div className="text-[8px] text-muted-foreground">Sales</div>
+                    <div className="text-[10px] font-bold">Rp 2.5B</div>
                   </div>
-                  <div className="text-center p-2 bg-muted/50 rounded-lg">
-                    <Star className="h-4 w-4 mx-auto mb-1 text-yellow-600" />
-                    <div className="text-[9px] text-muted-foreground">Rating</div>
-                    <div className="text-xs font-bold">4.8/5</div>
+                  <div className="text-center p-1.5 bg-muted/30 rounded-md">
+                    <Star className="h-3 w-3 mx-auto mb-0.5 text-primary" />
+                    <div className="text-[8px] text-muted-foreground">Rating</div>
+                    <div className="text-[10px] font-bold">4.8/5</div>
                   </div>
-                  <div className="text-center p-2 bg-muted/50 rounded-lg">
-                    <Trophy className="h-4 w-4 mx-auto mb-1 text-purple-600" />
-                    <div className="text-[9px] text-muted-foreground">Rank</div>
-                    <div className="text-xs font-bold">#12</div>
+                  <div className="text-center p-1.5 bg-muted/30 rounded-md">
+                    <Trophy className="h-3 w-3 mx-auto mb-0.5 text-accent" />
+                    <div className="text-[8px] text-muted-foreground">Rank</div>
+                    <div className="text-[10px] font-bold">#12</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Quick Actions */}
-            <Card>
-              <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm">Quick Actions</CardTitle>
+            <Card className="bg-card/80">
+              <CardHeader className="p-2 pb-1.5">
+                <CardTitle className="text-xs">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-1.5">
-                <Button className="w-full justify-start h-8 text-xs" variant="outline" size="sm">
-                  <PlusCircle className="h-3 w-3 mr-1.5" />
+              <CardContent className="p-2 pt-0 space-y-1">
+                <Button className="w-full justify-start h-7 text-[10px]" variant="outline" size="sm">
+                  <PlusCircle className="h-2.5 w-2.5 mr-1" />
                   Add Property
                 </Button>
-                <Button className="w-full justify-start h-8 text-xs" variant="outline" size="sm">
-                  <Users className="h-3 w-3 mr-1.5" />
+                <Button className="w-full justify-start h-7 text-[10px]" variant="outline" size="sm">
+                  <Users className="h-2.5 w-2.5 mr-1" />
                   Add Client
                 </Button>
-                <Button className="w-full justify-start h-8 text-xs" variant="outline" size="sm">
-                  <Calendar className="h-3 w-3 mr-1.5" />
+                <Button className="w-full justify-start h-7 text-[10px]" variant="outline" size="sm">
+                  <Calendar className="h-2.5 w-2.5 mr-1" />
                   Schedule Viewing
                 </Button>
-                <Button className="w-full justify-start h-8 text-xs" variant="outline" size="sm">
-                  <MessageSquare className="h-3 w-3 mr-1.5" />
+                <Button className="w-full justify-start h-7 text-[10px]" variant="outline" size="sm">
+                  <MessageSquare className="h-2.5 w-2.5 mr-1" />
                   Send Message
                 </Button>
               </CardContent>
@@ -336,59 +336,59 @@ const AgentOverview = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="add-property" className="space-y-3">
-          <Card>
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <PlusCircle className="h-4 w-4" />
+        <TabsContent value="add-property" className="space-y-2">
+          <Card className="bg-card/80">
+            <CardHeader className="p-2 pb-1.5">
+              <CardTitle className="flex items-center gap-1 text-xs">
+                <PlusCircle className="h-3 w-3 text-primary" />
                 Add New Property
               </CardTitle>
-              <CardDescription className="text-[10px]">Create a listing for sale or rent</CardDescription>
+              <CardDescription className="text-[9px]">Create a listing for sale or rent</CardDescription>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
+            <CardContent className="p-2 pt-0">
               <RoleBasedPropertyForm />
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="my-properties" className="space-y-3">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <TabsContent value="my-properties" className="space-y-2">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
             <div>
-              <h2 className="text-sm font-bold">Property Portfolio</h2>
-              <p className="text-[10px] text-muted-foreground">Manage your listings</p>
+              <h2 className="text-xs font-bold">Property Portfolio</h2>
+              <p className="text-[9px] text-muted-foreground">Manage your listings</p>
             </div>
-            <div className="flex gap-1.5">
-              <Button size="sm" className="h-7 text-[10px]">
-                <PlusCircle className="h-3 w-3 mr-1" />
+            <div className="flex gap-1">
+              <Button size="sm" className="h-6 text-[9px] bg-primary hover:bg-primary/90">
+                <PlusCircle className="h-2.5 w-2.5 mr-0.5" />
                 Add
               </Button>
-              <Button variant="outline" size="sm" className="h-7 text-[10px]">
-                <FileText className="h-3 w-3 mr-1" />
+              <Button variant="outline" size="sm" className="h-6 text-[9px]">
+                <FileText className="h-2.5 w-2.5 mr-0.5" />
                 Export
               </Button>
             </div>
           </div>
 
           {isLoading ? (
-            <div className="text-center py-4">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
-              <p className="text-xs">Loading...</p>
+            <div className="text-center py-3">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary mx-auto mb-1.5"></div>
+              <p className="text-[10px]">Loading...</p>
             </div>
           ) : properties?.length === 0 ? (
-            <div className="text-center py-6">
-              <Building className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-              <h3 className="text-sm font-semibold mb-2">No Properties</h3>
-              <p className="text-[10px] text-muted-foreground mb-3">Create your first listing</p>
-              <Button onClick={handleAddListing} size="sm" className="h-7 text-xs">
-                <PlusCircle className="h-3 w-3 mr-1" />
+            <div className="text-center py-4">
+              <Building className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+              <h3 className="text-xs font-semibold mb-1">No Properties</h3>
+              <p className="text-[9px] text-muted-foreground mb-2">Create your first listing</p>
+              <Button onClick={handleAddListing} size="sm" className="h-6 text-[10px] bg-primary hover:bg-primary/90">
+                <PlusCircle className="h-2.5 w-2.5 mr-0.5" />
                 Create Property
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {properties?.map((property) => (
-                <Card key={property.id} className="overflow-hidden hover:shadow-md transition-all duration-300 group">
-                  <div className="aspect-video relative overflow-hidden bg-muted">
+                <Card key={property.id} className="overflow-hidden hover:shadow-md transition-all duration-300 group bg-card/80">
+                  <div className="aspect-[4/3] relative overflow-hidden bg-muted">
                     {property.images?.[0] || property.image_urls?.[0] ? (
                       <img 
                         src={property.images?.[0] || property.image_urls?.[0]} 
@@ -397,69 +397,67 @@ const AgentOverview = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Building className="h-8 w-8 text-muted-foreground" />
+                        <Building className="h-6 w-6 text-muted-foreground" />
                       </div>
                     )}
-                    <div className="absolute top-1.5 right-1.5">
-                      <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="text-[9px] px-1.5 py-0.5">
+                    <div className="absolute top-1 right-1">
+                      <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="text-[8px] px-1 py-0">
                         {property.status?.replace('_', ' ')}
                       </Badge>
                     </div>
-                    <div className="absolute bottom-1.5 left-1.5">
-                      <Badge variant="outline" className="bg-background/90 text-[9px] px-1.5 py-0.5 capitalize">
+                    <div className="absolute bottom-1 left-1">
+                      <Badge variant="outline" className="bg-background/90 text-[8px] px-1 py-0 capitalize">
                         {property.listing_type}
                       </Badge>
                     </div>
                   </div>
                   
-                  <CardContent className="p-2.5">
-                    <div className="space-y-2">
+                  <CardContent className="p-2">
+                    <div className="space-y-1">
                       <div>
-                        <h3 className="font-bold text-xs line-clamp-1 group-hover:text-primary transition-colors">
+                        <h3 className="font-bold text-[10px] line-clamp-1 group-hover:text-primary transition-colors">
                           {property.title}
                         </h3>
-                        <p className="text-[10px] text-muted-foreground flex items-center gap-0.5 mt-0.5">
-                          <MapPin className="h-2.5 w-2.5" />
+                        <p className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                          <MapPin className="h-2 w-2" />
                           {property.location}
                         </p>
                       </div>
                       
-                      <div className="text-sm font-bold text-primary">
+                      <div className="text-xs font-bold text-primary">
                         {formatPrice(property.price, property.listing_type)}
                       </div>
                       
-                      <div className="flex justify-between text-[10px] text-muted-foreground bg-muted/50 rounded p-1.5">
+                      <div className="flex justify-between text-[8px] text-muted-foreground bg-muted/30 rounded px-1 py-0.5">
                         <span><strong>{property.bedrooms}</strong>BR</span>
                         <span><strong>{property.bathrooms}</strong>BA</span>
                         <span><strong>{property.area_sqm}</strong>m²</span>
                       </div>
                       
-                      <div className="flex gap-1">
+                      <div className="flex gap-0.5">
                         <Button 
                           size="sm" 
                           variant="outline" 
-                          className="flex-1 h-6 text-[10px]"
+                          className="flex-1 h-5 text-[8px] px-1"
                           onClick={() => handleViewProperty(property.id)}
                         >
-                          <Eye className="h-3 w-3 mr-0.5" />
-                          View
+                          <Eye className="h-2 w-2" />
                         </Button>
                         <Button 
                           size="sm" 
                           variant="outline" 
-                          className="flex-1 h-6 text-[10px]"
+                          className="flex-1 h-5 text-[8px] px-1"
                           onClick={() => handleEditProperty(property.id)}
                         >
-                          <Edit className="h-3 w-3 mr-0.5" />
-                          Edit
+                          <Edit className="h-2 w-2" />
                         </Button>
                         <Button 
                           size="sm" 
                           variant="outline" 
-                          className="flex-1 h-6 text-[10px] text-destructive hover:text-destructive"
+                          className="flex-1 h-5 text-[8px] px-1 text-destructive hover:text-destructive"
                           onClick={() => handleDeleteProperty(property.id)}
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-2 w-2" />
                         </Button>
                       </div>
                     </div>
@@ -474,75 +472,75 @@ const AgentOverview = () => {
           <ClientManagement />
         </TabsContent>
 
-        <TabsContent value="analytics" className="space-y-3">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-            <Card>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between gap-2">
+        <TabsContent value="analytics" className="space-y-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5">
+            <Card className="bg-card/80">
+              <CardContent className="p-2">
+                <div className="flex items-center justify-between gap-1">
                   <div>
-                    <p className="text-[10px] text-muted-foreground">Revenue</p>
-                    <p className="text-sm font-bold">Rp 2.5B</p>
-                    <p className="text-[9px] text-green-600">+12%</p>
+                    <p className="text-[9px] text-muted-foreground">Revenue</p>
+                    <p className="text-xs font-bold">Rp 2.5B</p>
+                    <p className="text-[8px] text-green-600">+12%</p>
                   </div>
-                  <DollarSign className="h-5 w-5 text-primary" />
+                  <DollarSign className="h-4 w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between gap-2">
+            <Card className="bg-card/80">
+              <CardContent className="p-2">
+                <div className="flex items-center justify-between gap-1">
                   <div>
-                    <p className="text-[10px] text-muted-foreground">Sold</p>
-                    <p className="text-sm font-bold">24</p>
-                    <p className="text-[9px] text-green-600">+8%</p>
+                    <p className="text-[9px] text-muted-foreground">Sold</p>
+                    <p className="text-xs font-bold">24</p>
+                    <p className="text-[8px] text-green-600">+8%</p>
                   </div>
-                  <Building className="h-5 w-5 text-primary" />
+                  <Building className="h-4 w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between gap-2">
+            <Card className="bg-card/80">
+              <CardContent className="p-2">
+                <div className="flex items-center justify-between gap-1">
                   <div>
-                    <p className="text-[10px] text-muted-foreground">Clients</p>
-                    <p className="text-sm font-bold">48</p>
-                    <p className="text-[9px] text-blue-600">+5 new</p>
+                    <p className="text-[9px] text-muted-foreground">Clients</p>
+                    <p className="text-xs font-bold">48</p>
+                    <p className="text-[8px] text-blue-600">+5 new</p>
                   </div>
-                  <Users className="h-5 w-5 text-primary" />
+                  <Users className="h-4 w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between gap-2">
+            <Card className="bg-card/80">
+              <CardContent className="p-2">
+                <div className="flex items-center justify-between gap-1">
                   <div>
-                    <p className="text-[10px] text-muted-foreground">Deal Time</p>
-                    <p className="text-sm font-bold">21 days</p>
-                    <p className="text-[9px] text-green-600">-3 days</p>
+                    <p className="text-[9px] text-muted-foreground">Deal Time</p>
+                    <p className="text-xs font-bold">21 days</p>
+                    <p className="text-[8px] text-green-600">-3 days</p>
                   </div>
-                  <Clock className="h-5 w-5 text-primary" />
+                  <Clock className="h-4 w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
           </div>
           
-          <Card>
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-sm">Analytics</CardTitle>
-              <CardDescription className="text-[10px]">Performance insights</CardDescription>
+          <Card className="bg-card/80">
+            <CardHeader className="p-2 pb-1.5">
+              <CardTitle className="text-xs">Analytics</CardTitle>
+              <CardDescription className="text-[9px]">Performance insights</CardDescription>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="text-center py-6">
-                <BarChart3 className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                <h3 className="text-sm font-semibold mb-1">Analytics Dashboard</h3>
-                <p className="text-[10px] text-muted-foreground mb-3">
+            <CardContent className="p-2 pt-0">
+              <div className="text-center py-4">
+                <BarChart3 className="h-8 w-8 text-muted-foreground mx-auto mb-1.5" />
+                <h3 className="text-xs font-semibold mb-0.5">Analytics Dashboard</h3>
+                <p className="text-[9px] text-muted-foreground mb-2">
                   View charts, trends, and metrics
                 </p>
-                <Button size="sm" className="h-7 text-xs">
-                  <TrendingUp className="h-3 w-3 mr-1" />
+                <Button size="sm" className="h-6 text-[9px] bg-primary hover:bg-primary/90">
+                  <TrendingUp className="h-2.5 w-2.5 mr-0.5" />
                   View Analytics
                 </Button>
               </div>
@@ -558,40 +556,40 @@ const AgentOverview = () => {
           <PayoutManagement />
         </TabsContent>
 
-        <TabsContent value="feedback" className="space-y-3">
-          <Card>
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <MessageSquare className="h-4 w-4" />
+        <TabsContent value="feedback" className="space-y-2">
+          <Card className="bg-card/80">
+            <CardHeader className="p-2 pb-1.5">
+              <CardTitle className="flex items-center gap-1 text-xs">
+                <MessageSquare className="h-3 w-3 text-primary" />
                 Client Feedback
               </CardTitle>
-              <CardDescription className="text-[10px]">Manage client reviews</CardDescription>
+              <CardDescription className="text-[9px]">Manage client reviews</CardDescription>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="space-y-2">
+            <CardContent className="p-2 pt-0">
+              <div className="space-y-1.5">
                 {[1, 2, 3].map((item) => (
-                  <div key={item} className="border rounded-lg p-2">
-                    <div className="flex items-start justify-between mb-1.5 gap-2">
+                  <div key={item} className="border border-border/50 rounded-md p-1.5 bg-muted/20">
+                    <div className="flex items-start justify-between mb-1 gap-1">
                       <div>
-                        <h4 className="text-xs font-semibold">Sarah Johnson</h4>
-                        <div className="flex items-center gap-0.5 mt-0.5">
+                        <h4 className="text-[10px] font-semibold">Sarah Johnson</h4>
+                        <div className="flex items-center gap-0.5">
                           {[1, 2, 3, 4, 5].map((star) => (
-                            <Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <Star key={star} className="h-2 w-2 fill-primary text-primary" />
                           ))}
                         </div>
                       </div>
-                      <Badge className="text-[9px] px-1.5 py-0">New</Badge>
+                      <Badge className="text-[8px] px-1 py-0 bg-primary text-primary-foreground">New</Badge>
                     </div>
-                    <p className="text-[10px] text-muted-foreground mb-2 line-clamp-2">
-                      "Excellent service! Professional and helped me find the perfect property."
+                    <p className="text-[9px] text-muted-foreground mb-1.5 line-clamp-2">
+                      "Excellent service! Professional and helpful."
                     </p>
-                    <div className="flex items-center gap-1">
-                      <Button size="sm" className="h-6 text-[10px]">
-                        <Reply className="h-3 w-3 mr-0.5" />
+                    <div className="flex items-center gap-0.5">
+                      <Button size="sm" className="h-5 text-[8px] bg-primary hover:bg-primary/90">
+                        <Reply className="h-2 w-2 mr-0.5" />
                         Reply
                       </Button>
-                      <Button size="sm" variant="outline" className="h-6 text-[10px]">
-                        <ThumbsUp className="h-3 w-3" />
+                      <Button size="sm" variant="outline" className="h-5 text-[8px] px-1.5">
+                        <ThumbsUp className="h-2 w-2" />
                       </Button>
                     </div>
                   </div>
@@ -601,49 +599,49 @@ const AgentOverview = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="support" className="space-y-3">
-          <Card>
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <HeadphonesIcon className="h-4 w-4" />
+        <TabsContent value="support" className="space-y-2">
+          <Card className="bg-card/80">
+            <CardHeader className="p-2 pb-1.5">
+              <CardTitle className="flex items-center gap-1 text-xs">
+                <HeadphonesIcon className="h-3 w-3 text-primary" />
                 Support
               </CardTitle>
-              <CardDescription className="text-[10px]">Get help from our team</CardDescription>
+              <CardDescription className="text-[9px]">Get help from our team</CardDescription>
             </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <CardContent className="p-2 pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
-                  <h4 className="text-xs font-semibold mb-2">Quick Help</h4>
-                  <div className="space-y-1">
-                    <Button variant="outline" className="w-full justify-start h-7 text-[10px]" size="sm">
-                      <HelpCircle className="h-3 w-3 mr-1" />
+                  <h4 className="text-[10px] font-semibold mb-1.5">Quick Help</h4>
+                  <div className="space-y-0.5">
+                    <Button variant="outline" className="w-full justify-start h-6 text-[9px]" size="sm">
+                      <HelpCircle className="h-2.5 w-2.5 mr-1" />
                       Listing Help
                     </Button>
-                    <Button variant="outline" className="w-full justify-start h-7 text-[10px]" size="sm">
-                      <BookOpen className="h-3 w-3 mr-1" />
+                    <Button variant="outline" className="w-full justify-start h-6 text-[9px]" size="sm">
+                      <BookOpen className="h-2.5 w-2.5 mr-1" />
                       Guidelines
                     </Button>
-                    <Button variant="outline" className="w-full justify-start h-7 text-[10px]" size="sm">
-                      <MessageSquare className="h-3 w-3 mr-1" />
+                    <Button variant="outline" className="w-full justify-start h-6 text-[9px]" size="sm">
+                      <MessageSquare className="h-2.5 w-2.5 mr-1" />
                       Contact
                     </Button>
                   </div>
                 </div>
                 
                 <div>
-                  <h4 className="text-xs font-semibold mb-2">Recent Tickets</h4>
-                  <div className="space-y-1.5">
+                  <h4 className="text-[10px] font-semibold mb-1.5">Recent Tickets</h4>
+                  <div className="space-y-1">
                     {[1, 2].map((item) => (
-                      <div key={item} className="border rounded p-2">
-                        <div className="flex items-center justify-between mb-1 gap-1">
-                          <span className="font-medium text-[10px] truncate">Property Approval</span>
-                          <Badge variant="secondary" className="text-[9px] px-1 py-0">In Progress</Badge>
+                      <div key={item} className="border border-border/50 rounded-md p-1.5 bg-muted/20">
+                        <div className="flex items-center justify-between mb-0.5 gap-1">
+                          <span className="font-medium text-[9px] truncate">Property Approval</span>
+                          <Badge variant="secondary" className="text-[8px] px-1 py-0">In Progress</Badge>
                         </div>
-                        <p className="text-[9px] text-muted-foreground truncate">
+                        <p className="text-[8px] text-muted-foreground truncate mb-1">
                           Need help with approval...
                         </p>
-                        <Button size="sm" className="mt-1.5 h-5 text-[9px]">
-                          <MessageSquare className="h-2.5 w-2.5 mr-0.5" />
+                        <Button size="sm" className="h-5 text-[8px] bg-primary hover:bg-primary/90">
+                          <MessageSquare className="h-2 w-2 mr-0.5" />
                           View
                         </Button>
                       </div>
