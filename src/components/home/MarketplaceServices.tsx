@@ -134,7 +134,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </div>
 
         {/* Title - Small */}
-        <h3 className="md:text-xs font-medium text-foreground leading-none text-center text-xs">
+        <h3 className="text-[3px] md:text-xs font-medium text-foreground leading-none text-center">
           {service.title}
         </h3>
         
