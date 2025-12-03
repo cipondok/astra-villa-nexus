@@ -107,7 +107,7 @@ const MarketplaceServices = () => {
               Join marketplace
             </p>
           </div>
-          <button onClick={() => navigate('/vendor-registration')} className="px-1.5 py-0.5 md:px-4 md:py-2 text-[6px] md:text-sm bg-primary text-primary-foreground rounded font-medium active:scale-95 whitespace-nowrap">
+          <button onClick={() => navigate('/vendor-registration')} className="px-1.5 py-0.5 md:px-4 md:py-2 md:text-sm bg-primary text-primary-foreground rounded active:scale-95 whitespace-nowrap font-semibold text-lg">
             Join
           </button>
         </div>
