@@ -206,24 +206,24 @@ const AgentOverview = () => {
         </div>
       </div>
 
-      {/* Agent Membership Progress Card - Template Styled */}
-      <Card className="border-l-2 border-l-primary shadow-sm bg-card/80">
+      {/* Agent Membership Progress Card - Marine Elevated Box */}
+      <Card className="border-l-2 border-l-teal-500 shadow-lg shadow-teal-500/20 bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5 transition-all duration-300">
         <CardHeader className="p-2.5 pb-1.5">
           <div className="flex items-center justify-between gap-1.5">
             <div className="flex items-center gap-1.5">
-              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shadow-sm">
-                <CurrentIcon className="h-3.5 w-3.5 text-primary-foreground" />
+              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-md shadow-teal-500/40">
+                <CurrentIcon className="h-3.5 w-3.5 text-white" />
               </div>
               <div>
-                <CardTitle className="text-xs">
+                <CardTitle className="text-xs text-teal-900 dark:text-teal-100">
                   Lv.{agentMembership.currentLevel.level} {agentMembership.currentLevel.name}
                 </CardTitle>
-                <CardDescription className="text-[9px]">
+                <CardDescription className="text-[9px] text-teal-600 dark:text-teal-400">
                   {agentMembership.progress.current}/{agentMembership.progress.required} → {agentMembership.nextLevel.name}
                 </CardDescription>
               </div>
             </div>
-            <Badge className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[9px]">
+            <Badge className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-1.5 py-0.5 text-[9px] shadow-sm">
               {agentMembership.currentLevel.name}
             </Badge>
           </div>
@@ -232,18 +232,18 @@ const AgentOverview = () => {
           <div className="space-y-1.5">
             <div>
               <div className="flex justify-between text-[9px] mb-0.5">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-bold text-primary">{agentMembership.progress.percentage}%</span>
+                <span className="text-teal-600 dark:text-teal-400">Progress</span>
+                <span className="font-bold text-teal-700 dark:text-teal-300">{agentMembership.progress.percentage}%</span>
               </div>
               <Progress value={agentMembership.progress.percentage} multiColor className="h-1" />
             </div>
             <div className="flex flex-wrap gap-0.5">
               {agentMembership.benefits.slice(0, 2).map((benefit, index) => (
-                <Badge key={index} variant="outline" className="text-[8px] px-1 py-0 border-primary/30">
+                <Badge key={index} variant="outline" className="text-[8px] px-1 py-0 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-900/30">
                   {benefit}
                 </Badge>
               ))}
-              <Badge variant="outline" className="text-[8px] px-1 py-0 text-muted-foreground">
+              <Badge variant="outline" className="text-[8px] px-1 py-0 text-teal-500 border-teal-300/50">
                 +{agentMembership.benefits.length - 2}
               </Badge>
             </div>
