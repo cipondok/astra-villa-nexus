@@ -156,14 +156,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
     >
       <div className="relative overflow-hidden rounded bg-card border border-border/40 p-0.5 md:p-3 h-full flex flex-col items-center text-center hover:border-primary/30">
         {/* Icon */}
-        <div className={`w-5 h-5 md:w-10 md:h-10 rounded ${service.bgColor} flex items-center justify-center mb-0.5 md:mb-2`}>
+        <div className={`w-4 h-4 md:w-10 md:h-10 rounded ${service.bgColor} flex items-center justify-center mb-0.5 md:mb-2`}>
           <div className={service.iconColor}>
-            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-2.5 h-2.5 md:w-5 md:h-5' })}
+            {React.cloneElement(service.icon as React.ReactElement, { className: 'w-2 h-2 md:w-5 md:h-5' })}
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-[6px] md:text-xs font-medium text-foreground leading-tight">
+        <h3 className="text-[5px] md:text-xs font-medium text-foreground leading-none">
           {service.title}
         </h3>
         
