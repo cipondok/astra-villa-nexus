@@ -2269,8 +2269,8 @@ const AstraSearchPanel = ({
               </div>
             </div>
             
-            {/* Inline Quick Filters */}
-            <div className="px-2 pb-2 flex gap-1.5 overflow-x-auto no-scrollbar">
+            {/* Inline Quick Filters - Hidden on mobile */}
+            <div className="hidden md:flex px-2 pb-2 gap-1.5 overflow-x-auto no-scrollbar">
               {/* Property Type Quick Filter */}
               <Button 
                 variant={filters.propertyType && filters.propertyType !== 'all' ? "default" : "outline"} 
