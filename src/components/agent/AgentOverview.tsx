@@ -22,6 +22,7 @@ import {
   PlusCircle, 
   BarChart3, 
   Users,
+  User,
   DollarSign,
   TrendingUp,
   Phone,
@@ -51,7 +52,7 @@ import {
 } from "lucide-react";
 
 const AgentOverview = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -153,23 +154,23 @@ const AgentOverview = () => {
 
   return (
     <div className="space-y-3">
-      {/* Unified Agent Control Panel with Membership Status */}
-      <div className="glass-card bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 rounded-lg overflow-hidden shadow-lg shadow-teal-500/20 border border-teal-200/50 dark:border-teal-800/50 hover:shadow-xl hover:shadow-teal-500/30 transition-all duration-300">
-        <div className="p-2.5">
+      {/* Unified Agent Control Panel - All in One */}
+      <div className="glass-card bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 rounded-lg overflow-hidden shadow-lg shadow-teal-500/20 border border-teal-200/50 dark:border-teal-800/50">
+        <div className="p-3 md:p-4">
           {/* Header Row */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-md shadow-teal-500/40">
-                <Users className="h-4 w-4 text-white" />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-500/40">
+                <Users className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xs font-bold text-teal-900 dark:text-teal-100">Agent Control Panel</h1>
-                <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-[9px] text-teal-600 dark:text-teal-400">Online</span>
-                  <Badge className="ml-1 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-1.5 py-0 text-[8px] shadow-sm">
-                    <CurrentIcon className="h-2 w-2 mr-0.5" />
-                    {agentMembership.currentLevel.name}
+                <h1 className="text-sm md:text-base font-bold text-teal-900 dark:text-teal-100">Agent Control Panel</h1>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs md:text-sm text-teal-600 dark:text-teal-400">Online</span>
+                  <Badge className="ml-1 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-2 py-0.5 text-[10px] md:text-xs shadow-sm">
+                    <CurrentIcon className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5" />
+                    {agentMembership.currentLevel.name} Agent
                   </Badge>
                 </div>
               </div>
@@ -178,81 +179,107 @@ const AgentOverview = () => {
             <Button 
               onClick={handleAddListing}
               size="sm"
-              className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-6 text-[9px] px-2 shadow-md"
+              className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-8 md:h-9 text-xs md:text-sm px-3 md:px-4 shadow-md"
             >
-              <PlusCircle className="h-2.5 w-2.5 mr-0.5" />
-              Add
+              <PlusCircle className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1" />
+              Add Property
             </Button>
           </div>
           
-          {/* Stats + Membership Progress Row */}
-          <div className="grid grid-cols-5 gap-1.5 mt-2 pt-2 border-t border-teal-200/50 dark:border-teal-800/50">
-            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
-              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.totalListings}</div>
-              <div className="text-[8px] text-teal-600 dark:text-teal-400">Properties</div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-4 gap-2 md:gap-3 mt-3 pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
+            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
+              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalListings}</div>
+              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Properties</div>
             </div>
-            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
-              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.activeListings}</div>
-              <div className="text-[8px] text-teal-600 dark:text-teal-400">Active</div>
+            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
+              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.activeListings}</div>
+              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Active</div>
             </div>
-            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
-              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.pendingListings}</div>
-              <div className="text-[8px] text-teal-600 dark:text-teal-400">Pending</div>
+            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
+              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.pendingListings}</div>
+              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Pending</div>
             </div>
-            <div className="text-center p-1.5 bg-teal-100/50 dark:bg-teal-900/30 rounded-md">
-              <div className="text-sm font-bold text-teal-800 dark:text-teal-200">{stats.totalClients}</div>
-              <div className="text-[8px] text-teal-600 dark:text-teal-400">Clients</div>
-            </div>
-            {/* Membership Progress Mini */}
-            <div className="p-1.5 bg-gradient-to-br from-teal-200/50 to-cyan-200/50 dark:from-teal-800/50 dark:to-cyan-800/50 rounded-md">
-              <div className="flex items-center justify-between mb-0.5">
-                <span className="text-[8px] text-teal-700 dark:text-teal-300 font-medium">Lv.{agentMembership.currentLevel.level}</span>
-                <span className="text-[8px] font-bold text-teal-800 dark:text-teal-200">{agentMembership.progress.percentage}%</span>
-              </div>
-              <Progress value={agentMembership.progress.percentage} className="h-1" />
-              <div className="text-[7px] text-teal-600 dark:text-teal-400 mt-0.5 text-center">
-                {agentMembership.progress.current}/{agentMembership.progress.required} → {agentMembership.nextLevel.name}
-              </div>
+            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
+              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalClients}</div>
+              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Clients</div>
             </div>
           </div>
-          
-          {/* Benefits Row */}
-          <div className="flex flex-wrap gap-0.5 mt-1.5">
-            {agentMembership.benefits.slice(0, 3).map((benefit, index) => (
-              <Badge key={index} variant="outline" className="text-[7px] px-1 py-0 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-900/30">
-                {benefit}
-              </Badge>
-            ))}
-            <Badge variant="outline" className="text-[7px] px-1 py-0 text-teal-500 border-teal-300/50">
-              +{agentMembership.benefits.length - 3}
-            </Badge>
+
+          {/* Membership + Profile Progress Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 mt-3 pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
+            {/* Membership Progress */}
+            <div className="p-2.5 md:p-3 bg-gradient-to-br from-teal-200/50 to-cyan-200/50 dark:from-teal-800/50 dark:to-cyan-800/50 rounded-lg">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2">
+                  <Crown className="h-4 w-4 md:h-5 md:w-5 text-teal-600 dark:text-teal-300" />
+                  <span className="text-xs md:text-sm font-semibold text-teal-800 dark:text-teal-200">
+                    Level {agentMembership.currentLevel.level}: {agentMembership.currentLevel.name}
+                  </span>
+                </div>
+                <span className="text-sm md:text-base font-bold text-teal-700 dark:text-teal-300">{agentMembership.progress.percentage}%</span>
+              </div>
+              <Progress value={agentMembership.progress.percentage} className="h-1.5 md:h-2 mb-1.5" />
+              <div className="flex items-center justify-between text-[10px] md:text-xs text-teal-600 dark:text-teal-400">
+                <span>{agentMembership.progress.current}/{agentMembership.progress.required} sales to {agentMembership.nextLevel.name}</span>
+              </div>
+              <div className="flex flex-wrap gap-1 mt-2">
+                {agentMembership.benefits.slice(0, 3).map((benefit, index) => (
+                  <Badge key={index} variant="outline" className="text-[9px] md:text-[10px] px-1.5 py-0.5 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-white/50 dark:bg-teal-900/50">
+                    {benefit}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {/* Profile Completion */}
+            <div className="p-2.5 md:p-3 bg-gradient-to-br from-amber-100/50 to-orange-100/50 dark:from-amber-900/30 dark:to-orange-900/30 rounded-lg">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
+                  <span className="text-xs md:text-sm font-semibold text-amber-800 dark:text-amber-200">Profile Completion</span>
+                </div>
+                <span className="text-sm md:text-base font-bold text-amber-700 dark:text-amber-300">
+                  {profile?.profile_completion_percentage || 0}%
+                </span>
+              </div>
+              <Progress value={profile?.profile_completion_percentage || 0} className="h-1.5 md:h-2 mb-1.5" />
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] md:text-xs text-amber-600 dark:text-amber-400">
+                  {(profile?.profile_completion_percentage || 0) < 70 ? 'Complete for 3x more leads!' : 'Great profile!'}
+                </span>
+                <Button 
+                  onClick={() => setActiveTab("settings")}
+                  variant="outline"
+                  size="sm"
+                  className="h-6 md:h-7 text-[10px] md:text-xs px-2 border-amber-400/50 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                >
+                  <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
+                  Complete
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Dashboard Tabs - Mobile App Style */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-2">
-        <TabsList className="flex w-full h-8 p-0.5 bg-muted/30 border border-border/50 rounded-lg overflow-x-auto gap-0.5 scrollbar-hide">
-          <TabsTrigger value="overview" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
-          <TabsTrigger value="add-property" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Add</TabsTrigger>
-          <TabsTrigger value="my-properties" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
-          <TabsTrigger value="clients" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
-          <TabsTrigger value="bookings" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
-          <TabsTrigger value="payouts" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
-          <TabsTrigger value="feedback" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
-          <TabsTrigger value="support" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Support</TabsTrigger>
-          <TabsTrigger value="tools" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
-          <TabsTrigger value="settings" className="flex-1 min-w-fit text-[9px] px-1.5 py-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
+        <TabsList className="flex w-full h-9 md:h-10 p-0.5 bg-muted/30 border border-border/50 rounded-lg overflow-x-auto gap-0.5 scrollbar-hide">
+          <TabsTrigger value="overview" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+          <TabsTrigger value="add-property" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Add</TabsTrigger>
+          <TabsTrigger value="my-properties" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
+          <TabsTrigger value="clients" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
+          <TabsTrigger value="analytics" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
+          <TabsTrigger value="bookings" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
+          <TabsTrigger value="payouts" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
+          <TabsTrigger value="feedback" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
+          <TabsTrigger value="support" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Support</TabsTrigger>
+          <TabsTrigger value="tools" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
+          <TabsTrigger value="settings" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-2">
-          {/* Profile Progress Section - Prominent Display */}
-          <AgentProfileProgress onEditProfile={() => {
-            // Switch to settings tab when clicked
-            setActiveTab("settings");
-          }} />
-          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
             {/* Agent Performance Summary */}
             <Card className="lg:col-span-2 bg-card/80">
