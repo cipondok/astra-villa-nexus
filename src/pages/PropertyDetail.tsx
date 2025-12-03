@@ -313,10 +313,10 @@ const PropertyDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading property details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-3 text-sm text-muted-foreground">Loading property...</p>
         </div>
       </div>
     );
@@ -324,10 +324,10 @@ const PropertyDetail: React.FC = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Property Not Found</h1>
-          <p className="text-muted-foreground">The property you're looking for doesn't exist or has been removed.</p>
+          <h1 className="text-lg sm:text-2xl font-bold text-foreground mb-2">Property Not Found</h1>
+          <p className="text-sm text-muted-foreground">This property doesn't exist or has been removed.</p>
         </div>
       </div>
     );
@@ -335,128 +335,109 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/20">
-      {/* Agent/Developer Header - Mobile Optimized */}
+      {/* Agent/Developer Header - Compact Mobile */}
       {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-primary/5 via-accent/3 to-secondary/5 backdrop-blur-sm border-b border-border/10 shadow-xl shadow-primary/5">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/2 to-accent/2"></div>
-          <div className="relative max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
-            <div className="flex flex-col lg:flex-row items-start justify-between gap-3 sm:gap-6">
-              {/* Agent Profile Section - Mobile Optimized */}
-              <div className="flex items-start gap-3 sm:gap-6 flex-1 w-full">
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+        <div className="relative bg-gradient-to-r from-primary/5 via-accent/3 to-secondary/5 backdrop-blur-sm border-b border-border/10">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-4">
+            <div className="flex items-center justify-between gap-2">
+              {/* Agent Profile - Compact */}
+              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                <div className="relative flex-shrink-0">
                   <img
                     src={property.posted_by.avatar_url || "/placeholder.svg"}
                     alt={property.posted_by.name}
-                    className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border-3 border-background shadow-lg"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-background shadow-md"
                   />
                   {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-accent rounded-full flex items-center justify-center border-2 border-background shadow-md">
-                      <Shield className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-accent-foreground" />
+                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-accent rounded-full flex items-center justify-center border border-background">
+                      <Shield className="w-2 h-2 text-accent-foreground" />
                     </div>
                   )}
                 </div>
                 
-                <div className="flex-1 space-y-1 sm:space-y-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-sm sm:text-lg bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="font-semibold text-xs sm:text-sm text-foreground truncate">
                       {property.posted_by.name}
                     </h3>
-                    <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium">
-                      {property.posted_by.position || 'Official Developer'}
+                    <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-medium whitespace-nowrap">
+                      {property.posted_by.position || 'Developer'}
                     </span>
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-xs sm:text-sm flex-wrap">
-                    <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
-                      <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-yellow-700 dark:text-yellow-300 text-[10px] sm:text-xs">
-                        {property.posted_by.customer_feedback_rating}
-                      </span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <div className="flex items-center gap-0.5">
+                      <Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />
+                      <span className="text-[10px] font-medium">{property.posted_by.customer_feedback_rating}</span>
                     </div>
-                    <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
-                      <Medal className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-emerald-600" />
-                      <span className="text-emerald-700 dark:text-emerald-300 text-[10px] sm:text-xs">
-                        {property.posted_by.experience_years}y Experience
-                      </span>
-                    </div>
+                    <span className="text-[9px] text-muted-foreground">• {property.posted_by.experience_years}y exp</span>
                   </div>
-                  
-                  <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
-                    <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                    Updated {formatTimeAgo(property.created_at)} ago
-                  </p>
                 </div>
               </div>
                 
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1 sm:flex-none bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md h-8 sm:h-9 text-xs sm:text-sm"
-                  onClick={() => {
-                    if (user && property.posted_by?.whatsapp_number) {
-                      window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
-                    } else {
-                      toast({
-                        title: "Sign in required", 
-                        description: "Please sign in to contact via WhatsApp.",
-                        variant: "destructive",
-                      });
-                    }
-                  }}
-                >
-                  📱 WhatsApp
-                </Button>
-              </div>
+              <Button 
+                size="sm"
+                className="flex-shrink-0 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 h-8 px-3 text-xs"
+                onClick={() => {
+                  if (user && property.posted_by?.whatsapp_number) {
+                    window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
+                  } else {
+                    toast({
+                      title: "Sign in required", 
+                      description: "Please sign in to contact via WhatsApp.",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              >
+                📱 Chat
+              </Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Navigation Header - Mobile Optimized with Close Button */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/50">
+      {/* Navigation Header - Compact Mobile */}
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/30">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="flex items-center justify-between h-12 sm:h-14">
-            <div className="flex items-center gap-1 sm:gap-3">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="flex items-center gap-1 sm:gap-2 hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3 md:flex"
-              >
-                <Home className="h-4 w-4 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Home</span>
-              </Button>
+          <div className="flex items-center justify-between h-10 sm:h-12">
+            <div className="flex items-center gap-1">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-1 sm:gap-2 hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3"
+                className="h-8 w-8 p-0 hover:bg-muted/50"
               >
-                <ArrowLeft className="h-4 w-4 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Back</span>
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/')}
+                className="hidden sm:flex items-center gap-1 hover:bg-muted/50 h-8 px-2"
+              >
+                <Home className="h-4 w-4" />
+                <span className="text-xs">Home</span>
               </Button>
             </div>
             
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Admin Edit Controls - Mobile Hidden */}
+            <div className="flex items-center gap-1">
+              {/* Admin Edit Controls */}
               {isAdmin && !adminLoading && (
-                <div className="hidden md:flex items-center gap-2 mr-2 border-r border-border pr-2">
+                <div className="hidden md:flex items-center gap-1 mr-1 border-r border-border pr-1">
                   <Button 
                     variant="default" 
                     size="sm"
                     onClick={() => setIsEditMode(!isEditMode)}
-                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md"
+                    className="bg-blue-500 hover:bg-blue-600 text-white h-7 text-xs px-2"
                   >
-                    <Edit className="h-4 w-4 mr-2" />
-                    {isEditMode ? 'Cancel Edit' : 'Edit Property'}
+                    <Edit className="h-3 w-3 mr-1" />
+                    {isEditMode ? 'Cancel' : 'Edit'}
                   </Button>
                   <Button 
                     variant="destructive" 
                     size="sm"
                     onClick={async () => {
-                      if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+                      if (confirm('Delete this property?')) {
                         try {
                           const { error } = await supabase
                             .from('properties')
@@ -466,61 +447,56 @@ const PropertyDetail: React.FC = () => {
                           if (error) throw error;
                           
                           toast.success({
-                            title: "Property deleted",
-                            description: "The property has been successfully deleted."
+                            title: "Deleted",
+                            description: "Property deleted successfully."
                           });
                           navigate('/admin');
                         } catch (error) {
                           console.error('Delete error:', error);
                           toast.error({
-                            title: "Delete failed",
-                            description: "Unable to delete property. Please try again."
+                            title: "Error",
+                            description: "Unable to delete."
                           });
                         }
                       }
                     }}
-                    className="shadow-md"
+                    className="h-7 text-xs px-2"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
               )}
               
-               <PropertyComparisonButton 
+              <PropertyComparisonButton 
                 property={{
                   ...property,
                   image_urls: property.images || [],
                   listing_type: property.listing_type as "sale" | "rent" | "lease"
-                 }} 
-               />
-               <Button 
-                 variant="outline" 
-                 size="sm" 
-                 onClick={handleSaveFavorite}
-                 disabled={favLoading}
-                 className={`h-8 sm:h-9 px-2 sm:px-3 ${isFavorite(property.id) ? "bg-destructive/10 text-destructive hover:bg-destructive/20" : "hover:bg-muted/50"}`}
-               >
-                 <Heart className={`h-3 w-3 sm:h-4 sm:w-4 sm:mr-2 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
-                 <span className="hidden sm:inline">{isFavorite(property.id) ? 'Saved' : 'Save'}</span>
-               </Button>
-               <Button 
-                 variant="outline" 
-                 size="sm"
-                 onClick={handleShareProperty}
-                 className="hover:bg-muted/50 h-8 sm:h-9 px-2 sm:px-3"
-               >
-                 <Share2 className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
-                 <span className="hidden sm:inline">Share</span>
+                }} 
+              />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSaveFavorite}
+                disabled={favLoading}
+                className={`h-8 w-8 p-0 ${isFavorite(property.id) ? "bg-destructive/10 text-destructive" : ""}`}
+              >
+                <Heart className={`h-4 w-4 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleShareProperty}
+                className="h-8 w-8 p-0"
+              >
+                <Share2 className="h-4 w-4" />
               </Button>
               
-              {/* Close/Home Button - Prominent on Mobile */}
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/')}
-                className="md:hidden hover:bg-muted/50 h-8 w-8 p-0"
-                aria-label="Close and go home"
+                className="md:hidden h-8 w-8 p-0"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -529,19 +505,18 @@ const PropertyDetail: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-4">
         
         {/* Admin Edit Form */}
         {isAdmin && isEditMode && (
-          <Card className="mb-6 border-2 border-primary/50 shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10">
-              <CardTitle className="flex items-center gap-2">
-                <Edit className="h-5 w-5" />
-                Edit Property Details
+          <Card className="mb-3 sm:mb-6 border border-primary/30">
+            <CardHeader className="p-3 sm:p-4 bg-primary/5">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                <Edit className="h-4 w-4" />
+                Edit Property
               </CardTitle>
-              <CardDescription>Update property information (Admin Access)</CardDescription>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4">
               <form onSubmit={async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
@@ -676,8 +651,8 @@ const PropertyDetail: React.FC = () => {
           </Card>
         )}
         
-        {/* Enhanced Image Gallery - Mobile Optimized */}
-        <div className="mb-4 sm:mb-8 -mx-2 sm:mx-0">
+        {/* Image Gallery - Compact Mobile */}
+        <div className="mb-2 sm:mb-4 -mx-2 sm:mx-0">
           <EnhancedImageGallery
             images={property.images || []}
             title={property.title}
@@ -686,42 +661,42 @@ const PropertyDetail: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-3 sm:space-y-6">
+          <div className="lg:col-span-2 space-y-2 sm:space-y-4">
             
-            {/* Property Header - Mobile Optimized */}
-            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
-              <CardContent className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row items-start justify-between mb-4 sm:mb-6">
+            {/* Property Header - Compact Mobile */}
+            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
+              <CardContent className="p-2.5 sm:p-4">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
                   <div className="flex-1 w-full">
-                    <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-2 sm:mb-3">
+                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1.5 sm:mb-2 leading-tight">
                       {property.title}
                     </h1>
-                    <div className="flex items-center gap-1 sm:gap-2 text-muted-foreground mb-3 sm:mb-4">
-                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                      <span className="text-sm sm:text-lg">{property.location}</span>
+                    <div className="flex items-center gap-1 text-muted-foreground mb-2">
+                      <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">{property.location}</span>
                     </div>
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                      <Badge variant="default" className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs shadow-md">
+                    <div className="flex flex-wrap gap-1">
+                      <Badge variant="default" className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[9px] sm:text-[10px]">
                         {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                       </Badge>
-                      <Badge variant="outline" className="border-border/50 px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs bg-muted/50">
+                      <Badge variant="outline" className="border-border/50 px-1.5 py-0.5 text-[9px] sm:text-[10px] bg-muted/30">
                         {property.property_type}
                       </Badge>
                       {property.development_status !== 'completed' && (
-                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs">
-                          {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-1.5 py-0.5 text-[9px] sm:text-[10px]">
+                          {property.development_status === 'new_project' ? 'New' : 'Pre-Launch'}
                         </Badge>
                       )}
                     </div>
                   </div>
                   
-                  {/* Price Display - Mobile Optimized */}
-                  <div className="w-full mt-4 sm:mt-0 sm:w-auto sm:text-right">
-                    <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-primary/20 shadow-lg">
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 font-medium">Price</p>
-                      <div className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                  {/* Price Display - Compact */}
+                  <div className="w-full sm:w-auto mt-2 sm:mt-0">
+                    <div className="bg-gradient-to-br from-primary/10 to-accent/5 rounded-lg p-2.5 sm:p-3 border border-primary/20">
+                      <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">Price</p>
+                      <div className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
@@ -731,96 +706,92 @@ const PropertyDetail: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Property Stats - Mobile Responsive Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+                {/* Property Stats - Compact Mobile Grid */}
+                <div className="grid grid-cols-4 gap-1.5 sm:gap-3 mt-3">
                   {property.bedrooms && (
-                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg sm:rounded-xl border border-primary/20 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                      <Bed className="h-4 w-4 sm:h-6 sm:w-6 text-primary mx-auto mb-1 sm:mb-2" />
-                      <div className="font-bold text-base sm:text-lg text-foreground">{property.bedrooms}</div>
-                      <div className="text-[10px] sm:text-sm text-muted-foreground">Bedrooms</div>
+                    <div className="text-center p-2 sm:p-3 bg-primary/5 rounded-lg border border-primary/10">
+                      <Bed className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-primary mx-auto mb-0.5" />
+                      <div className="font-bold text-sm sm:text-base">{property.bedrooms}</div>
+                      <div className="text-[8px] sm:text-[10px] text-muted-foreground">Beds</div>
                     </div>
                   )}
                   {property.bathrooms && (
-                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-accent/5 to-accent/10 rounded-lg sm:rounded-xl border border-accent/20 hover:shadow-lg hover:shadow-accent/10 transition-all duration-300">
-                      <Bath className="h-4 w-4 sm:h-6 sm:w-6 text-accent mx-auto mb-1 sm:mb-2" />
-                      <div className="font-bold text-base sm:text-lg text-foreground">{property.bathrooms}</div>
-                      <div className="text-[10px] sm:text-sm text-muted-foreground">Bathrooms</div>
+                    <div className="text-center p-2 sm:p-3 bg-accent/5 rounded-lg border border-accent/10">
+                      <Bath className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-accent mx-auto mb-0.5" />
+                      <div className="font-bold text-sm sm:text-base">{property.bathrooms}</div>
+                      <div className="text-[8px] sm:text-[10px] text-muted-foreground">Baths</div>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-lg sm:rounded-xl border border-secondary/20 hover:shadow-lg hover:shadow-secondary/10 transition-all duration-300">
-                      <Square className="h-4 w-4 sm:h-6 sm:w-6 text-secondary mx-auto mb-1 sm:mb-2" />
-                      <div className="font-bold text-base sm:text-lg text-foreground">{property.area_sqm}</div>
-                      <div className="text-[10px] sm:text-sm text-muted-foreground">Sqm</div>
+                    <div className="text-center p-2 sm:p-3 bg-secondary/5 rounded-lg border border-secondary/10">
+                      <Square className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-secondary mx-auto mb-0.5" />
+                      <div className="font-bold text-sm sm:text-base">{property.area_sqm}</div>
+                      <div className="text-[8px] sm:text-[10px] text-muted-foreground">m²</div>
                     </div>
                   )}
-                  <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-muted/50 to-muted/70 rounded-lg sm:rounded-xl border border-border hover:shadow-lg transition-all duration-300">
-                    <Calendar className="h-4 w-4 sm:h-6 sm:w-6 text-foreground mx-auto mb-1 sm:mb-2" />
-                    <div className="font-bold text-base sm:text-lg text-foreground">
+                  <div className="text-center p-2 sm:p-3 bg-muted/30 rounded-lg border border-border/30">
+                    <Calendar className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-muted-foreground mx-auto mb-0.5" />
+                    <div className="font-bold text-sm sm:text-base">
                       {new Date(property.created_at).getFullYear()}
                     </div>
-                    <div className="text-[10px] sm:text-sm text-muted-foreground">Listed</div>
+                    <div className="text-[8px] sm:text-[10px] text-muted-foreground">Listed</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Property Details Tabs - Mobile Optimized */}
-            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
-              <CardContent className="p-3 sm:p-6">
+            {/* Property Details Tabs - Compact Mobile */}
+            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
+              <CardContent className="p-2.5 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 rounded-lg h-auto">
-                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-xs sm:text-sm py-2">Description</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-xs sm:text-sm py-2">Features</TabsTrigger>
-                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-xs sm:text-sm py-2">Details</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 rounded-md h-8 sm:h-9">
+                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded text-[10px] sm:text-xs py-1.5">Description</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded text-[10px] sm:text-xs py-1.5">Features</TabsTrigger>
+                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded text-[10px] sm:text-xs py-1.5">Details</TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="description" className="mt-3 sm:mt-6">
-                    <div className="prose max-w-none">
-                      <p className="text-foreground leading-relaxed text-sm sm:text-base">
-                        {property.description || 'No description available for this property.'}
-                      </p>
-                    </div>
+                  <TabsContent value="description" className="mt-2 sm:mt-3">
+                    <p className="text-foreground leading-relaxed text-xs sm:text-sm">
+                      {property.description || 'No description available.'}
+                    </p>
                   </TabsContent>
                   
-                  <TabsContent value="features" className="mt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <TabsContent value="features" className="mt-2 sm:mt-3">
+                    <div className="grid grid-cols-1 gap-1.5 sm:gap-2">
                       {property.property_features && Object.keys(property.property_features).length > 0 ? (
                         Object.entries(property.property_features).map(([key, value]) => (
-                          <div key={key} className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
-                            <span className="font-medium text-foreground capitalize">{key.replace(/_/g, ' ')}</span>
+                          <div key={key} className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                            <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
                             <span className="text-muted-foreground">{String(value)}</span>
                           </div>
                         ))
                       ) : (
-                        <p className="text-muted-foreground col-span-2 text-center py-8">No additional features listed.</p>
+                        <p className="text-muted-foreground text-center py-4 text-xs">No features listed.</p>
                       )}
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="details" className="mt-6">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
-                          <span className="font-medium text-foreground">Property Type</span>
-                          <span className="text-muted-foreground capitalize">{property.property_type}</span>
-                        </div>
-                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
-                          <span className="font-medium text-foreground">Listing Type</span>
-                          <span className="text-muted-foreground capitalize">{property.listing_type}</span>
-                        </div>
-                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
-                          <span className="font-medium text-foreground">Status</span>
-                          <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
-                            {property.status}
-                          </Badge>
-                        </div>
-                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
-                          <span className="font-medium text-foreground">Listed Date</span>
-                          <span className="text-muted-foreground">
-                            {new Date(property.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
+                  <TabsContent value="details" className="mt-2 sm:mt-3">
+                    <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                        <span className="font-medium">Type</span>
+                        <span className="text-muted-foreground capitalize">{property.property_type}</span>
+                      </div>
+                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                        <span className="font-medium">Listing</span>
+                        <span className="text-muted-foreground capitalize">{property.listing_type}</span>
+                      </div>
+                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm items-center">
+                        <span className="font-medium">Status</span>
+                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-5 text-[9px] px-1.5">
+                          {property.status}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                        <span className="font-medium">Listed</span>
+                        <span className="text-muted-foreground">
+                          {new Date(property.created_at).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
                   </TabsContent>
@@ -828,7 +799,7 @@ const PropertyDetail: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Simple Property 3D Viewer */}
+            {/* 3D Viewer */}
             <SimpleProperty3DViewer
               property={{
                 ...property,
@@ -839,25 +810,25 @@ const PropertyDetail: React.FC = () => {
               virtualTourUrl={property.virtual_tour_url}
             />
 
-            {/* Virtual Tour & 3D Model */}
+            {/* Virtual Tour & 3D Model - Compact */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
-              <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-                    <Camera className="h-5 w-5 text-primary" />
+              <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
+                <CardHeader className="p-2.5 sm:p-4 pb-1.5 sm:pb-2">
+                  <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
+                    <Camera className="h-4 w-4 text-primary" />
                     Virtual Experience
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="p-2.5 sm:p-4 pt-0 space-y-1.5">
                   {property.virtual_tour_url && (
-                    <Button className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80" variant="default">
-                      <Globe className="h-4 w-4 mr-2" />
+                    <Button className="w-full h-8 text-xs" variant="default">
+                      <Globe className="h-3.5 w-3.5 mr-1.5" />
                       Virtual Tour
                     </Button>
                   )}
                   {property.three_d_model_url && (
-                    <Button className="w-full bg-gradient-to-r from-accent to-accent/90 hover:from-accent/90 hover:to-accent/80" variant="default">
-                      <Box className="h-4 w-4 mr-2" />
+                    <Button className="w-full h-8 text-xs" variant="outline">
+                      <Box className="h-3.5 w-3.5 mr-1.5" />
                       3D Model
                     </Button>
                   )}
@@ -866,265 +837,185 @@ const PropertyDetail: React.FC = () => {
             )}
           </div>
 
-          {/* Sidebar - Mobile Optimized */}
-          <div className="space-y-3 sm:space-y-6">
+          {/* Sidebar - Compact Mobile */}
+          <div className="space-y-2 sm:space-y-4">
             
-            {/* Enhanced Contact Information */}
-            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
-              <CardHeader className="p-3 sm:p-6">
-                <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent text-base sm:text-lg">
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                  Agent Information
+            {/* Contact Information - Compact */}
+            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
+              <CardHeader className="p-2.5 sm:p-4 pb-1.5 sm:pb-2">
+                <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
+                  <User className="h-4 w-4 text-primary" />
+                  Agent Info
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6 pt-0 sm:pt-0">
+              <CardContent className="p-2.5 sm:p-4 pt-0 space-y-3">
                 {property.posted_by ? (
                   <div>
-                    <div className="flex items-start gap-4 mb-6">
+                    {/* Agent Profile - Compact */}
+                    <div className="flex items-center gap-2.5 mb-3">
                       <img
                         src={property.posted_by.avatar_url || "/placeholder.svg"}
                         alt={property.posted_by.name}
-                        className="w-14 h-14 rounded-xl object-cover border-2 border-border shadow-md"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-border"
                       />
-                      <div className="flex-1">
-                        <h4 className="font-bold text-lg mb-1 text-foreground">{property.posted_by.name}</h4>
-                        <p className="text-sm text-primary font-medium mb-2">{property.posted_by.position}</p>
-                        <div className="flex items-center gap-1 mb-2">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-medium text-sm text-foreground">{property.posted_by.customer_feedback_rating}</span>
-                          <span className="text-sm text-muted-foreground">({property.posted_by.customer_feedback_count} reviews)</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm sm:text-base text-foreground truncate">{property.posted_by.name}</h4>
+                        <p className="text-[10px] sm:text-xs text-primary">{property.posted_by.position}</p>
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          <span className="text-[10px] sm:text-xs">{property.posted_by.customer_feedback_rating}</span>
+                          <span className="text-[9px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          REI License: {property.posted_by.license_number} • {property.posted_by.experience_years} years experience
-                        </p>
                       </div>
                     </div>
 
-                    {/* Company Information */}
-                    <div className="bg-gradient-to-br from-muted/30 to-muted/50 rounded-xl p-4 mb-6 border border-border/30">
-                      <h5 className="font-semibold mb-2 flex items-center gap-2 text-foreground">
-                        <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded text-primary-foreground text-xs flex items-center justify-center font-bold">
+                    {/* Company - Compact */}
+                    <div className="bg-muted/30 rounded-lg p-2.5 mb-3 text-xs">
+                      <div className="flex items-center gap-1.5 font-medium mb-1">
+                        <div className="w-5 h-5 bg-primary/10 rounded text-primary text-[9px] flex items-center justify-center font-bold">
                           {property.posted_by.company_name?.charAt(0)}
                         </div>
-                        {property.posted_by.company_name}
-                      </h5>
-                      <p className="text-sm text-muted-foreground mb-1">{property.posted_by.company_pt_name}</p>
-                      <p className="text-sm text-muted-foreground mb-2">{property.posted_by.developer_name}</p>
-                      <p className="text-xs text-muted-foreground">{property.posted_by.office_address}</p>
+                        <span className="truncate">{property.posted_by.company_name}</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground truncate">{property.posted_by.office_address}</p>
                     </div>
 
-                {/* Contact Options - Mobile Optimized */}
-                <div className="space-y-2 sm:space-y-3">
-                  <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-3 sm:p-4 rounded-xl border border-border/20">
-                    <h4 className="font-semibold text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2 text-foreground">
-                      <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                      Protected Contact Information
-                    </h4>
-                    <ProtectedContactInfo
-                      phone={property.posted_by.phone_number}
-                      email={ownerInfo?.email}
-                      whatsappNumber={property.posted_by.whatsapp_number}
-                      showButtons={true}
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 gap-2 sm:gap-3">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all h-9 sm:h-10 text-xs sm:text-sm"
-                      onClick={() => {
-                        if (user && property.posted_by?.whatsapp_number) {
-                          window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hello, I'm interested in ${property.title}`, '_blank');
-                        } else if (!user) {
-                          setShowAuthModal(true);
-                        } else {
-                          toast({
-                            title: "Contact not available",
-                            description: "WhatsApp number not provided for this property.",
-                            variant: "destructive",
-                          });
-                        }
-                      }}
-                    >
-                      📱 Contact via WhatsApp
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full hover:bg-primary/5 border-border/50 h-9 sm:h-10 text-xs sm:text-sm"
-                      onClick={() => {
-                        if (user && property.posted_by?.phone_number) {
-                          window.open(`tel:${property.posted_by.phone_number}`, '_self');
-                        } else {
-                          toast({
-                            title: "Sign in required",
-                            description: "Please sign in to make a call.",
-                            variant: "destructive",
-                          });
-                        }
-                      }}
-                    >
-                      <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
-                      Call Agent
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full hover:bg-primary/5 border-border/50 h-9 sm:h-10 text-xs sm:text-sm"
-                      onClick={() => {
-                        if (user && ownerInfo?.email) {
-                          window.open(`mailto:${ownerInfo.email}?subject=Inquiry about ${property.title}`, '_self');
-                        } else {
-                          toast({
-                            title: "Sign in required",
-                            description: "Please sign in to send an email.",
-                            variant: "destructive",
-                          });
-                        }
-                      }}
-                    >
-                      <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
-                      Send Email
-                    </Button>
-                  </div>
-                </div>
+                    {/* Contact Buttons - Compact */}
+                    <div className="space-y-1.5">
+                      <Button 
+                        className="w-full bg-green-600 hover:bg-green-700 text-white h-8 text-xs"
+                        onClick={() => {
+                          if (user && property.posted_by?.whatsapp_number) {
+                            window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, interested in ${property.title}`, '_blank');
+                          } else if (!user) {
+                            setShowAuthModal(true);
+                          } else {
+                            toast({ title: "Contact not available", variant: "destructive" });
+                          }
+                        }}
+                      >
+                        📱 WhatsApp
+                      </Button>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <Button 
+                          variant="outline" 
+                          className="h-8 text-xs"
+                          onClick={() => {
+                            if (user && property.posted_by?.phone_number) {
+                              window.open(`tel:${property.posted_by.phone_number}`, '_self');
+                            } else {
+                              toast({ title: "Sign in required", variant: "destructive" });
+                            }
+                          }}
+                        >
+                          <Phone className="h-3 w-3 mr-1" />
+                          Call
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="h-8 text-xs"
+                          onClick={() => {
+                            if (user && ownerInfo?.email) {
+                              window.open(`mailto:${ownerInfo.email}?subject=Inquiry: ${property.title}`, '_self');
+                            } else {
+                              toast({ title: "Sign in required", variant: "destructive" });
+                            }
+                          }}
+                        >
+                          <Mail className="h-3 w-3 mr-1" />
+                          Email
+                        </Button>
+                      </div>
+                    </div>
 
-                {/* Agent Stats - Mobile Optimized */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-border/30">
-                  <div className="text-center">
-                    <div className="font-bold text-base sm:text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{property.posted_by.total_properties}+</div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground">Properties Sold</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-base sm:text-lg bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">{property.posted_by.experience_years}</div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground">Years Experience</div>
-                  </div>
-                </div>
+                    {/* Agent Stats - Compact */}
+                    <div className="grid grid-cols-2 gap-2 pt-2.5 mt-2.5 border-t border-border/30">
+                      <div className="text-center">
+                        <div className="font-bold text-sm text-primary">{property.posted_by.total_properties}+</div>
+                        <div className="text-[9px] text-muted-foreground">Sold</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-sm text-accent">{property.posted_by.experience_years}y</div>
+                        <div className="text-[9px] text-muted-foreground">Experience</div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">Agent information not available</p>
+                  <p className="text-xs text-muted-foreground">Agent info not available</p>
                 )}
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Similar Properties Carousel - Horizontal Scroll */}
+        {/* Similar Properties - Compact Mobile Carousel */}
         {relatedProperties.length > 0 && (
-          <div className="mt-6 sm:mt-12">
-            <div className="flex items-center justify-between mb-3 sm:mb-6">
-              <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Similar Properties</h2>
-              <Button variant="outline" size="sm" className="text-primary hover:bg-primary/5 text-xs sm:text-sm">View All</Button>
+          <div className="mt-4 sm:mt-8">
+            <div className="flex items-center justify-between mb-2 sm:mb-4">
+              <h2 className="text-sm sm:text-lg font-bold text-foreground">Similar Properties</h2>
+              <Button variant="ghost" size="sm" className="text-primary text-xs h-7 px-2">View All</Button>
             </div>
             
-            {/* Horizontal Scrolling Container */}
-            <div className="relative">
-              <div ref={similarScrollRef} className="flex gap-2 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-3 sm:pb-4 -mx-2 px-2 sm:mx-0 sm:px-0 hover:pause-scroll">
-                {relatedProperties.map((relatedProperty) => (
-                  <Card 
-                    key={relatedProperty.id}
-                    className="group flex-shrink-0 w-[200px] sm:w-[280px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
-                    onClick={() => navigate(`/properties/${relatedProperty.id}`)}
-                  >
-                    <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
-                      <img
-                        src={relatedProperty.images?.[0] || "/placeholder.svg"}
-                        alt={relatedProperty.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
+            <div ref={similarScrollRef} className="flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
+              {relatedProperties.map((relatedProperty) => (
+                <Card 
+                  key={relatedProperty.id}
+                  className="flex-shrink-0 w-[160px] sm:w-[220px] border-0 bg-card shadow-md cursor-pointer snap-start"
+                  onClick={() => navigate(`/properties/${relatedProperty.id}`)}
+                >
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                    <img
+                      src={relatedProperty.images?.[0] || "/placeholder.svg"}
+                      alt={relatedProperty.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-2">
+                    <div className="text-xs sm:text-sm font-bold text-primary mb-0.5">{formatPrice(relatedProperty.price)}</div>
+                    <h4 className="font-medium text-[10px] sm:text-xs line-clamp-1 mb-1">{relatedProperty.title}</h4>
+                    <div className="flex items-center gap-2 text-[9px] sm:text-[10px] text-muted-foreground">
+                      {relatedProperty.bedrooms && <span>{relatedProperty.bedrooms} bed</span>}
+                      {relatedProperty.area_sqm && <span>{relatedProperty.area_sqm}m²</span>}
                     </div>
-                    <CardContent className="p-2.5 sm:p-4">
-                      <h3 className="text-sm sm:text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2">
-                        {formatPrice(relatedProperty.price)}
-                      </h3>
-                      <h4 className="font-semibold mb-1.5 sm:mb-3 text-foreground text-xs sm:text-base line-clamp-1">{relatedProperty.title}</h4>
-                      <div className="flex items-center justify-between gap-2 text-[10px] sm:text-sm mb-2 sm:mb-3">
-                        {relatedProperty.bedrooms && (
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <Bed className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span>{relatedProperty.bedrooms}</span>
-                          </div>
-                        )}
-                        {relatedProperty.bathrooms && (
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <Bath className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span>{relatedProperty.bathrooms}</span>
-                          </div>
-                        )}
-                        {relatedProperty.area_sqm && (
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <Square className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span>{relatedProperty.area_sqm}m²</span>
-                          </div>
-                        )}
-                      </div>
-                      <Button 
-                        className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 h-7 sm:h-9 text-xs sm:text-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/properties/${relatedProperty.id}`);
-                        }}
-                      >
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         )}
 
-        {/* More Properties from Agent Carousel - Horizontal Scroll */}
+        {/* More from Agent - Compact Mobile Carousel */}
         {userMoreProperties.length > 0 && (
-          <div className="mt-6 sm:mt-12">
-            <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              More from {agentInfo ? agentInfo.full_name : ownerInfo?.full_name || 'this agent'}
+          <div className="mt-4 sm:mt-8">
+            <h2 className="text-sm sm:text-lg font-bold mb-2 sm:mb-4 text-foreground">
+              More from {agentInfo?.full_name || ownerInfo?.full_name || 'agent'}
             </h2>
             
-            {/* Horizontal Scrolling Container */}
-            <div className="relative">
-              <div ref={moreFromAgentRef} className="flex gap-2 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-3 sm:pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
-                {userMoreProperties.map((userProperty) => (
-                  <Card 
-                    key={userProperty.id} 
-                    className="group flex-shrink-0 w-[180px] sm:w-[240px] border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer snap-start"
-                    onClick={() => navigate(`/properties/${userProperty.id}`)}
-                  >
-                    <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
-                      <img
-                        src={userProperty.images?.[0] || "/placeholder.svg"}
-                        alt={userProperty.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <CardContent className="p-2 sm:p-3">
-                      <h3 className="font-semibold line-clamp-2 mb-1 sm:mb-2 text-foreground text-[11px] sm:text-sm">{userProperty.title}</h3>
-                      <div className="flex items-center text-[10px] text-muted-foreground mb-1 sm:mb-2">
-                        <MapPin className="h-3 w-3 mr-1 text-primary flex-shrink-0" />
-                        <span className="truncate">{userProperty.location}</span>
-                      </div>
-                      <div className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2 text-xs sm:text-base">
-                        {formatPrice(userProperty.price)}
-                      </div>
-                      <Button 
-                        className="w-full h-7 sm:h-8 text-xs sm:text-sm" 
-                        size="sm"
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/properties/${userProperty.id}`);
-                        }}
-                      >
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+            <div ref={moreFromAgentRef} className="flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
+              {userMoreProperties.map((userProperty) => (
+                <Card 
+                  key={userProperty.id} 
+                  className="flex-shrink-0 w-[140px] sm:w-[180px] border-0 bg-card shadow-md cursor-pointer snap-start"
+                  onClick={() => navigate(`/properties/${userProperty.id}`)}
+                >
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                    <img
+                      src={userProperty.images?.[0] || "/placeholder.svg"}
+                      alt={userProperty.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-1.5">
+                    <h3 className="font-medium line-clamp-1 text-[10px] sm:text-xs mb-0.5">{userProperty.title}</h3>
+                    <div className="font-bold text-primary text-[10px] sm:text-xs">{formatPrice(userProperty.price)}</div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* Enhanced Auth Modal for login/registration */}
       <EnhancedAuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
