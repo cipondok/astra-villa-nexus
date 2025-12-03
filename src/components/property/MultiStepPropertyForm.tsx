@@ -401,34 +401,33 @@ const MultiStepPropertyForm = () => {
       )}
 
       {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm">
-          <span className="font-medium">Step {getCurrentStepIndex() + 1} of {steps.length}</span>
-          <span className="text-muted-foreground">{Math.round(progress)}% Complete</span>
+      <div className="space-y-1.5">
+        <div className="flex justify-between text-xs">
+          <span className="font-medium text-foreground/80">Step {getCurrentStepIndex() + 1} of {steps.length}</span>
+          <span className="text-muted-foreground">{Math.round(progress)}%</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} multiColor className="h-1.5" />
       </div>
 
       {/* Tabs */}
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6 h-auto">
+        <TabsList className="grid w-full grid-cols-6 h-9 p-0.5 gap-0.5 bg-muted/30 border border-border/30">
           {steps.map((step, index) => {
             const Icon = step.icon;
             const stepIndex = steps.findIndex(s => s.id === step.id);
             const isCompleted = stepIndex < getCurrentStepIndex();
-            const isCurrent = currentTab === step.id;
             
             return (
               <TabsTrigger
                 key={step.id}
                 value={step.id}
-                className="flex flex-col items-center gap-1 py-3 relative data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="flex items-center justify-center gap-1 py-1 px-1 text-[10px] relative data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all duration-200"
               >
                 {isCompleted && (
-                  <CheckCircle2 className="h-3 w-3 absolute top-1 right-1 text-green-600" />
+                  <CheckCircle2 className="h-2.5 w-2.5 absolute -top-0.5 -right-0.5 text-emerald-500" />
                 )}
-                <Icon className="h-4 w-4" />
-                <span className="text-xs hidden sm:inline">{step.label}</span>
+                <Icon className="h-3 w-3" />
+                <span className="hidden sm:inline truncate">{step.label}</span>
               </TabsTrigger>
             );
           })}
