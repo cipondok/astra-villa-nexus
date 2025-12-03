@@ -90,22 +90,26 @@ const MobileFooter = () => {
       </div>
 
       {/* Quick Links Row */}
-      <div className="px-3 py-1.5 flex justify-center gap-3 text-[9px]">
+      <div className="px-3 py-1.5 flex justify-center gap-2.5 text-[9px]">
+        <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
+          <Home className="h-2.5 w-2.5" />
+          <span>Home</span>
+        </button>
         <button onClick={() => navigate('/dijual')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
           <Building2 className="h-2.5 w-2.5" />
-          <span>Properties</span>
+          <span>Buy</span>
         </button>
-        <button onClick={() => navigate('/about')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
-          <Info className="h-2.5 w-2.5" />
-          <span>About</span>
+        <button onClick={() => navigate('/disewa')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
+          <Building2 className="h-2.5 w-2.5" />
+          <span>Rent</span>
         </button>
-        <button onClick={() => navigate('/services')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
+        <button onClick={() => navigate('/community')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
           <Users className="h-2.5 w-2.5" />
-          <span>Services</span>
+          <span>Community</span>
         </button>
-        <button onClick={() => window.open('https://astravilla.com', '_blank')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
-          <Globe className="h-2.5 w-2.5" />
-          <span>Website</span>
+        <button onClick={() => navigate('/development')} className="text-muted-foreground hover:text-primary flex items-center gap-0.5">
+          <Info className="h-2.5 w-2.5" />
+          <span>Development</span>
         </button>
       </div>
 
