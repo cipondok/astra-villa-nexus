@@ -27,7 +27,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   
   const { signIn, signUp } = useAuth();
 
-  // Show loading screen during authentication (simplified)
   if (isLoading && authAction) {
     const loadingMessage = authAction === 'login' 
       ? "Authenticating user..." 
@@ -36,7 +35,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
     return (
       <LoadingPage 
         message={loadingMessage}
-        showConnectionStatus={false} // Don't show connection status for auth
+        showConnectionStatus={false}
       />
     );
   }
@@ -108,34 +107,34 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[400px] glass-popup border-primary/20 shadow-2xl shadow-primary/20">
+      <DialogContent className="sm:max-w-[400px] bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-white/20 dark:border-white/10 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="gradient-text text-xl">Welcome to AstraVilla</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogTitle className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-xl">Welcome to AstraVilla</DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-400">
             {isLogin ? 'Sign in to your account' : 'Create a new account to get started'}
           </DialogDescription>
         </DialogHeader>
 
         {error && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+          <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/30">
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription className="text-red-700 dark:text-red-300">{error}</AlertDescription>
           </Alert>
         )}
 
         <Tabs value={isLogin ? "signin" : "signup"} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100/80 dark:bg-white/10">
             <TabsTrigger 
               value="signin" 
               onClick={() => { setIsLogin(true); setError(null); }}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm"
             >
               Sign In
             </TabsTrigger>
             <TabsTrigger 
               value="signup" 
               onClick={() => { setIsLogin(false); setError(null); }}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-white dark:data-[state=active]:bg-white/20 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm"
             >
               Sign Up
             </TabsTrigger>
@@ -144,7 +143,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           <TabsContent value="signin" className="space-y-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground/80">Email</Label>
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -152,11 +151,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
+                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-foreground/80">Password</Label>
+                <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -165,13 +164,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
+                    className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-gray-500 dark:text-gray-400"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -184,7 +183,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30" 
+                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg" 
                 disabled={isLoading}
               >
                 {isLoading ? "Signing in..." : "Sign In"}
@@ -195,7 +194,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           <TabsContent value="signup" className="space-y-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-foreground/80">Full Name</Label>
+                <Label htmlFor="fullName" className="text-gray-700 dark:text-gray-300">Full Name</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -203,11 +202,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
+                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-email" className="text-foreground/80">Email</Label>
+                <Label htmlFor="signup-email" className="text-gray-700 dark:text-gray-300">Email</Label>
                 <Input
                   id="signup-email"
                   type="email"
@@ -215,11 +214,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
+                  className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-password" className="text-foreground/80">Password</Label>
+                <Label htmlFor="signup-password" className="text-gray-700 dark:text-gray-300">Password</Label>
                 <div className="relative">
                   <Input
                     id="signup-password"
@@ -229,13 +228,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
+                    className="bg-white/70 dark:bg-white/10 border-gray-200/50 dark:border-white/20 focus:border-primary focus:ring-primary/30"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-gray-500 dark:text-gray-400"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -248,13 +247,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30" 
+                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg" 
                 disabled={isLoading}
               >
                 {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
               New accounts are automatically approved and ready to use
             </p>
           </TabsContent>
