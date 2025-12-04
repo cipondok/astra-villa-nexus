@@ -203,7 +203,7 @@ const Disewa = () => {
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-14 md:pt-16 transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground pt-11 md:pt-12 transition-colors duration-300">
       {/* Luxury Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
@@ -211,19 +211,19 @@ const Disewa = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 relative">
+      <div className="container mx-auto px-3 md:px-4 pt-1 pb-2 relative">
         {/* Centered Header */}
-        <div className="text-center mb-3">
-          <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+        <div className="text-center mb-2">
+          <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
             Properti Disewa
           </h1>
-          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+          <p className="text-[10px] md:text-xs text-muted-foreground">
             Temukan properti sewa terbaik dengan ASTRA Villa
           </p>
         </div>
 
         {/* Slim Search Panel */}
-        <div className="glass-card p-2 md:p-3 rounded-lg mb-3 border border-primary/20">
+        <div className="glass-card p-2 rounded-lg mb-2 border border-primary/20">
           <AdvancedRentalSearch
             filters={filters} 
             onFiltersChange={setFilters} 
