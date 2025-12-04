@@ -41,11 +41,11 @@ const LoadingPopup = ({
   const getIcon = () => {
     switch (type) {
       case "success":
-        return <CheckCircle className="w-16 h-16 text-green-500" />;
+        return <CheckCircle className="w-16 h-16 text-accent" />;
       case "error":
-        return <AlertCircle className="w-16 h-16 text-red-500" />;
+        return <AlertCircle className="w-16 h-16 text-destructive" />;
       default:
-        return <LoaderCircle className="w-16 h-16 text-blue-500 animate-spin" />;
+        return <LoaderCircle className="w-16 h-16 text-primary animate-spin" />;
     }
   };
 
@@ -62,12 +62,12 @@ const LoadingPopup = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md glass-popup shadow-lg">
+      <DialogContent className="max-w-md glass-popup border-primary/20 shadow-2xl shadow-primary/20">
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
           {/* Animated ASTRA Villa Logo */}
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-3">
-              <span className="inline-block animate-gradient bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent bg-[length:300%_300%]">
+              <span className="inline-block animate-gradient bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent bg-[length:300%_300%]">
                 ASTRA Villa
               </span>
             </h1>
@@ -77,8 +77,8 @@ const LoadingPopup = ({
           <div className="flex flex-col items-center space-y-4 text-center">
             {getIcon()}
             <p className={`text-lg ${type === 'loading' ? 'animate-pulse' : ''} ${
-              type === 'success' ? 'text-green-700' : 
-              type === 'error' ? 'text-red-700' : 
+              type === 'success' ? 'text-accent' : 
+              type === 'error' ? 'text-destructive' : 
               'text-muted-foreground'
             }`}>
               {message || getDefaultMessage()}
@@ -90,10 +90,10 @@ const LoadingPopup = ({
             <div className="flex gap-3 mt-4">
               <button
                 onClick={onClose}
-                className={`px-6 py-2 rounded-md font-medium transition-colors ${
+                className={`px-6 py-2 rounded-md font-medium transition-all shadow-lg ${
                   type === 'success' 
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-red-500 hover:bg-red-600 text-white'
+                    ? 'bg-gradient-to-r from-accent to-primary text-primary-foreground hover:opacity-90 shadow-accent/30'
+                    : 'bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground hover:opacity-90 shadow-destructive/30'
                 }`}
               >
                 {currentText.close}

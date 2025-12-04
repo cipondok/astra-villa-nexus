@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -162,34 +161,34 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+    <div className="fixed inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="w-full max-w-md glass-popup rounded-2xl border border-primary/20 shadow-2xl shadow-primary/20">
+        <div className="flex flex-row items-center justify-between p-4 pb-2 border-b border-border/50">
+          <h2 className="text-xl font-bold gradient-text">
             Astra Villa
-          </CardTitle>
-          <Button variant="ghost" size="sm" onClick={handleClose} disabled={isLoading}>
+          </h2>
+          <Button variant="ghost" size="sm" onClick={handleClose} disabled={isLoading} className="hover:bg-primary/10">
             <X className="h-4 w-4" />
           </Button>
-        </CardHeader>
+        </div>
         
-        <CardContent>
+        <div className="p-4">
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="destructive" className="mb-4 bg-destructive/10 border-destructive/30">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Sign In</TabsTrigger>
-              <TabsTrigger value="register">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+              <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign In</TabsTrigger>
+              <TabsTrigger value="register" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign Up</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="login" className="space-y-4">
+            <TabsContent value="login" className="space-y-4 mt-4">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email Address</Label>
+                  <Label htmlFor="login-email" className="text-foreground/80">Email Address</Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -198,11 +197,12 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
                     required
+                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="login-password" className="text-foreground/80">Password</Label>
                   <div className="relative">
                     <Input
                       id="login-password"
@@ -211,14 +211,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className="pr-10"
+                      className="pr-10 bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                       required
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent text-muted-foreground"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -227,18 +227,18 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                 </div>
 
                 {progressiveDelay > 0 && (
-                  <Alert className="mb-4">
-                    <Clock className="h-4 w-4" />
-                    <AlertDescription>
+                  <Alert className="mb-4 bg-primary/10 border-primary/30">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <AlertDescription className="text-foreground/80">
                       Please wait {Math.ceil(progressiveDelay / 1000)} seconds before trying again.
                     </AlertDescription>
                   </Alert>
                 )}
 
                 {captchaRequired && !showCaptcha && (
-                  <Alert className="mb-4">
-                    <Shield className="h-4 w-4" />
-                    <AlertDescription>
+                  <Alert className="mb-4 bg-primary/10 border-primary/30">
+                    <Shield className="h-4 w-4 text-primary" />
+                    <AlertDescription className="text-foreground/80">
                       Multiple failed attempts detected. CAPTCHA verification required.
                     </AlertDescription>
                   </Alert>
@@ -246,7 +246,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                  className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30"
                   disabled={isLoading || isProcessing || progressiveDelay > 0}
                 >
                   {isLoading || isProcessing ? "Signing in..." : "Sign In"}
@@ -254,10 +254,10 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
               </form>
             </TabsContent>
             
-            <TabsContent value="register" className="space-y-4">
+            <TabsContent value="register" className="space-y-4 mt-4">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-name">Full Name</Label>
+                  <Label htmlFor="register-name" className="text-foreground/80">Full Name</Label>
                   <Input
                     id="register-name"
                     type="text"
@@ -266,11 +266,12 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                     onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
                     disabled={isLoading}
                     required
+                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-email">Email Address</Label>
+                  <Label htmlFor="register-email" className="text-foreground/80">Email Address</Label>
                   <Input
                     id="register-email"
                     type="email"
@@ -279,11 +280,12 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                     onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
                     required
+                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
+                  <Label htmlFor="register-password" className="text-foreground/80">Password</Label>
                   <div className="relative">
                     <Input
                       id="register-password"
@@ -292,7 +294,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className="pr-10"
+                      className="pr-10 bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                       minLength={6}
                       required
                     />
@@ -300,7 +302,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent text-muted-foreground"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -309,7 +311,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-confirm-password">Confirm Password</Label>
+                  <Label htmlFor="register-confirm-password" className="text-foreground/80">Confirm Password</Label>
                   <div className="relative">
                     <Input
                       id="register-confirm-password"
@@ -318,14 +320,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       disabled={isLoading}
-                      className="pr-10"
+                      className="pr-10 bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                       required
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent text-muted-foreground"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -335,7 +337,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                  className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30"
                   disabled={isLoading}
                 >
                   {isLoading ? "Creating account..." : "Create Account"}
@@ -343,8 +345,8 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
               </form>
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* CAPTCHA Verification Modal */}
       {showCaptcha && (
