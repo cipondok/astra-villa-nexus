@@ -366,17 +366,17 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
   return (
     <div ref={filtersRef}>
-      <Card className="w-full max-w-4xl mx-auto shadow-2xl border-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl">
+      <Card className="w-full max-w-4xl mx-auto shadow-2xl border-0 bg-card/98 backdrop-blur-xl">
         <CardContent className="p-4 lg:p-6">
           <div className="space-y-3">
             {/* Main Search Bar */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-12 h-12 lg:h-14 text-base lg:text-lg border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-xl shadow-sm transition-all duration-200"
+                className="pl-12 h-12 lg:h-14 text-base lg:text-lg border-2 border-border focus:border-primary bg-input text-foreground placeholder:text-muted-foreground rounded-xl shadow-sm transition-all duration-200"
               />
             </div>
 
@@ -385,13 +385,13 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               <Button
                 onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
                 variant="outline"
-                className="h-9 px-3 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                className="h-9 px-3 border-border bg-card text-foreground rounded-lg transition-all duration-200"
                 disabled={isClosing}
               >
                 <Filter className="h-4 w-4 mr-1" />
                 {currentText.advancedFilters}
                 {activeFiltersCount > 0 && (
-                  <span className="ml-2 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                  <span className="ml-2 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-full">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -403,13 +403,13 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               <Button
                 onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
                 variant="outline"
-                className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative"
+                className="h-10 lg:h-11 border-border bg-card text-foreground hover:bg-muted rounded-lg transition-all duration-200 relative"
                 disabled={isClosing}
               >
                 <Filter className="h-4 w-4 mr-2" />
                 {currentText.advancedFilters}
                 {activeFiltersCount > 0 && (
-                  <Badge className="ml-2 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full">
+                  <Badge className="ml-2 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
                     {activeFiltersCount}
                   </Badge>
                 )}
@@ -421,27 +421,27 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                 ? 'max-h-[800px] opacity-100 transform translate-y-0' 
                 : 'max-h-0 opacity-0 transform -translate-y-4'
             }`}>
-              <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="space-y-6 pt-4 border-t border-border">
                 
                 {/* Mobile-only Quick Filters */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Filter className="h-4 w-4" />
                     Quick Filters
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {/* State Selection */}
                     <Select value={filters.state || "all"} onValueChange={(value) => handleFilterChange('state', value)}>
-                      <SelectTrigger className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+                      <SelectTrigger className="h-10 border-border bg-card text-foreground rounded-lg">
                         <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <MapPin className="h-4 w-4 text-primary" />
                           <SelectValue placeholder={currentText.location} />
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50 max-h-60 overflow-y-auto">
-                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                      <SelectContent className="bg-popover border-border z-50 max-h-60 overflow-y-auto">
+                        <SelectItem value="all" className="text-foreground">{currentText.any}</SelectItem>
                         {Object.keys(locationsByProvince).map((province) => (
-                          <SelectItem key={province} value={province} className="text-gray-900 dark:text-gray-100">
+                          <SelectItem key={province} value={province} className="text-foreground">
                             📍 {province}
                           </SelectItem>
                         ))}
@@ -450,16 +450,16 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
                     {/* Property Type */}
                     <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-                      <SelectTrigger className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+                      <SelectTrigger className="h-10 border-border bg-card text-foreground rounded-lg">
                         <div className="flex items-center gap-2">
-                          <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <Home className="h-4 w-4 text-primary" />
                           <SelectValue placeholder={currentText.propertyType} />
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
-                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                      <SelectContent className="bg-popover border-border z-50">
+                        <SelectItem value="all" className="text-foreground">{currentText.any}</SelectItem>
                         {propertyTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                          <SelectItem key={type.value} value={type.value} className="text-foreground">
                             {type.icon} {type.label}
                           </SelectItem>
                         ))}
@@ -468,16 +468,16 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
                     {/* Listing Type */}
                     <Select value={filters.listingType || "all"} onValueChange={(value) => handleFilterChange('listingType', value)}>
-                      <SelectTrigger className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
+                      <SelectTrigger className="h-10 border-border bg-card text-foreground rounded-lg">
                         <div className="flex items-center gap-2">
-                          <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <DollarSign className="h-4 w-4 text-primary" />
                           <SelectValue placeholder={currentText.listingType} />
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
-                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                      <SelectContent className="bg-popover border-border z-50">
+                        <SelectItem value="all" className="text-foreground">{currentText.any}</SelectItem>
                         {listingTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                          <SelectItem key={type.value} value={type.value} className="text-foreground">
                             {type.icon} {type.label}
                           </SelectItem>
                         ))}
@@ -488,7 +488,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                 
                 {/* Basic Filters Category */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Home className="h-4 w-4" />
                     {filterCategories.basic.title}
                   </h3>
@@ -497,7 +497,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder={currentText.developmentStatus} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 z-50">
+                      <SelectContent className="bg-popover z-50">
                         <SelectItem value="all">{currentText.any}</SelectItem>
                         {developmentStatuses.map((status) => (
                           <SelectItem key={status.value} value={status.value}>
@@ -511,13 +511,13 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
                 {/* Property Details Category */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Bed className="h-4 w-4" />
                     {filterCategories.details.title}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                      <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                         <Bed className="h-3 w-3" />
                         {currentText.bedrooms}
                         {filters.bedrooms.length > 0 && (
@@ -543,7 +543,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                             variant="ghost"
                             size="sm"
                             onClick={() => setFilters(prev => ({ ...prev, bedrooms: [] }))}
-                            className="text-xs h-8 text-red-500 hover:text-red-700"
+                            className="text-xs h-8 text-destructive hover:text-destructive/80"
                           >
                             <X className="h-3 w-3" />
                           </Button>
@@ -552,7 +552,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                      <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                         <Bath className="h-3 w-3" />
                         {currentText.bathrooms}
                         {filters.bathrooms.length > 0 && (
@@ -578,7 +578,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                             variant="ghost"
                             size="sm"
                             onClick={() => setFilters(prev => ({ ...prev, bathrooms: [] }))}
-                            className="text-xs h-8 text-red-500 hover:text-red-700"
+                            className="text-xs h-8 text-destructive hover:text-destructive/80"
                           >
                             <X className="h-3 w-3" />
                           </Button>
@@ -590,14 +590,14 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
                 {/* Price Range Category */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
                     {filterCategories.price.title}
                   </h3>
                   <div className="space-y-4">
                     {/* Price Range Slider */}
                     <div className="px-2">
-                      <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
+                      <div className="flex justify-between text-xs text-muted-foreground mb-2">
                         <span>{formatIDR(filters.priceRange[0])}</span>
                         <span>{formatIDR(filters.priceRange[1])}</span>
                       </div>
@@ -609,7 +609,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                         step={50000000}
                         className="w-full"
                       />
-                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <div className="flex justify-between text-xs text-muted-foreground mt-1">
                         <span>100M</span>
                         <span>50B</span>
                       </div>
@@ -618,25 +618,25 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                     {/* Manual Price Input */}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                        <label className="text-xs font-medium text-muted-foreground">
                           {currentText.from}
                         </label>
                         <Input
                           placeholder="100,000,000"
                           value={filters.priceMin ? formatNumberInput(parseInt(filters.priceMin)) : ''}
                           onChange={(e) => handleManualPriceChange('min', e.target.value)}
-                          className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                          className="h-10 border-border bg-input text-foreground rounded-lg transition-all duration-200"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                        <label className="text-xs font-medium text-muted-foreground">
                           {currentText.to}
                         </label>
                         <Input
                           placeholder="1,000,000,000"
                           value={filters.priceMax ? formatNumberInput(parseInt(filters.priceMax)) : ''}
                           onChange={(e) => handleManualPriceChange('max', e.target.value)}
-                          className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                          className="h-10 border-border bg-input text-foreground rounded-lg transition-all duration-200"
                         />
                       </div>
                     </div>
@@ -645,7 +645,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
                 {/* Amenities Category */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     ⭐ {filterCategories.amenities.title}
                     {filters.amenities.length > 0 && (
                       <Badge variant="secondary" className="ml-1 text-xs">
@@ -676,7 +676,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={handleSearch}
-                className="flex-1 h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                className="flex-1 h-11 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
               >
                 <Search className="h-4 w-4 mr-2" />
                 {currentText.search}
@@ -685,7 +685,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                 <Button
                   onClick={clearAllFilters}
                   variant="outline"
-                  className="h-11 px-4 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
+                  className="h-11 px-4 border-border text-muted-foreground hover:bg-muted rounded-lg transition-all duration-200"
                 >
                   <X className="h-4 w-4 mr-1" />
                   {currentText.clearAll}
@@ -698,7 +698,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
             {/* Active Filters Summary */}
             {activeFiltersCount > 0 && (
-              <div className="hidden md:block text-xs text-gray-600 dark:text-gray-400 text-center animate-fade-in">
+              <div className="hidden md:block text-xs text-muted-foreground text-center animate-fade-in">
                 {activeFiltersCount} {currentText.filtersApplied}
               </div>
             )}
