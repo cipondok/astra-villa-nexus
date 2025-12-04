@@ -41,9 +41,9 @@ const LoadingPopup = ({
   const getIcon = () => {
     switch (type) {
       case "success":
-        return <CheckCircle className="w-16 h-16 text-accent" />;
+        return <CheckCircle className="w-16 h-16 text-green-500" />;
       case "error":
-        return <AlertCircle className="w-16 h-16 text-destructive" />;
+        return <AlertCircle className="w-16 h-16 text-red-500" />;
       default:
         return <LoaderCircle className="w-16 h-16 text-primary animate-spin" />;
     }
@@ -62,7 +62,7 @@ const LoadingPopup = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md glass-popup border-primary/20 shadow-2xl shadow-primary/20">
+      <DialogContent className="max-w-md bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-white/20 dark:border-white/10 shadow-2xl">
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
           {/* Animated ASTRA Villa Logo */}
           <div className="text-center">
@@ -77,9 +77,9 @@ const LoadingPopup = ({
           <div className="flex flex-col items-center space-y-4 text-center">
             {getIcon()}
             <p className={`text-lg ${type === 'loading' ? 'animate-pulse' : ''} ${
-              type === 'success' ? 'text-accent' : 
-              type === 'error' ? 'text-destructive' : 
-              'text-muted-foreground'
+              type === 'success' ? 'text-green-600 dark:text-green-400' : 
+              type === 'error' ? 'text-red-600 dark:text-red-400' : 
+              'text-gray-600 dark:text-gray-400'
             }`}>
               {message || getDefaultMessage()}
             </p>
@@ -90,10 +90,10 @@ const LoadingPopup = ({
             <div className="flex gap-3 mt-4">
               <button
                 onClick={onClose}
-                className={`px-6 py-2 rounded-md font-medium transition-all shadow-lg ${
+                className={`px-6 py-2 rounded-lg font-medium transition-all shadow-lg ${
                   type === 'success' 
-                    ? 'bg-gradient-to-r from-accent to-primary text-primary-foreground hover:opacity-90 shadow-accent/30'
-                    : 'bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground hover:opacity-90 shadow-destructive/30'
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:opacity-90'
+                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:opacity-90'
                 }`}
               >
                 {currentText.close}
