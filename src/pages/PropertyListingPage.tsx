@@ -178,20 +178,21 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 dark:from-neutral-950 dark:via-neutral-900 dark:to-primary/10 text-foreground pt-12 md:pt-14 lg:pt-16">
+    <div className="min-h-screen bg-background text-foreground pt-12 md:pt-14 lg:pt-16">
       {/* Hero Header Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-amber-500/10 dark:from-primary/20 dark:to-amber-500/20" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-amber-400/20 to-transparent rounded-full blur-3xl dark:from-amber-500/30" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-2xl dark:from-primary/30" />
+        {/* Background gradient using design tokens */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-2xl" />
         
         <main className="relative w-full py-4 md:py-6">
           {/* Page Title */}
           <div className="px-4 mb-4 md:mb-6">
-            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-foreground via-foreground to-primary/80 dark:from-white dark:via-white dark:to-amber-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-foreground via-foreground to-primary bg-clip-text text-transparent">
               {title}
             </h1>
-            <p className="text-xs md:text-base text-muted-foreground dark:text-neutral-400">
+            <p className="text-xs md:text-base text-muted-foreground">
               {subtitle}
             </p>
           </div>
@@ -207,8 +208,8 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           {/* Results Count Badge */}
           {!isLoading && !isSearching && (
             <div className="px-4 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-primary/20 to-amber-500/20 dark:from-primary/30 dark:to-amber-500/30 text-foreground dark:text-white border border-primary/20 dark:border-amber-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-amber-500 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-primary/20 to-accent/20 text-foreground border border-primary/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
                 {hasSearched ? searchResults.length : properties.length} properties found
               </span>
             </div>
