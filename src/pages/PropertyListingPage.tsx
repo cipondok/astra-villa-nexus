@@ -13,6 +13,100 @@ interface PropertyListingPageProps {
   subtitle: string;
 }
 
+// Demo projects for pre-launching offers
+const demoPreLaunchingProjects = [
+  {
+    id: 'demo-pl-1',
+    title: 'ASTRA Luxury Residence - Phase 1',
+    price: 1850000000,
+    city: 'Jakarta Selatan',
+    province: 'DKI Jakarta',
+    property_type: 'apartment',
+    listing_type: 'sale',
+    bedrooms: 2,
+    bathrooms: 2,
+    area_sqm: 95,
+    images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800'],
+    development_status: 'pre_launching',
+    status: 'active'
+  },
+  {
+    id: 'demo-pl-2',
+    title: 'Sunset Villa Collection',
+    price: 5200000000,
+    city: 'Seminyak',
+    province: 'Bali',
+    property_type: 'villa',
+    listing_type: 'sale',
+    bedrooms: 4,
+    bathrooms: 4,
+    area_sqm: 380,
+    images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800'],
+    development_status: 'pre_launching',
+    status: 'active'
+  },
+  {
+    id: 'demo-pl-3',
+    title: 'Emerald Business Park',
+    price: 3800000000,
+    city: 'Tangerang',
+    province: 'Banten',
+    property_type: 'commercial',
+    listing_type: 'sale',
+    bedrooms: 0,
+    bathrooms: 4,
+    area_sqm: 600,
+    images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800'],
+    development_status: 'pre_launching',
+    status: 'active'
+  },
+  {
+    id: 'demo-pl-4',
+    title: 'Highland Garden Homes',
+    price: 2400000000,
+    city: 'Bandung',
+    province: 'Jawa Barat',
+    property_type: 'house',
+    listing_type: 'sale',
+    bedrooms: 3,
+    bathrooms: 3,
+    area_sqm: 180,
+    images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'],
+    development_status: 'pre_launching',
+    status: 'active'
+  },
+  {
+    id: 'demo-pl-5',
+    title: 'Ocean View Penthouse',
+    price: 9500000000,
+    city: 'Nusa Dua',
+    province: 'Bali',
+    property_type: 'penthouse',
+    listing_type: 'sale',
+    bedrooms: 5,
+    bathrooms: 5,
+    area_sqm: 520,
+    images: ['https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800'],
+    development_status: 'pre_launching',
+    status: 'active'
+  },
+  {
+    id: 'demo-pl-6',
+    title: 'Prime Land Investment',
+    price: 1200000000,
+    city: 'Bogor',
+    province: 'Jawa Barat',
+    property_type: 'land',
+    listing_type: 'sale',
+    bedrooms: 0,
+    bathrooms: 0,
+    area_sqm: 1000,
+    images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800'],
+    development_status: 'pre_launching',
+    status: 'active'
+  }
+];
+
 const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageProps) => {
   const [properties, setProperties] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,10 +148,21 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
 
       const { data, error } = await query.order('created_at', { ascending: false }).limit(50);
       if (!error) {
-        setProperties((data || []).filter(p => p.title?.trim() && p.price > 0));
+        const realData = (data || []).filter(p => p.title?.trim() && p.price > 0);
+        // Use demo data for pre-launching if no real data
+        if (realData.length === 0 && pageType === 'pre-launching') {
+          setProperties(demoPreLaunchingProjects);
+        } else {
+          setProperties(realData);
+        }
       }
     } catch (e) {
-      setProperties([]);
+      // Fallback to demo data for pre-launching
+      if (pageType === 'pre-launching') {
+        setProperties(demoPreLaunchingProjects);
+      } else {
+        setProperties([]);
+      }
     } finally {
       setIsLoading(false);
     }
