@@ -212,17 +212,14 @@ const Disewa = () => {
       </div>
 
       <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 relative">
-        {/* Slim Header */}
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Properti Disewa
-            </h1>
-            <p className="text-xs text-muted-foreground">ASTRA Villa Rental</p>
-          </div>
-          <Badge className="bg-primary/10 text-primary border-primary/30 text-xs">
-            {properties.length} properti
-          </Badge>
+        {/* Centered Header */}
+        <div className="text-center mb-3">
+          <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            Properti Disewa
+          </h1>
+          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+            Temukan properti sewa terbaik dengan ASTRA Villa
+          </p>
         </div>
 
         {/* Slim Search Panel */}
