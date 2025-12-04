@@ -108,27 +108,35 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[400px] glass-popup border-primary/20 shadow-2xl shadow-primary/20">
         <DialogHeader>
-          <DialogTitle>Welcome to AstraVilla</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="gradient-text text-xl">Welcome to AstraVilla</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             {isLogin ? 'Sign in to your account' : 'Create a new account to get started'}
           </DialogDescription>
         </DialogHeader>
 
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
         <Tabs value={isLogin ? "signin" : "signup"} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin" onClick={() => { setIsLogin(true); setError(null); }}>
+          <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+            <TabsTrigger 
+              value="signin" 
+              onClick={() => { setIsLogin(true); setError(null); }}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               Sign In
             </TabsTrigger>
-            <TabsTrigger value="signup" onClick={() => { setIsLogin(false); setError(null); }}>
+            <TabsTrigger 
+              value="signup" 
+              onClick={() => { setIsLogin(false); setError(null); }}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               Sign Up
             </TabsTrigger>
           </TabsList>
@@ -136,7 +144,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           <TabsContent value="signin" className="space-y-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-foreground/80">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -144,10 +152,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-foreground/80">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -156,12 +165,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -172,7 +182,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   </Button>
                 </div>
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30" 
+                disabled={isLoading}
+              >
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
@@ -181,7 +195,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           <TabsContent value="signup" className="space-y-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName" className="text-foreground/80">Full Name</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -189,10 +203,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
+                <Label htmlFor="signup-email" className="text-foreground/80">Email</Label>
                 <Input
                   id="signup-email"
                   type="email"
@@ -200,10 +215,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-password">Password</Label>
+                <Label htmlFor="signup-password" className="text-foreground/80">Password</Label>
                 <div className="relative">
                   <Input
                     id="signup-password"
@@ -213,12 +229,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -229,11 +246,15 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   </Button>
                 </div>
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30" 
+                disabled={isLoading}
+              >
                 {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
-            <p className="text-xs text-gray-600 text-center">
+            <p className="text-xs text-muted-foreground text-center">
               New accounts are automatically approved and ready to use
             </p>
           </TabsContent>

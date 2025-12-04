@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import LoadingPage from "./LoadingPage";
+import { X } from "lucide-react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -111,45 +111,47 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardContent className="p-6">
+    <div className="fixed inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="w-full max-w-md glass-popup rounded-2xl border border-primary/20 shadow-2xl shadow-primary/20">
+        <div className="p-4">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Astra Villa</h2>
-            <Button variant="ghost" onClick={onClose}>
-              {currentText.close}
+            <h2 className="text-xl font-bold gradient-text">Astra Villa</h2>
+            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-primary/10">
+              <X className="h-4 w-4" />
             </Button>
           </div>
           
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">{currentText.login}</TabsTrigger>
-              <TabsTrigger value="register">{currentText.register}</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+              <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{currentText.login}</TabsTrigger>
+              <TabsTrigger value="register" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{currentText.register}</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login" className="space-y-4">
+            <TabsContent value="login" className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email">{currentText.email}</Label>
+                <Label htmlFor="login-email" className="text-foreground/80">{currentText.email}</Label>
                 <Input
                   id="login-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={currentText.email}
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password">{currentText.password}</Label>
+                <Label htmlFor="login-password" className="text-foreground/80">{currentText.password}</Label>
                 <Input
                   id="login-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={currentText.password}
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <Button 
-                className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30"
                 onClick={handleLogin}
                 disabled={loading || !email || !password}
               >
@@ -157,44 +159,47 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
               </Button>
             </TabsContent>
             
-            <TabsContent value="register" className="space-y-4">
+            <TabsContent value="register" className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="register-name">{currentText.name}</Label>
+                <Label htmlFor="register-name" className="text-foreground/80">{currentText.name}</Label>
                 <Input
                   id="register-name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={currentText.name}
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-email">{currentText.email}</Label>
+                <Label htmlFor="register-email" className="text-foreground/80">{currentText.email}</Label>
                 <Input
                   id="register-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={currentText.email}
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-password">{currentText.password}</Label>
+                <Label htmlFor="register-password" className="text-foreground/80">{currentText.password}</Label>
                 <Input
                   id="register-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={currentText.password}
+                  className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-role">{currentText.role}</Label>
+                <Label htmlFor="register-role" className="text-foreground/80">{currentText.role}</Label>
                 <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/30">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="glass-popup border-primary/20">
                     <SelectItem value="general_user">{currentText.generalUser}</SelectItem>
                     <SelectItem value="property_owner">{currentText.propertyOwner}</SelectItem>
                     <SelectItem value="agent">{currentText.agent}</SelectItem>
@@ -204,7 +209,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                 </Select>
               </div>
               <Button 
-                className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30"
                 onClick={handleRegister}
                 disabled={loading || !email || !password || !name}
               >
@@ -212,8 +217,8 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
               </Button>
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
