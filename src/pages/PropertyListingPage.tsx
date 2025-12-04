@@ -178,25 +178,25 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-12 md:pt-14 lg:pt-16">
+    <div className="min-h-screen bg-[hsl(45,30%,97%)] dark:bg-[hsl(0,0%,8%)] text-[hsl(0,0%,12%)] dark:text-[hsl(0,0%,92%)] pt-12 md:pt-14 lg:pt-16 transition-colors duration-300">
       {/* Hero Header Section */}
       <div className="relative overflow-hidden">
-        {/* Luxury Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-accent/8" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-primary/20 via-primary/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-accent/20 via-accent/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-radial from-primary/5 to-transparent rounded-full blur-2xl" />
+        {/* Luxury Background Effects - Light Mode */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(48,95%,45%)]/10 via-transparent to-[hsl(42,85%,55%)]/10 dark:from-[hsl(48,100%,50%)]/15 dark:via-transparent dark:to-[hsl(45,90%,60%)]/15" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-[hsl(48,95%,45%)]/20 dark:from-[hsl(48,100%,50%)]/25 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[hsl(42,85%,55%)]/20 dark:from-[hsl(45,90%,60%)]/25 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[hsl(48,95%,45%)]/5 dark:bg-[hsl(48,100%,50%)]/10 rounded-full blur-2xl" />
         
         <main className="relative w-full py-4 md:py-6">
           {/* Page Title with Luxury Styling */}
           <div className="px-4 mb-4 md:mb-6">
             <div className="inline-block">
-              <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 gradient-text">
+              <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-[hsl(48,95%,45%)] to-[hsl(42,85%,55%)] dark:from-[hsl(48,100%,50%)] dark:to-[hsl(45,90%,60%)] bg-clip-text text-transparent">
                 {title}
               </h1>
-              <div className="h-0.5 w-full bg-gradient-to-r from-primary via-accent to-primary/50 rounded-full" />
+              <div className="h-0.5 w-full bg-gradient-to-r from-[hsl(48,95%,45%)] via-[hsl(42,85%,55%)] to-[hsl(48,95%,45%)]/50 dark:from-[hsl(48,100%,50%)] dark:via-[hsl(45,90%,60%)] dark:to-[hsl(48,100%,50%)]/50 rounded-full" />
             </div>
-            <p className="text-xs md:text-base text-muted-foreground mt-2">
+            <p className="text-xs md:text-base text-[hsl(0,0%,40%)] dark:text-[hsl(0,0%,70%)] mt-2">
               {subtitle}
             </p>
           </div>
@@ -212,9 +212,13 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           {/* Results Count Badge with Luxury Styling */}
           {!isLoading && !isSearching && (
             <div className="px-4 mb-3">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold glass-card border-primary/30 shadow-lg shadow-primary/10">
-                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse shadow-sm shadow-primary/50" />
-                <span className="bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold 
+                bg-[rgba(255,253,248,0.85)] dark:bg-[rgba(25,25,25,0.8)] 
+                border border-[hsl(48,95%,45%)]/30 dark:border-[hsl(48,100%,50%)]/30 
+                shadow-lg shadow-[hsl(48,95%,45%)]/10 dark:shadow-[hsl(48,100%,50%)]/20
+                backdrop-blur-xl">
+                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-[hsl(48,95%,45%)] to-[hsl(42,85%,55%)] dark:from-[hsl(48,100%,50%)] dark:to-[hsl(45,90%,60%)] animate-pulse" />
+                <span className="text-[hsl(0,0%,12%)] dark:text-[hsl(0,0%,92%)]">
                   {hasSearched ? searchResults.length : properties.length} properties found
                 </span>
               </span>

@@ -366,18 +366,31 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
   return (
     <div ref={filtersRef}>
-      <Card className="w-full max-w-4xl mx-auto glass-card shadow-2xl border-primary/20 hover:border-primary/30 transition-all duration-300">
+      <Card className="w-full max-w-4xl mx-auto shadow-2xl 
+        bg-[rgba(255,253,248,0.9)] dark:bg-[rgba(25,25,25,0.9)] 
+        border border-[hsl(48,95%,45%)]/20 dark:border-[hsl(48,100%,50%)]/25 
+        backdrop-blur-xl rounded-2xl
+        hover:border-[hsl(48,95%,45%)]/30 dark:hover:border-[hsl(48,100%,50%)]/40 
+        hover:shadow-[0_8px_40px_rgba(202,138,4,0.15)] dark:hover:shadow-[0_8px_40px_rgba(255,215,0,0.2)]
+        transition-all duration-300">
         <CardContent className="p-4 lg:p-6">
           <div className="space-y-3">
             {/* Main Search Bar with Luxury Styling */}
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary z-10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[hsl(48,95%,45%)]/20 to-[hsl(42,85%,55%)]/20 dark:from-[hsl(48,100%,50%)]/20 dark:to-[hsl(45,90%,60%)]/20 rounded-xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[hsl(48,95%,45%)] dark:text-[hsl(48,100%,50%)] z-10" />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="relative pl-12 h-12 lg:h-14 text-base lg:text-lg border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 bg-background/80 text-foreground placeholder:text-muted-foreground rounded-xl shadow-sm transition-all duration-300"
+                className="relative pl-12 h-12 lg:h-14 text-base lg:text-lg 
+                  border-2 border-[hsl(40,20%,88%)] dark:border-[hsl(0,0%,25%)] 
+                  focus:border-[hsl(48,95%,45%)] dark:focus:border-[hsl(48,100%,50%)] 
+                  focus:ring-2 focus:ring-[hsl(48,95%,45%)]/20 dark:focus:ring-[hsl(48,100%,50%)]/30
+                  bg-white/80 dark:bg-[hsl(0,0%,18%)]/80 
+                  text-[hsl(0,0%,12%)] dark:text-[hsl(0,0%,92%)] 
+                  placeholder:text-[hsl(0,0%,40%)] dark:placeholder:text-[hsl(0,0%,60%)] 
+                  rounded-xl shadow-sm transition-all duration-300"
               />
             </div>
 
@@ -386,13 +399,17 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               <Button
                 onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
                 variant="outline"
-                className="h-9 px-3 border-border bg-card text-foreground rounded-lg transition-all duration-200"
+                className="h-9 px-3 
+                  border-[hsl(40,20%,88%)] dark:border-[hsl(0,0%,25%)] 
+                  bg-white dark:bg-[hsl(0,0%,12%)] 
+                  text-[hsl(0,0%,12%)] dark:text-[hsl(0,0%,92%)] 
+                  rounded-lg transition-all duration-200"
                 disabled={isClosing}
               >
                 <Filter className="h-4 w-4 mr-1" />
                 {currentText.advancedFilters}
                 {activeFiltersCount > 0 && (
-                  <span className="ml-2 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-full">
+                  <span className="ml-2 bg-[hsl(48,95%,45%)] dark:bg-[hsl(48,100%,50%)] text-white dark:text-[hsl(0,0%,10%)] text-[10px] px-1.5 py-0.5 rounded-full">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -404,13 +421,18 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               <Button
                 onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
                 variant="outline"
-                className="h-10 lg:h-11 border-border bg-card text-foreground hover:bg-muted rounded-lg transition-all duration-200 relative"
+                className="h-10 lg:h-11 
+                  border-[hsl(40,20%,88%)] dark:border-[hsl(0,0%,25%)] 
+                  bg-white dark:bg-[hsl(0,0%,12%)] 
+                  text-[hsl(0,0%,12%)] dark:text-[hsl(0,0%,92%)] 
+                  hover:bg-[hsl(45,20%,94%)] dark:hover:bg-[hsl(0,0%,20%)] 
+                  rounded-lg transition-all duration-200 relative"
                 disabled={isClosing}
               >
                 <Filter className="h-4 w-4 mr-2" />
                 {currentText.advancedFilters}
                 {activeFiltersCount > 0 && (
-                  <Badge className="ml-2 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
+                  <Badge className="ml-2 bg-[hsl(48,95%,45%)] dark:bg-[hsl(48,100%,50%)] text-white dark:text-[hsl(0,0%,10%)] text-xs px-1.5 py-0.5 rounded-full">
                     {activeFiltersCount}
                   </Badge>
                 )}
@@ -677,7 +699,15 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={handleSearch}
-                className="flex-1 h-11 bg-gradient-to-r from-primary via-primary to-accent hover:from-primary/90 hover:via-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                className="flex-1 h-11 
+                  bg-gradient-to-r from-[hsl(48,95%,45%)] via-[hsl(48,95%,45%)] to-[hsl(42,85%,55%)] 
+                  dark:from-[hsl(48,100%,50%)] dark:via-[hsl(48,100%,50%)] dark:to-[hsl(45,90%,60%)]
+                  hover:from-[hsl(48,95%,40%)] hover:via-[hsl(48,95%,40%)] hover:to-[hsl(42,85%,50%)] 
+                  dark:hover:from-[hsl(48,100%,45%)] dark:hover:via-[hsl(48,100%,45%)] dark:hover:to-[hsl(45,90%,55%)]
+                  text-white dark:text-[hsl(0,0%,10%)] font-semibold rounded-xl 
+                  shadow-lg shadow-[hsl(48,95%,45%)]/30 dark:shadow-[hsl(48,100%,50%)]/40 
+                  hover:shadow-xl hover:shadow-[hsl(48,95%,45%)]/40 dark:hover:shadow-[hsl(48,100%,50%)]/50 
+                  hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
               >
                 <Search className="h-4 w-4 mr-2" />
                 {currentText.search}
@@ -686,7 +716,11 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
                 <Button
                   onClick={clearAllFilters}
                   variant="outline"
-                  className="h-11 px-4 border-border text-muted-foreground hover:bg-muted rounded-lg transition-all duration-200"
+                  className="h-11 px-4 
+                    border-[hsl(40,20%,88%)] dark:border-[hsl(0,0%,25%)] 
+                    text-[hsl(0,0%,40%)] dark:text-[hsl(0,0%,70%)] 
+                    hover:bg-[hsl(45,20%,94%)] dark:hover:bg-[hsl(0,0%,20%)] 
+                    rounded-lg transition-all duration-200"
                 >
                   <X className="h-4 w-4 mr-1" />
                   {currentText.clearAll}
