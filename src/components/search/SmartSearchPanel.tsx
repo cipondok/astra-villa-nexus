@@ -366,17 +366,18 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
 
   return (
     <div ref={filtersRef}>
-      <Card className="w-full max-w-4xl mx-auto shadow-2xl border-0 bg-card/98 backdrop-blur-xl">
+      <Card className="w-full max-w-4xl mx-auto glass-card shadow-2xl border-primary/20 hover:border-primary/30 transition-all duration-300">
         <CardContent className="p-4 lg:p-6">
           <div className="space-y-3">
-            {/* Main Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+            {/* Main Search Bar with Luxury Styling */}
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary z-10" />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-12 h-12 lg:h-14 text-base lg:text-lg border-2 border-border focus:border-primary bg-input text-foreground placeholder:text-muted-foreground rounded-xl shadow-sm transition-all duration-200"
+                className="relative pl-12 h-12 lg:h-14 text-base lg:text-lg border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 bg-background/80 text-foreground placeholder:text-muted-foreground rounded-xl shadow-sm transition-all duration-300"
               />
             </div>
 
@@ -672,11 +673,11 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" 
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons with Luxury Styling */}
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={handleSearch}
-                className="flex-1 h-11 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                className="flex-1 h-11 bg-gradient-to-r from-primary via-primary to-accent hover:from-primary/90 hover:via-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
               >
                 <Search className="h-4 w-4 mr-2" />
                 {currentText.search}
