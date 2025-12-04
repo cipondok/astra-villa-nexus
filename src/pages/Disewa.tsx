@@ -6,23 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
-import { 
-  MapPin, 
-  Home, 
-  Building, 
-  Bed, 
-  Bath, 
-  Square,
-  Heart,
-  Share2,
-  Eye,
-  Calendar,
-  Clock,
-  Zap,
-  User,
-  CheckCircle
-} from "lucide-react";
-
+import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle } from "lucide-react";
 interface Property {
   id: string;
   title: string;
@@ -49,7 +33,6 @@ interface Property {
   available_until?: string;
   rental_terms?: any;
 }
-
 interface RentalFilters {
   searchTerm: string;
   propertyType: string;
@@ -58,20 +41,23 @@ interface RentalFilters {
   priceRange: string;
   rentalPeriod: string[];
   checkInDate: Date | undefined;
-  checkOutDate: Date | undefined;  
+  checkOutDate: Date | undefined;
   onlineBookingOnly: boolean;
   minimumDays: number;
   nearMe: boolean;
-  userLocation: { lat: number; lng: number } | null;
+  userLocation: {
+    lat: number;
+    lng: number;
+  } | null;
 }
-
 const Disewa = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
-  
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
     propertyType: "all",
@@ -86,21 +72,18 @@ const Disewa = () => {
     nearMe: false,
     userLocation: null
   });
-
   useEffect(() => {
     fetchProperties();
   }, []);
-
   const fetchProperties = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('listing_type', 'rent')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-
+      const {
+        data,
+        error
+      } = await supabase.from('properties').select('*').eq('listing_type', 'rent').eq('status', 'active').order('created_at', {
+        ascending: false
+      });
       if (error) throw error;
       setProperties(data || []);
     } catch (error) {
@@ -108,29 +91,25 @@ const Disewa = () => {
       toast({
         title: "Error",
         description: "Gagal memuat properti. Silakan coba lagi.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
   const filteredProperties = properties.filter(property => {
     // Basic search
-    const matchesSearch = !filters.searchTerm || 
-      property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-      property.city?.toLowerCase().includes(filters.searchTerm.toLowerCase());
-    
+    const matchesSearch = !filters.searchTerm || property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) || property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) || property.city?.toLowerCase().includes(filters.searchTerm.toLowerCase());
+
     // Property type filter
     const matchesType = filters.propertyType === "all" || property.property_type === filters.propertyType;
-    
+
     // Province filter (simplified - would need property to have province data)
     const matchesProvince = filters.province === "all" || true; // TODO: Add province data to properties
-    
+
     // City filter
     const matchesCity = filters.city === "all" || property.city === filters.city;
-    
+
     // Price range filter
     let matchesPriceRange = true;
     if (filters.priceRange && filters.priceRange !== "all") {
@@ -153,26 +132,20 @@ const Disewa = () => {
           break;
       }
     }
-    
+
     // Rental period filter
-    const matchesRentalPeriod = filters.rentalPeriod.length === 0 || 
-      (property.rental_periods && property.rental_periods.some(period => filters.rentalPeriod.includes(period)));
-    
+    const matchesRentalPeriod = filters.rentalPeriod.length === 0 || property.rental_periods && property.rental_periods.some(period => filters.rentalPeriod.includes(period));
+
     // Online booking filter
-    const matchesOnlineBooking = !filters.onlineBookingOnly || 
-      (property.online_booking_enabled && property.booking_type !== 'owner_only');
-    
+    const matchesOnlineBooking = !filters.onlineBookingOnly || property.online_booking_enabled && property.booking_type !== 'owner_only';
+
     // Minimum days filter
-    const matchesMinimumDays = filters.minimumDays === 0 || 
-      (property.minimum_rental_days && property.minimum_rental_days >= filters.minimumDays);
-    
+    const matchesMinimumDays = filters.minimumDays === 0 || property.minimum_rental_days && property.minimum_rental_days >= filters.minimumDays;
+
     // Date availability filter (simplified - in real app would check booking calendar)
     const matchesDateAvailability = !filters.checkInDate || !filters.checkOutDate || true;
-    
-    return matchesSearch && matchesType && matchesProvince && matchesCity && matchesPriceRange && 
-           matchesRentalPeriod && matchesOnlineBooking && matchesMinimumDays && matchesDateAvailability;
+    return matchesSearch && matchesType && matchesProvince && matchesCity && matchesPriceRange && matchesRentalPeriod && matchesOnlineBooking && matchesMinimumDays && matchesDateAvailability;
   });
-
   const formatPrice = (price: number) => {
     if (price >= 1000000) {
       return `Rp ${(price / 1000000).toFixed(1)} Jt`;
@@ -180,59 +153,58 @@ const Disewa = () => {
       return `Rp ${price.toLocaleString('id-ID')}`;
     }
   };
-
   const handleSaveProperty = (propertyId: string) => {
     const newSaved = new Set(savedProperties);
     if (newSaved.has(propertyId)) {
       newSaved.delete(propertyId);
       toast({
         title: "Dihapus dari favorit",
-        description: "Properti telah dihapus dari daftar favorit Anda.",
+        description: "Properti telah dihapus dari daftar favorit Anda."
       });
     } else {
       newSaved.add(propertyId);
       toast({
         title: "Ditambah ke favorit",
-        description: "Properti telah ditambahkan ke daftar favorit Anda.",
+        description: "Properti telah ditambahkan ke daftar favorit Anda."
       });
     }
     setSavedProperties(newSaved);
   };
-
   const handleBookingClick = (property: Property) => {
     if (property.online_booking_enabled && property.booking_type !== 'owner_only') {
       toast({
         title: "ASTRA Villa Booking",
-        description: "Mengarahkan ke sistem booking online...",
+        description: "Mengarahkan ke sistem booking online..."
       });
       // Navigate to booking system
       navigate(`/booking/${property.id}`);
     } else {
       toast({
         title: "Hubungi Pemilik",
-        description: "Properti ini hanya bisa dibooking melalui pemilik langsung.",
+        description: "Properti ini hanya bisa dibooking melalui pemilik langsung."
       });
     }
   };
-
   const getRentalPeriodLabel = (periods: string[]) => {
     if (!periods || periods.length === 0) return "Bulanan";
     return periods.map(period => {
-      switch(period) {
-        case 'daily': return 'Harian';
-        case 'weekly': return 'Mingguan';
-        case 'monthly': return 'Bulanan';
-        case 'yearly': return 'Tahunan';
-        default: return period;
+      switch (period) {
+        case 'daily':
+          return 'Harian';
+        case 'weekly':
+          return 'Mingguan';
+        case 'monthly':
+          return 'Bulanan';
+        case 'yearly':
+          return 'Tahunan';
+        default:
+          return period;
       }
     }).join(', ');
   };
-
   const propertyTypes = [...new Set(properties.map(p => p.property_type))];
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50">
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -246,14 +218,7 @@ const Disewa = () => {
         </div>
 
         {/* Advanced Search */}
-        <AdvancedRentalSearch
-          filters={filters}
-          onFiltersChange={setFilters}
-          onSearch={fetchProperties}
-          propertyTypes={propertyTypes}
-          cities={cities}
-          loading={loading}
-        />
+        <AdvancedRentalSearch filters={filters} onFiltersChange={setFilters} onSearch={fetchProperties} propertyTypes={propertyTypes} cities={cities} loading={loading} />
 
         {/* Results Count */}
         <div className="mb-6">
@@ -263,21 +228,16 @@ const Disewa = () => {
         </div>
 
         {/* Properties Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
+        {loading ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => <Card key={i} className="animate-pulse">
                 <div className="aspect-video bg-gray-300 rounded-t-lg"></div>
                 <CardContent className="p-4">
                   <div className="h-4 bg-gray-300 rounded mb-2"></div>
                   <div className="h-3 bg-gray-300 rounded mb-4"></div>
                   <div className="h-6 bg-gray-300 rounded"></div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : filteredProperties.length === 0 ? (
-          <div className="text-center py-12">
+              </Card>)}
+          </div> : filteredProperties.length === 0 ? <div className="text-center py-12">
             <Home className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">
               Tidak ada properti sewa ditemukan
@@ -285,47 +245,24 @@ const Disewa = () => {
             <p className="text-gray-500">
               Coba ubah filter pencarian Anda untuk melihat hasil lainnya.
             </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProperties.map((property) => (
-              <Card key={property.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+          </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProperties.map(property => <Card key={property.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                 <div className="relative">
                   <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
-                    {property.image_urls?.[0] || property.images?.[0] ? (
-                      <img 
-                        src={property.image_urls?.[0] || property.images?.[0]} 
-                        alt={property.title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        onClick={() => navigate(`/properties/${property.id}`)}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    {property.image_urls?.[0] || property.images?.[0] ? <img src={property.image_urls?.[0] || property.images?.[0]} alt={property.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onClick={() => navigate(`/properties/${property.id}`)} /> : <div className="w-full h-full flex items-center justify-center bg-gray-200">
                         <Building className="h-12 w-12 text-gray-400" />
-                      </div>
-                    )}
+                      </div>}
                   </div>
                   
                   {/* Action Buttons */}
                   <div className="absolute top-3 right-3 flex space-x-2">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-8 h-8 p-0 bg-white/80 hover:bg-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSaveProperty(property.id);
-                      }}
-                    >
-                      <Heart 
-                        className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
-                      />
+                    <Button size="sm" variant="secondary" className="w-8 h-8 p-0 bg-white/80 hover:bg-white" onClick={e => {
+                e.stopPropagation();
+                handleSaveProperty(property.id);
+              }}>
+                      <Heart className={`h-4 w-4 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-8 h-8 p-0 bg-white/80 hover:bg-white"
-                    >
+                    <Button size="sm" variant="secondary" className="w-8 h-8 p-0 bg-white/80 hover:bg-white">
                       <Share2 className="h-4 w-4 text-gray-600" />
                     </Button>
                   </div>
@@ -335,26 +272,19 @@ const Disewa = () => {
                     <Badge variant="secondary" className="bg-purple-100 text-purple-800">
                       Disewa
                     </Badge>
-                    {property.online_booking_enabled && property.booking_type !== 'owner_only' ? (
-                      <Badge className="bg-green-100 text-green-800">
+                    {property.online_booking_enabled && property.booking_type !== 'owner_only' ? <Badge className="bg-green-100 text-green-800">
                         <Zap className="h-3 w-3 mr-1" />
                         Online Booking
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="bg-orange-100 text-orange-800">
+                      </Badge> : <Badge variant="outline" className="bg-orange-100 text-orange-800">
                         <User className="h-3 w-3 mr-1" />
                         Owner Only
-                      </Badge>
-                    )}
+                      </Badge>}
                   </div>
                 </div>
 
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
-                    <CardTitle 
-                      className="text-lg hover:text-purple-600 cursor-pointer line-clamp-2"
-                      onClick={() => navigate(`/properties/${property.id}`)}
-                    >
+                    <CardTitle className="text-lg hover:text-purple-600 cursor-pointer line-clamp-2" onClick={() => navigate(`/properties/${property.id}`)}>
                       {property.title}
                     </CardTitle>
                   </div>
@@ -380,24 +310,18 @@ const Disewa = () => {
                   </div>
 
                   <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
-                    {property.bedrooms && (
-                      <div className="flex items-center">
+                    {property.bedrooms && <div className="flex items-center">
                         <Bed className="h-4 w-4 mr-1" />
                         {property.bedrooms} KT
-                      </div>
-                    )}
-                    {property.bathrooms && (
-                      <div className="flex items-center">
+                      </div>}
+                    {property.bathrooms && <div className="flex items-center">
                         <Bath className="h-4 w-4 mr-1" />
                         {property.bathrooms} KM
-                      </div>
-                    )}
-                    {property.area_sqm && (
-                      <div className="flex items-center">
+                      </div>}
+                    {property.area_sqm && <div className="flex items-center">
                         <Square className="h-4 w-4 mr-1" />
                         {property.area_sqm} m²
-                      </div>
-                    )}
+                      </div>}
                   </div>
 
                   {/* Rental specific info */}
@@ -413,39 +337,23 @@ const Disewa = () => {
                   </div>
 
                   <div className="flex space-x-2">
-                    <Button 
-                      className="flex-1 bg-purple-600 hover:bg-purple-700"
-                      onClick={() => navigate(`/properties/${property.id}`)}
-                    >
+                    <Button className="flex-1 bg-purple-600 hover:bg-purple-700" onClick={() => navigate(`/properties/${property.id}`)}>
                       Lihat Detail
                     </Button>
-                    {property.online_booking_enabled && property.booking_type !== 'owner_only' ? (
-                      <Button 
-                        className="flex-1 bg-green-600 hover:bg-green-700"
-                        onClick={() => handleBookingClick(property)}
-                      >
+                    {property.online_booking_enabled && property.booking_type !== 'owner_only' ? <Button className="flex-1 bg-green-600 hover:bg-green-700" onClick={() => handleBookingClick(property)}>
                         <CheckCircle className="h-4 w-4 mr-1" />
                         Book Online
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="outline" 
-                        className="flex-1"
-                        onClick={() => handleBookingClick(property)}
-                      >
+                      </Button> : <Button variant="outline" className="flex-1" onClick={() => handleBookingClick(property)}>
                         <User className="h-4 w-4 mr-1" />
                         Hubungi Pemilik
-                      </Button>
-                    )}
+                      </Button>}
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+              </Card>)}
+          </div>}
 
         {/* Rental Tips */}
-        <div className="mt-12 bg-white rounded-lg shadow-md p-6">
+        <div className="mt-12 rounded-lg shadow-md p-6 bg-inherit">
           <h2 className="text-xl font-semibold mb-4">Tips Menyewa Properti via ASTRA Villa</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
@@ -464,8 +372,6 @@ const Disewa = () => {
         </div>
       </div>
 
-      </div>
-  );
+      </div>;
 };
-
 export default Disewa;
