@@ -105,15 +105,19 @@ const PropertyListingsSection = ({
     );
   }
 
-  // Optimized loading state
+  // Optimized loading state with luxury styling
   if (isSearching) {
     return (
       <section className="py-3 sm:py-4 min-h-[300px]">
         <div className="w-full px-2 sm:px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary mx-auto mb-3"></div>
-            <p className="text-sm sm:text-base text-muted-foreground">{currentText.loadingProperties}</p>
-            <p className="text-xs text-muted-foreground mt-1">This should only take a few seconds...</p>
+          <div className="text-center glass-card p-8 rounded-2xl max-w-sm mx-auto">
+            <div className="relative w-12 h-12 mx-auto mb-4">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent animate-spin" />
+              <div className="absolute inset-1 rounded-full bg-background" />
+              <div className="absolute inset-2 rounded-full bg-gradient-to-r from-primary/50 to-accent/50 animate-pulse" />
+            </div>
+            <p className="text-sm sm:text-base font-medium gradient-text">{currentText.loadingProperties}</p>
+            <p className="text-xs text-muted-foreground mt-2">This should only take a few seconds...</p>
           </div>
         </div>
       </section>
@@ -129,24 +133,25 @@ const PropertyListingsSection = ({
         <div className="w-full px-1 sm:px-2 md:px-4">
           {!hideTitle && (
             <div className="text-center mb-3 sm:mb-4">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">{sectionData.sectionTitle}</h2>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 gradient-text">{sectionData.sectionTitle}</h2>
               {sectionData.sectionSubtitle && (
                 <p className="text-sm sm:text-base text-muted-foreground">{sectionData.sectionSubtitle}</p>
               )}
+              <div className="w-24 h-0.5 mx-auto mt-2 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
             </div>
           )}
 
           {!displayProperties || displayProperties.length === 0 ? (
             <div className="text-center py-6 sm:py-8">
-              <div className="max-w-md mx-auto px-4">
+              <div className="max-w-md mx-auto px-4 glass-card p-6 rounded-2xl">
                 <div className="mb-4">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-muted rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center border border-primary/30">
+                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold mb-3 text-foreground">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 gradient-text">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 {hasSearched && (
@@ -155,10 +160,10 @@ const PropertyListingsSection = ({
                   </p>
                 )}
                 <div className="space-y-2">
-                  <Button onClick={() => window.location.reload()} variant="outline" className="w-full text-sm">
+                  <Button onClick={() => window.location.reload()} variant="outline" className="w-full text-sm border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-all duration-300">
                     Refresh
                   </Button>
-                  <Button onClick={() => navigate('/dijual')} className="w-full text-sm">
+                  <Button onClick={() => navigate('/dijual')} className="w-full text-sm bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/20">
                     {currentText.browseAll}
                   </Button>
                 </div>

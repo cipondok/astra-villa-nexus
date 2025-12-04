@@ -181,36 +181,42 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
     <div className="min-h-screen bg-background text-foreground pt-12 md:pt-14 lg:pt-16">
       {/* Hero Header Section */}
       <div className="relative overflow-hidden">
-        {/* Background gradient using design tokens */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-2xl" />
+        {/* Luxury Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-accent/8" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-primary/20 via-primary/10 to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-accent/20 via-accent/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-radial from-primary/5 to-transparent rounded-full blur-2xl" />
         
         <main className="relative w-full py-4 md:py-6">
-          {/* Page Title */}
+          {/* Page Title with Luxury Styling */}
           <div className="px-4 mb-4 md:mb-6">
-            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-foreground via-foreground to-primary bg-clip-text text-transparent">
-              {title}
-            </h1>
-            <p className="text-xs md:text-base text-muted-foreground">
+            <div className="inline-block">
+              <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 gradient-text">
+                {title}
+              </h1>
+              <div className="h-0.5 w-full bg-gradient-to-r from-primary via-accent to-primary/50 rounded-full" />
+            </div>
+            <p className="text-xs md:text-base text-muted-foreground mt-2">
               {subtitle}
             </p>
           </div>
           
-          {/* Search Filters */}
-          <div className="mb-4 md:mb-8">
+          {/* Search Filters with Glass Effect */}
+          <div className="mb-4 md:mb-8 px-2 md:px-4">
             <SmartSearchPanel
               language={language}
               onSearch={handleSearch}
             />
           </div>
 
-          {/* Results Count Badge */}
+          {/* Results Count Badge with Luxury Styling */}
           {!isLoading && !isSearching && (
             <div className="px-4 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-primary/20 to-accent/20 text-foreground border border-primary/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
-                {hasSearched ? searchResults.length : properties.length} properties found
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold glass-card border-primary/30 shadow-lg shadow-primary/10">
+                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse shadow-sm shadow-primary/50" />
+                <span className="bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  {hasSearched ? searchResults.length : properties.length} properties found
+                </span>
               </span>
             </div>
           )}
