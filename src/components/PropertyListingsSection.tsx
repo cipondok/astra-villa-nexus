@@ -111,9 +111,9 @@ const PropertyListingsSection = ({
       <section className="py-3 sm:py-4 min-h-[300px]">
         <div className="w-full px-2 sm:px-4">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
-            <p className="text-sm sm:text-base text-gray-600">{currentText.loadingProperties}</p>
-            <p className="text-xs text-gray-500 mt-1">This should only take a few seconds...</p>
+            <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary mx-auto mb-3"></div>
+            <p className="text-sm sm:text-base text-muted-foreground">{currentText.loadingProperties}</p>
+            <p className="text-xs text-muted-foreground mt-1">This should only take a few seconds...</p>
           </div>
         </div>
       </section>
@@ -140,17 +140,17 @@ const PropertyListingsSection = ({
             <div className="text-center py-6 sm:py-8">
               <div className="max-w-md mx-auto px-4">
                 <div className="mb-4">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-gray-200 rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-muted rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold mb-3">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 text-foreground">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 {hasSearched && (
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-4">
                     {currentText.tryDifferentSearch}
                   </p>
                 )}
@@ -162,7 +162,7 @@ const PropertyListingsSection = ({
                     {currentText.browseAll}
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 mt-3">{currentText.connectionIssue}</p>
+                <p className="text-xs text-muted-foreground mt-3">{currentText.connectionIssue}</p>
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
