@@ -203,32 +203,31 @@ const Disewa = () => {
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-12 md:pt-14 lg:pt-16 transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground pt-14 md:pt-16 transition-colors duration-300">
       {/* Luxury Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-primary/20 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-accent/20 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-2xl" />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 py-6 md:py-8 relative">
-        {/* Header with Luxury Styling */}
-        <div className="text-center mb-6 md:mb-8">
-          <div className="inline-block">
-            <h1 className="text-2xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Properti Disewa - ASTRA Villa
+      <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 relative">
+        {/* Slim Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Properti Disewa
             </h1>
-            <div className="h-0.5 w-full bg-gradient-to-r from-primary via-accent to-primary/50 rounded-full" />
+            <p className="text-xs text-muted-foreground">ASTRA Villa Rental</p>
           </div>
-          <p className="text-sm md:text-lg text-muted-foreground mt-3">
-            Temukan properti sewa dengan sistem booking online dan offline
-          </p>
+          <Badge className="bg-primary/10 text-primary border-primary/30 text-xs">
+            {properties.length} properti
+          </Badge>
         </div>
 
-        {/* Advanced Search with Glass Effect */}
-        <div className="glass-card p-3 md:p-4 rounded-xl mb-6 border border-primary/20 shadow-lg shadow-primary/10">
-          <AdvancedRentalSearch 
+        {/* Slim Search Panel */}
+        <div className="glass-card p-2 md:p-3 rounded-lg mb-3 border border-primary/20">
+          <AdvancedRentalSearch
             filters={filters} 
             onFiltersChange={setFilters} 
             onSearch={fetchProperties} 
@@ -238,15 +237,9 @@ const Disewa = () => {
           />
         </div>
 
-        {/* Results Count with Luxury Badge */}
-        <div className="mb-4 md:mb-6">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold 
-            bg-card/80 backdrop-blur-xl border border-primary/30 shadow-lg shadow-primary/10">
-            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse" />
-            <span className="text-foreground">
-              Menampilkan {filteredProperties.length} dari {properties.length} properti sewa
-            </span>
-          </span>
+        {/* Compact Results Info */}
+        <div className="flex items-center justify-between mb-2 text-xs text-muted-foreground">
+          <span>{filteredProperties.length} hasil ditemukan</span>
         </div>
 
         {/* Properties Grid */}
