@@ -170,8 +170,6 @@ serve(async (req) => {
         success: true,
         message: 'OTP code sent successfully',
         expires_at: expiresAt.toISOString(),
-        // Always include code for testing (since this is internal OTP system)
-        dev_code: code,
       }),
       {
         status: 200,
