@@ -68,6 +68,118 @@ const Dijual = () => {
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  // Demo properties for display
+  const demoProperties: Property[] = [
+    {
+      id: 'demo-sale-1',
+      title: 'Modern Minimalist House',
+      description: 'Beautiful modern house in prime location',
+      price: 2800000000,
+      property_type: 'house',
+      listing_type: 'sale',
+      location: 'Pondok Indah',
+      city: 'Jakarta Selatan',
+      area: 'Pondok Indah',
+      bedrooms: 4,
+      bathrooms: 3,
+      area_sqm: 250,
+      images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800'],
+      image_urls: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800'],
+      status: 'active',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'demo-sale-2',
+      title: 'Luxury Apartment SCBD',
+      description: 'Premium apartment with city view',
+      price: 4500000000,
+      property_type: 'apartment',
+      listing_type: 'sale',
+      location: 'SCBD',
+      city: 'Jakarta Selatan',
+      area: 'SCBD',
+      bedrooms: 3,
+      bathrooms: 2,
+      area_sqm: 180,
+      images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800'],
+      image_urls: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800'],
+      status: 'active',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'demo-sale-3',
+      title: 'Bali Style Villa',
+      description: 'Tropical villa with private pool',
+      price: 6200000000,
+      property_type: 'villa',
+      listing_type: 'sale',
+      location: 'Canggu',
+      city: 'Bali',
+      area: 'Canggu',
+      bedrooms: 5,
+      bathrooms: 4,
+      area_sqm: 400,
+      images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
+      image_urls: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
+      status: 'active',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'demo-sale-4',
+      title: 'Commercial Space BSD',
+      description: 'Strategic commercial property',
+      price: 3500000000,
+      property_type: 'commercial',
+      listing_type: 'sale',
+      location: 'BSD City',
+      city: 'Tangerang',
+      area: 'BSD',
+      bedrooms: 0,
+      bathrooms: 2,
+      area_sqm: 300,
+      images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800'],
+      image_urls: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800'],
+      status: 'active',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'demo-sale-5',
+      title: 'Cluster House Bandung',
+      description: 'New cluster in highland area',
+      price: 1850000000,
+      property_type: 'house',
+      listing_type: 'sale',
+      location: 'Dago',
+      city: 'Bandung',
+      area: 'Dago',
+      bedrooms: 3,
+      bathrooms: 2,
+      area_sqm: 150,
+      images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'],
+      image_urls: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'],
+      status: 'active',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'demo-sale-6',
+      title: 'Investment Land Plot',
+      description: 'Prime land for development',
+      price: 950000000,
+      property_type: 'land',
+      listing_type: 'sale',
+      location: 'Puncak',
+      city: 'Bogor',
+      area: 'Puncak',
+      bedrooms: 0,
+      bathrooms: 0,
+      area_sqm: 800,
+      images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800'],
+      image_urls: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800'],
+      status: 'active',
+      created_at: new Date().toISOString()
+    }
+  ];
+
   // Check if user came from dashboard
   const fromDashboard = location.state?.from === 'dashboard' || 
     document.referrer.includes('/dashboard');
@@ -111,13 +223,16 @@ const Dijual = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setProperties(data || []);
+      // Use demo data if no real properties exist
+      const realData = data || [];
+      setProperties(realData.length > 0 ? realData : demoProperties);
     } catch (error) {
       console.error('Error fetching properties:', error);
+      // Fallback to demo data on error
+      setProperties(demoProperties);
       toast({
-        title: "Error",
-        description: "Gagal memuat properti.",
-        variant: "destructive",
+        title: "Info",
+        description: "Menampilkan data demo.",
       });
     } finally {
       setLoading(false);
@@ -198,30 +313,37 @@ const Dijual = () => {
   const areas = [...new Set(properties.map(p => p.area).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground pt-11 md:pt-12">
+      {/* Luxury Background Effects */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
+      </div>
+
       {/* Compact Header */}
-      <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+      <div className="sticky top-0 z-40 glass-card border-b border-primary/20">
         <div className="px-2 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 w-7 p-0 text-primary-foreground hover:bg-white/20"
+              className="h-7 w-7 p-0 hover:bg-primary/10"
               onClick={() => navigate(-1)}
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-sm font-bold">Properti Dijual</h1>
-              <p className="text-[9px] text-primary-foreground/80">
+              <h1 className="text-sm font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Properti Dijual</h1>
+              <p className="text-[9px] text-muted-foreground">
                 {filteredProperties.length} dari {properties.length} listing
               </p>
             </div>
           </div>
           <Button 
             size="sm"
-            variant="ghost"
-            className="h-7 px-2 text-[10px] text-primary-foreground hover:bg-white/20"
+            variant="outline"
+            className="h-7 px-2 text-[10px] border-primary/30 hover:bg-primary/10"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
           >
             <SlidersHorizontal className="h-3 w-3 mr-1" />
