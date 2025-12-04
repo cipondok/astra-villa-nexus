@@ -199,8 +199,8 @@ const CompactPropertyCard = ({
   return (
     <>
       <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col">
-        {/* Image Section */}
-        <div className="relative aspect-[16/10] md:aspect-[4/3] overflow-hidden flex-shrink-0">
+        {/* Image Section - Optimized for mobile */}
+        <div className="relative aspect-[4/3] sm:aspect-[16/10] md:aspect-[4/3] overflow-hidden flex-shrink-0">
           <img
             src={getImageUrl()}
             alt={property.title}
@@ -294,11 +294,11 @@ const CompactPropertyCard = ({
           </div>
         </div>
 
-        {/* Content Section */}
-        <CardContent className="p-2.5 md:p-4 space-y-2 md:space-y-3 flex-1 flex flex-col">
+        {/* Content Section - Compact mobile styling */}
+        <CardContent className="p-2 sm:p-2.5 md:p-4 space-y-1.5 sm:space-y-2 md:space-y-3 flex-1 flex flex-col">
           {/* Price */}
           <div className="price-section">
-            <div className="text-base md:text-lg font-bold gradient-text tracking-tight leading-none">
+            <div className="text-sm sm:text-base md:text-lg font-bold gradient-text tracking-tight leading-none">
               {formatPrice(property.price)}
             </div>
             {property.listing_type === 'rent' && (
@@ -309,7 +309,7 @@ const CompactPropertyCard = ({
           </div>
 
           {/* Title */}
-          <h4 className="font-semibold text-xs md:text-sm text-foreground line-clamp-2 min-h-[2rem] md:min-h-[2.5rem] flex-grow">
+          <h4 className="font-semibold text-[11px] sm:text-xs md:text-sm text-foreground line-clamp-2 min-h-[1.75rem] sm:min-h-[2rem] md:min-h-[2.5rem] flex-grow">
             {property.title}
           </h4>
 
@@ -355,29 +355,29 @@ const CompactPropertyCard = ({
 
           {/* Location */}
           <div className="flex items-center gap-1 text-muted-foreground">
-            <MapPin className="h-4 w-4 flex-shrink-0" />
-            <span className="text-sm truncate">{property.location}</span>
+            <MapPin className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
+            <span className="text-[10px] sm:text-xs md:text-sm truncate">{property.location}</span>
           </div>
 
-          {/* Property Details */}
+          {/* Property Details - Compact mobile */}
           {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-            <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
-              {property.bedrooms && (
-                <div className="flex items-center gap-1">
-                  <Bed className="h-4 w-4" />
-                  <span>{property.bedrooms} {currentText.bedrooms}</span>
+            <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs md:text-sm text-muted-foreground flex-wrap">
+              {property.bedrooms && property.bedrooms > 0 && (
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  <Bed className="h-3 sm:h-4 w-3 sm:w-4" />
+                  <span>{property.bedrooms}</span>
                 </div>
               )}
-              {property.bathrooms && (
-                <div className="flex items-center gap-1">
-                  <Bath className="h-4 w-4" />
-                  <span>{property.bathrooms} {currentText.bathrooms}</span>
+              {property.bathrooms && property.bathrooms > 0 && (
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  <Bath className="h-3 sm:h-4 w-3 sm:w-4" />
+                  <span>{property.bathrooms}</span>
                 </div>
               )}
               {property.area_sqm && (
-                <div className="flex items-center gap-1">
-                  <Square className="h-4 w-4" />
-                  <span>{property.area_sqm} sqm</span>
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  <Square className="h-3 sm:h-4 w-3 sm:w-4" />
+                  <span>{property.area_sqm}m²</span>
                 </div>
               )}
             </div>
@@ -407,23 +407,25 @@ const CompactPropertyCard = ({
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-2 mt-auto pt-2">
+          {/* Action Buttons - Compact on mobile */}
+          <div className="flex gap-1.5 sm:gap-2 mt-auto pt-1.5 sm:pt-2">
             <Button 
-              className="flex-1 h-8 text-xs btn-primary"
+              className="flex-1 h-7 sm:h-8 text-[10px] sm:text-xs btn-primary"
               onClick={handleViewDetails}
             >
-              <Eye className="h-3 w-3 mr-1" />
-              {currentText.viewDetails}
+              <Eye className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5 sm:mr-1" />
+              <span className="hidden xs:inline">{currentText.viewDetails}</span>
+              <span className="xs:hidden">View</span>
             </Button>
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button 
                 variant="outline"
-                className="flex-1 h-8 text-xs"
+                className="flex-1 h-7 sm:h-8 text-[10px] sm:text-xs"
                 onClick={handleView3D}
               >
-                <ViewIcon className="h-3 w-3 mr-1" />
-                {currentText.view3D}
+                <ViewIcon className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5 sm:mr-1" />
+                <span className="hidden xs:inline">{currentText.view3D}</span>
+                <span className="xs:hidden">3D</span>
               </Button>
             )}
           </div>
