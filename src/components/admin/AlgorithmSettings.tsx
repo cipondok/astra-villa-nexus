@@ -509,13 +509,27 @@ function getDefaultConfig(): AlgorithmConfig {
 }
 
 function convertToConfig(settings: any[]): AlgorithmConfig {
-  // Convert system settings array to AlgorithmConfig
-  // This would map database settings to the config structure
-  return getDefaultConfig(); // Simplified for now
+  const defaultConfig = getDefaultConfig();
+  
+  if (!settings || settings.length === 0) {
+    return defaultConfig;
+  }
+  
+  // Map settings by key
+  const settingsMap: Record<string, any> = {};
+  for (const setting of settings) {
+    settingsMap[setting.key] = setting.value;
+  }
+  
+  return {
+    searchAlgorithm: settingsMap['search_algorithm'] || defaultConfig.searchAlgorithm,
+    recommendationEngine: settingsMap['recommendation_engine'] || defaultConfig.recommendationEngine,
+    behaviorAnalytics: settingsMap['behavior_analytics'] || defaultConfig.behaviorAnalytics,
+    modelOptimization: settingsMap['model_optimization'] || defaultConfig.modelOptimization
+  };
 }
 
 function convertFromConfig(config: AlgorithmConfig) {
-  // Convert AlgorithmConfig to system settings format
   return [
     {
       key: 'search_algorithm',

@@ -62,6 +62,24 @@ serve(async (req) => {
 
     console.log('AI Assistant request:', { message, userId, propertyId });
 
+    // Get AI bot settings from database
+    const { data: botSettings } = await supabase
+      .from('ai_bot_settings')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    // Use bot settings or defaults
+    const modelConfig = botSettings?.configuration as Record<string, any> || {};
+    const modelType = botSettings?.model_type || 'google/gemini-2.5-flash';
+    const temperature = modelConfig.temperature ?? 0.7;
+    const maxTokens = modelConfig.max_tokens ?? 1000;
+    const systemPrompt = modelConfig.system_prompt || null;
+    
+    console.log('Using AI model:', modelType, 'from bot:', botSettings?.bot_name || 'default');
+
     // Get user context and conversation history
     const [userContext, conversationHistory] = await Promise.all([
       getUserContext(supabase, userId),
@@ -82,11 +100,8 @@ serve(async (req) => {
       }
     }
 
-    // Prepare messages for OpenAI
-    const messages = [
-      {
-        role: 'system',
-        content: `You are Astra Villa's Personal Property Concierge - a friendly, knowledgeable, and proactive AI assistant who makes finding and managing properties a delightful experience.
+    // Build system prompt - use custom from settings or default
+    const defaultSystemPrompt = `You are Astra Villa's Personal Property Concierge - a friendly, knowledgeable, and proactive AI assistant who makes finding and managing properties a delightful experience.
 
 Your personality:
 - Warm and approachable, like a trusted friend in real estate
@@ -124,7 +139,13 @@ Communication style:
 - Be helpful and guide users toward taking action
 - Show genuine excitement about properties and opportunities
 
-Remember: You're not just an assistant - you're their trusted property advisor making their real estate journey smooth and enjoyable.`
+Remember: You're not just an assistant - you're their trusted property advisor making their real estate journey smooth and enjoyable.`;
+
+    // Prepare messages for OpenAI
+    const messages = [
+      {
+        role: 'system',
+        content: systemPrompt || defaultSystemPrompt
       },
       ...conversationHistory.map(msg => ({
         role: msg.role,
@@ -133,8 +154,8 @@ Remember: You're not just an assistant - you're their trusted property advisor m
       { role: 'user', content: message }
     ];
 
-    // Call Lovable AI with streaming enabled
-    console.log('Calling Lovable AI gateway...');
+    // Call Lovable AI with streaming enabled using configured model
+    console.log('Calling Lovable AI gateway with model:', modelType);
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -142,7 +163,9 @@ Remember: You're not just an assistant - you're their trusted property advisor m
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: modelType.startsWith('google/') || modelType.startsWith('anthropic/') || modelType.startsWith('openai/') 
+          ? modelType 
+          : `google/${modelType}`,
         messages,
         stream: true,
         functions: [
@@ -209,8 +232,8 @@ Remember: You're not just an assistant - you're their trusted property advisor m
             }
           }
         ],
-        temperature: 0.7,
-        max_tokens: 1000
+        temperature: temperature,
+        max_tokens: maxTokens
       }),
     });
 
