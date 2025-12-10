@@ -74,11 +74,12 @@ const EnhancedUserManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch enhanced users with levels
+  // Fetch enhanced users with levels and roles
   const { data: users, isLoading } = useQuery({
     queryKey: ['enhanced-users'],
     queryFn: async (): Promise<EnhancedUser[]> => {
-      const { data, error } = await supabase
+      // Fetch profiles with user_levels
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           *,
@@ -90,8 +91,32 @@ const EnhancedUserManagement = () => {
         `)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data || [];
+      if (profilesError) throw profilesError;
+      
+      // Fetch roles from user_roles table
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role')
+        .eq('is_active', true);
+      
+      if (rolesError) throw rolesError;
+      
+      // Map roles to users (get primary role - prefer admin/agent/vendor over general_user)
+      const roleMap = new Map<string, UserRole>();
+      const rolePriority: UserRole[] = ['admin', 'agent', 'vendor', 'property_owner', 'customer_service', 'general_user'];
+      
+      roles?.forEach(r => {
+        const currentRole = roleMap.get(r.user_id);
+        const newRole = r.role as UserRole;
+        if (!currentRole || rolePriority.indexOf(newRole) < rolePriority.indexOf(currentRole)) {
+          roleMap.set(r.user_id, newRole);
+        }
+      });
+      
+      return (profiles || []).map(profile => ({
+        ...profile,
+        role: roleMap.get(profile.id) || 'general_user'
+      }));
     },
   });
 
