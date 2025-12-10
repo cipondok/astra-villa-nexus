@@ -140,32 +140,32 @@ const ToolsManagementDashboard = () => {
 
     return (
       <Card className="hover:shadow-md transition-shadow">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <CategoryIcon className="h-5 w-5 text-primary" />
+        <CardHeader className="p-2 md:p-3 pb-1.5">
+          <div className="flex items-start justify-between gap-1.5">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="p-1 md:p-1.5 rounded-md bg-primary/10 shrink-0">
+                <CategoryIcon className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
               </div>
-              <div>
-                <CardTitle className="text-lg">{tool.name}</CardTitle>
-                <CardDescription className="text-sm">{tool.description}</CardDescription>
+              <div className="min-w-0">
+                <CardTitle className="text-xs md:text-sm font-medium truncate">{tool.name}</CardTitle>
+                <CardDescription className="text-[10px] md:text-xs line-clamp-1">{tool.description}</CardDescription>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
+            <div className="flex items-center gap-1 shrink-0">
+              <Badge variant="outline" className="text-[9px] md:text-[10px] px-1 py-0 h-4">
                 v{tool.version}
               </Badge>
-              <div className={`w-3 h-3 rounded-full ${statusColors[tool.status]}`} />
+              <div className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full shrink-0 ${statusColors[tool.status]}`} />
             </div>
           </div>
         </CardHeader>
         
-        <CardContent className="pt-0">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
+        <CardContent className="p-2 md:p-3 pt-0">
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] md:text-xs">
               <span className="text-muted-foreground">Status:</span>
-              <div className="flex items-center gap-2">
-                <StatusIcon className={`h-4 w-4 ${
+              <div className="flex items-center gap-1">
+                <StatusIcon className={`h-3 w-3 ${
                   tool.status === 'healthy' ? 'text-green-500' :
                   tool.status === 'warning' ? 'text-yellow-500' :
                   tool.status === 'error' ? 'text-red-500' :
@@ -176,43 +176,50 @@ const ToolsManagementDashboard = () => {
             </div>
             
             {tool.errorMessage && (
-              <div className="text-xs text-red-600 bg-red-50 p-2 rounded">
+              <div className="text-[9px] md:text-[10px] text-red-600 bg-red-50 dark:bg-red-900/20 p-1 md:p-1.5 rounded">
                 {tool.errorMessage}
               </div>
             )}
             
-            <div className="text-xs text-muted-foreground">
-              Last checked: {new Date(tool.lastChecked).toLocaleString()}
+            <div className="text-[9px] md:text-[10px] text-muted-foreground">
+              Last: {new Date(tool.lastChecked).toLocaleDateString()}
             </div>
             
             {tool.dependencies && tool.dependencies.length > 0 && (
-              <div className="text-xs">
-                <span className="text-muted-foreground">Dependencies: </span>
-                {tool.dependencies.map(dep => (
-                  <Badge key={dep} variant="secondary" className="text-xs mr-1">
+              <div className="text-[9px] md:text-[10px] flex flex-wrap gap-0.5">
+                <span className="text-muted-foreground">Deps: </span>
+                {tool.dependencies.slice(0, 2).map(dep => (
+                  <Badge key={dep} variant="secondary" className="text-[8px] px-1 py-0 h-3.5">
                     {dep}
                   </Badge>
                 ))}
+                {tool.dependencies.length > 2 && (
+                  <Badge variant="secondary" className="text-[8px] px-1 py-0 h-3.5">
+                    +{tool.dependencies.length - 2}
+                  </Badge>
+                )}
               </div>
             )}
             
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-1 pt-1">
               <Button
                 size="sm"
                 variant={tool.enabled ? "destructive" : "default"}
                 onClick={() => handleToolToggle(tool.id, tool.enabled)}
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 h-6 md:h-7 text-[10px] md:text-xs px-1.5"
               >
                 {tool.enabled ? (
                   <>
-                    <Pause className="h-4 w-4 mr-1" />
-                    Disable
+                    <Pause className="h-3 w-3 mr-0.5" />
+                    <span className="hidden xs:inline">Disable</span>
+                    <span className="xs:hidden">Off</span>
                   </>
                 ) : (
                   <>
-                    <Play className="h-4 w-4 mr-1" />
-                    Enable
+                    <Play className="h-3 w-3 mr-0.5" />
+                    <span className="hidden xs:inline">Enable</span>
+                    <span className="xs:hidden">On</span>
                   </>
                 )}
               </Button>
@@ -223,8 +230,9 @@ const ToolsManagementDashboard = () => {
                   variant="outline"
                   onClick={() => handleHealthCheck(tool.id)}
                   disabled={isLoading}
+                  className="h-6 md:h-7 w-6 md:w-7 p-0"
                 >
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-3 w-3" />
                 </Button>
               )}
             </div>
@@ -235,25 +243,32 @@ const ToolsManagementDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2 md:space-y-4 p-1 md:p-0">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h1 className="text-3xl font-bold">Tools Management</h1>
-          <p className="text-muted-foreground">Monitor and control all system tools and integrations</p>
+          <h1 className="text-lg md:text-2xl font-bold">Tools Management</h1>
+          <p className="text-[10px] md:text-sm text-muted-foreground">Monitor and control system tools</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={runAllHealthChecks} disabled={isLoading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Run Tool Health Checks
+        <div className="flex gap-1.5">
+          <Button 
+            onClick={runAllHealthChecks} 
+            disabled={isLoading} 
+            size="sm"
+            className="h-7 md:h-8 text-[10px] md:text-xs px-2 md:px-3"
+          >
+            <RefreshCw className={`h-3 w-3 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Run Tool </span>Check
           </Button>
           <Button 
             onClick={runSystemHealthCheck} 
             disabled={isRunningHealthCheck}
             variant="outline"
+            size="sm"
+            className="h-7 md:h-8 text-[10px] md:text-xs px-2 md:px-3"
           >
-            <Server className={`h-4 w-4 mr-2 ${isRunningHealthCheck ? 'animate-spin' : ''}`} />
-            Run System Health Check
+            <Server className={`h-3 w-3 mr-1 ${isRunningHealthCheck ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">System </span>Health
           </Button>
         </div>
       </div>
@@ -261,56 +276,49 @@ const ToolsManagementDashboard = () => {
       {/* System Health Results */}
       {healthCheckResults && (
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              System Health Report
+          <CardHeader className="p-2 md:p-3 pb-1.5">
+            <CardTitle className="flex items-center gap-1.5 text-xs md:text-sm">
+              <Database className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              Health Report
               <Badge 
                 variant={
                   healthCheckResults.overall === 'healthy' ? 'default' : 
                   healthCheckResults.overall === 'degraded' ? 'secondary' : 
                   'destructive'
                 }
+                className="text-[9px] md:text-[10px] px-1 py-0 h-4"
               >
                 {healthCheckResults.overall}
               </Badge>
             </CardTitle>
-            <CardDescription>
-              Generated at {new Date(healthCheckResults.generatedAt).toLocaleString()}
+            <CardDescription className="text-[9px] md:text-xs">
+              {new Date(healthCheckResults.generatedAt).toLocaleString()}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CardContent className="p-2 md:p-3 pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-2">
               {healthCheckResults.checks.map((check: any, index: number) => (
                 <Card key={index} className="border">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium capitalize">{check.service.replace('-', ' ')}</h4>
-                      <div className={`w-3 h-3 rounded-full ${
+                  <CardContent className="p-1.5 md:p-2">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <h4 className="text-[10px] md:text-xs font-medium capitalize truncate">{check.service.replace('-', ' ')}</h4>
+                      <div className={`w-2 h-2 rounded-full shrink-0 ${
                         check.status === 'healthy' ? 'bg-green-500' :
                         check.status === 'degraded' ? 'bg-yellow-500' :
                         'bg-red-500'
                       }`} />
                     </div>
-                    <div className="text-sm text-muted-foreground mb-1">
-                      Response time: {check.responseTime}ms
+                    <div className="text-[9px] md:text-[10px] text-muted-foreground">
+                      {check.responseTime}ms
                     </div>
-                    {check.details && (
-                      <div className="text-xs text-muted-foreground">
-                        {check.details}
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               ))}
             </div>
-            <div className="mt-4 p-3 bg-muted rounded-lg">
-              <div className="text-sm font-medium mb-1">Summary</div>
-              <div className="text-xs text-muted-foreground">
-                Total: {healthCheckResults.summary.total} | 
-                Healthy: {healthCheckResults.summary.healthy} | 
-                Degraded: {healthCheckResults.summary.degraded} | 
-                Unhealthy: {healthCheckResults.summary.unhealthy}
+            <div className="mt-2 p-1.5 md:p-2 bg-muted rounded">
+              <div className="text-[10px] md:text-xs font-medium">Summary</div>
+              <div className="text-[9px] md:text-[10px] text-muted-foreground">
+                {healthCheckResults.summary.healthy}/{healthCheckResults.summary.total} healthy
               </div>
             </div>
           </CardContent>
@@ -318,65 +326,65 @@ const ToolsManagementDashboard = () => {
       )}
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-1.5 md:gap-2">
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <div className="text-sm text-muted-foreground">Total Tools</div>
+          <CardContent className="p-2 md:p-3">
+            <div className="text-base md:text-xl font-bold">{stats.total}</div>
+            <div className="text-[9px] md:text-xs text-muted-foreground">Total</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">{stats.enabled}</div>
-            <div className="text-sm text-muted-foreground">Enabled</div>
+          <CardContent className="p-2 md:p-3">
+            <div className="text-base md:text-xl font-bold text-blue-600">{stats.enabled}</div>
+            <div className="text-[9px] md:text-xs text-muted-foreground">Enabled</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">{stats.healthy}</div>
-            <div className="text-sm text-muted-foreground">Healthy</div>
+          <CardContent className="p-2 md:p-3">
+            <div className="text-base md:text-xl font-bold text-green-600">{stats.healthy}</div>
+            <div className="text-[9px] md:text-xs text-muted-foreground">Healthy</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-yellow-600">{stats.warning}</div>
-            <div className="text-sm text-muted-foreground">Warning</div>
+          <CardContent className="p-2 md:p-3">
+            <div className="text-base md:text-xl font-bold text-yellow-600">{stats.warning}</div>
+            <div className="text-[9px] md:text-xs text-muted-foreground">Warning</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-red-600">{stats.error}</div>
-            <div className="text-sm text-muted-foreground">Error</div>
+          <CardContent className="p-2 md:p-3">
+            <div className="text-base md:text-xl font-bold text-red-600">{stats.error}</div>
+            <div className="text-[9px] md:text-xs text-muted-foreground">Error</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-gray-600">{stats.disabled}</div>
-            <div className="text-sm text-muted-foreground">Disabled</div>
+          <CardContent className="p-2 md:p-3">
+            <div className="text-base md:text-xl font-bold text-gray-600">{stats.disabled}</div>
+            <div className="text-[9px] md:text-xs text-muted-foreground">Disabled</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters and Search */}
       <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="p-2 md:p-3">
+          <div className="flex flex-col sm:flex-row gap-1.5 md:gap-2">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                 <Input
                   placeholder="Search tools..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9"
+                  className="pl-7 h-7 md:h-8 text-xs"
                 />
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border rounded-md text-sm"
+                className="px-2 py-1 border rounded-md text-[10px] md:text-xs h-7 md:h-8 bg-background"
               >
                 <option value="all">All Categories</option>
                 {categories.map(category => (
@@ -389,7 +397,7 @@ const ToolsManagementDashboard = () => {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="px-3 py-2 border rounded-md text-sm"
+                className="px-2 py-1 border rounded-md text-[10px] md:text-xs h-7 md:h-8 bg-background"
               >
                 <option value="all">All Status</option>
                 <option value="healthy">Healthy</option>
@@ -403,14 +411,14 @@ const ToolsManagementDashboard = () => {
       </Card>
 
       {/* Tools Grid */}
-      <Tabs defaultValue="grid" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="grid">Grid View</TabsTrigger>
-          <TabsTrigger value="list">List View</TabsTrigger>
+      <Tabs defaultValue="grid" className="space-y-2">
+        <TabsList className="h-7 md:h-8 p-0.5">
+          <TabsTrigger value="grid" className="text-[10px] md:text-xs h-6 md:h-7 px-2 md:px-3">Grid</TabsTrigger>
+          <TabsTrigger value="list" className="text-[10px] md:text-xs h-6 md:h-7 px-2 md:px-3">List</TabsTrigger>
         </TabsList>
 
         <TabsContent value="grid">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-2">
             {filteredTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -421,15 +429,15 @@ const ToolsManagementDashboard = () => {
           <Card>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="border-b">
+                <table className="w-full text-[10px] md:text-xs">
+                  <thead className="border-b bg-muted/50">
                     <tr className="text-left">
-                      <th className="p-4 font-medium">Tool</th>
-                      <th className="p-4 font-medium">Category</th>
-                      <th className="p-4 font-medium">Status</th>
-                      <th className="p-4 font-medium">Version</th>
-                      <th className="p-4 font-medium">Last Checked</th>
-                      <th className="p-4 font-medium">Actions</th>
+                      <th className="p-1.5 md:p-2 font-medium">Tool</th>
+                      <th className="p-1.5 md:p-2 font-medium hidden sm:table-cell">Category</th>
+                      <th className="p-1.5 md:p-2 font-medium">Status</th>
+                      <th className="p-1.5 md:p-2 font-medium hidden md:table-cell">Version</th>
+                      <th className="p-1.5 md:p-2 font-medium hidden lg:table-cell">Last Checked</th>
+                      <th className="p-1.5 md:p-2 font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -437,50 +445,57 @@ const ToolsManagementDashboard = () => {
                       const StatusIcon = statusIcons[tool.status];
                       return (
                         <tr key={tool.id} className="border-b hover:bg-muted/50">
-                          <td className="p-4">
+                          <td className="p-1.5 md:p-2">
                             <div>
-                              <div className="font-medium">{tool.name}</div>
-                              <div className="text-sm text-muted-foreground">{tool.description}</div>
+                              <div className="font-medium truncate max-w-[100px] md:max-w-none">{tool.name}</div>
+                              <div className="text-[9px] md:text-[10px] text-muted-foreground truncate max-w-[100px] md:max-w-none">{tool.description}</div>
                             </div>
                           </td>
-                          <td className="p-4">
-                            <Badge variant="outline" className="capitalize">
+                          <td className="p-1.5 md:p-2 hidden sm:table-cell">
+                            <Badge variant="outline" className="capitalize text-[9px] md:text-[10px] px-1 py-0">
                               {tool.category}
                             </Badge>
                           </td>
-                          <td className="p-4">
-                            <div className="flex items-center gap-2">
-                              <StatusIcon className={`h-4 w-4 ${
+                          <td className="p-1.5 md:p-2">
+                            <div className="flex items-center gap-1">
+                              <StatusIcon className={`h-3 w-3 ${
                                 tool.status === 'healthy' ? 'text-green-500' :
                                 tool.status === 'warning' ? 'text-yellow-500' :
                                 tool.status === 'error' ? 'text-red-500' :
                                 'text-gray-500'
                               }`} />
-                              <span className="capitalize">{tool.status}</span>
+                              <span className="capitalize hidden xs:inline">{tool.status}</span>
                             </div>
                           </td>
-                          <td className="p-4">v{tool.version}</td>
-                          <td className="p-4 text-sm text-muted-foreground">
-                            {new Date(tool.lastChecked).toLocaleString()}
+                          <td className="p-1.5 md:p-2 hidden md:table-cell">v{tool.version}</td>
+                          <td className="p-1.5 md:p-2 text-muted-foreground hidden lg:table-cell">
+                            {new Date(tool.lastChecked).toLocaleDateString()}
                           </td>
-                          <td className="p-4">
-                            <div className="flex gap-2">
+                          <td className="p-1.5 md:p-2">
+                            <div className="flex gap-1">
                               <Button
                                 size="sm"
                                 variant={tool.enabled ? "destructive" : "default"}
                                 onClick={() => handleToolToggle(tool.id, tool.enabled)}
                                 disabled={isLoading}
+                                className="h-5 md:h-6 text-[9px] md:text-[10px] px-1 md:px-1.5"
                               >
-                                {tool.enabled ? 'Disable' : 'Enable'}
+                                {tool.enabled ? (
+                                  <Pause className="h-2.5 w-2.5" />
+                                ) : (
+                                  <Play className="h-2.5 w-2.5" />
+                                )}
                               </Button>
+                              
                               {tool.enabled && (
                                 <Button
                                   size="sm"
                                   variant="outline"
                                   onClick={() => handleHealthCheck(tool.id)}
                                   disabled={isLoading}
+                                  className="h-5 md:h-6 w-5 md:w-6 p-0"
                                 >
-                                  <RefreshCw className="h-4 w-4" />
+                                  <RefreshCw className="h-2.5 w-2.5" />
                                 </Button>
                               )}
                             </div>
@@ -496,10 +511,18 @@ const ToolsManagementDashboard = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Last Update Info */}
-      <div className="text-center text-sm text-muted-foreground">
-        Last updated: {new Date().toLocaleString()}
-      </div>
+      {/* Empty State */}
+      {filteredTools.length === 0 && (
+        <Card>
+          <CardContent className="p-4 md:p-6 text-center">
+            <Settings className="h-8 w-8 md:h-10 md:w-10 mx-auto text-muted-foreground mb-2" />
+            <h3 className="text-sm md:text-base font-medium">No tools found</h3>
+            <p className="text-[10px] md:text-xs text-muted-foreground">
+              Try adjusting your search or filter criteria
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
