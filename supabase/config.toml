@@ -25,6 +25,9 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.algorithm-analytics]
     verify_jwt = false
 
+  [functions.algorithm-controller]
+    verify_jwt = false
+
   [functions.verify-captcha]
     verify_jwt = false
 

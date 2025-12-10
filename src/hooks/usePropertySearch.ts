@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { BaseProperty } from '@/types/property';
 import { logSearchError } from '@/utils/errorLogger';
+import { trackSearch } from '@/hooks/useSearchTracking';
 
 interface SearchFilters {
   query?: string;
@@ -176,6 +177,24 @@ export const usePropertySearch = () => {
       
       const endTime = performance.now();
       const duration = endTime - startTime;
+      
+      // Track search analytics (non-blocking)
+      trackSearch({
+        search_query: filters.query || null,
+        search_filters: {
+          property_type: filters.propertyType,
+          listing_type: filters.listingType,
+          city: filters.city,
+          state: filters.state,
+          price_range: filters.priceRange,
+          bedrooms: filters.bedrooms,
+          bathrooms: filters.bathrooms,
+          area_range: filters.areaRange
+        },
+        results_count: data?.length || 0,
+        response_time_ms: Math.round(duration),
+        cache_hit: false
+      }).catch(() => {}); // Silently ignore tracking errors
       
       // Log slow queries for monitoring
       if (duration > 1000) {
