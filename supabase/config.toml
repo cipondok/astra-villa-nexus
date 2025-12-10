@@ -2,7 +2,7 @@ project_id = "zymrajuuyyfkzdmptebl"
 
 [functions]
   [functions.ai-assistant]
-    verify_jwt = true
+    verify_jwt = false
   
   [functions.rental-negotiator]
     verify_jwt = false
