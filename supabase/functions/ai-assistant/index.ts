@@ -18,26 +18,21 @@ serve(async (req) => {
   }
 
   try {
-    // Verify authentication - require valid user token
+    // Optional authentication - guests can use with limited features
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Authentication required' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    let authenticatedUserId: string | null = null;
+    
+    if (authHeader) {
+      const authSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } }
       });
+      const { data: { user }, error: authError } = await authSupabase.auth.getUser();
+      if (!authError && user) {
+        authenticatedUserId = user.id;
+      }
     }
-
-    // Verify the token is valid
-    const authSupabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
-    });
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    
+    console.log('AI Assistant - authenticated user:', authenticatedUserId || 'guest');
 
     // Validate LOVABLE_API_KEY is configured
     if (!lovableApiKey) {
@@ -60,7 +55,8 @@ serve(async (req) => {
     };
     
     const message = rawBody.message;
-    const userId = sanitizeUuid(rawBody.userId);
+    // Use authenticated userId if available, otherwise fall back to body userId (for guest context)
+    const userId = authenticatedUserId || sanitizeUuid(rawBody.userId);
     const propertyId = sanitizeUuid(rawBody.propertyId);
     const initialConversationId = rawBody.conversationId;
 
