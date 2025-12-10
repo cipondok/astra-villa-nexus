@@ -20,9 +20,9 @@ const AIBotManagement = () => {
   const [editingBot, setEditingBot] = useState<any>(null);
   const [botData, setBotData] = useState({
     bot_name: '',
-    model_type: 'gpt-3.5-turbo',
+    model_type: 'google/gemini-2.5-flash',
     is_active: true,
-    configuration: {}
+    configuration: { temperature: 0.7, max_tokens: 1000, system_prompt: '' }
   });
 
   const { showSuccess, showError } = useAlert();
@@ -99,9 +99,9 @@ const AIBotManagement = () => {
   const resetBotForm = () => {
     setBotData({
       bot_name: '',
-      model_type: 'gpt-3.5-turbo',
+      model_type: 'google/gemini-2.5-flash',
       is_active: true,
-      configuration: {}
+      configuration: { temperature: 0.7, max_tokens: 1000, system_prompt: '' }
     });
   };
 
@@ -115,11 +115,16 @@ const AIBotManagement = () => {
 
   const handleEditBot = (bot: any) => {
     setEditingBot(bot);
+    const config = bot.configuration || {};
     setBotData({
       bot_name: bot.bot_name,
       model_type: bot.model_type,
       is_active: bot.is_active,
-      configuration: bot.configuration || {}
+      configuration: {
+        temperature: config.temperature ?? 0.7,
+        max_tokens: config.max_tokens ?? 1000,
+        system_prompt: config.system_prompt ?? ''
+      }
     });
     setShowBotForm(true);
   };
@@ -190,10 +195,13 @@ const AIBotManagement = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                        <SelectItem value="gpt-4">GPT-4</SelectItem>
-                        <SelectItem value="claude-3">Claude 3</SelectItem>
-                        <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                        <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash (Default)</SelectItem>
+                        <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                        <SelectItem value="google/gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</SelectItem>
+                        <SelectItem value="google/gemini-3-pro-preview">Gemini 3 Pro Preview</SelectItem>
+                        <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+                        <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+                        <SelectItem value="openai/gpt-5-nano">GPT-5 Nano</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
