@@ -65,34 +65,33 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   if (isLoading) {
     return (
       <section className={cn(
-        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
-        isMobile ? "p-3" : "p-4 lg:p-6"
+        "bg-background/60 dark:bg-background/80 backdrop-blur-md rounded-xl shadow-md border border-border/30",
+        isMobile ? "p-2" : "p-3 lg:p-4"
       )}>
         <div className={cn(
-          "text-center no-space-waste",
-          isMobile ? "mb-3" : "mb-4"
+          "text-center",
+          isMobile ? "mb-2" : "mb-3"
         )}>
           <h2 className={cn(
-            "font-bold gradient-text",
-            isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+            "font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent",
+            isMobile ? "text-base mb-0.5" : "text-lg lg:text-xl mb-1"
           )}>
             Properties for Sale
           </h2>
           <p className={cn(
             "text-muted-foreground",
-            isMobile ? "text-xs" : "text-sm lg:text-base"
+            isMobile ? "text-[10px]" : "text-xs"
           )}>
             Find your dream home to purchase
           </p>
         </div>
-        <div className="responsive-grid-properties">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-48 bg-muted rounded-t-lg"></div>
-              <div className={cn(isMobile ? "p-2 space-y-2" : "p-4 space-y-3")}>
-                <div className="h-4 bg-muted rounded"></div>
+            <div key={i} className="animate-pulse rounded-lg overflow-hidden">
+              <div className="h-24 md:h-32 bg-muted"></div>
+              <div className={cn(isMobile ? "p-1.5 space-y-1" : "p-2 space-y-1.5")}>
                 <div className="h-3 bg-muted rounded"></div>
-                <div className="h-3 bg-muted rounded w-3/4"></div>
+                <div className="h-2 bg-muted rounded w-3/4"></div>
               </div>
             </div>
           ))}
@@ -104,29 +103,29 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   if (saleProperties.length === 0) {
     return (
       <section className={cn(
-        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
-        isMobile ? "p-3" : "p-4 lg:p-6"
+        "bg-background/60 dark:bg-background/80 backdrop-blur-md rounded-xl shadow-md border border-border/30",
+        isMobile ? "p-2" : "p-3 lg:p-4"
       )}>
         <div className={cn(
-          "text-center no-space-waste",
-          isMobile ? "mb-3" : "mb-4"
+          "text-center",
+          isMobile ? "mb-2" : "mb-3"
         )}>
           <h2 className={cn(
-            "font-bold gradient-text",
-            isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+            "font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent",
+            isMobile ? "text-base mb-0.5" : "text-lg lg:text-xl mb-1"
           )}>
             Properties for Sale
           </h2>
           <p className={cn(
             "text-muted-foreground",
-            isMobile ? "text-xs" : "text-sm lg:text-base"
+            isMobile ? "text-[10px]" : "text-xs"
           )}>
             Find your dream home to purchase
           </p>
         </div>
         <div className={cn(
           "text-center text-muted-foreground",
-          isMobile ? "py-4 text-xs" : "py-8 text-sm"
+          isMobile ? "py-3 text-[10px]" : "py-4 text-xs"
         )}>
           No properties for sale available at the moment.
         </div>
@@ -136,28 +135,28 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
   return (
     <section className={cn(
-      "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
-      isMobile ? "p-3" : "p-4 lg:p-6"
+      "bg-background/60 dark:bg-background/80 backdrop-blur-md rounded-xl shadow-md border border-border/30",
+      isMobile ? "p-2" : "p-3 lg:p-4"
     )}>
       <div className={cn(
-        "text-center no-space-waste",
-        isMobile ? "mb-3" : "mb-4"
+        "text-center",
+        isMobile ? "mb-2" : "mb-3"
       )}>
         <h2 className={cn(
-          "font-bold gradient-text",
-          isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+          "font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent",
+          isMobile ? "text-base mb-0.5" : "text-lg lg:text-xl mb-1"
         )}>
           Properties for Sale
         </h2>
         <p className={cn(
           "text-muted-foreground",
-          isMobile ? "text-xs" : "text-sm lg:text-base"
+          isMobile ? "text-[10px]" : "text-xs"
         )}>
           Find your dream home to purchase
         </p>
       </div>
       
-      <div className="container-compact">
+      <div className="[&_.grid]:gap-2 [&_.grid]:md:gap-3">
         <PropertyGridView
           properties={saleProperties}
           onPropertyClick={onPropertyClick}
