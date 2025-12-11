@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine } from 'lucide-react';
 interface Service {
   icon: React.ReactNode;
@@ -77,22 +77,6 @@ const services: Service[] = [{
 }];
 const MarketplaceServices = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Scroll to this section if coming back from marketplace pages
-  useEffect(() => {
-    const fromMarketplace = sessionStorage.getItem('scrollToMarketplaceServices');
-    if (fromMarketplace === 'true') {
-      sessionStorage.removeItem('scrollToMarketplaceServices');
-      // Delay to ensure component is mounted
-      setTimeout(() => {
-        const element = document.getElementById('marketplace-services-section');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-  }, [location]);
 
   const handleServiceClick = (category: string) => {
     navigate(`/marketplace?category=${category}&from=home`);
@@ -125,7 +109,7 @@ const MarketplaceServices = () => {
               Join marketplace
             </p>
           </div>
-          <button onClick={() => navigate('/vendor-registration')} className="px-1.5 py-0.5 md:px-4 md:py-2 md:text-sm bg-primary text-primary-foreground rounded active:scale-95 whitespace-nowrap font-semibold text-lg">
+          <button onClick={() => navigate('/vendor-registration?from=home')} className="px-1.5 py-0.5 md:px-4 md:py-2 md:text-sm bg-primary text-primary-foreground rounded active:scale-95 whitespace-nowrap font-semibold text-lg">
             Join
           </button>
         </div>

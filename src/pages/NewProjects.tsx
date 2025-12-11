@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import PropertyCard from '@/components/property/PropertyCard';
 import useEmblaCarousel from 'embla-carousel-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 interface SearchFilters {
   city: string;
@@ -218,6 +219,9 @@ const NewProjects = () => {
       </div>
 
       <div className="container mx-auto px-3 md:px-4 pt-1 pb-4 relative">
+        {/* Back Link */}
+        <BackToHomeLink sectionId="new-projects-section" />
+
         {/* Centered Header */}
         <div className="text-center mb-2">
           <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
