@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine } from 'lucide-react';
 interface Service {
   icon: React.ReactNode;
@@ -77,16 +77,34 @@ const services: Service[] = [{
 }];
 const MarketplaceServices = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Scroll to this section if coming back from marketplace pages
+  useEffect(() => {
+    const fromMarketplace = sessionStorage.getItem('scrollToMarketplaceServices');
+    if (fromMarketplace === 'true') {
+      sessionStorage.removeItem('scrollToMarketplaceServices');
+      // Delay to ensure component is mounted
+      setTimeout(() => {
+        const element = document.getElementById('marketplace-services-section');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location]);
+
   const handleServiceClick = (category: string) => {
-    navigate(`/marketplace?category=${category}`);
+    navigate(`/marketplace?category=${category}&from=home`);
   };
-  return <div className="relative">
+  
+  return <div id="marketplace-services-section" className="relative">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-1 md:mb-4">
         <h2 className="text-[9px] md:text-base font-semibold text-foreground">
           Marketplace Services
         </h2>
-        <button onClick={() => navigate('/marketplace')} className="text-[7px] md:text-xs font-medium text-primary hover:text-primary/80 active:scale-95">
+        <button onClick={() => navigate('/marketplace?from=home')} className="text-[7px] md:text-xs font-medium text-primary hover:text-primary/80 active:scale-95">
           View All →
         </button>
       </div>
