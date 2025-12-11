@@ -22,6 +22,9 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.verify-otp]
     verify_jwt = true
 
+  [functions.verify-2fa]
+    verify_jwt = true
+
   [functions.algorithm-analytics]
     verify_jwt = false
 
