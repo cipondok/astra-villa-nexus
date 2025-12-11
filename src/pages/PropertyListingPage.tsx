@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, SlidersHorizontal, MapPin, Home, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
@@ -232,6 +233,9 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
       </div>
 
       <div className="container mx-auto px-3 md:px-4 pt-1 pb-4 relative">
+        {/* Back Link */}
+        <BackToHomeLink sectionId={`${pageType}-section`} />
+
         {/* Centered Header */}
         <div className="text-center mb-2">
           <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">

@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { logSearchError } from "@/utils/errorLogger";
 import { useConnectionSpeed } from "@/hooks/useConnectionSpeed";
+import { useScrollToSection } from "@/hooks/useHomeBackLink";
 
 import { supabase } from "@/integrations/supabase/client";
 import { BaseProperty } from "@/types/property";
@@ -235,6 +236,14 @@ const Index = () => {
       setIsSearching(false);
     }
   };
+
+  // Handle scroll restoration when returning from other pages
+  const location = useLocation();
+  const { scrollToSavedSection } = useScrollToSection();
+  
+  useEffect(() => {
+    scrollToSavedSection();
+  }, [location]);
 
   // Simulate panel loading
   useEffect(() => {
@@ -745,21 +754,21 @@ const Index = () => {
                 {/* Featured Properties - Modern Auto-Scrolling Carousel */}
 
                 {/* Properties for Sale Section - Compact */}
-                <div className="section-compact">
+                <div id="sale-section" className="section-compact">
                   <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
 
                 {/* Properties for Rent Section - Compact */}
-                <div className="section-compact">
+                <div id="rent-section" className="section-compact">
                   <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
 
                 {/* Marketplace Services Section */}
-                <div className="section-compact mt-8">
+                <div id="marketplace-services-section" className="section-compact mt-8">
                   <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <MarketplaceServices />
                   </Suspense>

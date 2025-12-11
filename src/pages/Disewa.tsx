@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
+import BackToHomeLink from "@/components/common/BackToHomeLink";
 import { MapPin, Home, Building, Bed, Bath, Square, Heart, Share2, Eye, Calendar, Clock, Zap, User, CheckCircle } from "lucide-react";
 
 interface Property {
@@ -212,6 +213,9 @@ const Disewa = () => {
       </div>
 
       <div className="container mx-auto px-3 md:px-4 pt-1 pb-2 relative">
+        {/* Back Link */}
+        <BackToHomeLink sectionId="rent-section" />
+
         {/* Centered Header */}
         <div className="text-center mb-2">
           <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">

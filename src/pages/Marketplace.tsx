@@ -103,7 +103,7 @@ const Marketplace = () => {
   const cameFromHome = searchParams.get('from') === 'home';
 
   const handleBackToHome = () => {
-    sessionStorage.setItem('scrollToMarketplaceServices', 'true');
+    sessionStorage.setItem('scrollToSection', 'marketplace-services-section');
     navigate('/');
   };
 
