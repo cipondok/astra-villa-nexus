@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, RefreshCw, TrendingUp } from 'lucide-react';
+import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye } from 'lucide-react';
 import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,6 +23,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const [showProgressPopup, setShowProgressPopup] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch user preferences and property data
   const { data: userPreferences } = useQuery({
@@ -147,96 +148,200 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return () => clearTimeout(timer);
   }, []);
 
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    if (price >= 1000000000) {
+      return `Rp ${(price / 1000000000).toFixed(1)}B`;
+    }
+    if (price >= 1000000) {
+      return `Rp ${(price / 1000000).toFixed(0)}M`;
+    }
+    return `Rp ${price.toLocaleString('id-ID')}`;
+  };
+
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <div className={cn("bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-1.5 md:p-4", className)}>
-      <div className="mb-2">
-        <div className="flex items-center justify-between mb-0.5">
-          <div className="flex items-center gap-1.5">
-            <div className="p-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <div>
-              <h3 className="text-[11px] md:text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
-                AI Recommended For You
-              </h3>
-              <p className="text-[9px] text-muted-foreground hidden sm:block">
-                {user ? 'Personalized based on your preferences' : 'Trending properties selected by AI'}
-              </p>
-            </div>
+    <div className={cn("relative", className)}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3 px-1">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg backdrop-blur-sm">
+            <Sparkles className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm md:text-base font-bold text-foreground">
+              AI Recommended
+            </h3>
+            <p className="text-[10px] md:text-xs text-muted-foreground">
+              {user ? 'Personalized for you' : 'Trending picks'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-7 w-7 rounded-full"
+              onClick={scrollLeft}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-7 w-7 rounded-full"
+              onClick={scrollRight}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
           <Button
             onClick={generateRecommendations}
             disabled={isGenerating}
             size="sm"
-            variant="outline"
-            className="gap-1 h-6 px-2"
+            variant="ghost"
+            className="h-7 w-7 p-0"
           >
-            <RefreshCw className={cn("h-3 w-3", isGenerating && "animate-spin")} />
-            <span className="hidden sm:inline text-xs">Refresh</span>
+            <RefreshCw className={cn("h-4 w-4", isGenerating && "animate-spin")} />
           </Button>
-        </div>
-        <div className="flex items-center gap-1 text-[8px] text-muted-foreground">
-          <TrendingUp className="h-2.5 w-2.5" />
-          <span className="hidden sm:inline">Powered by Lovable AI • Updated in real-time</span>
-          <span className="sm:hidden">AI Powered</span>
         </div>
       </div>
 
-      {isGenerating ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-3">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-[80px] sm:h-[110px] md:h-[120px] animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 md:gap-3">
-          {recommendations.map((property) => (
-            <div
-              key={property.id}
-              onClick={() => onPropertyClick(property)}
-              className="cursor-pointer group"
-            >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] sm:h-[110px] md:h-[120px]">
-                {/* Image - Left Side */}
-                <div className="relative w-[70px] sm:w-[100px] lg:w-[120px] flex-shrink-0">
-                  <img
-                    src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                    alt={property.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute top-0.5 left-0.5">
-                    <span className="px-1 py-0.5 bg-primary/90 text-primary-foreground text-[8px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
-                      {property.property_type}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 group-hover:to-black/20 transition-all duration-300" />
-                </div>
-                
-                {/* Content - Right Side */}
-                <div className="flex-1 p-1.5 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-[10px] font-semibold text-foreground line-clamp-2 mb-0.5">
-                      {property.title}
-                    </h3>
-                    <div className="text-[8px] text-muted-foreground line-clamp-1">
-                      {property.city || property.location}
+      {/* Scrollable Container */}
+      <div className="relative">
+        {isGenerating ? (
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {[...Array(6)].map((_, i) => (
+              <div 
+                key={i} 
+                className="flex-shrink-0 w-[160px] md:w-[200px] h-[200px] md:h-[240px] animate-pulse bg-muted rounded-xl"
+              />
+            ))}
+          </div>
+        ) : (
+          <div 
+            ref={scrollRef}
+            className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {recommendations.map((property) => (
+              <div
+                key={property.id}
+                onClick={() => onPropertyClick(property)}
+                className="flex-shrink-0 w-[150px] md:w-[200px] snap-start cursor-pointer group"
+              >
+                <div className="relative h-[190px] md:h-[240px] rounded-xl overflow-hidden bg-card border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-primary/30">
+                  {/* Image */}
+                  <div className="relative h-[100px] md:h-[130px] overflow-hidden">
+                    <img
+                      src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                      alt={property.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Type Badge */}
+                    <div className="absolute top-2 left-2">
+                      <span className="px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[9px] md:text-[10px] font-medium rounded-md backdrop-blur-sm capitalize">
+                        {property.property_type || 'Property'}
+                      </span>
+                    </div>
+
+                    {/* Listing Type Badge */}
+                    <div className="absolute top-2 right-2">
+                      <span className="px-1.5 py-0.5 bg-background/80 text-foreground text-[9px] md:text-[10px] font-medium rounded-md backdrop-blur-sm">
+                        {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
+                      </span>
+                    </div>
+
+                    {/* Price on Image */}
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <p className="text-white text-xs md:text-sm font-bold drop-shadow-lg">
+                        {formatPrice(property.price || 0)}
+                      </p>
                     </div>
                   </div>
-                  <div className="text-[9px] md:text-xs font-bold text-primary">
-                    {property.price && property.price >= 1000000 
-                      ? `Rp ${(property.price / 1000000).toFixed(1)}M`
-                      : `Rp ${property.price?.toLocaleString() || 'N/A'}`
-                    }
+
+                  {/* Content */}
+                  <div className="p-2 md:p-2.5 space-y-1.5">
+                    <h4 className="text-[11px] md:text-xs font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px] md:min-h-[32px]">
+                      {property.title}
+                    </h4>
+                    
+                    {/* Location */}
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
+                      <span className="text-[9px] md:text-[10px] truncate">
+                        {property.city || property.location || 'Indonesia'}
+                      </span>
+                    </div>
+
+                    {/* Property Details */}
+                    <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-muted-foreground">
+                      {property.bedrooms && (
+                        <div className="flex items-center gap-0.5">
+                          <Bed className="h-2.5 w-2.5" />
+                          <span>{property.bedrooms}</span>
+                        </div>
+                      )}
+                      {property.bathrooms && (
+                        <div className="flex items-center gap-0.5">
+                          <Bath className="h-2.5 w-2.5" />
+                          <span>{property.bathrooms}</span>
+                        </div>
+                      )}
+                      {property.area_sqm && (
+                        <div className="flex items-center gap-0.5">
+                          <span>{property.area_sqm}m²</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* View Button */}
+                    <Button 
+                      size="sm" 
+                      className="w-full h-6 md:h-7 text-[10px] md:text-xs mt-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPropertyClick(property);
+                      }}
+                    >
+                      <Eye className="h-3 w-3 mr-1" />
+                      View
+                    </Button>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+        )}
+
+        {/* Mobile Scroll Indicators */}
+        <div className="flex justify-center gap-1 mt-2 md:hidden">
+          {recommendations.slice(0, Math.min(6, recommendations.length)).map((_, i) => (
+            <div 
+              key={i} 
+              className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"
+            />
           ))}
         </div>
-      )}
+      </div>
       
       {selectedProperty && (
         <WhatsAppInquiryDialog
