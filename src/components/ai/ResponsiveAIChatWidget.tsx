@@ -1678,11 +1678,11 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             aria-label="AI Chat Assistant"
             aria-modal="true"
           >
-          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/98 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl max-h-full relative">
+          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/60 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl max-h-full relative touch-manipulation">
             {/* Header with Close, Minimize, and Sound Toggle - Draggable */}
             <div 
               className={cn(
-                "flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600 to-purple-600 text-white",
+                "flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white touch-manipulation",
                 !isMobile && !isMinimized && "cursor-move select-none"
               )}
               onMouseDown={handleDragStart}
@@ -1692,7 +1692,6 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             >
               <div className="flex items-center gap-2">
                 <Icons.aiLogo className="h-5 w-5" />
-                <span className="font-semibold text-sm bg-gradient-to-r from-primary via-purple-600 to-blue-600 bg-clip-text text-transparent">ASTRA AI</span>
                 {viewMode === 'mini' && (
                   <span className="text-xs opacity-80 font-normal">
                     (Mini {messages.length > 3 ? `· 3 of ${messages.length}` : ''})
