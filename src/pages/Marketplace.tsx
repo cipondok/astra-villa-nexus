@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine, Search, Filter, Lock } from 'lucide-react';
+import { Store, Wrench, Paintbrush, Hammer, Zap, Droplets, Shield, TreePine, Search, Filter, Lock, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -100,6 +100,12 @@ const Marketplace = () => {
     searchParams.get('category')
   );
   const [searchQuery, setSearchQuery] = useState('');
+  const cameFromHome = searchParams.get('from') === 'home';
+
+  const handleBackToHome = () => {
+    sessionStorage.setItem('scrollToMarketplaceServices', 'true');
+    navigate('/');
+  };
 
   // Redirect to auth if not logged in
   useEffect(() => {
@@ -175,6 +181,17 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-background pt-14 md:pt-20 pb-6 md:pb-12 px-3 md:px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Back Link */}
+        {cameFromHome && (
+          <button
+            onClick={handleBackToHome}
+            className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground hover:text-primary mb-2 md:mb-3 active:scale-95 transition-transform"
+          >
+            <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
+            Back to Home
+          </button>
+        )}
+
         {/* Header */}
         <div className="mb-4 md:mb-8">
           <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">
