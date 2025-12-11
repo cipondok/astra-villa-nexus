@@ -244,9 +244,9 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                 onClick={() => onPropertyClick(property)}
                 className="flex-shrink-0 w-[150px] md:w-[200px] snap-start cursor-pointer group"
               >
-                <div className="relative h-[190px] md:h-[240px] rounded-xl overflow-hidden bg-card border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-primary/30">
+                <div className="relative h-[210px] md:h-[260px] rounded-xl overflow-visible bg-card border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-primary/30 flex flex-col">
                   {/* Image */}
-                  <div className="relative h-[100px] md:h-[130px] overflow-hidden">
+                  <div className="relative h-[100px] md:h-[130px] overflow-hidden rounded-t-xl flex-shrink-0">
                     <img
                       src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                       alt={property.title}
@@ -279,13 +279,13 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                   </div>
 
                   {/* Content */}
-                  <div className="p-2 md:p-2.5 space-y-1.5">
-                    <h4 className="text-[11px] md:text-xs font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px] md:min-h-[32px]">
+                  <div className="p-2 md:p-2.5 flex flex-col flex-1">
+                    <h4 className="text-[11px] md:text-xs font-semibold text-foreground line-clamp-2 leading-tight mb-1">
                       {property.title}
                     </h4>
                     
                     {/* Location */}
-                    <div className="flex items-center gap-1 text-muted-foreground">
+                    <div className="flex items-center gap-1 text-muted-foreground mb-1">
                       <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
                       <span className="text-[9px] md:text-[10px] truncate">
                         {property.city || property.location || 'Indonesia'}
@@ -293,7 +293,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                     </div>
 
                     {/* Property Details */}
-                    <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-muted-foreground">
+                    <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-muted-foreground mb-2">
                       {property.bedrooms && (
                         <div className="flex items-center gap-0.5">
                           <Bed className="h-2.5 w-2.5" />
@@ -313,17 +313,17 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
                       )}
                     </div>
 
-                    {/* View Button */}
+                    {/* View Button - Always at bottom */}
                     <Button 
                       size="sm" 
-                      className="w-full h-6 md:h-7 text-[10px] md:text-xs mt-1"
+                      className="w-full h-7 md:h-8 text-[10px] md:text-xs mt-auto relative z-10"
                       onClick={(e) => {
                         e.stopPropagation();
                         onPropertyClick(property);
                       }}
                     >
                       <Eye className="h-3 w-3 mr-1" />
-                      View
+                      View Details
                     </Button>
                   </div>
                 </div>
