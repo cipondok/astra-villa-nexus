@@ -116,10 +116,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   };
   return <div onClick={handleClick} className="group cursor-pointer">
       <div className="relative overflow-hidden rounded-lg md:rounded-xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-1.5 md:p-3 lg:p-4 h-full flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/30">
-        {/* Icon Container - Bigger icons */}
+        {/* Icon Container - Bigger icons with transparent background */}
         <div className="relative mb-1 md:mb-2">
-          <div className={`relative w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg md:rounded-xl ${feature.bgGradient} flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-300`}>
-            <img src={feature.icon} alt={feature.title} className="w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
+          <div className="relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center">
+            <img src={feature.icon} alt={feature.title} className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-md" />
           </div>
           {/* AI Badge - Smaller */}
           <div className="absolute -top-0.5 -right-0.5 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 shadow-sm">
