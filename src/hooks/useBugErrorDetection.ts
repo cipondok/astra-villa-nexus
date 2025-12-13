@@ -74,6 +74,34 @@ export function useBugErrorDetection() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchSecurityFindings = useCallback(async (): Promise<SecurityFinding[]> => {
+    try {
+      // Fetch from security scan API endpoint
+      const response = await fetch('/api/security-scan-results');
+      if (response.ok) {
+        const data = await response.json();
+        if (data?.agent_security?.findings) {
+          return data.agent_security.findings.map((f: any) => ({
+            id: f.id || f.internal_id,
+            internal_id: f.internal_id,
+            name: f.name,
+            description: f.description,
+            level: f.level,
+            category: f.category,
+            details: f.details,
+            link: f.link,
+            ignore: f.ignore || false,
+            ignore_reason: f.ignore_reason
+          }));
+        }
+      }
+      return [];
+    } catch (err) {
+      console.error('Error fetching security findings:', err);
+      return [];
+    }
+  }, []);
+
   const fetchErrorLogs = useCallback(async () => {
     try {
       const now = new Date();
@@ -95,7 +123,7 @@ export function useBugErrorDetection() {
       return (errorLogs || []).map((log: any) => ({
         id: log.id,
         error_type: log.error_type || 'unknown',
-        error_message: log.error_message || '',
+        error_message: log.error_message || log.error_page || '',
         error_stack: log.error_stack,
         severity: log.severity || 'medium',
         component_name: log.component_name,
@@ -105,6 +133,36 @@ export function useBugErrorDetection() {
       }));
     } catch (err) {
       console.error('Error in fetchErrorLogs:', err);
+      return [];
+    }
+  }, []);
+
+  const fetchDatabaseErrors = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('database_error_tracking')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) {
+        console.error('Error fetching database errors:', error);
+        return [];
+      }
+
+      return (data || []).map((err: any) => ({
+        id: err.id,
+        error_type: err.error_type || 'database_error',
+        error_message: err.error_message,
+        error_stack: err.suggested_fix,
+        severity: err.error_severity === 'ERROR' ? 'high' : 'medium',
+        component_name: err.table_name || 'Database',
+        page_url: err.table_name,
+        created_at: err.created_at,
+        status: err.is_resolved ? 'resolved' : 'new'
+      }));
+    } catch (err) {
+      console.error('Error in fetchDatabaseErrors:', err);
       return [];
     }
   }, []);
@@ -173,7 +231,15 @@ export function useBugErrorDetection() {
     setError(null);
 
     try {
-      const errorLogs = await fetchErrorLogs();
+      // Fetch all data in parallel
+      const [errorLogs, databaseErrors, securityFindings] = await Promise.all([
+        fetchErrorLogs(),
+        fetchDatabaseErrors(),
+        fetchSecurityFindings()
+      ]);
+
+      // Combine error logs
+      const allErrorLogs = [...errorLogs, ...databaseErrors];
       
       // Calculate time-based stats
       const now = new Date();
@@ -181,13 +247,13 @@ export function useBugErrorDetection() {
       const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-      const logsLast24h = errorLogs.filter(log => 
+      const logsLast24h = allErrorLogs.filter(log => 
         new Date(log.created_at) >= twentyFourHoursAgo
       );
-      const logsLast7d = errorLogs.filter(log => 
+      const logsLast7d = allErrorLogs.filter(log => 
         new Date(log.created_at) >= sevenDaysAgo
       );
-      const logsPrevious7d = errorLogs.filter(log => {
+      const logsPrevious7d = allErrorLogs.filter(log => {
         const date = new Date(log.created_at);
         return date >= fourteenDaysAgo && date < sevenDaysAgo;
       });
@@ -200,10 +266,7 @@ export function useBugErrorDetection() {
         trendDirection = 'down';
       }
 
-      // Mock security findings - in a real scenario, this would come from the security scan API
-      const securityFindings: SecurityFinding[] = [];
-
-      const detectedBugs = convertToDetectedBugs(errorLogs, securityFindings);
+      const detectedBugs = convertToDetectedBugs(allErrorLogs, securityFindings);
 
       const criticalCount = detectedBugs.filter(b => b.severity === 'critical' && b.status !== 'fixed').length;
       const highCount = detectedBugs.filter(b => b.severity === 'high' && b.status !== 'fixed').length;
@@ -222,7 +285,7 @@ export function useBugErrorDetection() {
         bugCount7d: logsLast7d.length,
         trendDirection,
         securityFindings,
-        errorLogs,
+        errorLogs: allErrorLogs,
         detectedBugs
       });
     } catch (err) {
@@ -231,7 +294,7 @@ export function useBugErrorDetection() {
     } finally {
       setIsLoading(false);
     }
-  }, [fetchErrorLogs, convertToDetectedBugs]);
+  }, [fetchErrorLogs, fetchDatabaseErrors, fetchSecurityFindings, convertToDetectedBugs]);
 
   useEffect(() => {
     refresh();
