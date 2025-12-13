@@ -40,7 +40,8 @@ import {
   ImageIcon,
   Map,
   Cloud,
-  ShieldCheck
+  ShieldCheck,
+  Bug
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -330,6 +331,13 @@ export const navigationSections = {
   ],
 
   technical: [
+    {
+      key: "bug-error-detection",
+      label: "Bug & Error Detection",
+      icon: Bug,
+      description: "Comprehensive bug tracking, security findings, and error monitoring dashboard",
+      badge: "New"
+    },
     {
       key: "cloudflare-settings",
       label: "Cloudflare CDN",

@@ -62,6 +62,7 @@ import SocialMediaSettings from "./SocialMediaSettings";
 import VerificationManagement from "./VerificationManagement";
 import UserUpgradeApplications from "./UserUpgradeApplications";
 import UserLevelManagement from "./UserLevelManagement";
+import { BugErrorDashboard } from "./diagnostics/BugErrorDashboard";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -203,6 +204,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <PropertyFiltersManagement filterType="all" title="New Project Filters" description="Manage filters for new development projects" />;
       case "error-monitoring":
         return <ErrorMonitoringDashboard />;
+      case "bug-error-detection":
+        return <BugErrorDashboard />;
       default:
         return <AdminOverview />;
     }
