@@ -48,12 +48,63 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Require authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('send-email: Missing Authorization header');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Authorization required' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Verify the user's token
+    const supabaseAuth = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: userError } = await supabaseAuth.auth.getUser();
+    if (userError || !user) {
+      console.error('send-email: Invalid user token', userError);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log('send-email: Authenticated user:', user.id);
+
+    // Use service role for database operations
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
     const { to, subject, template, variables, html, text }: EmailRequest = await req.json();
+    
+    // Validate recipient - only allow sending to the authenticated user's email or approved admin operations
+    const toAddresses = Array.isArray(to) ? to : [to];
+    
+    // Check if user is admin for sending to other recipients
+    const { data: isAdmin } = await supabase.rpc('has_role', { 
+      user_id: user.id, 
+      role: 'admin' 
+    });
+    
+    // Non-admins can only send to their own email
+    if (!isAdmin) {
+      const userEmail = user.email?.toLowerCase();
+      const allToOwnEmail = toAddresses.every(addr => addr.toLowerCase() === userEmail);
+      if (!allToOwnEmail) {
+        console.error('send-email: Non-admin attempted to send to other addresses');
+        return new Response(
+          JSON.stringify({ success: false, error: 'You can only send emails to your own address' }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
 
     // Fetch SMTP config
     const { data: smtpData } = await supabase
