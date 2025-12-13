@@ -1,7 +1,24 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { sectionCategories } from "./navigationSections";
+import { 
+  LayoutDashboard, 
+  Users, 
+  Building2, 
+  Wrench, 
+  Settings, 
+  Cpu,
+  type LucideIcon 
+} from "lucide-react";
+
+const categoryIcons: Record<string, LucideIcon> = {
+  "core-management": LayoutDashboard,
+  "user-management": Users,
+  "property-management": Building2,
+  "vendor-services": Wrench,
+  "technical": Cpu,
+  "settings": Settings,
+};
 
 interface NavigationCategoryProps {
   category: string;
@@ -11,10 +28,12 @@ interface NavigationCategoryProps {
 
 const NavigationCategory = ({ category, activeSection, onSectionChange }: NavigationCategoryProps) => {
   const sections = sectionCategories[category as keyof typeof sectionCategories] || [];
+  const CategoryIcon = categoryIcons[category] || LayoutDashboard;
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-medium bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent uppercase tracking-wider">
+      <h3 className="text-sm font-medium bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent uppercase tracking-wider flex items-center gap-2">
+        <CategoryIcon className="h-4 w-4" />
         {category.replace('-', ' ')}
       </h3>
       <div className="grid gap-3">
