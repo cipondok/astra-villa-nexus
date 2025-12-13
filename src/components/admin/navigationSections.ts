@@ -41,7 +41,11 @@ import {
   Map,
   Cloud,
   ShieldCheck,
-  Bug
+  Bug,
+  FileWarning,
+  ClipboardList,
+  DatabaseZap,
+  Cpu
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -339,29 +343,22 @@ export const navigationSections = {
       badge: "New"
     },
     {
-      key: "cloudflare-settings",
-      label: "Cloudflare CDN",
-      icon: Cloud,
-      description: "Configure Cloudflare CDN, caching, security, and performance optimization",
-      badge: "New"
-    },
-    {
-      key: "database-management",
-      label: "Database Management",
-      icon: Database,
-      description: "Manage database tables and entries"
+      key: "error-logs",
+      label: "Error Logs",
+      icon: FileWarning,
+      description: "Monitor 404 errors and other page errors with IP tracking"
     },
     {
       key: "database-errors",
       label: "Database Errors",
-      icon: AlertTriangle,
+      icon: DatabaseZap,
       description: "Monitor and fix database errors automatically"
     },
     {
-      key: "error-logs",
-      label: "Error Logs",
-      icon: AlertTriangle,
-      description: "Monitor 404 errors and other page errors with IP tracking"
+      key: "system-reports",
+      label: "System Reports",
+      icon: ClipboardList,
+      description: "Generate system reports and logs"
     },
     {
       key: "security-monitoring",
@@ -372,14 +369,21 @@ export const navigationSections = {
     {
       key: "performance-monitor",
       label: "Performance Monitor",
-      icon: Activity,
+      icon: Cpu,
       description: "Monitor app performance, cache usage, and optimizations"
     },
     {
-      key: "system-reports",
-      label: "System Reports",
-      icon: FileText,
-      description: "Generate system reports and logs"
+      key: "database-management",
+      label: "Database Management",
+      icon: Database,
+      description: "Manage database tables and entries"
+    },
+    {
+      key: "cloudflare-settings",
+      label: "Cloudflare CDN",
+      icon: Cloud,
+      description: "Configure Cloudflare CDN, caching, security, and performance optimization",
+      badge: "New"
     },
     {
       key: "report-export",
