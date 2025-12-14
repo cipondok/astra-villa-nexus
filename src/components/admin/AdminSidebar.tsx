@@ -12,8 +12,27 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { navigationSections, sectionTitles, categories } from './navigationSections';
-import { ChevronRight } from 'lucide-react';
+import { 
+  ChevronRight, 
+  LayoutDashboard, 
+  Users, 
+  Building2, 
+  Wrench, 
+  Settings, 
+  Cpu,
+  type LucideIcon 
+} from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+
+const categoryIcons: Record<string, LucideIcon> = {
+  "overview": LayoutDashboard,
+  "core-management": LayoutDashboard,
+  "user-management": Users,
+  "property-management": Building2,
+  "vendor-services": Wrench,
+  "technical": Cpu,
+  "settings": Settings,
+};
 
 interface AdminSidebarProps {
   activeSection: string;
@@ -86,10 +105,14 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                 <SidebarGroup className="py-0.5">
                   <CollapsibleTrigger asChild>
                     <SidebarGroupLabel className="group/label flex items-center gap-2 cursor-pointer hover:bg-accent/30 rounded-md px-2 py-1.5 transition-all text-[10px]">
-                      <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform text-muted-foreground group-data-[state=open]/collapsible:rotate-90" />
+                      {(() => {
+                        const CategoryIcon = categoryIcons[category] || LayoutDashboard;
+                        return <CategoryIcon className="h-4 w-4 shrink-0 text-primary" />;
+                      })()}
                       <span className="font-semibold uppercase tracking-wider text-muted-foreground opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden">
                         {sectionTitles[category as keyof typeof sectionTitles]}
                       </span>
+                      <ChevronRight className="h-3 w-3 shrink-0 transition-transform text-muted-foreground group-data-[state=open]/collapsible:rotate-90 ml-auto opacity-0 group-hover/sidebar:opacity-100" />
                     </SidebarGroupLabel>
                   </CollapsibleTrigger>
 
