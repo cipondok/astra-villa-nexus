@@ -88,7 +88,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   return (
     <div ref={sidebarRef} className="group/sidebar">
       <Sidebar className="w-8 hover:w-56 transition-all duration-300 border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
-        <SidebarContent className="px-1 py-2">
+        <SidebarContent className="px-0 py-2">
           {categories.map((category) => {
             const sections = navigationSections[category as keyof typeof navigationSections];
             if (!sections || sections.length === 0) return null;
@@ -104,7 +104,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               >
                 <SidebarGroup className="py-0.5">
                   <CollapsibleTrigger asChild>
-                    <SidebarGroupLabel className="group/label flex items-center gap-2 cursor-pointer hover:bg-accent/30 rounded-md px-2 py-1.5 transition-all text-[10px]">
+                    <SidebarGroupLabel className="group/label flex items-center justify-center group-hover/sidebar:justify-start gap-2 cursor-pointer hover:bg-accent/30 rounded-md px-1 group-hover/sidebar:px-2 py-1.5 transition-all text-[10px]">
                       {(() => {
                         const CategoryIcon = categoryIcons[category] || LayoutDashboard;
                         return <CategoryIcon className="h-4 w-4 shrink-0 text-primary" />;
@@ -129,7 +129,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                                 onClick={() => handleNavClick(section.key)}
                                 isActive={isActive}
                                 className={`
-                                  relative transition-all duration-200 h-8 text-xs justify-center group-hover/sidebar:justify-start px-2
+                                  relative transition-all duration-200 h-8 text-xs justify-center group-hover/sidebar:justify-start px-1 group-hover/sidebar:px-2
                                   ${isActive 
                                     ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-sm hover:from-primary/90 hover:to-primary/70' 
                                     : 'hover:bg-accent/40'
