@@ -67,9 +67,9 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   }, [activeSection]);
 
   return (
-    <div ref={sidebarRef}>
-      <Sidebar className="border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
-        <SidebarContent className="px-1.5 py-2">
+    <div ref={sidebarRef} className="group/sidebar">
+      <Sidebar className="w-12 hover:w-56 transition-all duration-300 border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
+        <SidebarContent className="px-1 py-2">
           {categories.map((category) => {
             const sections = navigationSections[category as keyof typeof navigationSections];
             if (!sections || sections.length === 0) return null;
@@ -83,15 +83,13 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                 onOpenChange={(open) => setOpenCategory(open ? category : null)}
                 className="group/collapsible"
               >
-                <SidebarGroup className="py-1">
+                <SidebarGroup className="py-0.5">
                   <CollapsibleTrigger asChild>
-                    <SidebarGroupLabel className="group/label flex items-center justify-between cursor-pointer hover:bg-accent/30 rounded-md px-2 py-1.5 transition-all text-[10px]">
-                      <span className="font-semibold uppercase tracking-wider text-muted-foreground">
+                    <SidebarGroupLabel className="group/label flex items-center gap-2 cursor-pointer hover:bg-accent/30 rounded-md px-2 py-1.5 transition-all text-[10px]">
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform text-muted-foreground group-data-[state=open]/collapsible:rotate-90" />
+                      <span className="font-semibold uppercase tracking-wider text-muted-foreground opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden">
                         {sectionTitles[category as keyof typeof sectionTitles]}
                       </span>
-                      {!isCollapsed && (
-                        <ChevronRight className="h-3 w-3 transition-transform text-muted-foreground/60 group-data-[state=open]/collapsible:rotate-90" />
-                      )}
                     </SidebarGroupLabel>
                   </CollapsibleTrigger>
 
@@ -103,31 +101,32 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                           const isActive = section.key === activeSection;
 
                           return (
-                            <SidebarMenuItem key={section.key}>
+                            <SidebarMenuItem key={section.key} className="relative group/item">
                               <SidebarMenuButton
                                 onClick={() => handleNavClick(section.key)}
                                 isActive={isActive}
                                 className={`
-                                  relative group/item transition-all duration-200 h-8 text-xs
+                                  relative transition-all duration-200 h-8 text-xs justify-center group-hover/sidebar:justify-start px-2
                                   ${isActive 
                                     ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-sm hover:from-primary/90 hover:to-primary/70' 
                                     : 'hover:bg-accent/40'
                                   }
                                 `}
-                                tooltip={isCollapsed ? section.label : undefined}
                               >
-                                <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
-                                {!isCollapsed && (
-                                  <span className="flex-1 font-medium truncate">
-                                    {section.label}
-                                  </span>
-                                )}
-                                {!isCollapsed && section.badge && (
-                                  <span className="text-[9px] bg-destructive/20 text-destructive px-1.5 py-0.5 rounded-full font-medium">
+                                <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
+                                <span className="flex-1 font-medium truncate opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300 ml-2 whitespace-nowrap">
+                                  {section.label}
+                                </span>
+                                {section.badge && (
+                                  <span className="text-[9px] bg-destructive/20 text-destructive px-1.5 py-0.5 rounded-full font-medium opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300">
                                     {section.badge}
                                   </span>
                                 )}
                               </SidebarMenuButton>
+                              {/* Tooltip on hover when collapsed */}
+                              <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded shadow-lg opacity-0 group-hover/item:opacity-100 group-hover/sidebar:hidden pointer-events-none whitespace-nowrap z-50 transition-opacity">
+                                {section.label}
+                              </div>
                             </SidebarMenuItem>
                           );
                         })}
