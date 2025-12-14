@@ -87,8 +87,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
   return (
     <div ref={sidebarRef} className="group/sidebar h-full">
-      <Sidebar className="!w-[52px] hover:!w-56 transition-all duration-400 ease-out border-r border-border/20 bg-background/95 backdrop-blur-md">
-        <SidebarContent className="px-0 py-2 space-y-0.5">
+      <Sidebar className="!w-11 hover:!w-52 transition-all duration-300 border-r border-border/20 bg-background">
+        <SidebarContent className="p-1 space-y-0.5">
           {categories.map((category) => {
             const sections = navigationSections[category as keyof typeof navigationSections];
             if (!sections || sections.length === 0) return null;
@@ -105,20 +105,20 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               >
                 <SidebarGroup className="p-0">
                   <CollapsibleTrigger asChild>
-                    <SidebarGroupLabel className="group/label flex items-center gap-2.5 cursor-pointer hover:bg-accent/50 active:bg-accent mx-1 px-2 py-2 rounded-lg transition-colors duration-200">
-                      <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center shrink-0 group-hover/label:bg-primary/20 transition-colors">
+                    <SidebarGroupLabel className="group/label flex items-center gap-2 cursor-pointer hover:bg-accent/50 p-1 rounded-md transition-colors">
+                      <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
                         <CategoryIcon className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground/70 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200 whitespace-nowrap truncate flex-1">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-foreground/70 opacity-0 group-hover/sidebar:opacity-100 transition-opacity whitespace-nowrap truncate flex-1">
                         {sectionTitles[category as keyof typeof sectionTitles]}
                       </span>
-                      <ChevronRight className="h-3 w-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 opacity-0 group-hover/sidebar:opacity-100 shrink-0" />
+                      <ChevronRight className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]/collapsible:rotate-90 opacity-0 group-hover/sidebar:opacity-100 shrink-0" />
                     </SidebarGroupLabel>
                   </CollapsibleTrigger>
 
-                  <CollapsibleContent className="animate-accordion-down">
-                    <SidebarGroupContent className="pt-0.5 pb-1">
-                      <SidebarMenu className="space-y-0.5 px-1">
+                  <CollapsibleContent>
+                    <SidebarGroupContent className="py-0.5">
+                      <SidebarMenu className="space-y-0.5">
                         {sections.map((section) => {
                           const Icon = section.icon;
                           const isActive = section.key === activeSection;
@@ -129,27 +129,26 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                                 onClick={() => handleNavClick(section.key)}
                                 isActive={isActive}
                                 className={`
-                                  h-8 text-[11px] rounded-md transition-all duration-200 px-2 gap-2.5
+                                  h-7 text-[10px] rounded-md transition-colors p-1 gap-2
                                   ${isActive 
-                                    ? 'bg-primary text-primary-foreground shadow-sm' 
-                                    : 'hover:bg-accent/60 text-muted-foreground hover:text-foreground'
+                                    ? 'bg-primary text-primary-foreground' 
+                                    : 'hover:bg-accent/50 text-muted-foreground hover:text-foreground'
                                   }
                                 `}
                               >
-                                <div className="w-6 h-6 flex items-center justify-center shrink-0">
-                                  <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-primary-foreground' : ''}`} />
+                                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                                  <Icon className={`h-3 w-3 ${isActive ? 'text-primary-foreground' : ''}`} />
                                 </div>
-                                <span className="font-medium truncate opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200 whitespace-nowrap flex-1">
+                                <span className="font-medium truncate opacity-0 group-hover/sidebar:opacity-100 transition-opacity whitespace-nowrap flex-1">
                                   {section.label}
                                 </span>
                                 {section.badge && (
-                                  <span className="text-[8px] bg-destructive text-destructive-foreground px-1.5 py-0.5 rounded-full font-semibold opacity-0 group-hover/sidebar:opacity-100 transition-opacity shrink-0">
+                                  <span className="text-[8px] bg-destructive text-destructive-foreground px-1 py-0.5 rounded-full font-semibold opacity-0 group-hover/sidebar:opacity-100 shrink-0">
                                     {section.badge}
                                   </span>
                                 )}
                               </SidebarMenuButton>
-                              {/* Tooltip when collapsed */}
-                              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover text-popover-foreground text-[10px] rounded-md shadow-md border border-border opacity-0 group-hover/item:opacity-100 group-hover/sidebar:hidden pointer-events-none whitespace-nowrap z-50">
+                              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 bg-popover text-popover-foreground text-[9px] rounded shadow border border-border opacity-0 group-hover/item:opacity-100 group-hover/sidebar:hidden pointer-events-none whitespace-nowrap z-50">
                                 {section.label}
                               </div>
                             </SidebarMenuItem>
