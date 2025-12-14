@@ -87,7 +87,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
   return (
     <div ref={sidebarRef} className="group/sidebar">
-      <Sidebar className="w-12 hover:w-56 transition-all duration-300 border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
+      <Sidebar className="w-8 hover:w-56 transition-all duration-300 border-r border-border/30 bg-gradient-to-b from-background to-muted/10">
         <SidebarContent className="px-1 py-2">
           {categories.map((category) => {
             const sections = navigationSections[category as keyof typeof navigationSections];
