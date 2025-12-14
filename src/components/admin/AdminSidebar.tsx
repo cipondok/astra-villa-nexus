@@ -20,18 +20,29 @@ import {
   Wrench, 
   Settings, 
   Cpu,
+  Coins,
+  Headphones,
+  ShoppingBag,
+  BarChart3,
+  FileText,
+  HelpCircle,
   type LucideIcon 
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const categoryIcons: Record<string, LucideIcon> = {
   "overview": LayoutDashboard,
-  "core-management": LayoutDashboard,
-  "user-management": Users,
-  "property-management": Building2,
-  "vendor-services": Wrench,
+  "astra-token": Coins,
+  "tools": Wrench,
+  "core-management": Users,
+  "customer-service": Headphones,
+  "vendor-management": ShoppingBag,
+  "analytics-monitoring": BarChart3,
+  "content-settings": FileText,
+  "system-settings": Settings,
   "technical": Cpu,
-  "settings": Settings,
+  "features": Building2,
+  "help": HelpCircle,
 };
 
 interface AdminSidebarProps {
@@ -105,7 +116,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               >
                 <SidebarGroup className="p-0">
                   <CollapsibleTrigger asChild>
-                    <SidebarGroupLabel className="group/label flex items-center gap-2 cursor-pointer hover:bg-accent/50 p-1 rounded-md transition-colors">
+                    <SidebarGroupLabel className="group/label relative flex items-center gap-2 cursor-pointer hover:bg-accent/50 p-1 rounded-md transition-colors">
                       <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
                         <CategoryIcon className="h-4 w-4 text-primary" />
                       </div>
@@ -113,6 +124,10 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                         {sectionTitles[category as keyof typeof sectionTitles]}
                       </span>
                       <ChevronRight className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]/collapsible:rotate-90 opacity-0 group-hover/sidebar:opacity-100 shrink-0" />
+                      {/* Category tooltip when collapsed */}
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover text-popover-foreground text-[10px] rounded-md shadow-lg border border-border opacity-0 group-hover/label:opacity-100 group-hover/sidebar:!opacity-0 pointer-events-none whitespace-nowrap z-50 font-medium">
+                        {sectionTitles[category as keyof typeof sectionTitles]}
+                      </div>
                     </SidebarGroupLabel>
                   </CollapsibleTrigger>
 
@@ -148,7 +163,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                                   </span>
                                 )}
                               </SidebarMenuButton>
-                              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 bg-popover text-popover-foreground text-[9px] rounded shadow border border-border opacity-0 group-hover/item:opacity-100 group-hover/sidebar:hidden pointer-events-none whitespace-nowrap z-50">
+                              {/* Menu item tooltip when collapsed */}
+                              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover text-popover-foreground text-[10px] rounded-md shadow-lg border border-border opacity-0 group-hover/item:opacity-100 group-hover/sidebar:!opacity-0 pointer-events-none whitespace-nowrap z-50">
                                 {section.label}
                               </div>
                             </SidebarMenuItem>
