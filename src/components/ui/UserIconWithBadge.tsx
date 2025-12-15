@@ -108,6 +108,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 type="button"
                 variant="ghost"
                 size="sm"
+                onPointerDown={(e) => e.preventDefault()}
                 onClick={(e) => e.preventDefault()}
                 onFocusCapture={(e) => e.stopPropagation()}
                 className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-10 lg:h-10 p-0 rounded-full transition-all shrink-0 group"
@@ -216,7 +217,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
               </p>
               <div className="flex items-center gap-1 mt-0.5">
                 <span 
-                  className="text-[9px] px-2 py-0.5 rounded-full font-semibold"
+                  className="text-[11px] sm:text-[11px] px-2 py-0.5 rounded-full font-semibold"
                   style={{ 
                     background: membershipGradient,
                     color: 'white',
