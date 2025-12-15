@@ -111,15 +111,23 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
               >
                 {/* Membership Badge - Top Center */}
                 <div 
-                  className={`absolute -top-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10 ${membershipLevel === 'diamond' ? 'animate-pulse' : ''}`}
+                  className={
+                    `absolute -top-2.5 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10 ` +
+                    (membershipLevel === 'diamond' ? 'animate-pulse' : '')
+                  }
                   style={{ 
                     background: membershipGradient,
                     boxShadow: membershipLevel === 'diamond' 
-                      ? '0 2px 12px rgba(139, 92, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.4)' 
+                      ? '0 2px 14px rgba(139, 92, 246, 0.65), 0 0 24px rgba(6, 182, 212, 0.5)' 
                       : `0 2px 8px ${membershipConfig.color}60`
                   }}
                 >
-                  <MembershipIcon className={`h-3 w-3 text-white drop-shadow-sm ${membershipLevel === 'diamond' ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
+                  <MembershipIcon
+                    className={
+                      `h-3.5 w-3.5 text-white drop-shadow-sm ` +
+                      (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
+                    }
+                  />
                 </div>
                 
                 {/* User Avatar or Default Icon */}
@@ -127,7 +135,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                   {hasAvatar ? (
                     <img 
                       src={profile.avatar_url} 
-                      alt="User" 
+                      alt="User profile" 
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -194,22 +202,30 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
             <div className="relative w-11 h-11 flex-shrink-0">
               {/* Membership Badge - Top */}
               <div 
-                className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-background z-10 ${membershipLevel === 'diamond' ? 'animate-pulse' : ''}`}
+                className={
+                  `absolute -top-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg border-2 border-background z-10 ` +
+                  (membershipLevel === 'diamond' ? 'animate-pulse' : '')
+                }
                 style={{ 
                   background: membershipGradient,
                   boxShadow: membershipLevel === 'diamond' 
-                    ? '0 2px 12px rgba(139, 92, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.4)' 
+                    ? '0 2px 14px rgba(139, 92, 246, 0.65), 0 0 24px rgba(6, 182, 212, 0.5)' 
                     : `0 2px 8px ${membershipConfig.color}60`
                 }}
               >
-                <MembershipIcon className={`h-3 w-3 text-white drop-shadow-sm ${membershipLevel === 'diamond' ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
+                <MembershipIcon
+                  className={
+                    `h-3.5 w-3.5 text-white drop-shadow-sm ` +
+                    (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
+                  }
+                />
               </div>
               {/* Avatar or Default Icon */}
               <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-600 to-slate-800 dark:from-slate-500 dark:to-slate-700 flex items-center justify-center shadow-sm mt-1.5 overflow-hidden">
                 {hasAvatar ? (
                   <img 
                     src={profile.avatar_url} 
-                    alt="User" 
+                    alt="User profile" 
                     className="w-full h-full object-cover"
                   />
                 ) : (

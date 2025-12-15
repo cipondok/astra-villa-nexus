@@ -24,27 +24,35 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Close mobile menu when clicking outside
+  // Close mobile menu when clicking outside (robust on mobile + desktop)
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+    const handlePointerDown = (event: PointerEvent) => {
       if (!isOpen) return;
-      
-      const target = event.target as Node;
+
+      const target = event.target as Node | null;
+      if (!target) return;
+
       const isInsideMenu = mobileMenuRef.current?.contains(target);
       const isMenuButton = menuButtonRef.current?.contains(target);
-      
+
       // Only close if clicking outside both menu and button
       if (!isInsideMenu && !isMenuButton) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-    
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+
+    // Use capture phase so it still fires even if some elements stop propagation
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    document.addEventListener('keydown', handleKeyDown);
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('pointerdown', handlePointerDown, true);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen]);
 
