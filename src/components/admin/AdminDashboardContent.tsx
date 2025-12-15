@@ -63,6 +63,7 @@ import VerificationManagement from "./VerificationManagement";
 import UserUpgradeApplications from "./UserUpgradeApplications";
 import UserLevelManagement from "./UserLevelManagement";
 import { BugErrorDashboard } from "./diagnostics/BugErrorDashboard";
+import VisitorAnalytics from "./VisitorAnalytics";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -98,6 +99,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <EmailSettings />;
       case "indonesian-payment-config":
         return <IndonesianPaymentMerchantConfig />;
+      case "visitor-analytics":
+        return <VisitorAnalytics />;
       case "analytics":
         return <WebTrafficAnalytics />;
       case "ai-bot-management":

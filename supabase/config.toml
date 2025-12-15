@@ -72,3 +72,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.transcribe-audio]
     verify_jwt = true
+
+  [functions.track-visitor]
+    verify_jwt = false

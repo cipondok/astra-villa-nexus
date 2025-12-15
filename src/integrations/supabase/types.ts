@@ -1821,6 +1821,39 @@ export type Database = {
           },
         ]
       }
+      country_blocks: {
+        Row: {
+          blocked_at: string
+          blocked_by: string | null
+          country_code: string
+          country_name: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          reason: string | null
+        }
+        Insert: {
+          blocked_at?: string
+          blocked_by?: string | null
+          country_code: string
+          country_name: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          reason?: string | null
+        }
+        Update: {
+          blocked_at?: string
+          blocked_by?: string | null
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          reason?: string | null
+        }
+        Relationships: []
+      }
       cs_automation_rules: {
         Row: {
           actions: Json
@@ -3374,6 +3407,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ip_blocks: {
+        Row: {
+          block_count: number | null
+          blocked_at: string
+          blocked_by: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          ip_address: unknown
+          is_permanent: boolean | null
+          reason: string | null
+        }
+        Insert: {
+          block_count?: number | null
+          blocked_at?: string
+          blocked_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          ip_address: unknown
+          is_permanent?: boolean | null
+          reason?: string | null
+        }
+        Update: {
+          block_count?: number | null
+          blocked_at?: string
+          blocked_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_permanent?: boolean | null
+          reason?: string | null
+        }
+        Relationships: []
       }
       live_chat_messages: {
         Row: {
@@ -9554,14 +9623,17 @@ export type Database = {
           country: string | null
           created_at: string
           device_type: string | null
+          exit_page: string | null
           id: string
           ip_address: unknown
+          is_bounce: boolean | null
           os: string | null
           page_path: string
           referrer: string | null
           session_id: string
           user_agent: string | null
           user_id: string | null
+          visit_duration: number | null
           visitor_id: string
         }
         Insert: {
@@ -9570,14 +9642,17 @@ export type Database = {
           country?: string | null
           created_at?: string
           device_type?: string | null
+          exit_page?: string | null
           id?: string
           ip_address?: unknown
+          is_bounce?: boolean | null
           os?: string | null
           page_path: string
           referrer?: string | null
           session_id: string
           user_agent?: string | null
           user_id?: string | null
+          visit_duration?: number | null
           visitor_id: string
         }
         Update: {
@@ -9586,14 +9661,17 @@ export type Database = {
           country?: string | null
           created_at?: string
           device_type?: string | null
+          exit_page?: string | null
           id?: string
           ip_address?: unknown
+          is_bounce?: boolean | null
           os?: string | null
           page_path?: string
           referrer?: string | null
           session_id?: string
           user_agent?: string | null
           user_id?: string | null
+          visit_duration?: number | null
           visitor_id?: string
         }
         Relationships: []
