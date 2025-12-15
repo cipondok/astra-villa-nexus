@@ -211,6 +211,13 @@ export const navigationSections = {
 
   "analytics-monitoring": [
     {
+      key: "visitor-analytics",
+      label: "Visitor Analytics & Access",
+      icon: Globe,
+      description: "Monitor visitor traffic, IP addresses, countries, devices and manage access control",
+      badge: "New"
+    },
+    {
       key: "project-progress",
       label: "Project Progress Monitor",
       icon: TrendingUp,
