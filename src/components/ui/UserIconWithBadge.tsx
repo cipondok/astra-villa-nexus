@@ -49,7 +49,17 @@ const MEMBERSHIP_ICONS: Record<string, React.ComponentType<{ className?: string 
   vip: Star,
   gold: Award,
   platinum: Gem,
-  diamond: Crown,
+  diamond: Gem, // Using Gem for diamond
+};
+
+// Special gradient colors for each membership level
+const MEMBERSHIP_GRADIENTS: Record<string, string> = {
+  basic: 'linear-gradient(135deg, #6b7280, #9ca3af)',
+  verified: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+  vip: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+  gold: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+  platinum: 'linear-gradient(135deg, #64748b, #94a3b8)',
+  diamond: 'linear-gradient(135deg, #06b6d4, #8b5cf6, #ec4899)', // Rainbow gradient for diamond
 };
 
 const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate: undefined }) => {
@@ -85,6 +95,8 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
 
   const membershipConfig = getMembershipConfig(membershipLevel);
   const MembershipIcon = MEMBERSHIP_ICONS[membershipLevel] || Shield;
+  const membershipGradient = MEMBERSHIP_GRADIENTS[membershipLevel] || MEMBERSHIP_GRADIENTS.basic;
+  const hasAvatar = profile?.avatar_url;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
@@ -95,24 +107,32 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative w-9 h-9 sm:w-10 sm:h-10 lg:w-9 lg:h-9 p-0 rounded-xl bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0 group"
+                className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-10 lg:h-10 p-0 rounded-xl bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0 group"
               >
                 {/* Membership Badge - Top Center */}
                 <div 
-                  className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10 animate-pulse"
+                  className={`absolute -top-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10 ${membershipLevel === 'diamond' ? 'animate-pulse' : ''}`}
                   style={{ 
-                    background: `linear-gradient(135deg, ${membershipConfig.color}, ${membershipConfig.color}dd)`,
-                    boxShadow: `0 2px 8px ${membershipConfig.color}60`
+                    background: membershipGradient,
+                    boxShadow: membershipLevel === 'diamond' 
+                      ? '0 2px 12px rgba(139, 92, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.4)' 
+                      : `0 2px 8px ${membershipConfig.color}60`
                   }}
                 >
-                  <MembershipIcon className="h-3 w-3 text-white drop-shadow-sm" />
+                  <MembershipIcon className={`h-3 w-3 text-white drop-shadow-sm ${membershipLevel === 'diamond' ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
                 </div>
                 
-                {/* User Avatar */}
-                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg mt-1">
-                  <span className="text-white text-[10px] sm:text-xs lg:text-[10px] font-semibold">
-                    {getUserInitials()}
-                  </span>
+                {/* User Avatar or Default Icon */}
+                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 dark:from-slate-500 dark:to-slate-700 flex items-center justify-center shadow-lg mt-1.5 overflow-hidden">
+                  {hasAvatar ? (
+                    <img 
+                      src={profile.avatar_url} 
+                      alt="User" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="h-4 w-4 sm:h-5 sm:w-5 text-white/90" />
+                  )}
                 </div>
                 
                 {/* Notification Badge - Bottom Right */}
@@ -169,37 +189,45 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         sideOffset={8}
       >
         {/* User Profile Header with Membership */}
-        <DropdownMenuLabel className="p-2 sm:p-2.5 lg:p-2 border-b border-border/30 opacity-100">
-          <div className="flex items-center gap-2">
-            <div className="relative w-10 h-10 flex-shrink-0">
+        <DropdownMenuLabel className="p-2.5 border-b border-border/30 opacity-100">
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-11 h-11 flex-shrink-0">
               {/* Membership Badge - Top */}
               <div 
-                className="absolute -top-1 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-background z-10"
+                className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-background z-10 ${membershipLevel === 'diamond' ? 'animate-pulse' : ''}`}
                 style={{ 
-                  background: `linear-gradient(135deg, ${membershipConfig.color}, ${membershipConfig.color}dd)`,
-                  boxShadow: `0 2px 8px ${membershipConfig.color}60`
+                  background: membershipGradient,
+                  boxShadow: membershipLevel === 'diamond' 
+                    ? '0 2px 12px rgba(139, 92, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.4)' 
+                    : `0 2px 8px ${membershipConfig.color}60`
                 }}
               >
-                <MembershipIcon className="h-3 w-3 text-white drop-shadow-sm" />
+                <MembershipIcon className={`h-3 w-3 text-white drop-shadow-sm ${membershipLevel === 'diamond' ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
               </div>
-              {/* Avatar */}
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-sm mt-1">
-                <span className="text-white text-xs font-semibold">
-                  {getUserInitials()}
-                </span>
+              {/* Avatar or Default Icon */}
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-600 to-slate-800 dark:from-slate-500 dark:to-slate-700 flex items-center justify-center shadow-sm mt-1.5 overflow-hidden">
+                {hasAvatar ? (
+                  <img 
+                    src={profile.avatar_url} 
+                    alt="User" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="h-5 w-5 text-white/90" />
+                )}
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-[11px] sm:text-xs text-foreground truncate">
+              <p className="font-medium text-xs text-foreground truncate">
                 {profile?.full_name || user?.email}
               </p>
               <div className="flex items-center gap-1 mt-0.5">
                 <span 
                   className="text-[9px] px-2 py-0.5 rounded-full font-semibold"
                   style={{ 
-                    background: `linear-gradient(135deg, ${membershipConfig.color}30, ${membershipConfig.color}15)`,
-                    color: membershipConfig.color,
-                    border: `1px solid ${membershipConfig.color}40`
+                    background: membershipGradient,
+                    color: 'white',
+                    boxShadow: membershipLevel === 'diamond' ? '0 1px 6px rgba(139, 92, 246, 0.4)' : 'none'
                   }}
                 >
                   {membershipConfig.label}
