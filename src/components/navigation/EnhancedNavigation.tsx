@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, Shield, Settings, Headphones } from "lucide-react";
@@ -21,6 +21,32 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   const { user, signOut, profile } = useAuth();
   const { themeSettings } = useThemeSettings();
   const navigate = useNavigate();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (!isOpen) return;
+      
+      const target = event.target as Node;
+      const isInsideMenu = mobileMenuRef.current?.contains(target);
+      const isMenuButton = menuButtonRef.current?.contains(target);
+      
+      // Only close if clicking outside both menu and button
+      if (!isInsideMenu && !isMenuButton) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const { data: adminData } = useQuery({
     queryKey: ['admin-status', user?.id],
@@ -75,6 +101,11 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
   const handleAdminClick = () => {
     navigate('/admin');
+    setIsOpen(false);
+  };
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
     setIsOpen(false);
   };
 
@@ -171,6 +202,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
               <Button
+                ref={menuButtonRef}
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(!isOpen)}
@@ -185,17 +217,20 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="lg:hidden dropdown-ios border-t border-border/30 mt-2 mx-3 mb-3">
+        <div 
+          ref={mobileMenuRef}
+          className="lg:hidden dropdown-ios border-t border-border/30 mt-2 mx-3 mb-3"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="p-4 space-y-3">
             {navItems.map((item) => (
-              <Link
+              <button
                 key={item.name}
-                to={item.path}
-                className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleNavClick(item.path)}
+                className="block w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
               >
                 {item.name}
-              </Link>
+              </button>
             ))}
             
             {user ? (
