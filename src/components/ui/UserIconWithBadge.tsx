@@ -105,8 +105,11 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
+                onClick={(e) => e.preventDefault()}
+                onFocusCapture={(e) => e.stopPropagation()}
                 className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-10 lg:h-10 p-0 rounded-xl bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0 group"
               >
                 {/* Membership Badge - Top Center */}
@@ -195,6 +198,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
         className="w-44 sm:w-52 lg:w-52 p-0 backdrop-blur-md bg-background/70 border-border/30 shadow-xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2" 
         align="end"
         sideOffset={8}
+        onCloseAutoFocus={(e) => e.preventDefault()}
       >
         {/* User Profile Header with Membership */}
         <DropdownMenuLabel className="p-2.5 border-b border-border/30 opacity-100">
