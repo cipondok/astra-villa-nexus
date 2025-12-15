@@ -71,6 +71,15 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleOpenChange = (open: boolean) => {
+    // Prevent scroll jump on mobile Safari/Chrome when dropdown auto-focuses
+    if (open) {
+      const y = window.scrollY;
+      requestAnimationFrame(() => window.scrollTo({ top: y, left: 0 }));
+    }
+    setIsOpen(open);
+  };
+
   const handleSignOut = async () => {
     await signOut();
     setIsOpen(false);
@@ -99,7 +108,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
   const hasAvatar = profile?.avatar_url;
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
       <TooltipProvider delayDuration={200}>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -108,9 +117,6 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 type="button"
                 variant="ghost"
                 size="sm"
-                onPointerDown={(e) => e.preventDefault()}
-                onClick={(e) => e.preventDefault()}
-                onFocusCapture={(e) => e.stopPropagation()}
                 className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-10 lg:h-10 p-0 rounded-full transition-all shrink-0 group"
               >
                 {/* Main Icon - Membership Status Icon when logged in */}
