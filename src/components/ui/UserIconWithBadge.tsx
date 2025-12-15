@@ -11,7 +11,12 @@ import {
   Building2,
   Heart,
   MessageSquare,
-  Bell
+  Bell,
+  Shield,
+  Star,
+  Gem,
+  Award,
+  CheckCircle2
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,19 +26,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { useUserMembership } from "@/hooks/useUserMembership";
+import { getMembershipConfig, MEMBERSHIP_LEVELS } from "@/types/membership";
 
 interface UserIconWithBadgeProps {
   onNavigate?: (path: string) => void;
 }
 
+const MEMBERSHIP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  basic: Shield,
+  verified: CheckCircle2,
+  vip: Star,
+  gold: Award,
+  platinum: Gem,
+  diamond: Crown,
+};
+
 const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate: undefined }) => {
   const { user, profile, signOut } = useAuth();
   const { unreadCount } = useNotifications();
   const { data: roles = [] } = useUserRoles();
+  const { membershipLevel, verificationStatus } = useUserMembership();
   
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -60,49 +83,122 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
     return user?.email?.[0]?.toUpperCase() || 'U';
   };
 
+  const membershipConfig = getMembershipConfig(membershipLevel);
+  const MembershipIcon = MEMBERSHIP_ICONS[membershipLevel] || Shield;
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-8 lg:h-8 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0"
-        >
-          <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg">
-            <span className="text-white text-[10px] sm:text-xs lg:text-[10px] font-semibold">
-              {getUserInitials()}
-            </span>
-          </div>
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-8 lg:h-8 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0 group"
+              >
+                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg">
+                  <span className="text-white text-[10px] sm:text-xs lg:text-[10px] font-semibold">
+                    {getUserInitials()}
+                  </span>
+                </div>
+                
+                {/* Membership Badge */}
+                <div 
+                  className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center shadow-md border border-white/50"
+                  style={{ backgroundColor: membershipConfig.color }}
+                >
+                  <MembershipIcon className="h-2.5 w-2.5 text-white" />
+                </div>
+                
+                {/* Notification Badge */}
+                {unreadCount > 0 && (
+                  <Badge className="absolute -top-1 -left-1 h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4 flex items-center justify-center p-0 bg-red-500 text-white text-[8px] sm:text-xs lg:text-[8px] animate-pulse">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </Badge>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
           
-          {/* Notification Badge */}
-          {unreadCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4 flex items-center justify-center p-0 bg-red-500 text-white text-[8px] sm:text-xs lg:text-[8px] animate-pulse">
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </Badge>
+          {/* Hover Tooltip with Membership Details */}
+          {!isOpen && (
+            <TooltipContent 
+              side="bottom" 
+              align="end"
+              className="p-2 bg-popover/95 backdrop-blur-md border-border/50 shadow-xl"
+            >
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-6 h-6 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: membershipConfig.color }}
+                >
+                  <MembershipIcon className="h-3.5 w-3.5 text-white" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-foreground">{membershipConfig.label} Member</p>
+                  <p className="text-[9px] text-muted-foreground">
+                    {verificationStatus === 'verified' ? '✓ Verified' : 'Click for options'}
+                  </p>
+                </div>
+              </div>
+              {membershipConfig.benefits.length > 0 && (
+                <div className="mt-1.5 pt-1.5 border-t border-border/30">
+                  <p className="text-[8px] text-muted-foreground mb-0.5">Benefits:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {membershipConfig.benefits.slice(0, 2).map((benefit, i) => (
+                      <span key={i} className="text-[8px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">
+                        {benefit}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </TooltipContent>
           )}
-        </Button>
-      </DropdownMenuTrigger>
+        </Tooltip>
+      </TooltipProvider>
       
       <DropdownMenuContent 
         className="w-44 sm:w-52 lg:w-52 p-0 backdrop-blur-md bg-background/70 border-border/30 shadow-xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2" 
         align="end"
         sideOffset={8}
       >
-        {/* User Profile Header */}
+        {/* User Profile Header with Membership */}
         <DropdownMenuLabel className="p-2 sm:p-2.5 lg:p-2 border-b border-border/30 opacity-100">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-sm flex-shrink-0">
-              <span className="text-white text-[10px] sm:text-xs font-semibold">
-                {getUserInitials()}
-              </span>
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-9 lg:h-9 flex-shrink-0">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-sm">
+                <span className="text-white text-[10px] sm:text-xs font-semibold">
+                  {getUserInitials()}
+                </span>
+              </div>
+              {/* Membership Badge in Header */}
+              <div 
+                className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center shadow-md border border-white/50"
+                style={{ backgroundColor: membershipConfig.color }}
+              >
+                <MembershipIcon className="h-2.5 w-2.5 text-white" />
+              </div>
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-medium text-[10px] sm:text-xs text-foreground truncate">
                 {profile?.full_name || user?.email}
               </p>
-              <p className="text-[9px] sm:text-[10px] text-muted-foreground capitalize">
-                {roles[0]?.replace('_', ' ') || 'User'}
-              </p>
+              <div className="flex items-center gap-1">
+                <span 
+                  className="text-[8px] px-1.5 py-0.5 rounded-full font-medium"
+                  style={{ 
+                    backgroundColor: `${membershipConfig.color}20`,
+                    color: membershipConfig.color 
+                  }}
+                >
+                  {membershipConfig.label}
+                </span>
+                {verificationStatus === 'verified' && (
+                  <CheckCircle2 className="h-2.5 w-2.5 text-green-500" />
+                )}
+              </div>
             </div>
           </div>
         </DropdownMenuLabel>
