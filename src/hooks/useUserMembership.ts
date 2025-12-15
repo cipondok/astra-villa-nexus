@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { MembershipLevel, getMembershipFromUserLevel } from '@/types/membership';
+import { useUserRoles } from '@/hooks/useUserRoles';
 
 interface UserMembershipData {
   membershipLevel: MembershipLevel;
@@ -18,7 +19,10 @@ interface UserMembershipData {
 
 export function useUserMembership(userId?: string): UserMembershipData {
   const { user, profile } = useAuth();
+  const { data: roles = [] } = useUserRoles();
   const targetUserId = userId || user?.id;
+
+  const isAdmin = roles.includes('admin') || roles.includes('super_admin');
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['user-membership', targetUserId],
@@ -57,17 +61,20 @@ export function useUserMembership(userId?: string): UserMembershipData {
     ? (Array.isArray(data.user_levels) ? data.user_levels[0] : data.user_levels)
     : null;
 
-  const membershipLevel = getMembershipFromUserLevel(userLevel?.name);
+  // Admins get Diamond level by default if no level is set
+  const membershipLevel: MembershipLevel = isAdmin && !userLevel?.name 
+    ? 'diamond' 
+    : getMembershipFromUserLevel(userLevel?.name);
 
   return {
     membershipLevel,
-    verificationStatus: data?.verification_status || profile?.verification_status || 'pending',
-    userLevelName: userLevel?.name || null,
+    verificationStatus: isAdmin ? 'verified' : (data?.verification_status || profile?.verification_status || 'pending'),
+    userLevelName: isAdmin && !userLevel?.name ? 'Diamond' : (userLevel?.name || null),
     userLevelId: data?.user_level_id || null,
-    maxProperties: userLevel?.max_properties || 5,
-    maxListings: userLevel?.max_listings || 10,
-    canFeatureListings: userLevel?.can_feature_listings || false,
-    prioritySupport: userLevel?.priority_support || false,
+    maxProperties: isAdmin ? 999 : (userLevel?.max_properties || 5),
+    maxListings: isAdmin ? 999 : (userLevel?.max_listings || 10),
+    canFeatureListings: isAdmin ? true : (userLevel?.can_feature_listings || false),
+    prioritySupport: isAdmin ? true : (userLevel?.priority_support || false),
     isLoading,
     error: error as Error | null
   };

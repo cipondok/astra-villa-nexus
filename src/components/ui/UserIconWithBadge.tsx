@@ -95,25 +95,29 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-8 lg:h-8 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0 group"
+                className="relative w-9 h-9 sm:w-10 sm:h-10 lg:w-9 lg:h-9 p-0 rounded-xl bg-white/20 hover:bg-white/30 transition-all border border-white/30 shrink-0 group"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg">
+                {/* Membership Badge - Top Center */}
+                <div 
+                  className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10 animate-pulse"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${membershipConfig.color}, ${membershipConfig.color}dd)`,
+                    boxShadow: `0 2px 8px ${membershipConfig.color}60`
+                  }}
+                >
+                  <MembershipIcon className="h-3 w-3 text-white drop-shadow-sm" />
+                </div>
+                
+                {/* User Avatar */}
+                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg mt-1">
                   <span className="text-white text-[10px] sm:text-xs lg:text-[10px] font-semibold">
                     {getUserInitials()}
                   </span>
                 </div>
                 
-                {/* Membership Badge */}
-                <div 
-                  className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center shadow-md border border-white/50"
-                  style={{ backgroundColor: membershipConfig.color }}
-                >
-                  <MembershipIcon className="h-2.5 w-2.5 text-white" />
-                </div>
-                
-                {/* Notification Badge */}
+                {/* Notification Badge - Bottom Right */}
                 {unreadCount > 0 && (
-                  <Badge className="absolute -top-1 -left-1 h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4 flex items-center justify-center p-0 bg-red-500 text-white text-[8px] sm:text-xs lg:text-[8px] animate-pulse">
+                  <Badge className="absolute -bottom-0.5 -right-0.5 h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4 flex items-center justify-center p-0 bg-red-500 text-white text-[8px] sm:text-xs lg:text-[8px] animate-pulse border border-white">
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
                 )}
@@ -166,37 +170,42 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
       >
         {/* User Profile Header with Membership */}
         <DropdownMenuLabel className="p-2 sm:p-2.5 lg:p-2 border-b border-border/30 opacity-100">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-9 lg:h-9 flex-shrink-0">
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-sm">
-                <span className="text-white text-[10px] sm:text-xs font-semibold">
+          <div className="flex items-center gap-2">
+            <div className="relative w-10 h-10 flex-shrink-0">
+              {/* Membership Badge - Top */}
+              <div 
+                className="absolute -top-1 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-background z-10"
+                style={{ 
+                  background: `linear-gradient(135deg, ${membershipConfig.color}, ${membershipConfig.color}dd)`,
+                  boxShadow: `0 2px 8px ${membershipConfig.color}60`
+                }}
+              >
+                <MembershipIcon className="h-3 w-3 text-white drop-shadow-sm" />
+              </div>
+              {/* Avatar */}
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-sm mt-1">
+                <span className="text-white text-xs font-semibold">
                   {getUserInitials()}
                 </span>
               </div>
-              {/* Membership Badge in Header */}
-              <div 
-                className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center shadow-md border border-white/50"
-                style={{ backgroundColor: membershipConfig.color }}
-              >
-                <MembershipIcon className="h-2.5 w-2.5 text-white" />
-              </div>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-[10px] sm:text-xs text-foreground truncate">
+              <p className="font-medium text-[11px] sm:text-xs text-foreground truncate">
                 {profile?.full_name || user?.email}
               </p>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 mt-0.5">
                 <span 
-                  className="text-[8px] px-1.5 py-0.5 rounded-full font-medium"
+                  className="text-[9px] px-2 py-0.5 rounded-full font-semibold"
                   style={{ 
-                    backgroundColor: `${membershipConfig.color}20`,
-                    color: membershipConfig.color 
+                    background: `linear-gradient(135deg, ${membershipConfig.color}30, ${membershipConfig.color}15)`,
+                    color: membershipConfig.color,
+                    border: `1px solid ${membershipConfig.color}40`
                   }}
                 >
                   {membershipConfig.label}
                 </span>
                 {verificationStatus === 'verified' && (
-                  <CheckCircle2 className="h-2.5 w-2.5 text-green-500" />
+                  <CheckCircle2 className="h-3 w-3 text-green-500" />
                 )}
               </div>
             </div>
