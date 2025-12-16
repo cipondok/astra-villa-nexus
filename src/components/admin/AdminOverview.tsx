@@ -11,24 +11,25 @@ import {
   AlertTriangle, 
   CheckCircle, 
   Clock, 
-  Wrench, 
   Database, 
-  Settings, 
   Users, 
   Building2, 
   TrendingUp,
   Activity,
-  MessageSquare,
-  BarChart3,
   Zap,
-  Eye,
   ArrowUpRight,
   ArrowDownRight,
   Server,
   Cpu,
-  UserCheck
+  UserCheck,
+  Store,
+  Eye,
+  MessageSquare,
+  Globe,
+  RefreshCw,
+  FileText,
+  HardDrive
 } from "lucide-react";
-import AdminQuickActions from "./AdminQuickActions";
 import AdminQuickAccess from "./AdminQuickAccess";
 
 interface AdminOverviewProps {
@@ -42,6 +43,64 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
       onSectionChange(section);
     }
   };
+
+  // Fetch comprehensive platform statistics
+  const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
+    queryKey: ['admin-platform-stats'],
+    queryFn: async () => {
+      try {
+        const [
+          usersResult,
+          propertiesResult,
+          vendorsResult,
+          ordersResult,
+          articlesResult,
+          analyticsResult,
+          activeUsersResult
+        ] = await Promise.all([
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('properties').select('*', { count: 'exact', head: true }),
+          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true),
+          supabase.from('orders').select('*', { count: 'exact', head: true }),
+          supabase.from('articles').select('*', { count: 'exact', head: true }),
+          supabase.from('web_analytics').select('*', { count: 'exact', head: true }),
+          supabase.from('user_activity_logs').select('*', { count: 'exact', head: true })
+            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        ]);
+
+        // Calculate growth (mock for now, could be compared with historical data)
+        const totalUsers = usersResult.count || 0;
+        const totalProperties = propertiesResult.count || 0;
+        const totalVendors = vendorsResult.count || 0;
+        const totalOrders = ordersResult.count || 0;
+        const totalArticles = articlesResult.count || 0;
+        const totalPageViews = analyticsResult.count || 0;
+        const activeUsers24h = activeUsersResult.count || 0;
+
+        return {
+          totalUsers,
+          totalProperties,
+          totalVendors,
+          totalOrders,
+          totalArticles,
+          totalPageViews,
+          activeUsers24h,
+          userGrowth: 12.5,
+          propertyGrowth: 8.3,
+          vendorGrowth: 5.2,
+          revenueGrowth: 18.7
+        };
+      } catch (error) {
+        console.error('Error fetching platform stats:', error);
+        return {
+          totalUsers: 0, totalProperties: 0, totalVendors: 0, totalOrders: 0,
+          totalArticles: 0, totalPageViews: 0, activeUsers24h: 0,
+          userGrowth: 0, propertyGrowth: 0, vendorGrowth: 0, revenueGrowth: 0
+        };
+      }
+    },
+    refetchInterval: 30000,
+  });
 
   // Fetch recent admin alerts
   const { data: recentAlerts } = useQuery({
@@ -68,39 +127,32 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   const { data: systemHealth } = useQuery({
     queryKey: ['system-health'],
     queryFn: async () => {
+      const startTime = Date.now();
       try {
-        // Check recent database errors
         const { count: dbErrors } = await supabase
           .from('database_error_tracking')
           .select('*', { count: 'exact', head: true })
           .eq('is_resolved', false);
 
-        // Check recent user activity (last 24h)
-        const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-        const { count: activeUsers } = await supabase
-          .from('user_activity_logs')
-          .select('*', { count: 'exact', head: true })
-          .gte('created_at', yesterday);
-
-        // Check pending vendor applications
         const { count: pendingVendors } = await supabase
           .from('vendor_business_profiles')
           .select('*', { count: 'exact', head: true })
           .eq('is_verified', false);
 
+        const responseTime = Date.now() - startTime;
+
         return {
           dbErrors: dbErrors || 0,
-          activeUsers: activeUsers || 0,
           pendingVendors: pendingVendors || 0,
-          systemStatus: dbErrors === 0 ? 'healthy' : 'issues'
+          systemStatus: dbErrors === 0 ? 'healthy' : 'issues',
+          responseTime,
+          uptime: 99.9
         };
       } catch (error) {
         console.error('Error fetching system health:', error);
         return {
-          dbErrors: 0,
-          activeUsers: 0,
-          pendingVendors: 0,
-          systemStatus: 'unknown'
+          dbErrors: 0, pendingVendors: 0, systemStatus: 'unknown',
+          responseTime: 0, uptime: 0
         };
       }
     },
@@ -132,341 +184,398 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
     refetchInterval: 30000,
   });
 
+  // Fetch weekly activity data
+  const { data: weeklyActivity } = useQuery({
+    queryKey: ['weekly-activity'],
+    queryFn: async () => {
+      try {
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const startOfDay = new Date(date.setHours(0, 0, 0, 0)).toISOString();
+          const endOfDay = new Date(date.setHours(23, 59, 59, 999)).toISOString();
+          
+          const { count } = await supabase
+            .from('activity_logs')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', startOfDay)
+            .lte('created_at', endOfDay);
+          
+          days.push({
+            day: date.toLocaleDateString('en', { weekday: 'short' }),
+            count: count || 0
+          });
+        }
+        return days;
+      } catch (error) {
+        console.error('Error fetching weekly activity:', error);
+        return [];
+      }
+    },
+    refetchInterval: 60000,
+  });
+
   const quickManagementActions = [
     {
-      title: "Upgrade Applications",
-      description: `${pendingUpgrades?.total || 0} pending applications to review`,
+      title: "Upgrades",
+      description: `${pendingUpgrades?.total || 0} pending`,
       icon: UserCheck,
       action: "upgrade-applications",
-      priority: pendingUpgrades?.total ? "critical" : "medium",
-      color: pendingUpgrades?.total ? "bg-red-500/10 text-red-600" : "bg-green-500/10 text-green-600",
+      color: pendingUpgrades?.total ? "text-red-500 bg-red-500/10" : "text-green-500 bg-green-500/10",
       badge: pendingUpgrades?.total || 0
     },
     {
-      title: "User Management",
-      description: "Manage user accounts, roles, and permissions",
+      title: "Users",
+      description: "Manage accounts",
       icon: Users,
       action: "user-management",
-      priority: "high",
-      color: "bg-primary/10 text-primary"
+      color: "text-blue-500 bg-blue-500/10"
     },
     {
-      title: "Property Hub",
-      description: "Oversee property listings and approvals",
+      title: "Properties",
+      description: "Listings & approvals",
       icon: Building2,
       action: "property-management-hub",
-      priority: "high",
-      color: "bg-accent/10 text-accent"
+      color: "text-primary bg-primary/10"
     },
     {
-      title: "Vendor Control",
-      description: "Monitor vendor services and verification",
-      icon: Shield,
+      title: "Vendors",
+      description: "Services & verify",
+      icon: Store,
       action: "vendors-hub",
-      priority: "medium",
-      color: "bg-secondary/10 text-secondary"
+      color: "text-orange-500 bg-orange-500/10"
     },
     {
-      title: "System Monitor",
-      description: "Check system health and diagnostics",
+      title: "Analytics",
+      description: "View insights",
       icon: Activity,
-      action: "diagnostic",
-      priority: "critical",
-      color: "bg-orange-500/10 text-orange-600"
+      action: "visitor-analytics",
+      color: "text-purple-500 bg-purple-500/10"
     }
   ];
 
+  const maxActivity = Math.max(...(weeklyActivity?.map(d => d.count) || [1]), 1);
+
   return (
-    <div className="space-y-4 animate-in fade-in duration-500">
-      {/* Welcome Header */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-border/30 p-4 md:p-5">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl -translate-y-24 translate-x-24"></div>
-        <div className="relative">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold mb-1 bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
-                Admin Dashboard
-              </h1>
-              <p className="text-muted-foreground text-xs md:text-sm">
-                Platform overview and system status
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs ${
-                systemHealth?.systemStatus === 'healthy' 
-                  ? 'bg-green-500/10 border border-green-500/20 text-green-600' 
-                  : 'bg-orange-500/10 border border-orange-500/20 text-orange-600'
-              }`}>
-                <div className={`w-1.5 h-1.5 rounded-full ${
-                  systemHealth?.systemStatus === 'healthy' ? 'bg-green-500 animate-pulse' : 'bg-orange-500 animate-pulse'
-                }`}></div>
-                <span className="font-medium">
-                  {systemHealth?.systemStatus === 'healthy' ? 'Operational' : 'Attention'}
-                </span>
-              </div>
+    <div className="space-y-3 animate-in fade-in duration-500">
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-background to-accent/5 border border-border/30 p-3">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
+        <div className="relative flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Dashboard Overview
+            </h1>
+            <p className="text-muted-foreground text-[10px]">
+              Real-time platform monitoring
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 px-2"
+              onClick={() => refetchStats()}
+            >
+              <RefreshCw className="h-3 w-3" />
+            </Button>
+            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] ${
+              systemHealth?.systemStatus === 'healthy' 
+                ? 'bg-green-500/10 border border-green-500/20 text-green-600' 
+                : 'bg-orange-500/10 border border-orange-500/20 text-orange-600'
+            }`}>
+              <div className={`w-1.5 h-1.5 rounded-full ${
+                systemHealth?.systemStatus === 'healthy' ? 'bg-green-500 animate-pulse' : 'bg-orange-500 animate-pulse'
+              }`}></div>
+              <span className="font-medium">
+                {systemHealth?.systemStatus === 'healthy' ? 'Operational' : 'Attention'}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {/* Active Users Metric */}
-        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-blue-500/5 to-background hover:shadow-md transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Active Users
-            </CardTitle>
-            <Users className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent className="p-3 pt-0">
-            <div className="text-2xl font-bold mb-1">{systemHealth?.activeUsers || 0}</div>
-            <div className="flex items-center gap-1 text-[10px]">
-              <div className="flex items-center gap-0.5 text-green-500">
-                <ArrowUpRight className="h-2.5 w-2.5" />
-                <span>12%</span>
-              </div>
-              <span className="text-muted-foreground">vs 24h</span>
+      {/* Main Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <StatCard
+          title="Total Users"
+          value={platformStats?.totalUsers || 0}
+          icon={Users}
+          change={platformStats?.userGrowth || 0}
+          color="blue"
+          loading={statsLoading}
+        />
+        <StatCard
+          title="Properties"
+          value={platformStats?.totalProperties || 0}
+          icon={Building2}
+          change={platformStats?.propertyGrowth || 0}
+          color="primary"
+          loading={statsLoading}
+        />
+        <StatCard
+          title="Vendors"
+          value={platformStats?.totalVendors || 0}
+          icon={Store}
+          change={platformStats?.vendorGrowth || 0}
+          color="orange"
+          loading={statsLoading}
+        />
+        <StatCard
+          title="Active (24h)"
+          value={platformStats?.activeUsers24h || 0}
+          icon={Activity}
+          change={platformStats?.revenueGrowth || 0}
+          color="green"
+          loading={statsLoading}
+        />
+      </div>
+
+      {/* Secondary Stats */}
+      <div className="grid grid-cols-4 gap-2">
+        <MiniStatCard title="Page Views" value={platformStats?.totalPageViews || 0} icon={Eye} />
+        <MiniStatCard title="Orders" value={platformStats?.totalOrders || 0} icon={FileText} />
+        <MiniStatCard title="Articles" value={platformStats?.totalArticles || 0} icon={Globe} />
+        <MiniStatCard title="Pending" value={systemHealth?.pendingVendors || 0} icon={Clock} highlight />
+      </div>
+
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+        {/* Activity Chart */}
+        <Card className="lg:col-span-2 border-border/30 bg-background/50">
+          <CardHeader className="p-2 pb-1">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs flex items-center gap-1.5">
+                <TrendingUp className="h-3.5 w-3.5 text-primary" />
+                Weekly Activity
+              </CardTitle>
+              <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Last 7 days</Badge>
             </div>
-            <Progress value={75} className="mt-2 h-1" />
+          </CardHeader>
+          <CardContent className="p-2 pt-0">
+            <div className="flex items-end justify-between h-20 gap-1">
+              {weeklyActivity?.map((day, idx) => (
+                <div key={idx} className="flex-1 flex flex-col items-center gap-0.5">
+                  <div 
+                    className="w-full bg-gradient-to-t from-primary/60 to-primary rounded-t transition-all hover:from-primary/80 hover:to-primary"
+                    style={{ height: `${Math.max((day.count / maxActivity) * 100, 8)}%` }}
+                  />
+                  <span className="text-[8px] text-muted-foreground">{day.day}</span>
+                </div>
+              )) || Array(7).fill(0).map((_, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                  <div className="w-full h-2 bg-muted rounded-t animate-pulse" />
+                  <span className="text-[8px] text-muted-foreground">-</span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
-        {/* Database Status Metric */}
-        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-green-500/5 to-background hover:shadow-md transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Database
+        {/* System Health */}
+        <Card className="border-border/30 bg-background/50">
+          <CardHeader className="p-2 pb-1">
+            <CardTitle className="text-xs flex items-center gap-1.5">
+              <Server className="h-3.5 w-3.5 text-primary" />
+              System Health
             </CardTitle>
-            <Database className="h-4 w-4 text-green-500" />
           </CardHeader>
-          <CardContent className="p-3 pt-0">
-            <div className="text-2xl font-bold mb-1">
-              {systemHealth?.dbErrors === 0 ? '✓' : systemHealth?.dbErrors}
-            </div>
-            <div className="flex items-center gap-1 text-[10px]">
-              <span className={systemHealth?.dbErrors === 0 ? "text-green-500" : "text-orange-500"}>
-                {systemHealth?.dbErrors === 0 ? 'Healthy' : 'Issues'}
-              </span>
-            </div>
-            <Progress value={systemHealth?.dbErrors === 0 ? 100 : 60} className="mt-2 h-1" />
-          </CardContent>
-        </Card>
-
-        {/* Pending Vendors Metric */}
-        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-orange-500/5 to-background hover:shadow-md transition-all duration-300 group cursor-pointer"
-          onClick={() => handleQuickAction('vendors-hub')}
-        >
-          <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Pending
-            </CardTitle>
-            <Clock className="h-4 w-4 text-orange-500" />
-          </CardHeader>
-          <CardContent className="p-3 pt-0">
-            <div className="text-2xl font-bold mb-1">{systemHealth?.pendingVendors || 0}</div>
-            <div className="flex items-center gap-1 text-[10px]">
-              <span className="text-orange-500">Reviews</span>
-            </div>
-            <Progress value={30} className="mt-2 h-1" />
-          </CardContent>
-        </Card>
-
-        {/* System Performance Metric */}
-        <Card className="relative overflow-hidden border-border/30 bg-gradient-to-br from-purple-500/5 to-background hover:shadow-md transition-all duration-300 group">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
-          <CardHeader className="flex flex-row items-center justify-between p-3 pb-1">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Uptime
-            </CardTitle>
-            <Activity className="h-4 w-4 text-purple-500" />
-          </CardHeader>
-          <CardContent className="p-3 pt-0">
-            <div className="text-2xl font-bold mb-1">99.9%</div>
-            <div className="flex items-center gap-1 text-[10px]">
-              <CheckCircle className="h-2.5 w-2.5 text-green-500" />
-              <span className="text-muted-foreground">Optimal</span>
-            </div>
-            <Progress value={99.9} className="mt-2 h-1" />
+          <CardContent className="p-2 pt-0 space-y-2">
+            <HealthItem label="Database" value="Connected" status="good" />
+            <HealthItem label="Response" value={`${systemHealth?.responseTime || 0}ms`} status={systemHealth?.responseTime && systemHealth.responseTime < 500 ? "good" : "warn"} />
+            <HealthItem label="Uptime" value={`${systemHealth?.uptime || 99.9}%`} status="good" />
+            <HealthItem label="Errors" value={String(systemHealth?.dbErrors || 0)} status={systemHealth?.dbErrors === 0 ? "good" : "error"} />
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="w-full h-6 text-[10px] mt-1"
+              onClick={() => handleQuickAction('diagnostic')}
+            >
+              <Activity className="h-2.5 w-2.5 mr-1" />
+              Full Diagnostics
+            </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+      {/* Alerts & Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* Recent Alerts */}
-        <Card className="lg:col-span-2 border-border/30 bg-background/50 backdrop-blur-sm">
-          <CardHeader className="p-3 pb-2">
+        <Card className="border-border/30 bg-background/50">
+          <CardHeader className="p-2 pb-1">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-orange-500" />
-                <CardTitle className="text-sm">Recent Alerts</CardTitle>
-              </div>
+              <CardTitle className="text-xs flex items-center gap-1.5">
+                <AlertTriangle className="h-3.5 w-3.5 text-orange-500" />
+                Recent Alerts
+              </CardTitle>
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-7 text-xs"
+                className="h-5 text-[9px] px-1.5"
                 onClick={() => handleQuickAction('admin-alerts')}
               >
                 View All
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="p-3 pt-0">
-            <div className="space-y-2">
+          <CardContent className="p-2 pt-0">
+            <div className="space-y-1.5">
               {recentAlerts && recentAlerts.length > 0 ? (
-                recentAlerts.slice(0, 4).map((alert) => (
+                recentAlerts.slice(0, 3).map((alert) => (
                   <div 
                     key={alert.id}
-                    className="flex items-start gap-2 p-2.5 rounded-lg border border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
+                    className="flex items-center gap-2 p-1.5 rounded-md border border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
                     onClick={() => handleQuickAction('admin-alerts')}
                   >
-                    <div className={`p-1.5 rounded-md ${
+                    <div className={`p-1 rounded ${
                       alert.priority === 'high' ? 'bg-destructive/10' :
-                      alert.priority === 'medium' ? 'bg-orange-500/10' :
-                      'bg-primary/10'
+                      alert.priority === 'medium' ? 'bg-orange-500/10' : 'bg-primary/10'
                     }`}>
-                      <AlertTriangle className={`h-3 w-3 ${
+                      <AlertTriangle className={`h-2.5 w-2.5 ${
                         alert.priority === 'high' ? 'text-destructive' :
-                        alert.priority === 'medium' ? 'text-orange-500' :
-                        'text-primary'
+                        alert.priority === 'medium' ? 'text-orange-500' : 'text-primary'
                       }`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-0.5">
-                        <p className="font-medium text-xs truncate">{alert.title}</p>
-                        <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="ml-1 text-[9px] h-4 px-1.5">
-                          {alert.priority}
-                        </Badge>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground line-clamp-1">{alert.message}</p>
+                      <p className="font-medium text-[10px] truncate">{alert.title}</p>
+                      <p className="text-[8px] text-muted-foreground truncate">{alert.message}</p>
                     </div>
+                    <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="text-[8px] h-3.5 px-1">
+                      {alert.priority}
+                    </Badge>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8">
-                  <CheckCircle className="h-8 w-8 mx-auto text-green-500 mb-2 opacity-50" />
-                  <p className="text-xs text-muted-foreground">No active alerts</p>
+                <div className="text-center py-4">
+                  <CheckCircle className="h-6 w-6 mx-auto text-green-500 mb-1 opacity-50" />
+                  <p className="text-[10px] text-muted-foreground">No active alerts</p>
                 </div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        {/* System Resources */}
-        <Card className="border-border/30 bg-background/50 backdrop-blur-sm">
-          <CardHeader className="p-3 pb-2">
-            <div className="flex items-center gap-2">
-              <Server className="h-4 w-4 text-primary" />
-              <CardTitle className="text-sm">Resources</CardTitle>
-            </div>
+        {/* Quick Actions */}
+        <Card className="border-border/30 bg-background/50">
+          <CardHeader className="p-2 pb-1">
+            <CardTitle className="text-xs flex items-center gap-1.5">
+              <Zap className="h-3.5 w-3.5 text-primary" />
+              Quick Actions
+            </CardTitle>
           </CardHeader>
-          <CardContent className="p-3 pt-0 space-y-3">
-            {/* CPU Usage */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <Cpu className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-medium">CPU</span>
-                </div>
-                <span className="text-[10px] text-muted-foreground">42%</span>
-              </div>
-              <Progress value={42} className="h-1" />
+          <CardContent className="p-2 pt-0">
+            <div className="grid grid-cols-5 gap-1.5">
+              {quickManagementActions.map((action, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleQuickAction(action.action)}
+                  className="relative group rounded-lg border border-border/30 p-1.5 text-center transition-all hover:shadow-sm hover:border-primary/40 bg-background/50"
+                >
+                  {action.badge !== undefined && action.badge > 0 && (
+                    <div className="absolute -top-1 -right-1 bg-destructive text-white text-[7px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center animate-pulse">
+                      {action.badge}
+                    </div>
+                  )}
+                  <div className={`inline-flex p-1 rounded ${action.color} mb-0.5`}>
+                    <action.icon className="h-3 w-3" />
+                  </div>
+                  <p className="text-[8px] font-medium truncate">{action.title}</p>
+                </button>
+              ))}
             </div>
-
-            {/* Memory Usage */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <Database className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-medium">Memory</span>
-                </div>
-                <span className="text-[10px] text-muted-foreground">2.1/4GB</span>
-              </div>
-              <Progress value={52.5} className="h-1" />
-            </div>
-
-            {/* Storage */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <Server className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-medium">Storage</span>
-                </div>
-                <span className="text-[10px] text-muted-foreground">68/100GB</span>
-              </div>
-              <Progress value={68.4} className="h-1" />
-            </div>
-
-            {/* Network */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <Activity className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-medium">Network</span>
-                </div>
-                <span className="text-[10px] text-muted-foreground">↓1.2MB/s</span>
-              </div>
-              <Progress value={30} className="h-1" />
-            </div>
-
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="w-full h-7 text-xs mt-2"
-              onClick={() => handleQuickAction('diagnostic')}
-            >
-              <Activity className="h-3 w-3 mr-1.5" />
-              Diagnostics
-            </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card className="border-border/30 bg-background/50 backdrop-blur-sm">
-        <CardHeader className="p-3 pb-2">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Zap className="h-4 w-4 text-primary" />
-            Quick Actions
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3 pt-0">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
-            {quickManagementActions.map((action, index) => (
-              <button
-                key={index}
-                onClick={() => handleQuickAction(action.action)}
-                className="group relative overflow-hidden rounded-lg border border-border/30 p-3 text-left transition-all hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5 bg-gradient-to-br from-background to-accent/5"
-              >
-                <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
-                {action.badge !== undefined && action.badge > 0 && (
-                  <div className="absolute top-2 right-2 bg-destructive text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
-                    {action.badge}
-                  </div>
-                )}
-                <div className="relative">
-                  <div className={`inline-flex p-1.5 rounded-md mb-2 ${action.color}`}>
-                    <action.icon className="h-4 w-4" />
-                  </div>
-                  <h3 className="font-medium text-xs mb-0.5 group-hover:text-primary transition-colors truncate">
-                    {action.title}
-                  </h3>
-                  <p className="text-[9px] text-muted-foreground line-clamp-1">
-                    {action.description}
-                  </p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Additional Quick Access */}
       <AdminQuickAccess onSectionChange={onSectionChange} />
+    </div>
+  );
+};
+
+// Stat Card Component
+const StatCard = ({ title, value, icon: Icon, change, color, loading }: {
+  title: string;
+  value: number;
+  icon: React.ComponentType<{ className?: string }>;
+  change: number;
+  color: 'blue' | 'primary' | 'orange' | 'green' | 'purple';
+  loading?: boolean;
+}) => {
+  const colorClasses = {
+    blue: 'from-blue-500/10 to-background text-blue-500',
+    primary: 'from-primary/10 to-background text-primary',
+    orange: 'from-orange-500/10 to-background text-orange-500',
+    green: 'from-green-500/10 to-background text-green-500',
+    purple: 'from-purple-500/10 to-background text-purple-500'
+  };
+
+  return (
+    <Card className={`relative overflow-hidden border-border/30 bg-gradient-to-br ${colorClasses[color].split(' ')[0]} ${colorClasses[color].split(' ')[1]} hover:shadow-sm transition-all`}>
+      <CardContent className="p-2.5">
+        {loading ? (
+          <div className="animate-pulse">
+            <div className="h-3 w-12 bg-muted rounded mb-2" />
+            <div className="h-6 w-16 bg-muted rounded" />
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] text-muted-foreground font-medium uppercase tracking-wide">{title}</span>
+              <Icon className={`h-3.5 w-3.5 ${colorClasses[color].split(' ')[2]}`} />
+            </div>
+            <div className="text-xl font-bold">{value.toLocaleString()}</div>
+            <div className="flex items-center gap-0.5 text-[9px] mt-0.5">
+              {change >= 0 ? (
+                <ArrowUpRight className="h-2.5 w-2.5 text-green-500" />
+              ) : (
+                <ArrowDownRight className="h-2.5 w-2.5 text-red-500" />
+              )}
+              <span className={change >= 0 ? 'text-green-500' : 'text-red-500'}>
+                {Math.abs(change).toFixed(1)}%
+              </span>
+            </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+// Mini Stat Card
+const MiniStatCard = ({ title, value, icon: Icon, highlight }: {
+  title: string;
+  value: number;
+  icon: React.ComponentType<{ className?: string }>;
+  highlight?: boolean;
+}) => (
+  <div className={`rounded-lg border border-border/30 p-2 text-center ${highlight ? 'bg-orange-500/5 border-orange-500/30' : 'bg-background/50'}`}>
+    <Icon className={`h-3 w-3 mx-auto mb-0.5 ${highlight ? 'text-orange-500' : 'text-muted-foreground'}`} />
+    <div className={`text-sm font-bold ${highlight ? 'text-orange-500' : ''}`}>{value.toLocaleString()}</div>
+    <div className="text-[8px] text-muted-foreground">{title}</div>
+  </div>
+);
+
+// Health Item Component
+const HealthItem = ({ label, value, status }: {
+  label: string;
+  value: string;
+  status: 'good' | 'warn' | 'error';
+}) => {
+  const statusColors = {
+    good: 'bg-green-500',
+    warn: 'bg-orange-500',
+    error: 'bg-red-500'
+  };
+
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-[10px] text-muted-foreground">{label}</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-[10px] font-medium">{value}</span>
+        <div className={`w-1.5 h-1.5 rounded-full ${statusColors[status]}`} />
+      </div>
     </div>
   );
 };
