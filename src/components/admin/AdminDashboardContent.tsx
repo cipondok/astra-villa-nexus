@@ -300,55 +300,55 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
   };
 
   return (
-    <div className="flex-1 p-3 md:p-4">
+    <div className="flex-1 p-2 md:p-3 lg:p-4">
       {/* Back Navigation & Active Section Indicator */}
       {!isOverview && (
-        <div className="mb-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-primary/5 via-background to-accent/5 border border-border/40">
+        <div className="mb-2 md:mb-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-1 md:gap-2 p-1.5 md:p-2 rounded-lg bg-gradient-to-r from-primary/5 via-background to-accent/5 border border-border/40 overflow-x-auto">
             {/* Back Button */}
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 px-2 gap-1.5 hover:bg-primary/10 transition-all"
+              className="h-6 md:h-7 px-1.5 md:px-2 gap-1 md:gap-1.5 hover:bg-primary/10 transition-all shrink-0"
               onClick={handleBackToDashboard}
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              <span className="text-[10px] font-medium">Back</span>
+              <ArrowLeft className="h-3 w-3 md:h-3.5 md:w-3.5" />
+              <span className="text-[9px] md:text-[10px] font-medium">Back</span>
             </Button>
 
             {/* Breadcrumb Separator */}
-            <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
 
             {/* Home Link */}
             <button
               onClick={handleBackToDashboard}
-              className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-0.5 md:gap-1 text-[9px] md:text-[10px] text-muted-foreground hover:text-primary transition-colors shrink-0"
             >
-              <Home className="h-3 w-3" />
-              Dashboard
+              <Home className="h-2.5 w-2.5 md:h-3 md:w-3" />
+              <span className="hidden xs:inline">Dashboard</span>
             </button>
 
-            <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
 
             {/* Category Badge */}
             {currentSection.category && (
               <>
-                <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50 bg-background/50">
+                <Badge variant="outline" className="text-[8px] md:text-[9px] h-4 md:h-5 px-1 md:px-1.5 border-border/50 bg-background/50 shrink-0">
                   {currentSection.category}
                 </Badge>
-                <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0 hidden sm:block" />
               </>
             )}
 
             {/* Active Section Indicator */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary/10 border border-primary/30">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-semibold text-primary">
+            <div className="flex items-center gap-1 md:gap-2 shrink-0">
+              <div className="flex items-center gap-1 md:gap-1.5 px-1.5 md:px-2 py-0.5 md:py-1 rounded-md bg-primary/10 border border-primary/30">
+                <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[9px] md:text-[10px] font-semibold text-primary truncate max-w-[80px] md:max-w-none">
                   {currentSection.label}
                 </span>
               </div>
-              <Badge variant="secondary" className="text-[8px] h-4 px-1.5 bg-green-500/10 text-green-600 border-green-500/30">
+              <Badge variant="secondary" className="text-[7px] md:text-[8px] h-3.5 md:h-4 px-1 md:px-1.5 bg-green-500/10 text-green-600 border-green-500/30 hidden sm:flex">
                 Active
               </Badge>
             </div>

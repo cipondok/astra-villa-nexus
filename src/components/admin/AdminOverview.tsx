@@ -295,39 +295,40 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   const maxActivity = Math.max(...(weeklyActivity?.map(d => d.count) || [1]), 1);
 
   return (
-    <div className="space-y-3 animate-in fade-in duration-500">
+    <div className="space-y-2 md:space-y-3 animate-in fade-in duration-500">
       {/* Professional Header with System Status */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border/40 shadow-sm">
+      <div className="relative overflow-hidden rounded-lg md:rounded-xl bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border/40 shadow-sm">
         <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,transparent,white)]"></div>
-        <div className="relative p-3">
+        <div className="relative p-2 md:p-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20">
-                <PanelLeft className="h-4 w-4 text-primary-foreground" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="p-1.5 md:p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20">
+                <PanelLeft className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                <h1 className="text-sm md:text-base lg:text-lg font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
                   Admin Control Center
                 </h1>
-                <p className="text-muted-foreground text-[10px]">
+                <p className="text-muted-foreground text-[9px] md:text-[10px]">
                   Real-time platform monitoring & management
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="h-7 px-2 gap-1" onClick={() => refetchStats()}>
-                <RefreshCw className="h-3 w-3" />
-                <span className="text-[10px] hidden sm:inline">Refresh</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <Button variant="ghost" size="sm" className="h-6 md:h-7 px-1.5 md:px-2 gap-1" onClick={() => refetchStats()}>
+                <RefreshCw className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                <span className="text-[9px] md:text-[10px] hidden sm:inline">Refresh</span>
               </Button>
-              <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium transition-all ${
+              <div className={`flex items-center gap-1 md:gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-[9px] md:text-[10px] font-medium transition-all ${
                 systemHealth?.systemStatus === 'healthy' 
                   ? 'bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400' 
                   : 'bg-orange-500/10 border border-orange-500/30 text-orange-600 dark:text-orange-400'
               }`}>
-                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full animate-pulse ${
                   systemHealth?.systemStatus === 'healthy' ? 'bg-green-500' : 'bg-orange-500'
                 }`} />
-                {systemHealth?.systemStatus === 'healthy' ? 'All Systems Operational' : 'Needs Attention'}
+                <span className="hidden xs:inline">{systemHealth?.systemStatus === 'healthy' ? 'All Systems Operational' : 'Needs Attention'}</span>
+                <span className="xs:hidden">{systemHealth?.systemStatus === 'healthy' ? 'OK' : 'Alert'}</span>
               </div>
             </div>
           </div>
@@ -336,34 +337,34 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
       {/* Main Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full h-9 p-1 bg-muted/50 rounded-lg grid grid-cols-3 gap-1">
+        <TabsList className="w-full h-8 md:h-9 p-0.5 md:p-1 bg-muted/50 rounded-lg grid grid-cols-3 gap-0.5 md:gap-1">
           <TabsTrigger 
             value="dashboard" 
-            className={`h-7 text-[10px] rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1`}
+            className="h-7 md:h-7 text-[9px] md:text-[10px] rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-0.5 md:gap-1 px-1 md:px-2"
           >
-            <Home className="h-3 w-3" />
-            Dashboard
+            <Home className="h-2.5 w-2.5 md:h-3 md:w-3" />
+            <span>Dashboard</span>
           </TabsTrigger>
           <TabsTrigger 
             value="control-panel" 
-            className={`h-7 text-[10px] rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1`}
+            className="h-7 md:h-7 text-[9px] md:text-[10px] rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-0.5 md:gap-1 px-1 md:px-2"
           >
-            <Layers className="h-3 w-3" />
-            Control Panel
+            <Layers className="h-2.5 w-2.5 md:h-3 md:w-3" />
+            <span>Control</span>
           </TabsTrigger>
           <TabsTrigger 
             value="quick-actions" 
-            className={`h-7 text-[10px] rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1`}
+            className="h-7 md:h-7 text-[9px] md:text-[10px] rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-0.5 md:gap-1 px-1 md:px-2"
           >
-            <Zap className="h-3 w-3" />
-            Quick Actions
+            <Zap className="h-2.5 w-2.5 md:h-3 md:w-3" />
+            <span>Actions</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Dashboard Tab */}
-        <TabsContent value="dashboard" className="mt-3 space-y-3">
+        <TabsContent value="dashboard" className="mt-2 md:mt-3 space-y-2 md:space-y-3">
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
             <StatCard title="Total Users" value={platformStats?.totalUsers || 0} icon={Users} change={platformStats?.userGrowth || 0} color="blue" loading={statsLoading} />
             <StatCard title="Properties" value={platformStats?.totalProperties || 0} icon={Building2} change={platformStats?.propertyGrowth || 0} color="primary" loading={statsLoading} />
             <StatCard title="Vendors" value={platformStats?.totalVendors || 0} icon={Store} change={platformStats?.vendorGrowth || 0} color="orange" loading={statsLoading} />
@@ -371,28 +372,28 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           </div>
 
           {/* Secondary Stats */}
-          <div className="grid grid-cols-4 gap-2">
-            <MiniStatCard title="Page Views" value={platformStats?.totalPageViews || 0} icon={Eye} />
+          <div className="grid grid-cols-4 gap-1 md:gap-2">
+            <MiniStatCard title="Views" value={platformStats?.totalPageViews || 0} icon={Eye} />
             <MiniStatCard title="Orders" value={platformStats?.totalOrders || 0} icon={FileText} />
             <MiniStatCard title="Articles" value={platformStats?.totalArticles || 0} icon={Globe} />
             <MiniStatCard title="Pending" value={pendingUpgrades?.total || 0} icon={Clock} highlight={!!pendingUpgrades?.total} onClick={() => handleQuickAction('upgrade-applications')} />
           </div>
 
           {/* Activity & Health Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1.5 md:gap-2">
             {/* Activity Chart */}
             <Card className="lg:col-span-2 border-border/30 bg-background/50">
-              <CardHeader className="p-2 pb-1">
+              <CardHeader className="p-1.5 md:p-2 pb-1">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-xs flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-primary" />
+                  <CardTitle className="text-[10px] md:text-xs flex items-center gap-1 md:gap-1.5">
+                    <TrendingUp className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary" />
                     Weekly Activity
                   </CardTitle>
-                  <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Last 7 days</Badge>
+                  <Badge variant="secondary" className="text-[8px] md:text-[9px] h-3.5 md:h-4 px-1 md:px-1.5">7 days</Badge>
                 </div>
               </CardHeader>
-              <CardContent className="p-2 pt-0">
-                <div className="flex items-end justify-between h-16 gap-1">
+              <CardContent className="p-1.5 md:p-2 pt-0">
+                <div className="flex items-end justify-between h-12 md:h-16 gap-0.5 md:gap-1">
                   {weeklyActivity?.map((day, idx) => (
                     <div key={idx} className="flex-1 flex flex-col items-center gap-0.5">
                       <div 
@@ -400,12 +401,12 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                         style={{ height: `${Math.max((day.count / maxActivity) * 100, 8)}%` }}
                         title={`${day.count} activities`}
                       />
-                      <span className="text-[8px] text-muted-foreground">{day.day}</span>
+                      <span className="text-[7px] md:text-[8px] text-muted-foreground">{day.day}</span>
                     </div>
                   )) || Array(7).fill(0).map((_, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
                       <div className="w-full h-2 bg-muted rounded-t animate-pulse" />
-                      <span className="text-[8px] text-muted-foreground">-</span>
+                      <span className="text-[7px] md:text-[8px] text-muted-foreground">-</span>
                     </div>
                   ))}
                 </div>
@@ -414,20 +415,20 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
             {/* System Health */}
             <Card className="border-border/30 bg-background/50">
-              <CardHeader className="p-2 pb-1">
-                <CardTitle className="text-xs flex items-center gap-1.5">
-                  <Server className="h-3.5 w-3.5 text-primary" />
+              <CardHeader className="p-1.5 md:p-2 pb-1">
+                <CardTitle className="text-[10px] md:text-xs flex items-center gap-1 md:gap-1.5">
+                  <Server className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary" />
                   System Health
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-2 pt-0 space-y-1.5">
+              <CardContent className="p-1.5 md:p-2 pt-0 space-y-1 md:space-y-1.5">
                 <HealthItem label="Database" value="Connected" status="good" />
                 <HealthItem label="Response" value={`${systemHealth?.responseTime || 0}ms`} status={systemHealth?.responseTime && systemHealth.responseTime < 500 ? "good" : "warn"} />
                 <HealthItem label="Uptime" value={`${systemHealth?.uptime || 99.9}%`} status="good" />
                 <HealthItem label="Errors" value={String(systemHealth?.dbErrors || 0)} status={systemHealth?.dbErrors === 0 ? "good" : "error"} />
-                <Button variant="outline" size="sm" className="w-full h-6 text-[9px] mt-1" onClick={() => handleQuickAction('diagnostic')}>
-                  <Activity className="h-2.5 w-2.5 mr-1" />
-                  Full Diagnostics
+                <Button variant="outline" size="sm" className="w-full h-5 md:h-6 text-[8px] md:text-[9px] mt-1" onClick={() => handleQuickAction('diagnostic')}>
+                  <Activity className="h-2 w-2 md:h-2.5 md:w-2.5 mr-1" />
+                  Diagnostics
                 </Button>
               </CardContent>
             </Card>
@@ -435,47 +436,47 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
           {/* Alerts Preview */}
           <Card className="border-border/30 bg-background/50">
-            <CardHeader className="p-2 pb-1">
+            <CardHeader className="p-1.5 md:p-2 pb-1">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs flex items-center gap-1.5">
-                  <AlertTriangle className="h-3.5 w-3.5 text-orange-500" />
+                <CardTitle className="text-[10px] md:text-xs flex items-center gap-1 md:gap-1.5">
+                  <AlertTriangle className="h-3 w-3 md:h-3.5 md:w-3.5 text-orange-500" />
                   Recent Alerts
                 </CardTitle>
-                <Button variant="ghost" size="sm" className="h-5 text-[9px] px-1.5" onClick={() => handleQuickAction('admin-alerts')}>
-                  View All <ChevronRight className="h-2.5 w-2.5 ml-0.5" />
+                <Button variant="ghost" size="sm" className="h-4 md:h-5 text-[8px] md:text-[9px] px-1 md:px-1.5" onClick={() => handleQuickAction('admin-alerts')}>
+                  View All <ChevronRight className="h-2 w-2 md:h-2.5 md:w-2.5 ml-0.5" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-2 pt-0">
+            <CardContent className="p-1.5 md:p-2 pt-0">
               <div className="space-y-1">
                 {recentAlerts && recentAlerts.length > 0 ? (
                   recentAlerts.slice(0, 3).map((alert) => (
                     <div 
                       key={alert.id}
-                      className="flex items-center gap-2 p-1.5 rounded-md border border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 md:gap-2 p-1 md:p-1.5 rounded-md border border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
                       onClick={() => handleQuickAction('admin-alerts')}
                     >
-                      <div className={`p-1 rounded ${
+                      <div className={`p-0.5 md:p-1 rounded ${
                         alert.priority === 'high' ? 'bg-destructive/10' :
                         alert.priority === 'medium' ? 'bg-orange-500/10' : 'bg-primary/10'
                       }`}>
-                        <AlertTriangle className={`h-2.5 w-2.5 ${
+                        <AlertTriangle className={`h-2 w-2 md:h-2.5 md:w-2.5 ${
                           alert.priority === 'high' ? 'text-destructive' :
                           alert.priority === 'medium' ? 'text-orange-500' : 'text-primary'
                         }`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-[10px] truncate">{alert.title}</p>
+                        <p className="font-medium text-[9px] md:text-[10px] truncate">{alert.title}</p>
                       </div>
-                      <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="text-[8px] h-3.5 px-1">
+                      <Badge variant={alert.priority === 'high' ? 'destructive' : 'secondary'} className="text-[7px] md:text-[8px] h-3 md:h-3.5 px-0.5 md:px-1">
                         {alert.priority}
                       </Badge>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-3">
-                    <CheckCircle className="h-5 w-5 mx-auto text-green-500 mb-1 opacity-50" />
-                    <p className="text-[10px] text-muted-foreground">No active alerts</p>
+                  <div className="text-center py-2 md:py-3">
+                    <CheckCircle className="h-4 w-4 md:h-5 md:w-5 mx-auto text-green-500 mb-1 opacity-50" />
+                    <p className="text-[9px] md:text-[10px] text-muted-foreground">No active alerts</p>
                   </div>
                 )}
               </div>
@@ -484,8 +485,8 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         </TabsContent>
 
         {/* Control Panel Tab - Smart Selection */}
-        <TabsContent value="control-panel" className="mt-3 space-y-3">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        <TabsContent value="control-panel" className="mt-2 md:mt-3 space-y-2 md:space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-2">
             {controlPanelSections.map((section) => (
               <motion.div
                 key={section.category}
@@ -499,16 +500,16 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                   }`}
                   onClick={() => setSelectedCategory(selectedCategory === section.category ? null : section.category)}
                 >
-                  <CardHeader className="p-2 pb-1">
-                    <div className="flex items-center gap-2">
-                      <div className={`p-1.5 rounded-lg bg-gradient-to-br ${section.color} shadow-sm`}>
-                        <section.icon className="h-3.5 w-3.5 text-white" />
+                  <CardHeader className="p-1.5 md:p-2 pb-1">
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <div className={`p-1 md:p-1.5 rounded-lg bg-gradient-to-br ${section.color} shadow-sm`}>
+                        <section.icon className="h-3 w-3 md:h-3.5 md:w-3.5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[11px] font-semibold truncate">{section.category}</h3>
-                        <p className="text-[9px] text-muted-foreground">{section.items.length} modules</p>
+                        <h3 className="text-[9px] md:text-[11px] font-semibold truncate">{section.category}</h3>
+                        <p className="text-[8px] md:text-[9px] text-muted-foreground">{section.items.length} modules</p>
                       </div>
-                      <ChevronRight className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${
+                      <ChevronRight className={`h-3 w-3 md:h-3.5 md:w-3.5 text-muted-foreground transition-transform ${
                         selectedCategory === section.category ? 'rotate-90' : ''
                       }`} />
                     </div>
@@ -522,8 +523,8 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <CardContent className="p-2 pt-0">
-                          <div className="space-y-1 mt-1 border-t border-border/30 pt-2">
+                        <CardContent className="p-1.5 md:p-2 pt-0">
+                          <div className="space-y-0.5 md:space-y-1 mt-1 border-t border-border/30 pt-1.5 md:pt-2">
                             {section.items.map((item) => (
                               <button
                                 key={item.id}
@@ -531,14 +532,14 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                                   e.stopPropagation();
                                   handleQuickAction(item.id);
                                 }}
-                                className={`w-full flex items-center gap-2 p-1.5 rounded-md text-left transition-all hover:bg-accent/50 active:scale-[0.98] ${section.bgColor}`}
+                                className={`w-full flex items-center gap-1.5 md:gap-2 p-1 md:p-1.5 rounded-md text-left transition-all hover:bg-accent/50 active:scale-[0.98] ${section.bgColor}`}
                               >
-                                <item.icon className={`h-3 w-3 ${section.textColor}`} />
+                                <item.icon className={`h-2.5 w-2.5 md:h-3 md:w-3 ${section.textColor}`} />
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[10px] font-medium">{item.label}</p>
-                                  <p className="text-[8px] text-muted-foreground truncate">{item.description}</p>
+                                  <p className="text-[9px] md:text-[10px] font-medium">{item.label}</p>
+                                  <p className="text-[7px] md:text-[8px] text-muted-foreground truncate">{item.description}</p>
                                 </div>
-                                <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                                <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground" />
                               </button>
                             ))}
                           </div>
@@ -553,11 +554,11 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         </TabsContent>
 
         {/* Quick Actions Tab */}
-        <TabsContent value="quick-actions" className="mt-3 space-y-3">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <TabsContent value="quick-actions" className="mt-2 md:mt-3 space-y-2 md:space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
             {/* Priority Actions */}
             <QuickActionCard
-              title="Upgrade Requests"
+              title="Upgrades"
               value={pendingUpgrades?.total || 0}
               icon={UserCheck}
               color="red"
@@ -565,7 +566,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
               highlight={!!pendingUpgrades?.total}
             />
             <QuickActionCard
-              title="System Alerts"
+              title="Alerts"
               value={recentAlerts?.length || 0}
               icon={Bell}
               color="orange"
@@ -573,7 +574,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
               highlight={!!recentAlerts?.length}
             />
             <QuickActionCard
-              title="User Management"
+              title="Users"
               value={platformStats?.totalUsers || 0}
               icon={Users}
               color="blue"
@@ -590,14 +591,14 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
           {/* Secondary Actions Grid */}
           <Card className="border-border/30 bg-background/50">
-            <CardHeader className="p-2 pb-1">
-              <CardTitle className="text-xs flex items-center gap-1.5">
-                <Zap className="h-3.5 w-3.5 text-primary" />
+            <CardHeader className="p-1.5 md:p-2 pb-1">
+              <CardTitle className="text-[10px] md:text-xs flex items-center gap-1 md:gap-1.5">
+                <Zap className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary" />
                 All Quick Actions
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-2 pt-0">
-              <div className="grid grid-cols-4 md:grid-cols-6 gap-1.5">
+            <CardContent className="p-1.5 md:p-2 pt-0">
+              <div className="grid grid-cols-4 md:grid-cols-6 gap-1 md:gap-1.5">
                 {[
                   { id: 'analytics', icon: BarChart3, label: 'Analytics', color: 'purple' },
                   { id: 'vendors-hub', icon: Store, label: 'Vendors', color: 'orange' },
@@ -606,7 +607,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                   { id: 'database-management', icon: Database, label: 'Database', color: 'blue' },
                   { id: 'security-monitoring', icon: Shield, label: 'Security', color: 'red' },
                   { id: 'visitor-analytics', icon: Eye, label: 'Visitors', color: 'purple' },
-                  { id: 'diagnostic', icon: HardDrive, label: 'Diagnostics', color: 'slate' },
+                  { id: 'diagnostic', icon: HardDrive, label: 'Diagnostic', color: 'slate' },
                   { id: 'project-progress', icon: Gauge, label: 'Progress', color: 'green' },
                   { id: 'search-filters', icon: Filter, label: 'Filters', color: 'blue' },
                   { id: 'smtp-settings', icon: Globe, label: 'Email', color: 'orange' },
@@ -615,10 +616,10 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                   <button
                     key={action.id}
                     onClick={() => handleQuickAction(action.id)}
-                    className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border/30 hover:border-primary/40 hover:bg-accent/30 transition-all active:scale-95"
+                    className="flex flex-col items-center gap-0.5 md:gap-1 p-1.5 md:p-2 rounded-lg border border-border/30 hover:border-primary/40 hover:bg-accent/30 transition-all active:scale-95"
                   >
-                    <action.icon className={`h-4 w-4 text-${action.color}-500`} />
-                    <span className="text-[8px] font-medium text-center">{action.label}</span>
+                    <action.icon className={`h-3 w-3 md:h-4 md:w-4 text-${action.color}-500`} />
+                    <span className="text-[7px] md:text-[8px] font-medium text-center">{action.label}</span>
                   </button>
                 ))}
               </div>
@@ -649,21 +650,21 @@ const StatCard = ({ title, value, icon: Icon, change, color, loading }: {
 
   return (
     <Card className={`relative overflow-hidden border-border/30 bg-gradient-to-br ${colorClasses[color].split(' ')[0]} ${colorClasses[color].split(' ')[1]} hover:shadow-sm transition-all`}>
-      <CardContent className="p-2.5">
+      <CardContent className="p-1.5 md:p-2.5">
         {loading ? (
           <div className="animate-pulse">
-            <div className="h-3 w-12 bg-muted rounded mb-2" />
-            <div className="h-5 w-14 bg-muted rounded" />
+            <div className="h-2.5 md:h-3 w-10 md:w-12 bg-muted rounded mb-1.5 md:mb-2" />
+            <div className="h-4 md:h-5 w-12 md:w-14 bg-muted rounded" />
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[9px] text-muted-foreground font-medium uppercase tracking-wide">{title}</span>
-              <Icon className={`h-3.5 w-3.5 ${colorClasses[color].split(' ')[2]}`} />
+            <div className="flex items-center justify-between mb-0.5 md:mb-1">
+              <span className="text-[8px] md:text-[9px] text-muted-foreground font-medium uppercase tracking-wide">{title}</span>
+              <Icon className={`h-3 w-3 md:h-3.5 md:w-3.5 ${colorClasses[color].split(' ')[2]}`} />
             </div>
-            <div className="text-lg font-bold">{value.toLocaleString()}</div>
-            <div className="flex items-center gap-0.5 text-[9px]">
-              {change >= 0 ? <ArrowUpRight className="h-2.5 w-2.5 text-green-500" /> : <ArrowDownRight className="h-2.5 w-2.5 text-red-500" />}
+            <div className="text-sm md:text-lg font-bold">{value.toLocaleString()}</div>
+            <div className="flex items-center gap-0.5 text-[8px] md:text-[9px]">
+              {change >= 0 ? <ArrowUpRight className="h-2 w-2 md:h-2.5 md:w-2.5 text-green-500" /> : <ArrowDownRight className="h-2 w-2 md:h-2.5 md:w-2.5 text-red-500" />}
               <span className={change >= 0 ? 'text-green-500' : 'text-red-500'}>{Math.abs(change).toFixed(1)}%</span>
             </div>
           </>
@@ -682,14 +683,14 @@ const MiniStatCard = ({ title, value, icon: Icon, highlight, onClick }: {
   onClick?: () => void;
 }) => (
   <div 
-    className={`rounded-lg border border-border/30 p-2 text-center transition-all ${
+    className={`rounded-lg border border-border/30 p-1 md:p-2 text-center transition-all ${
       highlight ? 'bg-orange-500/5 border-orange-500/30 cursor-pointer hover:bg-orange-500/10' : 'bg-background/50'
     } ${onClick ? 'cursor-pointer hover:bg-accent/30' : ''}`}
     onClick={onClick}
   >
-    <Icon className={`h-3 w-3 mx-auto mb-0.5 ${highlight ? 'text-orange-500' : 'text-muted-foreground'}`} />
-    <div className={`text-sm font-bold ${highlight ? 'text-orange-500' : ''}`}>{value.toLocaleString()}</div>
-    <div className="text-[8px] text-muted-foreground">{title}</div>
+    <Icon className={`h-2.5 w-2.5 md:h-3 md:w-3 mx-auto mb-0.5 ${highlight ? 'text-orange-500' : 'text-muted-foreground'}`} />
+    <div className={`text-xs md:text-sm font-bold ${highlight ? 'text-orange-500' : ''}`}>{value.toLocaleString()}</div>
+    <div className="text-[7px] md:text-[8px] text-muted-foreground">{title}</div>
   </div>
 );
 
@@ -698,9 +699,9 @@ const HealthItem = ({ label, value, status }: { label: string; value: string; st
   const statusColors = { good: 'bg-green-500', warn: 'bg-orange-500', error: 'bg-red-500' };
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[10px] text-muted-foreground">{label}</span>
-      <div className="flex items-center gap-1.5">
-        <span className="text-[10px] font-medium">{value}</span>
+      <span className="text-[9px] md:text-[10px] text-muted-foreground">{label}</span>
+      <div className="flex items-center gap-1 md:gap-1.5">
+        <span className="text-[9px] md:text-[10px] font-medium">{value}</span>
         <div className={`w-1.5 h-1.5 rounded-full ${statusColors[status]}`} />
       </div>
     </div>
@@ -730,13 +731,13 @@ const QuickActionCard = ({ title, value, icon: Icon, color, onClick, highlight }
       className={`cursor-pointer transition-all hover:shadow-md active:scale-[0.98] border bg-gradient-to-br ${colorMap[color]} ${highlight ? 'animate-pulse' : ''}`}
       onClick={onClick}
     >
-      <CardContent className="p-3 flex items-center gap-3">
-        <div className={`p-2 rounded-lg bg-background/80`}>
-          <Icon className={`h-4 w-4 ${colorMap[color].split(' ').pop()}`} />
+      <CardContent className="p-2 md:p-3 flex items-center gap-2 md:gap-3">
+        <div className="p-1.5 md:p-2 rounded-lg bg-background/80">
+          <Icon className={`h-3 w-3 md:h-4 md:w-4 ${colorMap[color].split(' ').pop()}`} />
         </div>
         <div>
-          <p className="text-lg font-bold">{value}</p>
-          <p className="text-[9px] text-muted-foreground">{title}</p>
+          <p className="text-sm md:text-lg font-bold">{value}</p>
+          <p className="text-[8px] md:text-[9px] text-muted-foreground">{title}</p>
         </div>
       </CardContent>
     </Card>
