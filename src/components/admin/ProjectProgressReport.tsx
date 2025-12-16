@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,930 +10,554 @@ import {
   CheckCircle2,
   Circle,
   AlertCircle,
-  TrendingUp,
   Database,
   Shield,
   Zap,
   Users,
-  Settings,
   FileText,
   BarChart3,
-  ArrowRight,
   Target,
-  Lightbulb,
-  Award,
-  Clock,
-  Brain,
-  Activity,
   RefreshCw,
-  Stethoscope
+  Building,
+  Store,
+  UserCheck,
+  Activity,
+  TrendingUp,
+  Clock,
+  Globe,
+  Eye,
+  MessageSquare,
+  CreditCard
 } from 'lucide-react';
-import { CodeHealthChecker } from './diagnostics/CodeHealthChecker';
-import { FunctionHealthChecker } from './diagnostics/FunctionHealthChecker';
-import { BugDetectionSystem } from './diagnostics/BugDetectionSystem';
-import { DatabaseHealthChecker } from './diagnostics/DatabaseHealthChecker';
 
-interface ProgressCategory {
+interface SystemMetric {
   name: string;
-  progress: number;
-  status: 'completed' | 'in-progress' | 'pending';
+  current: number;
+  target: number;
   icon: any;
   color: string;
-  tasks: {
-    name: string;
-    completed: boolean;
-    description: string;
-  }[];
-  nextSteps: string[];
-  improvements: string[];
+  description: string;
+}
+
+interface ModuleStatus {
+  name: string;
+  progress: number;
+  status: 'operational' | 'partial' | 'issues';
+  icon: any;
+  metrics: { label: string; value: number | string }[];
 }
 
 const ProjectProgressReport = () => {
   const [refreshKey, setRefreshKey] = useState(0);
-  const [isScanning, setIsScanning] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch real database stats for progress calculation
-  const { data: dbStats } = useQuery({
-    queryKey: ['project-db-stats', refreshKey],
+  // Fetch actual database statistics
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['project-progress-stats', refreshKey],
     queryFn: async () => {
-      const [tables, users, properties, vendors, analytics] = await Promise.all([
+      const [
+        profiles,
+        properties,
+        vendors,
+        agents,
+        propertyOwners,
+        analytics,
+        articles,
+        supportTickets,
+        adminAlerts,
+        activityLogs,
+        chatSessions,
+        errorLogs,
+        vendorServices,
+        bookings,
+        favorites
+      ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).gt('created_at', '2024-01-01'),
         supabase.from('properties').select('*', { count: 'exact', head: true }),
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('web_analytics').select('*', { count: 'exact', head: true })
+        supabase.from('agent_registration_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('property_owner_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('web_analytics').select('*', { count: 'exact', head: true }),
+        supabase.from('articles').select('*', { count: 'exact', head: true }),
+        supabase.from('customer_support_tickets').select('*', { count: 'exact', head: true }),
+        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
+        supabase.from('activity_logs').select('*', { count: 'exact', head: true }),
+        supabase.from('live_chat_sessions').select('*', { count: 'exact', head: true }),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('vendor_services').select('*', { count: 'exact', head: true }),
+        supabase.from('vendor_bookings').select('*', { count: 'exact', head: true }),
+        supabase.from('favorites').select('*', { count: 'exact', head: true })
       ]);
 
       return {
-        hasUsers: (users.count || 0) > 0,
-        hasProperties: (properties.count || 0) > 0,
-        hasVendors: (vendors.count || 0) > 0,
-        hasAnalytics: (analytics.count || 0) > 0,
-        totalUsers: users.count || 0,
-        totalProperties: properties.count || 0,
-        totalVendors: vendors.count || 0
+        users: profiles.count || 0,
+        properties: properties.count || 0,
+        vendors: vendors.count || 0,
+        agents: agents.count || 0,
+        propertyOwners: propertyOwners.count || 0,
+        pageViews: analytics.count || 0,
+        articles: articles.count || 0,
+        tickets: supportTickets.count || 0,
+        unreadAlerts: adminAlerts.count || 0,
+        activities: activityLogs.count || 0,
+        chatSessions: chatSessions.count || 0,
+        pendingErrors: errorLogs.count || 0,
+        services: vendorServices.count || 0,
+        bookings: bookings.count || 0,
+        favorites: favorites.count || 0
       };
     }
   });
 
-  // Diagnostic Data - Code Health
-  const { data: codeIssues = [] } = useQuery({
-    queryKey: ['code-issues', refreshKey],
+  // Fetch database health
+  const { data: dbHealth } = useQuery({
+    queryKey: ['db-health-check', refreshKey],
     queryFn: async () => {
-      // Simulated code analysis - in production, integrate with ESLint, TypeScript compiler
-      return [
-        {
-          id: '1',
-          type: 'error' as const,
-          severity: 'high' as const,
-          file: 'src/components/vendor/VendorPaymentSystem.tsx',
-          line: 145,
-          message: 'Potential null reference error in payment handler',
-          category: 'TypeScript',
-          suggestion: 'Add null check before accessing payment.amount property'
-        },
-        {
-          id: '2',
-          type: 'warning' as const,
-          severity: 'medium' as const,
-          file: 'src/hooks/usePaymentProcessing.ts',
-          line: 67,
-          message: 'Missing error boundary for async operation',
-          category: 'Error Handling',
-          suggestion: 'Wrap async payment call in try-catch block'
-        },
-        {
-          id: '3',
-          type: 'warning' as const,
-          severity: 'low' as const,
-          file: 'src/pages/PropertyDetail.tsx',
-          message: 'Unused import: lodash',
-          category: 'Code Quality',
-          suggestion: 'Remove unused import to reduce bundle size'
-        }
-      ];
-    }
-  });
-
-  // Function Health Status
-  const { data: functionStatus = [] } = useQuery({
-    queryKey: ['function-status', refreshKey],
-    queryFn: async () => {
-      return [
-        {
-          id: '1',
-          name: 'processVendorPayout',
-          module: 'Payment System',
-          status: 'incomplete' as const,
-          completionPercentage: 60,
-          issues: ['Database schema not finalized', 'Stripe webhook handler missing'],
-          dependencies: ['vendor_astra_balances', 'stripe-api'],
-          lastChecked: new Date().toISOString(),
-          estimatedFixTime: '8 hours'
-        },
-        {
-          id: '2',
-          name: 'verifyVendorKYC',
-          module: 'Vendor Management',
-          status: 'broken' as const,
-          completionPercentage: 40,
-          issues: ['BPJS API integration failing', 'Document validation broken'],
-          dependencies: ['bpjs-api', 'document-storage'],
-          lastChecked: new Date().toISOString(),
-          estimatedFixTime: '12 hours'
-        },
-        {
-          id: '3',
-          name: 'generatePropertyReport',
-          module: 'Analytics',
-          status: 'complete' as const,
-          completionPercentage: 100,
-          issues: [],
-          dependencies: ['web_analytics', 'property_stats'],
-          lastChecked: new Date().toISOString()
-        },
-        {
-          id: '4',
-          name: 'optimizeImageUpload',
-          module: 'Media Management',
-          status: 'incomplete' as const,
-          completionPercentage: 75,
-          issues: ['WebP conversion not implemented', 'Progressive loading missing'],
-          dependencies: ['browser-image-compression'],
-          lastChecked: new Date().toISOString(),
-          estimatedFixTime: '6 hours'
-        },
-        {
-          id: '5',
-          name: 'aiPropertyRecommendation',
-          module: 'AI Features',
-          status: 'missing' as const,
-          completionPercentage: 0,
-          issues: ['Not yet implemented', 'Requires OpenAI integration'],
-          dependencies: ['openai-api', 'property_analytics'],
-          lastChecked: new Date().toISOString(),
-          estimatedFixTime: '20 hours'
-        }
-      ];
-    }
-  });
-
-  // Bug Detection
-  const { data: detectedBugs = [] } = useQuery({
-    queryKey: ['detected-bugs', refreshKey],
-    queryFn: async () => {
-      return [
-        {
-          id: '1',
-          type: 'runtime' as const,
-          severity: 'critical' as const,
-          title: 'Payment processing fails for amounts > 10M IDR',
-          description: 'Numeric overflow error when processing large payments',
-          location: 'src/components/vendor/PaymentProcessor.tsx:89',
-          impact: 'High-value transactions cannot be completed',
-          occurrences: 23,
-          firstSeen: '2025-09-28',
-          lastSeen: new Date().toISOString(),
-          status: 'open' as const,
-          stackTrace: 'TypeError: Cannot convert 10000000 to numeric...'
-        },
-        {
-          id: '2',
-          type: 'security' as const,
-          severity: 'high' as const,
-          title: 'Potential SQL injection in search query',
-          description: 'User input not properly sanitized in property search',
-          location: 'src/api/propertySearch.ts:45',
-          impact: 'Database could be compromised',
-          occurrences: 1,
-          firstSeen: new Date().toISOString(),
-          lastSeen: new Date().toISOString(),
-          status: 'open' as const
-        },
-        {
-          id: '3',
-          type: 'performance' as const,
-          severity: 'medium' as const,
-          title: 'Slow query on properties table',
-          description: 'Missing index on city column causing full table scans',
-          location: 'Database: properties table',
-          impact: 'Search results take 3-5 seconds to load',
-          occurrences: 450,
-          firstSeen: '2025-09-25',
-          lastSeen: new Date().toISOString(),
-          status: 'investigating' as const
-        }
-      ];
-    }
-  });
-
-  // Database Health
-  const { data: dbHealthChecks = [] } = useQuery({
-    queryKey: ['db-health', refreshKey],
-    queryFn: async () => {
-      const checks = [];
+      const start = Date.now();
+      const { error } = await supabase.from('profiles').select('id').limit(1);
+      const responseTime = Date.now() - start;
       
-      // Test database connection
-      try {
-        const start = Date.now();
-        const { error } = await supabase.from('profiles').select('count').limit(1).single();
-        const responseTime = Date.now() - start;
-        
-        checks.push({
-          name: 'Database Connection',
-          status: error ? 'error' as const : 'healthy' as const,
-          responseTime,
-          message: error ? 'Failed to connect to database' : 'Connection established successfully',
-          lastChecked: new Date().toISOString()
-        });
-      } catch (e) {
-        checks.push({
-          name: 'Database Connection',
-          status: 'error' as const,
-          message: 'Connection test failed',
-          lastChecked: new Date().toISOString()
-        });
-      }
-
-      // Check RLS policies
-      checks.push({
-        name: 'Row Level Security',
-        status: 'healthy' as const,
-        message: 'RLS enabled on all sensitive tables',
-        lastChecked: new Date().toISOString()
-      });
-
-      // Check backup status
-      checks.push({
-        name: 'Backup System',
-        status: 'healthy' as const,
-        message: 'Last backup: 2 hours ago',
-        lastChecked: new Date().toISOString()
-      });
-
-      // Check for missing indexes
-      checks.push({
-        name: 'Database Indexes',
-        status: 'warning' as const,
-        message: '3 tables missing recommended indexes',
-        lastChecked: new Date().toISOString()
-      });
-
-      return checks;
+      return {
+        isConnected: !error,
+        responseTime,
+        status: responseTime < 100 ? 'excellent' : responseTime < 300 ? 'good' : 'slow'
+      };
     }
   });
 
-  const handleRunDiagnostics = async () => {
-    setIsScanning(true);
+  // Fetch recent activity trend
+  const { data: activityTrend } = useQuery({
+    queryKey: ['activity-trend', refreshKey],
+    queryFn: async () => {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      
+      const { count: thisWeek } = await supabase
+        .from('activity_logs')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', weekAgo.toISOString());
+
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+      
+      const { count: lastWeek } = await supabase
+        .from('activity_logs')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', twoWeeksAgo.toISOString())
+        .lt('created_at', weekAgo.toISOString());
+
+      const change = lastWeek ? ((thisWeek || 0) - lastWeek) / lastWeek * 100 : 0;
+      return { thisWeek: thisWeek || 0, lastWeek: lastWeek || 0, change };
+    }
+  });
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
     setRefreshKey(prev => prev + 1);
-    setTimeout(() => setIsScanning(false), 2000);
+    setTimeout(() => setIsRefreshing(false), 1500);
   };
 
-  const codeHealthScore = Math.round(
-    ((codeIssues.filter(i => i.severity !== 'high').length) / Math.max(codeIssues.length, 1)) * 100
-  );
-
-  const progressCategories: ProgressCategory[] = [
+  // Calculate module statuses based on real data
+  const moduleStatuses: ModuleStatus[] = [
     {
-      name: 'Database & Infrastructure',
-      progress: 100,
-      status: 'completed',
-      icon: Database,
-      color: 'text-green-500',
-      tasks: [
-        { name: 'Database schema design', completed: true, description: 'Complete relational schema with 50+ tables' },
-        { name: 'RLS policies implementation', completed: true, description: 'Row-level security for all tables' },
-        { name: 'Supabase integration', completed: true, description: 'Full backend integration' },
-        { name: 'Data migration scripts', completed: true, description: 'Automated migration system' },
-        { name: 'Backup strategy', completed: true, description: 'Automated backup configuration implemented' },
-        { name: 'Database monitoring', completed: true, description: 'Performance monitoring & alerts active' }
-      ],
-      nextSteps: [
-        'Set up automated database backups',
-        'Implement database monitoring alerts',
-        'Add database performance indexes'
-      ],
-      improvements: [
-        'Implement AI-powered database query optimization for 10x performance gains',
-        'Deploy multi-region database replication for global scale and 99.99% uptime',
-        'Establish automated disaster recovery with point-in-time recovery capabilities'
-      ]
-    },
-    {
-      name: 'User Management & Authentication',
-      progress: 95,
-      status: 'completed',
+      name: 'User Management',
+      progress: stats?.users ? Math.min(100, (stats.users / 100) * 100) : 0,
+      status: stats?.users && stats.users > 10 ? 'operational' : stats?.users ? 'partial' : 'issues',
       icon: Users,
-      color: 'text-blue-500',
-      tasks: [
-        { name: 'User authentication system', completed: true, description: 'Supabase Auth integration' },
-        { name: 'Role-based access control', completed: true, description: 'Admin, vendor, user roles' },
-        { name: 'Profile management', completed: true, description: 'Complete profile system' },
-        { name: 'Email verification system', completed: true, description: 'Email verification with OTP' },
-        { name: 'OTP verification system', completed: true, description: 'SMTP-based OTP delivery' },
-        { name: 'Multi-factor authentication', completed: true, description: 'Email MFA with backup codes' }
-      ],
-      nextSteps: [
-        'Implement multi-factor authentication',
-        'Add social login providers (Google, Facebook)',
-        'Create user onboarding flow'
-      ],
-      improvements: [
-        'Integrate biometric authentication (Face ID, Touch ID) for frictionless secure access',
-        'Deploy AI-powered fraud detection and behavioral analytics for enhanced security',
-        'Implement blockchain-based identity verification for ultimate trust and compliance'
+      metrics: [
+        { label: 'Total Users', value: stats?.users || 0 },
+        { label: 'Agents', value: stats?.agents || 0 },
+        { label: 'Owners', value: stats?.propertyOwners || 0 }
       ]
     },
     {
-      name: 'Property Management System',
-      progress: 95,
-      status: 'completed',
-      icon: FileText,
-      color: 'text-purple-500',
-      tasks: [
-        { name: 'Property listing system', completed: true, description: 'Full CRUD operations' },
-        { name: 'Property approval workflow', completed: true, description: 'Admin approval system' },
-        { name: 'Property search & filters', completed: true, description: 'Advanced filtering' },
-        { name: 'Property analytics', completed: true, description: 'Views, inquiries tracking' },
-        { name: 'Virtual tours integration', completed: true, description: 'Matterport & iframe support' },
-        { name: '3D tour capabilities', completed: true, description: 'Interactive 3D property viewers' }
-      ],
-      nextSteps: [
-        'Complete virtual tours feature',
-        'Add property comparison tool',
-        'Implement property recommendations AI'
-      ],
-      improvements: [
-        'Launch AR/VR property tours with WebXR for immersive viewing experiences',
-        'Deploy AI-powered property valuation engine with market trend predictions',
-        'Create smart investment calculator with ROI forecasting and financing options'
+      name: 'Property System',
+      progress: stats?.properties ? Math.min(100, (stats.properties / 50) * 100) : 0,
+      status: stats?.properties && stats.properties > 5 ? 'operational' : stats?.properties ? 'partial' : 'issues',
+      icon: Building,
+      metrics: [
+        { label: 'Properties', value: stats?.properties || 0 },
+        { label: 'Favorites', value: stats?.favorites || 0 }
       ]
     },
     {
-      name: 'Vendor Management System',
-      progress: 95,
-      status: 'completed',
-      icon: Shield,
-      color: 'text-orange-500',
-      tasks: [
-        { name: 'Vendor registration', completed: true, description: 'Complete onboarding' },
-        { name: 'Service management', completed: true, description: 'Service listing & pricing' },
-        { name: 'Vendor verification', completed: true, description: 'Document verification system' },
-        { name: 'Booking system', completed: true, description: 'Appointment scheduling' },
-        { name: 'Payment processing', completed: true, description: 'Stripe payment gateway integrated' },
-        { name: 'Vendor payment gateway', completed: true, description: 'Astra balance & withdrawal system' }
-      ],
-      nextSteps: [
-        'Complete vendor payment integration',
-        'Add vendor rating & review system',
-        'Implement vendor performance analytics'
-      ],
-      improvements: [
-        'Establish vendor certification and training academy for quality assurance',
-        'Deploy AI-powered smart matching algorithm for optimal vendor-client pairing',
-        'Launch gamified loyalty program with NFT rewards and exclusive benefits'
+      name: 'Vendor Marketplace',
+      progress: stats?.vendors ? Math.min(100, (stats.vendors / 20) * 100) : 0,
+      status: stats?.vendors && stats.vendors > 3 ? 'operational' : stats?.vendors ? 'partial' : 'issues',
+      icon: Store,
+      metrics: [
+        { label: 'Vendors', value: stats?.vendors || 0 },
+        { label: 'Services', value: stats?.services || 0 },
+        { label: 'Bookings', value: stats?.bookings || 0 }
       ]
     },
     {
-      name: 'Analytics & Reporting',
-      progress: 95,
-      status: 'completed',
+      name: 'Analytics & Tracking',
+      progress: stats?.pageViews ? Math.min(100, (stats.pageViews / 1000) * 100) : 0,
+      status: stats?.pageViews && stats.pageViews > 100 ? 'operational' : stats?.pageViews ? 'partial' : 'issues',
       icon: BarChart3,
-      color: 'text-cyan-500',
-      tasks: [
-        { name: 'Web analytics tracking', completed: true, description: 'Page views, sessions' },
-        { name: 'Search analytics', completed: true, description: 'Search behavior tracking' },
-        { name: 'User behavior analytics', completed: true, description: 'User journey mapping' },
-        { name: 'Business intelligence', completed: true, description: 'Advanced reporting & BI dashboards' },
-        { name: 'Real-time dashboards', completed: true, description: 'Live data visualization' },
-        { name: 'Advanced reporting', completed: true, description: 'Comprehensive analytics system' }
-      ],
-      nextSteps: [
-        'Build comprehensive BI dashboards',
-        'Add predictive analytics',
-        'Implement A/B testing framework'
-      ],
-      improvements: [
-        'Integrate predictive analytics with ML models for business intelligence insights',
-        'Build no-code custom report builder for stakeholder-specific dashboards',
-        'Deploy automated insights engine with natural language summaries and alerts'
+      metrics: [
+        { label: 'Page Views', value: stats?.pageViews || 0 },
+        { label: 'Activities', value: stats?.activities || 0 }
       ]
     },
     {
-      name: 'Security & Compliance',
-      progress: 100,
-      status: 'completed',
-      icon: Shield,
-      color: 'text-red-500',
-      tasks: [
-        { name: 'RLS policies', completed: true, description: 'Row-level security implemented' },
-        { name: 'API key management', completed: true, description: 'Secure key storage with encryption' },
-        { name: 'Audit logging', completed: true, description: 'Comprehensive security event tracking' },
-        { name: 'GDPR compliance', completed: true, description: 'Data privacy compliance fully implemented' },
-        { name: 'Data privacy compliance', completed: true, description: 'Privacy policies & data protection' },
-        { name: 'Security scanning', completed: true, description: 'Automated vulnerability scanning active' },
-        { name: 'Automated vulnerability scanning', completed: true, description: 'Continuous security monitoring' }
-      ],
-      nextSteps: [
-        'Complete GDPR compliance implementation',
-        'Set up automated security scanning',
-        'Add intrusion detection system'
-      ],
-      improvements: [
-        'Deploy zero-trust architecture with microsegmentation for enterprise-grade security',
-        'Implement AI-powered threat detection with real-time anomaly identification',
-        'Establish 24/7 SOC (Security Operations Center) with automated incident response'
+      name: 'Support System',
+      progress: stats?.chatSessions ? Math.min(100, 80) : 50,
+      status: stats?.pendingErrors && stats.pendingErrors > 10 ? 'issues' : 'operational',
+      icon: MessageSquare,
+      metrics: [
+        { label: 'Chat Sessions', value: stats?.chatSessions || 0 },
+        { label: 'Tickets', value: stats?.tickets || 0 },
+        { label: 'Pending Errors', value: stats?.pendingErrors || 0 }
       ]
     },
     {
-      name: 'Performance Optimization',
-      progress: 95,
-      status: 'completed',
-      icon: Zap,
-      color: 'text-yellow-500',
-      tasks: [
-        { name: 'Code splitting', completed: true, description: 'Lazy loading components implemented' },
-        { name: 'Image optimization', completed: true, description: 'Compressed assets & lazy loading' },
-        { name: 'Caching strategy', completed: true, description: 'Browser caching & query caching' },
-        { name: 'Database indexing', completed: true, description: 'Query optimization with indexes' },
-        { name: 'Load testing', completed: true, description: 'Performance benchmarking complete' },
-        { name: 'Bundle optimization', completed: true, description: 'Optimized build size' }
-      ],
-      nextSteps: [
-        'Implement comprehensive caching',
-        'Add database query optimization',
-        'Conduct load testing'
-      ],
-      improvements: [
-        'Deploy global CDN with edge computing for sub-100ms response times worldwide',
-        'Implement progressive web app (PWA) with offline-first architecture',
-        'Optimize with AI-powered code splitting and predictive prefetching for instant loads'
+      name: 'Content Management',
+      progress: stats?.articles ? Math.min(100, (stats.articles / 10) * 100) : 0,
+      status: stats?.articles && stats.articles > 3 ? 'operational' : 'partial',
+      icon: FileText,
+      metrics: [
+        { label: 'Articles', value: stats?.articles || 0 },
+        { label: 'Alerts', value: stats?.unreadAlerts || 0 }
       ]
     }
   ];
 
   const overallProgress = Math.round(
-    progressCategories.reduce((sum, cat) => sum + cat.progress, 0) / progressCategories.length
+    moduleStatuses.reduce((sum, mod) => sum + mod.progress, 0) / moduleStatuses.length
   );
 
-  const completedTasks = progressCategories.reduce(
-    (sum, cat) => sum + cat.tasks.filter(t => t.completed).length,
-    0
-  );
+  const operationalCount = moduleStatuses.filter(m => m.status === 'operational').length;
 
-  const totalTasks = progressCategories.reduce((sum, cat) => sum + cat.tasks.length, 0);
-
-  const getStatusBadge = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed':
-        return <Badge className="bg-green-500/10 text-green-500">Completed</Badge>;
-      case 'in-progress':
-        return <Badge className="bg-blue-500/10 text-blue-500">In Progress</Badge>;
-      case 'pending':
-        return <Badge className="bg-gray-500/10 text-gray-500">Pending</Badge>;
-      default:
-        return null;
+      case 'operational': return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
+      case 'partial': return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+      case 'issues': return 'bg-rose-500/10 text-rose-600 border-rose-500/20';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'operational': return 'Operational';
+      case 'partial': return 'Partial';
+      case 'issues': return 'Issues';
+      default: return 'Unknown';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Overall Progress Header */}
-      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardHeader>
-          <div className="flex items-center justify-between">
+    <div className="space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Target className="h-5 w-5 text-primary" />
+          <h1 className="text-lg font-semibold">Project Progress</h1>
+        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="h-8 text-xs gap-1.5"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+
+      {/* Overall Progress Card */}
+      <Card className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border-primary/20">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <CardTitle className="text-3xl font-bold flex items-center gap-3">
-                <Target className="h-8 w-8" />
-                Project Progress Report
-              </CardTitle>
-              <CardDescription className="text-base mt-2">
-                Comprehensive overview of platform development and next steps
-              </CardDescription>
+              <p className="text-xs text-muted-foreground">Overall Progress</p>
+              <p className="text-3xl font-bold text-primary">{overallProgress}%</p>
             </div>
             <div className="text-right">
-              <div className="text-5xl font-bold text-primary">{overallProgress}%</div>
-              <p className="text-sm text-muted-foreground mt-1">Overall Completion</p>
+              <p className="text-xs text-muted-foreground">Modules Status</p>
+              <p className="text-sm font-medium text-emerald-600">{operationalCount}/{moduleStatuses.length} Operational</p>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <Progress value={overallProgress} className="h-4" />
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-2xl font-bold text-green-500">{completedTasks}</div>
-                <p className="text-sm text-muted-foreground">Completed Tasks</p>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-blue-500">{totalTasks - completedTasks}</div>
-                <p className="text-sm text-muted-foreground">Remaining Tasks</p>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-purple-500">{progressCategories.length}</div>
-                <p className="text-sm text-muted-foreground">Active Categories</p>
-              </div>
-            </div>
-          </div>
+          <Progress value={overallProgress} className="h-2" multiColor />
         </CardContent>
       </Card>
 
-      {/* Diagnostic Tools Section */}
-      <Card className="border-2 border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
-        <CardHeader>
+      {/* Quick Stats */}
+      <div className="grid grid-cols-4 gap-2">
+        <Card className="p-2.5">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-blue-500" />
+            <div>
+              <p className="text-lg font-bold">{stats?.users || 0}</p>
+              <p className="text-[10px] text-muted-foreground">Users</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-2.5">
+          <div className="flex items-center gap-2">
+            <Building className="h-4 w-4 text-purple-500" />
+            <div>
+              <p className="text-lg font-bold">{stats?.properties || 0}</p>
+              <p className="text-[10px] text-muted-foreground">Properties</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-2.5">
+          <div className="flex items-center gap-2">
+            <Store className="h-4 w-4 text-orange-500" />
+            <div>
+              <p className="text-lg font-bold">{stats?.vendors || 0}</p>
+              <p className="text-[10px] text-muted-foreground">Vendors</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-2.5">
+          <div className="flex items-center gap-2">
+            <Eye className="h-4 w-4 text-cyan-500" />
+            <div>
+              <p className="text-lg font-bold">{stats?.pageViews || 0}</p>
+              <p className="text-[10px] text-muted-foreground">Views</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Database Health */}
+      <Card className="p-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Database className="h-4 w-4 text-emerald-500" />
+            <span className="text-sm font-medium">Database</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Badge variant="outline" className={`text-[10px] ${
+              dbHealth?.status === 'excellent' ? 'text-emerald-600 border-emerald-500/30' :
+              dbHealth?.status === 'good' ? 'text-amber-600 border-amber-500/30' :
+              'text-rose-600 border-rose-500/30'
+            }`}>
+              {dbHealth?.responseTime || 0}ms
+            </Badge>
+            <Badge className={`text-[10px] ${
+              dbHealth?.isConnected ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
+            }`}>
+              {dbHealth?.isConnected ? 'Connected' : 'Disconnected'}
+            </Badge>
+          </div>
+        </div>
+      </Card>
+
+      {/* Activity Trend */}
+      {activityTrend && (
+        <Card className="p-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Stethoscope className="h-6 w-6 text-blue-500" />
-              <div>
-                <CardTitle className="text-xl">Project Health Diagnostics</CardTitle>
-                <CardDescription>Comprehensive system analysis and issue detection</CardDescription>
-              </div>
+            <div className="flex items-center gap-2">
+              <Activity className="h-4 w-4 text-blue-500" />
+              <span className="text-sm font-medium">Weekly Activity</span>
             </div>
-            <Button 
-              onClick={handleRunDiagnostics}
-              disabled={isScanning}
-              className="gap-2"
-            >
-              {isScanning ? (
-                <>
-                  <Activity className="h-4 w-4 animate-spin" />
-                  Scanning...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="h-4 w-4" />
-                  Run Diagnostics
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">{activityTrend.thisWeek}</span>
+              <Badge variant="outline" className={`text-[10px] ${
+                activityTrend.change >= 0 ? 'text-emerald-600' : 'text-rose-600'
+              }`}>
+                <TrendingUp className={`h-3 w-3 mr-1 ${activityTrend.change < 0 ? 'rotate-180' : ''}`} />
+                {Math.abs(activityTrend.change).toFixed(0)}%
+              </Badge>
+            </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <CodeHealthChecker 
-              issues={codeIssues} 
-              healthScore={codeHealthScore}
-            />
-            <FunctionHealthChecker functions={functionStatus} />
-            <BugDetectionSystem 
-              bugs={detectedBugs}
-              trendDirection="down"
-              bugCount24h={5}
-              bugCount7d={28}
-            />
-            <DatabaseHealthChecker 
-              checks={dbHealthChecks}
-              connectionStatus="connected"
-              queryPerformance={45}
-              activeConnections={12}
-              totalTables={58}
-              rlsEnabled={55}
-            />
-          </div>
-        </CardContent>
-      </Card>
+        </Card>
+      )}
 
-      {/* Progress Categories */}
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="diagnostics">Diagnostics</TabsTrigger>
-          <TabsTrigger value="next-steps">Next Steps</TabsTrigger>
-          <TabsTrigger value="improvements">Improvements</TabsTrigger>
+      {/* Module Tabs */}
+      <Tabs defaultValue="modules" className="w-full">
+        <TabsList className="w-full h-8 p-0.5 gap-0.5">
+          <TabsTrigger value="modules" className="flex-1 text-xs h-7">Modules</TabsTrigger>
+          <TabsTrigger value="metrics" className="flex-1 text-xs h-7">Metrics</TabsTrigger>
+          <TabsTrigger value="health" className="flex-1 text-xs h-7">Health</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="diagnostics" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                Detailed Diagnostic Report
-              </CardTitle>
-              <CardDescription>
-                Comprehensive analysis of uncompleted functions, code issues, and system bugs
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Summary Statistics */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg bg-red-500/5 border border-red-500/20">
-                  <div className="text-3xl font-bold text-red-500">{codeIssues.filter(i => i.severity === 'high').length}</div>
-                  <div className="text-sm text-muted-foreground">High Priority Issues</div>
+        <TabsContent value="modules" className="mt-3 space-y-2">
+          {moduleStatuses.map((module, index) => (
+            <Card key={index} className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <module.icon className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">{module.name}</span>
                 </div>
-                <div className="p-4 rounded-lg bg-yellow-500/5 border border-yellow-500/20">
-                  <div className="text-3xl font-bold text-yellow-500">
-                    {functionStatus.filter(f => f.status === 'incomplete' || f.status === 'broken').length}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Incomplete Functions</div>
-                </div>
-                <div className="p-4 rounded-lg bg-orange-500/5 border border-orange-500/20">
-                  <div className="text-3xl font-bold text-orange-500">
-                    {detectedBugs.filter(b => b.status === 'open').length}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Active Bugs</div>
-                </div>
-                <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                  <div className="text-3xl font-bold text-blue-500">{codeHealthScore}%</div>
-                  <div className="text-sm text-muted-foreground">Code Health</div>
-                </div>
+                <Badge className={`text-[10px] border ${getStatusColor(module.status)}`}>
+                  {getStatusLabel(module.status)}
+                </Badge>
               </div>
-
-              {/* Detailed breakdowns */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Priority Actions Required</h3>
-                {functionStatus.filter(f => f.status !== 'complete').map((func) => (
-                  <Card key={func.id} className="border-l-4 border-l-yellow-500">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2 flex-1">
-                          <div className="flex items-center gap-2">
-                            <Badge className="bg-yellow-500/10 text-yellow-500">{func.status}</Badge>
-                            <span className="font-medium">{func.name}</span>
-                          </div>
-                          <div className="text-sm text-muted-foreground">{func.module}</div>
-                          <Progress value={func.completionPercentage} className="h-2" />
-                          {func.issues.length > 0 && (
-                            <ul className="space-y-1 mt-2">
-                              {func.issues.map((issue, idx) => (
-                                <li key={idx} className="text-sm text-red-600 dark:text-red-400 flex items-start gap-1">
-                                  <AlertCircle className="h-3 w-3 mt-0.5" />
-                                  {issue}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                        {func.estimatedFixTime && (
-                          <Badge variant="outline" className="ml-4">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {func.estimatedFixTime}
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+              <Progress value={module.progress} className="h-1.5 mb-2" />
+              <div className="flex flex-wrap gap-2">
+                {module.metrics.map((metric, idx) => (
+                  <div key={idx} className="flex items-center gap-1 text-[10px]">
+                    <span className="text-muted-foreground">{metric.label}:</span>
+                    <span className="font-medium">{metric.value}</span>
+                  </div>
                 ))}
               </div>
-            </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        <TabsContent value="metrics" className="mt-3 space-y-2">
+          <Card className="p-3">
+            <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-primary" />
+              Key Performance Indicators
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">User Growth</span>
+                <div className="flex items-center gap-2">
+                  <Progress value={Math.min(100, (stats?.users || 0) / 100 * 100)} className="w-24 h-1.5" />
+                  <span className="text-xs font-medium w-8">{stats?.users || 0}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Properties Listed</span>
+                <div className="flex items-center gap-2">
+                  <Progress value={Math.min(100, (stats?.properties || 0) / 50 * 100)} className="w-24 h-1.5" />
+                  <span className="text-xs font-medium w-8">{stats?.properties || 0}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Vendor Services</span>
+                <div className="flex items-center gap-2">
+                  <Progress value={Math.min(100, (stats?.services || 0) / 30 * 100)} className="w-24 h-1.5" />
+                  <span className="text-xs font-medium w-8">{stats?.services || 0}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Chat Sessions</span>
+                <div className="flex items-center gap-2">
+                  <Progress value={Math.min(100, (stats?.chatSessions || 0) / 100 * 100)} className="w-24 h-1.5" />
+                  <span className="text-xs font-medium w-8">{stats?.chatSessions || 0}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Content Articles</span>
+                <div className="flex items-center gap-2">
+                  <Progress value={Math.min(100, (stats?.articles || 0) / 20 * 100)} className="w-24 h-1.5" />
+                  <span className="text-xs font-medium w-8">{stats?.articles || 0}</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-3">
+            <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              Platform Statistics
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-2 rounded bg-muted/50">
+                <p className="text-lg font-bold">{stats?.favorites || 0}</p>
+                <p className="text-[10px] text-muted-foreground">Saved Items</p>
+              </div>
+              <div className="p-2 rounded bg-muted/50">
+                <p className="text-lg font-bold">{stats?.bookings || 0}</p>
+                <p className="text-[10px] text-muted-foreground">Bookings</p>
+              </div>
+              <div className="p-2 rounded bg-muted/50">
+                <p className="text-lg font-bold">{stats?.agents || 0}</p>
+                <p className="text-[10px] text-muted-foreground">Agents</p>
+              </div>
+              <div className="p-2 rounded bg-muted/50">
+                <p className="text-lg font-bold">{stats?.propertyOwners || 0}</p>
+                <p className="text-[10px] text-muted-foreground">Owners</p>
+              </div>
+            </div>
           </Card>
         </TabsContent>
 
-        <TabsContent value="overview" className="space-y-4">
-          {progressCategories.map((category, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-primary/10`}>
-                      <category.icon className={`h-6 w-6 ${category.color}`} />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">{category.name}</CardTitle>
-                      <CardDescription>{category.progress}% Complete</CardDescription>
-                    </div>
+        <TabsContent value="health" className="mt-3 space-y-2">
+          <Card className="p-3">
+            <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+              <Shield className="h-4 w-4 text-emerald-500" />
+              System Health
+            </h3>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <Database className="h-3.5 w-3.5" />
+                  <span className="text-xs">Database Connection</span>
+                </div>
+                <Badge className={`text-[10px] ${dbHealth?.isConnected ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>
+                  {dbHealth?.isConnected ? 'Healthy' : 'Error'}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5" />
+                  <span className="text-xs">Response Time</span>
+                </div>
+                <Badge variant="outline" className="text-[10px]">
+                  {dbHealth?.responseTime || 0}ms
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  <span className="text-xs">Pending Errors</span>
+                </div>
+                <Badge className={`text-[10px] ${(stats?.pendingErrors || 0) > 5 ? 'bg-rose-500/10 text-rose-600' : 'bg-emerald-500/10 text-emerald-600'}`}>
+                  {stats?.pendingErrors || 0}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-3.5 w-3.5" />
+                  <span className="text-xs">Unread Alerts</span>
+                </div>
+                <Badge variant="outline" className="text-[10px]">
+                  {stats?.unreadAlerts || 0}
+                </Badge>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-3">
+            <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-primary" />
+              Module Status Summary
+            </h3>
+            <div className="space-y-1.5">
+              {moduleStatuses.map((module, idx) => (
+                <div key={idx} className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">{module.name}</span>
+                  <div className="flex items-center gap-1.5">
+                    {module.status === 'operational' ? (
+                      <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                    ) : module.status === 'partial' ? (
+                      <Clock className="h-3 w-3 text-amber-500" />
+                    ) : (
+                      <AlertCircle className="h-3 w-3 text-rose-500" />
+                    )}
+                    <span className={`text-[10px] ${
+                      module.status === 'operational' ? 'text-emerald-600' :
+                      module.status === 'partial' ? 'text-amber-600' : 'text-rose-600'
+                    }`}>
+                      {module.progress.toFixed(0)}%
+                    </span>
                   </div>
-                  {getStatusBadge(category.status)}
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Progress value={category.progress} className="h-3" />
-                
-                <div className="space-y-2">
-                  {category.tasks.map((task, taskIndex) => (
-                    <div key={taskIndex} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                      {task.completed ? (
-                        <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
-                      ) : (
-                        <Circle className="h-5 w-5 text-gray-400 mt-0.5" />
-                      )}
-                      <div className="flex-1">
-                        <p className={`font-medium ${task.completed ? 'text-foreground' : 'text-muted-foreground'}`}>
-                          {task.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="next-steps" className="space-y-4">
-          {progressCategories.map((category, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <category.icon className={`h-6 w-6 ${category.color}`} />
-                  <CardTitle>{category.name}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {category.nextSteps.map((step, stepIndex) => (
-                    <div key={stepIndex} className="flex items-start gap-3 p-3 rounded-lg border-l-4 border-primary bg-primary/5">
-                      <ArrowRight className="h-5 w-5 text-primary mt-0.5" />
-                      <div className="flex-1">
-                        <p className="font-medium">{step}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="outline" className="text-xs">
-                            Priority: {stepIndex === 0 ? 'High' : stepIndex === 1 ? 'Medium' : 'Low'}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {stepIndex === 0 ? '1-2 weeks' : stepIndex === 1 ? '2-4 weeks' : '1-2 months'}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="improvements" className="space-y-4">
-          <Card className="border-2 border-yellow-500/20 bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-amber-500/10">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <Lightbulb className="h-8 w-8 text-yellow-500 animate-pulse" />
-                <div className="flex-1">
-                  <CardTitle className="text-2xl">Advanced Improvement Recommendations</CardTitle>
-                  <CardDescription className="text-base mt-1">
-                    Strategic enhancements for next-level growth and market leadership
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                  <h4 className="font-semibold text-blue-500 mb-2 flex items-center gap-2">
-                    <Award className="h-4 w-4" />
-                    High Impact
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    Innovations that significantly boost user engagement and revenue
-                  </p>
-                </div>
-                <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                  <h4 className="font-semibold text-purple-500 mb-2 flex items-center gap-2">
-                    <Award className="h-4 w-4" />
-                    Strategic Value
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    Long-term competitive advantages and market differentiation
-                  </p>
-                </div>
-                <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                  <h4 className="font-semibold text-green-500 mb-2 flex items-center gap-2">
-                    <Award className="h-4 w-4" />
-                    Growth Accelerators
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    Features that enable rapid scaling and business expansion
-                  </p>
-                </div>
-              </div>
-            </CardContent>
+              ))}
+            </div>
           </Card>
-
-          {progressCategories.map((category, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <category.icon className={`h-6 w-6 ${category.color}`} />
-                  <CardTitle>{category.name}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {category.improvements.map((improvement, impIndex) => (
-                    <div key={impIndex} className="flex items-start gap-3 p-4 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
-                      <Award className="h-5 w-5 text-primary mt-0.5" />
-                      <div className="flex-1">
-                        <p className="font-medium">{improvement}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary" className="text-xs">
-                            Impact: {impIndex === 0 ? 'High' : impIndex === 1 ? 'Medium' : 'Strategic'}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            Level: Advanced
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </TabsContent>
       </Tabs>
-
-      {/* Action Summary */}
-      <Card className="border-2 border-green-500/20 bg-green-500/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <TrendingUp className="h-6 w-6 text-green-500" />
-            Recommended Action Plan
-          </CardTitle>
-          <CardDescription>Strategic next steps based on current completion status</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {/* Success Message */}
-            <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20 mb-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-6 w-6 text-green-500" />
-                <div>
-                  <h4 className="font-semibold text-green-500">Excellent Progress!</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Core features are 95-100% complete. Focus on optimization and scaling.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-lg bg-orange-500/10 border border-orange-500/20">
-                <h4 className="font-semibold text-orange-500 mb-2 flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Fine-tuning (Now)
-                </h4>
-                <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <span className="text-orange-500">•</span>
-                    <span>Final performance optimizations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-orange-500">•</span>
-                    <span>User feedback collection</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-orange-500">•</span>
-                    <span>Bug fixes & polish</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <h4 className="font-semibold text-blue-500 mb-2 flex items-center gap-2">
-                  <Target className="h-4 w-4" />
-                  Scaling (1-2 months)
-                </h4>
-                <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Global CDN deployment</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Advanced caching strategies</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Multi-region database replication</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <h4 className="font-semibold text-purple-500 mb-2 flex items-center gap-2">
-                  <Brain className="h-4 w-4" />
-                  Innovation (3-6 months)
-                </h4>
-                <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500">•</span>
-                    <span>AI predictive analytics</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500">•</span>
-                    <span>AR/VR property tours</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500">•</span>
-                    <span>Blockchain integration</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Next Milestone */}
-            <div className="mt-6 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
-              <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Next Major Milestone
-              </h4>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                <strong>Production Launch:</strong> With 95%+ completion across all features, the platform is ready for production deployment. 
-                Focus on final testing, user onboarding, and marketing initiatives.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
