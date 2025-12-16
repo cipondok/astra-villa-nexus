@@ -1,5 +1,8 @@
 
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Home, ChevronRight } from "lucide-react";
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
@@ -70,7 +73,89 @@ interface AdminDashboardContentProps {
   onSectionChange?: (section: string) => void;
 }
 
+// Section labels for display
+const sectionLabels: Record<string, { label: string; category: string }> = {
+  "overview": { label: "Dashboard Overview", category: "" },
+  "diagnostic": { label: "Project Diagnostics", category: "System" },
+  "project-progress": { label: "Progress Report", category: "System" },
+  "user-management": { label: "User Management", category: "Core Management" },
+  "user-levels": { label: "User Levels", category: "Core Management" },
+  "verification-management": { label: "Verification", category: "Core Management" },
+  "upgrade-applications": { label: "Upgrade Applications", category: "Core Management" },
+  "property-management": { label: "Property Management", category: "Property System" },
+  "property-management-hub": { label: "Properties Hub", category: "Property System" },
+  "property-management-advanced": { label: "Advanced Properties", category: "Property System" },
+  "system-settings": { label: "System Settings", category: "System & Tools" },
+  "settings": { label: "Settings", category: "System & Tools" },
+  "smtp-settings": { label: "Email Settings", category: "System & Tools" },
+  "indonesian-payment-config": { label: "Payment Config", category: "System & Tools" },
+  "visitor-analytics": { label: "Visitor Analytics", category: "Analytics" },
+  "analytics": { label: "Web Analytics", category: "Analytics" },
+  "ai-bot-management": { label: "AI Bot Management", category: "AI & Tools" },
+  "feedback-management": { label: "Feedback", category: "Content" },
+  "customer-service": { label: "Customer Service", category: "Support" },
+  "contact-management": { label: "Contacts", category: "Support" },
+  "vendors-hub": { label: "Vendors Hub", category: "Vendors & Services" },
+  "homepage-slider": { label: "Homepage Slider", category: "Content" },
+  "carousel-settings": { label: "Carousel Settings", category: "Content" },
+  "social-media-settings": { label: "Social Media", category: "Content" },
+  "content-management": { label: "Content Management", category: "Content" },
+  "search-filters": { label: "Search Filters", category: "System" },
+  "billing-management": { label: "Billing", category: "System" },
+  "database-management": { label: "Database", category: "System & Tools" },
+  "security-monitoring": { label: "Security", category: "System" },
+  "performance-monitor": { label: "Performance", category: "Analytics" },
+  "report-export": { label: "Report Export", category: "System" },
+  "property-comparison": { label: "Property Comparison", category: "Property System" },
+  "enhanced-search": { label: "Enhanced Search", category: "System" },
+  "system-reports": { label: "System Reports", category: "System" },
+  "daily-checkin": { label: "Daily Check-In", category: "Tokens" },
+  "astra-token-hub": { label: "ASTRA Token Hub", category: "Tokens" },
+  "tools-management": { label: "Tools Management", category: "System & Tools" },
+  "customer-service-control": { label: "CS Control Panel", category: "Support" },
+  "seo-settings": { label: "SEO Settings", category: "System" },
+  "vendor-agent-control": { label: "Vendor/Agent Control", category: "Vendors & Services" },
+  "authorization-monitoring": { label: "Authorization", category: "Security" },
+  "admin-alerts": { label: "Admin Alerts", category: "System" },
+  "database-errors": { label: "Database Errors", category: "System" },
+  "property-3d-settings": { label: "3D View Settings", category: "Property System" },
+  "property-survey-management": { label: "Property Surveys", category: "Property System" },
+  "location-management": { label: "Location Management", category: "Property System" },
+  "api-settings": { label: "API Settings", category: "System & Tools" },
+  "ai-assistant": { label: "AI Assistant", category: "AI & Tools" },
+  "booking-payment-settings": { label: "Booking Payments", category: "System" },
+  "bpjs-api-settings": { label: "BPJS API", category: "System" },
+  "admin-kyc-review": { label: "KYC Review", category: "Verification" },
+  "kyc-analytics": { label: "KYC Analytics", category: "Verification" },
+  "bulk-kyc-operations": { label: "Bulk KYC", category: "Verification" },
+  "document-ocr": { label: "Document OCR", category: "Verification" },
+  "error-logs": { label: "Error Logs", category: "System" },
+  "user-experience-tips": { label: "UX Tips", category: "Content" },
+  "algorithm-dashboard": { label: "Algorithm Dashboard", category: "Analytics" },
+  "notifications-center": { label: "Notifications Center", category: "System" },
+  "ai-feedback-analytics": { label: "AI Feedback Analytics", category: "Analytics" },
+  "project-map": { label: "Project Map", category: "System" },
+  "cookie-settings": { label: "Cookie Settings", category: "System" },
+  "captcha-settings": { label: "Captcha Settings", category: "Security" },
+  "cloudflare-settings": { label: "Cloudflare Settings", category: "System" },
+  "property-filters": { label: "Property Filters", category: "Property System" },
+  "rent-filters": { label: "Rent Filters", category: "Property System" },
+  "sale-filters": { label: "Sale Filters", category: "Property System" },
+  "new-project-filters": { label: "New Project Filters", category: "Property System" },
+  "error-monitoring": { label: "Error Monitoring", category: "System" },
+  "bug-error-detection": { label: "Bug Detection", category: "System" },
+};
+
 const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
+  const isOverview = activeSection === "overview";
+  const currentSection = sectionLabels[activeSection] || { label: activeSection, category: "Other" };
+
+  const handleBackToDashboard = () => {
+    if (onSectionChange) {
+      onSectionChange("overview");
+    }
+  };
+
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
@@ -216,6 +301,61 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
 
   return (
     <div className="flex-1 p-3 md:p-4">
+      {/* Back Navigation & Active Section Indicator */}
+      {!isOverview && (
+        <div className="mb-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-primary/5 via-background to-accent/5 border border-border/40">
+            {/* Back Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 gap-1.5 hover:bg-primary/10 transition-all"
+              onClick={handleBackToDashboard}
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span className="text-[10px] font-medium">Back</span>
+            </Button>
+
+            {/* Breadcrumb Separator */}
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
+
+            {/* Home Link */}
+            <button
+              onClick={handleBackToDashboard}
+              className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Home className="h-3 w-3" />
+              Dashboard
+            </button>
+
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
+
+            {/* Category Badge */}
+            {currentSection.category && (
+              <>
+                <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50 bg-background/50">
+                  {currentSection.category}
+                </Badge>
+                <ChevronRight className="h-3 w-3 text-muted-foreground" />
+              </>
+            )}
+
+            {/* Active Section Indicator */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary/10 border border-primary/30">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[10px] font-semibold text-primary">
+                  {currentSection.label}
+                </span>
+              </div>
+              <Badge variant="secondary" className="text-[8px] h-4 px-1.5 bg-green-500/10 text-green-600 border-green-500/30">
+                Active
+              </Badge>
+            </div>
+          </div>
+        </div>
+      )}
+
       {renderContent()}
     </div>
   );
