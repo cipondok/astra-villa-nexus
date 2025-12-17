@@ -70,8 +70,8 @@ const features: Feature[] = [{
 const AstraVillaFeatures = () => {
   return <div className="relative overflow-hidden">
       {/* Section Header */}
-      <div className="mb-3 md:mb-6 text-center">
-        <div className="inline-flex items-center gap-1.5 md:gap-2 mb-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/30 dark:border-blue-700/30">
+      <div className="mb-2 md:mb-6 text-center">
+        <div className="inline-flex items-center gap-1.5 md:gap-2 mb-1.5 px-2.5 md:px-4 py-1 md:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/30 dark:border-blue-700/30">
           <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-blue-600 dark:text-blue-400" />
           <h2 className="text-xs md:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
             AI-Powered Tools & Features
@@ -118,11 +118,11 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       <div className="relative overflow-hidden rounded-lg md:rounded-xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-1.5 md:p-3 lg:p-4 h-full flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/30">
         {/* Icon Container - Bigger icons with transparent background */}
         <div className="relative mb-1 md:mb-2">
-          <div className="relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-lg bg-white/80 dark:bg-white/90 p-1">
+          <div className="relative w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-lg bg-white/80 dark:bg-white/90 p-1">
             <img 
               src={feature.icon} 
               alt={feature.title} 
-              className="w-9 h-9 md:w-11 md:h-11 lg:w-12 lg:h-12 object-contain group-hover:scale-110 transition-transform duration-300" 
+              className="w-7 h-7 md:w-11 md:h-11 lg:w-12 lg:h-12 object-contain group-hover:scale-110 transition-transform duration-300" 
             />
           </div>
           {/* AI Badge - Smaller */}
@@ -133,10 +133,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
         
         {/* Content - Compact */}
         <div className="flex-1 flex flex-col">
-          <h3 className="text-[8px] md:text-xs lg:text-sm font-medium text-foreground leading-tight group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
+          <h3 className="text-[9px] md:text-xs lg:text-sm font-medium text-foreground leading-tight group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
             {feature.title}
           </h3>
-          <p className="text-[7px] md:text-[10px] text-muted-foreground line-clamp-1 mt-0.5 hidden md:block">
+          <p className="text-[9px] md:text-[10px] text-muted-foreground line-clamp-1 mt-0.5 hidden md:block">
             {feature.description}
           </p>
         </div>
