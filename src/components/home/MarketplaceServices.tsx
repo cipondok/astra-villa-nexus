@@ -84,32 +84,32 @@ const MarketplaceServices = () => {
   
   return <div id="marketplace-services-section" className="relative">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-1 md:mb-4">
-        <h2 className="text-[9px] md:text-base font-semibold text-foreground">
+      <div className="flex items-center justify-between mb-1.5 md:mb-4">
+        <h2 className="text-xs md:text-base font-semibold text-foreground">
           Marketplace Services
         </h2>
-        <button onClick={() => navigate('/marketplace?from=home')} className="text-[7px] md:text-xs font-medium text-primary hover:text-primary/80 active:scale-95">
+        <button onClick={() => navigate('/marketplace?from=home')} className="text-[10px] md:text-xs font-medium text-primary hover:text-primary/80 active:scale-95">
           View All →
         </button>
       </div>
 
       {/* Services Grid - 4 columns mobile, 4 on desktop */}
-      <div className="grid grid-cols-4 gap-1 md:gap-3">
+      <div className="grid grid-cols-4 gap-1.5 md:gap-3">
         {services.map((service, index) => <ServiceCard key={index} service={service} onClick={() => handleServiceClick(service.category)} />)}
       </div>
 
       {/* CTA Banner */}
-      <div className="mt-1.5 md:mt-4 p-1.5 md:p-4 rounded bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
-        <div className="flex items-center justify-between gap-1">
+      <div className="mt-2 md:mt-4 p-2 md:p-4 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+        <div className="flex items-center justify-between gap-2">
           <div>
-            <h3 className="text-[7px] md:text-base font-medium text-foreground">
+            <h3 className="text-[10px] md:text-base font-medium text-foreground">
               Service provider?
             </h3>
-            <p className="text-[6px] md:text-xs text-muted-foreground">
+            <p className="text-[9px] md:text-xs text-muted-foreground">
               Join marketplace
             </p>
           </div>
-          <button onClick={() => navigate('/vendor-registration?from=home')} className="px-1.5 py-0.5 md:px-4 md:py-2 md:text-sm bg-primary text-primary-foreground rounded active:scale-95 whitespace-nowrap font-semibold text-lg">
+          <button onClick={() => navigate('/vendor-registration?from=home')} className="px-2 py-1 md:px-4 md:py-2 text-[10px] md:text-sm bg-primary text-primary-foreground rounded active:scale-95 whitespace-nowrap font-medium">
             Join
           </button>
         </div>
@@ -125,18 +125,18 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   onClick
 }) => {
   return <div onClick={onClick} className="group cursor-pointer active:scale-95 transition-transform">
-      <div className="relative overflow-hidden rounded bg-card border border-border/40 p-0.5 md:p-3 h-full flex flex-col items-center text-center hover:border-primary/30">
+      <div className="relative overflow-hidden rounded-lg bg-card border border-border/40 p-1 md:p-3 h-full flex flex-col items-center text-center hover:border-primary/30">
         {/* Icon */}
-        <div className={`w-6 h-6 md:w-12 md:h-12 rounded ${service.bgColor} flex items-center justify-center mb-0.5 md:mb-2`}>
+        <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg ${service.bgColor} flex items-center justify-center mb-1 md:mb-2`}>
           <div className={service.iconColor}>
             {React.cloneElement(service.icon as React.ReactElement, {
-            className: 'w-3 h-3 md:w-6 md:h-6'
+            className: 'w-4 h-4 md:w-6 md:h-6'
           })}
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-[6px] md:text-xs font-medium text-foreground leading-none text-center truncate w-full px-0.5">
+        <h3 className="text-[9px] md:text-xs font-medium text-foreground leading-tight text-center line-clamp-2 w-full px-0.5">
           {service.title}
         </h3>
         
