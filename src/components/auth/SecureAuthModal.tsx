@@ -312,14 +312,14 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md" ref={mouseTrackingRef}>
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+      <DialogContent className="max-w-[300px] md:max-w-[340px] p-3 md:p-4" ref={mouseTrackingRef} autoClose={false}>
+        <DialogHeader className="space-y-1">
+          <DialogTitle className="flex items-center gap-1.5 text-xs md:text-sm">
+            <Shield className="h-3.5 w-3.5 text-primary" />
             Astra Villa
           </DialogTitle>
-          <DialogDescription>
-            Enterprise-grade security for your account
+          <DialogDescription className="text-[10px] md:text-xs">
+            Secure login to your account
           </DialogDescription>
         </DialogHeader>
 
@@ -339,87 +339,88 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
           }} />
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">{currentText.login}</TabsTrigger>
-              <TabsTrigger value="register">{currentText.register}</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 h-8">
+              <TabsTrigger value="login" className="text-[10px] md:text-xs h-7">{currentText.login}</TabsTrigger>
+              <TabsTrigger value="register" className="text-[10px] md:text-xs h-7">{currentText.register}</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="login" className="space-y-4">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">{currentText.email}</Label>
+            <TabsContent value="login" className="space-y-2 mt-2">
+              <form onSubmit={handleLogin} className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="email" className="text-[10px] md:text-xs">{currentText.email}</Label>
                   <div className="relative">
                     <Input
                       id="email"
                       type="email"
                       value={loginData.email}
                       onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
                       disabled={isLoading}
                       placeholder="Enter your email"
                     />
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Mail className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                    <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
                       {getEmailIcon()}
                     </div>
                   </div>
                   {emailValidation.message && (
-                    <p className={`text-xs ${
-                      emailValidation.type === "error" ? "text-red-500" :
+                    <p className={`text-[9px] ${
+                      emailValidation.type === "error" ? "text-destructive" :
                       emailValidation.type === "warning" ? "text-yellow-500" :
                       emailValidation.type === "success" ? "text-green-500" :
-                      "text-gray-500"
+                      "text-muted-foreground"
                     }`}>
                       {emailValidation.message}
                     </p>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="password">{currentText.password}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="password" className="text-[10px] md:text-xs">{currentText.password}</Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
                       disabled={isLoading}
                       placeholder="Enter your password"
                     />
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-2"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1.5">
                   <Checkbox
                     id="remember"
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    className="h-3 w-3"
                   />
-                  <Label htmlFor="remember" className="text-sm">
+                  <Label htmlFor="remember" className="text-[9px] md:text-[10px] text-muted-foreground">
                     {currentText.rememberMe}
                   </Label>
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+                  className="w-full h-8 text-xs bg-primary hover:bg-primary/90 transition-all duration-200"
                   disabled={isLoading || !emailValidation.isValid}
                 >
                   {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Authenticating...
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                      <span className="text-[10px]">Loading...</span>
                     </div>
                   ) : (
                     currentText.login
@@ -430,73 +431,73 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
               </form>
             </TabsContent>
 
-            <TabsContent value="register" className="space-y-4">
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">{currentText.fullName}</Label>
+            <TabsContent value="register" className="space-y-2 mt-2">
+              <form onSubmit={handleRegister} className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="fullName" className="text-[10px] md:text-xs">{currentText.fullName}</Label>
                   <div className="relative">
                     <Input
                       id="fullName"
                       value={registerData.fullName}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
-                      className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
                       disabled={isLoading}
                       placeholder="Enter your full name"
                     />
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <User className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="register-email">{currentText.email}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="register-email" className="text-[10px] md:text-xs">{currentText.email}</Label>
                   <div className="relative">
                     <Input
                       id="register-email"
                       type="email"
                       value={registerData.email}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
                       disabled={isLoading}
                       placeholder="Enter your email"
                     />
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Mail className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                    <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
                       {getEmailIcon()}
                     </div>
                   </div>
                   {emailValidation.message && (
-                    <p className={`text-xs ${
-                      emailValidation.type === "error" ? "text-red-500" :
+                    <p className={`text-[9px] ${
+                      emailValidation.type === "error" ? "text-destructive" :
                       emailValidation.type === "warning" ? "text-yellow-500" :
                       emailValidation.type === "success" ? "text-green-500" :
-                      "text-gray-500"
+                      "text-muted-foreground"
                     }`}>
                       {emailValidation.message}
                     </p>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="register-password">{currentText.password}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="register-password" className="text-[10px] md:text-xs">{currentText.password}</Label>
                   <div className="relative">
                     <Input
                       id="register-password"
                       type={showPassword ? "text" : "password"}
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
                       disabled={isLoading}
                       placeholder="Create a strong password"
                     />
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-2"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   <PasswordStrengthMeter 
@@ -504,28 +505,28 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                     onStrengthChange={setPasswordStrength}
                   />
                   {passwordStrength < 3 && registerData.password && (
-                    <p className="text-xs text-red-500">{currentText.weakPassword}</p>
+                    <p className="text-[9px] text-destructive">{currentText.weakPassword}</p>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">{currentText.confirmPassword}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="confirmPassword" className="text-[10px] md:text-xs">{currentText.confirmPassword}</Label>
                   <div className="relative">
                     <Input
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
                       disabled={isLoading}
                       placeholder="Confirm your password"
                     />
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                    <Lock className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                    <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
                       {registerData.confirmPassword && (
                         passwordsMatch ? 
-                          <CheckCircle className="h-4 w-4 text-green-500" /> :
-                          <XCircle className="h-4 w-4 text-red-500" />
+                          <CheckCircle className="h-3 w-3 text-green-500" /> :
+                          <XCircle className="h-3 w-3 text-destructive" />
                       )}
                       <Button
                         type="button"
@@ -534,34 +535,34 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                         className="h-full px-0"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showConfirmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                       </Button>
                     </div>
                   </div>
                   {registerData.confirmPassword && !passwordsMatch && (
-                    <p className="text-xs text-red-500">{currentText.passwordsDontMatch}</p>
+                    <p className="text-[9px] text-destructive">{currentText.passwordsDontMatch}</p>
                   )}
                   {registerData.confirmPassword && passwordsMatch && (
-                    <p className="text-xs text-green-500">{currentText.passwordsMatch}</p>
+                    <p className="text-[9px] text-green-500">{currentText.passwordsMatch}</p>
                   )}
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="gdpr" required />
-                  <Label htmlFor="gdpr" className="text-sm">
+                <div className="flex items-center space-x-1.5">
+                  <Checkbox id="gdpr" required className="h-3 w-3" />
+                  <Label htmlFor="gdpr" className="text-[9px] md:text-[10px] text-muted-foreground">
                     {currentText.gdprConsent}
                   </Label>
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50"
+                  className="w-full h-8 text-xs bg-primary hover:bg-primary/90 transition-all duration-200 disabled:opacity-50"
                   disabled={isLoading || !emailValidation.isValid || !passwordsMatch || passwordStrength < 3}
                 >
                   {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Creating Account...
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                      <span className="text-[10px]">Creating...</span>
                     </div>
                   ) : (
                     currentText.register
@@ -573,16 +574,16 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
         )}
 
         {/* Security Status Footer */}
-        <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t">
-          <div className="flex items-center gap-2">
-            <Shield className="h-3 w-3" />
+        <div className="flex items-center justify-between text-[9px] text-muted-foreground pt-2 border-t border-border/50">
+          <div className="flex items-center gap-1">
+            <Shield className="h-2.5 w-2.5" />
             <span>256-bit encryption</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className={`w-2 h-2 rounded-full ${
+            <div className={`w-1.5 h-1.5 rounded-full ${
               riskLevel === "low" ? "bg-green-500" :
               riskLevel === "medium" ? "bg-yellow-500" :
-              "bg-red-500"
+              "bg-destructive"
             }`} />
             <span>{riskLevel.toUpperCase()} RISK</span>
           </div>
