@@ -35,25 +35,45 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   autoClose?: boolean;
   autoCloseTimeout?: number;
+  showCountdown?: boolean;
 }
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, autoClose = true, autoCloseTimeout = 5000, ...props }, ref) => {
+>(({ className, children, autoClose = true, autoCloseTimeout = 5000, showCountdown = true, ...props }, ref) => {
   const [hasInteraction, setHasInteraction] = React.useState(false);
+  const [countdown, setCountdown] = React.useState(Math.ceil(autoCloseTimeout / 1000));
   const closeRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     if (!autoClose || hasInteraction) return;
 
-    const timer = setTimeout(() => {
+    // Reset countdown when dialog opens
+    setCountdown(Math.ceil(autoCloseTimeout / 1000));
+
+    // Countdown timer
+    const countdownInterval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Auto close timer
+    const closeTimer = setTimeout(() => {
       if (closeRef.current) {
         closeRef.current.click();
       }
     }, autoCloseTimeout);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearInterval(countdownInterval);
+      clearTimeout(closeTimer);
+    };
   }, [autoClose, autoCloseTimeout, hasInteraction]);
 
   const handleInteraction = () => {
@@ -80,6 +100,38 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
+        {/* Countdown Timer */}
+        {autoClose && showCountdown && !hasInteraction && countdown > 0 && (
+          <div className="absolute left-3 top-3 flex items-center gap-1">
+            <div className="relative h-5 w-5">
+              <svg className="h-5 w-5 -rotate-90" viewBox="0 0 24 24">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-muted/30"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeDasharray={62.83}
+                  strokeDashoffset={62.83 - (62.83 * countdown) / Math.ceil(autoCloseTimeout / 1000)}
+                  className="text-primary transition-all duration-1000"
+                />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[8px] font-medium text-foreground">
+                {countdown}
+              </span>
+            </div>
+          </div>
+        )}
         <DialogPrimitive.Close 
           ref={closeRef}
           className="absolute right-3 top-3 rounded-full p-1 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none"

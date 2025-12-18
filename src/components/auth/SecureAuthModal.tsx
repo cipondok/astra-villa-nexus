@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, Shield, Mail, User, Lock, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Shield, Mail, User, Lock, CheckCircle, XCircle, AlertTriangle, Phone, MessageCircle } from "lucide-react";
 import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 import { MFASetup } from "./MFASetup";
 import { BiometricAuth } from "./BiometricAuth";
@@ -35,12 +35,14 @@ interface EmailValidation {
 
 const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) => {
   const [activeTab, setActiveTab] = useState("login");
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [authMethod, setAuthMethod] = useState<"email" | "whatsapp">("email");
+  const [loginData, setLoginData] = useState({ email: "", password: "", whatsapp: "" });
   const [registerData, setRegisterData] = useState({ 
     email: "", 
     password: "", 
     confirmPassword: "", 
-    fullName: "" 
+    fullName: "",
+    whatsapp: ""
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -49,6 +51,12 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
   const [mfaRequired, setMfaRequired] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [whatsappValidation, setWhatsappValidation] = useState<EmailValidation>({
+    isValid: false,
+    isChecking: false,
+    message: "",
+    type: null
+  });
   const [emailValidation, setEmailValidation] = useState<EmailValidation>({
     isValid: false,
     isChecking: false,
@@ -90,7 +98,12 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
       passwordsMatch: "Passwords match",
       passwordsDontMatch: "Passwords don't match",
       weakPassword: "Password too weak (minimum strength: Good)",
-      gdprConsent: "I agree to data processing for security purposes"
+      gdprConsent: "I agree to data processing for security purposes",
+      whatsapp: "WhatsApp Number",
+      whatsappValid: "WhatsApp number is valid",
+      whatsappInvalid: "Enter valid WhatsApp (e.g. +62812xxxx)",
+      useEmail: "Use Email",
+      useWhatsapp: "Use WhatsApp"
     },
     id: {
       login: "Login Aman",
@@ -107,7 +120,12 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
       passwordsMatch: "Kata sandi cocok",
       passwordsDontMatch: "Kata sandi tidak cocok",
       weakPassword: "Kata sandi terlalu lemah (minimum: Baik)",
-      gdprConsent: "Saya setuju dengan pemrosesan data untuk tujuan keamanan"
+      gdprConsent: "Saya setuju dengan pemrosesan data untuk tujuan keamanan",
+      whatsapp: "Nomor WhatsApp",
+      whatsappValid: "Nomor WhatsApp valid",
+      whatsappInvalid: "Masukkan WhatsApp valid (cth: +62812xxxx)",
+      useEmail: "Pakai Email",
+      useWhatsapp: "Pakai WhatsApp"
     }
   };
 
@@ -118,6 +136,48 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  // WhatsApp validation function
+  const validateWhatsapp = (phone: string): boolean => {
+    // Accept formats: +62812xxx, 62812xxx, 0812xxx, 812xxx
+    const phoneRegex = /^(\+?62|0)?8[1-9][0-9]{7,10}$/;
+    return phoneRegex.test(phone.replace(/[\s-]/g, ''));
+  };
+
+  // Check WhatsApp number
+  const checkWhatsapp = (phone: string) => {
+    if (!phone) {
+      setWhatsappValidation({ isValid: false, isChecking: false, message: "", type: null });
+      return;
+    }
+
+    const cleanPhone = phone.replace(/[\s-]/g, '');
+    if (!validateWhatsapp(cleanPhone)) {
+      setWhatsappValidation({
+        isValid: false,
+        isChecking: false,
+        message: currentText.whatsappInvalid,
+        type: "error"
+      });
+      return;
+    }
+
+    setWhatsappValidation({
+      isValid: true,
+      isChecking: false,
+      message: currentText.whatsappValid,
+      type: "success"
+    });
+  };
+
+  // Debounced WhatsApp checking
+  useEffect(() => {
+    const phone = activeTab === "login" ? loginData.whatsapp : registerData.whatsapp;
+    if (authMethod === "whatsapp") {
+      const timer = setTimeout(() => checkWhatsapp(phone), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [loginData.whatsapp, registerData.whatsapp, activeTab, authMethod]);
 
   // Check email availability and format
   const checkEmail = async (email: string) => {
@@ -345,35 +405,93 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
             </TabsList>
 
             <TabsContent value="login" className="space-y-2 mt-2">
+              {/* Auth Method Toggle */}
+              <div className="flex gap-1 p-0.5 bg-muted/50 rounded-lg">
+                <Button
+                  type="button"
+                  variant={authMethod === "email" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-6 text-[9px] gap-1"
+                  onClick={() => setAuthMethod("email")}
+                >
+                  <Mail className="h-2.5 w-2.5" />
+                  {currentText.useEmail}
+                </Button>
+                <Button
+                  type="button"
+                  variant={authMethod === "whatsapp" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-6 text-[9px] gap-1"
+                  onClick={() => setAuthMethod("whatsapp")}
+                >
+                  <MessageCircle className="h-2.5 w-2.5" />
+                  {currentText.useWhatsapp}
+                </Button>
+              </div>
+
               <form onSubmit={handleLogin} className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="email" className="text-[10px] md:text-xs">{currentText.email}</Label>
-                  <div className="relative">
-                    <Input
-                      id="email"
-                      type="email"
-                      value={loginData.email}
-                      onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
-                      disabled={isLoading}
-                      placeholder="Enter your email"
-                    />
-                    <Mail className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-                    <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
-                      {getEmailIcon()}
+                {authMethod === "email" ? (
+                  <div className="space-y-1">
+                    <Label htmlFor="email" className="text-[10px] md:text-xs">{currentText.email}</Label>
+                    <div className="relative">
+                      <Input
+                        id="email"
+                        type="email"
+                        value={loginData.email}
+                        onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                        className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
+                        disabled={isLoading}
+                        placeholder="Enter your email"
+                      />
+                      <Mail className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
+                        {getEmailIcon()}
+                      </div>
                     </div>
+                    {emailValidation.message && (
+                      <p className={`text-[9px] ${
+                        emailValidation.type === "error" ? "text-destructive" :
+                        emailValidation.type === "warning" ? "text-yellow-500" :
+                        emailValidation.type === "success" ? "text-green-500" :
+                        "text-muted-foreground"
+                      }`}>
+                        {emailValidation.message}
+                      </p>
+                    )}
                   </div>
-                  {emailValidation.message && (
-                    <p className={`text-[9px] ${
-                      emailValidation.type === "error" ? "text-destructive" :
-                      emailValidation.type === "warning" ? "text-yellow-500" :
-                      emailValidation.type === "success" ? "text-green-500" :
-                      "text-muted-foreground"
-                    }`}>
-                      {emailValidation.message}
-                    </p>
-                  )}
-                </div>
+                ) : (
+                  <div className="space-y-1">
+                    <Label htmlFor="login-whatsapp" className="text-[10px] md:text-xs">{currentText.whatsapp}</Label>
+                    <div className="relative">
+                      <Input
+                        id="login-whatsapp"
+                        type="tel"
+                        value={loginData.whatsapp}
+                        onChange={(e) => setLoginData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                        className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
+                        disabled={isLoading}
+                        placeholder="+62812xxxxxxxx"
+                      />
+                      <Phone className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
+                        {whatsappValidation.type === "success" ? (
+                          <CheckCircle className="h-3 w-3 text-green-500" />
+                        ) : whatsappValidation.type === "error" ? (
+                          <XCircle className="h-3 w-3 text-destructive" />
+                        ) : (
+                          <MessageCircle className="h-3 w-3 text-green-600" />
+                        )}
+                      </div>
+                    </div>
+                    {whatsappValidation.message && (
+                      <p className={`text-[9px] ${
+                        whatsappValidation.type === "error" ? "text-destructive" : "text-green-500"
+                      }`}>
+                        {whatsappValidation.message}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-1">
                   <Label htmlFor="password" className="text-[10px] md:text-xs">{currentText.password}</Label>
@@ -415,7 +533,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                 <Button 
                   type="submit" 
                   className="w-full h-8 text-xs bg-primary hover:bg-primary/90 transition-all duration-200"
-                  disabled={isLoading || !emailValidation.isValid}
+                  disabled={isLoading || (authMethod === "email" ? !emailValidation.isValid : !whatsappValidation.isValid)}
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-1.5">
@@ -432,6 +550,30 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
             </TabsContent>
 
             <TabsContent value="register" className="space-y-2 mt-2">
+              {/* Auth Method Toggle */}
+              <div className="flex gap-1 p-0.5 bg-muted/50 rounded-lg">
+                <Button
+                  type="button"
+                  variant={authMethod === "email" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-6 text-[9px] gap-1"
+                  onClick={() => setAuthMethod("email")}
+                >
+                  <Mail className="h-2.5 w-2.5" />
+                  {currentText.useEmail}
+                </Button>
+                <Button
+                  type="button"
+                  variant={authMethod === "whatsapp" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-6 text-[9px] gap-1"
+                  onClick={() => setAuthMethod("whatsapp")}
+                >
+                  <MessageCircle className="h-2.5 w-2.5" />
+                  {currentText.useWhatsapp}
+                </Button>
+              </div>
+
               <form onSubmit={handleRegister} className="space-y-2">
                 <div className="space-y-1">
                   <Label htmlFor="fullName" className="text-[10px] md:text-xs">{currentText.fullName}</Label>
@@ -448,34 +590,68 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="register-email" className="text-[10px] md:text-xs">{currentText.email}</Label>
-                  <div className="relative">
-                    <Input
-                      id="register-email"
-                      type="email"
-                      value={registerData.email}
-                      onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
-                      disabled={isLoading}
-                      placeholder="Enter your email"
-                    />
-                    <Mail className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-                    <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
-                      {getEmailIcon()}
+                {authMethod === "email" ? (
+                  <div className="space-y-1">
+                    <Label htmlFor="register-email" className="text-[10px] md:text-xs">{currentText.email}</Label>
+                    <div className="relative">
+                      <Input
+                        id="register-email"
+                        type="email"
+                        value={registerData.email}
+                        onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
+                        className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
+                        disabled={isLoading}
+                        placeholder="Enter your email"
+                      />
+                      <Mail className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
+                        {getEmailIcon()}
+                      </div>
                     </div>
+                    {emailValidation.message && (
+                      <p className={`text-[9px] ${
+                        emailValidation.type === "error" ? "text-destructive" :
+                        emailValidation.type === "warning" ? "text-yellow-500" :
+                        emailValidation.type === "success" ? "text-green-500" :
+                        "text-muted-foreground"
+                      }`}>
+                        {emailValidation.message}
+                      </p>
+                    )}
                   </div>
-                  {emailValidation.message && (
-                    <p className={`text-[9px] ${
-                      emailValidation.type === "error" ? "text-destructive" :
-                      emailValidation.type === "warning" ? "text-yellow-500" :
-                      emailValidation.type === "success" ? "text-green-500" :
-                      "text-muted-foreground"
-                    }`}>
-                      {emailValidation.message}
-                    </p>
-                  )}
-                </div>
+                ) : (
+                  <div className="space-y-1">
+                    <Label htmlFor="register-whatsapp" className="text-[10px] md:text-xs">{currentText.whatsapp}</Label>
+                    <div className="relative">
+                      <Input
+                        id="register-whatsapp"
+                        type="tel"
+                        value={registerData.whatsapp}
+                        onChange={(e) => setRegisterData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                        className="pl-8 pr-8 h-8 text-xs transition-all duration-200 focus:ring-2 focus:ring-primary"
+                        disabled={isLoading}
+                        placeholder="+62812xxxxxxxx"
+                      />
+                      <Phone className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
+                        {whatsappValidation.type === "success" ? (
+                          <CheckCircle className="h-3 w-3 text-green-500" />
+                        ) : whatsappValidation.type === "error" ? (
+                          <XCircle className="h-3 w-3 text-destructive" />
+                        ) : (
+                          <MessageCircle className="h-3 w-3 text-green-600" />
+                        )}
+                      </div>
+                    </div>
+                    {whatsappValidation.message && (
+                      <p className={`text-[9px] ${
+                        whatsappValidation.type === "error" ? "text-destructive" : "text-green-500"
+                      }`}>
+                        {whatsappValidation.message}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-1">
                   <Label htmlFor="register-password" className="text-[10px] md:text-xs">{currentText.password}</Label>
@@ -557,7 +733,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                 <Button 
                   type="submit" 
                   className="w-full h-8 text-xs bg-primary hover:bg-primary/90 transition-all duration-200 disabled:opacity-50"
-                  disabled={isLoading || !emailValidation.isValid || !passwordsMatch || passwordStrength < 3}
+                  disabled={isLoading || (authMethod === "email" ? !emailValidation.isValid : !whatsappValidation.isValid) || !passwordsMatch || passwordStrength < 3}
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-1.5">
