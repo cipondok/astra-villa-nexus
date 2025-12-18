@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Cookie, Shield, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,22 +12,43 @@ interface CookieConsentProps {
 const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
   const [showCustomize, setShowCustomize] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [hasInteraction, setHasInteraction] = useState(false);
+  const [countdown, setCountdown] = useState(5);
   const [preferences, setPreferences] = useState({
     necessary: true,
     analytics: true,
     marketing: true,
   });
 
-  // Auto-close after 5 seconds if no interaction
+  // Auto-close countdown after 5 seconds if no interaction
   useEffect(() => {
-    if (!show || showCustomize) return;
+    if (!show || showCustomize || hasInteraction) return;
     
+    setCountdown(5);
+    
+    const countdownInterval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
     const timer = setTimeout(() => {
       handleAcceptAll();
     }, 5000);
 
-    return () => clearTimeout(timer);
-  }, [show, showCustomize]);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(countdownInterval);
+    };
+  }, [show, showCustomize, hasInteraction]);
+
+  const handleInteraction = () => {
+    setHasInteraction(true);
+  };
 
   const handleAcceptAll = () => {
     setIsClosing(true);
@@ -74,12 +95,45 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
       )}>
         <div className="max-w-sm mx-auto">
           <div className="rounded-lg border border-border/50 shadow-xl overflow-hidden bg-background/95 backdrop-blur-sm">
-            <div className="p-3">
+            <div className="p-3" onClick={handleInteraction}>
+              {/* Countdown Timer */}
+              {!hasInteraction && !showCustomize && countdown > 0 && (
+                <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
+                  <div className="relative h-5 w-5">
+                    <svg className="h-5 w-5 -rotate-90" viewBox="0 0 24 24">
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="text-muted/30"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeDasharray={62.83}
+                        strokeDashoffset={62.83 - (62.83 * countdown) / 5}
+                        className="text-primary transition-all duration-1000"
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-[8px] font-medium text-foreground">
+                      {countdown}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {!showCustomize ? (
                 // Main Cookie Banner - Compact
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 ml-6">
                       <Cookie className="w-3.5 h-3.5 text-primary" />
                     </div>
                     <div className="flex-grow">
