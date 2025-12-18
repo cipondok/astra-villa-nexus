@@ -20,7 +20,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-[999998] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overscroll-none",
+      "fixed inset-0 z-[999998] bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overscroll-none",
       className
     )}
     style={{ 
@@ -32,33 +32,65 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  autoClose?: boolean;
+  autoCloseTimeout?: number;
+}
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed left-[50%] top-[50%] z-[999999] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl p-6 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl overscroll-contain",
-        className
-      )}
-      style={{ 
-        position: 'fixed',
-        touchAction: 'auto',
-        WebkitOverflowScrolling: 'touch'
-      }}
-      {...props}
-    >
-      {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-1 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none">
-        <X className="h-4 w-4 text-foreground" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
-  </DialogPortal>
-))
+  DialogContentProps
+>(({ className, children, autoClose = true, autoCloseTimeout = 5000, ...props }, ref) => {
+  const [hasInteraction, setHasInteraction] = React.useState(false);
+  const closeRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (!autoClose || hasInteraction) return;
+
+    const timer = setTimeout(() => {
+      if (closeRef.current) {
+        closeRef.current.click();
+      }
+    }, autoCloseTimeout);
+
+    return () => clearTimeout(timer);
+  }, [autoClose, autoCloseTimeout, hasInteraction]);
+
+  const handleInteraction = () => {
+    setHasInteraction(true);
+  };
+
+  return (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        onClick={handleInteraction}
+        onKeyDown={handleInteraction}
+        onFocus={handleInteraction}
+        className={cn(
+          "fixed left-[50%] top-[50%] z-[999999] grid w-[88vw] max-w-[300px] md:max-w-[360px] translate-x-[-50%] translate-y-[-50%] gap-3 bg-background/95 backdrop-blur-xl border border-border/30 shadow-2xl p-4 md:p-5 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-xl overscroll-contain",
+          className
+        )}
+        style={{ 
+          position: 'fixed',
+          touchAction: 'auto',
+          WebkitOverflowScrolling: 'touch'
+        }}
+        {...props}
+      >
+        {children}
+        <DialogPrimitive.Close 
+          ref={closeRef}
+          className="absolute right-3 top-3 rounded-full p-1 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none"
+        >
+          <X className="h-3.5 w-3.5 text-foreground" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  );
+})
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({
@@ -67,7 +99,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col space-y-1.5 text-center sm:text-left",
+      "flex flex-col space-y-1 text-center sm:text-left",
       className
     )}
     {...props}
@@ -81,7 +113,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-1.5",
       className
     )}
     {...props}
@@ -96,7 +128,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-none tracking-tight text-foreground",
+      "text-sm md:text-base font-semibold leading-none tracking-tight text-foreground",
       className
     )}
     {...props}
@@ -110,7 +142,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-xs md:text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
