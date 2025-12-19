@@ -14,8 +14,8 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className="w-full relative transition-all duration-300">
-      <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-b-2 border-border/40 shadow-2xl rounded-xl overflow-hidden">
+    <div className="w-full relative transition-all duration-300 px-2">
+      <div className="relative backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/90 to-background/95 border-2 border-border/50 shadow-2xl rounded-2xl overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
         
         <Collapsible open={!isCollapsed} onOpenChange={(open) => setIsCollapsed(!open)}>
