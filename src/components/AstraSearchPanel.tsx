@@ -1866,30 +1866,48 @@ const AstraSearchPanel = ({
     return `${price} Jt`;
   };
   const getSelectedFiltersDisplay = () => {
-    const selected = [];
+    const selected: string[] = [];
 
     // Combine location parts with null safety
-    const locationParts = [];
+    const locationParts: string[] = [];
     if (filters.state && filters.state !== 'all') {
-      const province = provinces.find(p => p.code === filters.state);
+      const province = provinces.find((p) => p.code === filters.state);
       locationParts.push(province?.name || filters.state);
     }
     if (filters.city && filters.city !== 'all') {
-      const city = cities.find(c => c.code === filters.city);
+      const city = cities.find((c) => c.code === filters.city);
       locationParts.push(city?.name || filters.city);
     }
     if (filters.area && filters.area !== 'all') {
-      const area = areas.find(a => a.code === filters.area);
+      const area = areas.find((a) => a.code === filters.area);
       locationParts.push(area?.name || filters.area);
     }
     if (locationParts.length > 0) selected.push(locationParts.join(', '));
-    if (filters.propertyType) selected.push(currentText[filters.propertyType as keyof typeof currentText] || filters.propertyType);
-    if (filters.priceRange) selected.push(filters.priceRange);
-    if (filters.bedrooms) selected.push(`${filters.bedrooms} bed`);
-    if (filters.bathrooms) selected.push(`${filters.bathrooms} bath`);
+
+    if (filters.propertyType && filters.propertyType !== 'all') {
+      selected.push(currentText[filters.propertyType as keyof typeof currentText] || filters.propertyType);
+    }
+
+    // Human-friendly price range label (avoid raw numbers like 0-1000000000)
+    if (filters.priceRange && filters.priceRange !== 'all') {
+      const priceLabel =
+        filters.priceRange === '0-1000000000'
+          ? '< 1B'
+          : filters.priceRange === '1000000000-5000000000'
+            ? '1B-5B'
+            : filters.priceRange === '5000000000-99999999999'
+              ? '> 5B'
+              : filters.priceRange;
+      selected.push(priceLabel);
+    }
+
+    if (filters.bedrooms && filters.bedrooms !== 'all') selected.push(`${filters.bedrooms} bed`);
+    if (filters.bathrooms && filters.bathrooms !== 'all') selected.push(`${filters.bathrooms} bath`);
+
     if (filters.features.length > 0) selected.push(`${filters.features.length} features`);
-    if (filters.yearBuilt) selected.push(filters.yearBuilt);
-    if (filters.condition) selected.push(filters.condition);
+    if (filters.yearBuilt && filters.yearBuilt !== 'all') selected.push(filters.yearBuilt);
+    if (filters.condition && filters.condition !== 'all') selected.push(filters.condition);
+
     return selected;
   };
   const handleSearch = () => {
@@ -1971,32 +1989,34 @@ const AstraSearchPanel = ({
     return (
       <div className="w-full">
         {/* Fixed Search Panel */}
-        <div className="fixed top-14 left-0 right-0 z-[9999] bg-background shadow-lg border-b border-border p-2">
+        <div className="fixed top-14 left-0 right-0 z-[10050] bg-background shadow-lg border-b border-border p-2">
           <div className="flex items-center gap-2">
             <div ref={anchorRef} className="flex-1 relative">
-              <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary pointer-events-none",
-                searchQuery && "animate-pulse"
-              )} />
-              <Input 
-                placeholder={currentText.searchPlaceholder} 
-                value={searchQuery} 
-                onChange={e => handleSearchChange(e.target.value)} 
-                onFocus={(e) => { 
+              <Search
+                className={cn(
+                  "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary pointer-events-none",
+                  searchQuery && "animate-pulse"
+                )}
+              />
+              <Input
+                placeholder={currentText.searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={(e) => {
                   e.preventDefault();
                   const currentScroll = window.scrollY;
-                  setShowSuggestions(true); 
-                  if (anchorRef.current) { 
-                    const rect = anchorRef.current.getBoundingClientRect(); 
-                    setSuggestionsTop(rect.bottom); 
+                  setShowSuggestions(true);
+                  if (anchorRef.current) {
+                    const rect = anchorRef.current.getBoundingClientRect();
+                    setSuggestionsTop(rect.bottom);
                   }
                   requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                 }}
                 onTouchStart={(e) => e.stopPropagation()}
-                className="pl-10 h-10 text-base bg-background border-2 border-primary/40 focus:border-primary rounded-xl" 
+                className="pl-10 h-10 text-base bg-background border-2 border-primary/40 focus:border-primary rounded-xl"
               />
             </div>
-            
+
             <ImageSearchButton
               onImageSelected={handleImageSearch}
               onClear={handleClearImageSearch}
@@ -2005,44 +2025,44 @@ const AstraSearchPanel = ({
               enablePaste={true}
               className="shrink-0"
             />
-            
+
             {/* Filter Button */}
-            <Button 
-              onClick={() => setShowAdvancedFilters(true)} 
-              variant="outline" 
-              size="sm" 
+            <Button
+              onClick={() => setShowAdvancedFilters(true)}
+              variant="outline"
+              size="sm"
               className="h-9 px-3 border border-primary/40 rounded-xl relative"
             >
               <SlidersHorizontal className="h-4 w-4 text-primary" />
               {getActiveFiltersCount() > 0 && (
-                <Badge 
-                  variant="default" 
+                <Badge
+                  variant="default"
                   className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full"
                 >
                   {getActiveFiltersCount()}
                 </Badge>
               )}
             </Button>
-            
+
             {/* Search Button */}
             <Button onClick={handleSearch} size="sm" className="h-9 px-3 rounded-xl">
               <Search className="h-4 w-4" />
             </Button>
           </div>
         </div>
-        
+
         {/* Spacer for fixed panel */}
         <div className="h-16" />
-            
-            {/* Mobile Suggestions Dropdown */}
-            {showSuggestions && hasSuggestions && (
-              <div 
-                ref={suggestionsRef} 
-                className="fixed left-2 right-2 rounded-xl shadow-2xl shadow-primary/30 z-[1000] max-h-[60vh] overflow-y-auto overscroll-contain glass-popup backdrop-blur-2xl border-primary/20" 
-                style={{ top: suggestionsTop }}
-                onTouchStart={(e) => e.stopPropagation()}
-                onTouchMove={(e) => e.stopPropagation()}
-              >
+
+        {/* Mobile Suggestions Dropdown */}
+        {showSuggestions && hasSuggestions && (
+          <div
+            ref={suggestionsRef}
+            className="fixed left-2 right-2 rounded-xl shadow-2xl shadow-primary/30 z-[10040] max-h-[60vh] overflow-y-auto overscroll-contain glass-popup backdrop-blur-2xl border-primary/20"
+            style={{ top: suggestionsTop }}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
                 {/* Recent Searches */}
                 {filteredSuggestions.recent.length > 0 && (
                   <div className="p-2 border-b border-border/50">
