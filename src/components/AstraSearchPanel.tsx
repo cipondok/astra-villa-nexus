@@ -1970,72 +1970,69 @@ const AstraSearchPanel = ({
   if (isMobile) {
     return (
       <div className="w-full">
-        {/* Spacer to push content below the fixed search panel */}
-        <div className="h-20" />
-        <div className="fixed top-14 left-0 right-0 z-[100] bg-background shadow-xl border-b-2 border-primary/40">
-          {/* Search Bar */}
-          <div className="flex items-center gap-2 p-3">
-        <div ref={anchorRef} className="flex-1 relative">
-          <Search className={cn(
-            "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-blue-500 pointer-events-none transition-all",
-            searchQuery && "animate-pulse"
-          )} />
-          <Input 
-            placeholder={currentText.searchPlaceholder} 
-            value={searchQuery} 
-            onChange={e => handleSearchChange(e.target.value)} 
-            onFocus={(e) => { 
-              e.preventDefault();
-              const currentScroll = window.scrollY;
-              setShowSuggestions(true); 
-              if (anchorRef.current) { 
-                const rect = anchorRef.current.getBoundingClientRect(); 
-                setSuggestionsTop(rect.bottom); 
-              }
-              requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-            }}
-            onTouchStart={(e) => {
-              e.stopPropagation();
-            }}
-            className="pl-9 pr-2 h-10 text-base bg-background/70 backdrop-blur-sm border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/20 rounded-2xl font-medium shadow-md transition-all duration-500 hover:border-primary/60 hover:shadow-primary/20" 
-          />
+        {/* Fixed Search Panel */}
+        <div className="fixed top-14 left-0 right-0 z-[9999] bg-background shadow-lg border-b border-border p-2">
+          <div className="flex items-center gap-2">
+            <div ref={anchorRef} className="flex-1 relative">
+              <Search className={cn(
+                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary pointer-events-none",
+                searchQuery && "animate-pulse"
+              )} />
+              <Input 
+                placeholder={currentText.searchPlaceholder} 
+                value={searchQuery} 
+                onChange={e => handleSearchChange(e.target.value)} 
+                onFocus={(e) => { 
+                  e.preventDefault();
+                  const currentScroll = window.scrollY;
+                  setShowSuggestions(true); 
+                  if (anchorRef.current) { 
+                    const rect = anchorRef.current.getBoundingClientRect(); 
+                    setSuggestionsTop(rect.bottom); 
+                  }
+                  requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                }}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="pl-10 h-10 text-base bg-background border-2 border-primary/40 focus:border-primary rounded-xl" 
+              />
+            </div>
+            
+            <ImageSearchButton
+              onImageSelected={handleImageSearch}
+              onClear={handleClearImageSearch}
+              isSearching={isImageSearching}
+              enableDragDrop={true}
+              enablePaste={true}
+              className="shrink-0"
+            />
+            
+            {/* Filter Button */}
+            <Button 
+              onClick={() => setShowAdvancedFilters(true)} 
+              variant="outline" 
+              size="sm" 
+              className="h-9 px-3 border border-primary/40 rounded-xl relative"
+            >
+              <SlidersHorizontal className="h-4 w-4 text-primary" />
+              {getActiveFiltersCount() > 0 && (
+                <Badge 
+                  variant="default" 
+                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full"
+                >
+                  {getActiveFiltersCount()}
+                </Badge>
+              )}
+            </Button>
+            
+            {/* Search Button */}
+            <Button onClick={handleSearch} size="sm" className="h-9 px-3 rounded-xl">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
-        <ImageSearchButton
-          onImageSelected={handleImageSearch}
-          onClear={handleClearImageSearch}
-          isSearching={isImageSearching}
-          enableDragDrop={true}
-          enablePaste={true}
-          className="shrink-0"
-        />
-        
-        {/* Prominent All Filters Button */}
-          <Button 
-            onClick={() => {
-              setShowAdvancedFilters(true);
-            }} 
-            variant="outline" 
-            size="sm" 
-            className="h-9 px-3 border-2 border-primary/60 bg-gradient-to-r from-primary/15 to-primary/10 hover:from-primary/25 hover:to-primary/20 shadow-md hover:shadow-lg hover:shadow-primary/20 rounded-2xl relative transition-all duration-500 hover:scale-110"
-          >
-          <SlidersHorizontal className="h-4 w-4 text-primary" />
-          {getActiveFiltersCount() > 0 && (
-            <Badge 
-              variant="default" 
-              className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] rounded-full animate-pulse shadow-lg ring-2 ring-primary/50 bg-gradient-to-br from-primary to-accent"
-            >
-              <span className="animate-in zoom-in duration-200">
-                {getActiveFiltersCount()}
-              </span>
-            </Badge>
-          )}
-        </Button>
-        
-        <Button onClick={handleSearch} variant="default" size="sm" className="h-9 px-3 border-0 bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-110 rounded-xl transition-all duration-500 animate-gradient">
-          <Search className="h-4 w-4 transition-all duration-500" />
-        </Button>
-      </div>
+        {/* Spacer for fixed panel */}
+        <div className="h-16" />
             
             {/* Mobile Suggestions Dropdown */}
             {showSuggestions && hasSuggestions && (
@@ -2304,8 +2301,7 @@ const AstraSearchPanel = ({
                 {filters.bathrooms && filters.bathrooms !== 'all' ? `${filters.bathrooms} Bath` : 'Baths'}
               </Button>
             </div>
-          </div>
-
+        
         {/* Advanced Filters Modal using slim component */}
         <AdvancedFilters 
           language={language}
@@ -2319,8 +2315,6 @@ const AstraSearchPanel = ({
           open={showAdvancedFilters}
           onOpenChange={setShowAdvancedFilters}
         />
-        {/* Spacer for fixed search panel */}
-        <div className="h-14" />
       </div>
     );
   }
