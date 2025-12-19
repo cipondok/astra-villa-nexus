@@ -1970,7 +1970,7 @@ const AstraSearchPanel = ({
   if (isMobile) {
     return (
       <div className="w-full">
-        <div className="fixed top-[56px] left-2 right-2 z-40 bg-gradient-to-b from-background/98 via-background/95 to-background/90 backdrop-blur-xl border-2 border-primary/30 shadow-lg shadow-primary/10 rounded-2xl">
+        <div className="fixed top-[56px] left-0 right-0 z-40 bg-gradient-to-b from-background/98 via-background/95 to-background/90 backdrop-blur-xl border-b-2 border-primary/30 shadow-lg shadow-primary/10">
       {/* Search Bar */}
       <div className="flex items-center gap-1.5 p-2">
         <div ref={anchorRef} className="flex-1 relative">
