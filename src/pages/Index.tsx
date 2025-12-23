@@ -427,43 +427,60 @@ const Index = () => {
 
   // Mobile-first responsive layout wrapper
   const content = (
-    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative container-responsive"
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative"
     >
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
 
       {/* Background Wallpaper Layer */}
-      	<div 
-      	  className={cn(isMobile ? "absolute" : "fixed", "inset-0 z-0 opacity-30 dark:opacity-20 pointer-events-none")}
-      	  style={backgroundStyle}
-      	/>
+      <div 
+        className={cn(isMobile ? "absolute" : "fixed", "inset-0 z-0 opacity-20 dark:opacity-15 pointer-events-none")}
+        style={backgroundStyle}
+      />
       
       {/* Content Layer with mobile-first responsive backdrop */}
-      <div className="relative z-10 min-h-stable md:min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile px-0 md:px-2 pb-1 md:pb-2">
-        
+      <div className={cn(
+        "relative z-10 min-h-stable md:min-h-screen",
+        "bg-background/95 dark:bg-background/98",
+        "backdrop-blur-sm",
+        "safe-area-mobile",
+        // Mobile-specific padding
+        "px-0 md:px-2",
+        "pb-20 md:pb-4" // Extra bottom padding for mobile footer
+      )}>
         
         {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
-        <section className="relative w-full pt-1 md:pt-3 bg-gradient-to-b from-background via-background/95 to-muted/30">
-          {/* Decorative background elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <section className="relative w-full pt-0 md:pt-3 bg-gradient-to-b from-background via-background/95 to-muted/30">
+          {/* Decorative background elements - hidden on mobile for performance */}
+          <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
             <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="relative z-10 px-2 py-1 md:px-4 md:py-3 w-full max-w-7xl mx-auto">
-            {/* Enhanced Header */}
-            <div className="mb-1.5 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              {/* User Membership Status - removed from main page body as requested */}
-
-              <div className="inline-flex items-center gap-1.5 mb-1 px-2.5 py-0.5 md:px-4 md:py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20">
-                <Sparkles className="h-2.5 w-2.5 md:h-4 md:w-4 text-primary animate-pulse" />
-                <span className="text-[9px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
+          <div className={cn(
+            "relative z-10 w-full max-w-7xl mx-auto",
+            // Mobile: edge-to-edge with minimal padding
+            "px-2 py-2 md:px-4 md:py-3"
+          )}>
+            {/* Enhanced Header - Compact on mobile */}
+            <div className="mb-2 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              {/* AI Badge - Smaller on mobile */}
+              <div className={cn(
+                "inline-flex items-center gap-1.5 mb-1.5",
+                "px-3 py-1 md:px-4 md:py-1.5",
+                "bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10",
+                "rounded-full border border-primary/20"
+              )}>
+                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
+                <span className="text-[11px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
               </div>
-              <h2 className="hidden md:block text-sm md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
+              
+              {/* Title - Hidden on mobile, shown on tablet+ */}
+              <h2 className="hidden md:block text-lg md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
                 {t.findYour}
               </h2>
-              <p className="hidden md:flex text-[10px] md:text-sm lg:text-base text-muted-foreground items-center justify-center gap-1.5">
-                <Search className="h-3 w-3 md:h-4 md:w-4" />
+              <p className="hidden md:flex text-xs md:text-sm lg:text-base text-muted-foreground items-center justify-center gap-1.5">
+                <Search className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 {t.searchPowered}
               </p>
             </div>
