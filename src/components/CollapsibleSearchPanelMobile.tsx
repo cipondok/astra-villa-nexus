@@ -15,12 +15,12 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
 
   return (
     <div className="w-full relative transition-all duration-300">
-      <div className="relative backdrop-blur-2xl bg-background border border-border shadow-lg overflow-hidden">
+      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-background/70 shadow-macos backdrop-blur-xl">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-60 animate-shimmer" />
-        
+
         <Collapsible open={!isCollapsed} onOpenChange={(open) => setIsCollapsed(!open)}>
           <CollapsibleTrigger asChild>
-            <button className="w-full flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/15 hover:to-primary/10 transition-all duration-300 border-b border-border/20 relative z-10">
+            <button className="w-full flex items-center justify-between px-4 py-2.5 bg-background/40 hover:bg-background/55 transition-all duration-300 border-b border-border/30 relative z-10">
               <div className="flex items-center gap-2">
                 <Search className="h-4 w-4 text-primary" />
                 <span className="text-sm font-semibold text-foreground">Search Properties</span>
