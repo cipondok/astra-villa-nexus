@@ -1990,7 +1990,8 @@ const AstraSearchPanel = ({
       <div className="w-full">
         {/* Fixed Search Panel */}
         <div className="fixed top-14 left-0 right-0 z-[10050] bg-background shadow-lg border-b border-border p-2">
-          <div className="flex items-center gap-2">
+          {/* Search Input Row */}
+          <div className="flex items-center gap-2 mb-2">
             <div ref={anchorRef} className="flex-1 relative">
               <Search
                 className={cn(
@@ -2025,15 +2026,19 @@ const AstraSearchPanel = ({
               enablePaste={true}
               className="shrink-0"
             />
+          </div>
 
-            {/* Filter Button */}
+          {/* Filter & Search Button Row */}
+          <div className="flex items-center gap-2">
+            {/* Filter Button - Left side */}
             <Button
               onClick={() => setShowAdvancedFilters(true)}
               variant="outline"
               size="sm"
-              className="h-9 px-3 border border-primary/40 rounded-xl relative"
+              className="h-10 px-4 flex-1 border border-primary/40 rounded-xl relative flex items-center justify-center gap-2"
             >
               <SlidersHorizontal className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">{currentText.filters}</span>
               {getActiveFiltersCount() > 0 && (
                 <Badge
                   variant="default"
@@ -2044,9 +2049,10 @@ const AstraSearchPanel = ({
               )}
             </Button>
 
-            {/* Search Button */}
-            <Button onClick={handleSearch} size="sm" className="h-9 px-3 rounded-xl">
+            {/* Search Button - Right side */}
+            <Button onClick={handleSearch} size="sm" className="h-10 px-6 flex-1 rounded-xl flex items-center justify-center gap-2">
               <Search className="h-4 w-4" />
+              <span className="text-sm font-medium">{currentText.search}</span>
             </Button>
           </div>
         </div>
