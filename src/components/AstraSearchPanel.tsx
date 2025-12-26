@@ -2323,10 +2323,10 @@ const AstraSearchPanel = ({
     );
   }
   return <div className="w-full transition-all duration-500">
-    <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 max-w-7xl mx-auto")}>
+    <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 w-full")}>
       {/* Glassmorphic Luxury Container */}
-      <div className="glass-popup backdrop-blur-2xl border border-primary/30 rounded-2xl shadow-2xl shadow-primary/40 hover:shadow-3xl hover:shadow-primary/60 transition-all duration-700 bg-gradient-to-br from-background/60 via-background/40 to-primary/5 overflow-hidden">
-        <div className={cn("space-y-1.5 backdrop-blur-sm border border-primary/20 rounded-xl bg-transparent shadow-inner", isMobile ? "p-1.5" : "p-2 lg:p-3")}>
+      <div className="bg-transparent overflow-hidden">
+        <div className={cn("space-y-1.5 bg-transparent", isMobile ? "p-1.5" : "p-2 lg:p-3")}>
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
