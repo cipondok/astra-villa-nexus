@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { Search, ChevronDown } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { SearchPanelBackgroundSlider } from '@/components/search/SearchPanelBackgroundSlider';
 
 interface CollapsibleSearchPanelMobileProps {
   children: React.ReactNode;
@@ -40,15 +41,19 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
           // Mobile app-like glass card styling
           "rounded-2xl",
           "border border-border/40",
-          "bg-background/95 dark:bg-background/98",
           "shadow-lg shadow-black/5 dark:shadow-black/20",
-          "backdrop-blur-2xl",
           // Sticky state enhancements
           isSticky && "shadow-xl shadow-black/10 dark:shadow-black/30 border-border/60"
         )}
       >
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-transparent pointer-events-none" />
+        {/* Background Image Slider */}
+        <SearchPanelBackgroundSlider 
+          className={cn(
+            "transition-opacity duration-500",
+            isSticky ? "opacity-80" : "opacity-100"
+          )}
+          interval={6000}
+        />
 
         <Collapsible open={!isCollapsed} onOpenChange={(open) => setIsCollapsed(!open)}>
           <CollapsibleTrigger asChild>
@@ -56,10 +61,10 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
               className={cn(
                 "w-full flex items-center justify-between",
                 "px-4 py-3",
-                "bg-transparent hover:bg-muted/30",
-                "active:bg-muted/50",
+                "bg-transparent hover:bg-white/10",
+                "active:bg-white/20",
                 "transition-all duration-200",
-                "border-b border-border/20",
+                "border-b border-white/20",
                 "relative z-10",
                 // Touch-friendly sizing
                 "min-h-[52px]"
@@ -69,24 +74,25 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
                 <div className={cn(
                   "flex items-center justify-center",
                   "w-9 h-9 rounded-xl",
-                  "bg-primary/10 dark:bg-primary/20"
+                  "bg-white/20 backdrop-blur-sm"
                 )}>
-                  <Search className="h-4.5 w-4.5 text-primary" />
+                  <Search className="h-4.5 w-4.5 text-white" />
                 </div>
                 <div className="flex flex-col items-start">
-                  <span className="text-[15px] font-semibold text-foreground leading-tight">
+                  <span className="text-[15px] font-semibold text-white leading-tight drop-shadow-md">
                     Search Properties
                   </span>
-                  <span className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                  <span className="text-[11px] text-white/80 leading-tight mt-0.5 drop-shadow-sm">
                     Find your dream home
                   </span>
                 </div>
                 {activeFiltersCount > 0 && (
                   <span className={cn(
                     "ml-1 px-2.5 py-1 rounded-full",
-                    "bg-primary text-primary-foreground",
+                    "bg-white text-primary",
                     "text-[11px] font-bold leading-none",
-                    "min-w-[22px] text-center"
+                    "min-w-[22px] text-center",
+                    "shadow-lg"
                   )}>
                     {activeFiltersCount}
                   </span>
@@ -96,12 +102,12 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
                 <div className={cn(
                   "flex items-center justify-center",
                   "w-8 h-8 rounded-lg",
-                  "bg-muted/50 dark:bg-muted/30",
+                  "bg-white/20 backdrop-blur-sm",
                   "transition-colors duration-200"
                 )}>
                   <ChevronDown 
                     className={cn(
-                      "h-4.5 w-4.5 text-muted-foreground",
+                      "h-4.5 w-4.5 text-white",
                       "transition-transform duration-300 ease-out",
                       !isCollapsed && "rotate-180"
                     )} 
@@ -112,7 +118,7 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
           </CollapsibleTrigger>
           
           <CollapsibleContent className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2 duration-200">
-            <div className="relative z-[1]">
+            <div className="relative z-[1] bg-background/95 backdrop-blur-xl">
               {children}
             </div>
           </CollapsibleContent>
