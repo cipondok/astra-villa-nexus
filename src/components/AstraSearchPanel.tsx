@@ -1990,7 +1990,7 @@ const AstraSearchPanel = ({
       <div className="w-full">
         {/* Fixed Search Panel - Compact Mobile Style */}
         <div 
-          className="fixed left-2 right-2 z-[10050] bg-background/70 backdrop-blur-md shadow-sm border border-border/30 rounded-lg"
+          className="fixed left-2 right-2 z-[10050] bg-background/70 backdrop-blur-md shadow-sm border-[0.5px] border-border/20 rounded-lg"
           style={{ top: 'env(safe-area-inset-top, 56px)', paddingTop: '4px' }}
         >
           {/* Ultra Compact Search Container */}
