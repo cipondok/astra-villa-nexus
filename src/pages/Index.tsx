@@ -15,6 +15,7 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw } from "lucide-react";
+import { SearchPanelBackgroundSlider } from "@/components/search/SearchPanelBackgroundSlider";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -449,44 +450,55 @@ const Index = () => {
         "pb-20 md:pb-4" // Extra bottom padding for mobile footer
       )}>
         
-        {/* Hero Intro Slider Section with Integrated Search - Enhanced Design */}
-        <section className="relative w-full pt-0 md:pt-3 bg-gradient-to-b from-background via-background/95 to-muted/30">
-          {/* Decorative background elements - hidden on mobile for performance */}
-          <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
-          </div>
+        {/* Hero Search Section with Background Image Slider */}
+        <section className="relative w-full overflow-hidden">
+          {/* Background Image Slider - Full section background */}
+          <SearchPanelBackgroundSlider 
+            className="absolute inset-0 z-0"
+            interval={6000}
+          />
           
+          {/* Content overlay */}
           <div className={cn(
             "relative z-10 w-full max-w-7xl mx-auto",
             // Mobile: edge-to-edge with minimal padding
-            "px-2 py-2 md:px-4 md:py-3"
+            "px-2 py-4 md:px-4 md:py-8"
           )}>
-            {/* Enhanced Header - Compact on mobile */}
-            <div className="mb-2 md:mb-3 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              {/* AI Badge - Smaller on mobile */}
+            {/* Enhanced Header */}
+            <div className="mb-3 md:mb-5 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              {/* AI Badge */}
               <div className={cn(
-                "inline-flex items-center gap-1.5 mb-1.5",
+                "inline-flex items-center gap-1.5 mb-2",
                 "px-3 py-1 md:px-4 md:py-1.5",
-                "bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10",
-                "rounded-full border border-primary/20"
+                "bg-white/20 backdrop-blur-md",
+                "rounded-full border border-white/30"
               )}>
-                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
-                <span className="text-[11px] md:text-xs font-semibold text-primary">AI-Powered Search</span>
+                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-white animate-pulse" />
+                <span className="text-[11px] md:text-xs font-semibold text-white drop-shadow-md">AI-Powered Search</span>
               </div>
               
-              {/* Title - Hidden on mobile, shown on tablet+ */}
-              <h2 className="hidden md:block text-lg md:text-2xl lg:text-3xl font-bold leading-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent mb-0.5 md:mb-1">
+              {/* Title */}
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight text-white drop-shadow-lg mb-1 md:mb-2">
                 {t.findYour}
               </h2>
-              <p className="hidden md:flex text-xs md:text-sm lg:text-base text-muted-foreground items-center justify-center gap-1.5">
+              <p className="flex text-xs md:text-sm lg:text-base text-white/90 items-center justify-center gap-1.5 drop-shadow-md">
                 <Search className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 {t.searchPowered}
               </p>
             </div>
             
-            {/* Enhanced Search Panel Container - No overflow-hidden on mobile for sticky */}
-            {isMobile ? (
+            {/* Search Panel Container */}
+            <div className={cn(
+              "relative mx-auto",
+              "max-w-4xl",
+              // Glass card for the search panel
+              "bg-background/95 dark:bg-background/98",
+              "backdrop-blur-xl",
+              "rounded-2xl md:rounded-3xl",
+              "shadow-2xl shadow-black/20",
+              "border border-white/20",
+              "overflow-hidden"
+            )}>
               <Suspense fallback={<SearchPanelSkeleton />}>
                 <SearchErrorBoundary>
                   <AstraSearchPanel
@@ -500,39 +512,17 @@ const Index = () => {
                   />
                 </SearchErrorBoundary>
               </Suspense>
-            ) : (
-              <div className="relative">
-                {/* Glass morphism container - Desktop only */}
-                <div className="relative bg-gradient-to-br from-background/80 via-background/60 to-background/80 backdrop-blur-xl border border-border/50 rounded-2xl md:rounded-3xl shadow-2xl shadow-primary/5 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-5 duration-700">
-                  {/* Shine effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer"></div>
-                  
-                  <Suspense fallback={<SearchPanelSkeleton />}>
-                    <SearchErrorBoundary>
-                      <AstraSearchPanel
-                        language={language}
-                        onSearch={(searchData) => {
-                          setQuickSearch(searchData.searchQuery || "");
-                          handleQuickSearch(searchData);
-                        }}
-                        onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                        resultsCount={hasSearched ? searchResults.length : undefined}
-                      />
-                    </SearchErrorBoundary>
-                  </Suspense>
-                  
-                  {/* Retry Indicator */}
-                  {isRetrying && (
-                    <div className="absolute bottom-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300">
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                      <span className="text-sm font-medium">
-                        Retrying... ({retryCount}/3)
-                      </span>
-                    </div>
-                  )}
+              
+              {/* Retry Indicator */}
+              {isRetrying && (
+                <div className="absolute bottom-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span className="text-sm font-medium">
+                    Retrying... ({retryCount}/3)
+                  </span>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </section>
 
