@@ -1988,19 +1988,19 @@ const AstraSearchPanel = ({
   if (isMobile) {
     return (
       <div className="w-full">
-        {/* Fixed Search Panel - Native App Style */}
+        {/* Fixed Search Panel - Compact Mobile Style */}
         <div 
-          className="fixed left-0 right-0 z-[10050] bg-background/95 backdrop-blur-md shadow-lg border-b border-border/50"
-          style={{ top: 'env(safe-area-inset-top, 56px)', paddingTop: '8px' }}
+          className="fixed left-0 right-0 z-[10050] bg-background/95 backdrop-blur-md shadow-sm border-b border-border/30"
+          style={{ top: 'env(safe-area-inset-top, 56px)', paddingTop: '4px' }}
         >
-          {/* Compact Search Container */}
-          <div className="px-3 pb-3 space-y-2">
+          {/* Ultra Compact Search Container */}
+          <div className="px-2 pb-2 space-y-1.5">
             {/* Search Input Row */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <div ref={anchorRef} className="flex-1 relative">
                 <Search
                   className={cn(
-                    "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary pointer-events-none",
+                    "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-primary pointer-events-none",
                     searchQuery && "animate-pulse"
                   )}
                 />
@@ -2014,43 +2014,43 @@ const AstraSearchPanel = ({
                     setShowSuggestions(true);
                     if (anchorRef.current) {
                       const rect = anchorRef.current.getBoundingClientRect();
-                      setSuggestionsTop(rect.bottom + 8);
+                      setSuggestionsTop(rect.bottom + 4);
                     }
                     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                   }}
                   onTouchStart={(e) => e.stopPropagation()}
-                  className="pl-10 pr-12 h-11 text-base bg-muted/50 border border-border/60 focus:border-primary focus:bg-background rounded-xl shadow-sm"
+                  className="pl-8 pr-9 h-9 text-sm bg-muted/40 border border-border/50 focus:border-primary focus:bg-background rounded-lg"
                 />
                 
                 {/* Image Search Inside Input */}
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                <div className="absolute right-1.5 top-1/2 transform -translate-y-1/2">
                   <ImageSearchButton
                     onImageSelected={handleImageSearch}
                     onClear={handleClearImageSearch}
                     isSearching={isImageSearching}
                     enableDragDrop={true}
                     enablePaste={true}
-                    className="h-7 w-7"
+                    className="h-6 w-6"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Filter & Search Button Row - Compact */}
-            <div className="flex items-center gap-2">
+            {/* Filter & Search Button Row - Ultra Compact */}
+            <div className="flex items-center gap-1.5">
               {/* Filter Button */}
               <Button
                 onClick={() => setShowAdvancedFilters(true)}
                 variant="outline"
                 size="sm"
-                className="h-9 px-3 flex-1 border border-border/60 bg-muted/30 hover:bg-muted/50 rounded-xl relative flex items-center justify-center gap-1.5"
+                className="h-8 px-2.5 flex-1 border border-border/50 bg-muted/20 hover:bg-muted/40 rounded-lg flex items-center justify-center gap-1"
               >
-                <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-foreground">{currentText.filters}</span>
+                <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-foreground">{currentText.filters}</span>
                 {getActiveFiltersCount() > 0 && (
                   <Badge
                     variant="default"
-                    className="ml-1 h-5 min-w-[20px] px-1.5 flex items-center justify-center text-[10px] rounded-full bg-primary text-primary-foreground"
+                    className="ml-0.5 h-4 min-w-[16px] px-1 flex items-center justify-center text-[9px] rounded-full bg-primary text-primary-foreground"
                   >
                     {getActiveFiltersCount()}
                   </Badge>
@@ -2061,17 +2061,17 @@ const AstraSearchPanel = ({
               <Button 
                 onClick={handleSearch} 
                 size="sm" 
-                className="h-9 px-4 flex-1 rounded-xl flex items-center justify-center gap-1.5 bg-primary hover:bg-primary/90 shadow-md"
+                className="h-8 px-3 flex-1 rounded-lg flex items-center justify-center gap-1 bg-primary hover:bg-primary/90"
               >
-                <Search className="h-4 w-4" />
-                <span className="text-sm font-medium">{currentText.search}</span>
+                <Search className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">{currentText.search}</span>
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Spacer for fixed panel - matches panel height */}
-        <div className="h-[120px]" />
+        {/* Spacer for fixed panel - matches compact panel height */}
+        <div className="h-[88px]" />
 
         {/* Mobile Suggestions Dropdown */}
         {showSuggestions && hasSuggestions && (
