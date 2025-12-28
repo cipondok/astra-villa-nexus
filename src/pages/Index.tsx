@@ -46,6 +46,7 @@ const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecom
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
+const PremiumButtonsDemo = lazy(() => import("@/components/demo/PremiumButtonsDemo"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -769,6 +770,13 @@ const Index = () => {
                 <div id="marketplace-services-section" className="section-compact mt-8">
                   <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
                     <MarketplaceServices />
+                  </Suspense>
+                </div>
+
+                {/* Premium Buttons Demo Section */}
+                <div id="premium-buttons-demo" className="section-compact mt-8">
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <PremiumButtonsDemo />
                   </Suspense>
                 </div>
               </>

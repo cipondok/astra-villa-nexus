@@ -71,6 +71,23 @@ const config: Config = {
           700: 'hsl(0, 0%, 25%)',
           800: 'hsl(0, 0%, 15%)',
           900: 'hsl(0, 0%, 9%)',
+        },
+        // Premium Gold-Orange Theme Colors
+        'gold': {
+          primary: 'hsl(var(--gold-primary))',
+          secondary: 'hsl(var(--gold-secondary))',
+        },
+        'orange': {
+          primary: 'hsl(var(--orange-primary))',
+          secondary: 'hsl(var(--orange-secondary))',
+        },
+        'dark': {
+          bg: 'hsl(var(--dark-bg))',
+          card: 'hsl(var(--dark-card))',
+        },
+        'text': {
+          light: 'hsl(var(--text-light))',
+          muted: 'hsl(var(--text-muted))',
         }
       },
       borderRadius: {
@@ -82,6 +99,7 @@ const config: Config = {
         'sf': ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
         'inter': ['Inter', 'system-ui', 'sans-serif'],
         'playfair': ['Playfair Display', 'serif'],
+        'montserrat': ['Montserrat', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
