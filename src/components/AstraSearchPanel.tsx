@@ -192,11 +192,47 @@ const AstraSearchPanel = ({
     rentalDetails: false
   });
   
-  // Popular locations for quick selection
-  const popularLocations = [
-    "Jakarta Selatan", "Jakarta Pusat", "Bandung", "Surabaya", 
-    "Bali", "Tangerang", "Bekasi", "Depok"
-  ];
+  // Fetch locations from database
+  const [dbLocations, setDbLocations] = useState<{provinces: string[], cities: string[]}>({ provinces: [], cities: [] });
+  
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        // Fetch unique provinces
+        const { data: provincesData } = await supabase
+          .from('indonesian_locations')
+          .select('province_name')
+          .eq('is_active', true)
+          .order('province_name');
+        
+        // Fetch unique cities
+        const { data: citiesData } = await supabase
+          .from('indonesian_locations')
+          .select('city_name')
+          .eq('is_active', true)
+          .order('city_name');
+        
+        if (provincesData) {
+          const uniqueProvinces = [...new Set(provincesData.map(p => p.province_name).filter(Boolean))];
+          setDbLocations(prev => ({ ...prev, provinces: uniqueProvinces as string[] }));
+        }
+        
+        if (citiesData) {
+          const uniqueCities = [...new Set(citiesData.map(c => c.city_name).filter(Boolean))];
+          setDbLocations(prev => ({ ...prev, cities: uniqueCities as string[] }));
+        }
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    };
+    
+    fetchLocations();
+  }, []);
+  
+  // Popular locations - use database cities or fallback
+  const popularLocations = dbLocations.cities.length > 0 
+    ? dbLocations.cities.slice(0, 12) 
+    : ["Jakarta Selatan", "Jakarta Pusat", "Bandung", "Surabaya", "Bali", "Tangerang", "Bekasi", "Depok"];
   
   const [locationSearch, setLocationSearch] = useState("");
   const [locationActiveTab, setLocationActiveTab] = useState<'province' | 'city' | 'area'>('province');
@@ -3330,7 +3366,7 @@ const AstraSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Location - Slim Collapsible */}
+                {/* Location - Slim Collapsible with Province/City tabs */}
                 <Collapsible
                   open={openSections.location}
                   onOpenChange={(open) => setOpenSections(prev => ({ 
@@ -3348,43 +3384,79 @@ const AstraSearchPanel = ({
                       <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
                         <MapPin className="h-3 w-3 text-primary" />
                         Location
-                        {filters.location && <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">{filters.location}</Badge>}
+                        {(filters.state || filters.city || filters.location) && (
+                          <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">
+                            {filters.city || filters.state || filters.location}
+                          </Badge>
+                        )}
                       </Label>
                       {openSections.location ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1.5 pt-1">
                     <Input 
-                      placeholder="Search..." 
+                      placeholder="Search province or city..." 
                       value={locationSearch}
                       onChange={(e) => setLocationSearch(e.target.value)}
                       className="h-7 text-[10px] rounded-md bg-background/50"
                     />
-                    <div className="flex flex-wrap gap-1">
-                      {popularLocations
-                        .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
-                        .map(location => (
-                          <Badge 
-                            key={location}
-                            variant={filters.location === location ? "default" : "outline"}
-                            className={cn(
-                              "cursor-pointer h-5 px-2 text-[9px] font-medium rounded-md hover:bg-primary/10 transition-colors border-border/50",
-                              filters.location === location && "shadow-sm ring-1 ring-primary/30"
-                            )}
-                            onClick={() => {
-                              handleFilterChange('location', filters.location === location ? '' : location);
-                              setLocationSearch('');
-                              if (filters.location !== location) {
-                                setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true, propertyType: false, propertySpecs: false, amenities: false })), 150);
-                              } else {
-                                setOpenSections(prev => ({ ...prev, location: false }));
-                              }
-                            }}
-                          >
-                            {location}
-                          </Badge>
-                        ))}
+                    
+                    {/* Province/City Toggle */}
+                    <div className="flex gap-0.5 p-0.5 bg-muted/30 rounded-md">
+                      <Button
+                        variant={!filters.state ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => handleFilterChange('state', '')}
+                        className={cn(
+                          "flex-1 h-5 text-[9px] font-medium rounded-sm",
+                          !filters.state ? "bg-primary/80 text-primary-foreground" : "text-muted-foreground"
+                        )}
+                      >
+                        City
+                      </Button>
+                      <Button
+                        variant={filters.state ? "default" : "ghost"}
+                        size="sm"
+                        className={cn(
+                          "flex-1 h-5 text-[9px] font-medium rounded-sm",
+                          filters.state ? "bg-primary/80 text-primary-foreground" : "text-muted-foreground"
+                        )}
+                        onClick={() => {}}
+                      >
+                        Province
+                      </Button>
                     </div>
+                    
+                    {/* City/Location badges */}
+                    <ScrollArea className="max-h-24">
+                      <div className="flex flex-wrap gap-1">
+                        {(filters.state ? dbLocations.provinces : popularLocations)
+                          .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
+                          .slice(0, 15)
+                          .map(location => (
+                            <Badge 
+                              key={location}
+                              variant={(filters.city === location || filters.location === location) ? "default" : "outline"}
+                              className={cn(
+                                "cursor-pointer h-5 px-2 text-[9px] font-medium rounded-md hover:bg-primary/10 transition-colors border-border/50",
+                                (filters.city === location || filters.location === location) && "shadow-sm ring-1 ring-primary/30"
+                              )}
+                              onClick={() => {
+                                handleFilterChange('location', filters.location === location ? '' : location);
+                                handleFilterChange('city', filters.city === location ? '' : location);
+                                setLocationSearch('');
+                                if (filters.location !== location) {
+                                  setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true, propertyType: false, propertySpecs: false, amenities: false })), 150);
+                                } else {
+                                  setOpenSections(prev => ({ ...prev, location: false }));
+                                }
+                              }}
+                            >
+                              {location}
+                            </Badge>
+                          ))}
+                      </div>
+                    </ScrollArea>
                   </CollapsibleContent>
                 </Collapsible>
 
