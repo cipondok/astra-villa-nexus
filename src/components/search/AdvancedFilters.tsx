@@ -267,19 +267,19 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
         {/* Tabbed Filters - Compact */}
         <div className="flex-1 overflow-hidden px-2 sm:px-6 pt-2 sm:pt-3">
           <Tabs defaultValue="property" className="h-full flex flex-col">
-            <TabsList className="w-full grid grid-cols-3 h-7 sm:h-10 bg-muted/30 mb-2 sm:mb-3">
-              <TabsTrigger value="property" className="text-[9px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-1 sm:px-3">
-                <Home className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1.5" />
+            <TabsList className="filter-tabs-container h-8 sm:h-10 mb-2 sm:mb-3">
+              <TabsTrigger value="property" className="filter-tab-trigger text-[9px] sm:text-xs px-1 sm:px-3">
+                <Home className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1.5" />
                 <span className="hidden xs:inline">{currentText.propertyDetails}</span>
                 <span className="xs:hidden">Property</span>
               </TabsTrigger>
-              <TabsTrigger value="price" className="text-[9px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-1 sm:px-3">
-                <DollarSign className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1.5" />
+              <TabsTrigger value="price" className="filter-tab-trigger text-[9px] sm:text-xs px-1 sm:px-3">
+                <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1.5" />
                 <span className="hidden xs:inline">{currentText.priceAndArea}</span>
                 <span className="xs:hidden">Price</span>
               </TabsTrigger>
-              <TabsTrigger value="features" className="text-[9px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-1 sm:px-3">
-                <Sparkles className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1.5" />
+              <TabsTrigger value="features" className="filter-tab-trigger text-[9px] sm:text-xs px-1 sm:px-3">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1.5" />
                 <span className="hidden xs:inline">{currentText.features}</span>
                 <span className="xs:hidden">Features</span>
               </TabsTrigger>
