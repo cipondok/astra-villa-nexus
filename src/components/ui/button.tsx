@@ -17,6 +17,10 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         cta: "btn-cta",
+        // Premium Gold-Orange Variants
+        "gold-orange": "btn-gold-orange",
+        "glass": "btn-glass",
+        "outline-emboss": "btn-outline-emboss",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -25,6 +29,9 @@ const buttonVariants = cva(
         icon: "h-10 w-10",
         "icon-sm": "h-8 w-8",
         "icon-lg": "h-12 w-12",
+        // Premium button sizes
+        premium: "h-auto px-9 py-4",
+        "premium-sm": "h-auto px-6 py-3",
       },
     },
     defaultVariants: {
