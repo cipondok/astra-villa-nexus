@@ -192,47 +192,7 @@ const AstraSearchPanel = ({
     rentalDetails: false
   });
   
-  // Fetch locations from database
-  const [dbLocations, setDbLocations] = useState<{provinces: string[], cities: string[]}>({ provinces: [], cities: [] });
-  
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        // Fetch unique provinces
-        const { data: provincesData } = await supabase
-          .from('indonesian_locations')
-          .select('province_name')
-          .eq('is_active', true)
-          .order('province_name');
-        
-        // Fetch unique cities
-        const { data: citiesData } = await supabase
-          .from('indonesian_locations')
-          .select('city_name')
-          .eq('is_active', true)
-          .order('city_name');
-        
-        if (provincesData) {
-          const uniqueProvinces = [...new Set(provincesData.map(p => p.province_name).filter(Boolean))];
-          setDbLocations(prev => ({ ...prev, provinces: uniqueProvinces as string[] }));
-        }
-        
-        if (citiesData) {
-          const uniqueCities = [...new Set(citiesData.map(c => c.city_name).filter(Boolean))];
-          setDbLocations(prev => ({ ...prev, cities: uniqueCities as string[] }));
-        }
-      } catch (error) {
-        console.error('Error fetching locations:', error);
-      }
-    };
-    
-    fetchLocations();
-  }, []);
-  
-  // Popular locations - use database cities or fallback
-  const popularLocations = dbLocations.cities.length > 0 
-    ? dbLocations.cities.slice(0, 12) 
-    : ["Jakarta Selatan", "Jakarta Pusat", "Bandung", "Surabaya", "Bali", "Tangerang", "Bekasi", "Depok"];
+  // Location search state (using existing provinces/cities/areas data fetched elsewhere)
   
   const [locationSearch, setLocationSearch] = useState("");
   const [locationActiveTab, setLocationActiveTab] = useState<'province' | 'city' | 'area'>('province');
@@ -3366,17 +3326,29 @@ const AstraSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Location - Slim Collapsible with Province/City tabs */}
+                {/* Location - Slim Collapsible with Province/City/Area tabs (same as main search) */}
                 <Collapsible
                   open={openSections.location}
-                  onOpenChange={(open) => setOpenSections(prev => ({ 
-                    ...prev, 
-                    location: open,
-                    propertyType: false,
-                    priceRange: false,
-                    propertySpecs: false,
-                    amenities: false
-                  }))}
+                  onOpenChange={(open) => {
+                    setOpenSections(prev => ({ 
+                      ...prev, 
+                      location: open,
+                      propertyType: false,
+                      priceRange: false,
+                      propertySpecs: false,
+                      amenities: false
+                    }));
+                    // Reset to appropriate tab based on current selection
+                    if (open) {
+                      if (!filters.state || filters.state === 'all') {
+                        setLocationActiveTab('province');
+                      } else if (!filters.city || filters.city === 'all') {
+                        setLocationActiveTab('city');
+                      } else {
+                        setLocationActiveTab('area');
+                      }
+                    }
+                  }}
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
@@ -3384,79 +3356,143 @@ const AstraSearchPanel = ({
                       <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
                         <MapPin className="h-3 w-3 text-primary" />
                         Location
-                        {(filters.state || filters.city || filters.location) && (
+                        {(filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') ? (
                           <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">
-                            {filters.city || filters.state || filters.location}
+                            {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                           </Badge>
-                        )}
+                        ) : null}
                       </Label>
                       {openSections.location ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1.5 pt-1">
-                    <Input 
-                      placeholder="Search province or city..." 
-                      value={locationSearch}
-                      onChange={(e) => setLocationSearch(e.target.value)}
-                      className="h-7 text-[10px] rounded-md bg-background/50"
-                    />
-                    
-                    {/* Province/City Toggle */}
-                    <div className="flex gap-0.5 p-0.5 bg-muted/30 rounded-md">
-                      <Button
-                        variant={!filters.state ? "default" : "ghost"}
-                        size="sm"
-                        onClick={() => handleFilterChange('state', '')}
-                        className={cn(
-                          "flex-1 h-5 text-[9px] font-medium rounded-sm",
-                          !filters.state ? "bg-primary/80 text-primary-foreground" : "text-muted-foreground"
-                        )}
-                      >
-                        City
-                      </Button>
-                      <Button
-                        variant={filters.state ? "default" : "ghost"}
-                        size="sm"
-                        className={cn(
-                          "flex-1 h-5 text-[9px] font-medium rounded-sm",
-                          filters.state ? "bg-primary/80 text-primary-foreground" : "text-muted-foreground"
-                        )}
-                        onClick={() => {}}
-                      >
-                        Province
-                      </Button>
-                    </div>
-                    
-                    {/* City/Location badges */}
-                    <ScrollArea className="max-h-24">
-                      <div className="flex flex-wrap gap-1">
-                        {(filters.state ? dbLocations.provinces : popularLocations)
-                          .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
-                          .slice(0, 15)
-                          .map(location => (
-                            <Badge 
-                              key={location}
-                              variant={(filters.city === location || filters.location === location) ? "default" : "outline"}
-                              className={cn(
-                                "cursor-pointer h-5 px-2 text-[9px] font-medium rounded-md hover:bg-primary/10 transition-colors border-border/50",
-                                (filters.city === location || filters.location === location) && "shadow-sm ring-1 ring-primary/30"
-                              )}
+                    {/* Province/City/Area Tabs */}
+                    <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
+                      <TabsList className="w-full grid grid-cols-3 h-6 rounded-md bg-muted/50 p-0.5">
+                        <TabsTrigger
+                          value="province"
+                          className="text-[9px] font-medium rounded-sm data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground"
+                        >
+                          Province
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="city"
+                          disabled={!filters.state || filters.state === "all"}
+                          className="text-[9px] font-medium rounded-sm data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
+                        >
+                          City
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="area"
+                          disabled={!filters.city || filters.city === "all"}
+                          className="text-[9px] font-medium rounded-sm data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
+                        >
+                          Area
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="province" className="mt-1.5">
+                        <Input
+                          value={provinceSearch}
+                          onChange={(e) => setProvinceSearch(e.target.value)}
+                          placeholder="Search province..."
+                          className="h-6 text-[10px] rounded-md bg-background/50 mb-1"
+                        />
+                        <ScrollArea className="h-28 border border-border/30 rounded-md bg-transparent">
+                          <div className="space-y-0.5 p-1">
+                            <Button
+                              variant={!filters.state || filters.state === 'all' ? 'default' : 'ghost'}
+                              className="w-full justify-start text-[10px] h-6 rounded-sm"
+                              onClick={() => handleFilterChange('state', 'all')}
+                            >
+                              Any Province
+                            </Button>
+                            {filteredProvinces.map(province => (
+                              <Button
+                                key={province.code}
+                                variant={filters.state === province.code ? 'default' : 'ghost'}
+                                className="w-full justify-start text-[10px] h-6 rounded-sm"
+                                onClick={() => {
+                                  handleFilterChange('state', province.code);
+                                  setTimeout(() => setLocationActiveTab('city'), 150);
+                                }}
+                              >
+                                {province.name}
+                              </Button>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+
+                      <TabsContent value="city" className="mt-1.5">
+                        <Input
+                          value={citySearch}
+                          onChange={(e) => setCitySearch(e.target.value)}
+                          placeholder="Search city..."
+                          className="h-6 text-[10px] rounded-md bg-background/50 mb-1"
+                        />
+                        <ScrollArea className="h-28 border border-border/30 rounded-md bg-transparent">
+                          <div className="space-y-0.5 p-1">
+                            <Button
+                              variant={!filters.city || filters.city === 'all' ? 'default' : 'ghost'}
+                              className="w-full justify-start text-[10px] h-6 rounded-sm"
+                              onClick={() => handleFilterChange('city', 'all')}
+                            >
+                              Any City
+                            </Button>
+                            {filteredCities.map(city => (
+                              <Button
+                                key={city.code}
+                                variant={filters.city === city.code ? 'default' : 'ghost'}
+                                className="w-full justify-start text-[10px] h-6 rounded-sm"
+                                onClick={() => {
+                                  handleFilterChange('city', city.code);
+                                  setTimeout(() => setLocationActiveTab('area'), 150);
+                                }}
+                              >
+                                {city.type} {city.name}
+                              </Button>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+
+                      <TabsContent value="area" className="mt-1.5">
+                        <Input
+                          value={areaSearch}
+                          onChange={(e) => setAreaSearch(e.target.value)}
+                          placeholder="Search area..."
+                          className="h-6 text-[10px] rounded-md bg-background/50 mb-1"
+                        />
+                        <ScrollArea className="h-28 border border-border/30 rounded-md bg-transparent">
+                          <div className="space-y-0.5 p-1">
+                            <Button
+                              variant={!filters.area || filters.area === 'all' ? 'default' : 'ghost'}
+                              className="w-full justify-start text-[10px] h-6 rounded-sm"
                               onClick={() => {
-                                handleFilterChange('location', filters.location === location ? '' : location);
-                                handleFilterChange('city', filters.city === location ? '' : location);
-                                setLocationSearch('');
-                                if (filters.location !== location) {
-                                  setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true, propertyType: false, propertySpecs: false, amenities: false })), 150);
-                                } else {
-                                  setOpenSections(prev => ({ ...prev, location: false }));
-                                }
+                                handleFilterChange('area', 'all');
+                                setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true })), 150);
                               }}
                             >
-                              {location}
-                            </Badge>
-                          ))}
-                      </div>
-                    </ScrollArea>
+                              Any Area
+                            </Button>
+                            {filteredAreas.map(area => (
+                              <Button
+                                key={area.code}
+                                variant={filters.area === area.code ? 'default' : 'ghost'}
+                                className="w-full justify-start text-[10px] h-6 rounded-sm"
+                                onClick={() => {
+                                  handleFilterChange('area', area.code);
+                                  setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true })), 150);
+                                }}
+                              >
+                                {area.name}
+                              </Button>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+                    </Tabs>
                   </CollapsibleContent>
                 </Collapsible>
 
