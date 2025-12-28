@@ -2329,88 +2329,70 @@ const AstraSearchPanel = ({
       <div className="bg-transparent overflow-hidden">
         <div className={cn("space-y-1.5 bg-transparent", isMobile ? "p-1.5" : "p-2 lg:p-3")}>
           
-          {/* Compact Tabs for Sale/Rent/All */}
+          {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
-            <div
-              className={cn(
-                "inline-flex rounded-lg border-0 shadow-md shadow-macos-blue/10 relative",
-                "p-0.5 bg-transparent"
-              )}
-            >
-              {/* Sliding blue gradient background indicator */}
+            <div className="search-tab-container">
+              {/* Animated sliding background indicator */}
               <div
-                className="absolute inset-y-0.5 bg-gradient-to-r from-macos-light-blue via-macos-blue to-macos-light-blue rounded-md shadow-lg shadow-macos-blue/30 transition-all duration-500 ease-out animate-gradient"
+                className="search-tab-slider inset-y-1"
                 style={{
-                  width: "calc(25% - 2px)",
+                  width: "calc(25% - 4px)",
                   left:
                     activeTab === "all"
-                      ? "2px"
+                      ? "4px"
                       : activeTab === "sale"
-                        ? "calc(25% + 1px)"
+                        ? "calc(25% + 2px)"
                         : activeTab === "rent"
                           ? "calc(50%)"
-                          : "calc(75% - 1px)",
+                          : "calc(75% - 2px)",
                 }}
               />
 
               <button
-                onClick={() => {
-                  setActiveTab("all");
-                }}
+                onClick={() => setActiveTab("all")}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === "all"
-                    ? "text-primary-foreground drop-shadow-lg"
-                    : "text-muted-foreground hover:text-macos-blue"
+                  "search-tab-btn",
+                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  activeTab === "all" && "active"
                 )}
               >
-                <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
+                <Layers className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                 <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
               </button>
+              
               <button
-                onClick={() => {
-                  setActiveTab("sale");
-                }}
+                onClick={() => setActiveTab("sale")}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === "sale"
-                    ? "text-primary-foreground drop-shadow-lg"
-                    : "text-muted-foreground hover:text-macos-blue"
+                  "search-tab-btn",
+                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  activeTab === "sale" && "active"
                 )}
               >
-                <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
+                <ShoppingBag className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                 <span>{isMobile ? "Buy" : currentText.forSale}</span>
               </button>
+              
               <button
-                onClick={() => {
-                  setActiveTab("rent");
-                }}
+                onClick={() => setActiveTab("rent")}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === "rent"
-                    ? "text-primary-foreground drop-shadow-lg"
-                    : "text-muted-foreground hover:text-macos-blue"
+                  "search-tab-btn",
+                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  activeTab === "rent" && "active"
                 )}
               >
-                <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
+                <Key className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                 <span>{isMobile ? "Rent" : currentText.forRent}</span>
               </button>
+              
               <button
-                onClick={() => {
-                  setActiveTab("new_project");
-                }}
+                onClick={() => setActiveTab("new_project")}
                 className={cn(
-                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
-                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
-                  activeTab === "new_project"
-                    ? "text-primary-foreground drop-shadow-lg"
-                    : "text-muted-foreground hover:text-macos-blue"
+                  "search-tab-btn",
+                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  activeTab === "new_project" && "active"
                 )}
               >
-                <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
+                <Rocket className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
                 <span>{isMobile ? "New" : currentText.newProject}</span>
               </button>
             </div>
