@@ -199,6 +199,7 @@ const AstraSearchPanel = ({
   ];
   
   const [locationSearch, setLocationSearch] = useState("");
+  const [locationActiveTab, setLocationActiveTab] = useState<'province' | 'city' | 'area'>('province');
   const [filters, setFilters] = useState({
     location: '',
     state: '',
@@ -2552,7 +2553,19 @@ const AstraSearchPanel = ({
             </div>
 
             {/* Location Button */}
-            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen}>
+            {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={(open) => {
+                setIsLocationOpen(open);
+                // Reset to appropriate tab based on current selection
+                if (open) {
+                  if (!filters.state || filters.state === 'all') {
+                    setLocationActiveTab('province');
+                  } else if (!filters.city || filters.city === 'all') {
+                    setLocationActiveTab('city');
+                  } else {
+                    setLocationActiveTab('area');
+                  }
+                }
+              }}>
                 <PopoverTrigger asChild>
                   <button 
                     onClick={(e) => {
@@ -2594,13 +2607,12 @@ const AstraSearchPanel = ({
                     paddingRight: 'var(--removed-body-scroll-bar-size, 0px)'
                   }}
                 >
-                  <Tabs defaultValue="province" className="w-full overscroll-contain">
+                  <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full overscroll-contain">
                     <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-black/30 dark:bg-black/40 p-1 backdrop-blur-xl border border-white/15">
                       <TabsTrigger
                         value="province"
                         className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30"
                         onClick={(e) => {
-                          e.preventDefault();
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
@@ -2614,7 +2626,6 @@ const AstraSearchPanel = ({
                         disabled={!filters.state || filters.state === "all"}
                         className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
                         onClick={(e) => {
-                          e.preventDefault();
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
@@ -2628,7 +2639,6 @@ const AstraSearchPanel = ({
                         disabled={!filters.city || filters.city === "all"}
                         className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
                         onClick={(e) => {
-                          e.preventDefault();
                           e.stopPropagation();
                           const currentScroll = window.scrollY;
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
@@ -2701,6 +2711,8 @@ const AstraSearchPanel = ({
                                 e.stopPropagation();
                                 const currentScroll = window.scrollY;
                                 handleFilterChange('state', province.code);
+                                // Auto-switch to city tab after province selection
+                                setTimeout(() => setLocationActiveTab('city'), 150);
                                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
@@ -2778,6 +2790,8 @@ const AstraSearchPanel = ({
                                 e.stopPropagation();
                                 const currentScroll = window.scrollY;
                                 handleFilterChange('city', city.code);
+                                // Auto-switch to area tab after city selection
+                                setTimeout(() => setLocationActiveTab('area'), 150);
                                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                               }}
                               onTouchStart={(e) => e.stopPropagation()}
