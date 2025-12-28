@@ -271,21 +271,18 @@ body.scroll-locked {
   }
 
   .glass-popup {
-    --glass-popup-bg: rgba(255, 255, 255, 0.70);
-    background: var(--glass-popup-bg) !important;
+    /* Use theme tokens so it matches BOTH light + dark modes automatically */
+    background: hsl(var(--background) / 0.72) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid hsl(var(--border) / 0.55);
+    box-shadow: 0 12px 40px hsl(var(--foreground) / 0.10), 0 2px 10px hsl(var(--foreground) / 0.06);
   }
 
   .dark .glass-popup {
-    --glass-popup-bg: rgba(30, 30, 30, 0.70);
-    background: var(--glass-popup-bg) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: hsl(var(--background) / 0.72) !important;
+    border: 1px solid hsl(var(--border) / 0.45);
+    box-shadow: 0 14px 46px hsl(0 0% 0% / 0.45), 0 2px 12px hsl(0 0% 0% / 0.30);
   }
 
   .card-hover {
