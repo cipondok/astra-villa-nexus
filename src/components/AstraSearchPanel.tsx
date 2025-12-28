@@ -3142,9 +3142,10 @@ const AstraSearchPanel = ({
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300",
+              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300 !bg-transparent",
               isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
             )}
+            style={{ background: 'var(--glass-popup-bg, rgba(254, 252, 245, 0.70))' }}
           >
             {/* Slim Header */}
             <div className="flex items-center justify-between border-b border-border/20 px-3 py-2 shrink-0 bg-background/30">
@@ -3368,24 +3369,24 @@ const AstraSearchPanel = ({
                   <CollapsibleContent className="space-y-1.5 pt-1">
                     {/* Province/City/Area Tabs */}
                     <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
-                      <TabsList className="w-full grid grid-cols-3 h-6 rounded-md bg-muted/50 p-0.5">
+                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-md bg-muted p-0.5 gap-0.5">
                         <TabsTrigger
                           value="province"
-                          className="text-[9px] font-medium rounded-sm text-foreground data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground"
+                          className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
                         >
                           Province
                         </TabsTrigger>
                         <TabsTrigger
                           value="city"
                           disabled={!filters.state || filters.state === "all"}
-                          className="text-[9px] font-medium rounded-sm text-foreground data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
+                          className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                         >
                           City
                         </TabsTrigger>
                         <TabsTrigger
                           value="area"
                           disabled={!filters.city || filters.city === "all"}
-                          className="text-[9px] font-medium rounded-sm text-foreground data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
+                          className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                         >
                           Area
                         </TabsTrigger>

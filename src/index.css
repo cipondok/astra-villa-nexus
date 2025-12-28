@@ -271,7 +271,8 @@ body.scroll-locked {
   }
 
   .glass-popup {
-    background: rgba(254, 252, 245, 0.70);
+    --glass-popup-bg: rgba(254, 252, 245, 0.70);
+    background: var(--glass-popup-bg) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(202, 138, 4, 0.12);
@@ -279,7 +280,8 @@ body.scroll-locked {
   }
 
   .dark .glass-popup {
-    background: rgba(20, 20, 20, 0.70);
+    --glass-popup-bg: rgba(20, 20, 20, 0.70);
+    background: var(--glass-popup-bg) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 215, 0, 0.12);
