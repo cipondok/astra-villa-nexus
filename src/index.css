@@ -271,21 +271,21 @@ body.scroll-locked {
   }
 
   .glass-popup {
-    --glass-popup-bg: rgba(254, 252, 245, 0.70);
+    --glass-popup-bg: rgba(255, 255, 255, 0.70);
     background: var(--glass-popup-bg) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(202, 138, 4, 0.12);
-    box-shadow: 0 8px 32px rgba(202, 138, 4, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .dark .glass-popup {
-    --glass-popup-bg: rgba(20, 20, 20, 0.70);
+    --glass-popup-bg: rgba(30, 30, 30, 0.70);
     background: var(--glass-popup-bg) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 215, 0, 0.12);
-    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .card-hover {

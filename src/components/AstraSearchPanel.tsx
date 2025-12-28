@@ -3142,10 +3142,9 @@ const AstraSearchPanel = ({
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300 !bg-transparent",
+              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300",
               isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
             )}
-            style={{ background: 'var(--glass-popup-bg, rgba(254, 252, 245, 0.70))' }}
           >
             {/* Slim Header */}
             <div className="flex items-center justify-between border-b border-border/20 px-3 py-2 shrink-0 bg-background/30">
