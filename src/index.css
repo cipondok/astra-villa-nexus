@@ -305,8 +305,6 @@ body.scroll-locked {
   /* Premium Gold-Orange Gradient Button */
   .btn-gold-orange {
     @apply inline-flex items-center justify-center gap-3 rounded-full font-semibold text-sm uppercase tracking-wider cursor-pointer border-0 outline-none relative overflow-hidden z-[1];
-    font-family: 'Montserrat', sans-serif;
-    padding: 16px 36px;
     background: linear-gradient(135deg, hsl(var(--gold-primary)) 0%, hsl(var(--orange-primary)) 100%);
     color: hsl(var(--dark-bg));
     box-shadow: 0 6px 25px hsla(var(--gold-primary), 0.3);
@@ -325,8 +323,6 @@ body.scroll-locked {
   /* Glass Button */
   .btn-glass {
     @apply inline-flex items-center justify-center gap-3 rounded-full font-semibold text-sm uppercase tracking-wider cursor-pointer relative overflow-hidden z-[1];
-    font-family: 'Montserrat', sans-serif;
-    padding: 16px 36px;
     background: hsla(var(--gold-primary), 0.1);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -350,8 +346,6 @@ body.scroll-locked {
   /* Outline Button with Emboss Effect */
   .btn-outline-emboss {
     @apply inline-flex items-center justify-center gap-3 rounded-full font-semibold text-sm uppercase tracking-wider cursor-pointer relative overflow-hidden z-[1];
-    font-family: 'Montserrat', sans-serif;
-    padding: 16px 36px;
     background: transparent;
     border: 2px solid hsl(var(--gold-primary));
     color: hsl(var(--gold-primary));
