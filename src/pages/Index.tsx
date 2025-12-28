@@ -488,17 +488,13 @@ const Index = () => {
             </div>
             
             {/* Search Panel Container */}
-            <div className={cn(
-              "relative mx-auto",
-              "max-w-4xl",
-              // Glass card for the search panel
-              "bg-background/95 dark:bg-background/98",
-              "backdrop-blur-xl",
-              "rounded-2xl md:rounded-3xl",
-              "shadow-2xl shadow-black/20",
-              "border border-white/20",
-              "overflow-hidden"
-            )}>
+            <div
+              className={cn(
+                "relative mx-auto w-full",
+                // Full-width, fully transparent container (no glass card)
+                "bg-transparent"
+              )}
+            >
               <Suspense fallback={<SearchPanelSkeleton />}>
                 <SearchErrorBoundary>
                   <AstraSearchPanel

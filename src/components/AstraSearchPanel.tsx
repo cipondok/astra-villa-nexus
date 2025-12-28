@@ -2019,7 +2019,7 @@ const AstraSearchPanel = ({
                     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                   }}
                   onTouchStart={(e) => e.stopPropagation()}
-                  className="pl-8 pr-9 h-9 text-sm bg-muted/40 border border-border/50 focus:border-primary focus:bg-background rounded-lg"
+                  className="pl-8 pr-9 h-9 text-sm bg-transparent border border-border/50 focus:border-primary focus:bg-transparent rounded-lg"
                 />
                 
                 {/* Image Search Inside Input */}
@@ -2330,7 +2330,10 @@ const AstraSearchPanel = ({
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className={cn("inline-flex rounded-lg border-0 shadow-md shadow-primary/10 relative", isMobile ? "p-0.5 bg-muted/60" : "p-0.5 bg-background/40 backdrop-blur-xl")}>
+            <div className={cn(
+              "inline-flex rounded-lg border-0 shadow-md shadow-primary/10 relative",
+              "p-0.5 bg-transparent"
+            )}>
               {/* Sliding gold gradient background indicator */}
               <div className="absolute inset-y-0.5 bg-gradient-to-r from-primary via-accent to-primary rounded-md shadow-lg shadow-primary/30 transition-all duration-500 ease-out animate-gradient" style={{
               width: 'calc(25% - 2px)',
@@ -2371,8 +2374,9 @@ const AstraSearchPanel = ({
                 onChange={e => handleSearchChange(e.target.value)} 
                 onFocus={() => setShowSuggestions(true)} 
                 className={cn(
-                  "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20", 
-                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-background/80 backdrop-blur-sm" : "pl-10 pr-28 h-9 text-sm bg-background/70 backdrop-blur-md"
+                  "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
+                  // Fully transparent input background
+                  isMobile ? "pl-8 pr-16 h-8 text-xs bg-transparent" : "pl-10 pr-28 h-9 text-sm bg-transparent"
                 )} 
               />
               
@@ -2405,7 +2409,7 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 glass-popup backdrop-blur-2xl border-primary/20 rounded-xl shadow-2xl shadow-primary/30 z-[100] max-h-80 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-transparent border border-border/30 rounded-xl shadow-2xl shadow-primary/30 z-[100] max-h-80 overflow-y-auto">
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
@@ -2521,7 +2525,11 @@ const AstraSearchPanel = ({
                       requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                     }}
                     onTouchStart={(e) => e.stopPropagation()}
-                    className={cn("group relative overflow-hidden bg-gradient-to-r from-background to-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300", isMobile ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm", (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary/70 bg-primary/5 shadow-md")}
+                    className={cn(
+                      "group relative overflow-hidden bg-transparent border-2 border-border/50 rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300",
+                      isMobile ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm",
+                      (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary/70 bg-transparent shadow-md"
+                    )}
                   >
                     <MapPin className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "mr-1.5 text-primary relative z-10")} />
                     <span className="relative z-10 font-medium hidden sm:inline">{currentText.location}</span>
@@ -2532,8 +2540,8 @@ const AstraSearchPanel = ({
                 </PopoverTrigger>
                 
                 <PopoverContent 
-                  className="w-64 glass-popup border-2 border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
-                  align="start" 
+                  className="w-64 bg-transparent border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
+                  align="start"
                   sideOffset={8} 
                   avoidCollisions={true} 
                   collisionPadding={8} 
@@ -2547,8 +2555,8 @@ const AstraSearchPanel = ({
                   }}
                 >
                   <Tabs defaultValue="province" className="w-full overscroll-contain">
-                    <TabsList className="w-full grid grid-cols-3 h-9 bg-muted/30 p-0.5">
-                      <TabsTrigger 
+                    <TabsList className="w-full grid grid-cols-3 h-9 bg-transparent p-0.5">
+                      <TabsTrigger
                         value="province" 
                         className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                         onClick={(e) => {
@@ -2623,7 +2631,7 @@ const AstraSearchPanel = ({
                         </div>
                       )}
                       <ScrollArea 
-                        className="h-48 border border-border/30 rounded-lg bg-muted/5 overscroll-contain" 
+                        className="h-48 border border-border/30 rounded-lg bg-transparent overscroll-contain" 
                         onTouchStart={(e) => e.stopPropagation()}
                         onTouchMove={(e) => e.stopPropagation()}
                         onWheel={(e) => e.stopPropagation()}
@@ -2885,7 +2893,7 @@ const AstraSearchPanel = ({
 
           {/* Results Count */}
           {resultsCount !== undefined && <div className="text-center">
-              <p className={cn("text-muted-foreground bg-muted/30 rounded-md backdrop-blur-sm inline-block", isMobile ? "text-[10px] px-2 py-0.5" : "text-xs px-3 py-1")}>
+              <p className={cn("text-muted-foreground bg-transparent rounded-md inline-block", isMobile ? "text-[10px] px-2 py-0.5" : "text-xs px-3 py-1")}>
                 {resultsCount} {currentText.resultsFound}
               </p>
             </div>}
