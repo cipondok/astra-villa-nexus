@@ -3182,31 +3182,31 @@ const AstraSearchPanel = ({
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {activeTab && activeTab !== 'all' && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
                       {activeTab === 'sale' ? 'Sale' : activeTab === 'rent' ? 'Rent' : 'All'}
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => setActiveTab('all')} />
                     </Badge>
                   )}
                   {filters.propertyType && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
                       {filters.propertyType}
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
                     </Badge>
                   )}
                   {filters.location && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
                       {filters.location}
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
                     </Badge>
                   )}
                   {filters.bedrooms && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
                       {filters.bedrooms}BR
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
                     </Badge>
                   )}
                   {filters.bathrooms && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
                       {filters.bathrooms}BA
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
                     </Badge>
@@ -3371,21 +3371,21 @@ const AstraSearchPanel = ({
                       <TabsList className="w-full grid grid-cols-3 h-6 rounded-md bg-muted/50 p-0.5">
                         <TabsTrigger
                           value="province"
-                          className="text-[9px] font-medium rounded-sm data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground"
+                          className="text-[9px] font-medium rounded-sm text-foreground data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground"
                         >
                           Province
                         </TabsTrigger>
                         <TabsTrigger
                           value="city"
                           disabled={!filters.state || filters.state === "all"}
-                          className="text-[9px] font-medium rounded-sm data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
+                          className="text-[9px] font-medium rounded-sm text-foreground data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
                         >
                           City
                         </TabsTrigger>
                         <TabsTrigger
                           value="area"
                           disabled={!filters.city || filters.city === "all"}
-                          className="text-[9px] font-medium rounded-sm data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
+                          className="text-[9px] font-medium rounded-sm text-foreground data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground disabled:opacity-40"
                         >
                           Area
                         </TabsTrigger>
