@@ -2331,29 +2331,85 @@ const AstraSearchPanel = ({
           
           {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className={cn(
-              "inline-flex rounded-lg border-0 shadow-md shadow-primary/10 relative",
-              "p-0.5 bg-transparent"
-            )}>
-              {/* Sliding gold gradient background indicator */}
-              <div className="absolute inset-y-0.5 bg-gradient-to-r from-primary via-accent to-primary rounded-md shadow-lg shadow-primary/30 transition-all duration-500 ease-out animate-gradient" style={{
-              width: 'calc(25% - 2px)',
-              left: activeTab === 'all' ? '2px' : activeTab === 'sale' ? 'calc(25% + 1px)' : activeTab === 'rent' ? 'calc(50%)' : 'calc(75% - 1px)'
-            }} />
-              
-              <button onClick={() => { setActiveTab('all'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'all' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+            <div
+              className={cn(
+                "inline-flex rounded-lg border-0 shadow-md shadow-macos-blue/10 relative",
+                "p-0.5 bg-transparent"
+              )}
+            >
+              {/* Sliding blue gradient background indicator */}
+              <div
+                className="absolute inset-y-0.5 bg-gradient-to-r from-macos-light-blue via-macos-blue to-macos-light-blue rounded-md shadow-lg shadow-macos-blue/30 transition-all duration-500 ease-out animate-gradient"
+                style={{
+                  width: "calc(25% - 2px)",
+                  left:
+                    activeTab === "all"
+                      ? "2px"
+                      : activeTab === "sale"
+                        ? "calc(25% + 1px)"
+                        : activeTab === "rent"
+                          ? "calc(50%)"
+                          : "calc(75% - 1px)",
+                }}
+              />
+
+              <button
+                onClick={() => {
+                  setActiveTab("all");
+                }}
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
+                  activeTab === "all"
+                    ? "text-primary-foreground drop-shadow-lg"
+                    : "text-muted-foreground hover:text-macos-blue"
+                )}
+              >
                 <Layers className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
               </button>
-              <button onClick={() => { setActiveTab('sale'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'sale' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+              <button
+                onClick={() => {
+                  setActiveTab("sale");
+                }}
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
+                  activeTab === "sale"
+                    ? "text-primary-foreground drop-shadow-lg"
+                    : "text-muted-foreground hover:text-macos-blue"
+                )}
+              >
                 <ShoppingBag className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span>{isMobile ? "Buy" : currentText.forSale}</span>
               </button>
-              <button onClick={() => { setActiveTab('rent'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'rent' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+              <button
+                onClick={() => {
+                  setActiveTab("rent");
+                }}
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
+                  activeTab === "rent"
+                    ? "text-primary-foreground drop-shadow-lg"
+                    : "text-muted-foreground hover:text-macos-blue"
+                )}
+              >
                 <Key className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span>{isMobile ? "Rent" : currentText.forRent}</span>
               </button>
-              <button onClick={() => { setActiveTab('new_project'); }} className={cn("relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105", isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]", activeTab === 'new_project' ? 'text-primary-foreground drop-shadow-lg' : 'text-muted-foreground hover:text-primary')}>
+              <button
+                onClick={() => {
+                  setActiveTab("new_project");
+                }}
+                className={cn(
+                  "relative z-10 rounded-md font-semibold uppercase tracking-wide transition-all duration-500 flex-1 flex items-center justify-center gap-0.5 hover:scale-105",
+                  isMobile ? "px-1.5 py-1 text-[8px] min-w-[42px]" : "px-2 py-1 text-[9px] min-w-[50px]",
+                  activeTab === "new_project"
+                    ? "text-primary-foreground drop-shadow-lg"
+                    : "text-muted-foreground hover:text-macos-blue"
+                )}
+              >
                 <Rocket className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 <span>{isMobile ? "New" : currentText.newProject}</span>
               </button>
@@ -2558,10 +2614,10 @@ const AstraSearchPanel = ({
                   }}
                 >
                   <Tabs defaultValue="province" className="w-full overscroll-contain">
-                    <TabsList className="w-full grid grid-cols-3 h-9 bg-transparent p-0.5">
+                    <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-black/30 dark:bg-black/40 p-1 backdrop-blur-xl border border-white/15">
                       <TabsTrigger
-                        value="province" 
-                        className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                        value="province"
+                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -2570,12 +2626,12 @@ const AstraSearchPanel = ({
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                       >
-                        {currentText.selectProvince.replace('Select ', '')}
+                        {currentText.selectProvince.replace("Select ", "")}
                       </TabsTrigger>
-                      <TabsTrigger 
-                        value="city" 
-                        disabled={!filters.state || filters.state === 'all'}
-                        className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground disabled:opacity-40"
+                      <TabsTrigger
+                        value="city"
+                        disabled={!filters.state || filters.state === "all"}
+                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -2584,12 +2640,12 @@ const AstraSearchPanel = ({
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                       >
-                        {currentText.selectCity.replace('Select ', '')}
+                        {currentText.selectCity.replace("Select ", "")}
                       </TabsTrigger>
-                      <TabsTrigger 
-                        value="area" 
-                        disabled={!filters.city || filters.city === 'all'}
-                        className="text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground disabled:opacity-40"
+                      <TabsTrigger
+                        value="area"
+                        disabled={!filters.city || filters.city === "all"}
+                        className="text-xs text-white/70 hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-macos-light-blue data-[state=active]:to-macos-blue data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-macos-blue/30 disabled:opacity-40"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -2598,7 +2654,7 @@ const AstraSearchPanel = ({
                         }}
                         onTouchStart={(e) => e.stopPropagation()}
                       >
-                        {currentText.selectArea.replace('Select ', '')}
+                        {currentText.selectArea.replace("Select ", "")}
                       </TabsTrigger>
                     </TabsList>
 
