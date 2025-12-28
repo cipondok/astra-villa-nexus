@@ -183,7 +183,7 @@ const AstraSearchPanel = ({
   // Collapsible states for each filter section
   const [openSections, setOpenSections] = useState({
     listingType: true,
-    propertyType: false,
+    propertyType: true, // Open by default for All mode
     location: false,
     priceRange: false,
     propertySpecs: false,
@@ -3254,47 +3254,80 @@ const AstraSearchPanel = ({
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
               <div className="p-2 space-y-2 bg-background pb-3">
                 
-                {/* Listing Type - Always visible at top */}
-                <div className="space-y-1.5 pb-2 border-b border-border/50">
-                  <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <Key className="h-3.5 w-3.5 text-primary" />
-                    Listing Type
-                  </Label>
-                  <div className="grid grid-cols-2 gap-2">
+                {/* Search Mode Tabs - All, Buy, Rent */}
+                <div className="space-y-2 pb-3 border-b border-border/50">
+                  <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-xl">
                     <Button 
-                      variant={filters.listingType === 'sale' ? "default" : "outline"} 
+                      variant={filters.listingType === '' ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => {
-                        handleFilterChange('listingType', filters.listingType === 'sale' ? '' : 'sale');
-                        // Auto-open property type after selecting listing type
-                        if (filters.listingType !== 'sale') {
-                          setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                        }
+                        handleFilterChange('listingType', '');
+                        setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
-                      className={cn("h-10 text-sm font-semibold rounded-lg", filters.listingType === 'sale' && "shadow-md ring-2 ring-primary/20")}
+                      className={cn(
+                        "flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200",
+                        filters.listingType === '' 
+                          ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg" 
+                          : "hover:bg-background/50"
+                      )}
                     >
-                      For Sale
+                      <Layers className="h-4 w-4 mr-1.5" />
+                      All
                     </Button>
                     <Button 
-                      variant={filters.listingType === 'rent' ? "default" : "outline"} 
+                      variant={filters.listingType === 'sale' ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => {
-                        handleFilterChange('listingType', filters.listingType === 'rent' ? '' : 'rent');
-                        // Auto-open property type after selecting listing type
-                        if (filters.listingType !== 'rent') {
-                          setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                        }
+                        handleFilterChange('listingType', 'sale');
+                        setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
-                      className={cn("h-10 text-sm font-semibold rounded-lg", filters.listingType === 'rent' && "shadow-md ring-2 ring-primary/20")}
+                      className={cn(
+                        "flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200",
+                        filters.listingType === 'sale' 
+                          ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg" 
+                          : "hover:bg-background/50"
+                      )}
                     >
-                      For Rent
+                      <DollarSign className="h-4 w-4 mr-1.5" />
+                      Buy
                     </Button>
+                    <Button 
+                      variant={filters.listingType === 'rent' ? "default" : "ghost"} 
+                      size="sm" 
+                      onClick={() => {
+                        handleFilterChange('listingType', 'rent');
+                        setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                      }} 
+                      className={cn(
+                        "flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200",
+                        filters.listingType === 'rent' 
+                          ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg" 
+                          : "hover:bg-background/50"
+                      )}
+                    >
+                      <Key className="h-4 w-4 mr-1.5" />
+                      Rent
+                    </Button>
+                  </div>
+                  
+                  {/* Mode-specific hint */}
+                  <div className="flex items-center gap-2 px-2">
+                    <div className={cn(
+                      "h-1.5 w-1.5 rounded-full animate-pulse",
+                      filters.listingType === '' && "bg-primary",
+                      filters.listingType === 'sale' && "bg-emerald-500",
+                      filters.listingType === 'rent' && "bg-blue-500"
+                    )} />
+                    <span className="text-[10px] text-muted-foreground font-medium">
+                      {filters.listingType === '' && "Showing all properties for sale and rent"}
+                      {filters.listingType === 'sale' && "Filtering properties available for purchase"}
+                      {filters.listingType === 'rent' && "Filtering properties available for rent"}
+                    </span>
                   </div>
                 </div>
 
-                {/* Property Type - Collapsible with auto-close */}
-                {filters.listingType && (
-                  <Collapsible
+                {/* Property Type - Collapsible with auto-close - Always visible */}
+                <Collapsible
                     open={openSections.propertyType}
                     onOpenChange={(open) => setOpenSections(prev => ({ 
                       ...prev, 
@@ -3340,11 +3373,9 @@ const AstraSearchPanel = ({
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
-                )}
 
-                {/* Location - Collapsible with auto-close */}
-                {filters.listingType && (
-                  <Collapsible
+                {/* Location - Collapsible with auto-close - Always visible */}
+                <Collapsible
                     open={openSections.location}
                     onOpenChange={(open) => setOpenSections(prev => ({ 
                       ...prev, 
@@ -3401,11 +3432,9 @@ const AstraSearchPanel = ({
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
-                )}
 
-                {/* Price Range - Collapsible */}
-                {filters.listingType && (
-                  <Collapsible
+                {/* Price Range - Collapsible - Always visible */}
+                <Collapsible
                     open={openSections.priceRange}
                     onOpenChange={(open) => setOpenSections(prev => ({ 
                       ...prev, 
@@ -3461,7 +3490,6 @@ const AstraSearchPanel = ({
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
-                )}
 
                 {/* Database-driven filters by category */}
                 {filtersLoading && (
@@ -3475,16 +3503,8 @@ const AstraSearchPanel = ({
                   </div>
                 )}
                 
-                {!filtersLoading && !filters.listingType && (
-                  <div className="p-6 bg-accent/10 border border-accent/30 rounded-lg text-center">
-                    <Key className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
-                      Please select a listing type (For Sale or For Rent) to see available filters
-                    </p>
-                  </div>
-                )}
-                
-                {!filtersLoading && filters.listingType && currentDbFilters.length > 0 && currentDbFilters.map((category) => {
+                {/* Show database-driven filters for all modes */}
+                {!filtersLoading && currentDbFilters.length > 0 && currentDbFilters.map((category) => {
                   // Skip categories we're handling specially (location, price)
                   if (['location', 'price', 'search'].includes(category.name)) return null;
                   
