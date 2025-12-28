@@ -2563,9 +2563,10 @@ const AstraSearchPanel = ({
                     }}
                     onTouchStart={(e) => e.stopPropagation()}
                     className={cn(
-                      "search-action-btn location",
+                      "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200",
+                      "bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border/50",
                       isMobile ? "h-8 px-3 text-xs" : "h-9 px-4 text-sm",
-                      (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "ring-2 ring-purple-400/50"
+                      (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "ring-2 ring-primary/50"
                     )}
                   >
                     <MapPin className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
@@ -2878,7 +2879,8 @@ const AstraSearchPanel = ({
                 setShowAdvancedFilters(true);
               }} 
               className={cn(
-                "search-action-btn filters group",
+                "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200",
+                "bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border/50 group",
                 isMobile ? "h-8 px-3 text-xs" : "h-9 px-4 text-sm"
               )}
             >
@@ -2896,7 +2898,8 @@ const AstraSearchPanel = ({
               onClick={handleSearch}
               aria-label={currentText.search}
               className={cn(
-                "search-action-btn search-btn",
+                "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200",
+                "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg",
                 isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-9 px-5 text-sm gap-2"
               )}
             >
