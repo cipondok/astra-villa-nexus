@@ -3264,7 +3264,13 @@ const AstraSearchPanel = ({
                     <Button 
                       variant={filters.listingType === 'sale' ? "default" : "outline"} 
                       size="sm" 
-                      onClick={() => handleFilterChange('listingType', filters.listingType === 'sale' ? '' : 'sale')} 
+                      onClick={() => {
+                        handleFilterChange('listingType', filters.listingType === 'sale' ? '' : 'sale');
+                        // Auto-open property type after selecting listing type
+                        if (filters.listingType !== 'sale') {
+                          setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                        }
+                      }} 
                       className={cn("h-10 text-sm font-semibold rounded-lg", filters.listingType === 'sale' && "shadow-md ring-2 ring-primary/20")}
                     >
                       For Sale
@@ -3272,7 +3278,13 @@ const AstraSearchPanel = ({
                     <Button 
                       variant={filters.listingType === 'rent' ? "default" : "outline"} 
                       size="sm" 
-                      onClick={() => handleFilterChange('listingType', filters.listingType === 'rent' ? '' : 'rent')} 
+                      onClick={() => {
+                        handleFilterChange('listingType', filters.listingType === 'rent' ? '' : 'rent');
+                        // Auto-open property type after selecting listing type
+                        if (filters.listingType !== 'rent') {
+                          setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                        }
+                      }} 
                       className={cn("h-10 text-sm font-semibold rounded-lg", filters.listingType === 'rent' && "shadow-md ring-2 ring-primary/20")}
                     >
                       For Rent
@@ -3313,8 +3325,13 @@ const AstraSearchPanel = ({
                             size="sm" 
                             onClick={() => {
                               handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
-                              setOpenSections(prev => ({ ...prev, propertyType: false }));
-                            }} 
+                              // Auto-open location after selecting property type
+                              if (filters.propertyType !== type) {
+                                setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: false, location: true, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                              } else {
+                                setOpenSections(prev => ({ ...prev, propertyType: false }));
+                              }
+                            }}
                             className={cn("h-9 text-xs font-semibold rounded-lg", filters.propertyType === type && "shadow-md ring-2 ring-primary/20")}
                           >
                             {type}
@@ -3370,7 +3387,12 @@ const AstraSearchPanel = ({
                               onClick={() => {
                                 handleFilterChange('location', filters.location === location ? '' : location);
                                 setLocationSearch('');
-                                setOpenSections(prev => ({ ...prev, location: false }));
+                                // Auto-open price range after selecting location
+                                if (filters.location !== location) {
+                                  setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true, propertyType: false, propertySpecs: false, amenities: false })), 150);
+                                } else {
+                                  setOpenSections(prev => ({ ...prev, location: false }));
+                                }
                               }}
                             >
                               {location}
@@ -3647,7 +3669,8 @@ const AstraSearchPanel = ({
                             onClick={() => {
                               handleFilterChange('minArea', range.min);
                               handleFilterChange('maxArea', range.max);
-                              setOpenSections(prev => ({ ...prev, propertySpecs: false }));
+                              // Auto-open amenities after selecting area size
+                              setTimeout(() => setOpenSections(prev => ({ ...prev, propertySpecs: false, amenities: true, propertyType: false, location: false, priceRange: false })), 150);
                             }}
                             className="h-8 text-xs font-semibold rounded-lg"
                           >
