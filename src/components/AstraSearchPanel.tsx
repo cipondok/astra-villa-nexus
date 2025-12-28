@@ -2331,7 +2331,7 @@ const AstraSearchPanel = ({
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
-            <div className="search-tab-container">
+            <div className="search-tab-container grid grid-cols-4">
               {/* Animated sliding background indicator */}
               <div
                 className="search-tab-slider inset-y-1"
@@ -2351,49 +2351,49 @@ const AstraSearchPanel = ({
               <button
                 onClick={() => setActiveTab("all")}
                 className={cn(
-                  "search-tab-btn",
-                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
                   activeTab === "all" && "active"
                 )}
               >
                 <Layers className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span className={cn(isMobile ? "hidden" : "inline")}>{currentText.all}</span>
+                <span>{isMobile ? "" : currentText.all}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("sale")}
                 className={cn(
-                  "search-tab-btn",
-                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
                   activeTab === "sale" && "active"
                 )}
               >
                 <ShoppingBag className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "Buy" : currentText.forSale}</span>
+                <span>{isMobile ? "" : currentText.forSale}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("rent")}
                 className={cn(
-                  "search-tab-btn",
-                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
                   activeTab === "rent" && "active"
                 )}
               >
                 <Key className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "Rent" : currentText.forRent}</span>
+                <span>{isMobile ? "" : currentText.forRent}</span>
               </button>
               
               <button
                 onClick={() => setActiveTab("new_project")}
                 className={cn(
-                  "search-tab-btn",
-                  isMobile ? "px-2 py-1.5 text-[9px] min-w-[44px]" : "px-3 py-2 text-[10px] min-w-[56px]",
+                  "search-tab-btn flex-1",
+                  isMobile ? "px-2 py-1.5 text-[9px]" : "px-3 py-2 text-[10px]",
                   activeTab === "new_project" && "active"
                 )}
               >
                 <Rocket className={cn("tab-icon", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
-                <span>{isMobile ? "New" : currentText.newProject}</span>
+                <span>{isMobile ? "" : currentText.newProject}</span>
               </button>
             </div>
           </div>
