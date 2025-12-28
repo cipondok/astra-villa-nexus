@@ -40,7 +40,11 @@ const ChatButton = ({
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isLongPress, setIsLongPress] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load saved position on mount
   useEffect(() => {
@@ -65,10 +69,41 @@ const ChatButton = ({
     }
   }, []);
 
+  // Scroll detection - activate button on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+      setIsActive(true);
+      
+      // Clear existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Set timeout to deactivate after scrolling stops
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+        if (!isHovered) {
+          setIsActive(false);
+        }
+      }, 1500); // Stay active for 1.5s after scroll stops
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [isHovered]);
+
+  // Determine if button should be in active state
+  const isButtonActive = isHovered || isActive || isScrolling || isDragging || unreadCount > 0;
+
   const baseStyles = cn(
     "fixed z-[99999]",
     "h-[55px] w-[55px] rounded-full",
-    "shadow-none",
     "transition-all duration-500 ease-out",
     "pointer-events-auto",
     !isDragging && "transform hover:scale-110 active:scale-95",
@@ -77,20 +112,26 @@ const ChatButton = ({
     isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
   );
 
-  const variantStyles: Record<ChatButtonVariant, string> = {
-    pulse: cn(
-      "bg-background/80 backdrop-blur-sm",
-      "hover:bg-background/90",
+  // Premium gold-orange styling with active/inactive states
+  const getVariantStyles = () => {
+    const activeStyles = cn(
+      "bg-gradient-to-br from-gold-primary via-accent to-orange-primary",
+      "shadow-[0_4px_20px_hsla(48,100%,50%,0.4),0_8px_40px_hsla(33,100%,50%,0.3)]",
+      "border border-gold-primary/30",
       !isDragging && "animate-chat-float md:animate-chat-float"
-    ),
-    glow: cn(
-      "bg-background/80 backdrop-blur-sm",
-      "hover:bg-background/90"
-    ),
-    subtle: cn(
-      "bg-background/80 backdrop-blur-sm",
-      "hover:bg-background/90"
-    )
+    );
+
+    const inactiveStyles = cn(
+      "bg-gradient-to-br from-gold-primary/30 via-accent/20 to-orange-primary/30",
+      "shadow-[0_2px_10px_hsla(48,100%,50%,0.1),0_4px_20px_hsla(33,100%,50%,0.08)]",
+      "border border-gold-primary/10",
+      "backdrop-blur-sm"
+    );
+
+    if (isButtonActive) {
+      return activeStyles;
+    }
+    return inactiveStyles;
   };
 
   // Long press to activate drag (300ms)
@@ -125,10 +166,20 @@ const ChatButton = ({
       clearTimeout(pressTimerRef.current);
       pressTimerRef.current = null;
     }
+    setIsHovered(false);
+    // Only deactivate if not scrolling
+    if (!isScrolling) {
+      setIsActive(false);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    setIsActive(true);
   };
 
   const handleDragEnd = (_: any, info: { point: { x: number; y: number } }) => {
-    const buttonSize = window.innerWidth >= 768 ? 56 : 48; // Match responsive size
+    const buttonSize = window.innerWidth >= 768 ? 56 : 48;
     const halfSize = buttonSize / 2;
     // Constrain to viewport with 20px padding
     const newX = Math.max(20, Math.min(window.innerWidth - buttonSize - 20, info.point.x - halfSize));
@@ -150,18 +201,22 @@ const ChatButton = ({
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
+          onMouseEnter={handleMouseEnter}
           whileTap={{ scale: 0.95 }}
+          animate={{
+            opacity: isButtonActive ? 1 : 0.5,
+            scale: isButtonActive ? 1 : 0.95,
+          }}
           transition={{ 
-            duration: 0.1,
+            duration: 0.4,
             ease: "easeOut"
           }}
-          className={cn("group", baseStyles, variantStyles[variant], className)}
+          className={cn("group", baseStyles, getVariantStyles(), className)}
           style={{
             left: `${position.x}px`,
             top: `${position.y}px`,
             display: 'block',
             visibility: 'visible',
-            opacity: 1,
           }}
           aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
           role="button"
@@ -175,14 +230,20 @@ const ChatButton = ({
         >
           <div className={cn(
             "h-full w-full rounded-full flex items-center justify-center",
-            variantStyles[variant]
+            "transition-all duration-500",
+            isButtonActive 
+              ? "bg-gradient-to-br from-gold-primary/20 to-orange-primary/20" 
+              : "bg-transparent"
           )}>
             <div className="relative">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={showScrollArrow ? 'arrow' : 'bot'}
                   initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                  animate={{ 
+                    scale: 1, 
+                    opacity: isButtonActive ? 1 : 0.6 
+                  }}
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ 
                     duration: 0.15,
@@ -190,31 +251,62 @@ const ChatButton = ({
                   }}
                 >
                   {showScrollArrow ? (
-                    <ArrowUp className="h-7 w-7 text-foreground" aria-hidden="true" />
+                    <ArrowUp className={cn(
+                      "h-7 w-7 transition-colors duration-300",
+                      isButtonActive ? "text-foreground" : "text-foreground/60"
+                    )} aria-hidden="true" />
                   ) : (
-                    <Icons.aiLogo className="h-[55px] w-[55px] transition-transform duration-300 hover:rotate-12" aria-hidden="true" />
+                    <Icons.aiLogo 
+                      className={cn(
+                        "h-[55px] w-[55px] transition-all duration-500",
+                        isButtonActive 
+                          ? "drop-shadow-[0_0_8px_hsla(48,100%,50%,0.5)]" 
+                          : "opacity-70",
+                        !isDragging && isButtonActive && "hover:rotate-12"
+                      )} 
+                      aria-hidden="true" 
+                    />
                   )}
                 </motion.div>
               </AnimatePresence>
               {/* Drag handle indicator - shows on hover */}
               <GripVertical
                 className={cn(
-                  "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity",
-                  isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                  "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity duration-300",
+                  isDragging ? "opacity-100 text-gold-primary" : "opacity-0 group-hover:opacity-60"
                 )} 
                 aria-hidden="true"
               />
             </div>
             {unreadCount > 0 && <UnreadBadge count={unreadCount} />}
           </div>
+          
+          {/* Glow ring effect when active */}
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            animate={{
+              boxShadow: isButtonActive 
+                ? [
+                    "0 0 0 0 hsla(48, 100%, 50%, 0)",
+                    "0 0 0 8px hsla(48, 100%, 50%, 0.15)",
+                    "0 0 0 0 hsla(48, 100%, 50%, 0)"
+                  ]
+                : "0 0 0 0 hsla(48, 100%, 50%, 0)"
+            }}
+            transition={{
+              duration: 2,
+              repeat: isButtonActive ? Infinity : 0,
+              ease: "easeInOut"
+            }}
+          />
         </motion.button>
       </ContextMenuTrigger>
       
-      <ContextMenuContent className="w-56">
+      <ContextMenuContent className="w-56 glass-popup">
         {onOpenSettings && (
           <>
             <ContextMenuItem onClick={onOpenSettings} className="cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
+              <Settings className="mr-2 h-4 w-4 text-gold-primary" />
               <span>Settings</span>
             </ContextMenuItem>
             <ContextMenuSeparator />
@@ -224,7 +316,7 @@ const ChatButton = ({
         {onPositionReset && (
           <>
             <ContextMenuItem onClick={onPositionReset} className="cursor-pointer">
-              <RotateCcw className="mr-2 h-4 w-4" />
+              <RotateCcw className="mr-2 h-4 w-4 text-gold-primary" />
               <span>Reset Position</span>
             </ContextMenuItem>
             <ContextMenuSeparator />
@@ -237,7 +329,7 @@ const ChatButton = ({
               onClick={() => onTogglePin('scroll-to-top')}
               className="cursor-pointer"
             >
-              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('scroll-to-top') && "text-primary")} />
+              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('scroll-to-top') && "text-gold-primary")} />
               <span>{pinnedActions.has('scroll-to-top') ? 'Unpin' : 'Pin'} Scroll to Top</span>
             </ContextMenuItem>
             
@@ -245,7 +337,7 @@ const ChatButton = ({
               onClick={() => onTogglePin('image-search')}
               className="cursor-pointer"
             >
-              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('image-search') && "text-primary")} />
+              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('image-search') && "text-gold-primary")} />
               <span>{pinnedActions.has('image-search') ? 'Unpin' : 'Pin'} Image Search</span>
             </ContextMenuItem>
           </>
