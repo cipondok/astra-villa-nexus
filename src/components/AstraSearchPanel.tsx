@@ -2041,16 +2041,16 @@ const AstraSearchPanel = ({
               {/* Filter Button */}
               <Button
                 onClick={() => setShowAdvancedFilters(true)}
-                variant="outline"
+                variant="glass"
                 size="sm"
-                className="h-8 px-2.5 flex-1 border border-border/50 bg-muted/20 hover:bg-muted/40 rounded-lg flex items-center justify-center gap-1"
+                className="h-8 flex-1 rounded-full flex items-center justify-center gap-1"
               >
-                <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-xs font-medium text-foreground">{currentText.filters}</span>
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">{currentText.filters}</span>
                 {getActiveFiltersCount() > 0 && (
                   <Badge
                     variant="default"
-                    className="ml-0.5 h-4 min-w-[16px] px-1 flex items-center justify-center text-[9px] rounded-full bg-primary text-primary-foreground"
+                    className="ml-0.5 h-4 min-w-[16px] px-1 flex items-center justify-center text-[9px] rounded-full"
                   >
                     {getActiveFiltersCount()}
                   </Badge>
@@ -2058,10 +2058,11 @@ const AstraSearchPanel = ({
               </Button>
 
               {/* Search Button */}
-              <Button 
-                onClick={handleSearch} 
-                size="sm" 
-                className="h-8 px-3 flex-1 rounded-lg flex items-center justify-center gap-1 bg-primary hover:bg-primary/90"
+              <Button
+                onClick={handleSearch}
+                variant="gold-orange"
+                size="sm"
+                className="h-8 flex-1 rounded-full flex items-center justify-center gap-1"
               >
                 <Search className="h-3.5 w-3.5" />
                 <span className="text-xs font-medium">{currentText.search}</span>
@@ -2516,7 +2517,7 @@ const AstraSearchPanel = ({
             {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={setIsLocationOpen}>
                 <PopoverTrigger asChild>
                   <Button 
-                    variant="outline" 
+                    variant="glass" 
                     size="sm" 
                     onClick={(e) => {
                       e.preventDefault();
@@ -2526,16 +2527,18 @@ const AstraSearchPanel = ({
                     }}
                     onTouchStart={(e) => e.stopPropagation()}
                     className={cn(
-                      "group relative overflow-hidden bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 border-2 border-amber-400/50 rounded-xl hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 backdrop-blur-sm",
+                      "rounded-full border border-border/40",
                       isMobile ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm",
-                      (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-amber-400 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 shadow-md shadow-amber-500/20"
+                      (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "ring-2 ring-primary/30"
                     )}
                   >
-                    <MapPin className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "mr-1.5 text-amber-500 relative z-10")} />
-                    <span className="relative z-10 font-medium hidden sm:inline">{currentText.location}</span>
-                    {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && <span className="ml-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm relative z-10">
+                    <MapPin className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "mr-1.5")} />
+                    <span className="font-medium hidden sm:inline">{currentText.location}</span>
+                    {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
+                      <span className="ml-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground shadow-sm">
                         {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
-                      </span>}
+                      </span>
+                    )}
                   </Button>
                 </PopoverTrigger>
                 
@@ -2838,14 +2841,14 @@ const AstraSearchPanel = ({
               onClick={() => {
                 setShowAdvancedFilters(true);
               }} 
-              variant="outline"
+              variant="glass"
               size="sm" 
               className={cn(
-                "group relative overflow-hidden bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 border-2 border-amber-400/50 rounded-xl hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 backdrop-blur-sm font-medium",
+                "rounded-full border border-border/40 font-medium",
                 isMobile ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm"
               )}
             >
-              <SlidersHorizontal className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "mr-1.5 text-amber-500 group-hover:rotate-90 transition-transform duration-300")} />
+              <SlidersHorizontal className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "mr-1.5 group-hover:rotate-90 transition-transform duration-300")} />
               <span className="hidden sm:inline">Filters</span>
               {getActiveFiltersCount() > 0 && (
                 <Badge 
@@ -2858,7 +2861,12 @@ const AstraSearchPanel = ({
             </Button>
             
             {/* Search Button */}
-            <Button onClick={handleSearch} aria-label={currentText.search} className={cn("bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/40 hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-500 flex items-center hover:scale-105 animate-gradient border border-amber-400/50", isMobile ? "h-8 px-3 text-xs gap-1" : "h-9 px-4 text-sm gap-1.5")}>
+            <Button
+              onClick={handleSearch}
+              aria-label={currentText.search}
+              variant="gold-orange"
+              className={cn(isMobile ? "h-8 px-3 text-xs gap-1 rounded-full" : "h-9 px-4 text-sm gap-1.5 rounded-full")}
+            >
               <Search className={cn(isMobile ? "h-3 w-3" : "h-4 w-4", "transition-all duration-500")} />
               <span>{currentText.search}</span>
             </Button>
