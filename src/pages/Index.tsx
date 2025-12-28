@@ -492,8 +492,8 @@ const Index = () => {
             <div
               className={cn(
                 "relative mx-auto w-full",
-                // Full-width, fully transparent container (no glass card)
-                "bg-transparent"
+                // 80% transparent background with glass effect
+                "bg-background/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-2xl shadow-black/20 border border-white/20 overflow-hidden"
               )}
             >
               <Suspense fallback={<SearchPanelSkeleton />}>
