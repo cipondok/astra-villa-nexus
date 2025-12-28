@@ -3146,117 +3146,86 @@ const AstraSearchPanel = ({
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-2xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300",
-              isMobile ? "max-h-[85vh]" : "max-w-lg max-h-[70vh]"
+              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300",
+              isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
             )}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-border/30 px-3 py-2 shrink-0 backdrop-blur-xl bg-primary/5">
+            {/* Slim Header */}
+            <div className="flex items-center justify-between border-b border-border/20 px-3 py-2 shrink-0 bg-background/30">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-                  <SlidersHorizontal className="h-3.5 w-3.5 text-primary-foreground" />
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/80 to-accent/80 flex items-center justify-center shadow-sm">
+                  <SlidersHorizontal className="h-3 w-3 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-foreground">Advanced Filters</h3>
-                  <p className="text-xs text-muted-foreground">Refine search</p>
+                  <h3 className="text-xs font-bold text-foreground">Filters</h3>
                 </div>
-                <Badge variant="default" className="h-6 px-2 bg-primary text-primary-foreground text-xs font-bold animate-pulse">
-                  {getActiveFiltersCount()}
-                </Badge>
+                {getActiveFiltersCount() > 0 && (
+                  <Badge variant="default" className="h-5 px-1.5 bg-primary/90 text-primary-foreground text-[10px] font-bold">
+                    {getActiveFiltersCount()}
+                  </Badge>
+                )}
               </div>
-              <Button onClick={() => setShowAdvancedFilters(false)} variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive rounded-full">
-                <X className="h-4 w-4" />
+              <Button onClick={() => setShowAdvancedFilters(false)} variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-destructive/10 hover:text-destructive rounded-full">
+                <X className="h-3.5 w-3.5" />
               </Button>
             </div>
 
-            {/* Active Filters Summary Bar - Moved to Header */}
+            {/* Active Filters Summary - Compact */}
             {getActiveFiltersCount() > 0 && (
-              <div className="px-6 py-3 bg-accent/20 border-b border-accent/30 space-y-2 shrink-0">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-bold text-muted-foreground">ACTIVE FILTERS</Label>
+              <div className="px-3 py-2 bg-accent/10 border-b border-border/20 shrink-0">
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Active</Label>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={clearAllFilters}
-                    className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                    className="h-5 px-1.5 text-[10px] text-destructive hover:text-destructive hover:bg-destructive/10"
                   >
-                    Clear All
+                    Clear
                   </Button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1">
                   {activeTab && activeTab !== 'all' && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {activeTab === 'sale' ? 'For Sale' : activeTab === 'rent' ? 'For Rent' : activeTab === 'new_project' ? 'New Project' : 'All'}
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => setActiveTab('all')} />
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                      {activeTab === 'sale' ? 'Sale' : activeTab === 'rent' ? 'Rent' : 'All'}
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => setActiveTab('all')} />
                     </Badge>
                   )}
                   {filters.propertyType && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
                       {filters.propertyType}
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
                     </Badge>
                   )}
                   {filters.location && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
                       {filters.location}
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
-                    </Badge>
-                  )}
-                  {filters.priceRange && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {filters.priceRange === '0-1000000000' ? '< 1B' : filters.priceRange === '1000000000-5000000000' ? '1B-5B' : '> 5B'}
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('priceRange', '')} />
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
                     </Badge>
                   )}
                   {filters.bedrooms && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {filters.bedrooms} Bed
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                      {filters.bedrooms}BR
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
                     </Badge>
                   )}
                   {filters.bathrooms && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {filters.bathrooms} Bath
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
+                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-background/50">
+                      {filters.bathrooms}BA
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
                     </Badge>
                   )}
-                  {filters.condition && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {filters.condition}
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => handleFilterChange('condition', '')} />
-                    </Badge>
-                  )}
-                  {(filters.minArea || filters.maxArea) && (
-                    <Badge variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {filters.minArea || 0}-{filters.maxArea || '∞'} sqm
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
-                        handleFilterChange('minArea', '');
-                        handleFilterChange('maxArea', '');
-                      }} />
-                    </Badge>
-                  )}
-                  {filters.features.length > 0 && filters.features.map(feature => (
-                    <Badge key={feature} variant="secondary" className="h-7 px-2.5 text-xs gap-1.5">
-                      {feature}
-                      <X className="h-3.5 w-3.5 cursor-pointer" onClick={() => {
-                        setFilters(prev => ({
-                          ...prev,
-                          features: prev.features.filter(f => f !== feature)
-                        }));
-                      }} />
-                    </Badge>
-                  ))}
                 </div>
               </div>
             )}
 
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-2 space-y-2 bg-background pb-3">
+              <div className="p-2 space-y-1.5 bg-transparent pb-3">
                 
-                {/* Search Mode Tabs - All, Buy, Rent */}
-                <div className="space-y-2 pb-3 border-b border-border/50">
-                  <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-xl">
+                {/* Search Mode Tabs - All, Buy, Rent - Slim */}
+                <div className="pb-2 border-b border-border/30">
+                  <div className="flex items-center gap-0.5 p-0.5 bg-muted/30 rounded-lg">
                     <Button 
                       variant={filters.listingType === '' ? "default" : "ghost"} 
                       size="sm" 
@@ -3265,13 +3234,13 @@ const AstraSearchPanel = ({
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200",
+                        "flex-1 h-8 text-xs font-bold rounded-md transition-all duration-200",
                         filters.listingType === '' 
-                          ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg" 
-                          : "hover:bg-background/50"
+                          ? "bg-gradient-to-r from-primary/90 to-accent/90 text-primary-foreground shadow-sm" 
+                          : "hover:bg-background/50 text-muted-foreground"
                       )}
                     >
-                      <Layers className="h-4 w-4 mr-1.5" />
+                      <Layers className="h-3 w-3 mr-1" />
                       All
                     </Button>
                     <Button 
@@ -3282,13 +3251,13 @@ const AstraSearchPanel = ({
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200",
+                        "flex-1 h-8 text-xs font-bold rounded-md transition-all duration-200",
                         filters.listingType === 'sale' 
-                          ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg" 
-                          : "hover:bg-background/50"
+                          ? "bg-gradient-to-r from-emerald-500/90 to-green-600/90 text-white shadow-sm" 
+                          : "hover:bg-background/50 text-muted-foreground"
                       )}
                     >
-                      <DollarSign className="h-4 w-4 mr-1.5" />
+                      <DollarSign className="h-3 w-3 mr-1" />
                       Buy
                     </Button>
                     <Button 
@@ -3299,197 +3268,176 @@ const AstraSearchPanel = ({
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200",
+                        "flex-1 h-8 text-xs font-bold rounded-md transition-all duration-200",
                         filters.listingType === 'rent' 
-                          ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg" 
-                          : "hover:bg-background/50"
+                          ? "bg-gradient-to-r from-blue-500/90 to-indigo-600/90 text-white shadow-sm" 
+                          : "hover:bg-background/50 text-muted-foreground"
                       )}
                     >
-                      <Key className="h-4 w-4 mr-1.5" />
+                      <Key className="h-3 w-3 mr-1" />
                       Rent
                     </Button>
                   </div>
-                  
-                  {/* Mode-specific hint */}
-                  <div className="flex items-center gap-2 px-2">
-                    <div className={cn(
-                      "h-1.5 w-1.5 rounded-full animate-pulse",
-                      filters.listingType === '' && "bg-primary",
-                      filters.listingType === 'sale' && "bg-emerald-500",
-                      filters.listingType === 'rent' && "bg-blue-500"
-                    )} />
-                    <span className="text-[10px] text-muted-foreground font-medium">
-                      {filters.listingType === '' && "Showing all properties for sale and rent"}
-                      {filters.listingType === 'sale' && "Filtering properties available for purchase"}
-                      {filters.listingType === 'rent' && "Filtering properties available for rent"}
-                    </span>
-                  </div>
                 </div>
 
-                {/* Property Type - Collapsible with auto-close - Always visible */}
+                {/* Property Type - Slim Collapsible */}
                 <Collapsible
-                    open={openSections.propertyType}
-                    onOpenChange={(open) => setOpenSections(prev => ({ 
-                      ...prev, 
-                      propertyType: open,
-                      location: false,
-                      priceRange: false,
-                      propertySpecs: false,
-                      amenities: false
-                    }))}
-                    className="space-y-2"
-                  >
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                          <Home className="h-3.5 w-3.5 text-primary" />
-                          Property Type
-                          {filters.propertyType && <Badge variant="secondary" className="ml-1.5 h-5 px-2 text-xs">{filters.propertyType}</Badge>}
-                        </Label>
-                        {openSections.propertyType ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-2">
-                      <div className="grid grid-cols-3 gap-2">
-                        {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
-                          <Button 
-                            key={type}
-                            variant={filters.propertyType === type ? "default" : "outline"} 
-                            size="sm" 
+                  open={openSections.propertyType}
+                  onOpenChange={(open) => setOpenSections(prev => ({ 
+                    ...prev, 
+                    propertyType: open,
+                    location: false,
+                    priceRange: false,
+                    propertySpecs: false,
+                    amenities: false
+                  }))}
+                  className="space-y-1"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-accent/30 rounded-md">
+                      <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
+                        <Home className="h-3 w-3 text-primary" />
+                        Property Type
+                        {filters.propertyType && <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">{filters.propertyType}</Badge>}
+                      </Label>
+                      {openSections.propertyType ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-1 pt-1">
+                    <div className="grid grid-cols-3 gap-1">
+                      {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
+                        <Button 
+                          key={type}
+                          variant={filters.propertyType === type ? "default" : "outline"} 
+                          size="sm" 
+                          onClick={() => {
+                            handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
+                            if (filters.propertyType !== type) {
+                              setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: false, location: true, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                            } else {
+                              setOpenSections(prev => ({ ...prev, propertyType: false }));
+                            }
+                          }}
+                          className={cn(
+                            "h-7 text-[10px] font-semibold rounded-md border-border/50",
+                            filters.propertyType === type && "shadow-sm ring-1 ring-primary/30"
+                          )}
+                        >
+                          {type}
+                        </Button>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Location - Slim Collapsible */}
+                <Collapsible
+                  open={openSections.location}
+                  onOpenChange={(open) => setOpenSections(prev => ({ 
+                    ...prev, 
+                    location: open,
+                    propertyType: false,
+                    priceRange: false,
+                    propertySpecs: false,
+                    amenities: false
+                  }))}
+                  className="space-y-1"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-accent/30 rounded-md">
+                      <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
+                        <MapPin className="h-3 w-3 text-primary" />
+                        Location
+                        {filters.location && <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">{filters.location}</Badge>}
+                      </Label>
+                      {openSections.location ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-1.5 pt-1">
+                    <Input 
+                      placeholder="Search..." 
+                      value={locationSearch}
+                      onChange={(e) => setLocationSearch(e.target.value)}
+                      className="h-7 text-[10px] rounded-md bg-background/50"
+                    />
+                    <div className="flex flex-wrap gap-1">
+                      {popularLocations
+                        .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
+                        .map(location => (
+                          <Badge 
+                            key={location}
+                            variant={filters.location === location ? "default" : "outline"}
+                            className={cn(
+                              "cursor-pointer h-5 px-2 text-[9px] font-medium rounded-md hover:bg-primary/10 transition-colors border-border/50",
+                              filters.location === location && "shadow-sm ring-1 ring-primary/30"
+                            )}
                             onClick={() => {
-                              handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
-                              // Auto-open location after selecting property type
-                              if (filters.propertyType !== type) {
-                                setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: false, location: true, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                              handleFilterChange('location', filters.location === location ? '' : location);
+                              setLocationSearch('');
+                              if (filters.location !== location) {
+                                setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true, propertyType: false, propertySpecs: false, amenities: false })), 150);
                               } else {
-                                setOpenSections(prev => ({ ...prev, propertyType: false }));
+                                setOpenSections(prev => ({ ...prev, location: false }));
                               }
                             }}
-                            className={cn("h-9 text-xs font-semibold rounded-lg", filters.propertyType === type && "shadow-md ring-2 ring-primary/20")}
                           >
-                            {type}
-                          </Button>
+                            {location}
+                          </Badge>
                         ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
 
-                {/* Location - Collapsible with auto-close - Always visible */}
+                {/* Price Range - Slim Collapsible */}
                 <Collapsible
-                    open={openSections.location}
-                    onOpenChange={(open) => setOpenSections(prev => ({ 
-                      ...prev, 
-                      location: open,
-                      propertyType: false,
-                      priceRange: false,
-                      propertySpecs: false,
-                      amenities: false
-                    }))}
-                    className="space-y-2"
-                  >
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                          <MapPin className="h-3.5 w-3.5 text-primary" />
-                          Location
-                          {filters.location && <Badge variant="secondary" className="ml-1.5 h-5 px-2 text-xs">{filters.location}</Badge>}
-                        </Label>
-                        {openSections.location ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-2">
-                      <Input 
-                        placeholder="Search location..." 
-                        value={locationSearch}
-                        onChange={(e) => setLocationSearch(e.target.value)}
-                        className="h-8 text-xs rounded-lg"
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {popularLocations
-                          .filter(loc => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
-                          .map(location => (
-                            <Badge 
-                              key={location}
-                              variant={filters.location === location ? "default" : "outline"}
-                              className={cn(
-                                "cursor-pointer h-7 px-2.5 text-xs font-medium rounded-lg hover:bg-primary/10 transition-colors",
-                                filters.location === location && "shadow-md ring-1 ring-primary/30"
-                              )}
-                              onClick={() => {
-                                handleFilterChange('location', filters.location === location ? '' : location);
-                                setLocationSearch('');
-                                // Auto-open price range after selecting location
-                                if (filters.location !== location) {
-                                  setTimeout(() => setOpenSections(prev => ({ ...prev, location: false, priceRange: true, propertyType: false, propertySpecs: false, amenities: false })), 150);
-                                } else {
-                                  setOpenSections(prev => ({ ...prev, location: false }));
-                                }
-                              }}
-                            >
-                              {location}
-                            </Badge>
-                          ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                {/* Price Range - Collapsible - Always visible */}
-                <Collapsible
-                    open={openSections.priceRange}
-                    onOpenChange={(open) => setOpenSections(prev => ({ 
-                      ...prev, 
-                      priceRange: open,
-                      propertyType: false,
-                      location: false,
-                      propertySpecs: false,
-                      amenities: false
-                    }))}
-                    className="space-y-2"
-                  >
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-between h-9 px-2 hover:bg-accent/50">
-                        <Label className="text-xs font-bold text-foreground flex items-center gap-1.5 cursor-pointer">
-                          <DollarSign className="h-3.5 w-3.5 text-primary" />
-                          Price Range
-                          {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
-                            <Badge variant="secondary" className="ml-1.5 h-5 px-2 text-xs">
-                              {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
-                            </Badge>
-                          )}
-                        </Label>
-                        {openSections.priceRange ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-3 pt-2">
-                      <Slider 
-                        value={priceRange} 
-                        onValueChange={(value) => {
-                          setPriceRange(value);
-                          handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                          handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
-                        }} 
-                        min={0} 
-                        max={currentFilters.maxPrice} 
-                        step={currentFilters.priceStep} 
-                        className="w-full px-1" 
-                      />
-                      <div className="flex items-center justify-between text-xs">
-                        <div className="flex flex-col">
-                          <span className="text-muted-foreground mb-1">Min</span>
-                          <span className="font-semibold text-foreground">
-                            {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
-                          </span>
-                        </div>
-                        <span className="text-muted-foreground">-</span>
-                        <div className="flex flex-col items-end">
-                          <span className="text-muted-foreground mb-1">Max</span>
-                          <span className="font-semibold text-foreground">
-                            {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
-                          </span>
-                        </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  open={openSections.priceRange}
+                  onOpenChange={(open) => setOpenSections(prev => ({ 
+                    ...prev, 
+                    priceRange: open,
+                    propertyType: false,
+                    location: false,
+                    propertySpecs: false,
+                    amenities: false
+                  }))}
+                  className="space-y-1"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-accent/30 rounded-md">
+                      <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
+                        <DollarSign className="h-3 w-3 text-primary" />
+                        Price
+                        {(priceRange[0] > 0 || priceRange[1] < currentFilters.maxPrice) && (
+                          <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">
+                            {activeTab === 'rent' ? `${priceRange[0]}-${priceRange[1]}jt` : `${priceRange[0] >= 1000 ? (priceRange[0] / 1000).toFixed(1) : priceRange[0]}M-${priceRange[1] >= 1000 ? (priceRange[1] / 1000).toFixed(1) : priceRange[1]}M`}
+                          </Badge>
+                        )}
+                      </Label>
+                      {openSections.priceRange ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-2 pt-1 px-1">
+                    <Slider 
+                      value={priceRange} 
+                      onValueChange={(value) => {
+                        setPriceRange(value);
+                        handleFilterChange('minPrice', value[0] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                        handleFilterChange('maxPrice', value[1] * (activeTab === 'rent' ? 1000000 : 1000000000));
+                      }} 
+                      min={0} 
+                      max={currentFilters.maxPrice} 
+                      step={currentFilters.priceStep} 
+                      className="w-full" 
+                    />
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-muted-foreground font-medium">
+                        {activeTab === 'rent' ? `${priceRange[0]}jt` : priceRange[0] >= 1000 ? `${(priceRange[0] / 1000).toFixed(1)}M` : `${priceRange[0]}jt`}
+                      </span>
+                      <span className="text-muted-foreground font-medium">
+                        {activeTab === 'rent' ? (priceRange[1] >= currentFilters.maxPrice ? 'Any' : `${priceRange[1]}jt`) : (priceRange[1] >= currentFilters.maxPrice ? 'Any' : priceRange[1] >= 1000 ? `${(priceRange[1] / 1000).toFixed(1)}M` : `${priceRange[1]}jt`)}
+                      </span>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
 
                 {/* Database-driven filters by category */}
                 {filtersLoading && (
