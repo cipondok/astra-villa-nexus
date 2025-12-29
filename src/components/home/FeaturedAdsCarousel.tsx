@@ -119,10 +119,10 @@ export default function FeaturedAdsCarousel() {
 
   if (isLoading) {
     return (
-      <div className="relative glass-card rounded-xl p-4 md:p-6 mb-4 md:mb-6">
+      <div className="relative glass-card rounded-lg p-2 md:p-3 mb-2 md:mb-3">
         <div className="animate-pulse">
-          <div className="h-6 md:h-8 bg-muted rounded w-40 md:w-48 mb-3 md:mb-4" />
-          <div className="h-48 md:h-64 bg-muted rounded" />
+          <div className="h-4 md:h-5 bg-muted rounded w-32 md:w-40 mb-2" />
+          <div className="h-14 md:h-16 bg-muted rounded" />
         </div>
       </div>
     );
@@ -134,82 +134,80 @@ export default function FeaturedAdsCarousel() {
     return null;
   }
 
-  // Duplicate items for seamless infinite scroll
-  const displayAds = ads && ads.length > 0 ? [...ads, ...ads] : [];
-  const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties] : [];
+  // Triple items for seamless infinite scroll (ensures enough content)
+  const displayAds = ads && ads.length > 0 ? [...ads, ...ads, ...ads] : [];
+  const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties, ...fallbackProperties] : [];
 
   return (
-    <div className="relative glass-card rounded-xl p-2 md:p-4 overflow-hidden group">
-      {/* Header */}
-      <div className="mb-2 md:mb-3">
-        <h2 className="text-xs md:text-lg font-bold gradient-text">
-          Featured Properties
-        </h2>
-        <p className="text-[9px] md:text-xs text-muted-foreground mt-0.5">
-          Exclusive opportunities you don't want to miss
-        </p>
+    <div className="relative glass-card rounded-lg p-1.5 md:p-2 overflow-hidden group">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between mb-1 md:mb-1.5 px-1">
+        <div className="flex items-center gap-2">
+          <h2 className="text-[10px] md:text-sm font-bold gradient-text">Featured Properties</h2>
+          <span className="text-[8px] md:text-[10px] text-muted-foreground hidden sm:inline">• Exclusive picks</span>
+        </div>
       </div>
 
-      {/* Navigation Buttons - On Sides */}
+      {/* Navigation Buttons */}
       <Button
         variant="outline"
         size="icon"
         onClick={() => scroll('left')}
-        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-6 w-6 md:h-7 md:w-7 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-md transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+        <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 text-primary" />
       </Button>
       <Button
         variant="outline"
         size="icon"
         onClick={() => scroll('right')}
-        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-6 w-6 md:h-7 md:w-7 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-md transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+        <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-primary" />
       </Button>
 
-      {/* Carousel */}
+      {/* Carousel - Slim cards */}
       <div
-  ref={scrollRef}
-  className="flex gap-2 md:gap-3 overflow-hidden"
-  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
+        ref={scrollRef}
+        className="flex gap-1.5 md:gap-2 overflow-hidden px-1"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
       >
         {showFallback ? (
           displayProperties.map((p, idx) => (
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[220px] md:w-[320px] cursor-pointer group"
+              className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
             >
-              <div className="relative overflow-hidden rounded-lg glass-effect shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] md:h-[100px]">
-                {/* Image - Left Side */}
-                <div className="relative w-[90px] md:w-[140px] flex-shrink-0">
+              <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
+                {/* Image */}
+                <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
                   <img
                     src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
                     alt={p.title}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-110"
                   />
-                  <div className="absolute top-1 left-1">
-                    <span className="px-1 py-0.5 bg-primary/90 text-primary-foreground text-[8px] md:text-[9px] font-semibold rounded-full backdrop-blur-sm shadow-sm">
-                      {p.property_type}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 group-hover:to-black/20 transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
                 </div>
                 
-                {/* Content - Right Side */}
-                <div className="flex-1 p-1.5 md:p-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-[10px] md:text-sm font-semibold text-foreground line-clamp-2 mb-0.5">
+                {/* Content */}
+                <div className="flex-1 p-1.5 flex flex-col justify-between min-w-0">
+                  <div className="min-w-0">
+                    <span className="inline-block px-1 py-0.5 bg-primary/20 text-primary text-[7px] md:text-[8px] font-medium rounded mb-0.5 truncate max-w-full">
+                      {p.property_type}
+                    </span>
+                    <h3 className="text-[9px] md:text-[10px] font-medium text-foreground line-clamp-1">
                       {p.title}
                     </h3>
-                    <div className="text-[8px] md:text-[10px] text-muted-foreground line-clamp-1">
-                      {(p.city || p.state) ? `${p.city ?? ''}${p.city && p.state ? ', ' : ''}${p.state ?? ''}` : ''}
-                    </div>
                   </div>
-                  <div className="text-[10px] md:text-sm font-bold text-primary">
-                    Rp {(p.price / 1000000).toFixed(1)}M
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[8px] md:text-[9px] text-muted-foreground truncate">
+                      {p.city || p.state || ''}
+                    </span>
+                    <span className="text-[9px] md:text-[10px] font-bold text-primary whitespace-nowrap">
+                      {(p.price / 1000000).toFixed(1)}M
+                    </span>
                   </div>
                 </div>
               </div>
@@ -220,27 +218,27 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${ad.id}-${idx}`}
               onClick={() => handleAdClick(ad)}
-              className="flex-shrink-0 w-[220px] md:w-[320px] cursor-pointer group"
+              className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
             >
-              <div className="relative overflow-hidden rounded-lg glass-effect shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] md:h-[100px]">
-                {/* Image - Left Side */}
-                <div className="relative w-[90px] md:w-[140px] flex-shrink-0">
+              <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
+                {/* Image */}
+                <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
                   <img
                     src={ad.image_url}
                     alt={ad.title}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 group-hover:to-black/20 transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
                 </div>
                 
-                {/* Content - Right Side */}
-                <div className="flex-1 p-1.5 md:p-3 flex flex-col justify-center">
-                  <h3 className="text-[10px] md:text-sm font-bold text-foreground mb-0.5 line-clamp-2">
+                {/* Content */}
+                <div className="flex-1 p-1.5 flex flex-col justify-center min-w-0">
+                  <h3 className="text-[9px] md:text-[10px] font-semibold text-foreground line-clamp-1 mb-0.5">
                     {ad.title}
                   </h3>
                   {ad.subtitle && (
-                    <p className="text-[9px] md:text-xs text-muted-foreground line-clamp-2">
+                    <p className="text-[8px] md:text-[9px] text-muted-foreground line-clamp-1">
                       {ad.subtitle}
                     </p>
                   )}
