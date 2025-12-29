@@ -20,6 +20,7 @@ export default function useAutoHorizontalScroll(
     let paused = false;
     let rafId: number | null = null;
     let last = performance.now();
+    let initialized = false;
 
     // Handlers kept as references so we can remove them on cleanup
     const onMouseEnter = () => (paused = true);
@@ -32,7 +33,16 @@ export default function useAutoHorizontalScroll(
       const dt = Math.min(64, now - last); // cap delta to avoid huge jumps
       last = now;
 
-      if (!paused && el.scrollWidth > el.clientWidth) {
+      const scrollable = el.scrollWidth > el.clientWidth;
+      
+      // Initialize scroll position to 1/3 for seamless looping (content is tripled)
+      if (!initialized && scrollable && loopMode === 'seamless') {
+        const oneThird = Math.floor(el.scrollWidth / 3);
+        el.scrollLeft = oneThird;
+        initialized = true;
+      }
+
+      if (!paused && scrollable && speed > 0) {
         // Convert provided speed (px per interval) into px per frame using intervalMs as baseline
         const baseline = intervalMs ?? 16.7; // safeguard
         const px = Math.max(0.5, speed) * (dt / baseline);
@@ -41,26 +51,25 @@ export default function useAutoHorizontalScroll(
 
         const maxScroll = el.scrollWidth - el.clientWidth;
         const seamless = loopMode === 'seamless';
-        const loopWidth = seamless ? Math.floor(el.scrollWidth / 2) : 0;
+        // For tripled content, loop width is 1/3 of total
+        const loopWidth = seamless ? Math.floor(el.scrollWidth / 3) : 0;
 
         if (direction === 'rtl') {
           if (seamless && loopWidth > 0) {
-            // Seamless loop: reset position when crossing boundary
-            if (newScroll >= loopWidth) {
-              el.scrollLeft = newScroll - loopWidth;
+            // Seamless loop: reset when reaching 2/3 point
+            if (newScroll >= loopWidth * 2) {
+              el.scrollLeft = loopWidth;
             } else {
               el.scrollLeft = newScroll;
             }
           } else if (loopMode === 'stop') {
-            // Stop mode: pause at the end
             if (newScroll >= maxScroll) {
               el.scrollLeft = maxScroll;
-              paused = true; // Stop scrolling
+              paused = true;
             } else {
               el.scrollLeft = newScroll;
             }
           } else {
-            // Loop mode: jump back to start
             if (newScroll >= maxScroll) {
               el.scrollLeft = 0;
             } else {
@@ -69,22 +78,20 @@ export default function useAutoHorizontalScroll(
           }
         } else {
           if (seamless && loopWidth > 0) {
-            // Seamless loop for LTR
-            if (newScroll <= 0) {
-              el.scrollLeft = loopWidth + newScroll;
+            // Seamless loop for LTR: reset when reaching 1/3 point going left
+            if (newScroll <= loopWidth) {
+              el.scrollLeft = loopWidth * 2;
             } else {
               el.scrollLeft = newScroll;
             }
           } else if (loopMode === 'stop') {
-            // Stop mode: pause at the start
             if (newScroll <= 0) {
               el.scrollLeft = 0;
-              paused = true; // Stop scrolling
+              paused = true;
             } else {
               el.scrollLeft = newScroll;
             }
           } else {
-            // Loop mode: jump to end
             if (newScroll <= 0) {
               el.scrollLeft = maxScroll;
             } else {
