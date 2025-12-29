@@ -88,11 +88,11 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-t border-white/10">
-      <div className="container relative mx-auto px-4 md:px-6 py-8 md:py-12">
+      <div className="container relative mx-auto px-4 md:px-6 py-4 md:py-6">
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4">
           {/* Company Info */}
-          <div className="col-span-2 md:col-span-1 space-y-4">
+          <div className="col-span-2 md:col-span-1 space-y-2">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-gradient-to-br from-primary to-accent rounded-lg shadow-lg">
                 <Rocket className="w-5 h-5 md:w-6 md:h-6 text-white" />
@@ -119,7 +119,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <h3 className="text-sm md:text-base font-bold text-white">{currentText.quickLinks}</h3>
             <ul className="space-y-2">
               {[
@@ -139,7 +139,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
 
           {/* Services */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <h3 className="text-sm md:text-base font-bold text-white">{currentText.services}</h3>
             <ul className="space-y-2 text-sm text-slate-300">
               <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
@@ -172,7 +172,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
 
           {/* Newsletter */}
-          <div className="col-span-2 md:col-span-1 space-y-4">
+          <div className="col-span-2 md:col-span-1 space-y-2">
             <h3 className="text-sm md:text-base font-bold text-white">{currentText.newsletter}</h3>
             <p className="text-sm text-slate-300">{currentText.newsletterText}</p>
             <div className="space-y-2">
@@ -190,14 +190,14 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
         {/* Business Partners - Collapsible */}
         <Collapsible open={isPartnersOpen} onOpenChange={setIsPartnersOpen}>
-          <CollapsibleTrigger className="w-full border-t border-white/10 pt-6">
+          <CollapsibleTrigger className="w-full border-t border-white/10 pt-3">
             <div className="flex items-center justify-center gap-2 text-sm font-semibold text-white hover:text-primary transition-colors cursor-pointer">
               <Handshake className="w-4 h-4" />
               <span>{currentText.businessPartners}</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isPartnersOpen ? 'rotate-180' : ''}`} />
             </div>
           </CollapsibleTrigger>
-          <CollapsibleContent className="pt-6">
+          <CollapsibleContent className="pt-3">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {[
                 { to: "/partners/network", icon: Users, label: currentText.partnerNetwork, color: "text-blue-400" },
@@ -219,7 +219,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </Collapsible>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-6 mt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-white/10 pt-3 mt-3 flex flex-col md:flex-row justify-between items-center gap-2">
           {/* Copyright */}
           <p className="text-sm text-slate-400">© {new Date().getFullYear()} {currentText.company}. {currentText.allRights}</p>
           {/* Legal Links */}
