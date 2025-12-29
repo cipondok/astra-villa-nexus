@@ -87,33 +87,41 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const currentText = text[language];
 
   return (
-    <footer className="relative bg-muted/80 dark:bg-muted/40 border-t border-border">
-      <div className="container relative mx-auto px-2 py-3">
-        {/* Main Footer - Ultra Compact */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+    <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-t border-white/10">
+      <div className="container relative mx-auto px-4 md:px-6 py-8 md:py-12">
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
           {/* Company Info */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <div className="p-1 bg-gradient-to-br from-primary to-accent rounded">
-                <Rocket className="w-3 h-3 text-primary-foreground" />
+          <div className="col-span-2 md:col-span-1 space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-gradient-to-br from-primary to-accent rounded-lg shadow-lg">
+                <Rocket className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <span className="text-xs font-bold text-foreground">{currentText.company}</span>
+              <span className="text-lg md:text-xl font-bold text-white">{currentText.company}</span>
             </div>
-            <p className="text-[9px] text-muted-foreground leading-tight">{currentText.tagline}</p>
-            <div className="hidden md:flex flex-col gap-0.5">
-              <a href="tel:+622112345678" className="flex items-center gap-1 text-[9px] text-muted-foreground hover:text-primary">
-                <Phone className="w-2.5 h-2.5" />+62 21 1234 5678
+            <p className="text-sm md:text-base text-slate-300 leading-relaxed">{currentText.tagline}</p>
+            <div className="flex flex-col gap-2">
+              <a href="tel:+622112345678" className="flex items-center gap-2 text-sm text-slate-300 hover:text-primary transition-colors">
+                <Phone className="w-4 h-4" />+62 21 1234 5678
               </a>
-              <a href="mailto:info@astravilla.com" className="flex items-center gap-1 text-[9px] text-muted-foreground hover:text-primary">
-                <Mail className="w-2.5 h-2.5" />info@astravilla.com
+              <a href="mailto:info@astravilla.com" className="flex items-center gap-2 text-sm text-slate-300 hover:text-primary transition-colors">
+                <Mail className="w-4 h-4" />info@astravilla.com
               </a>
+            </div>
+            {/* Social Icons */}
+            <div className="flex gap-2 pt-2">
+              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
+                <a key={i} href="#" className="p-2 bg-white/10 hover:bg-primary/20 rounded-lg text-slate-300 hover:text-primary transition-all">
+                  <Icon className="w-4 h-4 md:w-5 md:h-5" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-1">
-            <h3 className="text-[10px] font-bold text-foreground">{currentText.quickLinks}</h3>
-            <ul className="space-y-0.5 text-[9px]">
+          <div className="space-y-4">
+            <h3 className="text-sm md:text-base font-bold text-white">{currentText.quickLinks}</h3>
+            <ul className="space-y-2">
               {[
                 { to: "/", label: currentText.home },
                 { to: "/dijual", label: currentText.buy },
@@ -122,8 +130,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 { to: "/development", label: language === "en" ? "Development" : "Pengembangan" },
               ].map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="text-muted-foreground hover:text-primary flex items-center">
-                    <ArrowUpRight className="w-2 h-2 mr-0.5 opacity-0 hover:opacity-100" />{link.label}
+                  <Link to={link.to} className="text-sm text-slate-300 hover:text-primary flex items-center gap-1 transition-colors">
+                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100" />{link.label}
                   </Link>
                 </li>
               ))}
@@ -131,54 +139,65 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
 
           {/* Services */}
-          <div className="hidden md:block space-y-1">
-            <h3 className="text-[10px] font-bold text-foreground">{currentText.services}</h3>
-            <ul className="space-y-0.5 text-[9px] text-muted-foreground">
-              <li>{currentText.propertySearch}</li>
-              <li>{currentText.consultation}</li>
-              <li>{currentText.valuation}</li>
-              <li>{currentText.investment}</li>
+          <div className="space-y-4">
+            <h3 className="text-sm md:text-base font-bold text-white">{currentText.services}</h3>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.propertySearch}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.consultation}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.valuation}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.investment}</li>
+            </ul>
+            
+            {/* Support */}
+            <h3 className="text-sm md:text-base font-bold text-white pt-2">{currentText.support}</h3>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.help}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.faq}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.contactUs}</li>
             </ul>
           </div>
 
           {/* Newsletter */}
-          <div className="space-y-1">
-            <h3 className="text-[10px] font-bold text-foreground">{currentText.newsletter}</h3>
-            <input
-              type="email"
-              placeholder={currentText.emailPlaceholder}
-              className="w-full px-2 py-1 bg-background border border-border rounded text-[9px] focus:ring-1 focus:ring-primary"
-            />
-            <button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground py-1 rounded text-[9px] font-medium hover:opacity-90">
-              {currentText.subscribe}
-            </button>
+          <div className="col-span-2 md:col-span-1 space-y-4">
+            <h3 className="text-sm md:text-base font-bold text-white">{currentText.newsletter}</h3>
+            <p className="text-sm text-slate-300">{currentText.newsletterText}</p>
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder={currentText.emailPlaceholder}
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              />
+              <button className="w-full bg-gradient-to-r from-primary to-accent text-white py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg">
+                {currentText.subscribe}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Business Partners - Collapsible */}
         <Collapsible open={isPartnersOpen} onOpenChange={setIsPartnersOpen}>
-          <CollapsibleTrigger className="w-full border-t border-border/50 pt-2">
-            <div className="flex items-center justify-center gap-1.5 text-[10px] font-semibold text-foreground hover:text-primary transition-colors cursor-pointer">
-              <Handshake className="w-3 h-3" />
+          <CollapsibleTrigger className="w-full border-t border-white/10 pt-6">
+            <div className="flex items-center justify-center gap-2 text-sm font-semibold text-white hover:text-primary transition-colors cursor-pointer">
+              <Handshake className="w-4 h-4" />
               <span>{currentText.businessPartners}</span>
-              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isPartnersOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isPartnersOpen ? 'rotate-180' : ''}`} />
             </div>
           </CollapsibleTrigger>
-          <CollapsibleContent className="pt-2">
-            <div className="grid grid-cols-4 gap-1.5">
+          <CollapsibleContent className="pt-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {[
-                { to: "/partners/network", icon: Users, label: currentText.partnerNetwork, color: "text-blue-500" },
-                { to: "/partners/become", icon: Building2, label: currentText.becomePartner, color: "text-green-500" },
-                { to: "/partners/benefits", icon: TrendingUp, label: currentText.partnerBenefits, color: "text-purple-500" },
-                { to: "/partners/ventures", icon: Handshake, label: currentText.jointVentures, color: "text-orange-500" },
+                { to: "/partners/network", icon: Users, label: currentText.partnerNetwork, color: "text-blue-400" },
+                { to: "/partners/become", icon: Building2, label: currentText.becomePartner, color: "text-green-400" },
+                { to: "/partners/benefits", icon: TrendingUp, label: currentText.partnerBenefits, color: "text-purple-400" },
+                { to: "/partners/ventures", icon: Handshake, label: currentText.jointVentures, color: "text-orange-400" },
               ].map((item) => (
                 <Link 
                   key={item.to}
                   to={item.to}
-                  className="p-1.5 bg-background/50 border border-border/50 rounded text-center hover:bg-background hover:border-primary/30 transition-all"
+                  className="p-4 bg-white/5 border border-white/10 rounded-xl text-center hover:bg-white/10 hover:border-primary/30 transition-all"
                 >
-                  <item.icon className={`w-4 h-4 mx-auto ${item.color}`} />
-                  <span className="text-[8px] font-medium text-foreground block mt-0.5 leading-tight">{item.label}</span>
+                  <item.icon className={`w-6 h-6 md:w-8 md:h-8 mx-auto ${item.color}`} />
+                  <span className="text-xs md:text-sm font-medium text-white block mt-2">{item.label}</span>
                 </Link>
               ))}
             </div>
@@ -186,23 +205,14 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </Collapsible>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border/50 pt-2 mt-2 flex flex-col md:flex-row justify-between items-center gap-1.5">
-          {/* Social */}
-          <div className="flex gap-1">
-            {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-              <a key={i} href="#" className="p-1 bg-background/50 hover:bg-primary/10 rounded text-muted-foreground hover:text-primary transition-colors">
-                <Icon className="w-3 h-3" />
-              </a>
-            ))}
-          </div>
+        <div className="border-t border-white/10 pt-6 mt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Copyright */}
-          <div className="text-center md:text-right">
-            <p className="text-[9px] text-muted-foreground">© {new Date().getFullYear()} {currentText.company}</p>
-            <div className="flex justify-center md:justify-end gap-2 text-[8px]">
-              <a href="#" className="text-muted-foreground hover:text-primary">{currentText.privacy}</a>
-              <a href="#" className="text-muted-foreground hover:text-primary">{currentText.terms}</a>
-              <a href="#" className="text-muted-foreground hover:text-primary">{currentText.cookies}</a>
-            </div>
+          <p className="text-sm text-slate-400">© {new Date().getFullYear()} {currentText.company}. {currentText.allRights}</p>
+          {/* Legal Links */}
+          <div className="flex gap-4 md:gap-6 text-sm">
+            <a href="#" className="text-slate-400 hover:text-primary transition-colors">{currentText.privacy}</a>
+            <a href="#" className="text-slate-400 hover:text-primary transition-colors">{currentText.terms}</a>
+            <a href="#" className="text-slate-400 hover:text-primary transition-colors">{currentText.cookies}</a>
           </div>
         </div>
       </div>
