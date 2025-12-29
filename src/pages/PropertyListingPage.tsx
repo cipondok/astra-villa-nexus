@@ -224,39 +224,39 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-11 md:pt-12 transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground pt-10 sm:pt-11 md:pt-12 transition-colors duration-300">
       {/* Luxury Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-tr from-accent/15 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-3 md:px-4 pt-1 pb-4 relative">
+      <div className="container mx-auto px-2 sm:px-3 md:px-4 pt-1 pb-4 relative">
         {/* Back Link */}
         <BackToHomeLink sectionId={`${pageType}-section`} />
 
         {/* Centered Header */}
-        <div className="text-center mb-2">
-          <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+        <div className="text-center mb-1.5 sm:mb-2">
+          <h1 className="text-sm sm:text-lg md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
             {title}
           </h1>
-          <p className="text-[10px] md:text-xs text-muted-foreground">
+          <p className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">
             {subtitle}
           </p>
         </div>
 
         {/* Slim Search Panel */}
-        <div className="glass-card p-2 rounded-lg mb-3 border border-primary/20">
-          <div className="flex gap-2 items-center">
+        <div className="glass-card p-1.5 sm:p-2 rounded-md sm:rounded-lg mb-2 sm:mb-3 border border-primary/20">
+          <div className="flex gap-1.5 sm:gap-2 items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-2 sm:left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
               <Input
-                placeholder="Search properties..."
+                placeholder="Cari properti..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-8 h-9 text-sm bg-input border-primary/20 focus:border-primary focus:ring-primary/30"
+                className="pl-6 sm:pl-8 h-7 sm:h-9 text-[10px] sm:text-sm bg-input border-primary/20 focus:border-primary focus:ring-primary/30"
               />
             </div>
             
@@ -264,11 +264,11 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               variant="outline"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className={`h-9 px-3 border-primary/30 ${showFilters ? 'bg-primary/10 text-primary' : ''}`}
+              className={`h-7 sm:h-9 px-2 sm:px-3 border-primary/30 ${showFilters ? 'bg-primary/10 text-primary' : ''}`}
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <SlidersHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
               {activeFiltersCount > 0 && (
-                <span className="ml-1.5 h-5 w-5 flex items-center justify-center text-[10px] bg-primary text-primary-foreground rounded-full">
+                <span className="ml-1 sm:ml-1.5 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-[8px] sm:text-[10px] bg-primary text-primary-foreground rounded-full">
                   {activeFiltersCount}
                 </span>
               )}
@@ -277,11 +277,11 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             <Button 
               onClick={handleSearch}
               size="sm"
-              className="h-9 px-4 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground"
+              className="h-7 sm:h-9 px-2 sm:px-4 text-[10px] sm:text-sm bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground"
               disabled={isSearching}
             >
-              <Search className="h-4 w-4 mr-1.5" />
-              {isSearching ? '...' : 'Search'}
+              <Search className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+              {isSearching ? '...' : 'Cari'}
             </Button>
           </div>
 
@@ -295,56 +295,56 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-2 mt-2 border-t border-primary/10 space-y-2">
+                <div className="pt-1.5 sm:pt-2 mt-1.5 sm:mt-2 border-t border-primary/10 space-y-1.5 sm:space-y-2">
                   {activeFiltersCount > 0 && (
                     <div className="flex justify-end">
-                      <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs text-destructive">
-                        <X className="h-3 w-3 mr-1" />
-                        Clear
+                      <Button variant="ghost" size="sm" onClick={clearFilters} className="h-6 sm:h-7 text-[10px] sm:text-xs text-destructive">
+                        <X className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />
+                        Hapus
                       </Button>
                     </div>
                   )}
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 sm:gap-2">
                     <Select value={filters.propertyType} onValueChange={(v) => setFilters(p => ({ ...p, propertyType: v }))}>
-                      <SelectTrigger className="h-8 text-xs bg-popover border-border">
-                        <Home className="h-3 w-3 mr-1.5" />
-                        <SelectValue placeholder="Type" />
+                      <SelectTrigger className="h-6 sm:h-8 text-[9px] sm:text-xs bg-popover border-border">
+                        <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1 sm:mr-1.5" />
+                        <SelectValue placeholder="Tipe" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover border-border z-50">
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="apartment">Apartment</SelectItem>
-                        <SelectItem value="house">House</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="land">Land</SelectItem>
-                        <SelectItem value="commercial">Commercial</SelectItem>
+                        <SelectItem value="all" className="text-[10px] sm:text-xs">Semua Tipe</SelectItem>
+                        <SelectItem value="apartment" className="text-[10px] sm:text-xs">Apartemen</SelectItem>
+                        <SelectItem value="house" className="text-[10px] sm:text-xs">Rumah</SelectItem>
+                        <SelectItem value="villa" className="text-[10px] sm:text-xs">Villa</SelectItem>
+                        <SelectItem value="land" className="text-[10px] sm:text-xs">Tanah</SelectItem>
+                        <SelectItem value="commercial" className="text-[10px] sm:text-xs">Komersial</SelectItem>
                       </SelectContent>
                     </Select>
 
                     <Select value={filters.city} onValueChange={(v) => setFilters(p => ({ ...p, city: v }))}>
-                      <SelectTrigger className="h-8 text-xs bg-popover border-border">
-                        <MapPin className="h-3 w-3 mr-1.5" />
-                        <SelectValue placeholder="City" />
+                      <SelectTrigger className="h-6 sm:h-8 text-[9px] sm:text-xs bg-popover border-border">
+                        <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1 sm:mr-1.5" />
+                        <SelectValue placeholder="Kota" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover border-border z-50">
-                        <SelectItem value="all">All Cities</SelectItem>
-                        <SelectItem value="Jakarta">Jakarta</SelectItem>
-                        <SelectItem value="Bali">Bali</SelectItem>
-                        <SelectItem value="Surabaya">Surabaya</SelectItem>
-                        <SelectItem value="Bandung">Bandung</SelectItem>
+                        <SelectItem value="all" className="text-[10px] sm:text-xs">Semua Kota</SelectItem>
+                        <SelectItem value="Jakarta" className="text-[10px] sm:text-xs">Jakarta</SelectItem>
+                        <SelectItem value="Bali" className="text-[10px] sm:text-xs">Bali</SelectItem>
+                        <SelectItem value="Surabaya" className="text-[10px] sm:text-xs">Surabaya</SelectItem>
+                        <SelectItem value="Bandung" className="text-[10px] sm:text-xs">Bandung</SelectItem>
                       </SelectContent>
                     </Select>
 
                     <Select value={filters.priceRange} onValueChange={(v) => setFilters(p => ({ ...p, priceRange: v }))}>
-                      <SelectTrigger className="h-8 text-xs bg-popover border-border">
-                        <SelectValue placeholder="Price" />
+                      <SelectTrigger className="h-6 sm:h-8 text-[9px] sm:text-xs bg-popover border-border">
+                        <SelectValue placeholder="Harga" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover border-border z-50">
-                        <SelectItem value="all">Any Price</SelectItem>
-                        <SelectItem value="0-500m">&lt; 500 Jt</SelectItem>
-                        <SelectItem value="500m-1b">500 Jt - 1 M</SelectItem>
-                        <SelectItem value="1b-5b">1 - 5 M</SelectItem>
-                        <SelectItem value="5b+">5 M+</SelectItem>
+                        <SelectItem value="all" className="text-[10px] sm:text-xs">Semua Harga</SelectItem>
+                        <SelectItem value="0-500m" className="text-[10px] sm:text-xs">&lt; 500 Jt</SelectItem>
+                        <SelectItem value="500m-1b" className="text-[10px] sm:text-xs">500 Jt - 1 M</SelectItem>
+                        <SelectItem value="1b-5b" className="text-[10px] sm:text-xs">1 - 5 M</SelectItem>
+                        <SelectItem value="5b+" className="text-[10px] sm:text-xs">5 M+</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -355,8 +355,8 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         </div>
 
         {/* Results Count */}
-        <div className="flex items-center justify-between mb-2 text-xs text-muted-foreground">
-          <span>{hasSearched ? searchResults.length : properties.length} properties found</span>
+        <div className="flex items-center justify-between mb-1.5 sm:mb-2 text-[9px] sm:text-xs text-muted-foreground">
+          <span>{hasSearched ? searchResults.length : properties.length} properti ditemukan</span>
         </div>
 
         {/* Property Listings */}
