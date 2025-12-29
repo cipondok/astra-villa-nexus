@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
@@ -139,13 +139,11 @@ export default function FeaturedAdsCarousel() {
   const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties, ...fallbackProperties] : [];
 
   return (
-    <div className="relative glass-card rounded-lg p-1.5 md:p-2 overflow-hidden group">
+    <div className="relative glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-amber-50/80 via-white/60 to-orange-50/40 dark:from-amber-950/40 dark:via-gray-900/60 dark:to-orange-950/30 backdrop-blur-xl shadow-lg overflow-hidden group">
       {/* Compact Header */}
-      <div className="flex items-center justify-between mb-1 md:mb-1.5 px-1">
-        <div className="flex items-center gap-2">
-          <h2 className="text-[10px] md:text-sm font-bold gradient-text">Featured Properties</h2>
-          <span className="text-[8px] md:text-[10px] text-muted-foreground hidden sm:inline">• Exclusive picks</span>
-        </div>
+      <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
+        <Star className="h-3 w-3 md:h-4 md:w-4 text-amber-500 dark:text-amber-400" />
+        <h2 className="text-[10px] md:text-xs font-semibold text-foreground">Featured Properties</h2>
       </div>
 
       {/* Navigation Buttons */}
@@ -153,23 +151,23 @@ export default function FeaturedAdsCarousel() {
         variant="outline"
         size="icon"
         onClick={() => scroll('left')}
-        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-6 w-6 md:h-7 md:w-7 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-md transition-all opacity-0 group-hover:opacity-100"
+        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-white/90 dark:bg-black/80 border-amber-200/50 dark:border-amber-800/30 hover:bg-amber-50 dark:hover:bg-amber-900/30 shadow-lg transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+        <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
       </Button>
       <Button
         variant="outline"
         size="icon"
         onClick={() => scroll('right')}
-        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-6 w-6 md:h-7 md:w-7 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-md transition-all opacity-0 group-hover:opacity-100"
+        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-white/90 dark:bg-black/80 border-amber-200/50 dark:border-amber-800/30 hover:bg-amber-50 dark:hover:bg-amber-900/30 shadow-lg transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
       </Button>
 
-      {/* Carousel - Slim cards */}
+      {/* Carousel - Image cards matching sale/rent style */}
       <div
         ref={scrollRef}
-        className="flex gap-1.5 md:gap-2 overflow-hidden px-1"
+        className="flex gap-2 md:gap-3 overflow-hidden px-1"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'auto' }}
       >
         {showFallback ? (
@@ -177,39 +175,53 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
+              className="flex-shrink-0 w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-xl overflow-hidden h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
             >
-              <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
-                {/* Image */}
-                <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
-                  <img
-                    src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
-                    alt={p.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
+              {/* Full Image Background */}
+              <img
+                src={p.thumbnail_url || p.images?.[0] || '/placeholder.svg'}
+                alt={p.title}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+              />
+              
+              {/* Gradient Overlay - Amber tint */}
+              <div className="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-black/40 to-transparent" />
+              
+              {/* View Icon - Center on hover */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
                 </div>
-                
-                {/* Content */}
-                <div className="flex-1 p-1.5 flex flex-col justify-between min-w-0">
-                  <div className="min-w-0">
-                    <span className="inline-block px-1 py-0.5 bg-primary/20 text-primary text-[7px] md:text-[8px] font-medium rounded mb-0.5 truncate max-w-full">
-                      {p.property_type}
-                    </span>
-                    <h3 className="text-[9px] md:text-[10px] font-medium text-foreground line-clamp-1">
-                      {p.title}
-                    </h3>
-                  </div>
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-[8px] md:text-[9px] text-muted-foreground truncate">
-                      {p.city || p.state || ''}
-                    </span>
-                    <span className="text-[9px] md:text-[10px] font-bold text-primary whitespace-nowrap">
-                      {(p.price / 1000000).toFixed(1)}M
-                    </span>
-                  </div>
-                </div>
+              </div>
+              
+              {/* Top Labels */}
+              <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between">
+                {/* Featured Badge */}
+                <span className="text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
+                  ⭐ Featured
+                </span>
+                {/* Property Type */}
+                <span className="text-[7px] md:text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[45%]">
+                  {p.property_type}
+                </span>
+              </div>
+              
+              {/* Price Label */}
+              <div className="absolute top-1/2 left-1.5 md:left-2 -translate-y-1/2">
+                <span className="text-xs md:text-sm font-bold px-2 py-1 rounded-md bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-xl">
+                  IDR {(p.price / 1000000).toFixed(0)}Jt
+                </span>
+              </div>
+              
+              {/* Bottom Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-2 md:p-2.5">
+                <h3 className="text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+                  {p.title}
+                </h3>
+                <p className="text-[8px] md:text-[10px] text-white/95 truncate drop-shadow-md mt-0.5">
+                  📍 {p.city || p.state || 'Indonesia'}
+                </p>
               </div>
             </div>
           ))
@@ -218,31 +230,43 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${ad.id}-${idx}`}
               onClick={() => handleAdClick(ad)}
-              className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
+              className="flex-shrink-0 w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-xl overflow-hidden h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
             >
-              <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
-                {/* Image */}
-                <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
-                  <img
-                    src={ad.image_url}
-                    alt={ad.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
+              {/* Full Image Background */}
+              <img
+                src={ad.image_url}
+                alt={ad.title}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+              />
+              
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-black/40 to-transparent" />
+              
+              {/* View Icon - Center on hover */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
                 </div>
-                
-                {/* Content */}
-                <div className="flex-1 p-1.5 flex flex-col justify-center min-w-0">
-                  <h3 className="text-[9px] md:text-[10px] font-semibold text-foreground line-clamp-1 mb-0.5">
-                    {ad.title}
-                  </h3>
-                  {ad.subtitle && (
-                    <p className="text-[8px] md:text-[9px] text-muted-foreground line-clamp-1">
-                      {ad.subtitle}
-                    </p>
-                  )}
-                </div>
+              </div>
+              
+              {/* Top Badge */}
+              <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2">
+                <span className="text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
+                  ⭐ Featured
+                </span>
+              </div>
+              
+              {/* Bottom Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-2 md:p-2.5">
+                <h3 className="text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+                  {ad.title}
+                </h3>
+                {ad.subtitle && (
+                  <p className="text-[8px] md:text-[10px] text-white/95 line-clamp-1 drop-shadow-md mt-0.5">
+                    {ad.subtitle}
+                  </p>
+                )}
               </div>
             </div>
           ))
