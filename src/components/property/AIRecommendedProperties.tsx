@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye } from 'lucide-react';
+import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight } from 'lucide-react';
 import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
+import { useNavigate } from 'react-router-dom';
 
 interface AIRecommendedPropertiesProps {
   onPropertyClick: (property: BaseProperty) => void;
@@ -18,6 +19,7 @@ interface AIRecommendedPropertiesProps {
 const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPropertiesProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
   const [recommendations, setRecommendations] = useState<BaseProperty[]>([]);
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
@@ -235,6 +237,26 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     </div>
   );
 
+  // View All CTA Card
+  const ViewAllCard = () => (
+    <div
+      onClick={() => navigate('/search')}
+      className="flex-shrink-0 w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-xl overflow-hidden h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 ring-1 ring-purple-300/50 dark:ring-purple-700/50"
+    >
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
+        <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-white/20 flex items-center justify-center mb-2 group-hover/card:scale-110 transition-transform duration-300">
+          <ArrowRight className="h-6 w-6 md:h-7 md:w-7 text-white" />
+        </div>
+        <h3 className="text-xs md:text-sm font-bold text-white drop-shadow-lg">
+          View All
+        </h3>
+        <p className="text-[9px] md:text-[10px] text-white/90 mt-0.5">
+          Explore more properties
+        </p>
+      </div>
+    </div>
+  );
+
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
@@ -300,6 +322,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
               {recommendations.slice(0, Math.ceil(recommendations.length / 2)).map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
+              <ViewAllCard />
             </div>
             {/* Row 2 */}
             <div 
@@ -309,6 +332,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
               {recommendations.slice(Math.ceil(recommendations.length / 2)).map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
+              <ViewAllCard />
             </div>
           </div>
         )}
