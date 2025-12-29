@@ -64,37 +64,15 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
   if (isLoading) {
     return (
-      <section className={cn(
-        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
-        isMobile ? "p-3" : "p-4 lg:p-6"
-      )}>
-        <div className={cn(
-          "text-center no-space-waste",
-          isMobile ? "mb-3" : "mb-4"
-        )}>
-          <h2 className={cn(
-            "font-bold gradient-text",
-            isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
-          )}>
+      <section className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
+        <div className="mb-1.5 md:mb-2 flex items-center justify-center gap-1 md:gap-1.5">
+          <h2 className="text-[10px] md:text-xs font-semibold text-foreground">
             Properties for Rent
           </h2>
-          <p className={cn(
-            "text-muted-foreground",
-            isMobile ? "text-xs" : "text-sm lg:text-base"
-          )}>
-            Discover rental properties in prime locations
-          </p>
         </div>
-        <div className="responsive-grid-properties">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-48 bg-muted rounded-t-lg"></div>
-              <div className={cn(isMobile ? "p-2 space-y-2" : "p-4 space-y-3")}>
-                <div className="h-4 bg-muted rounded"></div>
-                <div className="h-3 bg-muted rounded"></div>
-                <div className="h-3 bg-muted rounded w-3/4"></div>
-              </div>
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="animate-pulse rounded-xl overflow-hidden bg-white/50 dark:bg-white/5 h-36 md:h-44"></div>
           ))}
         </div>
       </section>
@@ -103,31 +81,13 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
   if (rentProperties.length === 0) {
     return (
-      <section className={cn(
-        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
-        isMobile ? "p-3" : "p-4 lg:p-6"
-      )}>
-        <div className={cn(
-          "text-center no-space-waste",
-          isMobile ? "mb-3" : "mb-4"
-        )}>
-          <h2 className={cn(
-            "font-bold gradient-text",
-            isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
-          )}>
+      <section className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
+        <div className="mb-1.5 md:mb-2 flex items-center justify-center gap-1 md:gap-1.5">
+          <h2 className="text-[10px] md:text-xs font-semibold text-foreground">
             Properties for Rent
           </h2>
-          <p className={cn(
-            "text-muted-foreground",
-            isMobile ? "text-xs" : "text-sm lg:text-base"
-          )}>
-            Discover rental properties in prime locations
-          </p>
         </div>
-        <div className={cn(
-          "text-center text-muted-foreground",
-          isMobile ? "py-4 text-xs" : "py-8 text-sm"
-        )}>
+        <div className="text-center text-muted-foreground py-3 text-[9px] md:text-xs">
           No rental properties available at the moment.
         </div>
       </section>
@@ -135,51 +95,84 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
   }
 
   return (
-    <section className={cn(
-      "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
-      isMobile ? "p-3" : "p-4 lg:p-6"
-    )}>
-      <div className={cn(
-        "text-center no-space-waste",
-        isMobile ? "mb-3" : "mb-4"
-      )}>
-        <h2 className={cn(
-          "font-bold gradient-text",
-          isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
-        )}>
+    <section className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
+      <div className="mb-1.5 md:mb-2 flex items-center justify-center gap-1 md:gap-1.5">
+        <h2 className="text-[10px] md:text-xs font-semibold text-foreground">
           Properties for Rent
         </h2>
-        <p className={cn(
-          "text-muted-foreground",
-          isMobile ? "text-xs" : "text-sm lg:text-base"
-        )}>
-          Discover rental properties in prime locations
-        </p>
       </div>
       
-      <div className="container-compact">
-        <PropertyGridView
-          properties={rentProperties}
-          onPropertyClick={onPropertyClick}
-          onView3D={onPropertyClick}
-          onSave={(property) => console.log('Save property:', property.id)}
-          onShare={async (property) => {
-            const success = await shareProperty({
-              id: property.id,
-              title: property.title,
-              price: property.price || 0,
-              location: property.location || property.city || '',
-              images: property.images
-            });
-            if (success) {
-              toast.success("Property link shared!");
-            }
-          }}
-          onContact={(property) => {
-            setSelectedProperty(property);
-            setWhatsappDialogOpen(true);
-          }}
-        />
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+        {rentProperties.slice(0, 6).map((property) => (
+          <div
+            key={property.id}
+            onClick={() => onPropertyClick(property)}
+            className="group cursor-pointer relative rounded-xl overflow-hidden h-36 md:h-44 hover:scale-[1.02] transition-all duration-200"
+          >
+            {/* Full Image Background */}
+            <img
+              src={property.images?.[0] || property.thumbnail_url || "/placeholder.svg"}
+              alt={property.title}
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+            
+            {/* Top Labels */}
+            <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between">
+              {/* Rent Badge */}
+              <span className="text-[9px] md:text-xs font-bold px-2 py-1 rounded-full bg-blue-500 text-white shadow-lg">
+                Sewa
+              </span>
+              {/* Property Type */}
+              <span className="text-[8px] md:text-[10px] font-semibold px-2 py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[55%]">
+                {property.property_type || 'Property'}
+              </span>
+            </div>
+            
+            {/* Price Label - Positioned prominently */}
+            <div className="absolute top-1/2 left-1.5 md:left-2 -translate-y-1/2">
+              <span className="text-xs md:text-sm font-bold px-2 py-1 rounded-md bg-primary text-primary-foreground shadow-xl">
+                {property.price >= 1000000000 
+                  ? `IDR ${(property.price / 1000000000).toFixed(1)}M` 
+                  : `IDR ${(property.price / 1000000).toFixed(0)}Jt`}
+                <span className="text-[8px] md:text-[10px] font-normal">/bln</span>
+              </span>
+            </div>
+            
+            {/* Bottom Content - All info on image */}
+            <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3">
+              {/* Title */}
+              <h3 className="text-[11px] md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
+                {property.title}
+              </h3>
+              {/* Location */}
+              <p className="text-[9px] md:text-xs text-white/95 truncate drop-shadow-md mt-0.5">
+                📍 {property.city || property.location}
+              </p>
+              {/* Property Details */}
+              <div className="flex items-center gap-2 md:gap-3 mt-1 text-[9px] md:text-[11px] text-white/90 font-medium">
+                {property.bedrooms && (
+                  <span className="flex items-center gap-0.5">
+                    🛏️ {property.bedrooms}
+                  </span>
+                )}
+                {property.bathrooms && (
+                  <span className="flex items-center gap-0.5">
+                    🚿 {property.bathrooms}
+                  </span>
+                )}
+                {property.area_sqm && (
+                  <span className="flex items-center gap-0.5">
+                    📐 {property.area_sqm}m²
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
       
       {selectedProperty && (
