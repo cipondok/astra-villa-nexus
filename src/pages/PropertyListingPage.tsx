@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import PropertyListingsSection from '@/components/PropertyListingsSection';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal, MapPin, Home, X } from 'lucide-react';
+import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maximize } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
-
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
   title: string;
@@ -354,20 +352,105 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           </AnimatePresence>
         </div>
 
-        {/* Results Count */}
-        <div className="flex items-center justify-between mb-1.5 sm:mb-2 text-[9px] sm:text-xs text-muted-foreground">
-          <span>{hasSearched ? searchResults.length : properties.length} properti ditemukan</span>
-        </div>
+        {/* Property Grid - Same style as Dijual */}
+        {isLoading || isSearching ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="aspect-[4/5] bg-muted animate-pulse rounded-lg" />
+            ))}
+          </div>
+        ) : (hasSearched ? searchResults : properties).length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            Tidak ada properti ditemukan
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+            {(hasSearched ? searchResults : properties).map((property: any) => {
+              const imageUrl = property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
+              const formatPrice = (price: number) => {
+                if (price >= 1000000000) return `Rp ${(price / 1000000000).toFixed(1)}M`;
+                if (price >= 1000000) return `Rp ${(price / 1000000).toFixed(0)}Jt`;
+                return `Rp ${price.toLocaleString('id-ID')}`;
+              };
+              const listingLabel = property.listing_type === 'sale' ? 'Jual' : 'Sewa';
 
-        {/* Property Listings */}
-        <PropertyListingsSection
-          language={language}
-          searchResults={hasSearched ? searchResults : properties}
-          hasSearched={hasSearched}
-          hideTitle={true}
-          isSearching={isSearching || isLoading}
-          fallbackResults={properties}
-        />
+              return (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="group relative aspect-[4/5] rounded-lg overflow-hidden cursor-pointer border border-primary/10 hover:border-primary/30 transition-all duration-300"
+                >
+                  {/* Background Image */}
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ backgroundImage: `url(${imageUrl})` }}
+                  />
+                  
+                  {/* Green Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-800/40 to-transparent" />
+
+                  {/* Top Actions */}
+                  <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5 right-1 sm:right-1.5 flex justify-between items-start z-10">
+                    <span className="px-1 sm:px-1.5 py-0.5 bg-emerald-600/90 text-white text-[6px] sm:text-[7px] font-medium rounded">
+                      {listingLabel}
+                    </span>
+                    <button className="p-0.5 sm:p-1 bg-black/30 hover:bg-black/50 rounded-full transition-colors">
+                      <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-white" />
+                    </button>
+                  </div>
+
+                  {/* Center Eye Icon on Hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    <div className="p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-full">
+                      <Eye className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+                    </div>
+                  </div>
+
+                  {/* Price Tag */}
+                  <div className="absolute top-1/2 left-1 sm:left-1.5 -translate-y-1/2 z-10">
+                    <span className="px-1 sm:px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[7px] sm:text-[8px] font-bold rounded shadow-lg">
+                      {formatPrice(property.price)}
+                    </span>
+                  </div>
+
+                  {/* Bottom Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 z-10">
+                    <h3 className="text-white font-semibold text-[8px] sm:text-[9px] md:text-[10px] leading-tight line-clamp-1 mb-0.5">
+                      {property.title}
+                    </h3>
+                    <p className="text-white/80 text-[6px] sm:text-[7px] flex items-center gap-0.5 mb-1">
+                      <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5 flex-shrink-0" />
+                      <span className="truncate">{property.location || property.city}</span>
+                    </p>
+                    
+                    {/* Property Details */}
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-white/90 text-[6px] sm:text-[7px]">
+                      {property.bedrooms > 0 && (
+                        <span className="flex items-center gap-0.5">
+                          <Bed className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+                          {property.bedrooms}
+                        </span>
+                      )}
+                      {property.bathrooms > 0 && (
+                        <span className="flex items-center gap-0.5">
+                          <Bath className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+                          {property.bathrooms}
+                        </span>
+                      )}
+                      {property.area_sqm > 0 && (
+                        <span className="flex items-center gap-0.5">
+                          <Maximize className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+                          {property.area_sqm}m²
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
