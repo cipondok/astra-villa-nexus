@@ -173,50 +173,41 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <div className={cn("relative", className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3 px-1">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg backdrop-blur-sm">
-            <Sparkles className="h-4 w-4 text-primary" />
-          </div>
-          <div>
-            <h3 className="text-sm md:text-base font-bold text-foreground">
-              AI Recommended
-            </h3>
-            <p className="text-[10px] md:text-xs text-muted-foreground">
-              {user ? 'Personalized for you' : 'Trending picks'}
-            </p>
-          </div>
+    <div className={cn("relative glass-card rounded-lg p-1.5 md:p-2", className)}>
+      {/* Compact Header */}
+      <div className="flex items-center justify-between mb-1 md:mb-1.5 px-1">
+        <div className="flex items-center gap-1.5">
+          <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary" />
+          <h3 className="text-[10px] md:text-sm font-bold gradient-text">AI Recommended</h3>
+          <span className="text-[8px] md:text-[10px] text-muted-foreground hidden sm:inline">
+            • {user ? 'For you' : 'Trending picks'}
+          </span>
         </div>
-        <div className="flex items-center gap-1">
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 rounded-full"
-              onClick={scrollLeft}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 rounded-full"
-              onClick={scrollRight}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+        <div className="flex items-center gap-0.5">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-5 w-5 md:h-6 md:w-6 rounded-full glass-effect border-border/50"
+            onClick={scrollLeft}
+          >
+            <ChevronLeft className="h-2.5 w-2.5 md:h-3 md:w-3" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-5 w-5 md:h-6 md:w-6 rounded-full glass-effect border-border/50"
+            onClick={scrollRight}
+          >
+            <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3" />
+          </Button>
           <Button
             onClick={generateRecommendations}
             disabled={isGenerating}
-            size="sm"
+            size="icon"
             variant="ghost"
-            className="h-7 w-7 p-0"
+            className="h-5 w-5 md:h-6 md:w-6"
           >
-            <RefreshCw className={cn("h-4 w-4", isGenerating && "animate-spin")} />
+            <RefreshCw className={cn("h-2.5 w-2.5 md:h-3 md:w-3", isGenerating && "animate-spin")} />
           </Button>
         </div>
       </div>
@@ -224,123 +215,68 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       {/* Scrollable Container */}
       <div className="relative">
         {isGenerating ? (
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-hide px-1">
             {[...Array(6)].map((_, i) => (
               <div 
                 key={i} 
-                className="flex-shrink-0 w-[160px] md:w-[200px] h-[200px] md:h-[240px] animate-pulse bg-muted rounded-xl"
+                className="flex-shrink-0 w-[140px] md:w-[170px] h-[56px] md:h-[64px] animate-pulse bg-muted rounded-md"
               />
             ))}
           </div>
         ) : (
           <div 
             ref={scrollRef}
-            className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+            className="flex gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-hide px-1"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {recommendations.map((property) => (
               <div
                 key={property.id}
                 onClick={() => onPropertyClick(property)}
-                className="flex-shrink-0 w-[150px] md:w-[200px] snap-start cursor-pointer group"
+                className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
               >
-                <div className="relative h-[210px] md:h-[260px] rounded-xl overflow-visible bg-card border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:border-primary/30 flex flex-col">
+                <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
                   {/* Image */}
-                  <div className="relative h-[100px] md:h-[130px] overflow-hidden rounded-t-xl flex-shrink-0">
+                  <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
                     <img
                       src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                       alt={property.title}
                       loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-300"
                     />
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-                    {/* Type Badge */}
-                    <div className="absolute top-2 left-2">
-                      <span className="px-1.5 py-0.5 bg-primary/90 text-primary-foreground text-[9px] md:text-[10px] font-medium rounded-md backdrop-blur-sm capitalize">
-                        {property.property_type || 'Property'}
-                      </span>
-                    </div>
-
-                    {/* Listing Type Badge */}
-                    <div className="absolute top-2 right-2">
-                      <span className="px-1.5 py-0.5 bg-background/80 text-foreground text-[9px] md:text-[10px] font-medium rounded-md backdrop-blur-sm">
-                        {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
-                      </span>
-                    </div>
-
-                    {/* Price on Image */}
-                    <div className="absolute bottom-2 left-2 right-2">
-                      <p className="text-white text-xs md:text-sm font-bold drop-shadow-lg">
-                        {formatPrice(property.price || 0)}
-                      </p>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
                   </div>
-
+                  
                   {/* Content */}
-                  <div className="p-2 md:p-2.5 flex flex-col flex-1">
-                    <h4 className="text-[11px] md:text-xs font-semibold text-foreground line-clamp-2 leading-tight mb-1">
-                      {property.title}
-                    </h4>
-                    
-                    {/* Location */}
-                    <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                      <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
-                      <span className="text-[9px] md:text-[10px] truncate">
-                        {property.city || property.location || 'Indonesia'}
+                  <div className="flex-1 p-1.5 flex flex-col justify-between min-w-0">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1 mb-0.5">
+                        <span className="inline-block px-1 py-0.5 bg-primary/20 text-primary text-[7px] md:text-[8px] font-medium rounded truncate">
+                          {property.property_type || 'Property'}
+                        </span>
+                        <span className="text-[7px] md:text-[8px] text-muted-foreground">
+                          {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
+                        </span>
+                      </div>
+                      <h4 className="text-[9px] md:text-[10px] font-medium text-foreground line-clamp-1">
+                        {property.title}
+                      </h4>
+                    </div>
+                    <div className="flex items-center justify-between gap-1">
+                      <div className="flex items-center gap-1 text-[8px] md:text-[9px] text-muted-foreground truncate">
+                        {property.bedrooms && <span>{property.bedrooms}bd</span>}
+                        {property.bathrooms && <span>{property.bathrooms}ba</span>}
+                      </div>
+                      <span className="text-[9px] md:text-[10px] font-bold text-primary whitespace-nowrap">
+                        {formatPrice(property.price || 0)}
                       </span>
                     </div>
-
-                    {/* Property Details */}
-                    <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-muted-foreground mb-2">
-                      {property.bedrooms && (
-                        <div className="flex items-center gap-0.5">
-                          <Bed className="h-2.5 w-2.5" />
-                          <span>{property.bedrooms}</span>
-                        </div>
-                      )}
-                      {property.bathrooms && (
-                        <div className="flex items-center gap-0.5">
-                          <Bath className="h-2.5 w-2.5" />
-                          <span>{property.bathrooms}</span>
-                        </div>
-                      )}
-                      {property.area_sqm && (
-                        <div className="flex items-center gap-0.5">
-                          <span>{property.area_sqm}m²</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* View Button - Always at bottom */}
-                    <Button 
-                      size="sm" 
-                      className="w-full h-7 md:h-8 text-[10px] md:text-xs mt-auto relative z-10"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onPropertyClick(property);
-                      }}
-                    >
-                      <Eye className="h-3 w-3 mr-1" />
-                      View Details
-                    </Button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         )}
-
-        {/* Mobile Scroll Indicators */}
-        <div className="flex justify-center gap-1 mt-2 md:hidden">
-          {recommendations.slice(0, Math.min(6, recommendations.length)).map((_, i) => (
-            <div 
-              key={i} 
-              className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"
-            />
-          ))}
-        </div>
       </div>
       
       {selectedProperty && (
