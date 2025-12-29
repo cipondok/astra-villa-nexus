@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp, ArrowUpRight, ChevronDown, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, Shield, FileText, Cookie } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ProfessionalFooterProps {
@@ -123,15 +123,15 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <h3 className="text-sm md:text-base font-bold text-white">{currentText.quickLinks}</h3>
             <ul className="space-y-2">
               {[
-                { to: "/", label: currentText.home },
-                { to: "/dijual", label: currentText.buy },
-                { to: "/disewa", label: currentText.rent },
-                { to: "/community", label: currentText.community },
-                { to: "/development", label: language === "en" ? "Development" : "Pengembangan" },
+                { to: "/", label: currentText.home, icon: Home },
+                { to: "/dijual", label: currentText.buy, icon: ShoppingCart },
+                { to: "/disewa", label: currentText.rent, icon: Key },
+                { to: "/community", label: currentText.community, icon: UsersRound },
+                { to: "/development", label: language === "en" ? "Development" : "Pengembangan", icon: Construction },
               ].map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="text-sm text-slate-300 hover:text-primary flex items-center gap-1 transition-colors">
-                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100" />{link.label}
+                  <Link to={link.to} className="text-sm text-slate-300 hover:text-primary flex items-center gap-2 transition-colors group">
+                    <link.icon className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{link.label}
                   </Link>
                 </li>
               ))}
@@ -142,18 +142,32 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <div className="space-y-4">
             <h3 className="text-sm md:text-base font-bold text-white">{currentText.services}</h3>
             <ul className="space-y-2 text-sm text-slate-300">
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.propertySearch}</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.consultation}</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.valuation}</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.investment}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <Search className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.propertySearch}
+              </li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <MessageSquare className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.consultation}
+              </li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <Calculator className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.valuation}
+              </li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <PiggyBank className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.investment}
+              </li>
             </ul>
             
             {/* Support */}
             <h3 className="text-sm md:text-base font-bold text-white pt-2">{currentText.support}</h3>
             <ul className="space-y-2 text-sm text-slate-300">
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.help}</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.faq}</li>
-              <li className="hover:text-primary transition-colors cursor-pointer">{currentText.contactUs}</li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <HelpCircle className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.help}
+              </li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <CircleHelp className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.faq}
+              </li>
+              <li className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
+                <PhoneCall className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />{currentText.contactUs}
+              </li>
             </ul>
           </div>
 
@@ -210,9 +224,15 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           <p className="text-sm text-slate-400">© {new Date().getFullYear()} {currentText.company}. {currentText.allRights}</p>
           {/* Legal Links */}
           <div className="flex gap-4 md:gap-6 text-sm">
-            <a href="#" className="text-slate-400 hover:text-primary transition-colors">{currentText.privacy}</a>
-            <a href="#" className="text-slate-400 hover:text-primary transition-colors">{currentText.terms}</a>
-            <a href="#" className="text-slate-400 hover:text-primary transition-colors">{currentText.cookies}</a>
+            <a href="#" className="text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5" />{currentText.privacy}
+            </a>
+            <a href="#" className="text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5" />{currentText.terms}
+            </a>
+            <a href="#" className="text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+              <Cookie className="w-3.5 h-3.5" />{currentText.cookies}
+            </a>
           </div>
         </div>
       </div>
