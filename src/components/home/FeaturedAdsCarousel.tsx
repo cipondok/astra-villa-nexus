@@ -119,10 +119,10 @@ export default function FeaturedAdsCarousel() {
 
   if (isLoading) {
     return (
-      <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
+      <div className="relative glass-card rounded-xl p-4 md:p-6 mb-4 md:mb-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4" />
-          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded" />
+          <div className="h-6 md:h-8 bg-muted rounded w-40 md:w-48 mb-3 md:mb-4" />
+          <div className="h-48 md:h-64 bg-muted rounded" />
         </div>
       </div>
     );
@@ -139,10 +139,10 @@ export default function FeaturedAdsCarousel() {
   const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties] : [];
 
   return (
-    <div className="relative bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-xl p-2 md:p-4 overflow-hidden group">
+    <div className="relative glass-card rounded-xl p-2 md:p-4 overflow-hidden group">
       {/* Header */}
       <div className="mb-2 md:mb-3">
-        <h2 className="text-xs md:text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+        <h2 className="text-xs md:text-lg font-bold gradient-text">
           Featured Properties
         </h2>
         <p className="text-[9px] md:text-xs text-muted-foreground mt-0.5">
@@ -155,17 +155,17 @@ export default function FeaturedAdsCarousel() {
         variant="outline"
         size="icon"
         onClick={() => scroll('left')}
-        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronLeft className="h-5 w-5 text-primary" />
+        <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-primary" />
       </Button>
       <Button
         variant="outline"
         size="icon"
         onClick={() => scroll('right')}
-        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 md:h-10 md:w-10 rounded-full glass-effect border border-border/50 hover:bg-primary/10 hover:border-primary shadow-lg transition-all opacity-0 group-hover:opacity-100"
       >
-        <ChevronRight className="h-5 w-5 text-primary" />
+        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-primary" />
       </Button>
 
       {/* Carousel */}
@@ -181,7 +181,7 @@ export default function FeaturedAdsCarousel() {
               onClick={() => navigate(`/properties/${p.id}`)}
               className="flex-shrink-0 w-[220px] md:w-[320px] cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] md:h-[100px]">
+              <div className="relative overflow-hidden rounded-lg glass-effect shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] md:h-[100px]">
                 {/* Image - Left Side */}
                 <div className="relative w-[90px] md:w-[140px] flex-shrink-0">
                   <img
@@ -222,7 +222,7 @@ export default function FeaturedAdsCarousel() {
               onClick={() => handleAdClick(ad)}
               className="flex-shrink-0 w-[220px] md:w-[320px] cursor-pointer group"
             >
-              <div className="relative overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] md:h-[100px]">
+              <div className="relative overflow-hidden rounded-lg glass-effect shadow-md hover:shadow-xl transition-all duration-300 flex h-[80px] md:h-[100px]">
                 {/* Image - Left Side */}
                 <div className="relative w-[90px] md:w-[140px] flex-shrink-0">
                   <img
