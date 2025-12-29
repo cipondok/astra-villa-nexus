@@ -429,7 +429,7 @@ const Index = () => {
 
   // Mobile-first responsive layout wrapper
   const content = (
-    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative"
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-gradient-to-br from-background via-secondary/30 to-muted/50"
     >
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
