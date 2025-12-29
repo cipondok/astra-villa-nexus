@@ -170,6 +170,52 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     return `Rp ${price.toLocaleString('id-ID')}`;
   };
 
+  const PropertyCard = ({ property }: { property: BaseProperty }) => (
+    <div
+      onClick={() => onPropertyClick(property)}
+      className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
+    >
+      <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
+        {/* Image */}
+        <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
+          <img
+            src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+            alt={property.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
+        </div>
+        
+        {/* Content */}
+        <div className="flex-1 p-1.5 flex flex-col justify-between min-w-0">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1 mb-0.5">
+              <span className="inline-block px-1 py-0.5 bg-primary/20 text-primary text-[7px] md:text-[8px] font-medium rounded truncate">
+                {property.property_type || 'Property'}
+              </span>
+              <span className="text-[7px] md:text-[8px] text-muted-foreground">
+                {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
+              </span>
+            </div>
+            <h4 className="text-[9px] md:text-[10px] font-medium text-foreground line-clamp-1">
+              {property.title}
+            </h4>
+          </div>
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center gap-1 text-[8px] md:text-[9px] text-muted-foreground truncate">
+              {property.bedrooms && <span>{property.bedrooms}bd</span>}
+              {property.bathrooms && <span>{property.bathrooms}ba</span>}
+            </div>
+            <span className="text-[9px] md:text-[10px] font-bold text-primary whitespace-nowrap">
+              {formatPrice(property.price || 0)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
@@ -212,69 +258,42 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         </div>
       </div>
 
-      {/* Scrollable Container */}
+      {/* Two Row Grid */}
       <div className="relative">
         {isGenerating ? (
-          <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-hide px-1">
-            {[...Array(6)].map((_, i) => (
-              <div 
-                key={i} 
-                className="flex-shrink-0 w-[140px] md:w-[170px] h-[56px] md:h-[64px] animate-pulse bg-muted rounded-md"
-              />
+          <div className="grid grid-rows-2 gap-1 md:gap-1.5 px-1">
+            {[0, 1].map((row) => (
+              <div key={row} className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide">
+                {[...Array(6)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="flex-shrink-0 w-[160px] md:w-[200px] h-[56px] md:h-[64px] animate-pulse bg-muted rounded-md"
+                  />
+                ))}
+              </div>
             ))}
           </div>
         ) : (
-          <div 
-            ref={scrollRef}
-            className="flex gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-hide px-1"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {recommendations.map((property) => (
-              <div
-                key={property.id}
-                onClick={() => onPropertyClick(property)}
-                className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
-              >
-                <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
-                  {/* Image */}
-                  <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
-                    <img
-                      src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                      alt={property.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="flex-1 p-1.5 flex flex-col justify-between min-w-0">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1 mb-0.5">
-                        <span className="inline-block px-1 py-0.5 bg-primary/20 text-primary text-[7px] md:text-[8px] font-medium rounded truncate">
-                          {property.property_type || 'Property'}
-                        </span>
-                        <span className="text-[7px] md:text-[8px] text-muted-foreground">
-                          {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
-                        </span>
-                      </div>
-                      <h4 className="text-[9px] md:text-[10px] font-medium text-foreground line-clamp-1">
-                        {property.title}
-                      </h4>
-                    </div>
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1 text-[8px] md:text-[9px] text-muted-foreground truncate">
-                        {property.bedrooms && <span>{property.bedrooms}bd</span>}
-                        {property.bathrooms && <span>{property.bathrooms}ba</span>}
-                      </div>
-                      <span className="text-[9px] md:text-[10px] font-bold text-primary whitespace-nowrap">
-                        {formatPrice(property.price || 0)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-rows-2 gap-1 md:gap-1.5 px-1">
+            {/* Row 1 */}
+            <div 
+              ref={scrollRef}
+              className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {recommendations.slice(0, Math.ceil(recommendations.length / 2)).map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+            {/* Row 2 */}
+            <div 
+              className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {recommendations.slice(Math.ceil(recommendations.length / 2)).map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
           </div>
         )}
       </div>
