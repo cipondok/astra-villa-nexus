@@ -20,7 +20,7 @@ import {
   Search,
   ArrowLeft,
   SlidersHorizontal,
-  ChevronRight
+  Eye
 } from "lucide-react";
 
 interface Property {
@@ -408,21 +408,12 @@ const Dijual = () => {
         onToggle={() => setIsFilterOpen(!isFilterOpen)}
       />
 
-      {/* Properties List */}
-      <div className="p-1.5 sm:p-2 space-y-1 sm:space-y-1.5">
+      {/* Properties Grid */}
+      <div className="p-1.5 sm:p-2 md:p-3">
         {loading ? (
-          <div className="space-y-1 sm:space-y-1.5">
-            {[...Array(5)].map((_, i) => (
-              <Card key={i} className="p-1.5 sm:p-2 animate-pulse">
-                <div className="flex gap-1.5 sm:gap-2">
-                  <div className="h-14 w-14 sm:h-16 sm:w-16 bg-muted rounded-md sm:rounded-lg"></div>
-                  <div className="flex-1 space-y-1">
-                    <div className="h-2.5 sm:h-3 bg-muted rounded w-3/4"></div>
-                    <div className="h-2 bg-muted rounded w-1/2"></div>
-                    <div className="h-2.5 sm:h-3 bg-muted rounded w-1/4"></div>
-                  </div>
-                </div>
-              </Card>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="animate-pulse rounded-lg sm:rounded-xl overflow-hidden bg-muted h-28 sm:h-32 md:h-44"></div>
             ))}
           </div>
         ) : filteredProperties.length === 0 ? (
@@ -454,113 +445,97 @@ const Dijual = () => {
             </div>
           </Card>
         ) : (
-          filteredProperties.map((property) => (
-            <Card 
-              key={property.id} 
-              className="p-1 sm:p-1.5 active:scale-[0.99] transition-transform cursor-pointer hover:bg-muted/50"
-              onClick={() => navigate(`/properties/${property.id}`)}
-            >
-              <div className="flex gap-1.5 sm:gap-2">
-                {/* Thumbnail */}
-                <div className="relative h-16 w-16 sm:h-18 sm:w-18 md:h-20 md:w-20 rounded-md sm:rounded-lg bg-muted flex-shrink-0 overflow-hidden">
-                  {property.image_urls?.[0] || property.images?.[0] ? (
-                    <img 
-                      src={property.image_urls?.[0] || property.images?.[0]} 
-                      alt={property.title}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center">
-                      <Building className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
-                    </div>
-                  )}
-                  {/* Save Button */}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="absolute top-0.5 right-0.5 h-4 w-4 sm:h-5 sm:w-5 p-0 bg-white/80 hover:bg-white rounded-full"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSaveProperty(property.id);
-                    }}
-                  >
-                    <Heart 
-                      className={`h-2 w-2 sm:h-2.5 sm:w-2.5 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`}
-                    />
-                  </Button>
-                  {/* Price Badge */}
-                  <Badge className="absolute bottom-0.5 left-0.5 text-[6px] sm:text-[7px] md:text-[8px] px-0.5 sm:px-1 py-0 h-3 sm:h-3.5 md:h-4 bg-primary/90">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+            {filteredProperties.map((property) => (
+              <div
+                key={property.id}
+                onClick={() => navigate(`/properties/${property.id}`)}
+                className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-44 hover:scale-[1.02] transition-all duration-200 ring-1 ring-green-200/50 dark:ring-green-800/30 shadow-md"
+              >
+                {/* Full Image Background */}
+                <img
+                  src={property.image_urls?.[0] || property.images?.[0] || "/placeholder.svg"}
+                  alt={property.title}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                
+                {/* Gradient Overlay - Green tint for sale */}
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-black/40 to-transparent" />
+                
+                {/* Save Button */}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 h-5 w-5 sm:h-6 sm:w-6 p-0 bg-white/80 hover:bg-white rounded-full z-20"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSaveProperty(property.id);
+                  }}
+                >
+                  <Heart 
+                    className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`}
+                  />
+                </Button>
+                
+                {/* View Icon - Center on hover */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                  <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+                    <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-green-600 dark:text-green-400" />
+                  </div>
+                </div>
+                
+                {/* Top Labels */}
+                <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 md:top-2 md:left-2 flex items-start gap-1">
+                  {/* Sale Badge */}
+                  <span className="text-[6px] sm:text-[7px] md:text-[9px] font-bold px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg">
+                    Jual
+                  </span>
+                  {/* Property Type */}
+                  <span className="text-[5px] sm:text-[6px] md:text-[8px] font-semibold px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[60px] sm:max-w-[80px] capitalize">
+                    {property.property_type || 'Property'}
+                  </span>
+                </div>
+                
+                {/* Price Label - Positioned prominently */}
+                <div className="absolute top-1/2 left-1 sm:left-1.5 md:left-2 -translate-y-1/2">
+                  <span className="text-[7px] sm:text-[9px] md:text-xs font-bold px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-1 rounded-md bg-gradient-to-r from-green-600 to-emerald-700 text-white shadow-xl">
                     {formatPrice(property.price || 0)}
-                  </Badge>
+                  </span>
                 </div>
-
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-0.5 sm:gap-1 mb-0.5">
-                    <h3 className="text-[9px] sm:text-[10px] md:text-[11px] font-semibold truncate flex-1 leading-tight">
-                      {property.title || 'Untitled'}
-                    </h3>
-                    <Badge variant="secondary" className="text-[5px] sm:text-[6px] md:text-[7px] px-0.5 sm:px-1 py-0 h-3 sm:h-3.5 flex-shrink-0 capitalize">
-                      {property.property_type}
-                    </Badge>
-                  </div>
-                  
-                  <p className="text-[7px] sm:text-[8px] md:text-[9px] text-muted-foreground flex items-center gap-0.5 mb-0.5 sm:mb-1">
-                    <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                    <span className="truncate">
-                      {property.location}{property.city && `, ${property.city}`}
-                    </span>
+                
+                {/* Bottom Content - All info on image */}
+                <div className="absolute bottom-0 left-0 right-0 p-1 sm:p-1.5 md:p-2">
+                  {/* Title */}
+                  <h3 className="text-[7px] sm:text-[9px] md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
+                    {property.title}
+                  </h3>
+                  {/* Location */}
+                  <p className="text-[6px] sm:text-[7px] md:text-xs text-white/95 truncate drop-shadow-md">
+                    📍 {property.city || property.location}
                   </p>
-
-                  {/* Specs */}
-                  <div className="flex items-center gap-1.5 sm:gap-2 text-[6px] sm:text-[7px] md:text-[8px] text-muted-foreground mb-0.5 sm:mb-1">
-                    {property.bedrooms && (
+                  {/* Property Details */}
+                  <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-0.5 text-[6px] sm:text-[7px] md:text-[10px] text-white/90 font-medium">
+                    {property.bedrooms > 0 && (
                       <span className="flex items-center gap-0.5">
-                        <Bed className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                        {property.bedrooms}
+                        🛏️ {property.bedrooms}
                       </span>
                     )}
-                    {property.bathrooms && (
+                    {property.bathrooms > 0 && (
                       <span className="flex items-center gap-0.5">
-                        <Bath className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                        {property.bathrooms}
+                        🚿 {property.bathrooms}
                       </span>
                     )}
-                    {property.area_sqm && (
+                    {property.area_sqm > 0 && (
                       <span className="flex items-center gap-0.5">
-                        <Square className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                        {property.area_sqm}m²
+                        📐 {property.area_sqm}m²
                       </span>
                     )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-0.5 sm:gap-1">
-                    <Button 
-                      size="sm"
-                      className="h-4 sm:h-5 px-1.5 sm:px-2 text-[6px] sm:text-[7px] md:text-[8px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/properties/${property.id}`);
-                      }}
-                    >
-                      Detail
-                    </Button>
-                    <Button 
-                      size="sm"
-                      variant="outline"
-                      className="h-4 sm:h-5 px-1.5 sm:px-2 text-[6px] sm:text-[7px] md:text-[8px]"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Hubungi
-                    </Button>
                   </div>
                 </div>
-
-                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground self-center flex-shrink-0" />
               </div>
-            </Card>
-          ))
+            ))}
+          </div>
         )}
 
         {/* Quick Stats */}
