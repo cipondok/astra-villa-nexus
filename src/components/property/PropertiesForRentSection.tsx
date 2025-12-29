@@ -8,6 +8,7 @@ import { shareProperty } from "@/utils/shareUtils";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
 import { toast } from "sonner";
+import { Eye, Key } from "lucide-react";
 
 interface PropertiesForRentSectionProps {
   language: "en" | "id";
@@ -95,8 +96,9 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
   }
 
   return (
-    <section className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
-      <div className="mb-1.5 md:mb-2 flex items-center justify-center gap-1 md:gap-1.5">
+    <section className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-blue-50/80 via-white/60 to-sky-50/40 dark:from-blue-950/40 dark:via-gray-900/60 dark:to-sky-950/30 backdrop-blur-xl shadow-lg">
+      <div className="mb-1.5 md:mb-2 flex items-center justify-center gap-1.5 md:gap-2">
+        <Key className="h-3 w-3 md:h-4 md:w-4 text-blue-600 dark:text-blue-400" />
         <h2 className="text-[10px] md:text-xs font-semibold text-foreground">
           Properties for Rent
         </h2>
@@ -107,7 +109,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
           <div
             key={property.id}
             onClick={() => onPropertyClick(property)}
-            className="group cursor-pointer relative rounded-xl overflow-hidden h-36 md:h-44 hover:scale-[1.02] transition-all duration-200"
+            className="group cursor-pointer relative rounded-xl overflow-hidden h-36 md:h-44 hover:scale-[1.02] transition-all duration-200 ring-1 ring-blue-200/50 dark:ring-blue-800/30"
           >
             {/* Full Image Background */}
             <img
@@ -117,13 +119,20 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
             
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+            {/* Gradient Overlay - Blue tint for rent */}
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-black/40 to-transparent" />
+            
+            {/* View Icon - Center on hover */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+              <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+                <Eye className="h-5 w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />
+              </div>
+            </div>
             
             {/* Top Labels */}
             <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between">
               {/* Rent Badge */}
-              <span className="text-[9px] md:text-xs font-bold px-2 py-1 rounded-full bg-blue-500 text-white shadow-lg">
+              <span className="text-[9px] md:text-xs font-bold px-2 py-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg">
                 Sewa
               </span>
               {/* Property Type */}
@@ -134,7 +143,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             
             {/* Price Label - Positioned prominently */}
             <div className="absolute top-1/2 left-1.5 md:left-2 -translate-y-1/2">
-              <span className="text-xs md:text-sm font-bold px-2 py-1 rounded-md bg-primary text-primary-foreground shadow-xl">
+              <span className="text-xs md:text-sm font-bold px-2 py-1 rounded-md bg-gradient-to-r from-blue-600 to-sky-700 text-white shadow-xl">
                 {property.price >= 1000000000 
                   ? `IDR ${(property.price / 1000000000).toFixed(1)}M` 
                   : `IDR ${(property.price / 1000000).toFixed(0)}Jt`}
