@@ -72,13 +72,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-2">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="animate-pulse rounded-lg overflow-hidden bg-white/50 dark:bg-white/5">
-              <div className="h-16 md:h-20 bg-muted/50"></div>
-              <div className="p-1.5 space-y-1">
-                <div className="h-2 bg-muted/50 rounded"></div>
-                <div className="h-1.5 bg-muted/50 rounded w-3/4"></div>
-              </div>
-            </div>
+            <div key={i} className="animate-pulse rounded-lg overflow-hidden bg-white/50 dark:bg-white/5 h-28 md:h-36"></div>
           ))}
         </div>
       </section>
@@ -113,43 +107,67 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           <div
             key={property.id}
             onClick={() => onPropertyClick(property)}
-            className="group cursor-pointer rounded-lg overflow-hidden bg-white/50 dark:bg-white/5 border border-white/30 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/10 transition-all duration-200 hover:scale-[1.02]"
+            className="group cursor-pointer relative rounded-lg overflow-hidden h-28 md:h-36 hover:scale-[1.02] transition-all duration-200"
           >
-            {/* Image */}
-            <div className="relative h-16 md:h-20 overflow-hidden">
-              <img
-                src={property.images?.[0] || property.thumbnail_url || "/placeholder.svg"}
-                alt={property.title}
-                loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              {/* Badge */}
-              <div className="absolute top-1 left-1">
-                <span className="text-[6px] md:text-[8px] font-medium px-1 py-0.5 rounded bg-green-500/90 text-white">
-                  Jual
-                </span>
-              </div>
-              {/* Price overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1">
-                <span className="text-[8px] md:text-[10px] font-bold text-white">
-                  {property.price >= 1000000000 
-                    ? `IDR ${(property.price / 1000000000).toFixed(1)} M` 
-                    : `IDR ${(property.price / 1000000).toFixed(0)} Jt`}
-                </span>
-              </div>
+            {/* Full Image Background */}
+            <img
+              src={property.images?.[0] || property.thumbnail_url || "/placeholder.svg"}
+              alt={property.title}
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            
+            {/* Top Labels */}
+            <div className="absolute top-1 left-1 right-1 flex items-start justify-between">
+              {/* Sale Badge */}
+              <span className="text-[7px] md:text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-green-500 text-white shadow-md">
+                Jual
+              </span>
+              {/* Property Type */}
+              <span className="text-[6px] md:text-[8px] font-medium px-1.5 py-0.5 rounded-full bg-white/90 dark:bg-black/70 text-foreground shadow-md truncate max-w-[60%]">
+                {property.property_type || 'Property'}
+              </span>
             </div>
-            {/* Content */}
-            <div className="p-1 md:p-1.5">
-              <h3 className="text-[8px] md:text-[10px] font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+            
+            {/* Price Label - Positioned prominently */}
+            <div className="absolute top-1/2 left-1 -translate-y-1/2">
+              <span className="text-[9px] md:text-xs font-bold px-1.5 py-0.5 rounded bg-primary text-primary-foreground shadow-lg">
+                {property.price >= 1000000000 
+                  ? `IDR ${(property.price / 1000000000).toFixed(1)}M` 
+                  : `IDR ${(property.price / 1000000).toFixed(0)}Jt`}
+              </span>
+            </div>
+            
+            {/* Bottom Content - All info on image */}
+            <div className="absolute bottom-0 left-0 right-0 p-1.5 md:p-2">
+              {/* Title */}
+              <h3 className="text-[9px] md:text-[11px] font-semibold text-white line-clamp-1 drop-shadow-md">
                 {property.title}
               </h3>
-              <p className="text-[7px] md:text-[8px] text-muted-foreground truncate">
-                {property.city || property.location}
+              {/* Location */}
+              <p className="text-[7px] md:text-[9px] text-white/90 truncate drop-shadow-sm">
+                📍 {property.city || property.location}
               </p>
-              <div className="flex items-center gap-1 mt-0.5 text-[6px] md:text-[7px] text-muted-foreground">
-                {property.bedrooms && <span>{property.bedrooms} Bed</span>}
-                {property.bathrooms && <span>• {property.bathrooms} Bath</span>}
-                {property.area_sqm && <span>• {property.area_sqm}m²</span>}
+              {/* Property Details */}
+              <div className="flex items-center gap-1.5 mt-0.5 text-[7px] md:text-[8px] text-white/80">
+                {property.bedrooms && (
+                  <span className="flex items-center gap-0.5">
+                    🛏️ {property.bedrooms}
+                  </span>
+                )}
+                {property.bathrooms && (
+                  <span className="flex items-center gap-0.5">
+                    🚿 {property.bathrooms}
+                  </span>
+                )}
+                {property.area_sqm && (
+                  <span className="flex items-center gap-0.5">
+                    📐 {property.area_sqm}m²
+                  </span>
+                )}
               </div>
             </div>
           </div>
