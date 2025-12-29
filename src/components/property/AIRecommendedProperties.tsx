@@ -162,55 +162,74 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      return `Rp ${(price / 1000000000).toFixed(1)}B`;
+      return `IDR ${(price / 1000000000).toFixed(1)}M`;
     }
     if (price >= 1000000) {
-      return `Rp ${(price / 1000000).toFixed(0)}M`;
+      return `IDR ${(price / 1000000).toFixed(0)}Jt`;
     }
-    return `Rp ${price.toLocaleString('id-ID')}`;
+    return `IDR ${price.toLocaleString('id-ID')}`;
   };
 
   const PropertyCard = ({ property }: { property: BaseProperty }) => (
     <div
       onClick={() => onPropertyClick(property)}
-      className="flex-shrink-0 w-[160px] md:w-[200px] cursor-pointer group/card"
+      className="flex-shrink-0 w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-xl overflow-hidden h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
     >
-      <div className="relative overflow-hidden rounded-md glass-effect shadow-sm hover:shadow-md transition-all duration-300 flex h-[56px] md:h-[64px]">
-        {/* Image */}
-        <div className="relative w-[56px] md:w-[64px] flex-shrink-0">
-          <img
-            src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-            alt={property.title}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
+      {/* Full Image Background */}
+      <img
+        src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+        alt={property.title}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+      />
+      
+      {/* Gradient Overlay - Purple tint for AI */}
+      <div className="absolute inset-0 bg-gradient-to-t from-purple-900/90 via-black/40 to-transparent" />
+      
+      {/* View Icon - Center on hover */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
+        <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+          <Eye className="h-5 w-5 md:h-6 md:w-6 text-purple-600 dark:text-purple-400" />
         </div>
-        
-        {/* Content */}
-        <div className="flex-1 p-1.5 flex flex-col justify-between min-w-0">
-          <div className="min-w-0">
-            <div className="flex items-center gap-1 mb-0.5">
-              <span className="inline-block px-1 py-0.5 bg-primary/20 text-primary text-[7px] md:text-[8px] font-medium rounded truncate">
-                {property.property_type || 'Property'}
-              </span>
-              <span className="text-[7px] md:text-[8px] text-muted-foreground">
-                {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
-              </span>
-            </div>
-            <h4 className="text-[9px] md:text-[10px] font-medium text-foreground line-clamp-1">
-              {property.title}
-            </h4>
-          </div>
-          <div className="flex items-center justify-between gap-1">
-            <div className="flex items-center gap-1 text-[8px] md:text-[9px] text-muted-foreground truncate">
-              {property.bedrooms && <span>{property.bedrooms}bd</span>}
-              {property.bathrooms && <span>{property.bathrooms}ba</span>}
-            </div>
-            <span className="text-[9px] md:text-[10px] font-bold text-primary whitespace-nowrap">
-              {formatPrice(property.price || 0)}
-            </span>
-          </div>
+      </div>
+      
+      {/* Top Labels */}
+      <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between">
+        {/* Listing Type Badge */}
+        <span className={cn(
+          "text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full text-white shadow-lg",
+          property.listing_type === 'sale' 
+            ? "bg-gradient-to-r from-green-500 to-emerald-600" 
+            : "bg-gradient-to-r from-blue-500 to-sky-600"
+        )}>
+          {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
+        </span>
+        {/* Property Type */}
+        <span className="text-[7px] md:text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[45%]">
+          {property.property_type || 'Property'}
+        </span>
+      </div>
+      
+      {/* Price Label */}
+      <div className="absolute top-1/2 left-1.5 md:left-2 -translate-y-1/2">
+        <span className="text-xs md:text-sm font-bold px-2 py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl">
+          {formatPrice(property.price || 0)}
+        </span>
+      </div>
+      
+      {/* Bottom Content */}
+      <div className="absolute bottom-0 left-0 right-0 p-2 md:p-2.5">
+        <h3 className="text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+          {property.title}
+        </h3>
+        <p className="text-[8px] md:text-[10px] text-white/95 truncate drop-shadow-md mt-0.5">
+          📍 {property.city || property.location || 'Indonesia'}
+        </p>
+        {/* Property Details */}
+        <div className="flex items-center gap-2 mt-0.5 text-[8px] md:text-[9px] text-white/90 font-medium">
+          {property.bedrooms && <span>🛏️ {property.bedrooms}</span>}
+          {property.bathrooms && <span>🚿 {property.bathrooms}</span>}
+          {property.area_sqm && <span>📐 {property.area_sqm}m²</span>}
         </div>
       </div>
     </div>
@@ -219,41 +238,38 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <div className={cn("relative glass-card rounded-lg p-1.5 md:p-2", className)}>
+    <div className={cn("relative glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-purple-50/80 via-white/60 to-violet-50/40 dark:from-purple-950/40 dark:via-gray-900/60 dark:to-violet-950/30 backdrop-blur-xl shadow-lg", className)}>
       {/* Compact Header */}
-      <div className="flex items-center justify-between mb-1 md:mb-1.5 px-1">
-        <div className="flex items-center gap-1.5">
-          <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary" />
-          <h3 className="text-[10px] md:text-sm font-bold gradient-text">AI Recommended</h3>
-          <span className="text-[8px] md:text-[10px] text-muted-foreground hidden sm:inline">
-            • {user ? 'For you' : 'Trending picks'}
-          </span>
+      <div className="flex items-center justify-between mb-1.5 md:mb-2 px-1">
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400" />
+          <h3 className="text-[10px] md:text-xs font-semibold text-foreground">AI Recommended</h3>
         </div>
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="icon"
-            className="h-5 w-5 md:h-6 md:w-6 rounded-full glass-effect border-border/50"
+            className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-white/80 dark:bg-black/50 border-purple-200/50 dark:border-purple-800/30"
             onClick={scrollLeft}
           >
-            <ChevronLeft className="h-2.5 w-2.5 md:h-3 md:w-3" />
+            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="h-5 w-5 md:h-6 md:w-6 rounded-full glass-effect border-border/50"
+            className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-white/80 dark:bg-black/50 border-purple-200/50 dark:border-purple-800/30"
             onClick={scrollRight}
           >
-            <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3" />
+            <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400" />
           </Button>
           <Button
             onClick={generateRecommendations}
             disabled={isGenerating}
             size="icon"
             variant="ghost"
-            className="h-5 w-5 md:h-6 md:w-6"
+            className="h-6 w-6 md:h-7 md:w-7"
           >
-            <RefreshCw className={cn("h-2.5 w-2.5 md:h-3 md:w-3", isGenerating && "animate-spin")} />
+            <RefreshCw className={cn("h-3 w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400", isGenerating && "animate-spin")} />
           </Button>
         </div>
       </div>
@@ -261,24 +277,24 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       {/* Two Row Grid */}
       <div className="relative">
         {isGenerating ? (
-          <div className="grid grid-rows-2 gap-1 md:gap-1.5 px-1">
+          <div className="grid grid-rows-2 gap-2 md:gap-3 px-1">
             {[0, 1].map((row) => (
-              <div key={row} className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide">
-                {[...Array(6)].map((_, i) => (
+              <div key={row} className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide">
+                {[...Array(5)].map((_, i) => (
                   <div 
                     key={i} 
-                    className="flex-shrink-0 w-[160px] md:w-[200px] h-[56px] md:h-[64px] animate-pulse bg-muted rounded-md"
+                    className="flex-shrink-0 w-[140px] md:w-[180px] h-32 md:h-40 animate-pulse bg-purple-100/50 dark:bg-purple-900/20 rounded-xl"
                   />
                 ))}
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-rows-2 gap-1 md:gap-1.5 px-1">
+          <div className="grid grid-rows-2 gap-2 md:gap-3 px-1">
             {/* Row 1 */}
             <div 
               ref={scrollRef}
-              className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide"
+              className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {recommendations.slice(0, Math.ceil(recommendations.length / 2)).map((property) => (
@@ -287,7 +303,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             </div>
             {/* Row 2 */}
             <div 
-              className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide"
+              className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {recommendations.slice(Math.ceil(recommendations.length / 2)).map((property) => (
