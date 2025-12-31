@@ -104,27 +104,27 @@ const PropertyGridView = ({
             />
             
             {/* Top Left - Sewa/Jual Badge */}
-            <div className="absolute top-1.5 left-1.5 md:top-3 md:left-3 z-10">
+            <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 md:top-3 md:left-3 z-10">
               <Badge 
                 className={`${
                   property.listing_type === 'rent' 
                     ? 'bg-blue-500 hover:bg-blue-600' 
                     : 'bg-green-500 hover:bg-green-600'
-                } text-white text-[9px] md:text-xs font-semibold rounded-md backdrop-blur-sm px-1.5 py-0.5 md:px-3 md:py-1 shadow-lg`}
+                } text-white text-[8px] sm:text-[9px] md:text-xs font-semibold rounded-md backdrop-blur-sm px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-3 md:py-1 shadow-lg`}
               >
                 {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
               </Badge>
             </div>
 
             {/* Top Right Compare Icon */}
-            <div className="absolute top-1.5 right-1.5 md:top-3 md:right-3 z-10 flex flex-col gap-1.5 md:gap-2 items-end">
+            <div className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 md:top-3 md:right-3 z-10 flex flex-col gap-1 sm:gap-1.5 md:gap-2 items-end">
               <PropertyComparisonButton 
                 property={property} 
                 variant="secondary"
                 size="sm"
               />
               <Badge 
-                className="bg-primary/90 text-primary-foreground text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-1.5 py-0.5 md:px-3 md:py-1"
+                className="bg-primary/90 text-primary-foreground text-[8px] sm:text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-3 md:py-1"
               >
                 {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
               </Badge>
@@ -159,13 +159,13 @@ const PropertyGridView = ({
             </div>
 
             {/* Bottom Left Price Overlay - Enhanced Design */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-3 md:p-4">
-              <div className="flex items-baseline gap-1.5 md:gap-2">
-                <div className="font-bold text-sm sm:text-base md:text-xl lg:text-2xl text-white leading-tight">
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 sm:p-3 md:p-4">
+              <div className="flex items-baseline gap-1 sm:gap-1.5 md:gap-2">
+                <div className="font-bold text-[11px] sm:text-sm md:text-xl lg:text-2xl text-white leading-tight">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <span className="text-white/90 text-xs md:text-sm font-medium">/bulan</span>
+                  <span className="text-white/90 text-[9px] sm:text-xs md:text-sm font-medium">/bulan</span>
                 )}
               </div>
             </div>
@@ -204,36 +204,36 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-2.5 md:p-4 flex flex-col flex-1">
+          <CardContent className="p-2 sm:p-2.5 md:p-4 flex flex-col flex-1">
             {/* Title - Now at top */}
-            <h3 className="font-semibold text-foreground line-clamp-2 text-xs md:text-base mb-1.5 md:mb-2 group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-foreground line-clamp-2 text-[10px] sm:text-xs md:text-base mb-1 sm:mb-1.5 md:mb-2 group-hover:text-primary transition-colors">
               {property.title}
             </h3>
 
             {/* Location */}
-            <div className="flex items-center gap-1 text-muted-foreground mb-1.5 md:mb-3">
-              <MapPin className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="text-[10px] md:text-sm truncate">{property.city || property.location}</span>
+            <div className="flex items-center gap-0.5 sm:gap-1 text-muted-foreground mb-1 sm:mb-1.5 md:mb-3">
+              <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="text-[9px] sm:text-[10px] md:text-sm truncate">{property.city || property.location}</span>
             </div>
 
             {/* Property Details */}
-            <div className="flex items-center gap-1.5 md:gap-3 text-[10px] md:text-sm text-muted-foreground mb-2 md:mb-4">
+            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-3 text-[9px] sm:text-[10px] md:text-sm text-muted-foreground mb-1.5 sm:mb-2 md:mb-4">
               {property.bedrooms && (
                 <div className="flex items-center gap-0.5 md:gap-1">
-                  <Bed className="h-3 w-3 md:h-4 md:w-4" />
+                  <Bed className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                   <span>{property.bedrooms}</span>
                 </div>
               )}
               {property.bathrooms && (
                 <div className="flex items-center gap-0.5 md:gap-1">
-                  <Bath className="h-3 w-3 md:h-4 md:w-4" />
+                  <Bath className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                   <span>{property.bathrooms}</span>
                 </div>
               )}
               {property.area_sqm && (
                 <>
                   <div className="flex items-center gap-0.5 md:gap-1">
-                    <Scale className="h-3 w-3 md:h-4 md:w-4" />
+                    <Scale className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                     <span className="hidden md:inline">LT: {property.area_sqm}</span>
                     <span className="md:hidden">{property.area_sqm}m²</span>
                   </div>
