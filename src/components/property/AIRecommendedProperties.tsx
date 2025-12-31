@@ -175,7 +175,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const PropertyCard = ({ property }: { property: BaseProperty }) => (
     <div
       onClick={() => onPropertyClick(property)}
-      className="flex-shrink-0 w-[120px] sm:w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
+      className="flex-shrink-0 w-[110px] sm:w-[130px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
     >
       {/* Full Image Background */}
       <img
@@ -184,48 +184,50 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
       />
-      
+
       {/* Gradient Overlay - Purple tint for AI */}
       <div className="absolute inset-0 bg-gradient-to-t from-purple-900/90 via-black/40 to-transparent" />
-      
+
       {/* View Icon - Center on hover */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-        <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
-          <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-purple-600 dark:text-purple-400" />
+        <div className="h-7 w-7 sm:h-9 sm:w-9 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+          <Eye className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5 md:h-6 md:w-6 text-purple-600 dark:text-purple-400" />
         </div>
       </div>
-      
+
       {/* Top Labels */}
       <div className="absolute top-1 left-1 right-1 sm:top-1.5 sm:left-1.5 sm:right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between">
         {/* Listing Type Badge */}
-        <span className={cn(
-          "text-[6px] sm:text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-white shadow-lg",
-          property.listing_type === 'sale' 
-            ? "bg-gradient-to-r from-green-500 to-emerald-600" 
-            : "bg-gradient-to-r from-blue-500 to-sky-600"
-        )}>
+        <span
+          className={cn(
+            "text-[6px] sm:text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-white shadow-lg",
+            property.listing_type === 'sale'
+              ? 'bg-gradient-to-r from-green-500 to-emerald-600'
+              : 'bg-gradient-to-r from-blue-500 to-sky-600'
+          )}
+        >
           {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
         </span>
         {/* Property Type */}
-        <span className="text-[5px] sm:text-[7px] md:text-[9px] font-semibold px-1 py-0.5 sm:px-1.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[45%]">
+        <span className="text-[5px] sm:text-[7px] md:text-[9px] font-semibold px-1 py-0.5 sm:px-1.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
           {property.property_type || 'Property'}
         </span>
       </div>
-      
+
       {/* Price Label */}
       <div className="absolute top-1/2 left-1 sm:left-1.5 md:left-2 -translate-y-1/2">
-        <span className="text-[8px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl">
+        <span className="text-[7px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl">
           {formatPrice(property.price || 0)}
         </span>
       </div>
-      
+
       {/* Bottom Content */}
       <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 md:p-2.5">
-        <h3 className="text-[8px] sm:text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+        <h3 className="text-[7px] sm:text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
           {property.title}
         </h3>
         <p className="text-[6px] sm:text-[8px] md:text-[10px] text-white/95 truncate drop-shadow-md mt-0.5">
-          📍 {property.city || property.location || 'Indonesia'}
+          {property.city || property.location || 'Indonesia'}
         </p>
         {/* Property Details */}
         <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 text-[6px] sm:text-[8px] md:text-[9px] text-white/90 font-medium">
@@ -237,22 +239,17 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     </div>
   );
 
-  // View All CTA Card
   const ViewAllCard = () => (
     <div
       onClick={() => navigate('/search')}
-      className="flex-shrink-0 w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-xl overflow-hidden h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 ring-1 ring-purple-300/50 dark:ring-purple-700/50"
+      className="flex-shrink-0 w-[110px] sm:w-[130px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 ring-1 ring-purple-300/50 dark:ring-purple-700/50"
     >
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
-        <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-white/20 flex items-center justify-center mb-2 group-hover/card:scale-110 transition-transform duration-300">
-          <ArrowRight className="h-6 w-6 md:h-7 md:w-7 text-white" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-3 text-center">
+        <div className="h-10 w-10 sm:h-11 sm:w-11 md:h-14 md:w-14 rounded-full bg-white/20 flex items-center justify-center mb-1.5 sm:mb-2 group-hover/card:scale-110 transition-transform duration-300">
+          <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-white" />
         </div>
-        <h3 className="text-xs md:text-sm font-bold text-white drop-shadow-lg">
-          View All
-        </h3>
-        <p className="text-[9px] md:text-[10px] text-white/90 mt-0.5">
-          Explore more properties
-        </p>
+        <h3 className="text-[10px] sm:text-xs md:text-sm font-bold text-white drop-shadow-lg">View All</h3>
+        <p className="text-[8px] sm:text-[9px] md:text-[10px] text-white/90 mt-0.5">Explore more</p>
       </div>
     </div>
   );
@@ -261,11 +258,10 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
   return (
     <div className={cn("relative glass-card rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-purple-50/80 via-white/60 to-violet-50/40 dark:from-purple-950/40 dark:via-gray-900/60 dark:to-violet-950/30 backdrop-blur-xl shadow-lg", className)}>
-      {/* Compact Header */}
       <div className="flex items-center justify-between mb-1 sm:mb-1.5 md:mb-2 px-0.5 sm:px-1">
         <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
           <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400" />
-          <h3 className="text-[8px] sm:text-[10px] md:text-xs font-semibold text-foreground">AI Recommended</h3>
+          <h3 className="text-[7px] sm:text-[10px] md:text-xs font-semibold text-foreground">AI Recommended</h3>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -291,7 +287,12 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
             variant="ghost"
             className="h-6 w-6 md:h-7 md:w-7"
           >
-            <RefreshCw className={cn("h-3 w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400", isGenerating && "animate-spin")} />
+            <RefreshCw
+              className={cn(
+                "h-3 w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400",
+                isGenerating && "animate-spin"
+              )}
+            />
           </Button>
         </div>
       </div>
