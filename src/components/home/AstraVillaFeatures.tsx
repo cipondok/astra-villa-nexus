@@ -69,11 +69,11 @@ const features: Feature[] = [{
 }];
 const AstraVillaFeatures = () => {
   return (
-    <div className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
+    <div className="glass-card rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
       {/* Section Header - Compact */}
-      <div className="mb-1.5 md:mb-2 flex items-center justify-center gap-1 md:gap-1.5">
-        <Sparkles className="h-2.5 w-2.5 md:h-3 md:w-3 text-primary" />
-        <h2 className="text-[10px] md:text-xs font-semibold text-foreground">
+      <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5">
+        <Sparkles className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 text-primary" />
+        <h2 className="text-[8px] sm:text-[10px] md:text-xs font-semibold text-foreground">
           AI Tools & Features
         </h2>
       </div>
@@ -115,24 +115,24 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
 
   return (
     <div onClick={handleClick} className="group cursor-pointer">
-      <div className="relative overflow-hidden rounded-md md:rounded-lg bg-white/50 dark:bg-white/5 border border-white/30 dark:border-white/10 p-1 md:p-1.5 h-full flex flex-col items-center text-center transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10 hover:scale-[1.02]">
-        {/* Icon Container - Compact */}
-        <div className="relative mb-0.5 md:mb-1">
-          <div className="relative w-7 h-7 md:w-9 md:h-9 flex items-center justify-center rounded-md bg-white/80 dark:bg-white/90 p-0.5">
+      <div className="relative overflow-hidden rounded-md md:rounded-lg bg-white/50 dark:bg-white/5 border border-white/30 dark:border-white/10 p-1.5 sm:p-1 md:p-1.5 h-full flex flex-col items-center text-center transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10 hover:scale-[1.02]">
+        {/* Icon Container - Bigger on mobile */}
+        <div className="relative mb-0.5 sm:mb-0.5 md:mb-1">
+          <div className="relative w-10 h-10 sm:w-8 sm:h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg sm:rounded-md bg-white/80 dark:bg-white/90 p-1 sm:p-0.5">
             <img 
               src={feature.icon} 
               alt={feature.title} 
-              className="w-5 h-5 md:w-7 md:h-7 object-contain group-hover:scale-105 transition-transform duration-200" 
+              className="w-7 h-7 sm:w-6 sm:h-6 md:w-8 md:h-8 object-contain group-hover:scale-105 transition-transform duration-200" 
             />
           </div>
           {/* AI Badge - Tiny */}
-          <div className="absolute -top-0.5 -right-0.5 w-2 h-2 md:w-2.5 md:h-2.5 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/70 shadow-sm">
-            <Sparkles className="w-1 h-1 md:w-1.5 md:h-1.5 text-white" strokeWidth={3} />
+          <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/70 shadow-sm">
+            <Sparkles className="w-1.5 h-1.5 sm:w-1 sm:h-1 md:w-1.5 md:h-1.5 text-white" strokeWidth={3} />
           </div>
         </div>
         
-        {/* Content - Minimal */}
-        <h3 className="text-[7px] md:text-[9px] font-medium text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
+        {/* Content - Smaller text on mobile */}
+        <h3 className="text-[6px] sm:text-[7px] md:text-[9px] font-medium text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {feature.title}
         </h3>
       </div>
