@@ -469,21 +469,21 @@ const Index = () => {
             <div className="mb-3 md:mb-5 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
               {/* AI Badge */}
               <div className={cn(
-                "inline-flex items-center gap-1.5 mb-2",
-                "px-3 py-1 md:px-4 md:py-1.5",
+                "inline-flex items-center gap-1 sm:gap-1.5 mb-1.5 sm:mb-2",
+                "px-2 py-0.5 sm:px-3 sm:py-1 md:px-4 md:py-1.5",
                 "bg-white/20 backdrop-blur-md",
                 "rounded-full border border-white/30"
               )}>
-                <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-white animate-pulse" />
-                <span className="text-[11px] md:text-xs font-semibold text-white drop-shadow-md">AI-Powered Search</span>
+                <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-white animate-pulse" />
+                <span className="text-[9px] sm:text-[11px] md:text-xs font-semibold text-white drop-shadow-md">AI-Powered Search</span>
               </div>
               
               {/* Title */}
-              <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight text-white drop-shadow-lg mb-1 md:mb-2">
+              <h2 className="text-base sm:text-lg md:text-3xl lg:text-4xl font-bold leading-tight text-white drop-shadow-lg mb-1 md:mb-2">
                 {t.findYour}
               </h2>
-              <p className="flex text-xs md:text-sm lg:text-base text-white/90 items-center justify-center gap-1.5 drop-shadow-md">
-                <Search className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              <p className="flex text-[10px] sm:text-xs md:text-sm lg:text-base text-white/90 items-center justify-center gap-1 sm:gap-1.5 drop-shadow-md">
+                <Search className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
                 {t.searchPowered}
               </p>
             </div>
@@ -594,15 +594,15 @@ const Index = () => {
                     />
                   </Suspense>
                   
-                  <div className="flex items-center justify-between mb-4 md:mb-6 mt-2 md:mt-4">
+                  <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6 mt-1.5 sm:mt-2 md:mt-4">
                     <div>
-                      <h2 className="text-lg md:text-2xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+                      <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                         {t.searchResults}
                       </h2>
-                      <p className="text-xs md:text-sm text-muted-foreground">
+                      <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">
                         {isSearching ? t.searching : `${searchResults.length} ${t.propertiesFound}`}
                         {quickSearch && (
-                          <span className="ml-2 text-primary font-medium">
+                          <span className="ml-1 sm:ml-2 text-primary font-medium">
                             {t.for} "{quickSearch}"
                           </span>
                         )}
