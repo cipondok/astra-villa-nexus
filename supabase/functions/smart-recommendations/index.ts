@@ -11,19 +11,68 @@ const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Authentication required - this endpoint exposes user behavior data
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ 
+        error: 'Authentication required',
+        message: 'Please sign in to access personalized recommendations.'
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Verify the user
+    const authSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(JSON.stringify({ 
+        error: 'Invalid authentication',
+        message: 'Your session has expired. Please sign in again.'
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const authenticatedUserId = user.id;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const { userId, type = 'properties', limit = 5 } = await req.json();
 
-    console.log('Smart recommendations request:', { userId, type, limit });
+    // Security: Users can only access their own data (unless admin)
+    const requestedUserId = userId || authenticatedUserId;
+    if (requestedUserId !== authenticatedUserId) {
+      // Check if user is admin
+      const { data: adminCheck } = await supabase.rpc('check_admin_access');
+      if (!adminCheck) {
+        console.warn(`Unauthorized access attempt: ${authenticatedUserId} tried to access ${requestedUserId}'s data`);
+        return new Response(JSON.stringify({ 
+          error: 'Unauthorized',
+          message: 'You can only access your own recommendations.'
+        }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    console.log('Smart recommendations request:', { userId: requestedUserId, type, limit, requestedBy: authenticatedUserId });
 
     // Get user behavior and preferences
-    const userProfile = await getUserProfile(supabase, userId);
+    const userProfile = await getUserProfile(supabase, requestedUserId);
     const recommendations = await generateRecommendations(supabase, userProfile, type, limit);
 
     return new Response(JSON.stringify({

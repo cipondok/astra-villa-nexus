@@ -12,13 +12,43 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
+// Rate limiting storage for guest users (in-memory, resets on function cold start)
+const guestRateLimits: Map<string, { count: number; resetAt: number }> = new Map();
+
+const GUEST_RATE_LIMIT = 10; // Max requests per window
+const GUEST_RATE_WINDOW = 60 * 60 * 1000; // 1 hour window
+const MAX_MESSAGE_LENGTH = 4000; // ~1000 tokens
+const GUEST_MAX_TOKENS = 500; // Reduced for guests
+
+function checkGuestRateLimit(clientIp: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const record = guestRateLimits.get(clientIp);
+  
+  if (!record || now > record.resetAt) {
+    guestRateLimits.set(clientIp, { count: 1, resetAt: now + GUEST_RATE_WINDOW });
+    return { allowed: true, remaining: GUEST_RATE_LIMIT - 1 };
+  }
+  
+  if (record.count >= GUEST_RATE_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+  
+  record.count++;
+  return { allowed: true, remaining: GUEST_RATE_LIMIT - record.count };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Optional authentication - guests can use with limited features
+    // Get client IP for rate limiting
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                     req.headers.get('cf-connecting-ip') || 
+                     'unknown';
+
+    // Authentication check
     const authHeader = req.headers.get('Authorization');
     let authenticatedUserId: string | null = null;
     
@@ -32,7 +62,28 @@ serve(async (req) => {
       }
     }
     
-    console.log('AI Assistant - authenticated user:', authenticatedUserId || 'guest');
+    const isGuest = !authenticatedUserId;
+    console.log('AI Assistant - user:', authenticatedUserId || `guest (IP: ${clientIp})`);
+
+    // Rate limiting for guest users
+    if (isGuest) {
+      const rateLimit = checkGuestRateLimit(clientIp);
+      if (!rateLimit.allowed) {
+        console.log(`Rate limit exceeded for guest IP: ${clientIp}`);
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit exceeded. Please sign in for unlimited access or try again later.',
+          retryAfter: 3600 // 1 hour
+        }), {
+          status: 429,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Retry-After': '3600'
+          },
+        });
+      }
+      console.log(`Guest rate limit: ${rateLimit.remaining} requests remaining`);
+    }
 
     // Validate LOVABLE_API_KEY is configured
     if (!lovableApiKey) {
@@ -54,7 +105,35 @@ serve(async (req) => {
       return val;
     };
     
-    const message = rawBody.message;
+    const rawMessage = rawBody.message;
+
+    // Input validation for message
+    if (!rawMessage || typeof rawMessage !== 'string') {
+      return new Response(JSON.stringify({ error: 'Invalid message format. Message must be a non-empty string.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const message = rawMessage.trim();
+    
+    if (message.length === 0) {
+      return new Response(JSON.stringify({ error: 'Message cannot be empty.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return new Response(JSON.stringify({ 
+        error: `Message too long. Maximum length is ${MAX_MESSAGE_LENGTH} characters.`,
+        maxLength: MAX_MESSAGE_LENGTH,
+        currentLength: message.length
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     // Use authenticated userId if available, otherwise fall back to body userId (for guest context)
     const userId = authenticatedUserId || sanitizeUuid(rawBody.userId);
     const propertyId = sanitizeUuid(rawBody.propertyId);
@@ -71,19 +150,21 @@ serve(async (req) => {
       .limit(1)
       .single();
 
-    // Use bot settings or defaults
+    // Use bot settings or defaults - reduce tokens for guest users
     const modelConfig = botSettings?.configuration as Record<string, any> || {};
     const modelType = botSettings?.model_type || 'google/gemini-2.5-flash';
     const temperature = modelConfig.temperature ?? 0.7;
-    const maxTokens = modelConfig.max_tokens ?? 1000;
+    const configMaxTokens = modelConfig.max_tokens ?? 1000;
+    // Guests get reduced token limit to prevent abuse
+    const maxTokens = isGuest ? Math.min(configMaxTokens, GUEST_MAX_TOKENS) : configMaxTokens;
     const systemPrompt = modelConfig.system_prompt || null;
     
-    console.log('Using AI model:', modelType, 'from bot:', botSettings?.bot_name || 'default');
+    console.log('Using AI model:', modelType, 'from bot:', botSettings?.bot_name || 'default', 'maxTokens:', maxTokens);
 
-    // Get user context and conversation history
+    // Get user context and conversation history (limited for guests)
     const [userContext, conversationHistory] = await Promise.all([
       getUserContext(supabase, userId),
-      getConversationHistory(supabase, initialConversationId, userId)
+      isGuest ? Promise.resolve([]) : getConversationHistory(supabase, initialConversationId, userId) // No history for guests
     ]);
 
     // Get property context if propertyId is provided

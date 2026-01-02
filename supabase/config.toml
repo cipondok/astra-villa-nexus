@@ -3,13 +3,13 @@ project_id = "zymrajuuyyfkzdmptebl"
 [functions]
   [functions.ai-assistant]
     verify_jwt = false
-  
+
   [functions.rental-negotiator]
     verify_jwt = false
-  
+
   [functions.neighborhood-simulator]
     verify_jwt = true
-  
+
   [functions.listing-reviver]
     verify_jwt = false
 
@@ -75,3 +75,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.track-visitor]
     verify_jwt = false
+
+  [functions.smart-recommendations]
+    verify_jwt = true
+
+  [functions.user-behavior-analyzer]
+    verify_jwt = true
