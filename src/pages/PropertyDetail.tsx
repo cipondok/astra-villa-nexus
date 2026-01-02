@@ -1000,7 +1000,7 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Similar Properties - Compact Mobile Carousel */}
+        {/* Similar Properties - Modern Compact Cards */}
         {relatedProperties.length > 0 && (
           <div className="mt-4 sm:mt-8">
             <div className="flex items-center justify-between mb-2 sm:mb-4">
@@ -1012,55 +1012,103 @@ const PropertyDetail: React.FC = () => {
               {relatedProperties.map((relatedProperty) => (
                 <Card 
                   key={relatedProperty.id}
-                  className="flex-shrink-0 w-[160px] sm:w-[220px] border-0 bg-card shadow-md cursor-pointer snap-start"
+                  className="flex-shrink-0 w-[140px] sm:w-[200px] border-0 bg-card/90 backdrop-blur-sm shadow-lg cursor-pointer snap-start rounded-xl overflow-hidden group hover:shadow-xl transition-all"
                   onClick={() => navigate(`/properties/${relatedProperty.id}`)}
                 >
-                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                  <div className="relative aspect-[4/3] overflow-hidden">
                     <img
                       src={relatedProperty.images?.[0] || "/placeholder.svg"}
                       alt={relatedProperty.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
-                  <CardContent className="p-2">
-                    <div className="text-xs sm:text-sm font-bold text-primary mb-0.5">{formatPrice(relatedProperty.price)}</div>
-                    <h4 className="font-medium text-[10px] sm:text-xs line-clamp-1 mb-1">{relatedProperty.title}</h4>
-                    <div className="flex items-center gap-2 text-[9px] sm:text-[10px] text-muted-foreground">
-                      {relatedProperty.bedrooms && <span>{relatedProperty.bedrooms} bed</span>}
-                      {relatedProperty.area_sqm && <span>{relatedProperty.area_sqm}m²</span>}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    
+                    {/* Price on image */}
+                    <div className="absolute bottom-1 left-1 right-1">
+                      <div className="text-white font-bold text-xs sm:text-sm drop-shadow-lg">
+                        {formatPrice(relatedProperty.price)}
+                      </div>
+                      <div className="flex gap-1 mt-0.5">
+                        {relatedProperty.bedrooms && (
+                          <span className="bg-white/20 backdrop-blur-sm text-white px-1 py-0.5 rounded text-[8px] sm:text-[10px] flex items-center gap-0.5">
+                            <Bed className="h-2 w-2" />{relatedProperty.bedrooms}
+                          </span>
+                        )}
+                        {relatedProperty.bathrooms && (
+                          <span className="bg-white/20 backdrop-blur-sm text-white px-1 py-0.5 rounded text-[8px] sm:text-[10px] flex items-center gap-0.5">
+                            <Bath className="h-2 w-2" />{relatedProperty.bathrooms}
+                          </span>
+                        )}
+                        {relatedProperty.area_sqm && (
+                          <span className="bg-white/20 backdrop-blur-sm text-white px-1 py-0.5 rounded text-[8px] sm:text-[10px] flex items-center gap-0.5">
+                            <Square className="h-2 w-2" />{relatedProperty.area_sqm}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </CardContent>
+                  </div>
+                  <div className="p-1.5">
+                    <h4 className="font-medium text-[10px] sm:text-xs line-clamp-1 group-hover:text-primary transition-colors">{relatedProperty.title}</h4>
+                    <div className="flex items-center gap-0.5 text-[8px] sm:text-[10px] text-muted-foreground mt-0.5">
+                      <MapPin className="h-2 w-2" />
+                      <span className="line-clamp-1">{relatedProperty.location}</span>
+                    </div>
+                  </div>
                 </Card>
               ))}
             </div>
           </div>
         )}
 
-        {/* More from Agent - Compact Mobile Carousel */}
+        {/* More from Agent - Modern Compact Cards */}
         {userMoreProperties.length > 0 && (
           <div className="mt-4 sm:mt-8">
-            <h2 className="text-sm sm:text-lg font-bold mb-2 sm:mb-4 text-foreground">
-              More from {agentInfo?.full_name || ownerInfo?.full_name || 'agent'}
-            </h2>
+            <div className="flex items-center justify-between mb-2 sm:mb-4">
+              <h2 className="text-sm sm:text-lg font-bold text-foreground flex items-center gap-1.5">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                </div>
+                More from {agentInfo?.full_name || ownerInfo?.full_name || 'Agent'}
+              </h2>
+            </div>
             
             <div ref={moreFromAgentRef} className="flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
               {userMoreProperties.map((userProperty) => (
                 <Card 
                   key={userProperty.id} 
-                  className="flex-shrink-0 w-[140px] sm:w-[180px] border-0 bg-card shadow-md cursor-pointer snap-start"
+                  className="flex-shrink-0 w-[130px] sm:w-[180px] border-0 bg-card/90 backdrop-blur-sm shadow-lg cursor-pointer snap-start rounded-xl overflow-hidden group hover:shadow-xl transition-all"
                   onClick={() => navigate(`/properties/${userProperty.id}`)}
                 >
-                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                  <div className="relative aspect-[4/3] overflow-hidden">
                     <img
                       src={userProperty.images?.[0] || "/placeholder.svg"}
                       alt={userProperty.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    
+                    {/* Price overlay */}
+                    <div className="absolute bottom-1 left-1 right-1">
+                      <div className="text-white font-bold text-xs sm:text-sm drop-shadow-lg">
+                        {formatPrice(userProperty.price)}
+                      </div>
+                      <div className="flex gap-1 mt-0.5">
+                        {userProperty.bedrooms && (
+                          <span className="bg-white/20 backdrop-blur-sm text-white px-1 py-0.5 rounded text-[8px] sm:text-[10px] flex items-center gap-0.5">
+                            <Bed className="h-2 w-2" />{userProperty.bedrooms}
+                          </span>
+                        )}
+                        {userProperty.area_sqm && (
+                          <span className="bg-white/20 backdrop-blur-sm text-white px-1 py-0.5 rounded text-[8px] sm:text-[10px] flex items-center gap-0.5">
+                            <Square className="h-2 w-2" />{userProperty.area_sqm}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <CardContent className="p-1.5">
-                    <h3 className="font-medium line-clamp-1 text-[10px] sm:text-xs mb-0.5">{userProperty.title}</h3>
-                    <div className="font-bold text-primary text-[10px] sm:text-xs">{formatPrice(userProperty.price)}</div>
-                  </CardContent>
+                  <div className="p-1.5">
+                    <h3 className="font-medium line-clamp-1 text-[10px] sm:text-xs group-hover:text-primary transition-colors">{userProperty.title}</h3>
+                  </div>
                 </Card>
               ))}
             </div>
