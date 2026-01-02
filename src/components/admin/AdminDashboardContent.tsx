@@ -52,7 +52,7 @@ import ErrorMonitoringDashboard from "./ErrorMonitoringDashboard";
 import UserExperienceTips from "./UserExperienceTips";
 import { AlgorithmDashboard } from "./AlgorithmDashboard";
 import { AdminNotificationsCenter } from "./AdminNotificationsCenter";
-import ProjectProgressReport from "./ProjectProgressReport";
+import LaunchReadinessDashboard from "./LaunchReadinessDashboard";
 import { AIFeedbackAnalytics } from "./AIFeedbackAnalytics";
 import HomepageSliderSettings from "./HomepageSliderSettings";
 import CarouselSettingsManager from "./CarouselSettingsManager";
@@ -77,7 +77,8 @@ interface AdminDashboardContentProps {
 const sectionLabels: Record<string, { label: string; category: string }> = {
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
-  "project-progress": { label: "Progress Report", category: "System" },
+  "project-progress": { label: "Launch Readiness", category: "System" },
+  "launch-readiness": { label: "Launch Readiness", category: "System" },
   "user-management": { label: "User Management", category: "Core Management" },
   "user-levels": { label: "User Levels", category: "Core Management" },
   "verification-management": { label: "Verification", category: "Core Management" },
@@ -163,7 +164,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "diagnostic":
         return <ProjectDiagnosticSystem />;
       case "project-progress":
-        return <ProjectProgressReport />;
+      case "launch-readiness":
+        return <LaunchReadinessDashboard onSectionChange={onSectionChange} />;
       case "user-management":
         return <EnhancedUserManagement />;
       case "user-levels":
