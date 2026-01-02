@@ -124,30 +124,37 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   service,
   onClick
 }) => {
-  return <div onClick={onClick} className="group cursor-pointer active:scale-95 transition-transform">
-      <div className="relative overflow-hidden rounded-lg bg-card border border-border/40 p-1 md:p-3 h-full flex flex-col items-center text-center hover:border-primary/30">
-        {/* Icon */}
-        <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg ${service.bgColor} flex items-center justify-center mb-1 md:mb-2`}>
-          <div className={service.iconColor}>
-            {React.cloneElement(service.icon as React.ReactElement, {
-            className: 'w-4 h-4 md:w-6 md:h-6'
-          })}
+  return (
+    <div onClick={onClick} className="group cursor-pointer relative active:scale-95 transition-transform">
+      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/15 dark:to-primary/10 border border-primary/20 dark:border-primary/30 p-2 sm:p-2 md:p-2.5 h-full flex flex-col items-center text-center transition-all duration-300 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 dark:hover:from-primary/15 dark:hover:via-primary/20 dark:hover:to-primary/15 hover:scale-[1.03] hover:shadow-md hover:shadow-primary/10">
+        {/* Icon Container - Clean white background */}
+        <div className="relative">
+          <div className="w-12 h-12 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl bg-white dark:bg-white shadow-sm border border-primary/10 flex items-center justify-center">
+            <div className="text-primary">
+              {React.cloneElement(service.icon as React.ReactElement, {
+                className: 'w-7 h-7 sm:w-6 sm:h-6 md:w-6 md:h-6'
+              })}
+            </div>
+          </div>
+          {/* Vendor Count Badge */}
+          <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 shadow-sm border-2 border-white dark:border-white">
+            <span className="text-[6px] sm:text-[5px] md:text-[6px] font-bold text-white">{service.vendorCount > 9 ? '9+' : service.vendorCount}</span>
           </div>
         </div>
 
-        {/* Title */}
-        <h3 className="text-[9px] md:text-xs font-medium text-foreground leading-tight text-center line-clamp-2 w-full px-0.5">
+        {/* Title - Hidden on mobile, visible on tablet+ */}
+        <h3 className="hidden sm:block mt-1 text-[8px] md:text-[10px] font-semibold text-primary/80 dark:text-primary leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {service.title}
         </h3>
-        
-        {/* Vendor Count - Desktop only */}
-        <div className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-primary/10 mt-1">
-          <Store className="w-2.5 h-2.5 text-primary" />
-          <span className="text-[10px] font-medium text-primary">
-            {service.vendorCount}+
-          </span>
+      </div>
+      
+      {/* Mobile Tooltip - Shows on hover/touch */}
+      <div className="sm:hidden absolute left-1/2 -translate-x-1/2 -bottom-8 z-50 opacity-0 group-hover:opacity-100 group-active:opacity-100 pointer-events-none transition-opacity duration-200">
+        <div className="bg-primary text-white text-[10px] font-semibold px-2.5 py-1 rounded-lg whitespace-nowrap shadow-lg">
+          {service.title}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default MarketplaceServices;
