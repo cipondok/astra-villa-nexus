@@ -175,7 +175,7 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[128px] sm:w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
+              className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] cursor-pointer group/card relative rounded-xl overflow-hidden h-36 sm:h-40 md:h-48 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
             >
               {/* Full Image Background */}
               <img
@@ -198,26 +198,26 @@ export default function FeaturedAdsCarousel() {
               {/* Top Labels */}
               <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between gap-1">
                 {/* Featured Badge */}
-                <span className="text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
+                <span className="text-[10px] sm:text-xs md:text-sm font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
                   ⭐ Featured
                 </span>
-                {/* Property Type (hide on very small screens to avoid overlap) */}
-                <span className="hidden sm:inline-flex text-[7px] md:text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
+                {/* Property Type */}
+                <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-1.5 py-0.5 sm:px-2 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
                   {p.property_type}
                 </span>
               </div>
 
-              {/* Bottom Content (includes price to avoid mid-overlay collisions on mobile) */}
-              <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 md:p-2.5">
+              {/* Bottom Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
                 <div className="flex items-end justify-between gap-1">
-                  <span className="text-[9px] sm:text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded-md bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-xl">
+                  <span className="text-[11px] sm:text-xs md:text-sm font-bold px-2 py-0.5 sm:py-1 rounded-md bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-xl">
                     IDR {(p.price / 1000000).toFixed(0)}Jt
                   </span>
-                  <span className="text-[7px] sm:text-[8px] md:text-[10px] text-white/90 truncate max-w-[55%] drop-shadow-md">
-                    {p.city || p.state || 'Indonesia'}
+                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate max-w-[55%] drop-shadow-md">
+                    📍 {p.city || p.state || 'Indonesia'}
                   </span>
                 </div>
-                <h3 className="mt-0.5 text-[10px] sm:text-[11px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+                <h3 className="mt-0.5 text-[11px] sm:text-xs md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
                   {p.title}
                 </h3>
               </div>
