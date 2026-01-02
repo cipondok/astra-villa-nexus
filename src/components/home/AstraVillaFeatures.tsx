@@ -114,27 +114,34 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
   };
 
   return (
-    <div onClick={handleClick} className="group cursor-pointer">
-      <div className="relative overflow-hidden rounded-md md:rounded-lg bg-white/50 dark:bg-white/5 border border-white/30 dark:border-white/10 p-1.5 sm:p-1 md:p-1.5 h-full flex flex-col items-center text-center transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10 hover:scale-[1.02]">
-        {/* Icon Container - Bigger on mobile */}
-        <div className="relative mb-0.5 sm:mb-0.5 md:mb-1">
-          <div className="relative w-11 h-11 sm:w-9 sm:h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg sm:rounded-md bg-white/80 dark:bg-white/90 p-1">
+    <div onClick={handleClick} className="group cursor-pointer relative">
+      <div className="relative overflow-hidden rounded-md md:rounded-lg bg-white/50 dark:bg-white/5 border border-white/30 dark:border-white/10 p-1.5 sm:p-1.5 md:p-1.5 h-full flex flex-col items-center text-center transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10 hover:scale-[1.02]">
+        {/* Icon Container */}
+        <div className="relative">
+          <div className="relative w-10 h-10 sm:w-9 sm:h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg sm:rounded-md bg-white/80 dark:bg-white/90 p-1">
             <img
               src={feature.icon}
               alt={feature.title}
-              className="w-8 h-8 sm:w-7 sm:h-7 md:w-8 md:h-8 object-contain group-hover:scale-105 transition-transform duration-200"
+              className="w-7 h-7 sm:w-7 sm:h-7 md:w-8 md:h-8 object-contain group-hover:scale-105 transition-transform duration-200"
             />
           </div>
-          {/* AI Badge - Tiny */}
+          {/* AI Badge */}
           <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/70 shadow-sm">
             <Sparkles className="w-1.5 h-1.5 sm:w-1 sm:h-1 md:w-1.5 md:h-1.5 text-white" strokeWidth={3} />
           </div>
         </div>
 
-        {/* Content - Smaller text on mobile */}
-        <h3 className="text-[5px] sm:text-[7px] md:text-[9px] font-medium text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
+        {/* Title - Hidden on mobile, visible on hover via tooltip or on tablet+ */}
+        <h3 className="hidden sm:block mt-0.5 text-[7px] md:text-[9px] font-medium text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {feature.title}
         </h3>
+      </div>
+      
+      {/* Mobile Tooltip - Shows on hover/touch */}
+      <div className="sm:hidden absolute left-1/2 -translate-x-1/2 -bottom-6 z-50 opacity-0 group-hover:opacity-100 group-active:opacity-100 pointer-events-none transition-opacity duration-200">
+        <div className="bg-foreground text-background text-[8px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap shadow-lg">
+          {feature.title}
+        </div>
       </div>
     </div>
   );
