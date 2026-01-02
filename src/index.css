@@ -270,38 +270,92 @@ body.scroll-locked {
     box-shadow: 0 4px 24px rgba(255, 215, 0, 0.15);
   }
 
-  /* Global modal styling (one place to control all popups) */
+  /* Global modal styling (one place to control all popups) - GLASSY STYLE */
   .modal-overlay {
     /* Change this single variable to update overlay opacity everywhere */
-    --modal-overlay-opacity: 0.70;
-    background: hsl(0 0% 0% / var(--modal-overlay-opacity));
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    --modal-overlay-opacity: 0.50;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.08) 0%,
+      hsl(0 0% 0% / var(--modal-overlay-opacity)) 50%,
+      hsl(var(--primary) / 0.05) 100%
+    );
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
   }
 
   .modal-surface {
     /* Change this single variable to update popup background opacity everywhere */
-    --modal-surface-opacity: 0.72;
-    background: hsl(var(--background) / var(--modal-surface-opacity));
-    border: 1px solid hsl(var(--border) / 0.55);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 12px 40px hsl(var(--foreground) / 0.10), 0 2px 10px hsl(var(--foreground) / 0.06);
+    --modal-surface-opacity: 0.65;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--background) / 0.85) 0%,
+      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
+      hsl(var(--background) / 0.75) 100%
+    );
+    border: 1px solid hsl(var(--primary) / 0.15);
+    border-top: 1px solid hsl(var(--background) / 0.8);
+    border-left: 1px solid hsl(var(--background) / 0.6);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: 
+      0 20px 50px hsl(var(--foreground) / 0.15),
+      0 8px 20px hsl(var(--foreground) / 0.08),
+      inset 0 1px 1px hsl(var(--background) / 0.5),
+      0 0 0 1px hsl(var(--primary) / 0.05);
+  }
+
+  .dark .modal-surface {
+    --modal-surface-opacity: 0.60;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--background) / 0.80) 0%,
+      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
+      hsl(var(--background) / 0.70) 100%
+    );
+    border: 1px solid hsl(var(--primary) / 0.20);
+    border-top: 1px solid hsl(var(--background) / 0.5);
+    border-left: 1px solid hsl(var(--background) / 0.4);
+    box-shadow: 
+      0 20px 50px hsl(0 0% 0% / 0.4),
+      0 8px 20px hsl(0 0% 0% / 0.25),
+      inset 0 1px 1px hsl(var(--background) / 0.3),
+      0 0 40px hsl(var(--primary) / 0.08);
   }
 
   .glass-popup {
     /* Back-compat: same as modal-surface */
-    --modal-surface-opacity: 0.72;
-    background: hsl(var(--background) / var(--modal-surface-opacity));
-    border: 1px solid hsl(var(--border) / 0.55);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 12px 40px hsl(var(--foreground) / 0.10), 0 2px 10px hsl(var(--foreground) / 0.06);
+    --modal-surface-opacity: 0.65;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--background) / 0.85) 0%,
+      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
+      hsl(var(--background) / 0.75) 100%
+    );
+    border: 1px solid hsl(var(--primary) / 0.15);
+    border-top: 1px solid hsl(var(--background) / 0.8);
+    border-left: 1px solid hsl(var(--background) / 0.6);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: 
+      0 20px 50px hsl(var(--foreground) / 0.15),
+      0 8px 20px hsl(var(--foreground) / 0.08),
+      inset 0 1px 1px hsl(var(--background) / 0.5);
   }
 
   .dark .glass-popup {
-    background: hsl(var(--background) / var(--modal-surface-opacity));
-    border: 1px solid hsl(var(--border) / 0.45);
+    --modal-surface-opacity: 0.60;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--background) / 0.80) 0%,
+      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
+      hsl(var(--background) / 0.70) 100%
+    );
+    border: 1px solid hsl(var(--primary) / 0.20);
+    box-shadow: 
+      0 20px 50px hsl(0 0% 0% / 0.4),
+      0 8px 20px hsl(0 0% 0% / 0.25),
+      inset 0 1px 1px hsl(var(--background) / 0.3);
   }
 
   .card-hover {
