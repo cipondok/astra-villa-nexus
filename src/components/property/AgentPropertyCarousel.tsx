@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { User, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import ModernPropertyCard from "@/components/property/ModernPropertyCard";
 
 interface AgentPropertyCarouselProps {
   currentPropertyId: string;
@@ -104,9 +104,9 @@ const AgentPropertyCarousel = ({
         </CardHeader>
         <CardContent className="p-2 sm:p-3 md:p-6">
           {properties.length <= 3 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
               {properties.map((property) => (
-                <CompactPropertyCard
+                <ModernPropertyCard
                   key={property.id}
                   property={property}
                   language="en"
@@ -122,7 +122,7 @@ const AgentPropertyCarousel = ({
               <CarouselContent className="-ml-1.5 sm:-ml-2">
                 {properties.map((property) => (
                   <CarouselItem key={property.id} className="pl-1.5 sm:pl-2 basis-1/2 sm:basis-1/3 lg:basis-1/4">
-                    <CompactPropertyCard
+                    <ModernPropertyCard
                       property={property}
                       language="en"
                       isSaved={false}

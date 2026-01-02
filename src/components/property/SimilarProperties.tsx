@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Home, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import ModernPropertyCard from "@/components/property/ModernPropertyCard";
 
 interface SimilarPropertiesProps {
   currentProperty: {
@@ -171,9 +171,9 @@ const SimilarProperties = ({ currentProperty, limit = 6 }: SimilarPropertiesProp
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2 sm:p-3 md:p-6">
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
           {similarProperties.map((property) => (
-            <CompactPropertyCard
+            <ModernPropertyCard
               key={property.id}
               property={property}
               language="en"
