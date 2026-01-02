@@ -9,9 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { useAlert } from "@/contexts/AlertContext";
-import { Crown, Edit, Plus, Trash2, Shield, Star, Gem, Award, Users, Sparkles } from "lucide-react";
-import { MEMBERSHIP_LEVELS, getMembershipFromUserLevel } from "@/types/membership";
+import { 
+  Crown, Edit, Plus, Trash2, Shield, Star, Gem, Award, Users, Sparkles,
+  Building, ListChecks, Zap, HeadphonesIcon, TrendingUp, Check
+} from "lucide-react";
+import { MEMBERSHIP_LEVELS, getMembershipFromUserLevel, type MembershipLevel } from "@/types/membership";
 
 interface UserLevel {
   id: string;
@@ -26,15 +31,16 @@ interface UserLevel {
   updated_at: string;
 }
 
-const getLevelIcon = (levelName: string) => {
+const getLevelIcon = (levelName: string, size: 'sm' | 'md' | 'lg' = 'sm') => {
   const membership = getMembershipFromUserLevel(levelName);
+  const sizeClass = size === 'lg' ? 'h-5 w-5' : size === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5';
   switch (membership) {
-    case 'diamond': return <Gem className="h-3.5 w-3.5 text-sky-500" />;
-    case 'platinum': return <Sparkles className="h-3.5 w-3.5 text-cyan-500" />;
-    case 'gold': return <Crown className="h-3.5 w-3.5 text-yellow-500" />;
-    case 'vip': return <Star className="h-3.5 w-3.5 text-purple-500" />;
-    case 'verified': return <Shield className="h-3.5 w-3.5 text-blue-500" />;
-    default: return <Users className="h-3.5 w-3.5 text-muted-foreground" />;
+    case 'diamond': return <Gem className={`${sizeClass} text-sky-500`} />;
+    case 'platinum': return <Sparkles className={`${sizeClass} text-cyan-500`} />;
+    case 'gold': return <Crown className={`${sizeClass} text-yellow-500`} />;
+    case 'vip': return <Star className={`${sizeClass} text-purple-500`} />;
+    case 'verified': return <Shield className={`${sizeClass} text-blue-500`} />;
+    default: return <Users className={`${sizeClass} text-muted-foreground`} />;
   }
 };
 
@@ -59,19 +65,21 @@ const UserLevelManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
+  // Fetch levels
   const { data: levels, isLoading } = useQuery({
     queryKey: ['user-levels'],
     queryFn: async (): Promise<UserLevel[]> => {
       const { data, error } = await supabase
         .from('user_levels')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: true });
       
       if (error) throw error;
       return data || [];
     },
   });
 
+  // Fetch user counts per level
   const { data: userCounts } = useQuery({
     queryKey: ['user-level-counts'],
     queryFn: async () => {
@@ -82,12 +90,14 @@ const UserLevelManagement = () => {
       if (error) throw error;
       
       const counts: Record<string, number> = {};
+      let totalWithLevel = 0;
       data?.forEach(p => {
         if (p.user_level_id) {
           counts[p.user_level_id] = (counts[p.user_level_id] || 0) + 1;
+          totalWithLevel++;
         }
       });
-      return counts;
+      return { counts, totalUsers: data?.length || 0, totalWithLevel };
     },
   });
 
@@ -151,6 +161,7 @@ const UserLevelManagement = () => {
     onSuccess: () => {
       showSuccess("Level Deleted", "User level deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ['user-levels'] });
+      queryClient.invalidateQueries({ queryKey: ['user-level-counts'] });
     },
     onError: (error: any) => {
       showError("Delete Failed", error.message);
@@ -172,23 +183,29 @@ const UserLevelManagement = () => {
     });
   };
 
+  // Calculate stats
+  const totalLevels = levels?.length || 0;
+  const totalUsersWithLevel = userCounts?.totalWithLevel || 0;
+  const totalUsers = userCounts?.totalUsers || 0;
+  const assignmentRate = totalUsers > 0 ? Math.round((totalUsersWithLevel / totalUsers) * 100) : 0;
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <h3 className="text-sm font-semibold flex items-center gap-1.5">
-            <Crown className="h-4 w-4 text-yellow-500" />
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <Crown className="h-5 w-5 text-yellow-500" />
             User Levels & Membership
           </h3>
-          <p className="text-xs text-muted-foreground truncate">
-            Manage membership tiers and privileges
+          <p className="text-xs text-muted-foreground">
+            Manage membership tiers, privileges, and limits
           </p>
         </div>
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="h-7 text-xs gap-1">
-              <Plus className="h-3 w-3" />
+            <Button size="sm" className="h-8 text-xs gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
               Add Level
             </Button>
           </DialogTrigger>
@@ -203,7 +220,7 @@ const UserLevelManagement = () => {
                   value={newLevel.name}
                   onChange={(e) => setNewLevel(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="e.g., Gold, VIP, Diamond"
-                  className="h-8 text-sm"
+                  className="h-8 text-xs mt-1"
                 />
               </div>
               <div>
@@ -212,7 +229,7 @@ const UserLevelManagement = () => {
                   value={newLevel.description}
                   onChange={(e) => setNewLevel(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Level benefits description"
-                  className="text-sm min-h-[60px]"
+                  className="text-xs min-h-[60px] mt-1"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -222,7 +239,7 @@ const UserLevelManagement = () => {
                     type="number"
                     value={newLevel.max_properties}
                     onChange={(e) => setNewLevel(prev => ({ ...prev, max_properties: parseInt(e.target.value) || 0 }))}
-                    className="h-8 text-sm"
+                    className="h-8 text-xs mt-1"
                   />
                 </div>
                 <div>
@@ -231,19 +248,25 @@ const UserLevelManagement = () => {
                     type="number"
                     value={newLevel.max_listings}
                     onChange={(e) => setNewLevel(prev => ({ ...prev, max_listings: parseInt(e.target.value) || 0 }))}
-                    className="h-8 text-sm"
+                    className="h-8 text-xs mt-1"
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between py-1">
-                <Label className="text-xs">Can Feature Listings</Label>
+              <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5 text-yellow-500" />
+                  <Label className="text-xs">Can Feature Listings</Label>
+                </div>
                 <Switch
                   checked={newLevel.can_feature_listings}
                   onCheckedChange={(checked) => setNewLevel(prev => ({ ...prev, can_feature_listings: checked }))}
                 />
               </div>
-              <div className="flex items-center justify-between py-1">
-                <Label className="text-xs">Priority Support</Label>
+              <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <HeadphonesIcon className="h-3.5 w-3.5 text-green-500" />
+                  <Label className="text-xs">Priority Support</Label>
+                </div>
                 <Switch
                   checked={newLevel.priority_support}
                   onCheckedChange={(checked) => setNewLevel(prev => ({ ...prev, priority_support: checked }))}
@@ -272,112 +295,219 @@ const UserLevelManagement = () => {
         </Dialog>
       </div>
 
-      {/* Stats Cards */}
+      {/* Overview Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        {Object.entries(MEMBERSHIP_LEVELS).slice(0, 4).map(([key, config]) => (
-          <Card key={key} className="p-2">
-            <div className="flex items-center gap-1.5">
-              <span className="text-base">{config.icon}</span>
-              <div>
-                <p className="text-[10px] text-muted-foreground">{config.shortLabel}</p>
-                <p className="text-sm font-semibold">
-                  {levels?.filter(l => getMembershipFromUserLevel(l.name) === key).length || 0}
-                </p>
-              </div>
+        <Card className="p-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Crown className="h-4 w-4 text-primary" />
             </div>
-          </Card>
-        ))}
+            <div>
+              <p className="text-[10px] text-muted-foreground">Total Levels</p>
+              <p className="text-lg font-bold">{totalLevels}</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-green-500/10">
+              <Users className="h-4 w-4 text-green-500" />
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground">Users Assigned</p>
+              <p className="text-lg font-bold">{totalUsersWithLevel}</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-blue-500/10">
+              <TrendingUp className="h-4 w-4 text-blue-500" />
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground">Assignment Rate</p>
+              <p className="text-lg font-bold">{assignmentRate}%</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-purple-500/10">
+              <Award className="h-4 w-4 text-purple-500" />
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground">Unassigned</p>
+              <p className="text-lg font-bold">{totalUsers - totalUsersWithLevel}</p>
+            </div>
+          </div>
+        </Card>
       </div>
 
-      {/* Levels List */}
+      {/* Membership Tiers Visual */}
       <Card>
-        <CardHeader className="py-2 px-3">
-          <CardTitle className="text-xs font-medium">Configured Levels</CardTitle>
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-cyan-500" />
+            Membership Tier System
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+            {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
+              <div 
+                key={key}
+                className={`p-3 rounded-lg border text-center transition-all hover:scale-105 ${config.bgColor} ${config.borderColor} ${config.glowColor ? `shadow-lg ${config.glowColor}` : ''}`}
+              >
+                <div className="text-2xl mb-1">{config.icon}</div>
+                <p className={`text-xs font-semibold ${config.color}`}>{config.shortLabel}</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Priority: {config.priority}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Configured Levels */}
+      <Card>
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="text-sm font-medium flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <ListChecks className="h-4 w-4 text-blue-500" />
+              Configured Levels ({levels?.length || 0})
+            </span>
+          </CardTitle>
         </CardHeader>
         <CardContent className="p-2">
           {isLoading ? (
-            <div className="text-center py-4 text-xs text-muted-foreground">Loading levels...</div>
+            <div className="text-center py-6 text-xs text-muted-foreground">Loading levels...</div>
           ) : levels?.length === 0 ? (
-            <div className="text-center py-4 text-xs text-muted-foreground">
-              No levels configured. Create your first membership level.
+            <div className="text-center py-6">
+              <Crown className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+              <p className="text-xs text-muted-foreground">No levels configured yet.</p>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="mt-2 h-7 text-xs"
+                onClick={() => setIsCreateModalOpen(true)}
+              >
+                Create First Level
+              </Button>
             </div>
           ) : (
-            <div className="space-y-2">
-              {levels?.map((level) => (
-                <div 
-                  key={level.id} 
-                  className="flex items-center justify-between p-2 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <div className={`p-1.5 rounded-md ${getLevelBadgeStyle(level.name)}`}>
-                      {getLevelIcon(level.name)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-medium truncate">{level.name}</span>
-                        <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
-                          {userCounts?.[level.id] || 0} users
-                        </Badge>
+            <ScrollArea className="h-[300px]">
+              <div className="space-y-2 pr-2">
+                {levels?.map((level) => {
+                  const usersInLevel = userCounts?.counts[level.id] || 0;
+                  const membership = getMembershipFromUserLevel(level.name);
+                  const tierConfig = MEMBERSHIP_LEVELS[membership];
+                  
+                  return (
+                    <div 
+                      key={level.id} 
+                      className={`p-3 rounded-lg border transition-all hover:shadow-md ${tierConfig.bgColor} ${tierConfig.borderColor}`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                          <div className={`p-2 rounded-lg ${tierConfig.bgColor} border ${tierConfig.borderColor}`}>
+                            {getLevelIcon(level.name, 'md')}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className={`text-sm font-semibold ${tierConfig.color}`}>
+                                {level.name}
+                              </span>
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                                {usersInLevel} users
+                              </Badge>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">
+                              {level.description || 'No description'}
+                            </p>
+                            
+                            {/* Level Stats */}
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                <Building className="h-3 w-3" />
+                                <span>{level.max_properties} properties</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                <ListChecks className="h-3 w-3" />
+                                <span>{level.max_listings} listings</span>
+                              </div>
+                              {level.can_feature_listings && (
+                                <Badge className="text-[9px] px-1 py-0 h-4 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                  <Zap className="h-2.5 w-2.5 mr-0.5" />
+                                  Featured
+                                </Badge>
+                              )}
+                              {level.priority_support && (
+                                <Badge className="text-[9px] px-1 py-0 h-4 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                  <HeadphonesIcon className="h-2.5 w-2.5 mr-0.5" />
+                                  Priority
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Actions */}
+                        <div className="flex items-center gap-1">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-7 w-7"
+                            onClick={() => setEditingLevel(level)}
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-7 w-7 text-destructive hover:text-destructive"
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this level?')) {
+                                deleteLevelMutation.mutate(level.id);
+                              }
+                            }}
+                            disabled={deleteLevelMutation.isPending || usersInLevel > 0}
+                            title={usersInLevel > 0 ? 'Cannot delete: users assigned' : 'Delete level'}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       </div>
-                      <p className="text-[10px] text-muted-foreground truncate">
-                        {level.max_properties} props • {level.max_listings} listings
-                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {level.can_feature_listings && (
-                      <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 hidden sm:flex">
-                        Featured
-                      </Badge>
-                    )}
-                    {level.priority_support && (
-                      <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 hidden sm:flex">
-                        Priority
-                      </Badge>
-                    )}
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6"
-                      onClick={() => setEditingLevel(level)}
-                    >
-                      <Edit className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6 text-destructive hover:text-destructive"
-                      onClick={() => deleteLevelMutation.mutate(level.id)}
-                      disabled={deleteLevelMutation.isPending}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           )}
         </CardContent>
       </Card>
 
-      {/* Membership Tiers Reference */}
+      {/* Benefits Reference */}
       <Card>
-        <CardHeader className="py-2 px-3">
-          <CardTitle className="text-xs font-medium">Membership Tiers Reference</CardTitle>
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="text-sm font-medium">Tier Benefits Reference</CardTitle>
         </CardHeader>
-        <CardContent className="p-2">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        <CardContent className="p-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {Object.entries(MEMBERSHIP_LEVELS).map(([key, config]) => (
               <div 
                 key={key}
-                className={`p-2 rounded-lg border ${config.bgColor} ${config.borderColor}`}
+                className={`p-2.5 rounded-lg border ${config.bgColor} ${config.borderColor}`}
               >
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-sm">{config.icon}</span>
-                  <span className={`text-xs font-medium ${config.color}`}>{config.label}</span>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-lg">{config.icon}</span>
+                  <span className={`text-xs font-semibold ${config.color}`}>{config.label}</span>
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  {config.benefits.slice(0, 2).join(' • ')}
+                <div className="space-y-1">
+                  {config.benefits.slice(0, 3).map((benefit, idx) => (
+                    <div key={idx} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                      <Check className="h-2.5 w-2.5 text-green-500" />
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -391,7 +521,7 @@ const UserLevelManagement = () => {
           <DialogContent className="max-w-md">
             <DialogHeader className="pb-2">
               <DialogTitle className="text-sm flex items-center gap-2">
-                {getLevelIcon(editingLevel.name)}
+                {getLevelIcon(editingLevel.name, 'md')}
                 Edit {editingLevel.name}
               </DialogTitle>
             </DialogHeader>
@@ -401,7 +531,7 @@ const UserLevelManagement = () => {
                 <Input
                   value={editingLevel.name}
                   onChange={(e) => setEditingLevel(prev => prev ? ({ ...prev, name: e.target.value }) : null)}
-                  className="h-8 text-sm"
+                  className="h-8 text-xs mt-1"
                 />
               </div>
               <div>
@@ -409,7 +539,7 @@ const UserLevelManagement = () => {
                 <Textarea
                   value={editingLevel.description || ''}
                   onChange={(e) => setEditingLevel(prev => prev ? ({ ...prev, description: e.target.value }) : null)}
-                  className="text-sm min-h-[60px]"
+                  className="text-xs min-h-[60px] mt-1"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -419,7 +549,7 @@ const UserLevelManagement = () => {
                     type="number"
                     value={editingLevel.max_properties}
                     onChange={(e) => setEditingLevel(prev => prev ? ({ ...prev, max_properties: parseInt(e.target.value) || 0 }) : null)}
-                    className="h-8 text-sm"
+                    className="h-8 text-xs mt-1"
                   />
                 </div>
                 <div>
@@ -428,19 +558,25 @@ const UserLevelManagement = () => {
                     type="number"
                     value={editingLevel.max_listings}
                     onChange={(e) => setEditingLevel(prev => prev ? ({ ...prev, max_listings: parseInt(e.target.value) || 0 }) : null)}
-                    className="h-8 text-sm"
+                    className="h-8 text-xs mt-1"
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between py-1">
-                <Label className="text-xs">Can Feature Listings</Label>
+              <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5 text-yellow-500" />
+                  <Label className="text-xs">Can Feature Listings</Label>
+                </div>
                 <Switch
                   checked={editingLevel.can_feature_listings}
                   onCheckedChange={(checked) => setEditingLevel(prev => prev ? ({ ...prev, can_feature_listings: checked }) : null)}
                 />
               </div>
-              <div className="flex items-center justify-between py-1">
-                <Label className="text-xs">Priority Support</Label>
+              <div className="flex items-center justify-between py-1.5 px-2 rounded-md bg-muted/50">
+                <div className="flex items-center gap-2">
+                  <HeadphonesIcon className="h-3.5 w-3.5 text-green-500" />
+                  <Label className="text-xs">Priority Support</Label>
+                </div>
                 <Switch
                   checked={editingLevel.priority_support}
                   onCheckedChange={(checked) => setEditingLevel(prev => prev ? ({ ...prev, priority_support: checked }) : null)}
@@ -453,7 +589,7 @@ const UserLevelManagement = () => {
                   size="sm"
                   className="flex-1 h-8 text-xs"
                 >
-                  {updateLevelMutation.isPending ? 'Updating...' : 'Update Level'}
+                  {updateLevelMutation.isPending ? 'Saving...' : 'Save Changes'}
                 </Button>
                 <Button 
                   variant="outline" 
