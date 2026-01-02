@@ -175,7 +175,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const PropertyCard = ({ property }: { property: BaseProperty }) => (
     <div
       onClick={() => onPropertyClick(property)}
-      className="flex-shrink-0 w-[120px] sm:w-[140px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-32 sm:h-36 md:h-44 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
+      className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-40 sm:h-44 md:h-52 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
     >
       {/* Full Image Background */}
       <img
@@ -197,10 +197,10 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
       {/* Top Labels */}
       <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between gap-1">
-        {/* Listing Type Badge - LARGER */}
+        {/* Listing Type Badge */}
         <span
           className={cn(
-            "text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-white shadow-lg",
+            "text-[11px] sm:text-xs md:text-sm font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-white shadow-lg",
             property.listing_type === 'sale'
               ? 'bg-gradient-to-r from-green-500 to-emerald-600'
               : 'bg-gradient-to-r from-blue-500 to-sky-600'
@@ -209,27 +209,27 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
         </span>
         {/* Property Type */}
-        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold px-1.5 py-0.5 sm:px-2 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[50%]">
+        <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[50%]">
           {property.property_type || 'Property'}
         </span>
       </div>
 
       {/* Bottom Content */}
       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
-        {/* Price - LARGER */}
-        <span className="inline-block text-[11px] sm:text-xs md:text-sm font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl mb-1">
+        {/* Price */}
+        <span className="inline-block text-xs sm:text-sm md:text-base font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl mb-1">
           {formatPrice(property.price || 0)}
         </span>
-        {/* Title - LARGER */}
-        <h3 className="text-[11px] sm:text-xs md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
+        {/* Title */}
+        <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg">
           {property.title}
         </h3>
-        {/* Location - LARGER */}
-        <p className="text-[9px] sm:text-[10px] md:text-xs text-white/95 truncate drop-shadow-md mt-0.5">
+        {/* Location */}
+        <p className="text-[10px] sm:text-xs md:text-sm text-white/95 truncate drop-shadow-md mt-0.5">
           📍 {property.city || property.location || 'Indonesia'}
         </p>
         {/* Details */}
-        <div className="flex items-center gap-2 mt-0.5 text-[8px] sm:text-[9px] md:text-[10px] text-white/90 font-medium">
+        <div className="flex items-center gap-2 sm:gap-3 mt-1 text-[10px] sm:text-xs md:text-sm text-white/90 font-medium">
           {property.bedrooms ? <span>🛏️ {property.bedrooms}</span> : null}
           {property.bathrooms ? <span>🚿 {property.bathrooms}</span> : null}
           {property.area_sqm ? <span>📐 {property.area_sqm}m²</span> : null}
