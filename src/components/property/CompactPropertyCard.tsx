@@ -198,9 +198,9 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col">
-        {/* Image Section - Optimized for mobile */}
-        <div className="relative aspect-[4/3] sm:aspect-[16/10] md:aspect-[4/3] overflow-hidden flex-shrink-0">
+      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-lg rounded-xl">
+        {/* Image Section with Overlay Info */}
+        <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <img
             src={getImageUrl()}
             alt={property.title}
@@ -208,176 +208,166 @@ const CompactPropertyCard = ({
             loading="lazy"
           />
 
-          {/* Top Badges */}
-          <div className="absolute top-2 left-2 flex flex-wrap gap-1 max-w-[70%]">
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+          {/* Top Left Badges */}
+          <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 flex flex-wrap gap-1 max-w-[75%]">
             {similarityScore && (
-              <Badge 
-                className="bg-purple-600 text-white font-bold px-2 py-0.5 text-xs shadow-md flex items-center gap-1"
-              >
-                <ScanEye className="h-2.5 w-2.5" />
-                {similarityScore.toFixed(0)}% Match
+              <Badge className="bg-purple-600 text-white font-bold px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-md flex items-center gap-0.5">
+                <ScanEye className="h-2 sm:h-2.5 w-2 sm:w-2.5" />
+                {similarityScore.toFixed(0)}%
               </Badge>
             )}
-            <Badge 
-              className="bg-primary text-primary-foreground font-medium px-2 py-0.5 text-xs shadow-md"
-            >
+            <Badge className="bg-primary text-primary-foreground font-medium px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs shadow-md">
               {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
             </Badge>
             {property.property_type && (
-              <Badge variant="outline" className="bg-background/90 capitalize text-xs px-2 py-0.5">
+              <Badge variant="outline" className="bg-background/80 backdrop-blur-sm capitalize text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5">
                 {property.property_type}
               </Badge>
             )}
-            {(property.three_d_model_url || property.virtual_tour_url) && (
-              <Badge variant="secondary" className="bg-secondary/90 text-secondary-foreground backdrop-blur-sm border-none flex items-center gap-1 px-2 py-0.5 text-xs">
-                <ViewIcon className="h-2.5 w-2.5" />
-                <span>3D</span>
-              </Badge>
-            )}
           </div>
 
-          {/* Verification Badges - Bottom Left */}
-          <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
-            {property.owner_type === 'individual' && property.owner_verified && (
-              <VerificationBadge type="owner" verified={true} size="sm" />
-            )}
-            {property.owner_type === 'agent' && property.agent_verified && (
-              <VerificationBadge type="agent" verified={true} size="sm" />
-            )}
-            {property.owner_type === 'agency' && property.agency_verified && (
-              <VerificationBadge type="agency" verified={true} size="sm" />
-            )}
-          </div>
-
-          {/* Top-right: Actions */}
-          <div className="absolute top-3 right-3 flex gap-2">
+          {/* Top Right Actions */}
+          <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 flex gap-1 sm:gap-1.5">
             {searchImage && similarityScore && (
               <Button
                 size="sm"
                 variant="ghost"
-                className="bg-purple-500/90 hover:bg-purple-600 text-white shadow-lg"
+                className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-purple-500/90 hover:bg-purple-600 text-white shadow-lg rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowComparisonModal(true);
                 }}
-                title="Compare visually"
               >
-                <ScanEye className="h-4 w-4" />
+                <ScanEye className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
               </Button>
             )}
             <Button
               size="sm"
               variant="ghost"
-              className={`bg-white/90 hover:bg-white ${isLiked ? "ring-2 ring-red-400" : ""}`}
+              className={`h-6 w-6 sm:h-7 sm:w-7 p-0 bg-white/90 hover:bg-white rounded-full ${isLiked ? "ring-2 ring-red-400" : ""}`}
               onClick={handleLike}
             >
-              <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+              <Heart className={`h-3 sm:h-3.5 w-3 sm:w-3.5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
             </Button>
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button
                 size="sm"
                 variant="ghost"
-                className="bg-white/90 hover:bg-white text-blue-500"
+                className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-white/90 hover:bg-white text-blue-500 rounded-full"
                 onClick={handleView3D}
               >
-                <ViewIcon className="h-4 w-4" />
+                <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
               </Button>
             )}
             <Button
               size="sm"
               variant="ghost"
-              className="bg-white/90 hover:bg-white text-gray-600"
+              className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-white/90 hover:bg-white text-gray-600 rounded-full"
               onClick={handleShare}
             >
-              <Share2 className="h-4 w-4" />
+              <Share2 className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
             </Button>
           </div>
-        </div>
 
-        {/* Content Section - Compact mobile styling */}
-        <CardContent className="p-2 sm:p-2.5 md:p-4 space-y-1.5 sm:space-y-2 md:space-y-3 flex-1 flex flex-col">
-          {/* Price */}
-          <div className="price-section">
-            <div className="text-sm sm:text-base md:text-lg font-bold gradient-text tracking-tight leading-none">
+          {/* Bottom Overlay - Property Info on Image */}
+          <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 md:p-3">
+            {/* Price */}
+            <div className="text-white font-bold text-sm sm:text-base md:text-lg leading-tight drop-shadow-lg">
               {formatPrice(property.price)}
+              {property.listing_type === 'rent' && (
+                <span className="text-[9px] sm:text-xs font-normal opacity-90">/mo</span>
+              )}
             </div>
-            {property.listing_type === 'rent' && (
-              <div className="text-[10px] md:text-xs font-medium text-muted-foreground mt-0.5">
-                Per Month
-              </div>
-            )}
-          </div>
 
-          {/* Title */}
-          <h4 className="font-semibold text-[11px] sm:text-xs md:text-sm text-foreground line-clamp-2 min-h-[1.75rem] sm:min-h-[2rem] md:min-h-[2.5rem] flex-grow">
-            {property.title}
-          </h4>
+            {/* Title */}
+            <h4 className="text-white text-[10px] sm:text-xs md:text-sm font-medium line-clamp-1 drop-shadow-md mt-0.5">
+              {property.title}
+            </h4>
 
-          {/* User Information Section - Compact */}
-          {property.posted_by && (
-            <div className="space-y-2">
-              {/* Main User Info */}
-              <div className="flex items-center gap-2 p-2 glass-ios">
-                <div className="flex items-center gap-2">
-                  {property.posted_by.avatar_url ? (
-                    <img 
-                      src={property.posted_by.avatar_url} 
-                      alt={property.posted_by.name}
-                      className="w-6 h-6 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-xs font-bold">
-                      {property.posted_by.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <span className="text-xs font-medium text-foreground truncate">
-                      {property.posted_by.name}
-                    </span>
-                    {property.posted_by.user_level && (
-                      <span className="text-xs text-muted-foreground font-medium truncate">
-                        {property.posted_by.user_level}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                {property.posted_by.rating && (
-                  <div className="flex items-center gap-1 ml-auto flex-shrink-0">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
-                      {property.posted_by.rating.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Location */}
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <MapPin className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
-            <span className="text-[10px] sm:text-xs md:text-sm truncate">{property.location}</span>
-          </div>
-
-          {/* Property Details - Compact mobile */}
-          {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-            <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs md:text-sm text-muted-foreground flex-wrap">
+            {/* Property Details Row */}
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 mt-1 sm:mt-1.5">
               {property.bedrooms && property.bedrooms > 0 && (
-                <div className="flex items-center gap-0.5 sm:gap-1">
-                  <Bed className="h-3 sm:h-4 w-3 sm:w-4" />
-                  <span>{property.bedrooms}</span>
+                <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5">
+                  <Bed className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
+                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-medium">{property.bedrooms}</span>
                 </div>
               )}
               {property.bathrooms && property.bathrooms > 0 && (
-                <div className="flex items-center gap-0.5 sm:gap-1">
-                  <Bath className="h-3 sm:h-4 w-3 sm:w-4" />
-                  <span>{property.bathrooms}</span>
+                <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5">
+                  <Bath className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
+                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-medium">{property.bathrooms}</span>
                 </div>
               )}
               {property.area_sqm && (
-                <div className="flex items-center gap-0.5 sm:gap-1">
-                  <Square className="h-3 sm:h-4 w-3 sm:w-4" />
-                  <span>{property.area_sqm}m²</span>
+                <div className="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5">
+                  <Square className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
+                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-medium">{property.area_sqm}m²</span>
+                </div>
+              )}
+              {(property.three_d_model_url || property.virtual_tour_url) && (
+                <div className="flex items-center gap-0.5 bg-blue-500/80 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5">
+                  <ViewIcon className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white" />
+                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white font-medium">3D</span>
+                </div>
+              )}
+            </div>
+
+            {/* Location */}
+            <div className="flex items-center gap-0.5 mt-1 sm:mt-1.5">
+              <MapPin className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white/80 flex-shrink-0" />
+              <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate">{property.location}</span>
+            </div>
+
+            {/* Verification Badges */}
+            <div className="flex flex-wrap gap-1 mt-1">
+              {property.owner_type === 'individual' && property.owner_verified && (
+                <VerificationBadge type="owner" verified={true} size="sm" />
+              )}
+              {property.owner_type === 'agent' && property.agent_verified && (
+                <VerificationBadge type="agent" verified={true} size="sm" />
+              )}
+              {property.owner_type === 'agency' && property.agency_verified && (
+                <VerificationBadge type="agency" verified={true} size="sm" />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Compact Bottom Section */}
+        <CardContent className="p-1.5 sm:p-2 md:p-3 space-y-1 sm:space-y-1.5 flex-1 flex flex-col">
+          {/* Posted By - Compact */}
+          {property.posted_by && (
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 glass-ios rounded-lg">
+              {property.posted_by.avatar_url ? (
+                <img 
+                  src={property.posted_by.avatar_url} 
+                  alt={property.posted_by.name}
+                  className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-[9px] sm:text-xs font-bold flex-shrink-0">
+                  {property.posted_by.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-[10px] sm:text-xs font-medium text-foreground truncate leading-tight">
+                  {property.posted_by.name}
+                </span>
+                {property.posted_by.user_level && (
+                  <span className="text-[9px] sm:text-[10px] text-muted-foreground truncate leading-tight">
+                    {property.posted_by.user_level}
+                  </span>
+                )}
+              </div>
+              {property.posted_by.rating && (
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  <Star className="h-2.5 sm:h-3 w-2.5 sm:w-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-[9px] sm:text-xs font-bold text-yellow-600 dark:text-yellow-400">
+                    {property.posted_by.rating.toFixed(1)}
+                  </span>
                 </div>
               )}
             </div>
@@ -394,38 +384,36 @@ const CompactPropertyCard = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-xs text-muted-foreground hover:text-foreground"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setShowRatingModal(true);
                 }}
               >
-                <MessageSquare className="h-3 w-3 mr-1" />
+                <MessageSquare className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5" />
                 Reviews
               </Button>
             </div>
           )}
 
-          {/* Action Buttons - Compact on mobile */}
-          <div className="flex gap-1.5 sm:gap-2 mt-auto pt-1.5 sm:pt-2">
+          {/* Action Button - Compact */}
+          <div className="flex gap-1 sm:gap-1.5 mt-auto pt-1">
             <Button 
-              className="flex-1 h-7 sm:h-8 text-[10px] sm:text-xs btn-primary"
+              className="flex-1 h-6 sm:h-7 md:h-8 text-[9px] sm:text-[10px] md:text-xs btn-primary"
               onClick={handleViewDetails}
             >
-              <Eye className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5 sm:mr-1" />
-              <span className="hidden xs:inline">{currentText.viewDetails}</span>
-              <span className="xs:hidden">View</span>
+              <Eye className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5" />
+              View
             </Button>
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button 
                 variant="outline"
-                className="flex-1 h-7 sm:h-8 text-[10px] sm:text-xs"
+                className="flex-1 h-6 sm:h-7 md:h-8 text-[9px] sm:text-[10px] md:text-xs"
                 onClick={handleView3D}
               >
-                <ViewIcon className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5 sm:mr-1" />
-                <span className="hidden xs:inline">{currentText.view3D}</span>
-                <span className="xs:hidden">3D</span>
+                <ViewIcon className="h-2.5 sm:h-3 w-2.5 sm:w-3 mr-0.5" />
+                3D
               </Button>
             )}
           </div>
