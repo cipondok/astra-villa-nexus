@@ -187,25 +187,27 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
   };
 
   return (
-    <Card className={`w-full ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : ''}`}>
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5" />
-            Virtual Property Experience
-            <Badge variant="outline" className="ml-2">
+    <Card className={`w-full border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : ''}`}>
+      <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            </div>
+            <span className="truncate">Virtual Experience</span>
+            <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 py-0.5 hidden sm:inline-flex">
               {activeTab === 'virtual-tour' ? 'Matterport' : 'Sketchfab'}
             </Badge>
           </CardTitle>
           
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Share2 className="h-4 w-4 mr-1" />
-              Share
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" className="h-7 sm:h-8 px-2 sm:px-3 text-xs">
+              <Share2 className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Share</span>
             </Button>
             {onFullscreenToggle && (
-              <Button variant="outline" size="sm" onClick={onFullscreenToggle}>
-                <Maximize2 className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-7 sm:h-8 px-2" onClick={onFullscreenToggle}>
+                <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             )}
           </div>
@@ -214,14 +216,14 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
       
       <CardContent className="p-0">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="px-6 pb-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="virtual-tour" className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                Virtual Tour
+          <div className="px-3 sm:px-6 pb-2 sm:pb-4">
+            <TabsList className="grid w-full grid-cols-2 h-8 sm:h-10">
+              <TabsTrigger value="virtual-tour" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Virtual</span> Tour
               </TabsTrigger>
-              <TabsTrigger value="3d-model" className="flex items-center gap-2">
-                <Box className="h-4 w-4" />
+              <TabsTrigger value="3d-model" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Box className="h-3 w-3 sm:h-4 sm:w-4" />
                 3D Model
               </TabsTrigger>
             </TabsList>
