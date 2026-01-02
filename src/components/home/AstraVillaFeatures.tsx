@@ -115,31 +115,33 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
 
   return (
     <div onClick={handleClick} className="group cursor-pointer relative">
-      <div className="relative overflow-hidden rounded-md md:rounded-lg bg-white/50 dark:bg-white/5 border border-white/30 dark:border-white/10 p-1.5 sm:p-1.5 md:p-1.5 h-full flex flex-col items-center text-center transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10 hover:scale-[1.02]">
-        {/* Icon Container - Bigger on mobile */}
+      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/15 dark:to-primary/10 border border-primary/20 dark:border-primary/30 p-2 sm:p-2 md:p-2.5 h-full flex flex-col items-center text-center transition-all duration-300 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 dark:hover:from-primary/15 dark:hover:via-primary/20 dark:hover:to-primary/15 hover:scale-[1.03] hover:shadow-md hover:shadow-primary/10">
+        {/* Icon Container - Clean white background */}
         <div className="relative">
-          <div className="relative w-14 h-14 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center rounded-xl sm:rounded-lg bg-white dark:bg-white/95 p-1.5 shadow-sm">
+          <div className="relative w-12 h-12 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-xl bg-white dark:bg-white shadow-sm border border-primary/10">
             <img
               src={feature.icon}
               alt={feature.title}
-              className="w-10 h-10 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain group-hover:scale-105 transition-transform duration-200"
+              className="w-8 h-8 sm:w-7 sm:h-7 md:w-8 md:h-8 object-contain"
+              style={{ imageRendering: 'crisp-edges' }}
+              loading="eager"
             />
           </div>
           {/* AI Badge */}
-          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/70 shadow-sm border border-white">
-            <Sparkles className="w-2 h-2 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 text-white" strokeWidth={3} />
+          <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 shadow-sm border-2 border-white dark:border-white">
+            <Sparkles className="w-2.5 h-2.5 sm:w-2 sm:h-2 md:w-2 md:h-2 text-white" strokeWidth={2.5} />
           </div>
         </div>
 
-        {/* Title - Hidden on mobile, visible on hover via tooltip or on tablet+ */}
-        <h3 className="hidden sm:block mt-0.5 text-[7px] md:text-[9px] font-medium text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
+        {/* Title - Hidden on mobile, visible on tablet+ */}
+        <h3 className="hidden sm:block mt-1 text-[8px] md:text-[10px] font-semibold text-primary/80 dark:text-primary leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {feature.title}
         </h3>
       </div>
       
       {/* Mobile Tooltip - Shows on hover/touch */}
-      <div className="sm:hidden absolute left-1/2 -translate-x-1/2 -bottom-7 z-50 opacity-0 group-hover:opacity-100 group-active:opacity-100 pointer-events-none transition-opacity duration-200">
-        <div className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium px-2 py-1 rounded-md whitespace-nowrap shadow-lg">
+      <div className="sm:hidden absolute left-1/2 -translate-x-1/2 -bottom-8 z-50 opacity-0 group-hover:opacity-100 group-active:opacity-100 pointer-events-none transition-opacity duration-200">
+        <div className="bg-primary text-white text-[10px] font-semibold px-2.5 py-1 rounded-lg whitespace-nowrap shadow-lg">
           {feature.title}
         </div>
       </div>
