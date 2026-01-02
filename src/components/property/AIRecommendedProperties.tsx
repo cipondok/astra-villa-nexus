@@ -175,7 +175,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const PropertyCard = ({ property }: { property: BaseProperty }) => (
     <div
       onClick={() => onPropertyClick(property)}
-      className="flex-shrink-0 w-[110px] sm:w-[130px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
+      className="flex-shrink-0 w-[108px] sm:w-[130px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
     >
       {/* Full Image Background */}
       <img
@@ -196,7 +196,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       </div>
 
       {/* Top Labels */}
-      <div className="absolute top-1 left-1 right-1 sm:top-1.5 sm:left-1.5 sm:right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between">
+      <div className="absolute top-1 left-1 right-1 sm:top-1.5 sm:left-1.5 sm:right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between gap-1">
         {/* Listing Type Badge */}
         <span
           className={cn(
@@ -208,32 +208,30 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         >
           {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
         </span>
-        {/* Property Type */}
-        <span className="text-[5px] sm:text-[7px] md:text-[9px] font-semibold px-1 py-0.5 sm:px-1.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
+        {/* Property Type (hide on tiny screens to prevent overlap) */}
+        <span className="hidden sm:inline-flex text-[7px] md:text-[9px] font-semibold px-1 py-0.5 sm:px-1.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
           {property.property_type || 'Property'}
         </span>
       </div>
 
-      {/* Price Label */}
-      <div className="absolute top-1/2 left-1 sm:left-1.5 md:left-2 -translate-y-1/2">
-        <span className="text-[7px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl">
-          {formatPrice(property.price || 0)}
-        </span>
-      </div>
-
-      {/* Bottom Content */}
+      {/* Bottom Content (includes price to avoid mid-overlay collisions on mobile) */}
       <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 md:p-2.5">
-        <h3 className="text-[7px] sm:text-[10px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
+        <div className="flex items-end justify-between gap-1">
+          <span className="text-[9px] sm:text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl">
+            {formatPrice(property.price || 0)}
+          </span>
+          <span className="text-[7px] sm:text-[8px] md:text-[10px] text-white/90 truncate max-w-[55%] drop-shadow-md">
+            {property.city || property.location || 'Indonesia'}
+          </span>
+        </div>
+        <h3 className="mt-0.5 text-[10px] sm:text-[11px] md:text-xs font-bold text-white line-clamp-1 drop-shadow-lg">
           {property.title}
         </h3>
-        <p className="text-[6px] sm:text-[8px] md:text-[10px] text-white/95 truncate drop-shadow-md mt-0.5">
-          {property.city || property.location || 'Indonesia'}
-        </p>
-        {/* Property Details */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 text-[6px] sm:text-[8px] md:text-[9px] text-white/90 font-medium">
-          {property.bedrooms && <span>🛏️ {property.bedrooms}</span>}
-          {property.bathrooms && <span>🚿 {property.bathrooms}</span>}
-          {property.area_sqm && <span>📐 {property.area_sqm}m²</span>}
+        {/* Details hidden on xs to prevent overlaps */}
+        <div className="hidden sm:flex items-center gap-2 mt-0.5 text-[8px] md:text-[9px] text-white/90 font-medium">
+          {property.bedrooms ? <span>🛏️ {property.bedrooms}</span> : null}
+          {property.bathrooms ? <span>🚿 {property.bathrooms}</span> : null}
+          {property.area_sqm ? <span>📐 {property.area_sqm}m²</span> : null}
         </div>
       </div>
     </div>
