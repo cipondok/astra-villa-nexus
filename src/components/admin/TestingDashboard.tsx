@@ -245,7 +245,7 @@ const TestingDashboard = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid grid-cols-5 w-full max-w-2xl">
+        <TabsList className="grid grid-cols-6 w-full max-w-3xl">
           <TabsTrigger value="overview" className="gap-2">
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">Overview</span>
@@ -257,6 +257,10 @@ const TestingDashboard = () => {
           <TabsTrigger value="e2e" className="gap-2">
             <Monitor className="h-4 w-4" />
             <span className="hidden sm:inline">E2E</span>
+          </TabsTrigger>
+          <TabsTrigger value="browser" className="gap-2">
+            <Globe className="h-4 w-4" />
+            <span className="hidden sm:inline">Browser</span>
           </TabsTrigger>
           <TabsTrigger value="mobile" className="gap-2">
             <Smartphone className="h-4 w-4" />
@@ -565,23 +569,133 @@ const TestingDashboard = () => {
           </div>
         </TabsContent>
 
-        {/* Mobile Tests Tab */}
-        <TabsContent value="mobile" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Cross-Browser Tests Tab */}
+        <TabsContent value="browser" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-primary" />
+                    Cross-Browser Test Results
+                  </CardTitle>
+                  <Button size="sm" variant="outline" onClick={() => handleRunTests('browser')}>
+                    <Play className="h-4 w-4 mr-2" />
+                    Run Browser Tests
+                  </Button>
+                </div>
+                <CardDescription>
+                  Compatibility testing across major browsers
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {crossBrowserResults.map((browser, idx) => (
+                    <div key={idx} className="p-4 rounded-lg border bg-gradient-to-br from-muted/30 to-muted/10 hover:from-muted/50 hover:to-muted/20 transition-colors">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-primary/10">
+                            <Chrome className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{browser.browser}</p>
+                            <p className="text-xs text-muted-foreground">Version {browser.version}</p>
+                          </div>
+                        </div>
+                        {getStatusIcon(browser.status)}
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Tests Passed</span>
+                          <span className="font-medium">{browser.passed}/{browser.passed + browser.failed}</span>
+                        </div>
+                        <Progress value={(browser.passed / (browser.passed + browser.failed)) * 100} className="h-2" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Separator />
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                    <p className="text-2xl font-bold text-green-600">181</p>
+                    <p className="text-xs text-muted-foreground">Total Passed</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                    <p className="text-2xl font-bold text-red-600">3</p>
+                    <p className="text-xs text-muted-foreground">Total Failed</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                    <p className="text-2xl font-bold text-blue-600">4</p>
+                    <p className="text-xs text-muted-foreground">Browsers Tested</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                    <p className="text-2xl font-bold text-purple-600">98.4%</p>
+                    <p className="text-xs text-muted-foreground">Pass Rate</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Smartphone className="h-5 w-5 text-primary" />
-                  Mobile Device Testing
-                </CardTitle>
+                <CardTitle className="text-sm">Browser Support Matrix</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  {[
+                    { feature: 'CSS Grid', support: 100 },
+                    { feature: 'Flexbox', support: 100 },
+                    { feature: 'WebGL', support: 95 },
+                    { feature: 'Web Workers', support: 100 },
+                    { feature: 'Service Workers', support: 92 },
+                    { feature: 'WebSockets', support: 100 },
+                  ].map((item, idx) => (
+                    <div key={idx} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span>{item.feature}</span>
+                        <span className={item.support === 100 ? 'text-green-600' : 'text-yellow-600'}>
+                          {item.support}%
+                        </span>
+                      </div>
+                      <Progress value={item.support} className="h-1.5" />
+                    </div>
+                  ))}
+                </div>
+                <Separator />
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Testing Framework</p>
+                  <Badge variant="outline">Playwright v1.56.1</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Mobile Tests Tab */}
+        <TabsContent value="mobile" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Smartphone className="h-5 w-5 text-primary" />
+                    Mobile Device Testing
+                  </CardTitle>
+                  <Button size="sm" variant="outline" onClick={() => handleRunTests('mobile')}>
+                    <Play className="h-4 w-4 mr-2" />
+                    Run Mobile Tests
+                  </Button>
+                </div>
                 <CardDescription>
                   Responsive and touch interaction tests
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {mobileTests.map((device, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/30 transition-colors">
+                    <div key={idx} className="flex items-center justify-between p-4 rounded-lg border bg-gradient-to-br from-muted/30 to-muted/10 hover:from-muted/50 hover:to-muted/20 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-primary/10">
                           <Smartphone className="h-5 w-5 text-primary" />
@@ -594,36 +708,60 @@ const TestingDashboard = () => {
                       <div className="flex items-center gap-3">
                         <div className="text-right">
                           <p className="text-sm font-medium">{device.passed}/{device.passed + device.failed}</p>
-                          <p className="text-xs text-muted-foreground">tests passed</p>
+                          <p className="text-xs text-muted-foreground">passed</p>
                         </div>
                         {getStatusIcon(device.status)}
                       </div>
                     </div>
                   ))}
                 </div>
+
+                <Separator />
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                    <p className="text-2xl font-bold text-green-600">149</p>
+                    <p className="text-xs text-muted-foreground">Total Passed</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                    <p className="text-2xl font-bold text-red-600">3</p>
+                    <p className="text-xs text-muted-foreground">Total Failed</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                    <p className="text-2xl font-bold text-blue-600">4</p>
+                    <p className="text-xs text-muted-foreground">Devices Tested</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                    <p className="text-2xl font-bold text-purple-600">98.0%</p>
+                    <p className="text-xs text-muted-foreground">Pass Rate</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <Shield className="h-4 w-4" />
                   Mobile Test Categories
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {[
-                    { name: 'Touch Interactions', passed: 45, total: 48 },
-                    { name: 'Responsive Layout', passed: 32, total: 32 },
-                    { name: 'Gestures', passed: 18, total: 20 },
-                    { name: 'Viewport Scaling', passed: 12, total: 12 },
-                    { name: 'PWA Features', passed: 8, total: 10 },
+                    { name: 'Touch Interactions', passed: 45, total: 48, icon: '👆' },
+                    { name: 'Responsive Layout', passed: 32, total: 32, icon: '📐' },
+                    { name: 'Gestures', passed: 18, total: 20, icon: '🤏' },
+                    { name: 'Viewport Scaling', passed: 12, total: 12, icon: '🔍' },
+                    { name: 'PWA Features', passed: 8, total: 10, icon: '📱' },
                   ].map((category, idx) => (
                     <div key={idx} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm">{category.name}</span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-sm flex items-center gap-2">
+                          <span>{category.icon}</span>
+                          {category.name}
+                        </span>
+                        <span className={`text-xs font-medium ${category.passed === category.total ? 'text-green-600' : 'text-yellow-600'}`}>
                           {category.passed}/{category.total}
                         </span>
                       </div>
