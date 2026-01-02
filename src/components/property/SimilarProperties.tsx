@@ -113,21 +113,23 @@ const SimilarProperties = ({ currentProperty, limit = 6 }: SimilarPropertiesProp
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Home className="h-5 w-5" />
+      <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 pb-2 bg-gradient-to-r from-primary/5 to-accent/5">
+          <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Home className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            </div>
             Similar Properties
-            <Badge variant="outline">Location Match</Badge>
+            <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 py-0.5">Location Match</Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <CardContent className="p-2 sm:p-3 md:p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-40 bg-gray-200 rounded-lg mb-3"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-24 sm:h-32 md:h-40 bg-muted/50 rounded-lg mb-2 sm:mb-3"></div>
+                <div className="h-3 sm:h-4 bg-muted/50 rounded w-3/4 mb-1.5 sm:mb-2"></div>
+                <div className="h-2 sm:h-3 bg-muted/50 rounded w-1/2"></div>
               </div>
             ))}
           </div>
@@ -138,17 +140,19 @@ const SimilarProperties = ({ currentProperty, limit = 6 }: SimilarPropertiesProp
 
   if (similarProperties.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Home className="h-5 w-5" />
+      <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 pb-2 bg-gradient-to-r from-primary/5 to-accent/5">
+          <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Home className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            </div>
             Similar Properties
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No similar properties found in this area</p>
+        <CardContent className="p-3 sm:p-4">
+          <div className="text-center py-4 sm:py-8">
+            <MapPin className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground/50 mx-auto mb-2 sm:mb-4" />
+            <p className="text-xs sm:text-sm text-muted-foreground">No similar properties found in this area</p>
           </div>
         </CardContent>
       </Card>
@@ -156,16 +160,18 @@ const SimilarProperties = ({ currentProperty, limit = 6 }: SimilarPropertiesProp
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Home className="h-5 w-5" />
+    <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+      <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
+        <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+            <Home className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+          </div>
           Similar Properties
-          <Badge variant="outline">{similarProperties.length} found</Badge>
+          <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 ml-auto">{similarProperties.length} found</Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <CardContent className="p-2 sm:p-3 md:p-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
           {similarProperties.map((property) => (
             <CompactPropertyCard
               key={property.id}

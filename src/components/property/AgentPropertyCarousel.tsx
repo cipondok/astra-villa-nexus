@@ -65,12 +65,12 @@ const AgentPropertyCarousel = ({
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="h-5 sm:h-6 bg-muted/50 rounded w-1/3 mb-3 sm:mb-4"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-36 sm:h-48 md:h-64 bg-muted/50 rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -92,17 +92,19 @@ const AgentPropertyCarousel = ({
     if (properties.length === 0) return null;
 
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Icon className="h-5 w-5" />
-            {title}
-            <Badge variant="outline">{properties.length} properties</Badge>
+      <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
+          <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            </div>
+            <span className="truncate flex-1">{title}</span>
+            <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 flex-shrink-0">{properties.length} properties</Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2 sm:p-3 md:p-6">
           {properties.length <= 3 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
               {properties.map((property) => (
                 <CompactPropertyCard
                   key={property.id}
@@ -117,9 +119,9 @@ const AgentPropertyCarousel = ({
             </div>
           ) : (
             <Carousel className="w-full">
-              <CarouselContent className="-ml-2">
+              <CarouselContent className="-ml-1.5 sm:-ml-2">
                 {properties.map((property) => (
-                  <CarouselItem key={property.id} className="pl-2 basis-1/2 sm:basis-1/3 lg:basis-1/4">
+                  <CarouselItem key={property.id} className="pl-1.5 sm:pl-2 basis-1/2 sm:basis-1/3 lg:basis-1/4">
                     <CompactPropertyCard
                       property={property}
                       language="en"
@@ -131,8 +133,8 @@ const AgentPropertyCarousel = ({
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <CarouselPrevious className="hidden sm:flex" />
+              <CarouselNext className="hidden sm:flex" />
             </Carousel>
           )}
         </CardContent>
@@ -141,12 +143,12 @@ const AgentPropertyCarousel = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Agent Properties Section */}
       {agentId && (
         <PropertyCarouselSection
           properties={agentProperties}
-          title="More Properties by This Agent"
+          title="More from Agent"
           icon={User}
           badgeText="Agent Listings"
         />
@@ -155,7 +157,7 @@ const AgentPropertyCarousel = ({
       {/* Owner Properties Section */}
       <PropertyCarouselSection
         properties={ownerProperties}
-        title={`More Properties by This ${ownerType === 'company' ? 'Company' : 'Owner'}`}
+        title={`More from ${ownerType === 'company' ? 'Company' : 'Owner'}`}
         icon={Building2}
         badgeText="Owner Listings"
       />

@@ -856,24 +856,26 @@ const PropertyDetail: React.FC = () => {
               virtualTourUrl={property.virtual_tour_url}
             />
 
-            {/* Virtual Tour & 3D Model - Compact */}
+            {/* Virtual Tour & 3D Model - Glassy Compact */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
-              <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
-                <CardHeader className="p-2.5 sm:p-4 pb-1.5 sm:pb-2">
+              <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+                <CardHeader className="p-2.5 sm:p-4 pb-1.5 sm:pb-2 bg-gradient-to-r from-primary/5 to-accent/5">
                   <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
-                    <Camera className="h-4 w-4 text-primary" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/15 flex items-center justify-center">
+                      <Camera className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                    </div>
                     Virtual Experience
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-2.5 sm:p-4 pt-0 space-y-1.5">
+                <CardContent className="p-2.5 sm:p-4 pt-2 space-y-1.5 sm:space-y-2">
                   {property.virtual_tour_url && (
-                    <Button className="w-full h-8 text-xs" variant="default">
+                    <Button className="w-full h-8 sm:h-9 text-xs sm:text-sm bg-gradient-to-r from-primary to-primary/80" variant="default">
                       <Globe className="h-3.5 w-3.5 mr-1.5" />
                       Virtual Tour
                     </Button>
                   )}
                   {property.three_d_model_url && (
-                    <Button className="w-full h-8 text-xs" variant="outline">
+                    <Button className="w-full h-8 sm:h-9 text-xs sm:text-sm" variant="outline">
                       <Box className="h-3.5 w-3.5 mr-1.5" />
                       3D Model
                     </Button>
