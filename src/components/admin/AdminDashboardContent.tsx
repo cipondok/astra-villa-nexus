@@ -67,6 +67,7 @@ import UserUpgradeApplications from "./UserUpgradeApplications";
 import UserLevelManagement from "./UserLevelManagement";
 import { BugErrorDashboard } from "./diagnostics/BugErrorDashboard";
 import VisitorAnalytics from "./VisitorAnalytics";
+import TestingDashboard from "./TestingDashboard";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -145,6 +146,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "new-project-filters": { label: "New Project Filters", category: "Property System" },
   "error-monitoring": { label: "Error Monitoring", category: "System" },
   "bug-error-detection": { label: "Bug Detection", category: "System" },
+  "testing-dashboard": { label: "Testing Dashboard", category: "Quality Assurance" },
 };
 
 const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
@@ -296,6 +298,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ErrorMonitoringDashboard />;
       case "bug-error-detection":
         return <BugErrorDashboard />;
+      case "testing-dashboard":
+        return <TestingDashboard />;
       default:
         return <AdminOverview />;
     }

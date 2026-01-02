@@ -45,7 +45,8 @@ import {
   FileWarning,
   ClipboardList,
   DatabaseZap,
-  Cpu
+  Cpu,
+  TestTube2
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -397,6 +398,13 @@ export const navigationSections = {
       label: "Report Export",
       icon: Download,
       description: "Export and download comprehensive reports"
+    },
+    {
+      key: "testing-dashboard",
+      label: "Testing Dashboard",
+      icon: TestTube2,
+      description: "Unit tests, E2E tests, cross-browser testing, mobile testing, and load testing",
+      badge: "New"
     }
   ],
 
