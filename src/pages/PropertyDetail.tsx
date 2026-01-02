@@ -703,84 +703,84 @@ const PropertyDetail: React.FC = () => {
             
             {/* Property Header - Glassy Style */}
             <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+              <CardContent className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-6">
                   <div className="flex-1 w-full">
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3 leading-tight">
+                    <h1 className="text-base sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-3 leading-tight">
                       {property.title}
                     </h1>
-                    <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                    <div className="flex items-center gap-1 text-muted-foreground mb-2 sm:mb-3">
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
                       </div>
-                      <span className="text-sm sm:text-base">{property.location}</span>
+                      <span className="text-xs sm:text-base">{property.location}</span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="default" className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-3 py-1 text-xs rounded-full shadow-md">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
+                      <Badge variant="default" className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full shadow-md">
                         {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                       </Badge>
-                      <Badge variant="outline" className="border-border/50 px-3 py-1 text-xs rounded-full bg-muted/50 backdrop-blur-sm capitalize">
+                      <Badge variant="outline" className="border-border/50 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-muted/50 backdrop-blur-sm capitalize">
                         {property.property_type}
                       </Badge>
                       {property.development_status !== 'completed' && (
-                        <Badge variant="outline" className="bg-gradient-to-r from-primary/15 to-accent/15 text-primary border-primary/20 px-3 py-1 text-xs rounded-full">
+                        <Badge variant="outline" className="bg-gradient-to-r from-primary/15 to-accent/15 text-primary border-primary/20 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full">
                           {property.development_status === 'new_project' ? '✨ New' : '🚀 Pre-Launch'}
                         </Badge>
                       )}
                     </div>
                   </div>
                   
-                  {/* Price Display - Enhanced Glassy */}
-                  <div className="w-full sm:w-auto mt-2 sm:mt-0">
-                    <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 rounded-2xl p-4 sm:p-5 border border-primary/20 backdrop-blur-sm shadow-lg">
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">Price</p>
-                      <div className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                  {/* Price Display - Compact Mobile */}
+                  <div className="w-full sm:w-auto mt-1 sm:mt-0">
+                    <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-primary/20 backdrop-blur-sm shadow-lg">
+                      <p className="text-[10px] sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Price</p>
+                      <div className="text-lg sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
-                        <span className="text-sm sm:text-base text-muted-foreground">/month</span>
+                        <span className="text-[10px] sm:text-base text-muted-foreground">/month</span>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Property Stats - Glassy Grid */}
-                <div className="grid grid-cols-4 gap-3 sm:gap-4 mt-5">
+                {/* Property Stats - Compact Mobile Grid */}
+                <div className="grid grid-cols-4 gap-1.5 sm:gap-4 mt-3 sm:mt-5">
                   {property.bedrooms && (
-                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/15 backdrop-blur-sm">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-1.5">
-                        <Bed className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg sm:rounded-xl border border-primary/15 backdrop-blur-sm">
+                      <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
+                        <Bed className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
                       </div>
-                      <div className="font-bold text-base sm:text-lg">{property.bedrooms}</div>
-                      <div className="text-[10px] sm:text-xs text-muted-foreground">Beds</div>
+                      <div className="font-bold text-sm sm:text-lg">{property.bedrooms}</div>
+                      <div className="text-[8px] sm:text-xs text-muted-foreground">Beds</div>
                     </div>
                   )}
                   {property.bathrooms && (
-                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/15 backdrop-blur-sm">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-1.5">
-                        <Bath className="h-4 w-4 sm:h-5 sm:w-5 text-accent" />
+                    <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg sm:rounded-xl border border-accent/15 backdrop-blur-sm">
+                      <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
+                        <Bath className="h-3 w-3 sm:h-5 sm:w-5 text-accent" />
                       </div>
-                      <div className="font-bold text-base sm:text-lg">{property.bathrooms}</div>
-                      <div className="text-[10px] sm:text-xs text-muted-foreground">Baths</div>
+                      <div className="font-bold text-sm sm:text-lg">{property.bathrooms}</div>
+                      <div className="text-[8px] sm:text-xs text-muted-foreground">Baths</div>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-xl border border-secondary/15 backdrop-blur-sm">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-1.5">
-                        <Square className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
+                    <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-lg sm:rounded-xl border border-secondary/15 backdrop-blur-sm">
+                      <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
+                        <Square className="h-3 w-3 sm:h-5 sm:w-5 text-secondary" />
                       </div>
-                      <div className="font-bold text-base sm:text-lg">{property.area_sqm}</div>
-                      <div className="text-[10px] sm:text-xs text-muted-foreground">m²</div>
+                      <div className="font-bold text-sm sm:text-lg">{property.area_sqm}</div>
+                      <div className="text-[8px] sm:text-xs text-muted-foreground">m²</div>
                     </div>
                   )}
-                  <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl border border-border/30 backdrop-blur-sm">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-1.5">
-                      <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                  <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg sm:rounded-xl border border-border/30 backdrop-blur-sm">
+                    <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
+                      <Calendar className="h-3 w-3 sm:h-5 sm:w-5 text-muted-foreground" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg">
+                    <div className="font-bold text-sm sm:text-lg">
                       {new Date(property.created_at).getFullYear()}
                     </div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground">Listed</div>
+                    <div className="text-[8px] sm:text-xs text-muted-foreground">Listed</div>
                   </div>
                 </div>
               </CardContent>
