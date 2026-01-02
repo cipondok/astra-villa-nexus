@@ -361,30 +361,32 @@ const PropertyDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/20">
-      {/* Agent/Developer Header - Compact Mobile with Membership Badge */}
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
+      {/* Agent/Developer Header - Glassy Style with Membership Badge */}
       {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-primary/5 via-accent/3 to-secondary/5 backdrop-blur-sm border-b border-border/10">
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-4">
-            <div className="flex items-center justify-between gap-2">
-              {/* Agent Profile - Compact */}
-              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+        <div className="relative bg-gradient-to-r from-primary/8 via-accent/5 to-secondary/8 backdrop-blur-md border-b border-primary/10 shadow-sm">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2.5 sm:py-4">
+            <div className="flex items-center justify-between gap-3">
+              {/* Agent Profile - Enhanced */}
+              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                 <div className="relative flex-shrink-0">
-                  <img
-                    src={property.posted_by.avatar_url || "/placeholder.svg"}
-                    alt={property.posted_by.name}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-background shadow-md"
-                  />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 p-0.5 shadow-lg">
+                    <img
+                      src={property.posted_by.avatar_url || "/placeholder.svg"}
+                      alt={property.posted_by.name}
+                      className="w-full h-full rounded-[10px] object-cover"
+                    />
+                  </div>
                   {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center border border-background">
-                      <Shield className="w-2 h-2 text-white" />
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center border-2 border-background shadow-md">
+                      <Shield className="w-2.5 h-2.5 text-white" />
                     </div>
                   )}
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <h3 className="font-semibold text-xs sm:text-sm text-foreground truncate">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
                       {property.posted_by.name}
                     </h3>
                     {/* Membership Level Badge */}
@@ -395,22 +397,22 @@ const PropertyDetail: React.FC = () => {
                       showIcon={true}
                     />
                   </div>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-medium">
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="bg-gradient-to-r from-primary/15 to-accent/15 text-primary px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium backdrop-blur-sm">
                       {property.posted_by.position || 'Developer'}
                     </span>
-                    <div className="flex items-center gap-0.5">
-                      <Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />
-                      <span className="text-[10px] font-medium">{property.posted_by.customer_feedback_rating}</span>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span className="text-xs font-semibold">{property.posted_by.customer_feedback_rating}</span>
                     </div>
-                    <span className="text-[9px] text-muted-foreground">• {property.posted_by.experience_years}y</span>
+                    <span className="text-xs text-muted-foreground hidden sm:inline">• {property.posted_by.experience_years}y exp</span>
                   </div>
                 </div>
               </div>
                 
               <Button 
                 size="sm"
-                className="flex-shrink-0 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 h-8 px-3 text-xs"
+                className="flex-shrink-0 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 h-9 px-4 text-xs font-semibold shadow-lg shadow-green-500/20"
                 onClick={() => {
                   if (user && property.posted_by?.whatsapp_number) {
                     window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -695,133 +697,143 @@ const PropertyDetail: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-2 sm:space-y-4">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-6">
             
-            {/* Property Header - Compact Mobile */}
-            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
-              <CardContent className="p-2.5 sm:p-4">
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
+            {/* Property Header - Glassy Style */}
+            <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
                   <div className="flex-1 w-full">
-                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1.5 sm:mb-2 leading-tight">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3 leading-tight">
                       {property.title}
                     </h1>
-                    <div className="flex items-center gap-1 text-muted-foreground mb-2">
-                      <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                      <span className="text-xs sm:text-sm">{property.location}</span>
+                    <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                      <span className="text-sm sm:text-base">{property.location}</span>
                     </div>
-                    <div className="flex flex-wrap gap-1">
-                      <Badge variant="default" className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[9px] sm:text-[10px]">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="default" className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-3 py-1 text-xs rounded-full shadow-md">
                         {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                       </Badge>
-                      <Badge variant="outline" className="border-border/50 px-1.5 py-0.5 text-[9px] sm:text-[10px] bg-muted/30">
+                      <Badge variant="outline" className="border-border/50 px-3 py-1 text-xs rounded-full bg-muted/50 backdrop-blur-sm capitalize">
                         {property.property_type}
                       </Badge>
                       {property.development_status !== 'completed' && (
-                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-1.5 py-0.5 text-[9px] sm:text-[10px]">
-                          {property.development_status === 'new_project' ? 'New' : 'Pre-Launch'}
+                        <Badge variant="outline" className="bg-gradient-to-r from-primary/15 to-accent/15 text-primary border-primary/20 px-3 py-1 text-xs rounded-full">
+                          {property.development_status === 'new_project' ? '✨ New' : '🚀 Pre-Launch'}
                         </Badge>
                       )}
                     </div>
                   </div>
                   
-                  {/* Price Display - Compact */}
+                  {/* Price Display - Enhanced Glassy */}
                   <div className="w-full sm:w-auto mt-2 sm:mt-0">
-                    <div className="bg-gradient-to-br from-primary/10 to-accent/5 rounded-lg p-2.5 sm:p-3 border border-primary/20">
-                      <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">Price</p>
-                      <div className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 rounded-2xl p-4 sm:p-5 border border-primary/20 backdrop-blur-sm shadow-lg">
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">Price</p>
+                      <div className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
-                        <span className="text-xs sm:text-sm text-muted-foreground">/month</span>
+                        <span className="text-sm sm:text-base text-muted-foreground">/month</span>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Property Stats - Compact Mobile Grid */}
-                <div className="grid grid-cols-4 gap-1.5 sm:gap-3 mt-3">
+                {/* Property Stats - Glassy Grid */}
+                <div className="grid grid-cols-4 gap-3 sm:gap-4 mt-5">
                   {property.bedrooms && (
-                    <div className="text-center p-2 sm:p-3 bg-primary/5 rounded-lg border border-primary/10">
-                      <Bed className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-primary mx-auto mb-0.5" />
-                      <div className="font-bold text-sm sm:text-base">{property.bedrooms}</div>
-                      <div className="text-[8px] sm:text-[10px] text-muted-foreground">Beds</div>
+                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/15 backdrop-blur-sm">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-1.5">
+                        <Bed className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      </div>
+                      <div className="font-bold text-base sm:text-lg">{property.bedrooms}</div>
+                      <div className="text-[10px] sm:text-xs text-muted-foreground">Beds</div>
                     </div>
                   )}
                   {property.bathrooms && (
-                    <div className="text-center p-2 sm:p-3 bg-accent/5 rounded-lg border border-accent/10">
-                      <Bath className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-accent mx-auto mb-0.5" />
-                      <div className="font-bold text-sm sm:text-base">{property.bathrooms}</div>
-                      <div className="text-[8px] sm:text-[10px] text-muted-foreground">Baths</div>
+                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-accent/15 backdrop-blur-sm">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-1.5">
+                        <Bath className="h-4 w-4 sm:h-5 sm:w-5 text-accent" />
+                      </div>
+                      <div className="font-bold text-base sm:text-lg">{property.bathrooms}</div>
+                      <div className="text-[10px] sm:text-xs text-muted-foreground">Baths</div>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="text-center p-2 sm:p-3 bg-secondary/5 rounded-lg border border-secondary/10">
-                      <Square className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-secondary mx-auto mb-0.5" />
-                      <div className="font-bold text-sm sm:text-base">{property.area_sqm}</div>
-                      <div className="text-[8px] sm:text-[10px] text-muted-foreground">m²</div>
+                    <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-xl border border-secondary/15 backdrop-blur-sm">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-1.5">
+                        <Square className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
+                      </div>
+                      <div className="font-bold text-base sm:text-lg">{property.area_sqm}</div>
+                      <div className="text-[10px] sm:text-xs text-muted-foreground">m²</div>
                     </div>
                   )}
-                  <div className="text-center p-2 sm:p-3 bg-muted/30 rounded-lg border border-border/30">
-                    <Calendar className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-muted-foreground mx-auto mb-0.5" />
-                    <div className="font-bold text-sm sm:text-base">
+                  <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl border border-border/30 backdrop-blur-sm">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-1.5">
+                      <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                    </div>
+                    <div className="font-bold text-base sm:text-lg">
                       {new Date(property.created_at).getFullYear()}
                     </div>
-                    <div className="text-[8px] sm:text-[10px] text-muted-foreground">Listed</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">Listed</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Property Details Tabs - Compact Mobile */}
-            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
-              <CardContent className="p-2.5 sm:p-4">
+            {/* Property Details Tabs - Glassy Style */}
+            <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+              <CardContent className="p-4 sm:p-6">
                 <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 rounded-md h-8 sm:h-9">
-                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded text-[10px] sm:text-xs py-1.5">Description</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded text-[10px] sm:text-xs py-1.5">Features</TabsTrigger>
-                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded text-[10px] sm:text-xs py-1.5">Details</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3 bg-gradient-to-r from-muted/50 via-muted/40 to-muted/50 rounded-xl h-10 sm:h-11 p-1">
+                    <TabsTrigger value="description" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground rounded-lg text-xs sm:text-sm font-medium transition-all">Description</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground rounded-lg text-xs sm:text-sm font-medium transition-all">Features</TabsTrigger>
+                    <TabsTrigger value="details" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground rounded-lg text-xs sm:text-sm font-medium transition-all">Details</TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="description" className="mt-2 sm:mt-3">
-                    <p className="text-foreground leading-relaxed text-xs sm:text-sm">
+                  <TabsContent value="description" className="mt-4 sm:mt-5">
+                    <p className="text-foreground leading-relaxed text-sm sm:text-base">
                       {property.description || 'No description available.'}
                     </p>
                   </TabsContent>
                   
-                  <TabsContent value="features" className="mt-2 sm:mt-3">
-                    <div className="grid grid-cols-1 gap-1.5 sm:gap-2">
+                  <TabsContent value="features" className="mt-4 sm:mt-5">
+                    <div className="grid grid-cols-1 gap-2 sm:gap-3">
                       {property.property_features && Object.keys(property.property_features).length > 0 ? (
                         Object.entries(property.property_features).map(([key, value]) => (
-                          <div key={key} className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                          <div key={key} className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
                             <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
                             <span className="text-muted-foreground">{String(value)}</span>
                           </div>
                         ))
                       ) : (
-                        <p className="text-muted-foreground text-center py-4 text-xs">No features listed.</p>
+                        <p className="text-muted-foreground text-center py-6 text-sm">No features listed.</p>
                       )}
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="details" className="mt-2 sm:mt-3">
-                    <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                  <TabsContent value="details" className="mt-4 sm:mt-5">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
                         <span className="font-medium">Type</span>
                         <span className="text-muted-foreground capitalize">{property.property_type}</span>
                       </div>
-                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
                         <span className="font-medium">Listing</span>
                         <span className="text-muted-foreground capitalize">{property.listing_type}</span>
                       </div>
-                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm items-center">
+                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm items-center">
                         <span className="font-medium">Status</span>
-                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-5 text-[9px] px-1.5">
+                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-6 text-xs px-2.5 rounded-full">
                           {property.status}
                         </Badge>
                       </div>
-                      <div className="flex justify-between py-1.5 px-2.5 bg-muted/30 rounded text-xs sm:text-sm">
+                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
                         <span className="font-medium">Listed</span>
                         <span className="text-muted-foreground">
                           {new Date(property.created_at).toLocaleDateString()}
@@ -871,53 +883,57 @@ const PropertyDetail: React.FC = () => {
             )}
           </div>
 
-          {/* Sidebar - Compact Mobile */}
-          <div className="space-y-2 sm:space-y-4">
+          {/* Sidebar - Glassy Style */}
+          <div className="space-y-3 sm:space-y-6">
             
-            {/* Contact Information - Compact */}
-            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-lg">
-              <CardHeader className="p-2.5 sm:p-4 pb-1.5 sm:pb-2">
-                <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
-                  <User className="h-4 w-4 text-primary" />
+            {/* Contact Information - Glassy */}
+            <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
+              <CardHeader className="p-4 sm:p-5 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary" />
+                  </div>
                   Agent Info
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-2.5 sm:p-4 pt-0 space-y-3">
+              <CardContent className="p-4 sm:p-5 pt-0 space-y-4">
                 {property.posted_by ? (
                   <div>
-                    {/* Agent Profile - Compact */}
-                    <div className="flex items-center gap-2.5 mb-3">
-                      <img
-                        src={property.posted_by.avatar_url || "/placeholder.svg"}
-                        alt={property.posted_by.name}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-border"
-                      />
+                    {/* Agent Profile - Enhanced */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 p-0.5 shadow-md">
+                        <img
+                          src={property.posted_by.avatar_url || "/placeholder.svg"}
+                          alt={property.posted_by.name}
+                          className="w-full h-full rounded-[10px] object-cover"
+                        />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-sm sm:text-base text-foreground truncate">{property.posted_by.name}</h4>
-                        <p className="text-[10px] sm:text-xs text-primary">{property.posted_by.position}</p>
-                        <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-[10px] sm:text-xs">{property.posted_by.customer_feedback_rating}</span>
-                          <span className="text-[9px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
+                        <h4 className="font-bold text-base sm:text-lg text-foreground truncate">{property.posted_by.name}</h4>
+                        <p className="text-xs sm:text-sm text-primary font-medium">{property.posted_by.position}</p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                          <span className="text-xs sm:text-sm font-semibold">{property.posted_by.customer_feedback_rating}</span>
+                          <span className="text-xs text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Company - Compact */}
-                    <div className="bg-muted/30 rounded-lg p-2.5 mb-3 text-xs">
-                      <div className="flex items-center gap-1.5 font-medium mb-1">
-                        <div className="w-5 h-5 bg-primary/10 rounded text-primary text-[9px] flex items-center justify-center font-bold">
+                    {/* Company - Enhanced */}
+                    <div className="bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl p-4 mb-4 backdrop-blur-sm">
+                      <div className="flex items-center gap-2 font-semibold mb-1.5">
+                        <div className="w-7 h-7 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg text-primary text-xs flex items-center justify-center font-bold">
                           {property.posted_by.company_name?.charAt(0)}
                         </div>
-                        <span className="truncate">{property.posted_by.company_name}</span>
+                        <span className="truncate text-sm">{property.posted_by.company_name}</span>
                       </div>
-                      <p className="text-[10px] text-muted-foreground truncate">{property.posted_by.office_address}</p>
+                      <p className="text-xs text-muted-foreground truncate">{property.posted_by.office_address}</p>
                     </div>
 
-                    {/* Contact Buttons - Compact */}
-                    <div className="space-y-1.5">
+                    {/* Contact Buttons - Enhanced */}
+                    <div className="space-y-2.5">
                       <Button 
-                        className="w-full bg-green-600 hover:bg-green-700 text-white h-8 text-xs"
+                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white h-11 text-sm font-semibold shadow-lg shadow-green-500/20 rounded-xl"
                         onClick={() => {
                           if (user && property.posted_by?.whatsapp_number) {
                             window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, interested in ${property.title}`, '_blank');
@@ -930,10 +946,10 @@ const PropertyDetail: React.FC = () => {
                       >
                         📱 WhatsApp
                       </Button>
-                      <div className="grid grid-cols-2 gap-1.5">
+                      <div className="grid grid-cols-2 gap-2.5">
                         <Button 
                           variant="outline" 
-                          className="h-8 text-xs"
+                          className="h-10 text-sm rounded-xl border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 hover:from-muted/50 hover:to-muted/30"
                           onClick={() => {
                             if (user && property.posted_by?.phone_number) {
                               window.open(`tel:${property.posted_by.phone_number}`, '_self');
@@ -942,12 +958,12 @@ const PropertyDetail: React.FC = () => {
                             }
                           }}
                         >
-                          <Phone className="h-3 w-3 mr-1" />
+                          <Phone className="h-4 w-4 mr-1.5" />
                           Call
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="h-8 text-xs"
+                          className="h-10 text-sm rounded-xl border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 hover:from-muted/50 hover:to-muted/30"
                           onClick={() => {
                             if (user && ownerInfo?.email) {
                               window.open(`mailto:${ownerInfo.email}?subject=Inquiry: ${property.title}`, '_self');
@@ -956,26 +972,26 @@ const PropertyDetail: React.FC = () => {
                             }
                           }}
                         >
-                          <Mail className="h-3 w-3 mr-1" />
+                          <Mail className="h-4 w-4 mr-1.5" />
                           Email
                         </Button>
                       </div>
                     </div>
 
-                    {/* Agent Stats - Compact */}
-                    <div className="grid grid-cols-2 gap-2 pt-2.5 mt-2.5 border-t border-border/30">
-                      <div className="text-center">
-                        <div className="font-bold text-sm text-primary">{property.posted_by.total_properties}+</div>
-                        <div className="text-[9px] text-muted-foreground">Sold</div>
+                    {/* Agent Stats - Enhanced */}
+                    <div className="grid grid-cols-2 gap-3 pt-4 mt-4 border-t border-border/30">
+                      <div className="text-center p-3 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl">
+                        <div className="font-bold text-lg text-primary">{property.posted_by.total_properties}+</div>
+                        <div className="text-xs text-muted-foreground">Properties Sold</div>
                       </div>
-                      <div className="text-center">
-                        <div className="font-bold text-sm text-accent">{property.posted_by.experience_years}y</div>
-                        <div className="text-[9px] text-muted-foreground">Experience</div>
+                      <div className="text-center p-3 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl">
+                        <div className="font-bold text-lg text-accent">{property.posted_by.experience_years}y</div>
+                        <div className="text-xs text-muted-foreground">Experience</div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground">Agent info not available</p>
+                  <p className="text-sm text-muted-foreground">Agent info not available</p>
                 )}
               </CardContent>
             </Card>
