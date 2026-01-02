@@ -7,28 +7,77 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    // Authentication required - this endpoint exposes sensitive user behavior data
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ 
+        error: 'Authentication required',
+        message: 'Please sign in to access behavior analysis.'
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
+    // Verify the user
+    const authSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(JSON.stringify({ 
+        error: 'Invalid authentication',
+        message: 'Your session has expired. Please sign in again.'
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const authenticatedUserId = user.id;
+    const supabaseClient = createClient(supabaseUrl, supabaseServiceKey);
     const { userId, sessionId, options = {}, requestType = 'analysis' } = await req.json();
+
+    // Security: Users can only access their own data (unless admin)
+    const requestedUserId = userId || authenticatedUserId;
+    if (requestedUserId && requestedUserId !== authenticatedUserId) {
+      // Check if user is admin
+      const { data: adminCheck } = await supabaseClient.rpc('check_admin_access');
+      if (!adminCheck) {
+        console.warn(`Unauthorized access attempt: ${authenticatedUserId} tried to access ${requestedUserId}'s behavior data`);
+        return new Response(JSON.stringify({ 
+          error: 'Unauthorized',
+          message: 'You can only access your own behavior analysis.'
+        }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    console.log('Behavior analysis request:', { userId: requestedUserId, sessionId, requestedBy: authenticatedUserId });
     
     if (requestType === 'insights') {
-      const insights = await generatePersonalizedInsights(supabaseClient, userId, sessionId);
+      const insights = await generatePersonalizedInsights(supabaseClient, requestedUserId, sessionId);
       return new Response(JSON.stringify({ insights }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     // Main behavior analysis
-    const metrics = await analyzeBehaviorPatterns(supabaseClient, userId, sessionId, options);
+    const metrics = await analyzeBehaviorPatterns(supabaseClient, requestedUserId, sessionId, options);
     
     return new Response(JSON.stringify({ metrics }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
