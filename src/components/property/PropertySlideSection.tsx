@@ -33,7 +33,16 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
       try {
         let query = supabase
           .from('properties')
-          .select('*')
+          .select(`
+            *,
+            owner:profiles!properties_owner_id_fkey(
+              id,
+              full_name,
+              avatar_url,
+              verification_status,
+              created_at
+            )
+          `)
           .eq('status', 'active')
           .not('title', 'is', null)
           .not('title', 'eq', '')
@@ -76,11 +85,22 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
           property.title?.trim() &&
           property.price > 0 &&
           (property.images?.length > 0 || property.thumbnail_url)
-        );
+        ).map(property => {
+          const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
+          return {
+            ...property,
+            posted_by: ownerData ? {
+              id: ownerData.id,
+              name: ownerData.full_name || 'Anonymous',
+              avatar_url: ownerData.avatar_url,
+              verification_status: ownerData.verification_status || 'unverified',
+              joining_date: ownerData.created_at
+            } : undefined
+          };
+        });
 
         console.log(`${type} properties loaded:`, filteredData.length);
         return filteredData;
-        
       } catch (err) {
         console.error(`Error fetching ${type} properties:`, err);
         return [];

@@ -131,7 +131,16 @@ const AutoScrollCarousel = ({
           if (ownerId) {
             const { data: ownerProps } = await supabase
               .from('properties')
-              .select('*')
+              .select(`
+                *,
+                owner:profiles!properties_owner_id_fkey(
+                  id,
+                  full_name,
+                  avatar_url,
+                  verification_status,
+                  created_at
+                )
+              `)
               .eq('owner_id', ownerId)
               .neq('id', currentPropertyId)
               .eq('status', 'active')
@@ -139,7 +148,19 @@ const AutoScrollCarousel = ({
               .not('title', 'eq', '')
               .gt('price', 0)
               .limit(limit);
-            data = ownerProps || [];
+            data = (ownerProps || []).map(p => {
+              const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+              return {
+                ...p,
+                posted_by: ownerData ? {
+                  id: ownerData.id,
+                  name: ownerData.full_name || 'Anonymous',
+                  avatar_url: ownerData.avatar_url,
+                  verification_status: ownerData.verification_status || 'unverified',
+                  joining_date: ownerData.created_at
+                } : undefined
+              };
+            });
           }
           break;
 
@@ -150,7 +171,16 @@ const AutoScrollCarousel = ({
 
             const { data: similarProps } = await supabase
               .from('properties')
-              .select('*')
+              .select(`
+                *,
+                owner:profiles!properties_owner_id_fkey(
+                  id,
+                  full_name,
+                  avatar_url,
+                  verification_status,
+                  created_at
+                )
+              `)
               .neq('id', currentPropertyId)
               .eq('status', 'active')
               .eq('property_type', propertyData.property_type)
@@ -163,14 +193,35 @@ const AutoScrollCarousel = ({
               .or(`city.ilike.%${propertyData.city || ''}%,state.ilike.%${propertyData.state || ''}%`)
               .limit(limit);
 
-            data = similarProps || [];
+            data = (similarProps || []).map(p => {
+              const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+              return {
+                ...p,
+                posted_by: ownerData ? {
+                  id: ownerData.id,
+                  name: ownerData.full_name || 'Anonymous',
+                  avatar_url: ownerData.avatar_url,
+                  verification_status: ownerData.verification_status || 'unverified',
+                  joining_date: ownerData.created_at
+                } : undefined
+              };
+            });
           }
           break;
 
         case 'recommended':
           let query = supabase
             .from('properties')
-            .select('*')
+            .select(`
+              *,
+              owner:profiles!properties_owner_id_fkey(
+                id,
+                full_name,
+                avatar_url,
+                verification_status,
+                created_at
+              )
+            `)
             .eq('status', 'active')
             .neq('id', currentPropertyId)
             .not('title', 'is', null)
@@ -187,7 +238,19 @@ const AutoScrollCarousel = ({
           }
 
           const { data: recommendedProps } = await query;
-          data = recommendedProps || [];
+          data = (recommendedProps || []).map(p => {
+            const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+            return {
+              ...p,
+              posted_by: ownerData ? {
+                id: ownerData.id,
+                name: ownerData.full_name || 'Anonymous',
+                avatar_url: ownerData.avatar_url,
+                verification_status: ownerData.verification_status || 'unverified',
+                joining_date: ownerData.created_at
+              } : undefined
+            };
+          });
           break;
       }
 
