@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Bot, X, Sparkles, Move, Maximize2, Clock, Volume2 } from "lucide-react";
+import { Bot, Sparkles, Move, Maximize2, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface ChatbotWelcomeDialogProps {
@@ -14,14 +14,6 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
       <DialogContent className="max-w-sm p-0 overflow-hidden max-h-[70vh]">
         {/* Header with gradient background */}
         <div className="relative bg-gradient-to-br from-primary/20 via-primary/10 to-background p-4 pb-5">
-          <Button
-            onClick={onClose}
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 h-6 w-6"
-          >
-            <X className="h-3 w-3" />
-          </Button>
           
           <motion.div
             initial={{ scale: 0 }}
