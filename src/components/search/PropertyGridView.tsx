@@ -6,6 +6,7 @@ import PropertyComparisonButton from "@/components/property/PropertyComparisonBu
 import SocialShareDialog from "@/components/property/SocialShareDialog";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
 interface PropertyGridViewProps {
   properties: BaseProperty[];
@@ -209,6 +210,14 @@ const PropertyGridView = ({
             <h3 className="font-semibold text-foreground line-clamp-2 text-[10px] sm:text-xs md:text-base mb-1 sm:mb-1.5 md:mb-2 group-hover:text-primary transition-colors">
               {property.title}
             </h3>
+
+            {/* Posted by + status */}
+            {property.posted_by?.name && (
+              <div className="flex items-center gap-1 mb-1 text-[9px] sm:text-[10px] md:text-sm text-muted-foreground">
+                <span className="truncate max-w-[70%]">{property.posted_by.name}</span>
+                <UserStatusBadge status={property.posted_by.verification_status} size="xs" />
+              </div>
+            )}
 
             {/* Location */}
             <div className="flex items-center gap-0.5 sm:gap-1 text-muted-foreground mb-1 sm:mb-1.5 md:mb-3">
