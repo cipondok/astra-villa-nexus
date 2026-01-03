@@ -30,40 +30,42 @@ const UserStatusBadge = ({
 
   const getStatusConfig = () => {
     switch (status.toLowerCase()) {
+      // Some backends store verification as "approved".
       case "verified":
+      case "approved":
         return {
           icon: ShieldCheck,
-          color: "text-emerald-500",
-          bgColor: "bg-emerald-500/10",
-          label: "Verified User"
+          color: "text-primary",
+          bgColor: "bg-primary/10",
+          label: "Verified User",
         };
       case "premium":
         return {
           icon: CheckCircle2,
-          color: "text-amber-500",
-          bgColor: "bg-amber-500/10",
-          label: "Premium User"
+          color: "text-accent-foreground",
+          bgColor: "bg-accent/20",
+          label: "Premium User",
         };
       case "pending":
         return {
           icon: Clock,
-          color: "text-orange-500",
-          bgColor: "bg-orange-500/10",
-          label: "Verification Pending"
+          color: "text-muted-foreground",
+          bgColor: "bg-muted/60",
+          label: "Verification Pending",
         };
       case "rejected":
         return {
           icon: XCircle,
-          color: "text-red-500",
-          bgColor: "bg-red-500/10",
-          label: "Verification Rejected"
+          color: "text-destructive",
+          bgColor: "bg-destructive/10",
+          label: "Verification Rejected",
         };
       case "unverified":
         return {
           icon: AlertCircle,
           color: "text-muted-foreground",
           bgColor: "bg-muted/50",
-          label: "Unverified"
+          label: "Unverified",
         };
       default:
         return null;
