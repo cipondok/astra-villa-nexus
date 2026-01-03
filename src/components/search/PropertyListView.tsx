@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone } from "lucide-react";
 import { BaseProperty } from "@/types/property";
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
 interface PropertyListViewProps {
   properties: BaseProperty[];
@@ -140,9 +141,17 @@ const PropertyListView = ({
               {/* Content Section */}
               <div className="flex-1 p-6 flex flex-col justify-between">
                 {/* Title - Now at top */}
-                <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
-                  {property.title}
+                <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 flex items-center gap-2">
+                  <span className="min-w-0 flex-1 truncate">{property.title}</span>
                 </h3>
+
+                {/* Posted by + status */}
+                {property.posted_by?.name && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                    <span className="truncate max-w-[420px]">{property.posted_by.name}</span>
+                    <UserStatusBadge status={property.posted_by.verification_status} size="sm" />
+                  </div>
+                )}
                 
                 {/* Location */}
                 <div className="flex items-center text-muted-foreground mb-4">

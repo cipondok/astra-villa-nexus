@@ -11,6 +11,7 @@ import PropertyRatingModal from './PropertyRatingModal';
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from "@/types/property";
 import VerificationBadge from '@/components/ui/VerificationBadge';
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
 interface PropertyCardProps {
   id: string;
@@ -223,8 +224,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                     </div>
                   )}
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                    <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
                       {posted_by.name}
+                      <UserStatusBadge status={posted_by.verification_status} size="xs" />
                     </span>
                     {posted_by.user_level && (
                       <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">

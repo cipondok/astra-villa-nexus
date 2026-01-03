@@ -2,9 +2,10 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Shield, Calendar } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
 interface PropertyOwner {
   id: string;
@@ -236,9 +237,7 @@ const ModernPropertyCard = ({
                 <span className="text-[10px] font-medium text-foreground truncate">
                   {ownerInfo.name}
                 </span>
-                {ownerInfo.verification_status === 'verified' && (
-                  <Shield className="h-2.5 w-2.5 text-primary flex-shrink-0" />
-                )}
+                <UserStatusBadge status={ownerInfo.verification_status} size="xs" />
               </div>
               <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
                 {ownerInfo.type && (

@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useIsAdmin } from '@/hooks/useUserRoles';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { UserMembershipBadge } from '@/components/user/UserMembershipBadge';
+import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { 
   MapPin, 
   Bed, 
@@ -377,11 +378,9 @@ const PropertyDetail: React.FC = () => {
                       className="w-full h-full rounded-[10px] object-cover"
                     />
                   </div>
-                  {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center border-2 border-background shadow-md">
-                      <Shield className="w-2.5 h-2.5 text-white" />
-                    </div>
-                  )}
+                  <div className="absolute -bottom-1 -right-1">
+                    <UserStatusBadge status={property.posted_by.verification_status} size="sm" />
+                  </div>
                 </div>
                 
                 <div className="flex-1 min-w-0">

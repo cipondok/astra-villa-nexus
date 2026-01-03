@@ -53,7 +53,29 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Get recent properties for context
       const { data: recentProperties } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description')
+        .select(`
+          id,
+          title,
+          property_type,
+          listing_type,
+          price,
+          location,
+          bedrooms,
+          bathrooms,
+          area_sqm,
+          images,
+          thumbnail_url,
+          state,
+          city,
+          description,
+          owner:profiles!properties_owner_id_fkey(
+            id,
+            full_name,
+            avatar_url,
+            verification_status,
+            created_at
+          )
+        `)
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
@@ -81,26 +103,74 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         // Fallback to recent properties
         const recommended = recentProperties
           ?.slice(0, 8)
-          .map(p => ({
-            ...p,
-            listing_type: p.listing_type as "sale" | "rent" | "lease",
-            image_urls: p.images || []
-          })) || [];
+          .map((p: any) => {
+            const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+            return {
+              ...p,
+              listing_type: p.listing_type as "sale" | "rent" | "lease",
+              image_urls: p.images || [],
+              posted_by: ownerData
+                ? {
+                    id: ownerData.id,
+                    name: ownerData.full_name || "Anonymous",
+                    avatar_url: ownerData.avatar_url || undefined,
+                    verification_status: ownerData.verification_status || "unverified",
+                    joining_date: ownerData.created_at || undefined,
+                  }
+                : undefined,
+            };
+          }) || [];
         setRecommendations(recommended);
       } else {
         // Fetch recommended properties
         const { data: recommendedProps } = await supabase
           .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
+          .select(`
+            id,
+            title,
+            property_type,
+            listing_type,
+            price,
+            location,
+            bedrooms,
+            bathrooms,
+            area_sqm,
+            images,
+            thumbnail_url,
+            state,
+            city,
+            description,
+            three_d_model_url,
+            virtual_tour_url,
+            owner:profiles!properties_owner_id_fkey(
+              id,
+              full_name,
+              avatar_url,
+              verification_status,
+              created_at
+            )
+          `)
           .in('id', propertyIds.slice(0, 8))
           .eq('status', 'active')
           .eq('approval_status', 'approved');
 
-        const transformed = recommendedProps?.map(p => ({
-          ...p,
-          listing_type: p.listing_type as "sale" | "rent" | "lease",
-          image_urls: p.images || []
-        })) || [];
+        const transformed = recommendedProps?.map((p: any) => {
+          const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+          return {
+            ...p,
+            listing_type: p.listing_type as "sale" | "rent" | "lease",
+            image_urls: p.images || [],
+            posted_by: ownerData
+              ? {
+                  id: ownerData.id,
+                  name: ownerData.full_name || "Anonymous",
+                  avatar_url: ownerData.avatar_url || undefined,
+                  verification_status: ownerData.verification_status || "unverified",
+                  joining_date: ownerData.created_at || undefined,
+                }
+              : undefined,
+          };
+        }) || [];
 
         setRecommendations(transformed);
       }
@@ -116,17 +186,53 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Fallback to trending properties
       const { data: fallbackProps } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
+        .select(`
+          id,
+          title,
+          property_type,
+          listing_type,
+          price,
+          location,
+          bedrooms,
+          bathrooms,
+          area_sqm,
+          images,
+          thumbnail_url,
+          state,
+          city,
+          description,
+          three_d_model_url,
+          virtual_tour_url,
+          owner:profiles!properties_owner_id_fkey(
+            id,
+            full_name,
+            avatar_url,
+            verification_status,
+            created_at
+          )
+        `)
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
         .limit(8);
 
-      const transformed = fallbackProps?.map(p => ({
-        ...p,
-        listing_type: p.listing_type as "sale" | "rent" | "lease",
-        image_urls: p.images || []
-      })) || [];
+      const transformed = fallbackProps?.map((p: any) => {
+        const ownerData = Array.isArray(p.owner) ? p.owner[0] : p.owner;
+        return {
+          ...p,
+          listing_type: p.listing_type as "sale" | "rent" | "lease",
+          image_urls: p.images || [],
+          posted_by: ownerData
+            ? {
+                id: ownerData.id,
+                name: ownerData.full_name || "Anonymous",
+                avatar_url: ownerData.avatar_url || undefined,
+                verification_status: ownerData.verification_status || "unverified",
+                joining_date: ownerData.created_at || undefined,
+              }
+            : undefined,
+        };
+      }) || [];
 
       setRecommendations(transformed);
 
