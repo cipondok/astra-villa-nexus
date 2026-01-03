@@ -12,6 +12,7 @@ import { VisualComparisonModal } from '@/components/search/VisualComparisonModal
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from '@/types/property';
 import VerificationBadge from '@/components/ui/VerificationBadge';
+import UserStatusBadge from '@/components/ui/UserStatusBadge';
 
 interface CompactProperty {
   id: string;
@@ -353,9 +354,15 @@ const CompactPropertyCard = ({
                 </div>
               )}
               <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-[10px] sm:text-xs font-medium text-foreground truncate leading-tight">
-                  {property.posted_by.name}
-                </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] sm:text-xs font-medium text-foreground truncate leading-tight">
+                    {property.posted_by.name}
+                  </span>
+                  <UserStatusBadge 
+                    status={property.posted_by.verification_status} 
+                    size="xs" 
+                  />
+                </div>
                 {property.posted_by.user_level && (
                   <span className="text-[9px] sm:text-[10px] text-muted-foreground truncate leading-tight">
                     {property.posted_by.user_level}
