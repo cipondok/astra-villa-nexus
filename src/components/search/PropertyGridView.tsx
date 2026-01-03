@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale, Tag, Percent } from "lucide-react";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import SocialShareDialog from "@/components/property/SocialShareDialog";
 import { BaseProperty } from "@/types/property";
@@ -159,14 +159,24 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Bottom Left Price Overlay - Enhanced Design */}
+            {/* Bottom Left Price Overlay - Gradient Badge with Icon */}
             <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 sm:p-3 md:p-4">
-              <div className="flex items-baseline gap-1 sm:gap-1.5 md:gap-2">
-                <div className="font-bold text-[11px] sm:text-sm md:text-xl lg:text-2xl text-white leading-tight">
-                  {formatPrice(property.price)}
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="inline-flex items-center gap-1 sm:gap-1.5 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-lg">
+                  <Tag className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="font-bold text-[11px] sm:text-sm md:text-lg lg:text-xl leading-tight">
+                    {formatPrice(property.price)}
+                  </span>
+                  {property.listing_type === 'rent' && (
+                    <span className="text-primary-foreground/80 text-[9px] sm:text-xs font-medium">/bln</span>
+                  )}
                 </div>
-                {property.listing_type === 'rent' && (
-                  <span className="text-white/90 text-[9px] sm:text-xs md:text-sm font-medium">/bulan</span>
+                {/* Discount Badge */}
+                {(property as any).discount_percentage && (property as any).discount_percentage > 0 && (
+                  <div className="inline-flex items-center gap-0.5 sm:gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-lg animate-pulse">
+                    <Percent className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span className="font-bold text-[9px] sm:text-xs">{(property as any).discount_percentage}% OFF</span>
+                  </div>
                 )}
               </div>
             </div>

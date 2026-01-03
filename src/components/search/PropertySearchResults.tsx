@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +13,9 @@ import {
   Share2, 
   ExternalLink,
   Building2,
-  Eye
+  Eye,
+  Tag,
+  Percent
 } from 'lucide-react';
 
 interface PropertySearchResultsProps {
@@ -196,9 +197,21 @@ const PropertySearchResults = ({
           </div>
 
           <CardContent className="p-4">
-            {/* Price */}
-            <div className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2">
-              {property.price ? formatIDR(property.price) : currentText.priceOnRequest}
+            {/* Price with Gradient Badge and Discount */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-3 py-1.5 rounded-lg shadow-md">
+                <Tag className="h-4 w-4" />
+                <span className="text-lg font-bold">
+                  {property.price ? formatIDR(property.price) : currentText.priceOnRequest}
+                </span>
+              </div>
+              {/* Discount Badge */}
+              {(property as any).discount_percentage && (property as any).discount_percentage > 0 && (
+                <div className="inline-flex items-center gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-1 rounded-full shadow-md animate-pulse">
+                  <Percent className="h-3 w-3" />
+                  <span className="font-bold text-xs">{(property as any).discount_percentage}% OFF</span>
+                </div>
+              )}
             </div>
 
             {/* Title */}
