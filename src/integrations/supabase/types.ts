@@ -4368,6 +4368,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           development_status: string
+          discount_percentage: number | null
           id: string
           image_urls: string[] | null
           images: string[] | null
@@ -4407,6 +4408,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           development_status?: string
+          discount_percentage?: number | null
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
@@ -4446,6 +4448,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           development_status?: string
+          discount_percentage?: number | null
           id?: string
           image_urls?: string[] | null
           images?: string[] | null

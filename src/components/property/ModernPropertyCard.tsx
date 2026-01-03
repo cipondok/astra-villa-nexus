@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar, Tag, Percent } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
@@ -43,6 +43,7 @@ interface ModernPropertyCardProps {
     posted_by?: PropertyOwner;
     city?: string;
     state?: string;
+    discount_percentage?: number;
   };
   language?: string;
   isSaved?: boolean;
@@ -162,11 +163,26 @@ const ModernPropertyCard = ({
 
         {/* Bottom Info Overlay - Price & Stats */}
         <div className="absolute bottom-0 left-0 right-0 p-2">
-          {/* Price */}
-          <div className="text-white font-bold text-sm sm:text-base mb-1 drop-shadow-lg">
-            {formatPrice(property.price)}
-            {(property.listing_type === 'rent' || property.type === 'rent') && (
-              <span className="text-[10px] font-normal opacity-80">/mo</span>
+          {/* Price with Gradient Badge */}
+          <div className="flex items-center gap-1.5 flex-wrap mb-1">
+            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-primary via-primary/90 to-accent shadow-lg backdrop-blur-sm">
+              <Tag className="h-3 w-3 text-primary-foreground" />
+              <span className="text-primary-foreground font-bold text-sm sm:text-base leading-tight">
+                {formatPrice(property.price)}
+              </span>
+              {(property.listing_type === 'rent' || property.type === 'rent') && (
+                <span className="text-primary-foreground/80 text-[9px] font-medium">/mo</span>
+              )}
+            </div>
+            
+            {/* Discount Badge */}
+            {property.discount_percentage && property.discount_percentage > 0 && (
+              <div className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-destructive to-destructive/80 shadow-md animate-pulse">
+                <Percent className="h-2.5 w-2.5 text-destructive-foreground" />
+                <span className="text-destructive-foreground font-bold text-[10px]">
+                  {property.discount_percentage}% OFF
+                </span>
+              </div>
             )}
           </div>
           

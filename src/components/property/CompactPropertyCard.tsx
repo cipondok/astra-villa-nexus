@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare, ScanEye, Tag, Percent } from 'lucide-react';
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
 import PropertyRatingDisplay from './PropertyRatingDisplay';
@@ -37,6 +37,7 @@ interface CompactProperty {
   owner_verified?: boolean;
   agent_verified?: boolean;
   agency_verified?: boolean;
+  discount_percentage?: number;
   posted_by?: {
     id: string;
     name: string;
@@ -275,11 +276,27 @@ const CompactPropertyCard = ({
 
           {/* Bottom Overlay - Property Info on Image */}
           <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 md:p-3">
-            {/* Price */}
-            <div className="text-white font-bold text-sm sm:text-base md:text-lg leading-tight drop-shadow-lg">
-              {formatPrice(property.price)}
-              {property.listing_type === 'rent' && (
-                <span className="text-[9px] sm:text-xs font-normal opacity-90">/mo</span>
+            {/* Price with Gradient Badge */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Main Price Badge */}
+              <div className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-gradient-to-r from-primary via-primary/90 to-accent shadow-lg backdrop-blur-sm">
+                <Tag className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-primary-foreground" />
+                <span className="text-primary-foreground font-bold text-xs sm:text-sm md:text-base leading-tight">
+                  {formatPrice(property.price)}
+                </span>
+                {property.listing_type === 'rent' && (
+                  <span className="text-primary-foreground/80 text-[8px] sm:text-[10px] font-medium">/mo</span>
+                )}
+              </div>
+
+              {/* Discount Badge */}
+              {property.discount_percentage && property.discount_percentage > 0 && (
+                <div className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-gradient-to-r from-destructive to-destructive/80 shadow-md animate-pulse">
+                  <Percent className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-destructive-foreground" />
+                  <span className="text-destructive-foreground font-bold text-[10px] sm:text-xs">
+                    {property.discount_percentage}% OFF
+                  </span>
+                </div>
               )}
             </div>
 
