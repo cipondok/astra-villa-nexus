@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Percent } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
@@ -45,6 +45,7 @@ interface PropertyCardProps {
     customer_feedback_rating?: number;
     customer_feedback_count?: number;
   };
+  discount_percentage?: number;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -67,7 +68,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   owner_verified,
   agent_verified,
   agency_verified,
-  posted_by
+  posted_by,
+  discount_percentage
 }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
@@ -288,14 +290,25 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="relative price-display mb-2">
-            <div className="text-3xl font-black bg-gradient-to-br from-emerald-500 via-emerald-600 to-green-700 bg-clip-text text-transparent tracking-tight leading-none">
-              {formatPrice(price)}
+          {/* Price with Gradient Badge */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-primary via-primary/90 to-accent shadow-lg">
+              <Tag className="h-4 w-4 text-primary-foreground" />
+              <span className="text-primary-foreground font-bold text-xl sm:text-2xl leading-tight">
+                {formatPrice(price)}
+              </span>
+              {listing_type === 'rent' && (
+                <span className="text-primary-foreground/80 text-xs font-medium">/month</span>
+              )}
             </div>
-            <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/15 via-green-500/15 to-emerald-600/15 blur-lg -z-10 rounded-lg"></div>
-            {listing_type === 'rent' && (
-              <div className="text-xs font-semibold text-emerald-600/90 mt-1 tracking-wider uppercase">
-                Per Month
+            
+            {/* Discount Badge */}
+            {discount_percentage && discount_percentage > 0 && (
+              <div className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-destructive to-destructive/80 shadow-md animate-pulse">
+                <Percent className="h-3.5 w-3.5 text-destructive-foreground" />
+                <span className="text-destructive-foreground font-bold text-sm">
+                  {discount_percentage}% OFF
+                </span>
               </div>
             )}
           </div>
