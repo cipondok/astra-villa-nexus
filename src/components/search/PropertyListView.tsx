@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent } from "lucide-react";
 import { BaseProperty } from "@/types/property";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
@@ -97,17 +97,25 @@ const PropertyListView = ({
                   </Badge>
                 </div>
 
-                {/* Price Overlay - Bottom Left - Responsive with Full Color */}
+                {/* Price Overlay - Bottom Left - Gradient Badge with Icon */}
                 <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 md:bottom-4 md:left-4 z-10">
-                  <div className="bg-primary rounded-md sm:rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 lg:px-5 lg:py-3 shadow-lg">
-                    <div className="flex items-center gap-2 md:gap-2.5">
-                      <div className="font-bold text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl text-primary-foreground leading-tight whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg shadow-lg">
+                      <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                      <span className="font-bold text-sm sm:text-base md:text-xl lg:text-2xl leading-tight whitespace-nowrap">
                         {formatPrice(property.price)}
-                      </div>
+                      </span>
                       {property.listing_type === 'rent' && (
-                        <span className="bg-primary-foreground/20 text-primary-foreground text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">/bln</span>
+                        <span className="bg-primary-foreground/20 text-primary-foreground text-[9px] sm:text-[10px] md:text-xs font-semibold px-1.5 py-0.5 rounded">/bln</span>
                       )}
                     </div>
+                    {/* Discount Badge */}
+                    {(property as any).discount_percentage && (property as any).discount_percentage > 0 && (
+                      <div className="inline-flex items-center gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full shadow-lg animate-pulse">
+                        <Percent className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                        <span className="font-bold text-xs sm:text-sm">{(property as any).discount_percentage}% OFF</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
