@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +43,9 @@ interface FallbackProperty {
   state: string | null;
   images: string[] | null;
   thumbnail_url: string | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  area_sqm: number | null;
   owner_type?: string;
   owner_verified?: boolean;
   agent_verified?: boolean;
@@ -95,7 +98,7 @@ export default function FeaturedAdsCarousel() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, price, property_type, city, state, images, thumbnail_url, created_at')
+        .select('id, title, price, property_type, city, state, images, thumbnail_url, bedrooms, bathrooms, area_sqm, created_at')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .not('title', 'is', null)
@@ -247,6 +250,27 @@ export default function FeaturedAdsCarousel() {
                 <h3 className="mt-0.5 text-[11px] sm:text-xs md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
                   {p.title}
                 </h3>
+                {/* Property Stats - Bedroom, Bathroom, Area */}
+                <div className="flex items-center gap-2 mt-1">
+                  {p.bedrooms !== null && p.bedrooms > 0 && (
+                    <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] text-white/90 drop-shadow-md">
+                      <Bed className="h-3 w-3" />
+                      <span>{p.bedrooms}</span>
+                    </span>
+                  )}
+                  {p.bathrooms !== null && p.bathrooms > 0 && (
+                    <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] text-white/90 drop-shadow-md">
+                      <Bath className="h-3 w-3" />
+                      <span>{p.bathrooms}</span>
+                    </span>
+                  )}
+                  {p.area_sqm !== null && p.area_sqm > 0 && (
+                    <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] text-white/90 drop-shadow-md">
+                      <Maximize className="h-3 w-3" />
+                      <span>{p.area_sqm}m²</span>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           ))
