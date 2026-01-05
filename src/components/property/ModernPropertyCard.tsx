@@ -66,12 +66,29 @@ const ModernPropertyCard = ({
   const formatPrice = (price: number | string) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     if (numPrice >= 1000000000) {
-      return `Rp${(numPrice / 1000000000).toFixed(1)}M`;
+      return (
+        <>
+          <span className="text-[0.7em] font-medium opacity-90">Rp</span>
+          {(numPrice / 1000000000).toFixed(1)}
+          <span className="text-[0.7em] font-medium opacity-90">M</span>
+        </>
+      );
     }
     if (numPrice >= 1000000) {
-      return `Rp${(numPrice / 1000000).toFixed(0)}Jt`;
+      return (
+        <>
+          <span className="text-[0.7em] font-medium opacity-90">Rp</span>
+          {(numPrice / 1000000).toFixed(0)}
+          <span className="text-[0.7em] font-medium opacity-90">Jt</span>
+        </>
+      );
     }
-    return `Rp${numPrice.toLocaleString()}`;
+    return (
+      <>
+        <span className="text-[0.7em] font-medium opacity-90">Rp</span>
+        {numPrice.toLocaleString()}
+      </>
+    );
   };
 
   const getTypeLabel = (type?: string) => {
