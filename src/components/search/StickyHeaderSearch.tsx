@@ -77,14 +77,13 @@ export function StickyHeaderSearch({
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className={cn(
-            "fixed top-0 left-0 right-0 z-[9999]",
-            "bg-background/95 backdrop-blur-xl border-b border-border/50",
-            "shadow-md",
-            "pt-[52px] sm:pt-[56px] md:pt-[60px]",
+            "fixed top-[44px] sm:top-[48px] md:top-[52px] left-0 right-0 z-[9999]",
+            "bg-background border-b border-border/50",
+            "shadow-sm",
             className
           )}
         >
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-1.5">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-1">
             <form onSubmit={handleSubmit} className="flex items-center gap-1.5 sm:gap-2">
               {/* Mobile: Compact search bar */}
               <div className="md:hidden flex-1">
