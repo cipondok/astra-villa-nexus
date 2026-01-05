@@ -35,18 +35,13 @@ const PropertyGridView = ({
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
       const value = price / 1000000000;
-      return `IDR ${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)} Miliar`;
+      return `Rp${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}M`;
     }
     if (price >= 1000000) {
       const value = price / 1000000;
-      return `IDR ${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)} Jt`;
+      return `Rp${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}Jt`;
     }
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
+    return `Rp${price.toLocaleString('id-ID')}`;
   };
 
   const getImageUrl = (property: BaseProperty) => {
@@ -165,15 +160,15 @@ const PropertyGridView = ({
             </div>
 
             {/* Bottom Left Price Overlay - Gradient Badge with Icon */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 sm:p-3 md:p-4">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="inline-flex items-center gap-1 sm:gap-1.5 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-lg">
-                  <Tag className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="font-bold text-[11px] sm:text-sm md:text-lg lg:text-xl leading-tight">
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 sm:p-2.5 md:p-3">
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <div className="inline-flex items-center gap-0.5 sm:gap-1 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-1.5 sm:px-2 py-0.5 sm:py-1 rounded shadow-lg">
+                  <Tag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <span className="font-bold text-[10px] sm:text-xs md:text-sm leading-tight">
                     {formatPrice(property.price)}
                   </span>
                   {property.listing_type === 'rent' && (
-                    <span className="text-primary-foreground/80 text-[9px] sm:text-xs font-medium">/bln</span>
+                    <span className="text-primary-foreground/80 text-[7px] sm:text-[8px] md:text-[10px] font-medium">/bln</span>
                   )}
                 </div>
                 {/* Discount Badge */}

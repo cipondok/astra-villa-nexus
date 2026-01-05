@@ -89,11 +89,11 @@ const PropertySlideshow = () => {
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      return `Rp ${(price / 1000000000).toFixed(1)}B`;
+      return `Rp${(price / 1000000000).toFixed(1)}M`;
     } else if (price >= 1000000) {
-      return `Rp ${(price / 1000000).toFixed(1)}M`;
+      return `Rp${(price / 1000000).toFixed(0)}Jt`;
     } else {
-      return `Rp ${price.toLocaleString()}`;
+      return `Rp${price.toLocaleString()}`;
     }
   };
 
@@ -177,7 +177,7 @@ const PropertySlideshow = () => {
             </div>
             
             <div className="px-2">
-              <div className="text-lg font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              <div className="text-sm font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                 {formatPrice(property.price)}
               </div>
               <h3 className="text-sm font-semibold text-foreground line-clamp-1 mb-2">
