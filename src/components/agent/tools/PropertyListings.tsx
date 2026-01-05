@@ -5,15 +5,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Eye, Edit, Plus, MapPin, DollarSign, Calendar } from "lucide-react";
+import { Building2, Eye, Edit, Plus, MapPin, DollarSign, Star, Lock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PropertyManager from "../PropertyManager";
 import RentalBookingManager from "../../rental/RentalBookingManager";
+import { useVIPFeatureGate } from "@/hooks/useVIPFeatureGate";
+import { VIPUpgradePrompt } from "@/components/vip/VIPUpgradePrompt";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const PropertyListings = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { canAccess: canFeature, requiredLevel } = useVIPFeatureGate('featured_listings');
   
   const { data: properties, isLoading } = useQuery({
     queryKey: ['agent-properties', user?.id],
@@ -150,6 +154,36 @@ const PropertyListings = () => {
                       Created: {new Date(property.created_at).toLocaleDateString()}
                     </p>
                     <div className="flex gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              size="sm" 
+                              variant={canFeature ? "outline" : "ghost"}
+                              disabled={!canFeature}
+                              className={!canFeature ? "opacity-60" : ""}
+                              onClick={() => {
+                                if (canFeature) {
+                                  // TODO: Implement feature listing toggle
+                                  console.log('Feature listing:', property.id);
+                                }
+                              }}
+                            >
+                              {canFeature ? (
+                                <Star className="h-3 w-3 mr-1" />
+                              ) : (
+                                <Lock className="h-3 w-3 mr-1" />
+                              )}
+                              Feature
+                            </Button>
+                          </TooltipTrigger>
+                          {!canFeature && (
+                            <TooltipContent>
+                              <p>Gold+ membership required</p>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+                      </TooltipProvider>
                       <Button 
                         size="sm" 
                         variant="outline"
