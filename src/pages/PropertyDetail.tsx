@@ -55,6 +55,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProtectedContactInfo from '@/components/ProtectedContactInfo';
 import useAutoHorizontalScroll from '@/hooks/useAutoHorizontalScroll';
+import { BookingDialog } from '@/components/property/BookingDialog';
+import { PropertyReviews } from '@/components/property/PropertyReviews';
 
 interface PropertyData {
   id: string;
@@ -977,6 +979,21 @@ const PropertyDetail: React.FC = () => {
                           Email
                         </Button>
                       </div>
+                      
+                      {/* Schedule Viewing Button */}
+                      <BookingDialog 
+                        propertyId={property.id} 
+                        propertyTitle={property.title}
+                        trigger={
+                          <Button 
+                            variant="outline"
+                            className="w-full mt-3 h-11 text-sm font-semibold rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                          >
+                            <Calendar className="h-4 w-4 mr-1.5" />
+                            Schedule Viewing
+                          </Button>
+                        }
+                      />
                     </div>
 
                     {/* Agent Stats - Enhanced */}
@@ -997,6 +1014,11 @@ const PropertyDetail: React.FC = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-6 sm:mt-8">
+          <PropertyReviews propertyId={property.id} />
         </div>
 
         {/* Similar Properties - Modern Compact Cards */}
