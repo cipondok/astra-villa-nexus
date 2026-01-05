@@ -223,7 +223,7 @@ export default function FeaturedAdsCarousel() {
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
                 <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
                 </div>
               </div>
 
@@ -333,7 +333,7 @@ export default function FeaturedAdsCarousel() {
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
                 <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
                 </div>
               </div>
               
