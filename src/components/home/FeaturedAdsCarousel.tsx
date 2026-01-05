@@ -259,20 +259,20 @@ export default function FeaturedAdsCarousel() {
                 {/* Property Stats - Bedroom, Bathroom, Area with bigger icons */}
                 <div className="flex items-center gap-3 bg-black/40 rounded-lg px-2 py-1.5 backdrop-blur-sm">
                   {p.bedrooms !== null && p.bedrooms > 0 && (
-                    <span className="flex items-center gap-1 text-xs sm:text-sm text-white font-medium">
-                      <Bed className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-white font-medium">
+                      <Bed className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>{p.bedrooms}</span>
                     </span>
                   )}
                   {p.bathrooms !== null && p.bathrooms > 0 && (
-                    <span className="flex items-center gap-1 text-xs sm:text-sm text-white font-medium">
-                      <Bath className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-white font-medium">
+                      <Bath className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>{p.bathrooms}</span>
                     </span>
                   )}
                   {p.area_sqm !== null && p.area_sqm > 0 && (
-                    <span className="flex items-center gap-1 text-xs sm:text-sm text-white font-medium">
-                      <Maximize className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-white font-medium">
+                      <Maximize className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>{p.area_sqm}m²</span>
                     </span>
                   )}
