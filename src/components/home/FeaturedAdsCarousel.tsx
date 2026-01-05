@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
@@ -238,10 +238,11 @@ export default function FeaturedAdsCarousel() {
                       Featured
                     </span>
                   </span>
-                  {/* Listing Type Badge - Jual/Sewa */}
-                  <span className={`text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full text-white shadow-lg ${
+                  {/* Listing Type Badge - Jual/Sewa with icon */}
+                  <span className={`flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full text-white shadow-lg ${
                     p.listing_type === 'rent' ? 'bg-blue-500' : 'bg-green-500'
                   }`}>
+                    {p.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                     {getListingLabel(p.listing_type)}
                   </span>
                 </div>
