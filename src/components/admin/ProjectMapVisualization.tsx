@@ -91,7 +91,7 @@ const ProjectMapVisualization = () => {
     {
       name: 'User Management',
       icon: Users,
-      progress: 95,
+      progress: 100,
       status: 'completed',
       priority: 'critical',
       tasks: [
@@ -99,7 +99,7 @@ const ProjectMapVisualization = () => {
         { name: 'Profile management', done: true },
         { name: 'Role-based access', done: true },
         { name: 'KYC verification', done: true },
-        { name: 'User levels system', done: false }
+        { name: 'User levels system', done: true }
       ]
     },
     {
