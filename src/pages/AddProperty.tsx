@@ -1,12 +1,13 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogIn, UserPlus, Lock, ArrowLeft, Building } from "lucide-react";
+import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
+import { useVIPLimits } from "@/hooks/useVIPLimits";
+import VIPLimitAlert from "@/components/property/VIPLimitAlert";
 
 const AddProperty = () => {
   const { isAuthenticated, profile } = useAuth();
@@ -14,6 +15,13 @@ const AddProperty = () => {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const { data: userRoles = [] } = useUserRoles();
   const navigate = useNavigate();
+  const { 
+    canAddProperty, 
+    currentProperties, 
+    maxProperties, 
+    membershipLevel, 
+    isLoading: limitsLoading 
+  } = useVIPLimits();
 
   // Show login/register prompt for non-authenticated users
   if (!isAuthenticated) {
@@ -66,14 +74,14 @@ const AddProperty = () => {
     );
   }
 
-  // Check if user has permission to add properties
-  const canAddProperty = isAdmin || 
+  // Check if user has permission to add properties (role-based)
+  const hasRolePermission = isAdmin || 
     userRoles.includes('agent') || 
     userRoles.includes('property_owner') || 
     userRoles.includes('vendor');
 
   // Show role upgrade prompt for users without permission
-  if (!adminLoading && !canAddProperty) {
+  if (!adminLoading && !hasRolePermission) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-2 py-4">
         <Card className="w-full max-w-sm shadow-lg border-border/50">
@@ -98,6 +106,48 @@ const AddProperty = () => {
               size="sm"
             >
               {language === "en" ? "Upgrade Account" : "Upgrade Akun"}
+            </Button>
+            <Button 
+              onClick={() => navigate('/dashboard')}
+              variant="outline"
+              className="w-full h-8 text-[10px]"
+              size="sm"
+            >
+              {language === "en" ? "Back to Dashboard" : "Kembali"}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show VIP limit reached message
+  if (!adminLoading && !limitsLoading && !canAddProperty && !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-2 py-4">
+        <Card className="w-full max-w-sm shadow-lg border-border/50">
+          <CardHeader className="text-center p-3 pb-2">
+            <div className="mx-auto w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center mb-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+            </div>
+            <CardTitle className="text-base">
+              {language === "en" ? "Property Limit Reached" : "Batas Properti Tercapai"}
+            </CardTitle>
+            <CardDescription className="text-xs">
+              {language === "en" 
+                ? `You've reached ${currentProperties}/${maxProperties} properties for your ${membershipLevel} tier.`
+                : `Anda telah mencapai ${currentProperties}/${maxProperties} properti untuk level ${membershipLevel}.`
+              }
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 p-3 pt-0">
+            <Button 
+              onClick={() => navigate('/membership')}
+              className="w-full h-9 text-xs"
+              size="sm"
+            >
+              <Crown className="h-3.5 w-3.5 mr-1.5" />
+              {language === "en" ? "Upgrade VIP Level" : "Upgrade Level VIP"}
             </Button>
             <Button 
               onClick={() => navigate('/dashboard')}
@@ -149,7 +199,17 @@ const AddProperty = () => {
       </div>
 
       {/* Main Content - Compact */}
-      <div className="p-2">
+      <div className="p-2 space-y-2">
+        {/* VIP Limit Warning */}
+        {!isAdmin && (
+          <VIPLimitAlert
+            currentCount={currentProperties}
+            maxCount={maxProperties}
+            type="property"
+            membershipLevel={membershipLevel}
+          />
+        )}
+        
         <Card className="border-border/50 shadow-sm">
           <CardContent className="p-2 sm:p-4">
             <MultiStepPropertyForm />
