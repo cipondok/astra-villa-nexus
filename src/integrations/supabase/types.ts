@@ -4155,6 +4155,120 @@ export type Database = {
           },
         ]
       }
+      payment_refunds: {
+        Row: {
+          created_at: string | null
+          gateway_response: Json | null
+          id: string
+          order_id: string
+          processed_by: string | null
+          reason: string | null
+          refund_amount: number
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          gateway_response?: Json | null
+          id?: string
+          order_id: string
+          processed_by?: string | null
+          reason?: string | null
+          refund_amount: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          gateway_response?: Json | null
+          id?: string
+          order_id?: string
+          processed_by?: string | null
+          reason?: string | null
+          refund_amount?: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          created_at: string | null
+          currency: string | null
+          customer_email: string | null
+          customer_id: string | null
+          customer_name: string | null
+          gateway_response: Json | null
+          id: string
+          order_id: string
+          payment_gateway: string | null
+          payment_method: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          booking_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          customer_email?: string | null
+          customer_id?: string | null
+          customer_name?: string | null
+          gateway_response?: Json | null
+          id?: string
+          order_id: string
+          payment_gateway?: string | null
+          payment_method?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          customer_email?: string | null
+          customer_id?: string | null
+          customer_name?: string | null
+          gateway_response?: Json | null
+          id?: string
+          order_id?: string
+          payment_gateway?: string | null
+          payment_method?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      payment_webhook_logs: {
+        Row: {
+          created_at: string | null
+          event_type: string | null
+          id: string
+          order_id: string | null
+          payload: Json | null
+          processed: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type?: string | null
+          id?: string
+          order_id?: string | null
+          payload?: Json | null
+          processed?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string | null
+          id?: string
+          order_id?: string | null
+          payload?: Json | null
+          processed?: boolean | null
+        }
+        Relationships: []
+      }
       payout_requests: {
         Row: {
           admin_notes: string | null
