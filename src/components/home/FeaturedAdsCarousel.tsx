@@ -196,7 +196,7 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] cursor-pointer group/card relative rounded-xl overflow-hidden h-36 sm:h-40 md:h-48 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
+              className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[220px] cursor-pointer group/card relative rounded-xl overflow-hidden h-48 sm:h-52 md:h-60 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
             >
               {/* Full Image Background */}
               <img
@@ -238,35 +238,41 @@ export default function FeaturedAdsCarousel() {
               </div>
 
               {/* Bottom Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
-                <div className="flex items-end justify-between gap-1">
-                  <span className="text-[11px] sm:text-xs md:text-sm font-bold px-2 py-0.5 sm:py-1 rounded-md bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-xl">
-                    IDR {(p.price / 1000000).toFixed(0)}Jt
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate max-w-[55%] drop-shadow-md">
-                    📍 {p.city || p.state || 'Indonesia'}
+              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3 z-10">
+                {/* Price Badge - Prominent positioning */}
+                <div className="mb-1.5">
+                  <span className="inline-block text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl">
+                    Rp {(p.price / 1000000).toFixed(0)}Jt
                   </span>
                 </div>
-                <h3 className="mt-0.5 text-[11px] sm:text-xs md:text-sm font-bold text-white line-clamp-1 drop-shadow-lg">
+                
+                {/* Title */}
+                <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg mb-1">
                   {p.title}
                 </h3>
-                {/* Property Stats - Bedroom, Bathroom, Area */}
-                <div className="flex items-center gap-2 mt-1">
+                
+                {/* Location */}
+                <div className="text-[10px] sm:text-xs text-white/90 truncate drop-shadow-md mb-1.5">
+                  📍 {p.city || p.state || 'Indonesia'}
+                </div>
+                
+                {/* Property Stats - Bedroom, Bathroom, Area with bigger icons */}
+                <div className="flex items-center gap-3 bg-black/40 rounded-lg px-2 py-1.5 backdrop-blur-sm">
                   {p.bedrooms !== null && p.bedrooms > 0 && (
-                    <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] text-white/90 drop-shadow-md">
-                      <Bed className="h-3 w-3" />
+                    <span className="flex items-center gap-1 text-xs sm:text-sm text-white font-medium">
+                      <Bed className="h-4 w-4 sm:h-5 sm:w-5" />
                       <span>{p.bedrooms}</span>
                     </span>
                   )}
                   {p.bathrooms !== null && p.bathrooms > 0 && (
-                    <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] text-white/90 drop-shadow-md">
-                      <Bath className="h-3 w-3" />
+                    <span className="flex items-center gap-1 text-xs sm:text-sm text-white font-medium">
+                      <Bath className="h-4 w-4 sm:h-5 sm:w-5" />
                       <span>{p.bathrooms}</span>
                     </span>
                   )}
                   {p.area_sqm !== null && p.area_sqm > 0 && (
-                    <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] text-white/90 drop-shadow-md">
-                      <Maximize className="h-3 w-3" />
+                    <span className="flex items-center gap-1 text-xs sm:text-sm text-white font-medium">
+                      <Maximize className="h-4 w-4 sm:h-5 sm:w-5" />
                       <span>{p.area_sqm}m²</span>
                     </span>
                   )}
