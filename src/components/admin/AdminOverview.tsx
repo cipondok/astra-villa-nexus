@@ -44,8 +44,10 @@ import {
   ShieldCheck,
   MessageSquare,
   CreditCard,
-  MapPin
+  MapPin,
+  Crown
 } from "lucide-react";
+import { VIPStatsWidget } from "./VIPStatsWidget";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AdminOverviewProps {
@@ -100,9 +102,9 @@ const controlPanelSections = [
     textColor: "text-purple-500",
     items: [
       { id: "visitor-analytics", label: "Visitors", icon: Eye, description: "Traffic data" },
+      { id: "vip-analytics", label: "VIP Analytics", icon: Crown, description: "Membership stats" },
       { id: "analytics", label: "Web Analytics", icon: BarChart3, description: "Site metrics" },
       { id: "algorithm-dashboard", label: "Algorithm", icon: Gauge, description: "Search tuning" },
-      { id: "performance-monitor", label: "Performance", icon: Activity, description: "Speed metrics" },
     ]
   },
   {
@@ -378,6 +380,9 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
             <MiniStatCard title="Articles" value={platformStats?.totalArticles || 0} icon={Globe} />
             <MiniStatCard title="Pending" value={pendingUpgrades?.total || 0} icon={Clock} highlight={!!pendingUpgrades?.total} onClick={() => handleQuickAction('upgrade-applications')} />
           </div>
+
+          {/* VIP Stats Widget */}
+          <VIPStatsWidget onNavigate={handleQuickAction} />
 
           {/* Activity & Health Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-1.5 md:gap-2">
