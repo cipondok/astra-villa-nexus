@@ -9,7 +9,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, User, Save } from 'lucide-react';
+import { ArrowLeft, User, Save, Crown, Sparkles, Shield, ChevronRight } from 'lucide-react';
+import { useUserMembership } from '@/hooks/useUserMembership';
+import { useVIPLimits } from '@/hooks/useVIPLimits';
+import { UserMembershipBadge, VerificationBadge } from '@/components/user/UserMembershipBadge';
+import { MEMBERSHIP_LEVELS } from '@/types/membership';
+import { Progress } from '@/components/ui/progress';
 
 const ProfileEditPage = () => {
   const { user, profile, refreshProfile } = useAuth();
@@ -132,6 +137,9 @@ const ProfileEditPage = () => {
           </div>
         </div>
 
+        {/* VIP Membership Card */}
+        <VIPMembershipCard />
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -238,6 +246,144 @@ const ProfileEditPage = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+// VIP Membership Card Component
+const VIPMembershipCard: React.FC = () => {
+  const navigate = useNavigate();
+  const { membershipLevel, verificationStatus, userLevelName, isLoading } = useUserMembership();
+  const { 
+    currentProperties, 
+    maxProperties, 
+    currentListings, 
+    maxListings,
+    canFeatureListings,
+    prioritySupport
+  } = useVIPLimits();
+
+  if (isLoading) {
+    return (
+      <Card className="mb-6">
+        <CardContent className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-6 bg-muted rounded w-1/3"></div>
+            <div className="h-4 bg-muted rounded w-1/2"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const config = MEMBERSHIP_LEVELS[membershipLevel];
+  const isHighTier = ['gold', 'platinum', 'diamond'].includes(membershipLevel);
+  const propertiesPercent = maxProperties > 0 ? (currentProperties / maxProperties) * 100 : 0;
+  const listingsPercent = maxListings > 0 ? (currentListings / maxListings) * 100 : 0;
+
+  return (
+    <Card className={`mb-6 overflow-hidden ${isHighTier ? config.borderColor : ''}`}>
+      {isHighTier && (
+        <div className={`h-1 ${config.bgColor}`} />
+      )}
+      <CardHeader className={isHighTier ? config.bgColor : ''}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-full ${config.bgColor}`}>
+              <Crown className={`h-5 w-5 ${config.color}`} />
+            </div>
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                Membership Status
+                {isHighTier && <Sparkles className="h-4 w-4 text-yellow-500" />}
+              </CardTitle>
+              <CardDescription>Your current membership level and benefits</CardDescription>
+            </div>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => navigate('/membership')}
+            className="shrink-0"
+          >
+            Upgrade
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="p-6 space-y-6">
+        {/* Membership Level & Verification */}
+        <div className="flex items-center gap-4 flex-wrap">
+          <UserMembershipBadge 
+            membershipLevel={membershipLevel}
+            size="md"
+            variant="badge"
+            showLabel={true}
+            showIcon={true}
+          />
+          <VerificationBadge status={verificationStatus as any} size="sm" />
+          {userLevelName && (
+            <span className="text-sm text-muted-foreground">
+              Level: {userLevelName}
+            </span>
+          )}
+        </div>
+
+        {/* Usage Limits */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Properties</span>
+              <span className="font-medium">{currentProperties} / {maxProperties}</span>
+            </div>
+            <Progress value={propertiesPercent} className="h-2" />
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Active Listings</span>
+              <span className="font-medium">{currentListings} / {maxListings}</span>
+            </div>
+            <Progress value={listingsPercent} className="h-2" />
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="flex flex-wrap gap-2">
+          {canFeatureListings && (
+            <div className="flex items-center gap-1.5 text-xs bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">
+              <Sparkles className="h-3 w-3" />
+              Featured Listings
+            </div>
+          )}
+          {prioritySupport && (
+            <div className="flex items-center gap-1.5 text-xs bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-full">
+              <Shield className="h-3 w-3" />
+              Priority Support
+            </div>
+          )}
+          {verificationStatus === 'verified' && (
+            <div className="flex items-center gap-1.5 text-xs bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-full">
+              <Shield className="h-3 w-3" />
+              Verified Account
+            </div>
+          )}
+        </div>
+
+        {/* Benefits List */}
+        <div className="border-t pt-4">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Your Benefits:</p>
+          <div className="flex flex-wrap gap-1">
+            {config.benefits.map((benefit, index) => (
+              <span 
+                key={index}
+                className="text-xs bg-muted px-2 py-0.5 rounded"
+              >
+                {benefit}
+              </span>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
