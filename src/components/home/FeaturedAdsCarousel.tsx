@@ -260,10 +260,12 @@ export default function FeaturedAdsCarousel() {
 
               {/* Bottom Content */}
               <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3 z-10">
-                {/* Price Badge - Prominent positioning */}
+              {/* Price Badge - Prominent positioning */}
                 <div className="mb-1.5">
-                  <span className="inline-block text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl">
-                    Rp {(p.price / 1000000).toFixed(0)}Jt
+                  <span className="inline-flex items-baseline text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl">
+                    <span className="text-[0.7em] font-medium opacity-90">Rp</span>
+                    <span>{(p.price / 1000000).toFixed(0)}</span>
+                    <span className="text-[0.7em] font-medium opacity-90">Jt</span>
                   </span>
                 </div>
                 
