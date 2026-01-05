@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag, Clock, BadgeCheck, ShieldCheck, Crown, ShieldAlert } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag, Clock, BadgeCheck, ShieldCheck, Crown, ShieldAlert, Gem, Award, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
@@ -68,21 +68,36 @@ interface FallbackProperty {
   user_level?: string;
 }
 
-// Get verification info
+// Get verification info with VIP tiers
 const getVerificationInfo = (property: FallbackProperty) => {
   const status = property.verification_status?.toLowerCase() || '';
   const level = property.user_level?.toLowerCase() || '';
   
-  if (level.includes('vip') || level.includes('premium')) {
-    return { icon: Crown, label: 'VIP Member', color: 'text-amber-500', bg: 'bg-amber-500/20' };
+  // VIP Tiers - Check for specific levels first
+  if (level.includes('platinum') || level.includes('diamond')) {
+    return { icon: Gem, label: 'Platinum VIP', color: 'text-cyan-400', bg: 'bg-gradient-to-r from-cyan-500/30 to-blue-500/30', glow: 'shadow-[0_0_8px_rgba(34,211,238,0.5)]' };
   }
+  if (level.includes('gold')) {
+    return { icon: Crown, label: 'Gold VIP', color: 'text-amber-400', bg: 'bg-gradient-to-r from-amber-500/30 to-yellow-500/30', glow: 'shadow-[0_0_8px_rgba(251,191,36,0.5)]' };
+  }
+  if (level.includes('silver')) {
+    return { icon: Award, label: 'Silver VIP', color: 'text-slate-300', bg: 'bg-gradient-to-r from-slate-400/30 to-gray-500/30', glow: 'shadow-[0_0_8px_rgba(148,163,184,0.4)]' };
+  }
+  if (level.includes('bronze')) {
+    return { icon: Medal, label: 'Bronze VIP', color: 'text-orange-400', bg: 'bg-gradient-to-r from-orange-600/30 to-amber-700/30', glow: 'shadow-[0_0_6px_rgba(251,146,60,0.4)]' };
+  }
+  if (level.includes('vip') || level.includes('premium')) {
+    return { icon: Crown, label: 'VIP Member', color: 'text-amber-500', bg: 'bg-amber-500/20', glow: '' };
+  }
+  
+  // Verification statuses
   if (status === 'verified' || property.owner_verified || property.agent_verified || property.agency_verified) {
-    return { icon: BadgeCheck, label: 'Verified User', color: 'text-green-500', bg: 'bg-green-500/20' };
+    return { icon: BadgeCheck, label: 'Verified User', color: 'text-green-500', bg: 'bg-green-500/20', glow: '' };
   }
   if (status === 'trusted') {
-    return { icon: ShieldCheck, label: 'Trusted Seller', color: 'text-blue-500', bg: 'bg-blue-500/20' };
+    return { icon: ShieldCheck, label: 'Trusted Seller', color: 'text-blue-500', bg: 'bg-blue-500/20', glow: '' };
   }
-  return { icon: ShieldAlert, label: 'Unverified', color: 'text-muted-foreground', bg: 'bg-muted/50' };
+  return { icon: ShieldAlert, label: 'Unverified', color: 'text-muted-foreground', bg: 'bg-muted/50', glow: '' };
 };
 
 export default function FeaturedAdsCarousel() {
@@ -287,13 +302,13 @@ export default function FeaturedAdsCarousel() {
                         const verification = getVerificationInfo(p);
                         const VerificationIcon = verification.icon;
                         return (
-                          <span className={`flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold px-1.5 py-1 rounded-full ${verification.bg} backdrop-blur-sm shadow-lg cursor-help`}>
+                          <span className={`flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold px-1.5 py-1 rounded-full ${verification.bg} backdrop-blur-sm ${verification.glow} cursor-help transition-all duration-300 hover:scale-110`}>
                             <VerificationIcon className={`h-3 w-3 ${verification.color}`} />
                           </span>
                         );
                       })()}
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-xs">
+                    <TooltipContent side="bottom" className="text-xs font-medium">
                       {getVerificationInfo(p).label}
                     </TooltipContent>
                   </Tooltip>
