@@ -3,7 +3,10 @@ import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
-import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag, Building } from "lucide-react";
+
+// Helper to capitalize first letter
+const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 import { Button } from "@/components/ui/button";
 
 interface Property {
@@ -165,8 +168,9 @@ const PropertySlideshow = () => {
                 </span>
               </div>
               <div className="absolute top-3 right-3">
-                <span className="px-3 py-1.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm shadow-md">
-                  {property.property_type}
+                <span className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm shadow-md">
+                  <Building className="h-3 w-3" />
+                  {capitalizeFirst(property.property_type)}
                 </span>
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

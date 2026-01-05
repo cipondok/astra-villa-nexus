@@ -1,7 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent, Key } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent, Key, Building } from "lucide-react";
+
+// Helper to capitalize first letter
+const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 import { BaseProperty } from "@/types/property";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
@@ -92,9 +95,10 @@ const PropertyListView = ({
                 {/* Property Type Badge - Below Comparison Button */}
                 <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
                   <Badge 
-                    className="bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs font-semibold rounded-full px-3 py-1 shadow-md"
+                    className="flex items-center gap-1 bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs font-semibold rounded-full px-3 py-1 shadow-md"
                   >
-                    {property.property_type || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
+                    <Building className="h-3 w-3" />
+                    {capitalizeFirst(property.property_type) || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
                   </Badge>
                 </div>
 

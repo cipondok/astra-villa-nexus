@@ -8,7 +8,10 @@ import { shareProperty } from "@/utils/shareUtils";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
 import { toast } from "sonner";
-import { Eye, Home, Tag } from "lucide-react";
+import { Eye, Home, Tag, Building } from "lucide-react";
+
+// Helper to capitalize first letter
+const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 
 interface PropertiesForSaleSectionProps {
   language: "en" | "id";
@@ -137,8 +140,9 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 Jual
               </span>
               {/* Property Type */}
-              <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[50%]">
-                {property.property_type || 'Property'}
+              <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[55%]">
+                <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                {capitalizeFirst(property.property_type)}
               </span>
             </div>
             
