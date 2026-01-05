@@ -222,8 +222,8 @@ export default function FeaturedAdsCarousel() {
 
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                 </div>
               </div>
 
@@ -250,7 +250,7 @@ export default function FeaturedAdsCarousel() {
                 {(() => {
                   const PropertyIcon = getPropertyIcon(p.property_type);
                   return (
-                    <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[50%]">
+                    <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground shadow-lg truncate max-w-[50%]">
                       <PropertyIcon className="h-3 w-3 md:h-3.5 md:w-3.5 flex-shrink-0" />
                       <span className="truncate">{capitalizeFirst(p.property_type)}</span>
                     </span>
@@ -323,8 +323,8 @@ export default function FeaturedAdsCarousel() {
               
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                 </div>
               </div>
               
