@@ -78,6 +78,7 @@ import AstraDevelopment from '@/pages/AstraDevelopment';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 
 
 const AppContent = () => {
@@ -86,6 +87,10 @@ const AppContent = () => {
   
   // 💾 PRO: Auto-restore scroll position per route
   useScrollRestore(true);
+  
+  // 🎖️ VIP: Listen for VIP level changes and show notifications
+  useVIPNotifications();
+  
   const location = useLocation();
   const { language } = useLanguage();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
