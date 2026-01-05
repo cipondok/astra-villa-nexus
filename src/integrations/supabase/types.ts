@@ -2365,6 +2365,92 @@ export type Database = {
         }
         Relationships: []
       }
+      email_logs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          recipient_email: string
+          recipient_id: string | null
+          sent_at: string | null
+          status: string | null
+          subject: string
+          template_key: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          recipient_email: string
+          recipient_id?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject: string
+          template_key?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          recipient_email?: string
+          recipient_id?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject?: string
+          template_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_logs_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_templates: {
+        Row: {
+          body_html: string
+          body_text: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          subject: string
+          template_key: string
+          template_name: string
+          updated_at: string | null
+          variables: string[] | null
+        }
+        Insert: {
+          body_html: string
+          body_text?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          subject: string
+          template_key: string
+          template_name: string
+          updated_at?: string | null
+          variables?: string[] | null
+        }
+        Update: {
+          body_html?: string
+          body_text?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          subject?: string
+          template_key?: string
+          template_name?: string
+          updated_at?: string | null
+          variables?: string[] | null
+        }
+        Relationships: []
+      }
       error_logs: {
         Row: {
           component_name: string | null
@@ -4475,6 +4561,108 @@ export type Database = {
         }
         Relationships: []
       }
+      property_bookings: {
+        Row: {
+          booking_type: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          completed_at: string | null
+          confirmed_at: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          owner_id: string | null
+          property_id: string
+          scheduled_date: string
+          scheduled_time: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          booking_type: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          owner_id?: string | null
+          property_id: string
+          scheduled_date: string
+          scheduled_time: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          booking_type?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          owner_id?: string | null
+          property_id?: string
+          scheduled_date?: string
+          scheduled_time?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_bookings_cancelled_by_fkey"
+            columns: ["cancelled_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bookings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_categories: {
         Row: {
           created_at: string | null
@@ -4980,6 +5168,98 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_reviews: {
+        Row: {
+          admin_approved: boolean | null
+          booking_id: string | null
+          cons: string[] | null
+          created_at: string | null
+          helpful_count: number | null
+          id: string
+          is_published: boolean | null
+          is_verified_visit: boolean | null
+          owner_responded_at: string | null
+          owner_response: string | null
+          property_id: string
+          pros: string[] | null
+          rating: number
+          report_count: number | null
+          review_text: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_approved?: boolean | null
+          booking_id?: string | null
+          cons?: string[] | null
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_published?: boolean | null
+          is_verified_visit?: boolean | null
+          owner_responded_at?: string | null
+          owner_response?: string | null
+          property_id: string
+          pros?: string[] | null
+          rating: number
+          report_count?: number | null
+          review_text?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_approved?: boolean | null
+          booking_id?: string | null
+          cons?: string[] | null
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_published?: boolean | null
+          is_verified_visit?: boolean | null
+          owner_responded_at?: string | null
+          owner_response?: string | null
+          property_id?: string
+          pros?: string[] | null
+          rating?: number
+          report_count?: number | null
+          review_text?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "property_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_reviews_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_reviews_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5555,6 +5835,98 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "vendor_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_reports: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          details: string | null
+          id: string
+          reason: string
+          reported_by: string
+          review_id: string
+          review_type: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          reason: string
+          reported_by: string
+          review_id: string
+          review_type: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_by?: string
+          review_id?: string
+          review_type?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_reports_reported_by_fkey"
+            columns: ["reported_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_reports_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          review_id: string
+          review_type: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          review_id: string
+          review_type: string
+          user_id: string
+          vote_type: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          review_id?: string
+          review_type?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -8889,42 +9261,66 @@ export type Database = {
       }
       vendor_reviews: {
         Row: {
+          admin_approved: boolean | null
+          communication_rating: number | null
           created_at: string | null
           customer_id: string | null
+          helpful_count: number | null
           id: string
+          is_published: boolean | null
           is_verified: boolean | null
+          professionalism_rating: number | null
           rating: number
+          report_count: number | null
           response_date: string | null
           response_text: string | null
           review_text: string | null
           service_id: string | null
+          title: string | null
           updated_at: string | null
+          value_rating: number | null
           vendor_id: string | null
         }
         Insert: {
+          admin_approved?: boolean | null
+          communication_rating?: number | null
           created_at?: string | null
           customer_id?: string | null
+          helpful_count?: number | null
           id?: string
+          is_published?: boolean | null
           is_verified?: boolean | null
+          professionalism_rating?: number | null
           rating: number
+          report_count?: number | null
           response_date?: string | null
           response_text?: string | null
           review_text?: string | null
           service_id?: string | null
+          title?: string | null
           updated_at?: string | null
+          value_rating?: number | null
           vendor_id?: string | null
         }
         Update: {
+          admin_approved?: boolean | null
+          communication_rating?: number | null
           created_at?: string | null
           customer_id?: string | null
+          helpful_count?: number | null
           id?: string
+          is_published?: boolean | null
           is_verified?: boolean | null
+          professionalism_rating?: number | null
           rating?: number
+          report_count?: number | null
           response_date?: string | null
           response_text?: string | null
           review_text?: string | null
           service_id?: string | null
+          title?: string | null
           updated_at?: string | null
+          value_rating?: number | null
           vendor_id?: string | null
         }
         Relationships: [

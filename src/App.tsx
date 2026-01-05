@@ -76,6 +76,7 @@ import VendorRegistration from '@/pages/VendorRegistration';
 import SharedSearch from '@/pages/SharedSearch';
 import AstraDevelopment from '@/pages/AstraDevelopment';
 import MembershipPage from '@/pages/MembershipPage';
+import BookingsPage from '@/pages/BookingsPage';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -169,6 +170,7 @@ const AppContent = () => {
           <Route path="/development" element={<AstraDevelopment />} />
           <Route path="/astra-development" element={<AstraDevelopment />} />
           <Route path="/membership" element={<MembershipPage />} />
+          <Route path="/bookings" element={<BookingsPage />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
