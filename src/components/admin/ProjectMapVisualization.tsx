@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +10,7 @@ import {
   Building2, UserCheck, Bell, Rocket, Clock, Target,
   CheckCircle2, CircleDashed, Play, Pause, MapPin,
   Server, Globe, CreditCard, MessageSquare, Settings,
-  BarChart3, ShieldCheck, Smartphone, Mail
+  BarChart3, ShieldCheck, Smartphone, Mail, CalendarDays, Star
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
@@ -20,6 +20,8 @@ import { useProjectAnalytics } from '@/hooks/useProjectAnalytics';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface ModuleStatus {
   name: string;
@@ -33,8 +35,45 @@ interface ModuleStatus {
 const ProjectMapVisualization = () => {
   const [selectedView, setSelectedView] = useState('roadmap');
   const { data: analytics, isLoading, refetch, isFetching } = useProjectAnalytics();
+  const [lastAutoUpdate, setLastAutoUpdate] = useState<Date>(new Date());
   
-  // Project modules with actual progress
+  // Real-time subscriptions for auto-updates
+  useEffect(() => {
+    const channels = [
+      supabase.channel('project-map-bookings')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'property_bookings' }, () => {
+          refetch();
+          setLastAutoUpdate(new Date());
+          toast.success('Booking data updated', { duration: 2000 });
+        })
+        .subscribe(),
+      supabase.channel('project-map-reviews')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'property_reviews' }, () => {
+          refetch();
+          setLastAutoUpdate(new Date());
+          toast.success('Review data updated', { duration: 2000 });
+        })
+        .subscribe(),
+      supabase.channel('project-map-properties')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'properties' }, () => {
+          refetch();
+          setLastAutoUpdate(new Date());
+        })
+        .subscribe(),
+      supabase.channel('project-map-profiles')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+          refetch();
+          setLastAutoUpdate(new Date());
+        })
+        .subscribe()
+    ];
+
+    return () => {
+      channels.forEach(channel => supabase.removeChannel(channel));
+    };
+  }, [refetch]);
+  
+  // Project modules with actual progress - UPDATED with new features
   const projectModules: ModuleStatus[] = [
     {
       name: 'Authentication & Security',
@@ -66,28 +105,57 @@ const ProjectMapVisualization = () => {
     {
       name: 'Property System',
       icon: Building2,
-      progress: 92,
-      status: 'in-progress',
+      progress: 95,
+      status: 'completed',
       priority: 'critical',
       tasks: [
         { name: 'Property listings', done: true },
         { name: 'Search & filters', done: true },
         { name: 'Property details', done: true },
         { name: 'Image gallery', done: true },
+        { name: 'Property reviews', done: true },
         { name: '3D views integration', done: false }
+      ]
+    },
+    {
+      name: 'Booking System',
+      icon: CalendarDays,
+      progress: 100,
+      status: 'completed',
+      priority: 'critical',
+      tasks: [
+        { name: 'Property booking requests', done: true },
+        { name: 'Booking management', done: true },
+        { name: 'Admin booking controls', done: true },
+        { name: 'Booking notifications', done: true },
+        { name: 'Booking calendar', done: true }
+      ]
+    },
+    {
+      name: 'Review & Rating System',
+      icon: Star,
+      progress: 100,
+      status: 'completed',
+      priority: 'high',
+      tasks: [
+        { name: 'Property reviews', done: true },
+        { name: 'Star ratings', done: true },
+        { name: 'Review voting', done: true },
+        { name: 'Review moderation', done: true },
+        { name: 'Vendor reviews', done: true }
       ]
     },
     {
       name: 'Vendor Platform',
       icon: Server,
-      progress: 88,
-      status: 'in-progress',
+      progress: 92,
+      status: 'completed',
       priority: 'high',
       tasks: [
         { name: 'Vendor registration', done: true },
         { name: 'Service management', done: true },
         { name: 'Booking system', done: true },
-        { name: 'Reviews & ratings', done: false },
+        { name: 'Reviews & ratings', done: true },
         { name: 'Analytics dashboard', done: false }
       ]
     },
@@ -108,15 +176,30 @@ const ProjectMapVisualization = () => {
     {
       name: 'Admin Dashboard',
       icon: Settings,
-      progress: 95,
+      progress: 98,
       status: 'completed',
       priority: 'high',
       tasks: [
         { name: 'Overview dashboard', done: true },
         { name: 'User management', done: true },
         { name: 'Content management', done: true },
+        { name: 'Booking management', done: true },
         { name: 'Analytics views', done: true },
         { name: 'System settings', done: true }
+      ]
+    },
+    {
+      name: 'Email Notifications',
+      icon: Mail,
+      progress: 100,
+      status: 'completed',
+      priority: 'high',
+      tasks: [
+        { name: 'Email templates', done: true },
+        { name: 'Booking notifications', done: true },
+        { name: 'Review notifications', done: true },
+        { name: 'Welcome emails', done: true },
+        { name: 'Email logs', done: true }
       ]
     },
     {
@@ -134,9 +217,9 @@ const ProjectMapVisualization = () => {
     },
     {
       name: 'Communication',
-      icon: Mail,
-      progress: 75,
-      status: 'in-progress',
+      icon: Bell,
+      progress: 90,
+      status: 'completed',
       priority: 'high',
       tasks: [
         { name: 'Email notifications', done: true },
@@ -287,7 +370,10 @@ const ProjectMapVisualization = () => {
                 </h1>
               </div>
               <p className="text-[10px] text-muted-foreground mt-1">
-                Development progress • {formatDistanceToNow(analytics?.lastUpdated || new Date(), { addSuffix: true })}
+                Development progress • Updated {formatDistanceToNow(lastAutoUpdate, { addSuffix: true })}
+                <Badge variant="outline" className="ml-2 text-[8px] h-4 px-1 bg-green-500/10 text-green-600 border-green-500/30">
+                  <span className="animate-pulse mr-1">●</span> Live
+                </Badge>
                 <Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} className="h-5 px-1.5 ml-1">
                   <RefreshCw className={`h-3 w-3 ${isFetching ? 'animate-spin' : ''}`} />
                 </Button>
