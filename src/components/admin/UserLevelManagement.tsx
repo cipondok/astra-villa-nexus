@@ -65,7 +65,11 @@ const getLevelBadgeStyle = (levelName: string) => {
   return `${config.bgColor} ${config.color} ${config.borderColor} border`;
 };
 
-const UserLevelManagement = () => {
+interface UserLevelManagementProps {
+  onNavigate?: (section: string) => void;
+}
+
+const UserLevelManagement = ({ onNavigate }: UserLevelManagementProps) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<UserLevel | null>(null);
   const [activeTab, setActiveTab] = useState("levels");
@@ -275,6 +279,17 @@ const UserLevelManagement = () => {
             Manage VIP tiers, privileges, and assign levels to users
           </p>
         </div>
+        {onNavigate && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-8 text-xs gap-1.5"
+            onClick={() => onNavigate('vip-analytics')}
+          >
+            <TrendingUp className="h-3.5 w-3.5" />
+            VIP Analytics
+          </Button>
+        )}
       </div>
 
       {/* Overview Stats */}

@@ -173,7 +173,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "user-management":
         return <EnhancedUserManagement />;
       case "user-levels":
-        return <UserLevelManagement />;
+        return <UserLevelManagement onNavigate={onSectionChange} />;
       case "verification-management":
         return <VerificationManagement />;
       case "upgrade-applications":
@@ -303,7 +303,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "testing-dashboard":
         return <TestingDashboard />;
       case "vip-analytics":
-        return <VIPAnalyticsDashboard />;
+        return <VIPAnalyticsDashboard onNavigate={onSectionChange} />;
       default:
         return <AdminOverview />;
     }

@@ -2,7 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Crown, Gem, Award, Users, TrendingUp, ArrowUpCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Crown, Gem, Award, Users, TrendingUp, ArrowUpCircle, Settings } from 'lucide-react';
 import { getMembershipConfig, getMembershipFromUserLevel } from '@/types/membership';
 import VIPLevelBadge from '@/components/ui/VIPLevelBadge';
 
@@ -19,7 +20,11 @@ interface RecentUpgrade {
   updated_at: string;
 }
 
-export function VIPAnalyticsDashboard() {
+interface VIPAnalyticsDashboardProps {
+  onNavigate?: (section: string) => void;
+}
+
+export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps) {
   // Fetch VIP distribution
   const { data: distribution, isLoading: loadingDistribution } = useQuery({
     queryKey: ['vip-distribution'],
@@ -108,6 +113,21 @@ export function VIPAnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Header with link to User Levels */}
+      {onNavigate && (
+        <div className="flex justify-end">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-8 text-xs gap-1.5"
+            onClick={() => onNavigate('user-levels')}
+          >
+            <Settings className="h-3.5 w-3.5" />
+            Manage User Levels
+          </Button>
+        </div>
+      )}
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
