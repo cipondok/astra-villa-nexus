@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Eye, MapPin, Home, DollarSign, User, Building, Calendar, Ruler, X } from "lucide-react";
+import { Eye, MapPin, Home, DollarSign, User, Building, Calendar, Ruler, X, Key, Tag } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import { useNavigate } from 'react-router-dom';
 
@@ -50,8 +50,9 @@ const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmittin
             <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
               <CardTitle className="flex items-center justify-between text-gray-900">
                 <span className="text-xl font-bold">{propertyData.title}</span>
-                <Badge variant="outline" className="bg-white text-blue-700 border-blue-200">
-                  {propertyData.listing_type === 'sale' ? '💰 Dijual' : '🏠 Disewakan'}
+                <Badge variant="outline" className={`flex items-center gap-0.5 text-[10px] ${propertyData.listing_type === 'sale' ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white border-green-400' : 'bg-gradient-to-r from-blue-500 to-sky-600 text-white border-blue-400'}`}>
+                  {propertyData.listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
+                  {propertyData.listing_type === 'sale' ? 'Jual' : 'Sewa'}
                 </Badge>
               </CardTitle>
             </CardHeader>
