@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bed, Bath, Maximize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Property {
@@ -12,6 +12,7 @@ interface Property {
   location: string;
   price: number;
   property_type: string;
+  listing_type: string | null;
   bedrooms: number;
   bathrooms: number;
   area_sqm: number;
@@ -25,6 +26,16 @@ interface Property {
   agency_verified?: boolean;
 }
 
+// Get listing type label
+const getListingLabel = (type: string | null) => {
+  switch (type) {
+    case 'rent': return 'Sewa';
+    case 'sale': return 'Jual';
+    case 'lease': return 'Sewa';
+    default: return 'Jual';
+  }
+};
+
 const PropertySlideshow = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -35,7 +46,7 @@ const PropertySlideshow = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, location, price, property_type, bedrooms, bathrooms, area_sqm, images, thumbnail_url, city, state')
+        .select('id, title, location, price, property_type, listing_type, bedrooms, bathrooms, area_sqm, images, thumbnail_url, city, state')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .not('title', 'is', null)
@@ -145,6 +156,13 @@ const PropertySlideshow = () => {
                 alt={property.title}
                 className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
+              <div className="absolute top-3 left-3">
+                <span className={`px-3 py-1.5 text-white text-xs font-semibold rounded-full backdrop-blur-sm shadow-md ${
+                  property.listing_type === 'rent' ? 'bg-blue-500' : 'bg-green-500'
+                }`}>
+                  {getListingLabel(property.listing_type)}
+                </span>
+              </div>
               <div className="absolute top-3 right-3">
                 <span className="px-3 py-1.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm shadow-md">
                   {property.property_type}
@@ -164,17 +182,17 @@ const PropertySlideshow = () => {
                 <i className="fas fa-map-marker-alt"></i>
                 {property.city}, {property.state}
               </div>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground bg-muted/80 rounded-lg px-2 py-1.5 backdrop-blur-sm">
                 <div className="flex items-center gap-1.5">
-                  <i className="fas fa-bed"></i>
+                  <Bed className="h-3.5 w-3.5" />
                   <span>{property.bedrooms}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <i className="fas fa-bath"></i>
+                  <Bath className="h-3.5 w-3.5" />
                   <span>{property.bathrooms}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <i className="fas fa-ruler-combined"></i>
+                  <Maximize className="h-3.5 w-3.5" />
                   <span>{property.area_sqm}m²</span>
                 </div>
               </div>
