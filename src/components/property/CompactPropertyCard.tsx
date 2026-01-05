@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +12,7 @@ import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from '@/types/property';
 import VerificationBadge from '@/components/ui/VerificationBadge';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
+import VIPLevelBadge from '@/components/ui/VIPLevelBadge';
 
 interface CompactProperty {
   id: string;
@@ -377,6 +377,10 @@ const CompactPropertyCard = ({
                   </span>
                   <UserStatusBadge 
                     status={property.posted_by.verification_status} 
+                    size="xs" 
+                  />
+                  <VIPLevelBadge 
+                    level={property.posted_by.user_level} 
                     size="xs" 
                   />
                 </div>

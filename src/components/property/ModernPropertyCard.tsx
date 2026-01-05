@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar,
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
-
+import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 interface PropertyOwner {
   id: string;
   name: string;
@@ -278,13 +277,13 @@ const ModernPropertyCard = ({
               </div>
             )}
             
-            {/* Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1">
                 <span className="text-[10px] font-medium text-foreground truncate">
                   {ownerInfo.name}
                 </span>
                 <UserStatusBadge status={ownerInfo.verification_status} size="xs" />
+                <VIPLevelBadge level={ownerInfo.user_level} size="xs" />
               </div>
               <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
                 {ownerInfo.type && (
