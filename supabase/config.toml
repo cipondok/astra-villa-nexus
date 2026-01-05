@@ -81,3 +81,9 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.user-behavior-analyzer]
     verify_jwt = true
+
+  [functions.midtrans-payment]
+    verify_jwt = false
+
+  [functions.midtrans-webhook]
+    verify_jwt = false
