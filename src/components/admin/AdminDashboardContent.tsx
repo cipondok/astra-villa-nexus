@@ -68,6 +68,7 @@ import UserLevelManagement from "./UserLevelManagement";
 import { BugErrorDashboard } from "./diagnostics/BugErrorDashboard";
 import VisitorAnalytics from "./VisitorAnalytics";
 import TestingDashboard from "./TestingDashboard";
+import VIPAnalyticsDashboard from "./VIPAnalyticsDashboard";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -147,6 +148,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "error-monitoring": { label: "Error Monitoring", category: "System" },
   "bug-error-detection": { label: "Bug Detection", category: "System" },
   "testing-dashboard": { label: "Testing Dashboard", category: "Quality Assurance" },
+  "vip-analytics": { label: "VIP Analytics", category: "Analytics" },
 };
 
 const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
@@ -300,6 +302,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <BugErrorDashboard />;
       case "testing-dashboard":
         return <TestingDashboard />;
+      case "vip-analytics":
+        return <VIPAnalyticsDashboard />;
       default:
         return <AdminOverview />;
     }
