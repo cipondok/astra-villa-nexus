@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar, Tag, Percent } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar, Tag, Percent, Eye, Building } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
@@ -154,29 +154,43 @@ const ModernPropertyCard = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         
         {/* Top Badges */}
-        <div className="absolute top-1.5 left-1.5 flex gap-1">
-          <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
-            {getTypeLabel()}
-          </Badge>
-          {hasVirtualTour && (
-            <Badge className="bg-accent/90 text-accent-foreground text-[10px] px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
-              <Box className="h-2.5 w-2.5" />
-              3D
+        <div className="absolute top-1.5 left-1.5 right-1.5 flex justify-between items-start">
+          <div className="flex gap-1">
+            <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
+              {getTypeLabel()}
             </Badge>
-          )}
+            {hasVirtualTour && (
+              <Badge className="bg-accent/90 text-accent-foreground text-[10px] px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+                <Box className="h-2.5 w-2.5" />
+                3D
+              </Badge>
+            )}
+          </div>
+          {/* Property Type Badge */}
+          <Badge className="flex items-center gap-0.5 bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
+            <Building className="h-2.5 w-2.5" />
+            {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
+          </Badge>
         </div>
 
         {/* Heart Button */}
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background ${
+          className={`absolute top-8 right-1.5 h-6 w-6 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-black/80 ${
             isLiked ? 'text-destructive' : 'text-muted-foreground'
           }`}
           onClick={handleLike}
         >
           <Heart className={`h-3 w-3 ${isLiked ? 'fill-current' : ''}`} />
         </Button>
+
+        {/* View Icon - Center on hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
+            <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+          </div>
+        </div>
 
         {/* Bottom Info Overlay - Price & Stats */}
         <div className="absolute bottom-0 left-0 right-0 p-2">

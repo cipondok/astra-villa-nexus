@@ -92,7 +92,7 @@ const PropertyListView = ({
                 {/* Property Type Badge - Below Comparison Button */}
                 <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
                   <Badge 
-                    className="flex items-center gap-1 bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs font-semibold rounded-full px-3 py-1 shadow-md"
+                    className="flex items-center gap-1 bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground text-xs font-semibold rounded-full px-3 py-1 shadow-md"
                   >
                     <Building className="h-3 w-3" />
                     {capitalizeFirst(property.property_type) || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}

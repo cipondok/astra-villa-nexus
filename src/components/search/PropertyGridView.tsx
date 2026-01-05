@@ -126,7 +126,7 @@ const PropertyGridView = ({
                 size="sm"
               />
               <Badge 
-                className="flex items-center gap-0.5 bg-primary/90 text-primary-foreground text-[8px] sm:text-[9px] md:text-xs font-semibold rounded-full backdrop-blur-sm px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-3 md:py-1"
+                className="flex items-center gap-0.5 bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground text-[8px] sm:text-[9px] md:text-xs font-semibold rounded-full px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-3 md:py-1"
               >
                 <Building className="h-2.5 w-2.5 md:h-3 md:w-3" />
                 {capitalizeFirst(property.property_type) || (property.listing_type === 'sale' ? 'For Sale' : 'For Rent')}
@@ -135,22 +135,22 @@ const PropertyGridView = ({
 
             {/* Center Action Icons - Only on Hover */}
             <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-              <Button
-                size="sm"
-                variant="secondary"
-                className="h-10 w-10 p-0 glass-ios rounded-full"
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm shadow-xl"
                 onClick={(e) => {
                   e.stopPropagation();
                   onPropertyClick(property);
                 }}
-              >
-                <Eye className="h-5 w-5 text-foreground" />
+                >
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </Button>
               {(property.three_d_model_url || property.virtual_tour_url) && (
                 <Button
-                  size="sm"
-                  variant="secondary"
-                  className="h-10 w-10 p-0 glass-ios rounded-full"
+                  size="icon"
+                  variant="ghost"
+                  className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm shadow-xl"
                   onClick={(e) => {
                     e.stopPropagation();
                     onView3D?.(property);
