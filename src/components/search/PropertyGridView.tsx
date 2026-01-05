@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale, Tag, Percent } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale, Tag, Percent, Key } from "lucide-react";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import SocialShareDialog from "@/components/property/SocialShareDialog";
 import { BaseProperty } from "@/types/property";
@@ -104,15 +104,16 @@ const PropertyGridView = ({
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             
-            {/* Top Left - Sewa/Jual Badge */}
+            {/* Top Left - Sewa/Jual Badge with icon */}
             <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 md:top-3 md:left-3 z-10">
               <Badge 
-                className={`${
+                className={`flex items-center gap-0.5 ${
                   property.listing_type === 'rent' 
                     ? 'bg-blue-500 hover:bg-blue-600' 
                     : 'bg-green-500 hover:bg-green-600'
-                } text-white text-[8px] sm:text-[9px] md:text-xs font-semibold rounded-md backdrop-blur-sm px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-3 md:py-1 shadow-lg`}
+                } text-white text-[8px] sm:text-[9px] md:text-[10px] font-semibold rounded-md backdrop-blur-sm px-1 py-0.5 sm:px-1.5 sm:py-0.5 md:px-2 md:py-0.5 shadow-lg`}
               >
+                {property.listing_type === 'rent' ? <Key className="h-2.5 w-2.5 md:h-3 md:w-3" /> : <Tag className="h-2.5 w-2.5 md:h-3 md:w-3" />}
                 {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
               </Badge>
             </div>

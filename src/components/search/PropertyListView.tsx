@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Tag, Percent, Key } from "lucide-react";
 import { BaseProperty } from "@/types/property";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 
@@ -75,15 +75,16 @@ const PropertyListView = ({
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 
-                {/* Top Left - Sewa/Jual Badge */}
+                {/* Top Left - Sewa/Jual Badge with icon */}
                 <div className="absolute top-4 left-4">
                   <Badge 
-                    className={`${
+                    className={`flex items-center gap-0.5 ${
                       property.listing_type === 'rent' 
                         ? 'bg-blue-500 hover:bg-blue-600' 
                         : 'bg-green-500 hover:bg-green-600'
-                    } text-white backdrop-blur-sm text-xs font-semibold rounded-md px-3 py-1 shadow-lg`}
+                    } text-white backdrop-blur-sm text-[10px] font-semibold rounded-md px-2 py-0.5 shadow-lg`}
                   >
+                    {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                     {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
                   </Badge>
                 </div>

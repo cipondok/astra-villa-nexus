@@ -8,7 +8,7 @@ import { shareProperty } from "@/utils/shareUtils";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
 import { toast } from "sonner";
-import { Eye, Home } from "lucide-react";
+import { Eye, Home, Tag } from "lucide-react";
 
 interface PropertiesForSaleSectionProps {
   language: "en" | "id";
@@ -131,8 +131,9 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
             
             {/* Top Labels */}
             <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between">
-              {/* Sale Badge */}
-              <span className="text-[11px] sm:text-xs md:text-sm font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg">
+              {/* Sale Badge with icon */}
+              <span className="flex items-center gap-0.5 text-[8px] sm:text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg">
+                <Tag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 Jual
               </span>
               {/* Property Type */}

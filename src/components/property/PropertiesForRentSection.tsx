@@ -168,8 +168,9 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             
             {/* Top Labels */}
             <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between">
-              {/* Rent Badge */}
-              <span className="text-[11px] sm:text-xs md:text-sm font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg">
+              {/* Rent Badge with icon */}
+              <span className="flex items-center gap-0.5 text-[8px] sm:text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg">
+                <Key className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 Sewa
               </span>
               {/* Property Type */}

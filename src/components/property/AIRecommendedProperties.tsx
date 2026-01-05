@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight } from 'lucide-react';
+import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag } from 'lucide-react';
 import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -303,15 +303,16 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
       {/* Top Labels */}
       <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between gap-1">
-        {/* Listing Type Badge */}
+        {/* Listing Type Badge with icon */}
         <span
           className={cn(
-            "text-[11px] sm:text-xs md:text-sm font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-white shadow-lg",
+            "flex items-center gap-0.5 text-[8px] sm:text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full text-white shadow-lg",
             property.listing_type === 'sale'
               ? 'bg-gradient-to-r from-green-500 to-emerald-600'
               : 'bg-gradient-to-r from-blue-500 to-sky-600'
           )}
         >
+          {property.listing_type === 'sale' ? <Tag className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Key className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
           {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
         </span>
         {/* Property Type */}
