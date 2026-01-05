@@ -167,12 +167,14 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      return `Rp${(price / 1000000000).toFixed(1)}M`;
+      const value = (price / 1000000000).toFixed(1);
+      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{value}<span className="text-[0.7em] font-medium opacity-90">M</span></>;
     }
     if (price >= 1000000) {
-      return `Rp${(price / 1000000).toFixed(0)}Jt`;
+      const value = (price / 1000000).toFixed(0);
+      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{value}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>;
     }
-    return `Rp${price.toLocaleString('id-ID')}`;
+    return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString('id-ID')}</>;
   };
 
   const PropertyCard = ({ property }: { property: BaseProperty }) => (

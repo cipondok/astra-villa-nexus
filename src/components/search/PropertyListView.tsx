@@ -28,13 +28,15 @@ const PropertyListView = ({
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
       const value = price / 1000000000;
-      return `Rp${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}M`;
+      const numStr = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
+      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{numStr}<span className="text-[0.7em] font-medium opacity-90">M</span></>;
     }
     if (price >= 1000000) {
       const value = price / 1000000;
-      return `Rp${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}Jt`;
+      const numStr = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
+      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{numStr}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>;
     }
-    return `Rp${price.toLocaleString('id-ID')}`;
+    return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString('id-ID')}</>;
   };
 
   const getImageUrl = (property: BaseProperty) => {
