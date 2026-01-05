@@ -27,6 +27,7 @@ import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 import { UserProfileHeader } from "@/components/user/UserProfileHeader";
+import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
@@ -468,12 +469,25 @@ const Index = () => {
     setFilters(newFilters);
   };
 
+  // Handle sticky header search
+  const handleStickySearch = (query: string) => {
+    setQuickSearch(query);
+    handleQuickSearch({ searchQuery: query });
+    // Scroll to results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Mobile-first responsive layout wrapper
   const content = (
-    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-gradient-to-br from-background via-secondary/30 to-muted/50"
-    >
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-gradient-to-br from-background via-secondary/30 to-muted/50">
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
+
+      {/* Sticky Header Search - appears on scroll */}
+      <StickyHeaderSearch 
+        onSearch={handleStickySearch}
+        initialQuery={quickSearch}
+      />
 
       {/* Background Wallpaper Layer */}
       <div 
@@ -493,49 +507,53 @@ const Index = () => {
       )}>
         
         {/* Hero Search Section with Background Image Slider */}
-        <section className="relative w-full overflow-hidden">
+        <section className="relative w-full overflow-hidden" id="hero-section">
           {/* Background Image Slider - Full section background */}
           <SearchPanelBackgroundSlider 
             className="absolute inset-0 z-0"
             interval={6000}
           />
           
-          {/* Content overlay */}
+          {/* Content overlay - Enhanced mobile responsiveness */}
           <div className={cn(
             "relative z-10 w-full max-w-7xl mx-auto",
-            // Mobile: edge-to-edge with minimal padding
-            "px-2 py-4 md:px-4 md:py-8"
+            // Mobile: compact padding, tablet/desktop: more generous
+            "px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8"
           )}>
-            {/* Enhanced Header */}
-            <div className="mb-3 md:mb-5 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              {/* AI Badge */}
+            {/* Enhanced Header - Better mobile scaling */}
+            <div className="mb-2 sm:mb-3 md:mb-5 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              {/* AI Badge - Responsive sizing */}
               <div className={cn(
-                "inline-flex items-center gap-1 sm:gap-1.5 mb-1.5 sm:mb-2",
-                "px-2 py-0.5 sm:px-3 sm:py-1 md:px-4 md:py-1.5",
+                "inline-flex items-center gap-1 sm:gap-1.5 mb-1 sm:mb-1.5 md:mb-2",
+                "px-2 py-0.5 sm:px-2.5 sm:py-0.5 md:px-4 md:py-1.5",
                 "bg-white/20 backdrop-blur-md",
                 "rounded-full border border-white/30"
               )}>
                 <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-white animate-pulse" />
-                <span className="text-[9px] sm:text-[11px] md:text-xs font-semibold text-white drop-shadow-md">AI-Powered Search</span>
+                <span className="text-[8px] sm:text-[10px] md:text-xs font-semibold text-white drop-shadow-md">AI-Powered Search</span>
               </div>
               
-              {/* Title */}
-              <h2 className="text-base sm:text-lg md:text-3xl lg:text-4xl font-bold leading-tight text-white drop-shadow-lg mb-1 md:mb-2">
+              {/* Title - Optimized for mobile readability */}
+              <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight text-white drop-shadow-lg mb-0.5 sm:mb-1 md:mb-2">
                 {t.findYour}
-              </h2>
-              <p className="flex text-[10px] sm:text-xs md:text-sm lg:text-base text-white/90 items-center justify-center gap-1 sm:gap-1.5 drop-shadow-md">
-                <Search className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+              </h1>
+              <p className="flex text-[9px] sm:text-[11px] md:text-sm lg:text-base text-white/90 items-center justify-center gap-1 sm:gap-1.5 drop-shadow-md">
+                <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                 {t.searchPowered}
               </p>
             </div>
             
-            {/* Search Panel Container */}
+            {/* Search Panel Container - Mobile optimized */}
             <div
               className={cn(
-                "relative mx-auto w-full",
-                // Premium glassy background
-                "bg-white/10 dark:bg-black/20 backdrop-blur-2xl rounded-2xl md:rounded-3xl shadow-2xl shadow-black/30 border border-white/30 dark:border-white/10 overflow-hidden",
-                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-white/5 before:rounded-2xl before:md:rounded-3xl before:pointer-events-none"
+                "relative mx-auto w-full max-w-4xl",
+                // Premium glassy background with better mobile radius
+                "bg-white/10 dark:bg-black/20 backdrop-blur-2xl",
+                "rounded-xl sm:rounded-2xl md:rounded-3xl",
+                "shadow-xl sm:shadow-2xl shadow-black/20 sm:shadow-black/30",
+                "border border-white/20 sm:border-white/30 dark:border-white/10",
+                "overflow-hidden",
+                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-white/5 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none"
               )}
             >
               <Suspense fallback={<SearchPanelSkeleton />}>
@@ -552,11 +570,11 @@ const Index = () => {
                 </SearchErrorBoundary>
               </Suspense>
               
-              {/* Retry Indicator */}
+              {/* Retry Indicator - Mobile friendly positioning */}
               {isRetrying && (
-                <div className="absolute bottom-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-2 duration-300">
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span className="text-sm font-medium">
+                <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-primary/90 text-primary-foreground px-2 py-1 sm:px-4 sm:py-2 rounded-lg shadow-lg flex items-center gap-1.5 sm:gap-2 animate-in slide-in-from-bottom-2 duration-300">
+                  <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                  <span className="text-xs sm:text-sm font-medium">
                     Retrying... ({retryCount}/3)
                   </span>
                 </div>
@@ -620,12 +638,12 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property Display Section - Space Optimized */}
-        <div className="px-2 py-2 md:py-4 space-y-3 md:space-y-4">
-          <div className="w-full max-w-full mx-auto space-y-3 md:space-y-4">
+        {/* Property Display Section - Enhanced Mobile Responsiveness */}
+        <div className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 space-y-2 sm:space-y-3 md:space-y-4">
+          <div className="w-full max-w-7xl mx-auto space-y-2 sm:space-y-3 md:space-y-4">
             {hasSearched ? (
-              <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
-                <div className="p-2 md:p-4 lg:p-6">
+              <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border-0">
+                <div className="p-2 sm:p-3 md:p-4 lg:p-6">
                   {/* Active Filter Pills */}
                   <Suspense fallback={null}>
                     <ActiveFilterPills
@@ -658,9 +676,9 @@ const Index = () => {
                   </div>
                   
                   {isSearching && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-3 md:mb-4">
                       {[...Array(6)].map((_, i) => (
-                        <div key={i} className="animate-pulse bg-muted/50 rounded-xl h-64" 
+                        <div key={i} className="animate-pulse bg-muted/50 rounded-lg sm:rounded-xl h-48 sm:h-56 md:h-64" 
                           style={{ animationDelay: `${i * 100}ms` }} 
                         />
                       ))}
