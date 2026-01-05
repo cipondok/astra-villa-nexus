@@ -46,7 +46,8 @@ import {
   ClipboardList,
   DatabaseZap,
   Cpu,
-  TestTube2
+  TestTube2,
+  Gem
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -211,6 +212,13 @@ export const navigationSections = {
   ],
 
   "analytics-monitoring": [
+    {
+      key: "vip-analytics",
+      label: "VIP Analytics",
+      icon: Gem,
+      description: "View VIP member distribution, upgrade trends, and membership analytics",
+      badge: "New"
+    },
     {
       key: "visitor-analytics",
       label: "Visitor Analytics & Access",
