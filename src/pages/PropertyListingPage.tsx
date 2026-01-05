@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maximize } from 'lucide-react';
+import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maximize, Key, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 interface PropertyListingPageProps {
@@ -392,7 +392,10 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
 
                   {/* Top Actions */}
                   <div className="absolute top-1 sm:top-1.5 left-1 sm:left-1.5 right-1 sm:right-1.5 flex justify-between items-start z-10">
-                    <span className="px-1 sm:px-1.5 py-0.5 bg-emerald-600/90 text-white text-[6px] sm:text-[7px] font-medium rounded">
+                    <span className={`flex items-center gap-0.5 px-1 sm:px-1.5 py-0.5 text-white text-[6px] sm:text-[7px] font-medium rounded ${
+                      property.listing_type === 'rent' ? 'bg-blue-500/90' : 'bg-emerald-600/90'
+                    }`}>
+                      {property.listing_type === 'rent' ? <Key className="h-2 w-2 sm:h-2.5 sm:w-2.5" /> : <Tag className="h-2 w-2 sm:h-2.5 sm:w-2.5" />}
                       {listingLabel}
                     </span>
                     <button className="p-0.5 sm:p-1 bg-black/30 hover:bg-black/50 rounded-full transition-colors">
