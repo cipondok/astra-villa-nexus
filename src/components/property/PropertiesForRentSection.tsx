@@ -27,32 +27,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select(`
-            id,
-            title,
-            property_type,
-            listing_type,
-            price,
-            location,
-            bedrooms,
-            bathrooms,
-            area_sqm,
-            images,
-            thumbnail_url,
-            state,
-            city,
-            development_status,
-            description,
-            three_d_model_url,
-            virtual_tour_url,
-            owner:profiles!properties_owner_id_fkey(
-              id,
-              full_name,
-              avatar_url,
-              verification_status,
-              created_at
-            )
-          `)
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url')
           .eq('status', 'active')
           .eq('approval_status', 'approved')
           .eq('listing_type', 'rent')
@@ -70,23 +45,11 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
 
         console.log('Properties for rent loaded:', data?.length || 0);
         // Transform data to match BaseProperty interface
-        const transformedData = data?.map((property: any) => {
-          const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
-          return {
-            ...property,
-            listing_type: property.listing_type as "sale" | "rent" | "lease",
-            image_urls: property.images || [],
-            posted_by: ownerData
-              ? {
-                  id: ownerData.id,
-                  name: ownerData.full_name || "Anonymous",
-                  avatar_url: ownerData.avatar_url || undefined,
-                  verification_status: ownerData.verification_status || "unverified",
-                  joining_date: ownerData.created_at || undefined,
-                }
-              : undefined,
-          };
-        }) || [];
+        const transformedData = data?.map(property => ({
+          ...property,
+          listing_type: property.listing_type as "sale" | "rent" | "lease",
+          image_urls: property.images || []
+        })) || [];
         return transformedData;
         
       } catch (err) {
