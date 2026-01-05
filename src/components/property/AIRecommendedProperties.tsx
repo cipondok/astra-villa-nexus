@@ -195,7 +195,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
       {/* View Icon - Center on hover */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-        <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full bg-white/90 dark:bg-black/80 flex items-center justify-center shadow-xl">
+        <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
           <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-purple-600 dark:text-purple-400" />
         </div>
       </div>
@@ -215,7 +215,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
         </span>
         {/* Property Type */}
-        <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[55%]">
+        <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground shadow-lg truncate max-w-[55%]">
           <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           {capitalizeFirst(property.property_type)}
         </span>
