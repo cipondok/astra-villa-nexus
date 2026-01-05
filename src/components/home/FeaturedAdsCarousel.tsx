@@ -264,8 +264,17 @@ export default function FeaturedAdsCarousel() {
                 <div className="mb-1.5">
                   <span className="inline-flex items-baseline text-xs sm:text-sm md:text-base font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl">
                     <span className="text-[0.7em] font-medium opacity-90">Rp</span>
-                    <span>{(p.price / 1000000).toFixed(0)}</span>
-                    <span className="text-[0.7em] font-medium opacity-90">Jt</span>
+                    {p.price >= 1000000000 ? (
+                      <>
+                        <span>{(p.price / 1000000000).toFixed(1)}</span>
+                        <span className="text-[0.7em] font-medium opacity-90">M</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{(p.price / 1000000).toFixed(0)}</span>
+                        <span className="text-[0.7em] font-medium opacity-90">Jt</span>
+                      </>
+                    )}
                   </span>
                 </div>
                 
