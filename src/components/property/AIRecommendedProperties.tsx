@@ -2,7 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag } from 'lucide-react';
+import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building } from 'lucide-react';
+
+// Helper to capitalize first letter
+const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -210,8 +213,9 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
           {property.listing_type === 'sale' ? 'Jual' : 'Sewa'}
         </span>
         {/* Property Type */}
-        <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[50%]">
-          {property.property_type || 'Property'}
+        <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[55%]">
+          <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+          {capitalizeFirst(property.property_type)}
         </span>
       </div>
 

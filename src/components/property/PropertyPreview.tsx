@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Eye, MapPin, Home, DollarSign, User, Building, Calendar, Ruler, X, Key, Tag } from "lucide-react";
+
+// Helper to capitalize first letter
+const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
 import { formatIDR } from "@/utils/currency";
 import { useNavigate } from 'react-router-dom';
 
@@ -85,7 +88,7 @@ const PropertyPreview = ({ isOpen, onClose, onConfirm, propertyData, isSubmittin
                 <div className="text-center bg-blue-50 p-3 rounded-lg">
                   <Building className="h-6 w-6 mx-auto mb-2 text-blue-600" />
                   <p className="text-sm text-gray-600 font-medium">Tipe</p>
-                  <p className="font-bold text-gray-900 capitalize">{propertyData.property_type}</p>
+                  <p className="font-bold text-gray-900 capitalize">{capitalizeFirst(propertyData.property_type)}</p>
                 </div>
                 {propertyData.bedrooms && (
                   <div className="text-center bg-purple-50 p-3 rounded-lg">
