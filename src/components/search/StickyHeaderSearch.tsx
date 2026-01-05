@@ -91,9 +91,9 @@ export function StickyHeaderSearch({
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className={cn(
-            "fixed top-10 md:top-11 lg:top-12 left-0 right-0 z-[9990]",
-            "bg-background/80 backdrop-blur-xl border-b border-border/50",
-            "shadow-lg shadow-black/5",
+            "fixed top-[52px] sm:top-[56px] md:top-[60px] left-0 right-0 z-[9999]",
+            "bg-background/95 backdrop-blur-xl border-b border-border/50",
+            "shadow-lg shadow-black/10",
             className
           )}
         >
