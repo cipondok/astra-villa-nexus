@@ -30,6 +30,7 @@ import {
   Shield,
   CreditCard,
   Calendar,
+  CalendarDays,
   Mail,
   Activity,
   Download,
@@ -153,6 +154,13 @@ export const navigationSections = {
       label: "Property Survey Booking",
       icon: Calendar,
       description: "Manage property viewing and survey appointments"
+    },
+    {
+      key: "booking-management",
+      label: "Booking Management",
+      icon: CalendarDays,
+      description: "Manage all property bookings, viewings, and booking settings",
+      badge: "New"
     },
     {
       key: "notifications-center",
