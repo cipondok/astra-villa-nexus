@@ -1,10 +1,12 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store, Bed, Bath, Maximize, Key, Tag, Clock, BadgeCheck, ShieldCheck, Crown, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns";
 
 // Get icon for property type
 const getPropertyIcon = (type: string) => {
@@ -57,11 +59,31 @@ interface FallbackProperty {
   bedrooms: number | null;
   bathrooms: number | null;
   area_sqm: number | null;
+  created_at?: string;
   owner_type?: string;
   owner_verified?: boolean;
   agent_verified?: boolean;
   agency_verified?: boolean;
+  verification_status?: string;
+  user_level?: string;
 }
+
+// Get verification info
+const getVerificationInfo = (property: FallbackProperty) => {
+  const status = property.verification_status?.toLowerCase() || '';
+  const level = property.user_level?.toLowerCase() || '';
+  
+  if (level.includes('vip') || level.includes('premium')) {
+    return { icon: Crown, label: 'VIP Member', color: 'text-amber-500', bg: 'bg-amber-500/20' };
+  }
+  if (status === 'verified' || property.owner_verified || property.agent_verified || property.agency_verified) {
+    return { icon: BadgeCheck, label: 'Verified User', color: 'text-green-500', bg: 'bg-green-500/20' };
+  }
+  if (status === 'trusted') {
+    return { icon: ShieldCheck, label: 'Trusted Seller', color: 'text-blue-500', bg: 'bg-blue-500/20' };
+  }
+  return { icon: ShieldAlert, label: 'Unverified', color: 'text-muted-foreground', bg: 'bg-muted/50' };
+};
 
 export default function FeaturedAdsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -256,6 +278,26 @@ export default function FeaturedAdsCarousel() {
                     </span>
                   );
                 })()}
+                
+                {/* Verification Status Badge */}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      {(() => {
+                        const verification = getVerificationInfo(p);
+                        const VerificationIcon = verification.icon;
+                        return (
+                          <span className={`flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold px-1.5 py-1 rounded-full ${verification.bg} backdrop-blur-sm shadow-lg cursor-help`}>
+                            <VerificationIcon className={`h-3 w-3 ${verification.color}`} />
+                          </span>
+                        );
+                      })()}
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">
+                      {getVerificationInfo(p).label}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Bottom Content */}
@@ -283,9 +325,15 @@ export default function FeaturedAdsCarousel() {
                   {p.title}
                 </h3>
                 
-                {/* Location */}
-                <div className="text-[10px] sm:text-xs text-white/90 truncate drop-shadow-md mb-1.5">
-                  📍 {p.city || p.state || 'Indonesia'}
+                {/* Location & Time */}
+                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/90 mb-1.5">
+                  <span className="truncate drop-shadow-md">📍 {p.city || p.state || 'Indonesia'}</span>
+                  {p.created_at && (
+                    <span className="flex items-center gap-0.5 text-white/70">
+                      <Clock className="h-2.5 w-2.5" />
+                      {formatDistanceToNow(new Date(p.created_at), { addSuffix: true })}
+                    </span>
+                  )}
                 </div>
                 
                 {/* Property Stats - Bedroom, Bathroom, Area with bigger icons */}
