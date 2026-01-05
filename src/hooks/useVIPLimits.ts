@@ -11,6 +11,7 @@ interface VIPLimitsData {
   canAddProperty: boolean;
   canAddListing: boolean;
   canFeatureListings: boolean;
+  prioritySupport: boolean;
   remainingProperties: number;
   remainingListings: number;
   membershipLevel: string;
@@ -24,6 +25,7 @@ export function useVIPLimits(): VIPLimitsData {
     maxProperties, 
     maxListings, 
     canFeatureListings, 
+    prioritySupport,
     membershipLevel,
     isLoading: membershipLoading 
   } = useUserMembership();
@@ -78,6 +80,7 @@ export function useVIPLimits(): VIPLimitsData {
     canAddProperty: currentProperties < maxProperties,
     canAddListing: currentListings < maxListings,
     canFeatureListings,
+    prioritySupport,
     remainingProperties,
     remainingListings,
     membershipLevel,
