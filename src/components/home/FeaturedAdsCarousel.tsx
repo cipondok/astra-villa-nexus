@@ -197,9 +197,12 @@ export default function FeaturedAdsCarousel() {
 
               {/* Top Labels */}
               <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between gap-1">
-                {/* Featured Badge */}
-                <span className="text-[10px] sm:text-xs md:text-sm font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
-                  ⭐ Featured
+                {/* Featured Badge - Icon only, text on hover */}
+                <span className="group/badge flex items-center gap-1 font-bold px-1.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg transition-all duration-300 hover:px-2">
+                  <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white" />
+                  <span className="text-[10px] sm:text-xs md:text-sm max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px]">
+                    Featured
+                  </span>
                 </span>
                 {/* Property Type */}
                 <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-1.5 py-0.5 sm:px-2 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
@@ -248,10 +251,13 @@ export default function FeaturedAdsCarousel() {
                 </div>
               </div>
               
-              {/* Top Badge */}
+              {/* Top Badge - Icon only, text on hover */}
               <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2">
-                <span className="text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg">
-                  ⭐ Featured
+                <span className="group/badge flex items-center gap-1 font-bold px-1.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg transition-all duration-300 hover:px-2">
+                  <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white" />
+                  <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px]">
+                    Featured
+                  </span>
                 </span>
               </div>
               
