@@ -167,12 +167,12 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
-      return `IDR ${(price / 1000000000).toFixed(1)}M`;
+      return `Rp${(price / 1000000000).toFixed(1)}M`;
     }
     if (price >= 1000000) {
-      return `IDR ${(price / 1000000).toFixed(0)}Jt`;
+      return `Rp${(price / 1000000).toFixed(0)}Jt`;
     }
-    return `IDR ${price.toLocaleString('id-ID')}`;
+    return `Rp${price.toLocaleString('id-ID')}`;
   };
 
   const PropertyCard = ({ property }: { property: BaseProperty }) => (
@@ -222,7 +222,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       {/* Bottom Content */}
       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
         {/* Price */}
-        <span className="inline-block text-xs sm:text-sm md:text-base font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xl mb-1">
+        <span className="inline-block text-[10px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-lg mb-1">
           {formatPrice(property.price || 0)}
         </span>
         {/* Title */}

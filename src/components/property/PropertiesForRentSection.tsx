@@ -148,11 +148,11 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             
             {/* Price Label */}
             <div className="absolute top-1/2 left-1.5 sm:left-2 md:left-2.5 -translate-y-1/2">
-              <span className="text-xs sm:text-sm md:text-base font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-gradient-to-r from-blue-600 to-sky-700 text-white shadow-xl">
-                {property.price >= 1000000000 
+              <span className="text-[10px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded bg-gradient-to-r from-blue-600 to-sky-700 text-white shadow-lg">
+                Rp{property.price >= 1000000000 
                   ? `${(property.price / 1000000000).toFixed(1)}M` 
                   : `${(property.price / 1000000).toFixed(0)}Jt`}
-                <span className="text-[8px] sm:text-[10px] md:text-xs font-normal">/bln</span>
+                <span className="text-[7px] sm:text-[8px] md:text-[10px] font-normal">/bln</span>
               </span>
             </div>
             
