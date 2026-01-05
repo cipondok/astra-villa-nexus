@@ -1,10 +1,28 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight, Eye, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Star, Home, Building2, Warehouse, Castle, TreePine, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { useNavigate } from "react-router-dom";
+
+// Get icon for property type
+const getPropertyIcon = (type: string) => {
+  const lowerType = type?.toLowerCase() || '';
+  if (lowerType.includes('house') || lowerType.includes('rumah')) return Home;
+  if (lowerType.includes('apartment') || lowerType.includes('apartemen')) return Building2;
+  if (lowerType.includes('villa')) return Castle;
+  if (lowerType.includes('land') || lowerType.includes('tanah')) return TreePine;
+  if (lowerType.includes('warehouse') || lowerType.includes('gudang')) return Warehouse;
+  if (lowerType.includes('shop') || lowerType.includes('ruko') || lowerType.includes('commercial')) return Store;
+  return Home;
+};
+
+// Capitalize first letter
+const capitalizeFirst = (str: string) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
 
 interface FeaturedAd {
   id: string;
@@ -204,10 +222,16 @@ export default function FeaturedAdsCarousel() {
                     Featured
                   </span>
                 </span>
-                {/* Property Type */}
-                <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[45%]">
-                  {p.property_type}
-                </span>
+                {/* Property Type with Icon */}
+                {(() => {
+                  const PropertyIcon = getPropertyIcon(p.property_type);
+                  return (
+                    <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[50%]">
+                      <PropertyIcon className="h-3 w-3 md:h-3.5 md:w-3.5 flex-shrink-0" />
+                      <span className="truncate">{capitalizeFirst(p.property_type)}</span>
+                    </span>
+                  );
+                })()}
               </div>
 
               {/* Bottom Content */}
