@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
-import { ChevronLeft, ChevronRight, Bed, Bath, Maximize } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Property {
@@ -157,9 +157,10 @@ const PropertySlideshow = () => {
                 className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute top-3 left-3">
-                <span className={`px-3 py-1.5 text-white text-xs font-semibold rounded-full backdrop-blur-sm shadow-md ${
+                <span className={`flex items-center gap-1 px-3 py-1.5 text-white text-xs font-semibold rounded-full backdrop-blur-sm shadow-md ${
                   property.listing_type === 'rent' ? 'bg-blue-500' : 'bg-green-500'
                 }`}>
+                  {property.listing_type === 'rent' ? <Key className="h-3.5 w-3.5" /> : <Tag className="h-3.5 w-3.5" />}
                   {getListingLabel(property.listing_type)}
                 </span>
               </div>
