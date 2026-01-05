@@ -196,16 +196,16 @@ export default function FeaturedAdsCarousel() {
               </div>
 
               {/* Top Labels */}
-              <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between gap-1">
-                {/* Featured Badge - Icon only, text on hover */}
-                <span className="group/badge flex items-center gap-1 font-bold px-1.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg transition-all duration-300 hover:px-2">
-                  <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white" />
-                  <span className="text-[10px] sm:text-xs md:text-sm max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px]">
+              <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between gap-1 z-10">
+                {/* Featured Badge - Polished icon with glow, text on hover */}
+                <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-[0_0_12px_rgba(251,191,36,0.6)] transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.8)]">
+                  <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+                  <span className="text-[10px] sm:text-xs md:text-sm max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
                     Featured
                   </span>
                 </span>
                 {/* Property Type */}
-                <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-1.5 py-0.5 sm:px-2 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[48%]">
+                <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/95 dark:bg-black/80 text-foreground shadow-lg truncate max-w-[45%]">
                   {p.property_type}
                 </span>
               </div>
@@ -251,11 +251,11 @@ export default function FeaturedAdsCarousel() {
                 </div>
               </div>
               
-              {/* Top Badge - Icon only, text on hover */}
-              <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2">
-                <span className="group/badge flex items-center gap-1 font-bold px-1.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg transition-all duration-300 hover:px-2">
-                  <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white" />
-                  <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px]">
+              {/* Top Badge - Polished icon with glow, text on hover */}
+              <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 z-10">
+                <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-[0_0_12px_rgba(251,191,36,0.6)] transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.8)]">
+                  <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+                  <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
                     Featured
                   </span>
                 </span>
