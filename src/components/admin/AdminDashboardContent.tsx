@@ -69,6 +69,7 @@ import { BugErrorDashboard } from "./diagnostics/BugErrorDashboard";
 import VisitorAnalytics from "./VisitorAnalytics";
 import TestingDashboard from "./TestingDashboard";
 import VIPAnalyticsDashboard from "./VIPAnalyticsDashboard";
+import BookingManagement from "./BookingManagement";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -127,6 +128,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "api-settings": { label: "API Settings", category: "System & Tools" },
   "ai-assistant": { label: "AI Assistant", category: "AI & Tools" },
   "booking-payment-settings": { label: "Booking Payments", category: "System" },
+  "booking-management": { label: "Booking Management", category: "Core Management" },
   "bpjs-api-settings": { label: "BPJS API", category: "System" },
   "admin-kyc-review": { label: "KYC Review", category: "Verification" },
   "kyc-analytics": { label: "KYC Analytics", category: "Verification" },
@@ -260,6 +262,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AIPropertyAssistant />;
       case "booking-payment-settings":
         return <BookingPaymentSettings />;
+      case "booking-management":
+        return <BookingManagement />;
       case "bpjs-api-settings":
         return <BPJSAPISettings />;
       case "admin-kyc-review":
