@@ -151,70 +151,80 @@ body.scroll-locked {
 
 @layer base {
   :root {
-    /* Light Mode Colors - Luxury Cream & Gold Theme */
-    --background: 45 30% 97%;
-    --foreground: 0 0% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 12%;
-    --primary: 48 95% 45%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 25% 90%;
-    --secondary-foreground: 0 0% 15%;
-    --muted: 45 20% 94%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 42 85% 55%;
-    --accent-foreground: 0 0% 10%;
+    /* Light Mode - Luxury Deep Navy & Gold Glassy Theme */
+    --background: 220 30% 96%;
+    --foreground: 220 50% 12%;
+    --card: 220 20% 99%;
+    --card-foreground: 220 50% 12%;
+    --popover: 220 20% 99%;
+    --popover-foreground: 220 50% 12%;
+    --primary: 45 93% 47%;
+    --primary-foreground: 220 50% 8%;
+    --secondary: 220 20% 92%;
+    --secondary-foreground: 220 40% 20%;
+    --muted: 220 15% 94%;
+    --muted-foreground: 220 15% 45%;
+    --accent: 45 85% 55%;
+    --accent-foreground: 220 50% 8%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 40 20% 88%;
-    --input: 0 0% 100%;
-    --ring: 48 95% 45%;
-    --radius: 12px;
+    --border: 220 20% 88%;
+    --input: 220 20% 99%;
+    --ring: 45 93% 47%;
+    --radius: 16px;
     
-    /* Premium Gold-Orange Theme Colors */
-    --gold-primary: 51 100% 50%;
-    --gold-secondary: 43 97% 59%;
-    --orange-primary: 33 100% 50%;
-    --orange-secondary: 39 100% 50%;
-    --dark-bg: 0 0% 4%;
-    --dark-card: 0 0% 10%;
-    --text-light: 0 0% 96%;
-    --text-muted: 0 0% 67%;
+    /* Premium Navy & Gold Theme Colors */
+    --gold-primary: 45 93% 47%;
+    --gold-secondary: 38 95% 55%;
+    --navy-primary: 220 60% 20%;
+    --navy-secondary: 220 50% 30%;
+    --dark-bg: 220 50% 6%;
+    --dark-card: 220 45% 12%;
+    --text-light: 220 20% 98%;
+    --text-muted: 220 15% 55%;
+    
+    /* Glassy effect colors */
+    --glass-bg: 220 30% 98%;
+    --glass-border: 45 50% 70%;
+    --glass-shadow: 220 50% 10%;
   }
 
   .dark {
-    /* Dark Mode Colors - Gold, Silver, Black Luxury Theme */
-    --background: 0 0% 8%;
-    --foreground: 0 0% 92%;
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 92%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 92%;
-    --primary: 48 100% 50%;
-    --primary-foreground: 0 0% 10%;
-    --secondary: 0 0% 25%;
-    --secondary-foreground: 0 0% 92%;
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 45 90% 60%;
-    --accent-foreground: 0 0% 10%;
+    /* Dark Mode - Deep Navy & Gold Luxury Glassy Theme */
+    --background: 220 50% 6%;
+    --foreground: 45 20% 95%;
+    --card: 220 45% 10%;
+    --card-foreground: 45 20% 95%;
+    --popover: 220 45% 8%;
+    --popover-foreground: 45 20% 95%;
+    --primary: 45 93% 50%;
+    --primary-foreground: 220 50% 6%;
+    --secondary: 220 40% 18%;
+    --secondary-foreground: 45 20% 92%;
+    --muted: 220 35% 15%;
+    --muted-foreground: 220 15% 60%;
+    --accent: 45 90% 55%;
+    --accent-foreground: 220 50% 6%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 25%;
-    --input: 0 0% 18%;
-    --ring: 48 100% 50%;
+    --border: 220 40% 20%;
+    --input: 220 40% 14%;
+    --ring: 45 93% 50%;
     
-    /* Premium Gold-Orange Theme Colors - Dark Mode */
-    --gold-primary: 51 100% 50%;
-    --gold-secondary: 43 97% 59%;
-    --orange-primary: 33 100% 50%;
-    --orange-secondary: 39 100% 50%;
-    --dark-bg: 0 0% 4%;
-    --dark-card: 0 0% 10%;
-    --text-light: 0 0% 96%;
-    --text-muted: 0 0% 67%;
+    /* Premium Navy & Gold Theme Colors - Dark Mode */
+    --gold-primary: 45 93% 50%;
+    --gold-secondary: 38 95% 58%;
+    --navy-primary: 220 60% 25%;
+    --navy-secondary: 220 50% 35%;
+    --dark-bg: 220 55% 4%;
+    --dark-card: 220 45% 10%;
+    --text-light: 45 20% 98%;
+    --text-muted: 220 15% 60%;
+    
+    /* Glassy effect colors - Dark Mode */
+    --glass-bg: 220 50% 8%;
+    --glass-border: 45 70% 45%;
+    --glass-shadow: 220 60% 3%;
   }
 
   * {
@@ -240,34 +250,52 @@ body.scroll-locked {
 }
 
 @layer components {
-  /* Glassmorphism Effects - Light Mode Cream Tone */
+  /* Glassmorphism Effects - Luxury Navy & Gold */
   .glass-effect {
-    background: rgba(254, 252, 245, 0.75);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(202, 138, 4, 0.15);
-    box-shadow: 0 8px 32px rgba(202, 138, 4, 0.08);
+    background: linear-gradient(135deg, 
+      hsl(220 30% 98% / 0.85) 0%, 
+      hsl(220 25% 96% / 0.75) 100%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid hsl(45 70% 60% / 0.2);
+    box-shadow: 
+      0 8px 32px hsl(220 50% 10% / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.5);
   }
 
   .dark .glass-effect {
-    background: rgba(20, 20, 20, 0.7);
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+    background: linear-gradient(135deg, 
+      hsl(220 50% 10% / 0.85) 0%, 
+      hsl(220 45% 8% / 0.75) 100%);
+    border: 1px solid hsl(45 93% 50% / 0.2);
+    box-shadow: 
+      0 8px 32px hsl(220 60% 3% / 0.4),
+      inset 0 1px 0 hsl(45 50% 50% / 0.1);
   }
 
   .glass-card {
-    background: rgba(255, 253, 248, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(202, 138, 4, 0.2);
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(202, 138, 4, 0.10);
+    background: linear-gradient(145deg, 
+      hsl(220 25% 99% / 0.9) 0%, 
+      hsl(220 20% 97% / 0.8) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(45 70% 55% / 0.25);
+    border-radius: 20px;
+    box-shadow: 
+      0 4px 24px hsl(220 50% 10% / 0.1),
+      0 1px 3px hsl(220 50% 10% / 0.05),
+      inset 0 1px 0 hsl(0 0% 100% / 0.6);
   }
 
   .dark .glass-card {
-    background: rgba(25, 25, 25, 0.8);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    box-shadow: 0 4px 24px rgba(255, 215, 0, 0.15);
+    background: linear-gradient(145deg, 
+      hsl(220 45% 12% / 0.9) 0%, 
+      hsl(220 50% 8% / 0.85) 100%);
+    border: 1px solid hsl(45 93% 50% / 0.25);
+    box-shadow: 
+      0 4px 24px hsl(220 60% 3% / 0.5),
+      0 1px 3px hsl(45 93% 50% / 0.1),
+      inset 0 1px 0 hsl(45 50% 50% / 0.08);
   }
 
   /* Global modal styling (one place to control all popups) - GLASSY STYLE */
