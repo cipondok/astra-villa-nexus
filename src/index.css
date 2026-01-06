@@ -298,92 +298,278 @@ body.scroll-locked {
       inset 0 1px 0 hsl(45 50% 50% / 0.08);
   }
 
-  /* Global modal styling (one place to control all popups) - GLASSY STYLE */
+  /* ========================================
+     LUXURY GLASSY UI SYSTEM - Navy & Gold
+     ======================================== */
+
+  /* Modal Overlay - Frosted glass backdrop */
   .modal-overlay {
-    /* Change this single variable to update overlay opacity everywhere */
-    --modal-overlay-opacity: 0.50;
+    --modal-overlay-opacity: 0.6;
     background: linear-gradient(
       135deg,
-      hsl(var(--primary) / 0.08) 0%,
-      hsl(0 0% 0% / var(--modal-overlay-opacity)) 50%,
-      hsl(var(--primary) / 0.05) 100%
+      hsl(220 50% 10% / 0.3) 0%,
+      hsl(220 50% 5% / var(--modal-overlay-opacity)) 50%,
+      hsl(45 50% 30% / 0.1) 100%
     );
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
   }
 
-  .modal-surface {
-    /* Change this single variable to update popup background opacity everywhere */
-    --modal-surface-opacity: 0.65;
+  .dark .modal-overlay {
+    --modal-overlay-opacity: 0.75;
     background: linear-gradient(
-      145deg,
-      hsl(var(--background) / 0.85) 0%,
-      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
-      hsl(var(--background) / 0.75) 100%
+      135deg,
+      hsl(220 60% 4% / 0.5) 0%,
+      hsl(220 55% 3% / var(--modal-overlay-opacity)) 50%,
+      hsl(45 80% 30% / 0.08) 100%
     );
-    border: 1px solid hsl(var(--primary) / 0.15);
-    border-top: 1px solid hsl(var(--background) / 0.8);
-    border-left: 1px solid hsl(var(--background) / 0.6);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+  }
+
+  /* Modal Surface - Main popup/dialog glass panel */
+  .modal-surface {
+    background: linear-gradient(
+      155deg,
+      hsl(220 25% 99% / 0.95) 0%,
+      hsl(220 20% 97% / 0.88) 50%,
+      hsl(220 25% 96% / 0.92) 100%
+    );
+    border: 1px solid hsl(45 70% 55% / 0.3);
+    border-top: 1px solid hsl(0 0% 100% / 0.8);
+    border-left: 1px solid hsl(0 0% 100% / 0.6);
+    border-radius: 20px;
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
     box-shadow: 
-      0 20px 50px hsl(var(--foreground) / 0.15),
-      0 8px 20px hsl(var(--foreground) / 0.08),
-      inset 0 1px 1px hsl(var(--background) / 0.5),
-      0 0 0 1px hsl(var(--primary) / 0.05);
+      0 25px 60px hsl(220 50% 10% / 0.2),
+      0 10px 25px hsl(220 50% 10% / 0.1),
+      inset 0 1px 2px hsl(0 0% 100% / 0.6),
+      0 0 0 1px hsl(45 70% 55% / 0.1);
   }
 
   .dark .modal-surface {
-    --modal-surface-opacity: 0.60;
     background: linear-gradient(
-      145deg,
-      hsl(var(--background) / 0.80) 0%,
-      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
-      hsl(var(--background) / 0.70) 100%
+      155deg,
+      hsl(220 45% 14% / 0.95) 0%,
+      hsl(220 50% 10% / 0.9) 50%,
+      hsl(220 48% 12% / 0.92) 100%
     );
-    border: 1px solid hsl(var(--primary) / 0.20);
-    border-top: 1px solid hsl(var(--background) / 0.5);
-    border-left: 1px solid hsl(var(--background) / 0.4);
+    border: 1px solid hsl(45 93% 50% / 0.25);
+    border-top: 1px solid hsl(45 50% 50% / 0.15);
+    border-left: 1px solid hsl(45 50% 50% / 0.1);
     box-shadow: 
-      0 20px 50px hsl(0 0% 0% / 0.4),
-      0 8px 20px hsl(0 0% 0% / 0.25),
-      inset 0 1px 1px hsl(var(--background) / 0.3),
-      0 0 40px hsl(var(--primary) / 0.08);
+      0 25px 60px hsl(220 60% 3% / 0.6),
+      0 10px 25px hsl(220 60% 3% / 0.4),
+      inset 0 1px 2px hsl(45 50% 50% / 0.1),
+      0 0 80px hsl(45 93% 50% / 0.05);
   }
 
+  /* Glass Popup - For smaller dropdowns and tooltips */
   .glass-popup {
-    /* Back-compat: same as modal-surface */
-    --modal-surface-opacity: 0.65;
     background: linear-gradient(
-      145deg,
-      hsl(var(--background) / 0.85) 0%,
-      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
-      hsl(var(--background) / 0.75) 100%
+      150deg,
+      hsl(220 25% 99% / 0.96) 0%,
+      hsl(220 20% 97% / 0.9) 100%
     );
-    border: 1px solid hsl(var(--primary) / 0.15);
-    border-top: 1px solid hsl(var(--background) / 0.8);
-    border-left: 1px solid hsl(var(--background) / 0.6);
+    border: 1px solid hsl(45 70% 55% / 0.25);
+    border-top: 1px solid hsl(0 0% 100% / 0.7);
+    border-radius: 16px;
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     box-shadow: 
-      0 20px 50px hsl(var(--foreground) / 0.15),
-      0 8px 20px hsl(var(--foreground) / 0.08),
-      inset 0 1px 1px hsl(var(--background) / 0.5);
+      0 15px 40px hsl(220 50% 10% / 0.15),
+      0 5px 15px hsl(220 50% 10% / 0.08),
+      inset 0 1px 1px hsl(0 0% 100% / 0.5);
   }
 
   .dark .glass-popup {
-    --modal-surface-opacity: 0.60;
+    background: linear-gradient(
+      150deg,
+      hsl(220 45% 14% / 0.96) 0%,
+      hsl(220 50% 10% / 0.92) 100%
+    );
+    border: 1px solid hsl(45 93% 50% / 0.2);
+    border-top: 1px solid hsl(45 50% 50% / 0.12);
+    box-shadow: 
+      0 15px 40px hsl(220 60% 3% / 0.5),
+      0 5px 15px hsl(220 60% 3% / 0.3),
+      inset 0 1px 1px hsl(45 50% 50% / 0.08),
+      0 0 40px hsl(45 93% 50% / 0.04);
+  }
+
+  /* Glass Menu - Navigation and context menus */
+  .glass-menu {
+    background: linear-gradient(
+      160deg,
+      hsl(220 25% 99% / 0.97) 0%,
+      hsl(220 20% 97% / 0.92) 100%
+    );
+    border: 1px solid hsl(45 60% 60% / 0.2);
+    border-radius: 14px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 
+      0 12px 35px hsl(220 50% 10% / 0.12),
+      0 4px 12px hsl(220 50% 10% / 0.06),
+      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+  }
+
+  .dark .glass-menu {
+    background: linear-gradient(
+      160deg,
+      hsl(220 45% 13% / 0.97) 0%,
+      hsl(220 50% 9% / 0.94) 100%
+    );
+    border: 1px solid hsl(45 93% 50% / 0.18);
+    box-shadow: 
+      0 12px 35px hsl(220 60% 3% / 0.45),
+      0 4px 12px hsl(220 60% 3% / 0.25),
+      inset 0 1px 0 hsl(45 50% 50% / 0.06);
+  }
+
+  /* Glass Menu Item - Individual menu options */
+  .glass-menu-item {
+    @apply px-4 py-2.5 text-sm font-medium cursor-pointer transition-all duration-200 rounded-lg mx-1;
+    color: hsl(var(--foreground));
+  }
+
+  .glass-menu-item:hover {
+    background: linear-gradient(
+      135deg,
+      hsl(45 70% 55% / 0.15) 0%,
+      hsl(45 60% 50% / 0.08) 100%
+    );
+    color: hsl(var(--primary));
+  }
+
+  .dark .glass-menu-item:hover {
+    background: linear-gradient(
+      135deg,
+      hsl(45 93% 50% / 0.12) 0%,
+      hsl(45 80% 45% / 0.06) 100%
+    );
+  }
+
+  /* Glass Dropdown - Select menus and dropdowns */
+  .glass-dropdown {
+    background: linear-gradient(
+      155deg,
+      hsl(220 25% 99% / 0.98) 0%,
+      hsl(220 20% 97% / 0.94) 100%
+    );
+    border: 1px solid hsl(45 60% 60% / 0.2);
+    border-radius: 12px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 
+      0 10px 30px hsl(220 50% 10% / 0.1),
+      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+  }
+
+  .dark .glass-dropdown {
+    background: linear-gradient(
+      155deg,
+      hsl(220 45% 13% / 0.98) 0%,
+      hsl(220 50% 9% / 0.95) 100%
+    );
+    border: 1px solid hsl(45 93% 50% / 0.15);
+    box-shadow: 
+      0 10px 30px hsl(220 60% 3% / 0.4),
+      inset 0 1px 0 hsl(45 50% 50% / 0.05);
+  }
+
+  /* Glass Tooltip */
+  .glass-tooltip {
     background: linear-gradient(
       145deg,
-      hsl(var(--background) / 0.80) 0%,
-      hsl(var(--background) / var(--modal-surface-opacity)) 50%,
-      hsl(var(--background) / 0.70) 100%
+      hsl(220 45% 12% / 0.95) 0%,
+      hsl(220 50% 8% / 0.9) 100%
     );
-    border: 1px solid hsl(var(--primary) / 0.20);
+    border: 1px solid hsl(45 80% 50% / 0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    color: hsl(45 20% 95%);
     box-shadow: 
-      0 20px 50px hsl(0 0% 0% / 0.4),
-      0 8px 20px hsl(0 0% 0% / 0.25),
-      inset 0 1px 1px hsl(var(--background) / 0.3);
+      0 8px 25px hsl(220 60% 3% / 0.4),
+      inset 0 1px 0 hsl(45 50% 50% / 0.1);
+  }
+
+  .light .glass-tooltip,
+  :root:not(.dark) .glass-tooltip {
+    background: linear-gradient(
+      145deg,
+      hsl(220 50% 15% / 0.95) 0%,
+      hsl(220 55% 10% / 0.9) 100%
+    );
+  }
+
+  /* Glass Input - Form inputs with glassy style */
+  .glass-input {
+    background: linear-gradient(
+      135deg,
+      hsl(220 25% 99% / 0.9) 0%,
+      hsl(220 20% 98% / 0.85) 100%
+    );
+    border: 1px solid hsl(220 20% 85% / 0.6);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+
+  .glass-input:focus {
+    border-color: hsl(45 70% 55% / 0.5);
+    box-shadow: 
+      0 0 0 3px hsl(45 70% 55% / 0.15),
+      0 4px 12px hsl(220 50% 10% / 0.08);
+  }
+
+  .dark .glass-input {
+    background: linear-gradient(
+      135deg,
+      hsl(220 45% 14% / 0.9) 0%,
+      hsl(220 50% 11% / 0.85) 100%
+    );
+    border: 1px solid hsl(220 40% 25% / 0.6);
+  }
+
+  .dark .glass-input:focus {
+    border-color: hsl(45 93% 50% / 0.4);
+    box-shadow: 
+      0 0 0 3px hsl(45 93% 50% / 0.1),
+      0 4px 12px hsl(220 60% 3% / 0.3);
+  }
+
+  /* Gold accent line for headers/dividers */
+  .gold-accent-line {
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(45 93% 50% / 0.6) 20%,
+      hsl(38 95% 55%) 50%,
+      hsl(45 93% 50% / 0.6) 80%,
+      transparent 100%
+    );
+  }
+
+  /* Gold shimmer effect for special elements */
+  .gold-shimmer {
+    background: linear-gradient(
+      110deg,
+      hsl(45 93% 50%) 0%,
+      hsl(38 95% 60%) 25%,
+      hsl(45 100% 75%) 50%,
+      hsl(38 95% 60%) 75%,
+      hsl(45 93% 50%) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: -100% 0; }
+    50% { background-position: 100% 0; }
   }
 
   .card-hover {

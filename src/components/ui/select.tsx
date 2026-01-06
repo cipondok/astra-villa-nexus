@@ -74,11 +74,9 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative isolate max-h-80 min-w-[8rem] overflow-hidden rounded-lg border shadow-2xl overscroll-contain overflow-y-auto",
-          // Force solid background and maximum z-index for visibility in modals
-          "bg-background dark:bg-gray-900 text-foreground",
+          "relative isolate max-h-80 min-w-[8rem] overflow-hidden rounded-xl glass-dropdown shadow-xl overscroll-contain overflow-y-auto",
+          "text-foreground",
           "!z-[99999999]",
-          // Use only transform and opacity for animations to prevent layout shifts
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -97,7 +95,7 @@ const SelectContent = React.forwardRef<
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
           className={cn(
-            "p-1",
+            "p-1.5",
             position === "popper" &&
               "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
           )}
@@ -130,7 +128,9 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors duration-200 focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex w-full cursor-default select-none items-center rounded-lg py-2 pl-8 pr-3 text-sm outline-none transition-all duration-200",
+      "focus:bg-primary/10 focus:text-primary hover:bg-primary/8",
+      "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     {...props}
