@@ -1,11 +1,13 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car, View as ViewIcon, RotateCcw } from 'lucide-react';
+import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car, View as ViewIcon, RotateCcw, Clock, User } from 'lucide-react';
 import { useState } from 'react';
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
 import { BaseProperty } from '@/types/property';
+import { formatDistanceToNow } from '@/utils/dateUtils';
+import UserStatusBadge from '@/components/ui/UserStatusBadge';
 
 interface Property {
   id: string;
@@ -22,6 +24,14 @@ interface Property {
   property_features?: any;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  created_at?: string;
+  posted_at?: string;
+  posted_by?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+    verification_status?: string;
+  };
 }
 
 interface EnhancedPropertyCardProps {
@@ -267,14 +277,22 @@ const EnhancedPropertyCard = ({
 
         {/* Content Section */}
         <CardContent className="p-4 space-y-3">
-          {/* Price */}
+          {/* Price & Posted Time */}
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-primary">
               {formatPrice(property.price)}
             </h3>
-            {property.listing_type === 'rent' && (
-              <span className="text-sm text-muted-foreground">/month</span>
-            )}
+            <div className="flex items-center gap-2">
+              {(property.created_at || property.posted_at) && (
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span className="text-xs">{formatDistanceToNow(new Date(property.posted_at || property.created_at || ''))}</span>
+                </div>
+              )}
+              {property.listing_type === 'rent' && (
+                <span className="text-sm text-muted-foreground">/month</span>
+              )}
+            </div>
           </div>
 
           {/* Title - allow more lines if needed, shift other content down */}
@@ -309,6 +327,27 @@ const EnhancedPropertyCard = ({
               </div>
             )}
           </div>
+
+          {/* Posted By User Info */}
+          {property.posted_by && (
+            <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg border border-border/30">
+              {property.posted_by.avatar_url ? (
+                <img 
+                  src={property.posted_by.avatar_url} 
+                  alt={property.posted_by.name}
+                  className="w-6 h-6 rounded-full object-cover ring-1 ring-primary/20"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                  <User className="h-3 w-3 text-primary-foreground" />
+                </div>
+              )}
+              <span className="text-sm font-medium text-foreground flex-1 truncate">
+                {property.posted_by.name}
+              </span>
+              <UserStatusBadge status={property.posted_by.verification_status} size="sm" />
+            </div>
+          )}
 
           {/* Features */}
           {property.property_features && (

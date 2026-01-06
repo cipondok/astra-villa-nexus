@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BaseProperty } from '@/types/property';
 import { formatIDR } from '@/utils/currency';
+import { formatDistanceToNow } from '@/utils/dateUtils';
+import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { 
   MapPin, 
   Bed, 
@@ -15,7 +17,9 @@ import {
   Building2,
   Eye,
   Tag,
-  Percent
+  Percent,
+  Clock,
+  User
 } from 'lucide-react';
 
 interface PropertySearchResultsProps {
@@ -214,16 +218,45 @@ const PropertySearchResults = ({
               )}
             </div>
 
-            {/* Title */}
-            <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-              {property.title}
-            </h3>
+            {/* Title & Posted Time */}
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors flex-1">
+                {property.title}
+              </h3>
+              {property.created_at && (
+                <div className="flex items-center gap-1 text-muted-foreground shrink-0">
+                  <Clock className="h-3 w-3" />
+                  <span className="text-xs">{formatDistanceToNow(new Date(property.created_at))}</span>
+                </div>
+              )}
+            </div>
 
             {/* Location */}
             <div className="flex items-center text-muted-foreground mb-3">
               <MapPin className="h-4 w-4 mr-1 text-primary" />
               <span className="text-sm line-clamp-1">{property.location}</span>
             </div>
+
+            {/* Posted By User Info */}
+            {property.posted_by && (
+              <div className="flex items-center gap-2 p-2 mb-3 bg-muted/50 rounded-lg border border-border/30">
+                {property.posted_by.avatar_url ? (
+                  <img 
+                    src={property.posted_by.avatar_url} 
+                    alt={property.posted_by.name}
+                    className="w-6 h-6 rounded-full object-cover ring-1 ring-primary/20"
+                  />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                    <User className="h-3 w-3 text-primary-foreground" />
+                  </div>
+                )}
+                <span className="text-sm font-medium text-foreground flex-1 truncate">
+                  {property.posted_by.name}
+                </span>
+                <UserStatusBadge status={property.posted_by.verification_status} size="sm" />
+              </div>
+            )}
 
             {/* Property Details */}
             {(property.bedrooms || property.bathrooms || property.area_sqm) && (

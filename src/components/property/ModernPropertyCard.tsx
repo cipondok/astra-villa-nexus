@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar, Tag, Percent, Eye, Building } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Box, User, Building2, Calendar, Tag, Percent, Eye, Building, Clock } from "lucide-react";
+import { formatDistanceToNow } from "@/utils/dateUtils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
@@ -136,6 +137,14 @@ const ModernPropertyCard = ({
     return new Date(date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
   };
 
+  const getPostedAgo = () => {
+    const dateStr = property.created_at;
+    if (!dateStr) return null;
+    return formatDistanceToNow(new Date(dateStr));
+  };
+
+  const postedAgo = getPostedAgo();
+
   return (
     <Card 
       className="group relative overflow-hidden rounded-xl border-0 bg-card/90 backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
@@ -246,10 +255,18 @@ const ModernPropertyCard = ({
 
       {/* Content */}
       <div className="p-2">
-        {/* Title */}
-        <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 mb-1 group-hover:text-primary transition-colors">
-          {property.title}
-        </h3>
+        {/* Title & Posted Time */}
+        <div className="flex items-start justify-between gap-1 mb-1">
+          <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors flex-1">
+            {property.title}
+          </h3>
+          {postedAgo && (
+            <div className="flex items-center gap-0.5 text-muted-foreground shrink-0">
+              <Clock className="h-2.5 w-2.5" />
+              <span className="text-[9px]">{postedAgo}</span>
+            </div>
+          )}
+        </div>
         
         {/* Location */}
         <div className="flex items-center gap-1 text-muted-foreground mb-1.5">
