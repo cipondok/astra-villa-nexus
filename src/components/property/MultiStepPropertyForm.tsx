@@ -284,6 +284,8 @@ const MultiStepPropertyForm = () => {
         seo_title: formData.title,
         seo_description: formData.description,
         property_features: { ...features },
+        virtual_tour_url: formData.virtual_tour_url || null,
+        three_d_model_url: formData.three_d_model_url || null,
         ...(formData.listing_type === 'rent' && {
           rental_periods: formData.rental_periods,
           minimum_rental_days: parseInt(formData.minimum_rental_days) || 30,

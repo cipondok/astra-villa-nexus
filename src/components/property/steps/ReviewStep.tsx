@@ -1,10 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, MapPin, DollarSign, Bed, Bath, Maximize, CheckCircle2 } from "lucide-react";
+import { Building2, MapPin, DollarSign, Bed, Bath, Maximize, CheckCircle2, Eye, Box, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ReviewStepProps {
-  formData: any;
+  formData: {
+    virtual_tour_url?: string;
+    three_d_model_url?: string;
+    [key: string]: any;
+  };
   features: any;
 }
 
@@ -165,6 +169,32 @@ const ReviewStep = ({ formData, features }: ReviewStepProps) => {
               {formData.images?.length || 0} {t.imagesUploaded}
             </p>
           </div>
+
+          {/* 3D & Virtual Tour */}
+          {(formData.virtual_tour_url || formData.three_d_model_url) && (
+            <div className="border-t pt-4">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                3D Experience
+              </h4>
+              <div className="space-y-2">
+                {formData.virtual_tour_url && (
+                  <div className="flex items-center gap-2 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
+                    <Eye className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium">Virtual Tour</span>
+                    <Badge variant="outline" className="ml-auto text-xs">Added</Badge>
+                  </div>
+                )}
+                {formData.three_d_model_url && (
+                  <div className="flex items-center gap-2 p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                    <Box className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm font-medium">3D Model</span>
+                    <Badge variant="outline" className="ml-auto text-xs">Added</Badge>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Description */}
           {formData.description && (
