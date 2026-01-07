@@ -271,24 +271,28 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
   };
 
   return (
-    <Card className={`w-full ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : ''}`}>
-      <CardHeader className="pb-4">
+    <Card className={`w-full glass-card border-glass-border overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'rounded-2xl'}`}>
+      <CardHeader className="pb-4 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b border-border/50">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <BoxIcon className="h-5 w-5" />
-            3D Property Experience
-            <Badge variant="outline">Interactive</Badge>
+          <CardTitle className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-primary/20">
+              <BoxIcon className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <span className="text-lg font-semibold">3D Property Experience</span>
+              <Badge variant="outline" className="ml-2 border-primary/30 text-primary">Interactive</Badge>
+            </div>
           </CardTitle>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleScreenshot}>
+            <Button variant="outline" size="sm" onClick={handleScreenshot} className="glass-effect">
               <Camera className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={handleShare}>
+            <Button variant="outline" size="sm" onClick={handleShare} className="glass-effect">
               <Share2 className="h-4 w-4" />
             </Button>
             {onFullscreenToggle && (
-              <Button variant="outline" size="sm" onClick={onFullscreenToggle}>
+              <Button variant="outline" size="sm" onClick={onFullscreenToggle} className="glass-effect">
                 <Maximize2 className="h-4 w-4" />
               </Button>
             )}
@@ -298,16 +302,16 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
       
       <CardContent className="p-0">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="px-6 pb-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="3d-model">3D Model</TabsTrigger>
-              <TabsTrigger value="virtual-tour">Virtual Tour</TabsTrigger>
-              <TabsTrigger value="tools">3D Tools</TabsTrigger>
+          <div className="px-6 pb-4 pt-4 bg-muted/30">
+            <TabsList className="grid w-full grid-cols-3 bg-background/50 backdrop-blur-sm p-1 rounded-xl border border-border/50">
+              <TabsTrigger value="3d-model" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">3D Model</TabsTrigger>
+              <TabsTrigger value="virtual-tour" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Virtual Tour</TabsTrigger>
+              <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">3D Tools</TabsTrigger>
             </TabsList>
           </div>
           
           <TabsContent value="3d-model" className="m-0">
-            <div className={`${isFullscreen ? 'h-screen' : 'h-96'} relative bg-gradient-to-b from-sky-200 to-green-100`}>
+            <div className={`${isFullscreen ? 'h-screen' : 'h-96'} relative bg-gradient-to-b from-sky-100 to-emerald-50 dark:from-slate-900 dark:to-slate-800`}>
               <Canvas 
                 camera={{ position: validCameraPosition, fov: 50 }}
                 gl={{ antialias: true, alpha: false }}
