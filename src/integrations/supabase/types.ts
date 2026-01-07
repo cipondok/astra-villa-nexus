@@ -11096,6 +11096,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_user_role: {
+        Args: { _role: string; _user_id: string }
+        Returns: boolean
+      }
       insert_api_setting_secure: {
         Args: {
           p_api_endpoint?: string
@@ -11106,9 +11110,12 @@ export type Database = {
         }
         Returns: string
       }
+      is_admin_secure: { Args: { _user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
+      is_authenticated: { Args: never; Returns: boolean }
       is_authorized_support_user: { Args: never; Returns: boolean }
       is_current_user_admin: { Args: never; Returns: boolean }
+      is_owner: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       is_super_admin_by_email: { Args: never; Returns: boolean }
       is_super_admin_direct: { Args: never; Returns: boolean }
