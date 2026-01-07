@@ -10,12 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FileText, Home, MapPin, Sparkles, Image, Eye, Save, Send, CheckCircle2, Clock, Trash2 } from "lucide-react";
+import { FileText, Home, MapPin, Sparkles, Image, Eye, Save, Send, CheckCircle2, Clock, Trash2, Box } from "lucide-react";
 import BasicInfoStep from "./steps/BasicInfoStep";
 import PropertyDetailsStep from "./steps/PropertyDetailsStep";
 import LocationStep from "./steps/LocationStep";
 import FeaturesStep from "./steps/FeaturesStep";
 import ImagesStep from "./steps/ImagesStep";
+import Virtual3DStep from "./steps/Virtual3DStep";
 import ReviewStep from "./steps/ReviewStep";
 
 // Auto-save configuration
@@ -28,6 +29,7 @@ const steps = [
   { id: 'location', label: 'Location', icon: MapPin },
   { id: 'features', label: 'Features', icon: Sparkles },
   { id: 'images', label: 'Images', icon: Image },
+  { id: '3d-tour', label: '3D Tour', icon: Box },
   { id: 'review', label: 'Review', icon: Eye },
 ];
 
@@ -66,6 +68,8 @@ const MultiStepPropertyForm = () => {
     rental_periods: ["monthly"],
     minimum_rental_days: "30",
     images: [],
+    virtual_tour_url: "",
+    three_d_model_url: "",
   });
 
   const [features, setFeatures] = useState({
@@ -236,6 +240,8 @@ const MultiStepPropertyForm = () => {
       rental_periods: ["monthly"],
       minimum_rental_days: "30",
       images: [],
+      virtual_tour_url: "",
+      three_d_model_url: "",
     });
     setFeatures({
       parking: false,
@@ -411,7 +417,7 @@ const MultiStepPropertyForm = () => {
 
       {/* Tabs */}
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6 h-10 p-1 gap-1 bg-gradient-to-r from-muted/40 via-muted/20 to-muted/40 backdrop-blur-sm border border-border/40 rounded-xl shadow-inner">
+        <TabsList className="grid w-full grid-cols-7 h-10 p-1 gap-1 bg-gradient-to-r from-muted/40 via-muted/20 to-muted/40 backdrop-blur-sm border border-border/40 rounded-xl shadow-inner">
           {steps.map((step, index) => {
             const Icon = step.icon;
             const stepIndex = steps.findIndex(s => s.id === step.id);
@@ -469,6 +475,10 @@ const MultiStepPropertyForm = () => {
 
             <TabsContent value="images" className="mt-0">
               <ImagesStep formData={formData} onUpdate={updateFormData} />
+            </TabsContent>
+
+            <TabsContent value="3d-tour" className="mt-0">
+              <Virtual3DStep formData={formData} onUpdate={updateFormData} />
             </TabsContent>
 
             <TabsContent value="review" className="mt-0">
