@@ -5,6 +5,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Cache headers for heavy traffic optimization
+const cacheHeaders = {
+  'Cache-Control': 'public, max-age=300, stale-while-revalidate=120',
+  'CDN-Cache-Control': 'public, max-age=600',
+  'Surrogate-Control': 'max-age=3600',
+};
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -63,7 +70,14 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ trends }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      { 
+        headers: { 
+          ...corsHeaders, 
+          ...cacheHeaders,
+          'Content-Type': 'application/json' 
+        }, 
+        status: 200 
+      }
     );
   } catch (error) {
     console.error('❌ Error in trending searches:', error);

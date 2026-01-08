@@ -5,6 +5,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Cache headers for reducing load under heavy traffic
+const cacheHeaders = {
+  'Cache-Control': 'private, max-age=60, stale-while-revalidate=30',
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -119,7 +124,11 @@ Example: ["3 bedroom apartments in Jakarta under $200k", "Modern houses with poo
     return new Response(
       JSON.stringify({ suggestions }), 
       { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { 
+          ...corsHeaders, 
+          ...cacheHeaders,
+          'Content-Type': 'application/json' 
+        } 
       }
     );
 
