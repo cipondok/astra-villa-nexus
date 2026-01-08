@@ -3,9 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff, AlertTriangle, Loader2, CheckCircle, Phone, Mail, MessageCircle } from "lucide-react";
+import { X, Eye, EyeOff, AlertTriangle, Loader2, CheckCircle, Phone, Mail, MessageCircle, KeyRound } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { EmailValidationIndicator } from "./EmailValidationIndicator";
+import { PasswordStrengthBar } from "./PasswordStrengthBar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface EnhancedAuthModalProps {
   isOpen: boolean;
@@ -25,9 +36,22 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
   const [isSuccess, setIsSuccess] = useState(false);
   const [hasInteraction, setHasInteraction] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   
   const { signIn, signUp, signInWithGoogle } = useAuth();
+
+  // Load remembered email on mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem('rememberEmail');
+    if (rememberedEmail) {
+      setLoginData(prev => ({ ...prev, email: rememberedEmail }));
+      setRememberMe(true);
+    }
+  }, []);
 
   const text = {
     en: {
@@ -58,7 +82,14 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       whatsapp: "WhatsApp Number",
       whatsappInvalid: "Enter valid WhatsApp (e.g. +62812xxxx)",
       useEmail: "Email",
-      useWhatsapp: "WhatsApp"
+      useWhatsapp: "WhatsApp",
+      rememberMe: "Remember me",
+      forgotPassword: "Forgot password?",
+      resetPassword: "Reset Password",
+      resetDescription: "Enter your email to receive a password reset link.",
+      sendResetLink: "Send Reset Link",
+      resetSent: "Reset email sent! Check your inbox.",
+      passwordWeak: "Password too weak"
     },
     id: {
       login: "Masuk",
@@ -88,7 +119,14 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       whatsapp: "Nomor WhatsApp",
       whatsappInvalid: "Masukkan WhatsApp valid (cth: +62812xxxx)",
       useEmail: "Email",
-      useWhatsapp: "WhatsApp"
+      useWhatsapp: "WhatsApp",
+      rememberMe: "Ingat saya",
+      forgotPassword: "Lupa kata sandi?",
+      resetPassword: "Reset Kata Sandi",
+      resetDescription: "Masukkan email untuk menerima link reset.",
+      sendResetLink: "Kirim Link Reset",
+      resetSent: "Email reset terkirim! Cek inbox Anda.",
+      passwordWeak: "Kata sandi terlalu lemah"
     }
   };
 
@@ -227,6 +265,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
         setErrors({ login: errorMessage });
         toast.error(errorMessage);
       } else if (result.success) {
+        // Store remember me preference
+        if (rememberMe && authMethod === "email") {
+          localStorage.setItem('rememberEmail', loginData.email);
+        } else {
+          localStorage.removeItem('rememberEmail');
+        }
+        
         setIsSuccess(true);
         toast.success(currentText.loginSuccess);
         
@@ -310,6 +355,30 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       setErrors({ login: errorMessage });
       toast.error(errorMessage);
       setIsLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    handleInteraction();
+    setResetLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success(currentText.resetSent);
+        setResetDialogOpen(false);
+        setResetEmail("");
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "An error occurred");
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -578,6 +647,29 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                   )}
                 </div>
 
+                {/* Remember me & Forgot password */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5">
+                    <Checkbox 
+                      id="remember-me" 
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => { setRememberMe(checked as boolean); handleInteraction(); }}
+                      className="h-3 w-3"
+                    />
+                    <Label htmlFor="remember-me" className="text-[10px] font-normal cursor-pointer text-muted-foreground">
+                      {currentText.rememberMe}
+                    </Label>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => { setResetDialogOpen(true); handleInteraction(); }}
+                    className="text-[10px] text-primary hover:text-primary/80 transition-colors"
+                  >
+                    {currentText.forgotPassword}
+                  </button>
+                </div>
+
                 <Button 
                   type="submit" 
                   className="w-full h-8 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg text-xs"
@@ -636,6 +728,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       disabled={isLoading}
                       className={`h-8 text-xs bg-background border-border rounded-lg ${errors.email ? "border-destructive" : ""}`}
                     />
+                    <EmailValidationIndicator email={registerData.email} />
                     {errors.email && (
                       <p className="text-[10px] text-destructive">{errors.email}</p>
                     )}
@@ -688,6 +781,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                     </Button>
                   </div>
+                  <PasswordStrengthBar password={registerData.password} showTips={false} />
                   {errors.password && (
                     <p className="text-[10px] text-destructive">{errors.password}</p>
                   )}
@@ -718,8 +812,11 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       {showConfirmPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                     </Button>
                   </div>
-                  {errors.confirmPassword && (
-                    <p className="text-[10px] text-destructive">{errors.confirmPassword}</p>
+                  {registerData.confirmPassword && registerData.password !== registerData.confirmPassword && (
+                    <p className="text-[10px] text-destructive">Passwords do not match</p>
+                  )}
+                  {registerData.confirmPassword && registerData.password === registerData.confirmPassword && registerData.confirmPassword.length > 0 && (
+                    <p className="text-[10px] text-green-600">✓ Passwords match</p>
                   )}
                 </div>
 
@@ -759,6 +856,46 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
           </div>
         </div>
       </div>
+
+      {/* Password Reset Dialog */}
+      <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-sm">
+              <KeyRound className="h-4 w-4" />
+              {currentText.resetPassword}
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              {currentText.resetDescription}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePasswordReset} className="space-y-3 mt-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="reset-email" className="text-xs">Email</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="h-9 text-sm"
+              />
+              <EmailValidationIndicator email={resetEmail} />
+            </div>
+            <Button type="submit" className="w-full h-9" disabled={resetLoading}>
+              {resetLoading ? (
+                <>
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                currentText.sendResetLink
+              )}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
