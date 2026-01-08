@@ -7,9 +7,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, EyeOff, Mail, KeyRound } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndicator";
+import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const Auth = () => {
   const { signIn, signUp, user } = useAuth();
@@ -17,16 +28,23 @@ const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Password reset state
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
 
   // If already authenticated, redirect to home
   if (user) {
@@ -42,6 +60,13 @@ const Auth = () => {
       const { success, error } = await signIn(loginEmail, loginPassword);
       
       if (success) {
+        // Store remember me preference
+        if (rememberMe) {
+          localStorage.setItem('rememberEmail', loginEmail);
+        } else {
+          localStorage.removeItem('rememberEmail');
+        }
+        
         toast({
           title: "Login successful!",
           description: "Welcome back to Astra Villa",
@@ -62,6 +87,40 @@ const Auth = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) {
+        toast({
+          title: "Reset failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Reset email sent!",
+          description: "Check your inbox for password reset instructions",
+        });
+        setResetDialogOpen(false);
+        setResetEmail("");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.message || "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -93,7 +152,18 @@ const Auth = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(registerEmail)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Password validation
     if (registerPassword !== confirmPassword) {
       toast({
         title: "Passwords don't match",
@@ -103,10 +173,18 @@ const Auth = () => {
       return;
     }
 
-    if (registerPassword.length < 6) {
+    // Check password strength (minimum 3 criteria)
+    const hasLength = registerPassword.length >= 8;
+    const hasUpper = /[A-Z]/.test(registerPassword);
+    const hasLower = /[a-z]/.test(registerPassword);
+    const hasNumber = /\d/.test(registerPassword);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(registerPassword);
+    const strengthScore = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+
+    if (strengthScore < 3) {
       toast({
-        title: "Password too short",
-        description: "Password must be at least 6 characters",
+        title: "Password too weak",
+        description: "Please create a stronger password meeting at least 3 criteria",
         variant: "destructive",
       });
       return;
@@ -141,6 +219,15 @@ const Auth = () => {
     }
   };
 
+  // Load remembered email on mount
+  useState(() => {
+    const rememberedEmail = localStorage.getItem('rememberEmail');
+    if (rememberedEmail) {
+      setLoginEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  });
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 px-4 py-12">
       <Card className="w-full max-w-md shadow-xl">
@@ -169,22 +256,10 @@ const Auth = () => {
                   onClick={() => handleSocialLogin('google')}
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                   </svg>
                   Continue with Google
                 </Button>
@@ -238,12 +313,63 @@ const Auth = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </div>
+
+                {/* Remember me & Forgot password */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="remember-me" 
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    />
+                    <Label htmlFor="remember-me" className="text-sm font-normal cursor-pointer">
+                      Remember me
+                    </Label>
+                  </div>
+                  
+                  <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="px-0 h-auto text-sm text-primary">
+                        Forgot password?
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          <KeyRound className="h-5 w-5" />
+                          Reset Password
+                        </DialogTitle>
+                        <DialogDescription>
+                          Enter your email address and we'll send you a link to reset your password.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form onSubmit={handlePasswordReset} className="space-y-4 mt-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="reset-email">Email address</Label>
+                          <Input
+                            id="reset-email"
+                            type="email"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            placeholder="your@email.com"
+                            required
+                          />
+                          <EmailValidationIndicator email={resetEmail} />
+                        </div>
+                        <Button type="submit" className="w-full" disabled={resetLoading}>
+                          {resetLoading ? "Sending..." : "Send Reset Link"}
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
                 <Button
                   type="submit"
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
@@ -264,22 +390,10 @@ const Auth = () => {
                   onClick={() => handleSocialLogin('google')}
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                   </svg>
                   Sign up with Google
                 </Button>
@@ -329,39 +443,45 @@ const Auth = () => {
                     placeholder="your@email.com"
                     required
                   />
+                  <EmailValidationIndicator email={registerEmail} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="register-password">Password</Label>
                   <div className="relative">
                     <Input
                       id="register-password"
-                      type={showPassword ? "text" : "password"}
+                      type={showRegisterPassword ? "text" : "password"}
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
                       placeholder="••••••••"
                       required
-                      minLength={6}
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showRegisterPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
+                  <PasswordStrengthBar password={registerPassword} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">Confirm Password</Label>
                   <Input
                     id="confirm-password"
-                    type={showPassword ? "text" : "password"}
+                    type={showRegisterPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    minLength={6}
                   />
+                  {confirmPassword && registerPassword !== confirmPassword && (
+                    <p className="text-xs text-red-600 mt-1">Passwords do not match</p>
+                  )}
+                  {confirmPassword && registerPassword === confirmPassword && confirmPassword.length > 0 && (
+                    <p className="text-xs text-green-600 mt-1">✓ Passwords match</p>
+                  )}
                 </div>
                 <Button
                   type="submit"
