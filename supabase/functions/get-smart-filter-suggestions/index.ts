@@ -5,6 +5,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Cache headers for heavy traffic optimization
+const cacheHeaders = {
+  'Cache-Control': 'public, max-age=300, stale-while-revalidate=120',
+  'CDN-Cache-Control': 'public, max-age=600',
+};
+
 interface FilterSuggestion {
   id: string;
   title: string;
@@ -141,7 +147,11 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ suggestions: topSuggestions }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 
+          ...corsHeaders, 
+          ...cacheHeaders,
+          'Content-Type': 'application/json' 
+        },
         status: 200,
       }
     );
