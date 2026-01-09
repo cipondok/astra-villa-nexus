@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building } from 'lucide-react';
+import { Sparkles, RefreshCw, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Eye, ArrowRight, Key, Tag, Building, Clock, Maximize } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
@@ -56,7 +57,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Get recent properties for context
       const { data: recentProperties } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
+        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
@@ -94,7 +95,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
         // Fetch recommended properties
         const { data: recommendedProps } = await supabase
           .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at')
           .in('id', propertyIds.slice(0, 8))
           .eq('status', 'active')
           .eq('approval_status', 'approved');
@@ -119,7 +120,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       // Fallback to trending properties
       const { data: fallbackProps } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
+        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url, created_at')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .order('created_at', { ascending: false })
@@ -223,23 +224,46 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
       {/* Bottom Content */}
       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
-        {/* Price */}
-        <span className="inline-block text-[10px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-lg mb-1">
-          {formatPrice(property.price || 0)}
-        </span>
+        {/* Price Badge */}
+        <div className="mb-1">
+          <span className="inline-flex items-baseline text-[10px] sm:text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-lg">
+            {formatPrice(property.price || 0)}
+          </span>
+        </div>
         {/* Title */}
         <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg">
           {property.title}
         </h3>
-        {/* Location */}
-        <p className="text-[10px] sm:text-xs md:text-sm text-white/95 truncate drop-shadow-md mt-0.5">
-          📍 {property.city || property.location || 'Indonesia'}
-        </p>
-        {/* Details */}
-        <div className="flex items-center gap-2 sm:gap-3 mt-1 text-[10px] sm:text-xs md:text-sm text-white/90 font-medium">
-          {property.bedrooms ? <span>🛏️ {property.bedrooms}</span> : null}
-          {property.bathrooms ? <span>🚿 {property.bathrooms}</span> : null}
-          {property.area_sqm ? <span>📐 {property.area_sqm}m²</span> : null}
+        {/* Location & Time */}
+        <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/90 mt-0.5 mb-1">
+          <span className="truncate drop-shadow-md">📍 {property.city || property.location || 'Indonesia'}</span>
+          {(property as any).created_at && (
+            <span className="flex items-center gap-0.5 text-white/70">
+              <Clock className="h-2.5 w-2.5" />
+              {formatDistanceToNow(new Date((property as any).created_at), { addSuffix: true })}
+            </span>
+          )}
+        </div>
+        {/* Property Stats */}
+        <div className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-lg px-2 py-1 backdrop-blur-sm">
+          {property.bedrooms ? (
+            <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
+              <Bed className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {property.bedrooms}
+            </span>
+          ) : null}
+          {property.bathrooms ? (
+            <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
+              <Bath className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {property.bathrooms}
+            </span>
+          ) : null}
+          {property.area_sqm ? (
+            <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
+              <Maximize className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {property.area_sqm}m²
+            </span>
+          ) : null}
         </div>
       </div>
     </div>
