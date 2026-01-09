@@ -8,7 +8,8 @@ import { shareProperty } from "@/utils/shareUtils";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
 import { toast } from "sonner";
-import { Eye, Key, Building } from "lucide-react";
+import { Eye, Key, Building, Clock, Bed, Bath, Maximize } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
@@ -30,7 +31,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url')
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url, created_at')
           .eq('status', 'active')
           .eq('approval_status', 'approved')
           .eq('listing_type', 'rent')
@@ -146,42 +147,53 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
               </span>
             </div>
             
-            {/* Price Label */}
-            <div className="absolute top-1/2 left-1.5 sm:left-2 md:left-2.5 -translate-y-1/2">
-              <span className="text-[10px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded bg-gradient-to-r from-blue-600 to-sky-700 text-white shadow-lg">
-                <span className="text-[0.7em] font-medium opacity-90">Rp</span>
-                {property.price >= 1000000000 
-                  ? <>{(property.price / 1000000000).toFixed(1)}<span className="text-[0.7em] font-medium opacity-90">M</span></> 
-                  : <>{(property.price / 1000000).toFixed(0)}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>}
-                <span className="text-[0.6em] font-normal opacity-80">/bln</span>
-              </span>
-            </div>
-            
             {/* Bottom Content */}
             <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
+              {/* Price Badge */}
+              <div className="mb-1.5">
+                <span className="inline-flex items-baseline text-[10px] sm:text-xs md:text-sm font-bold px-2 py-0.5 rounded-lg bg-gradient-to-r from-blue-600 to-sky-700 text-white shadow-lg">
+                  <span className="text-[0.7em] font-medium opacity-90">Rp</span>
+                  {property.price >= 1000000000 
+                    ? <>{(property.price / 1000000000).toFixed(1)}<span className="text-[0.7em] font-medium opacity-90">M</span></> 
+                    : <>{(property.price / 1000000).toFixed(0)}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>}
+                  <span className="text-[0.6em] font-normal opacity-80">/bln</span>
+                </span>
+              </div>
+              
               {/* Title */}
               <h3 className="text-xs sm:text-sm md:text-base font-bold text-white line-clamp-1 drop-shadow-lg">
                 {property.title}
               </h3>
-              {/* Location */}
-              <p className="text-[10px] sm:text-xs md:text-sm text-white/95 truncate drop-shadow-md mt-0.5">
-                📍 {property.city || property.location}
-              </p>
-              {/* Property Details */}
-              <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mt-1 text-[10px] sm:text-xs md:text-sm text-white/90 font-medium">
+              
+              {/* Location & Time */}
+              <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/90 mt-0.5 mb-1">
+                <span className="truncate drop-shadow-md">📍 {property.city || property.location}</span>
+                {(property as any).created_at && (
+                  <span className="flex items-center gap-0.5 text-white/70">
+                    <Clock className="h-2.5 w-2.5" />
+                    {formatDistanceToNow(new Date((property as any).created_at), { addSuffix: true })}
+                  </span>
+                )}
+              </div>
+              
+              {/* Property Stats */}
+              <div className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-lg px-2 py-1 backdrop-blur-sm">
                 {property.bedrooms && (
-                  <span className="flex items-center gap-0.5">
-                    🛏️ {property.bedrooms}
+                  <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
+                    <Bed className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    {property.bedrooms}
                   </span>
                 )}
                 {property.bathrooms && (
-                  <span className="flex items-center gap-0.5">
-                    🚿 {property.bathrooms}
+                  <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
+                    <Bath className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    {property.bathrooms}
                   </span>
                 )}
                 {property.area_sqm && (
-                  <span className="flex items-center gap-0.5">
-                    📐 {property.area_sqm}m²
+                  <span className="flex items-center gap-0.5 text-[10px] sm:text-xs text-white font-medium">
+                    <Maximize className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    {property.area_sqm}m²
                   </span>
                 )}
               </div>
