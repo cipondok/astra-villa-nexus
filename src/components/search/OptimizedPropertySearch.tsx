@@ -1457,7 +1457,11 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
     `;
 
     const element = document.createElement('div');
-    element.innerHTML = htmlContent;
+    // Sanitize HTML content to prevent XSS while allowing PDF structure tags
+    element.innerHTML = DOMPurify.sanitize(htmlContent, {
+      ALLOWED_TAGS: ['html', 'head', 'style', 'body', 'h1', 'div', 'p', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'span', 'strong'],
+      ALLOWED_ATTR: ['class', 'style']
+    });
     
     const filename = hasImageSearch
       ? `property-image-search-results-${new Date().toISOString().split('T')[0]}.pdf`
