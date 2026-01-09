@@ -127,21 +127,21 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
             
             {/* View Icon - Center on hover */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-              <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />
+              <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-blue-200/40 dark:border-blue-500/30">
+                <Eye className="h-4 w-4 md:h-5 md:w-5 text-blue-600 dark:text-blue-400" />
               </div>
             </div>
             
             {/* Top Labels */}
             <div className="absolute top-1.5 left-1.5 right-1.5 sm:top-2 sm:left-2 sm:right-2 flex items-start justify-between">
               {/* Rent Badge with icon */}
-              <span className="flex items-center gap-0.5 text-[8px] sm:text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg">
-                <Key className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+              <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full bg-blue-600 border border-blue-400/50 text-white shadow-md">
+                <Key className="h-3 w-3" />
                 Sewa
               </span>
               {/* Property Type */}
-              <span className="flex items-center gap-0.5 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground shadow-lg truncate max-w-[55%]">
-                <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+              <span className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-semibold px-2 py-1 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md text-foreground shadow-lg border border-white/40 dark:border-white/20 truncate max-w-[55%]">
+                <Building className="h-3 w-3" />
                 {capitalizeFirst(property.property_type)}
               </span>
             </div>
