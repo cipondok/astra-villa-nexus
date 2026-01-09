@@ -259,8 +259,8 @@ export default function FeaturedAdsCarousel() {
 
               {/* View Icon - Center on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
+                <div className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-white/80 dark:bg-black/70 backdrop-blur-md flex items-center justify-center shadow-lg border border-amber-200/40 dark:border-amber-500/30">
+                  <Eye className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
                 </div>
               </div>
 
