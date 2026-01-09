@@ -268,10 +268,10 @@ export default function FeaturedAdsCarousel() {
               <div className="absolute top-1.5 left-1.5 right-1.5 md:top-2 md:left-2 md:right-2 flex items-start justify-between gap-1 z-10">
                 {/* Left side badges */}
                 <div className="flex flex-col gap-1">
-                  {/* Featured Badge - Polished icon with glow, text on hover */}
-                  <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-[0_0_12px_rgba(251,191,36,0.6)] transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.8)]">
-                    <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
-                    <span className="text-[10px] sm:text-xs md:text-sm max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
+                  {/* Featured Badge - Compact icon with glow, text on hover */}
+                  <span className="group/badge flex items-center gap-0.5 font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-300 hover:shadow-[0_0_16px_rgba(251,191,36,0.7)]">
+                    <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white stroke-white drop-shadow-[0_0_3px_rgba(255,255,255,0.7)]" />
+                    <span className="text-[9px] sm:text-[10px] md:text-xs max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px] font-semibold">
                       Featured
                     </span>
                   </span>
