@@ -276,10 +276,12 @@ export default function FeaturedAdsCarousel() {
                     </span>
                   </span>
                   {/* Listing Type Badge - Jual/Sewa with icon */}
-                  <span className={`flex items-center gap-0.5 text-[8px] sm:text-[9px] md:text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white shadow-lg ${
-                    p.listing_type === 'rent' ? 'bg-blue-500' : 'bg-green-500'
+                  <span className={`flex items-center gap-1 text-[9px] sm:text-[10px] md:text-xs font-bold px-2 py-1 rounded-full text-white shadow-md border ${
+                    p.listing_type === 'rent' 
+                      ? 'bg-blue-600 border-blue-400/50' 
+                      : 'bg-emerald-600 border-emerald-400/50'
                   }`}>
-                    {p.listing_type === 'rent' ? <Key className="h-2.5 w-2.5" /> : <Tag className="h-2.5 w-2.5" />}
+                    {p.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                     {getListingLabel(p.listing_type)}
                   </span>
                 </div>
