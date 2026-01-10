@@ -18,6 +18,9 @@ import { useIsAdmin } from '@/hooks/useUserRoles';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { UserMembershipBadge } from '@/components/user/UserMembershipBadge';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
+import { PropertyReviews } from '@/components/property/PropertyReviews';
+import { KPRCalculator } from '@/components/property/KPRCalculator';
+import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import { 
   MapPin, 
   Bed, 
@@ -48,7 +51,11 @@ import {
   Medal,
   Edit,
   Trash2,
-  X
+  X,
+  Building2,
+  Landmark,
+  Navigation,
+  CheckCircle2
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -56,7 +63,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ProtectedContactInfo from '@/components/ProtectedContactInfo';
 import useAutoHorizontalScroll from '@/hooks/useAutoHorizontalScroll';
 import { BookingDialog } from '@/components/property/BookingDialog';
-import { PropertyReviews } from '@/components/property/PropertyReviews';
+import { formatDistanceToNow } from 'date-fns';
+import { id as localeId } from 'date-fns/locale';
 
 interface PropertyData {
   id: string;
@@ -78,14 +86,21 @@ interface PropertyData {
   development_status: string;
   virtual_tour_url?: string;
   three_d_model_url?: string;
+  // Location details
+  province?: string;
+  city?: string;
+  district?: string;
+  address?: string;
+  coordinates?: { lat: number; lng: number };
   // Poster information
   posted_by?: {
     id: string;
     name: string;
     avatar_url?: string;
+    poster_type?: 'personal' | 'pt' | 'developer';
     rating?: number;
     user_level?: string;
-    verification_status?: string;
+    verification_status?: 'unverified' | 'pending' | 'verified' | 'trusted' | 'premium';
     total_properties?: number;
     joining_date?: string;
     customer_feedback_rating?: number;
@@ -189,13 +204,14 @@ const PropertyDetail: React.FC = () => {
           };
           
           // Enhanced agent/poster data with comprehensive information
-          const posterInfo = {
+          const posterInfo: PropertyData['posted_by'] = {
             id: propertyData.owner_id,
             name: owner.full_name || 'Anonymous User',
             avatar_url: owner.avatar_url,
+            poster_type: 'personal' as const,
             rating: 4.8,
             user_level: getMembershipLevel(userLevel?.name),
-            verification_status: owner.verification_status || 'verified',
+            verification_status: (owner.verification_status || 'verified') as 'unverified' | 'pending' | 'verified' | 'trusted' | 'premium',
             total_properties: 25,
             joining_date: owner.created_at,
             customer_feedback_rating: 4.9,
@@ -688,13 +704,18 @@ const PropertyDetail: React.FC = () => {
           </Card>
         )}
         
-        {/* Image Gallery - Compact Mobile */}
+        {/* Image Gallery - Enhanced with overlays */}
         <div className="mb-2 sm:mb-4 -mx-2 sm:mx-0">
           <EnhancedImageGallery
             images={property.images || []}
             title={property.title}
             propertyType={property.property_type}
             listingType={property.listing_type}
+            createdAt={property.created_at}
+            bedrooms={property.bedrooms}
+            bathrooms={property.bathrooms}
+            areaSqm={property.area_sqm}
+            location={property.location}
           />
         </div>
 
@@ -710,12 +731,45 @@ const PropertyDetail: React.FC = () => {
                     <h1 className="text-base sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-3 leading-tight">
                       {property.title}
                     </h1>
-                    <div className="flex items-center gap-1 text-muted-foreground mb-2 sm:mb-3">
-                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                        <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                    {/* Enhanced Location Display */}
+                    <div className="flex items-start gap-2 text-muted-foreground mb-2 sm:mb-3 p-2 sm:p-3 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-primary" />
                       </div>
-                      <span className="text-xs sm:text-base">{property.location}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs sm:text-sm font-medium text-foreground">{property.location}</div>
+                        {property.address && (
+                          <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{property.address}</div>
+                        )}
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                          {property.province && (
+                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-muted/50">
+                              {property.province}
+                            </Badge>
+                          )}
+                          {property.city && (
+                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-muted/50">
+                              {property.city}
+                            </Badge>
+                          )}
+                          {property.district && (
+                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-muted/50">
+                              {property.district}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0" title="Lihat di Maps">
+                        <Navigation className="h-4 w-4 text-primary" />
+                      </Button>
                     </div>
+                    
+                    {/* Posted Time */}
+                    <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span>Diposting {formatDistanceToNow(new Date(property.created_at), { addSuffix: true, locale: localeId })}</span>
+                    </div>
+                    
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       <Badge variant="default" className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full shadow-md">
                         {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
@@ -889,7 +943,12 @@ const PropertyDetail: React.FC = () => {
           {/* Sidebar - Glassy Style */}
           <div className="space-y-3 sm:space-y-6">
             
-            {/* Contact Information - Glassy */}
+            {/* KPR Calculator */}
+            {property.listing_type === 'sale' && (
+              <KPRCalculator propertyPrice={property.price} />
+            )}
+            
+            {/* Contact Information - Enhanced Poster Info */}
             <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
               <CardHeader className="p-4 sm:p-5 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
