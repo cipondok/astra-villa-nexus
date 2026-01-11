@@ -122,31 +122,7 @@ const LocationMap = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b border-border/40">
-        <div className="container mx-auto px-4">
-          <div className="h-11 flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="h-3 w-3 mr-1" />
-                Beranda
-              </Button>
-            </div>
-            <div className="text-center">
-              <h1 className="text-sm font-semibold text-foreground leading-tight">Pilih Lokasi</h1>
-              <p className="text-[10px] text-muted-foreground leading-tight">Klik provinsi untuk lihat properti</p>
-            </div>
-            <div className="w-[76px]" />
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 pt-16 pb-6">
+      <main className="container mx-auto px-4 py-4">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
