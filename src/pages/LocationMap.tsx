@@ -236,8 +236,8 @@ const LocationMap = () => {
           </Card>
         </motion.div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {/* Quick Stats - Slim */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
           {[
             { label: 'Total Provinsi', value: '38', icon: MapPin },
             { label: 'Total Properti', value: '125.4K', icon: Building2 },
@@ -246,18 +246,18 @@ const LocationMap = () => {
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
+              transition={{ delay: 0.2 + index * 0.05 }}
             >
               <Card className="border-border/50 hover:border-primary/30 transition-colors">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <stat.icon className="h-5 w-5 text-primary" />
+                <CardContent className="p-2 sm:p-3 flex items-center gap-2">
+                  <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                    <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    <p className="text-base sm:text-lg font-bold text-foreground leading-tight">{stat.value}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</p>
                   </div>
                 </CardContent>
               </Card>
