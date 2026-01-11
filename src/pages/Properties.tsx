@@ -225,34 +225,26 @@ const Properties = () => {
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {/* Sub-header with location info - fixed (reliable across scroll containers) */}
       {locationFilter && <>
-          <div className="fixed left-0 right-0 top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-1.5 sm:py-2">
-            <div className="container mx-auto px-3 sm:px-4">
-              <div className="flex items-center justify-between gap-2">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px] sm:text-xs">
-                  <ArrowLeft className="h-3 w-3 mr-0.5" />
-                  <span className="hidden sm:inline">Peta</span>
+          <div className="fixed left-0 right-0 top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-1">
+            <div className="container mx-auto px-2 sm:px-4">
+              <div className="flex items-center justify-between gap-1">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-5 px-1.5 text-[9px] sm:text-[10px]">
+                  <ArrowLeft className="h-2.5 w-2.5" />
                 </Button>
 
                 <div className="text-center flex-1 min-w-0">
-                  <h1 className="leading-tight truncate font-semibold text-[11px] sm:text-sm md:text-base">
-                    Properti di {locationFilter}
+                  <h1 className="leading-none truncate font-medium text-[10px] sm:text-xs">
+                    Properti di {locationFilter} • {isLoading ? '...' : properties.length}
                   </h1>
-                  <p className="opacity-80 truncate text-[9px] sm:text-xs">
-                    {isLoading ? 'Memuat...' : `${properties.length} properti ditemukan`}
-                  </p>
                 </div>
 
-                <Badge variant="secondary" className="bg-white/20 text-primary-foreground border-white/30 px-1.5 py-0.5 cursor-pointer hover:bg-white/30 text-[9px] sm:text-xs" onClick={handleClearLocationFilter}>
-                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
-                  <span className="max-w-[60px] sm:max-w-none truncate">{locationFilter}</span>
-                  <X className="h-2.5 w-2.5 ml-1" />
+                <Badge variant="secondary" className="bg-white/20 text-primary-foreground border-0 px-1.5 py-0 h-5 cursor-pointer hover:bg-white/30 text-[8px] sm:text-[10px]" onClick={handleClearLocationFilter}>
+                  <X className="h-2.5 w-2.5" />
                 </Badge>
               </div>
             </div>
           </div>
-
-          {/* Spacer */}
-          <div aria-hidden className="h-9 sm:h-10" />
+          <div aria-hidden className="h-7" />
         </>}
 
       <div className="container mx-auto px-4 py-4">
