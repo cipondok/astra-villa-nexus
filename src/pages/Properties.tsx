@@ -44,6 +44,44 @@ interface Property {
   created_at: string;
 }
 
+// Province name mapping (Indonesian to English)
+const provinceNameMapping: Record<string, string[]> = {
+  'Aceh': ['Aceh'],
+  'Sumatera Utara': ['North Sumatra', 'Sumatra Utara', 'Medan'],
+  'Sumatera Barat': ['West Sumatra', 'Sumatra Barat', 'Padang'],
+  'Riau': ['Riau', 'Pekanbaru'],
+  'Kepulauan Riau': ['Riau Islands', 'Batam'],
+  'Jambi': ['Jambi'],
+  'Sumatera Selatan': ['South Sumatra', 'Sumatra Selatan', 'Palembang'],
+  'Bengkulu': ['Bengkulu'],
+  'Bangka Belitung': ['Bangka Belitung'],
+  'Lampung': ['Lampung'],
+  'Banten': ['Banten', 'Tangerang', 'Serang'],
+  'DKI Jakarta': ['Jakarta', 'DKI Jakarta', 'Central Jakarta', 'South Jakarta', 'North Jakarta', 'West Jakarta', 'East Jakarta'],
+  'Jawa Barat': ['West Java', 'Jawa Barat', 'Bandung', 'Bogor', 'Bekasi', 'Depok', 'Cimahi', 'Karawang', 'Cirebon'],
+  'Jawa Tengah': ['Central Java', 'Jawa Tengah', 'Semarang', 'Solo', 'Surakarta'],
+  'Yogyakarta': ['DIY Yogyakarta', 'Yogyakarta', 'Jogja', 'Jogjakarta'],
+  'Jawa Timur': ['East Java', 'Jawa Timur', 'Surabaya', 'Malang', 'Sidoarjo'],
+  'Kalimantan Barat': ['West Kalimantan', 'Kalimantan Barat', 'Pontianak'],
+  'Kalimantan Tengah': ['Central Kalimantan', 'Kalimantan Tengah', 'Palangkaraya'],
+  'Kalimantan Selatan': ['South Kalimantan', 'Kalimantan Selatan', 'Banjarmasin'],
+  'Kalimantan Timur': ['East Kalimantan', 'Kalimantan Timur', 'Balikpapan', 'Samarinda'],
+  'Kalimantan Utara': ['North Kalimantan', 'Kalimantan Utara', 'Tarakan'],
+  'Sulawesi Utara': ['North Sulawesi', 'Sulawesi Utara', 'Manado'],
+  'Gorontalo': ['Gorontalo'],
+  'Sulawesi Tengah': ['Central Sulawesi', 'Sulawesi Tengah', 'Palu'],
+  'Sulawesi Barat': ['West Sulawesi', 'Sulawesi Barat'],
+  'Sulawesi Selatan': ['South Sulawesi', 'Sulawesi Selatan', 'Makassar'],
+  'Sulawesi Tenggara': ['Southeast Sulawesi', 'Sulawesi Tenggara', 'Kendari'],
+  'Bali': ['Bali', 'Denpasar', 'Seminyak', 'Ubud', 'Kuta', 'Sanur', 'Canggu'],
+  'Nusa Tenggara Barat': ['West Nusa Tenggara', 'NTB', 'Lombok', 'Mataram'],
+  'Nusa Tenggara Timur': ['East Nusa Tenggara', 'NTT', 'Kupang'],
+  'Maluku Utara': ['North Maluku', 'Maluku Utara', 'Ternate'],
+  'Maluku': ['Maluku', 'Ambon'],
+  'Papua Barat': ['West Papua', 'Papua Barat', 'Sorong'],
+  'Papua': ['Papua', 'Jayapura'],
+};
+
 const Properties = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const locationFilter = searchParams.get('location') || '';
@@ -51,6 +89,12 @@ const Properties = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterType, setFilterType] = useState('all');
   const navigate = useNavigate();
+
+  // Get search terms for a province (includes Indonesian and English names)
+  const getSearchTerms = (provinceName: string): string[] => {
+    const terms = provinceNameMapping[provinceName] || [provinceName];
+    return [provinceName, ...terms];
+  };
 
   // Update search query when location filter changes
   useEffect(() => {
@@ -68,10 +112,19 @@ const Properties = () => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      // Apply location filter from URL or search query
-      const searchTerm = locationFilter || searchQuery;
-      if (searchTerm) {
-        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
+      // Apply location filter from URL
+      if (locationFilter) {
+        const searchTerms = getSearchTerms(locationFilter);
+        // Build OR query for all possible location names
+        const orConditions = searchTerms.flatMap(term => [
+          `title.ilike.%${term}%`,
+          `location.ilike.%${term}%`,
+          `city.ilike.%${term}%`,
+          `state.ilike.%${term}%`
+        ]).join(',');
+        query = query.or(orConditions);
+      } else if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%,state.ilike.%${searchQuery}%`);
       }
 
       if (filterType !== 'all') {
