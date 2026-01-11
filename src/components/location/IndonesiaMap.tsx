@@ -32,36 +32,36 @@ const provinceCodeMap: Record<string, string> = {
   'North Maluku': 'IDMU', 'West Papua': 'IDPB',
 };
 
-// Multi-color palette for provinces (theme-aware)
+// Multi-color palette for provinces (theme-aware) - muted/softer colors
 const getProvinceColors = (isDark: boolean) => {
   const lightColors = [
-    'hsl(45, 85%, 65%)',   // Gold
-    'hsl(200, 70%, 60%)',  // Blue
-    'hsl(150, 60%, 55%)',  // Teal
-    'hsl(280, 60%, 65%)',  // Purple
-    'hsl(15, 80%, 60%)',   // Orange
-    'hsl(340, 70%, 65%)',  // Pink
-    'hsl(180, 55%, 50%)',  // Cyan
-    'hsl(100, 50%, 55%)',  // Green
-    'hsl(35, 90%, 60%)',   // Amber
-    'hsl(260, 55%, 60%)',  // Violet
-    'hsl(170, 60%, 50%)',  // Emerald
-    'hsl(5, 75%, 60%)',    // Red
+    'hsl(45, 45%, 75%)',   // Gold
+    'hsl(200, 40%, 70%)',  // Blue
+    'hsl(150, 35%, 68%)',  // Teal
+    'hsl(280, 35%, 72%)',  // Purple
+    'hsl(15, 45%, 70%)',   // Orange
+    'hsl(340, 40%, 72%)',  // Pink
+    'hsl(180, 35%, 65%)',  // Cyan
+    'hsl(100, 30%, 68%)',  // Green
+    'hsl(35, 50%, 72%)',   // Amber
+    'hsl(260, 35%, 70%)',  // Violet
+    'hsl(170, 35%, 65%)',  // Emerald
+    'hsl(5, 40%, 70%)',    // Red
   ];
   
   const darkColors = [
-    'hsl(45, 80%, 50%)',   // Gold
-    'hsl(200, 65%, 45%)',  // Blue
-    'hsl(150, 55%, 40%)',  // Teal
-    'hsl(280, 55%, 50%)',  // Purple
-    'hsl(15, 75%, 50%)',   // Orange
-    'hsl(340, 65%, 50%)',  // Pink
-    'hsl(180, 50%, 40%)',  // Cyan
-    'hsl(100, 45%, 40%)',  // Green
-    'hsl(35, 85%, 50%)',   // Amber
-    'hsl(260, 50%, 50%)',  // Violet
-    'hsl(170, 55%, 40%)',  // Emerald
-    'hsl(5, 70%, 50%)',    // Red
+    'hsl(45, 40%, 35%)',   // Gold
+    'hsl(200, 35%, 32%)',  // Blue
+    'hsl(150, 30%, 30%)',  // Teal
+    'hsl(280, 30%, 35%)',  // Purple
+    'hsl(15, 40%, 35%)',   // Orange
+    'hsl(340, 35%, 35%)',  // Pink
+    'hsl(180, 30%, 30%)',  // Cyan
+    'hsl(100, 25%, 30%)',  // Green
+    'hsl(35, 45%, 35%)',   // Amber
+    'hsl(260, 30%, 35%)',  // Violet
+    'hsl(170, 30%, 30%)',  // Emerald
+    'hsl(5, 35%, 35%)',    // Red
   ];
   
   return isDark ? darkColors : lightColors;
