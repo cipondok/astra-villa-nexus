@@ -9,6 +9,24 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+// Multi-color palette for provinces (same as map)
+const provinceColors = [
+  'hsl(45, 85%, 65%)',   // Gold
+  'hsl(200, 70%, 60%)',  // Blue
+  'hsl(150, 60%, 55%)',  // Teal
+  'hsl(280, 60%, 65%)',  // Purple
+  'hsl(15, 80%, 60%)',   // Orange
+  'hsl(340, 70%, 65%)',  // Pink
+  'hsl(180, 55%, 50%)',  // Cyan
+  'hsl(100, 50%, 55%)',  // Green
+  'hsl(35, 90%, 60%)',   // Amber
+  'hsl(260, 55%, 60%)',  // Violet
+  'hsl(170, 60%, 50%)',  // Emerald
+  'hsl(5, 75%, 60%)',    // Red
+];
+
+const getProvinceColor = (index: number) => provinceColors[index % provinceColors.length];
+
 // Static provinces list for sidebar
 const provinces = [
   { id: 'aceh', code: 'IDAC', name: 'Aceh' },
@@ -136,25 +154,32 @@ const LocationMap = () => {
                     <TrendingUp className="h-3 w-3 text-primary" />
                     Populer:
                   </span>
-                  {popularProvinces.map((province) => (
-                    <motion.div
-                      key={province.id}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => handleProvinceClick(province.id, province.name)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-full cursor-pointer transition-colors ${
-                        selectedProvince === province.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted/50 hover:bg-muted'
-                      }`}
-                    >
-                      <province.icon className="h-2.5 w-2.5" />
-                      <span className="text-xs font-medium">{province.name}</span>
-                      <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-[10px] px-1 py-0 h-4">
-                        {province.properties.toLocaleString()}
-                      </Badge>
-                    </motion.div>
-                  ))}
+                  {popularProvinces.map((province, index) => {
+                    const colorIndex = provinces.findIndex(p => p.id === province.id);
+                    const bgColor = getProvinceColor(colorIndex >= 0 ? colorIndex : index);
+                    return (
+                      <motion.div
+                        key={province.id}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => handleProvinceClick(province.id, province.name)}
+                        style={{
+                          backgroundColor: selectedProvince === province.id ? undefined : bgColor,
+                        }}
+                        className={`flex items-center gap-1 px-2 py-1 rounded-full cursor-pointer transition-colors ${
+                          selectedProvince === province.id
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-foreground hover:opacity-80'
+                        }`}
+                      >
+                        <province.icon className="h-2.5 w-2.5" />
+                        <span className="text-xs font-medium">{province.name}</span>
+                        <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-[10px] px-1 py-0 h-4 bg-background/60">
+                          {province.properties.toLocaleString()}
+                        </Badge>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -165,22 +190,29 @@ const LocationMap = () => {
                   Semua Provinsi
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
-                  {filteredProvinces.map((province) => (
-                    <motion.div
-                      key={province.id}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => handleProvinceClick(province.id, province.name)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer transition-colors ${
-                        selectedProvince === province.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted/50 hover:bg-muted'
-                      }`}
-                    >
-                      <MapPin className="h-2.5 w-2.5" />
-                      <span className="text-xs">{province.name}</span>
-                    </motion.div>
-                  ))}
+                  {filteredProvinces.map((province) => {
+                    const colorIndex = provinces.findIndex(p => p.id === province.id);
+                    const bgColor = getProvinceColor(colorIndex);
+                    return (
+                      <motion.div
+                        key={province.id}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => handleProvinceClick(province.id, province.name)}
+                        style={{
+                          backgroundColor: selectedProvince === province.id ? undefined : bgColor,
+                        }}
+                        className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer transition-colors ${
+                          selectedProvince === province.id
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-foreground hover:opacity-80'
+                        }`}
+                      >
+                        <MapPin className="h-2.5 w-2.5" />
+                        <span className="text-xs">{province.name}</span>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
             </CardContent>
