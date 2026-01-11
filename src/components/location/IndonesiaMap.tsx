@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ZoomIn, ZoomOut, Maximize2, Compass } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useProvincePropertyCounts } from '@/hooks/useProvincePropertyCounts';
 
 // Local Indonesia TopoJSON file
 const INDONESIA_TOPO_JSON = "/data/indonesia.json";
@@ -48,17 +49,8 @@ const provinceCoordinates: Record<string, [number, number]> = {
   'Maluku': [128.0, -3.2], 'Maluku Utara': [127.5, 1.5], 'Papua Barat': [133.0, -1.5], 'Papua': [138.0, -4.5],
 };
 
-// Property counts for each province
-const provincePropertyCounts: Record<string, number> = {
-  'Aceh': 1250, 'Sumatera Utara': 3420, 'Sumatera Barat': 2180, 'Riau': 2890, 'Kepulauan Riau': 1560,
-  'Jambi': 980, 'Sumatera Selatan': 2340, 'Bengkulu': 720, 'Bangka Belitung': 890, 'Lampung': 1870,
-  'Banten': 4560, 'DKI Jakarta': 15420, 'Jakarta Raya': 15420, 'Jawa Barat': 12350, 'Jawa Tengah': 5890,
-  'Yogyakarta': 3210, 'DI Yogyakarta': 3210, 'Jawa Timur': 8920, 'Kalimantan Barat': 1340,
-  'Kalimantan Tengah': 890, 'Kalimantan Selatan': 1560, 'Kalimantan Timur': 2340, 'Kalimantan Utara': 560,
-  'Sulawesi Utara': 1120, 'Gorontalo': 420, 'Sulawesi Tengah': 780, 'Sulawesi Barat': 540,
-  'Sulawesi Selatan': 3420, 'Sulawesi Tenggara': 890, 'Bali': 6540, 'Nusa Tenggara Barat': 1890,
-  'Nusa Tenggara Timur': 1230, 'Maluku Utara': 340, 'Maluku': 560, 'Papua Barat': 280, 'Papua': 450,
-};
+// Default/fallback property counts (used when data is loading)
+const defaultPropertyCounts: Record<string, number> = {};
 
 // Harmonized color palette for provinces - earthy & professional tones
 const getProvinceColors = (isDark: boolean) => {
@@ -142,6 +134,9 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   const [provinceGeographies, setProvinceGeographies] = useState<GeoJSON.FeatureCollection | null>(null);
   const [isDark, setIsDark] = useState(false);
   const navigate = useNavigate();
+  
+  // Fetch real property counts from database
+  const { data: provincePropertyCounts = defaultPropertyCounts } = useProvincePropertyCounts();
 
   // Detect dark mode
   useEffect(() => {
