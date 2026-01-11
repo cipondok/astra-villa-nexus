@@ -130,8 +130,8 @@ const LocationMap = () => {
                   />
                 </div>
                 
-                {/* Popular Provinces - Horizontal */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+                {/* Popular Provinces - Wrap */}
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="text-sm font-semibold text-foreground whitespace-nowrap flex items-center gap-1">
                     <TrendingUp className="h-4 w-4 text-primary" />
                     Populer:
@@ -142,7 +142,7 @@ const LocationMap = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleProvinceClick(province.id, province.name)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-colors whitespace-nowrap ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-colors ${
                         selectedProvince === province.id
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-muted/50 hover:bg-muted'
@@ -158,32 +158,30 @@ const LocationMap = () => {
                 </div>
               </div>
 
-              {/* All Provinces - Horizontal Scroll */}
+              {/* All Provinces - Wrap */}
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                   <Filter className="h-4 w-4 text-primary" />
                   Semua Provinsi
                 </h3>
-                <ScrollArea className="w-full">
-                  <div className="flex gap-2 pb-3">
-                    {filteredProvinces.map((province) => (
-                      <motion.div
-                        key={province.id}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleProvinceClick(province.id, province.name)}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors whitespace-nowrap ${
-                          selectedProvince === province.id
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted/50 hover:bg-muted'
-                        }`}
-                      >
-                        <MapPin className="h-3.5 w-3.5" />
-                        <span className="text-sm">{province.name}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </ScrollArea>
+                <div className="flex flex-wrap gap-2">
+                  {filteredProvinces.map((province) => (
+                    <motion.div
+                      key={province.id}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleProvinceClick(province.id, province.name)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                        selectedProvince === province.id
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted/50 hover:bg-muted'
+                      }`}
+                    >
+                      <MapPin className="h-3.5 w-3.5" />
+                      <span className="text-sm">{province.name}</span>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
