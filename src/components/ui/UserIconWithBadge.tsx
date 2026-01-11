@@ -117,24 +117,24 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-10 lg:h-10 p-0 rounded-full transition-all shrink-0 group"
+                className="relative w-8 h-8 sm:w-9 sm:h-9 lg:w-8 lg:h-8 p-0 rounded-full transition-all shrink-0 group"
               >
                 {/* Main Icon - Membership Status Icon when logged in */}
                 <div 
                   className={
-                    `w-full h-full rounded-full flex items-center justify-center shadow-lg border-2 border-white/50 ` +
+                    `w-full h-full rounded-full flex items-center justify-center shadow-md border border-white/50 ` +
                     (membershipLevel === 'diamond' ? 'animate-pulse' : '')
                   }
                   style={{ 
                     background: membershipGradient,
                     boxShadow: membershipLevel === 'diamond' 
-                      ? '0 2px 14px rgba(139, 92, 246, 0.65), 0 0 24px rgba(6, 182, 212, 0.5)' 
-                      : `0 2px 10px ${membershipConfig.color}50`
+                      ? '0 1px 8px rgba(139, 92, 246, 0.5), 0 0 12px rgba(6, 182, 212, 0.4)' 
+                      : `0 1px 6px ${membershipConfig.color}40`
                   }}
                 >
                   <MembershipIcon
                     className={
-                      `h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md ` +
+                      `h-3.5 w-3.5 sm:h-4 sm:w-4 text-white drop-shadow-sm ` +
                       (membershipLevel === 'diamond' ? 'animate-[spin_6s_linear_infinite]' : '')
                     }
                   />
@@ -142,7 +142,7 @@ const UserIconWithBadge = ({ onNavigate }: UserIconWithBadgeProps = { onNavigate
                 
                 {/* Notification Badge - Bottom Right */}
                 {unreadCount > 0 && (
-                  <Badge className="absolute -bottom-0.5 -right-0.5 h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4 flex items-center justify-center p-0 bg-red-500 text-white text-[8px] sm:text-xs lg:text-[8px] animate-pulse border border-white">
+                  <Badge className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-3.5 lg:w-3.5 flex items-center justify-center p-0 bg-red-500 text-white text-[7px] sm:text-[8px] lg:text-[7px] animate-pulse border border-white">
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
                 )}
