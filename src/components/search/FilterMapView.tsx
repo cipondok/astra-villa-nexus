@@ -26,13 +26,17 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
       center: [106.8456, -6.2088],
-      zoom: 13,
-      maxZoom: 18,
+      zoom: 15,
+      maxZoom: 20,
       minZoom: 10,
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    map.current.on('load', () => setIsLoading(false));
+    map.current.on('load', () => {
+      // Ensure we start close-in even if the map reflows after mount
+      map.current?.jumpTo({ center: [106.8456, -6.2088], zoom: 15 });
+      setIsLoading(false);
+    });
 
     return () => map.current?.remove();
   }, []);
