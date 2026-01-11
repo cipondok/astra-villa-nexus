@@ -58,7 +58,24 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   const navigate = useNavigate();
 
   const getProvinceName = (properties: Record<string, unknown>): string => {
-    return (properties.name || properties.NAME_1 || properties.state || properties.PROVINSI || 'Unknown') as string;
+    // Try various property names used in different GeoJSON/TopoJSON formats
+    const name = properties.name || 
+                 properties.Name ||
+                 properties.NAME || 
+                 properties.NAME_1 || 
+                 properties.state || 
+                 properties.PROVINSI ||
+                 properties.provinsi ||
+                 properties.woe_name ||
+                 properties.gn_name ||
+                 null;
+    
+    // Log for debugging
+    if (!name) {
+      console.log('Province properties:', properties);
+    }
+    
+    return (name || 'Unknown') as string;
   };
 
   const handleProvinceClick = (provinceName: string) => {
