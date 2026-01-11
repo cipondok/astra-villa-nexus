@@ -262,9 +262,9 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sub-header with location info */}
+      {/* Sub-header with location info - sticky */}
       {locationFilter && (
-        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2">
+        <div className="sticky top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5">
