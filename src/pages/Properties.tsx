@@ -294,10 +294,10 @@ const Properties = () => {
                 </div>
 
                 <div className="text-center flex-1">
-                  <h1 className="text-[10px] md:text-sm font-semibold leading-tight">
+                  <h1 className="text-[8px] md:text-sm font-semibold leading-tight">
                     Properti di {locationFilter}
                   </h1>
-                  <p className="text-[7px] md:text-[9px] opacity-70">
+                  <p className="text-[6px] md:text-[9px] opacity-70">
                     {isLoading ? 'Memuat...' : `${properties.length} properti ditemukan`}
                   </p>
                 </div>
