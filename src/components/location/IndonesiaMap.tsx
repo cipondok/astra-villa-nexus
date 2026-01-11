@@ -32,13 +32,14 @@ const provinceCodeMap: Record<string, string> = {
   'North Maluku': 'IDMU', 'West Papua': 'IDPB',
 };
 
-// Unified sage green color matching reference image
-const mapColors = {
-  base: '#7d9d78',
-  hover: '#6b8b66', 
-  selected: '#5a7a55',
-  border: '#ffffff',
-};
+// Theme-aware map colors using CSS custom properties
+const getMapColors = (isDark: boolean) => ({
+  base: isDark ? 'hsl(220, 40%, 25%)' : 'hsl(220, 30%, 75%)',
+  hover: isDark ? 'hsl(45, 93%, 50%)' : 'hsl(45, 93%, 47%)',
+  selected: isDark ? 'hsl(45, 93%, 55%)' : 'hsl(45, 93%, 42%)',
+  border: isDark ? 'hsl(220, 40%, 35%)' : 'hsl(220, 20%, 88%)',
+  background: isDark ? 'hsl(220, 50%, 8%)' : 'hsl(220, 30%, 96%)',
+});
 
 interface Province {
   id: string;
@@ -56,7 +57,25 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   const [position, setPosition] = useState({ coordinates: [118, -2] as [number, number], zoom: 1 });
   const [isDragging, setIsDragging] = useState(false);
   const [provinceGeographies, setProvinceGeographies] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [isDark, setIsDark] = useState(false);
   const navigate = useNavigate();
+
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
+
+  const mapColors = getMapColors(isDark);
 
   const getProvinceName = (properties: Record<string, unknown>): string => {
     // Try various property names used in different GeoJSON/TopoJSON formats
@@ -149,39 +168,42 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   }, []);
 
   return (
-    <div className="relative w-full aspect-[2.5/1] rounded-2xl overflow-hidden shadow-2xl border border-border/30 bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50">
+    <div 
+      className="relative w-full aspect-[2.5/1] rounded-2xl overflow-hidden shadow-2xl border border-border"
+      style={{ backgroundColor: mapColors.background }}
+    >
       {/* Map controls */}
       <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
         <Button 
           size="icon" 
           variant="secondary" 
-          className="h-9 w-9 bg-white/95 hover:bg-white shadow-lg border border-gray-200"
+          className="h-9 w-9 shadow-lg"
           onClick={handleZoomIn}
         >
-          <ZoomIn className="h-4 w-4 text-gray-700" />
+          <ZoomIn className="h-4 w-4" />
         </Button>
         <Button 
           size="icon" 
           variant="secondary" 
-          className="h-9 w-9 bg-white/95 hover:bg-white shadow-lg border border-gray-200"
+          className="h-9 w-9 shadow-lg"
           onClick={handleZoomOut}
         >
-          <ZoomOut className="h-4 w-4 text-gray-700" />
+          <ZoomOut className="h-4 w-4" />
         </Button>
         <Button 
           size="icon" 
           variant="secondary" 
-          className="h-9 w-9 bg-white/95 hover:bg-white shadow-lg border border-gray-200"
+          className="h-9 w-9 shadow-lg"
           onClick={handleReset}
         >
-          <Maximize2 className="h-4 w-4 text-gray-700" />
+          <Maximize2 className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Map title */}
-      <div className="absolute top-4 left-4 z-30 flex items-center gap-3 bg-white/95 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-lg border border-gray-100">
-        <div className="h-8 w-8 rounded-lg bg-[#7d9d78]/20 flex items-center justify-center">
-          <MapPin className="h-4 w-4 text-[#5a7a55]" />
+      <div className="absolute top-4 left-4 z-30 flex items-center gap-3 bg-card/95 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-lg border border-border">
+        <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center">
+          <MapPin className="h-4 w-4 text-primary" />
         </div>
         <div>
           <span className="text-sm font-bold text-foreground block">Peta Indonesia</span>
@@ -258,9 +280,9 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
       </ComposableMap>
 
       {/* Province count badge */}
-      <div className="absolute bottom-4 left-4 z-30 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-lg border border-gray-100">
-        <p className="text-xs font-bold text-gray-900 flex items-center gap-2">
-          <Compass className="h-3.5 w-3.5 text-[#5a7a55]" />
+      <div className="absolute bottom-4 left-4 z-30 bg-card/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-lg border border-border">
+        <p className="text-xs font-bold text-foreground flex items-center gap-2">
+          <Compass className="h-3.5 w-3.5 text-primary" />
           34 Provinsi Indonesia
         </p>
       </div>
@@ -272,21 +294,18 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-20 right-4 z-30 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-gray-100 min-w-[220px]"
+            className="absolute top-20 right-4 z-30 bg-card/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-border min-w-[220px]"
           >
             <div className="flex items-start gap-3">
-              <div 
-                className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
-                style={{ backgroundColor: '#7d9d78' }}
-              >
-                <MapPin className="h-5 w-5 text-white" />
+              <div className="h-11 w-11 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="font-bold text-gray-900">{hoveredProvinceName}</p>
-                <p className="text-sm text-gray-500 mb-1">
+                <p className="font-bold text-foreground">{hoveredProvinceName}</p>
+                <p className="text-sm text-muted-foreground mb-1">
                   {provinceCodeMap[hoveredProvinceName] || 'ID'}
                 </p>
-                <p className="text-xs text-[#5a7a55] font-medium">Klik untuk lihat properti →</p>
+                <p className="text-xs text-primary font-medium">Klik untuk lihat properti →</p>
               </div>
             </div>
           </motion.div>
@@ -296,13 +315,13 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
       {/* Compass rose */}
       <div className="absolute bottom-4 right-4 z-20">
         <svg width="48" height="48" viewBox="0 0 48 48" className="drop-shadow-md">
-          <circle cx="24" cy="24" r="22" fill="white" stroke="#e5e7eb" strokeWidth="1" />
-          <polygon points="24,6 28,20 24,16 20,20" fill="#5a7a55" />
-          <polygon points="24,42 28,28 24,32 20,28" fill="#9ca3af" />
-          <polygon points="42,24 28,20 32,24 28,28" fill="#9ca3af" />
-          <polygon points="6,24 20,20 16,24 20,28" fill="#9ca3af" />
-          <circle cx="24" cy="24" r="3" fill="#374151" />
-          <text x="24" y="12" textAnchor="middle" fontSize="6" fill="#5a7a55" fontWeight="bold">N</text>
+          <circle cx="24" cy="24" r="22" className="fill-card stroke-border" strokeWidth="1" />
+          <polygon points="24,6 28,20 24,16 20,20" className="fill-primary" />
+          <polygon points="24,42 28,28 24,32 20,28" className="fill-muted-foreground" />
+          <polygon points="42,24 28,20 32,24 28,28" className="fill-muted-foreground" />
+          <polygon points="6,24 20,20 16,24 20,28" className="fill-muted-foreground" />
+          <circle cx="24" cy="24" r="3" className="fill-foreground" />
+          <text x="24" y="12" textAnchor="middle" fontSize="6" className="fill-primary" fontWeight="bold">N</text>
         </svg>
       </div>
     </div>
