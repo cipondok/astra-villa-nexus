@@ -262,44 +262,49 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sub-header with location info - sticky */}
+      {/* Sub-header with location info - fixed (reliable across scroll containers) */}
       {locationFilter && (
-        <div className="sticky top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate('/location')}
-                  className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+        <>
+          <div className="fixed left-0 right-0 top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2">
+            <div className="container mx-auto px-4">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/location')}
+                    className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                  >
+                    <ArrowLeft className="h-3 w-3 mr-0.5" />
+                    Peta
+                  </Button>
+                </div>
+
+                <div className="text-center flex-1">
+                  <h1 className="text-sm font-semibold leading-tight">
+                    Properti di {locationFilter}
+                  </h1>
+                  <p className="text-[9px] opacity-70">
+                    {isLoading ? 'Memuat...' : `${properties.length} properti ditemukan`}
+                  </p>
+                </div>
+
+                <Badge
+                  variant="secondary"
+                  className="bg-white/20 text-primary-foreground border-white/30 px-2 py-0.5 text-[10px] cursor-pointer hover:bg-white/30"
+                  onClick={handleClearLocationFilter}
                 >
-                  <ArrowLeft className="h-3 w-3 mr-0.5" />
-                  Peta
-                </Button>
+                  <MapPin className="h-2.5 w-2.5 mr-1" />
+                  {locationFilter}
+                  <X className="h-2.5 w-2.5 ml-1.5" />
+                </Badge>
               </div>
-              
-              <div className="text-center flex-1">
-                <h1 className="text-sm font-semibold leading-tight">
-                  Properti di {locationFilter}
-                </h1>
-                <p className="text-[9px] opacity-70">
-                  {isLoading ? 'Memuat...' : `${properties.length} properti ditemukan`}
-                </p>
-              </div>
-              
-              <Badge 
-                variant="secondary" 
-                className="bg-white/20 text-primary-foreground border-white/30 px-2 py-0.5 text-[10px] cursor-pointer hover:bg-white/30"
-                onClick={handleClearLocationFilter}
-              >
-                <MapPin className="h-2.5 w-2.5 mr-1" />
-                {locationFilter}
-                <X className="h-2.5 w-2.5 ml-1.5" />
-              </Badge>
             </div>
           </div>
-        </div>
+
+          {/* Spacer so content doesn't slide under the fixed bar */}
+          <div aria-hidden className="h-10" />
+        </>
       )}
 
       <div className="container mx-auto px-4 py-4">
