@@ -265,13 +265,13 @@ const LocationMap = () => {
           ))}
         </div>
 
-        {/* Region Cards */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-primary" />
+        {/* Region Cards - Slim */}
+        <div className="mb-4">
+          <h2 className="text-sm sm:text-base font-bold text-foreground mb-2 flex items-center gap-1.5">
+            <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             Wilayah Populer
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {[
               { region: 'Jawa', provinces: ['DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur'], properties: 42500, color: 'from-blue-500/20 to-blue-600/20' },
               { region: 'Sumatera', provinces: ['Sumatera Utara', 'Sumatera Barat', 'Riau'], properties: 18200, color: 'from-green-500/20 to-green-600/20' },
@@ -279,32 +279,32 @@ const LocationMap = () => {
             ].map((item, index) => (
               <motion.div
                 key={item.region}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
+                transition={{ delay: 0.3 + index * 0.05 }}
               >
-                <Card className={`bg-gradient-to-br ${item.color} border-border/50 hover:border-primary/30 transition-all hover:shadow-lg cursor-pointer`}>
-                  <CardContent className="p-5">
-                    <h3 className="font-bold text-lg text-foreground mb-2">{item.region}</h3>
-                    <div className="flex flex-wrap gap-1 mb-3">
+                <Card className={`bg-gradient-to-br ${item.color} border-border/50 hover:border-primary/30 transition-all hover:shadow-md cursor-pointer`}>
+                  <CardContent className="p-2 sm:p-3">
+                    <h3 className="font-bold text-sm sm:text-base text-foreground mb-1">{item.region}</h3>
+                    <div className="flex flex-wrap gap-0.5 sm:gap-1 mb-1.5">
                       {item.provinces.slice(0, 3).map((p) => (
-                        <Badge key={p} variant="secondary" className="text-xs">
+                        <Badge key={p} variant="secondary" className="text-[10px] sm:text-xs px-1 py-0">
                           {p}
                         </Badge>
                       ))}
                       {item.provinces.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-[10px] sm:text-xs px-1 py-0">
                           +{item.provinces.length - 3}
                         </Badge>
                       )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground">
                         {item.properties.toLocaleString()} properti
                       </span>
-                      <Button size="sm" variant="ghost" className="h-8">
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-xs">
                         Jelajahi
-                        <ChevronRight className="h-4 w-4 ml-1" />
+                        <ChevronRight className="h-3 w-3 ml-0.5" />
                       </Button>
                     </div>
                   </CardContent>
