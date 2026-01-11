@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useProvincePropertyCounts, useTotalPropertyCount } from '@/hooks/useProvincePropertyCounts';
 
 // Harmonized color palette for provinces - earthy & professional tones
 const provinceColors = [
@@ -27,15 +28,18 @@ const provinceColors = [
 
 const getProvinceColor = (index: number) => provinceColors[index % provinceColors.length];
 
-// Property counts for each province (mock data)
-const provincePropertyCounts: Record<string, number> = {
-  'aceh': 1250, 'sumut': 3420, 'sumbar': 2180, 'riau': 2890, 'kepri': 1560,
-  'jambi': 980, 'sumsel': 2340, 'bengkulu': 720, 'babel': 890, 'lampung': 1870,
-  'banten': 4560, 'jakarta': 15420, 'jabar': 12350, 'jateng': 5890, 'yogya': 3210,
-  'jatim': 8920, 'kalbar': 1340, 'kalteng': 890, 'kalsel': 1560, 'kaltim': 2340,
-  'kaltara': 560, 'sulut': 1120, 'gorontalo': 420, 'sulteng': 780, 'sulbar': 540,
-  'sulsel': 3420, 'sultra': 890, 'bali': 6540, 'ntb': 1890, 'ntt': 1230,
-  'malut': 340, 'maluku': 560, 'papuabarat': 280, 'papua': 450,
+// Map province names to IDs for lookup
+const provinceNameToId: Record<string, string> = {
+  'Aceh': 'aceh', 'Sumatera Utara': 'sumut', 'Sumatera Barat': 'sumbar', 'Riau': 'riau',
+  'Kepulauan Riau': 'kepri', 'Jambi': 'jambi', 'Sumatera Selatan': 'sumsel', 'Bengkulu': 'bengkulu',
+  'Bangka Belitung': 'babel', 'Lampung': 'lampung', 'Banten': 'banten', 'DKI Jakarta': 'jakarta',
+  'Jawa Barat': 'jabar', 'Jawa Tengah': 'jateng', 'Yogyakarta': 'yogya', 'Jawa Timur': 'jatim',
+  'Kalimantan Barat': 'kalbar', 'Kalimantan Tengah': 'kalteng', 'Kalimantan Selatan': 'kalsel',
+  'Kalimantan Timur': 'kaltim', 'Kalimantan Utara': 'kaltara', 'Sulawesi Utara': 'sulut',
+  'Gorontalo': 'gorontalo', 'Sulawesi Tengah': 'sulteng', 'Sulawesi Barat': 'sulbar',
+  'Sulawesi Selatan': 'sulsel', 'Sulawesi Tenggara': 'sultra', 'Bali': 'bali',
+  'Nusa Tenggara Barat': 'ntb', 'Nusa Tenggara Timur': 'ntt', 'Maluku Utara': 'malut',
+  'Maluku': 'maluku', 'Papua Barat': 'papuabarat', 'Papua': 'papua',
 };
 
 // Static provinces list for sidebar
@@ -80,19 +84,29 @@ const LocationMap = () => {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  
+  // Fetch real property counts from database
+  const { data: provincePropertyCounts = {} } = useProvincePropertyCounts();
+  const { data: totalProperties = 0 } = useTotalPropertyCount();
 
   const filteredProvinces = provinces.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Get property count for a province by name
+  const getPropertyCount = (provinceName: string): number => {
+    return provincePropertyCounts[provinceName] || 0;
+  };
+
+  // Get top provinces by property count for popular section
   const popularProvinces = [
-    { id: 'jakarta', name: 'DKI Jakarta', properties: 15420, icon: Building2 },
-    { id: 'jabar', name: 'Jawa Barat', properties: 12350, icon: Home },
-    { id: 'jatim', name: 'Jawa Timur', properties: 8920, icon: Building2 },
-    { id: 'bali', name: 'Bali', properties: 6540, icon: TrendingUp },
-    { id: 'jateng', name: 'Jawa Tengah', properties: 5890, icon: Home },
-    { id: 'sulsel', name: 'Sulawesi Selatan', properties: 3420, icon: Building2 },
-  ];
+    { id: 'bali', name: 'Bali', icon: TrendingUp },
+    { id: 'jabar', name: 'Jawa Barat', icon: Home },
+    { id: 'jakarta', name: 'DKI Jakarta', icon: Building2 },
+    { id: 'jatim', name: 'Jawa Timur', icon: Building2 },
+    { id: 'yogya', name: 'Yogyakarta', icon: Home },
+    { id: 'jateng', name: 'Jawa Tengah', icon: Building2 },
+  ].map(p => ({ ...p, properties: getPropertyCount(p.name) }));
 
   const handleProvinceSelect = (province: Province) => {
     setSelectedProvince(province.id);
@@ -204,7 +218,7 @@ const LocationMap = () => {
                   {filteredProvinces.map((province) => {
                     const colorIndex = provinces.findIndex(p => p.id === province.id);
                     const bgColor = getProvinceColor(colorIndex);
-                    const propertyCount = provincePropertyCounts[province.id] || 0;
+                    const propertyCount = getPropertyCount(province.name);
                     return (
                       <motion.div
                         key={province.id}
@@ -240,8 +254,8 @@ const LocationMap = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
           {[
             { label: 'Total Provinsi', value: '38', icon: MapPin },
-            { label: 'Total Properti', value: '125.4K', icon: Building2 },
-            { label: 'Kota Tersedia', value: '514', icon: Home },
+            { label: 'Total Properti', value: totalProperties.toString(), icon: Building2 },
+            { label: 'Kota Tersedia', value: Object.keys(provincePropertyCounts).length.toString(), icon: Home },
             { label: 'Agen Aktif', value: '12.3K', icon: TrendingUp },
           ].map((stat, index) => (
             <motion.div
