@@ -169,40 +169,40 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
 
   return (
     <div 
-      className="relative w-full aspect-[2.5/1] rounded-2xl overflow-hidden shadow-2xl border border-border"
+      className="relative w-full aspect-[2/1] rounded-2xl overflow-hidden shadow-2xl border border-border/50"
       style={{ backgroundColor: mapColors.background }}
     >
-      {/* Map controls */}
+      {/* Map controls - Glassy style */}
       <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
         <Button 
           size="icon" 
-          variant="secondary" 
-          className="h-9 w-9 shadow-lg"
+          variant="ghost" 
+          className="h-9 w-9 bg-background/40 backdrop-blur-md border border-border/50 shadow-lg hover:bg-background/60"
           onClick={handleZoomIn}
         >
           <ZoomIn className="h-4 w-4" />
         </Button>
         <Button 
           size="icon" 
-          variant="secondary" 
-          className="h-9 w-9 shadow-lg"
+          variant="ghost" 
+          className="h-9 w-9 bg-background/40 backdrop-blur-md border border-border/50 shadow-lg hover:bg-background/60"
           onClick={handleZoomOut}
         >
           <ZoomOut className="h-4 w-4" />
         </Button>
         <Button 
           size="icon" 
-          variant="secondary" 
-          className="h-9 w-9 shadow-lg"
+          variant="ghost" 
+          className="h-9 w-9 bg-background/40 backdrop-blur-md border border-border/50 shadow-lg hover:bg-background/60"
           onClick={handleReset}
         >
           <Maximize2 className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Map title */}
-      <div className="absolute top-4 left-4 z-30 flex items-center gap-3 bg-card/95 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-lg border border-border">
-        <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center">
+      {/* Map title - Glassy style */}
+      <div className="absolute top-4 left-4 z-30 flex items-center gap-3 bg-background/40 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-lg border border-border/50">
+        <div className="h-8 w-8 rounded-lg bg-primary/30 backdrop-blur-sm flex items-center justify-center">
           <MapPin className="h-4 w-4 text-primary" />
         </div>
         <div>
@@ -211,11 +211,11 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
         </div>
       </div>
 
-      {/* Main Map */}
+      {/* Main Map - Zoomed in more */}
       <ComposableMap
         projection="geoMercator"
         projectionConfig={{
-          scale: 850,
+          scale: 1100,
           center: [118, -2]
         }}
         style={{ width: '100%', height: '100%' }}
@@ -279,25 +279,26 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
         </ZoomableGroup>
       </ComposableMap>
 
-      {/* Province count badge */}
-      <div className="absolute bottom-4 left-4 z-30 bg-card/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-lg border border-border">
+      {/* Province count badge - Glassy style */}
+      <div className="absolute bottom-4 left-4 z-30 bg-background/40 backdrop-blur-md rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
         <p className="text-xs font-bold text-foreground flex items-center gap-2">
           <Compass className="h-3.5 w-3.5 text-primary" />
           34 Provinsi Indonesia
         </p>
       </div>
 
-      {/* Hover info panel */}
+      {/* Hover info panel - Glassy style */}
       <AnimatePresence>
         {hoveredProvinceName && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-20 right-4 z-30 bg-card/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-border min-w-[220px]"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-20 right-4 z-30 bg-background/50 backdrop-blur-xl rounded-xl p-4 shadow-xl border border-border/50 min-w-[220px]"
           >
             <div className="flex items-start gap-3">
-              <div className="h-11 w-11 rounded-xl bg-primary flex items-center justify-center shrink-0">
+              <div className="h-11 w-11 rounded-xl bg-primary/80 backdrop-blur-sm flex items-center justify-center shrink-0">
                 <MapPin className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
@@ -312,17 +313,19 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
         )}
       </AnimatePresence>
 
-      {/* Compass rose */}
+      {/* Compass rose - Glassy style */}
       <div className="absolute bottom-4 right-4 z-20">
-        <svg width="48" height="48" viewBox="0 0 48 48" className="drop-shadow-md">
-          <circle cx="24" cy="24" r="22" className="fill-card stroke-border" strokeWidth="1" />
-          <polygon points="24,6 28,20 24,16 20,20" className="fill-primary" />
-          <polygon points="24,42 28,28 24,32 20,28" className="fill-muted-foreground" />
-          <polygon points="42,24 28,20 32,24 28,28" className="fill-muted-foreground" />
-          <polygon points="6,24 20,20 16,24 20,28" className="fill-muted-foreground" />
-          <circle cx="24" cy="24" r="3" className="fill-foreground" />
-          <text x="24" y="12" textAnchor="middle" fontSize="6" className="fill-primary" fontWeight="bold">N</text>
-        </svg>
+        <div className="bg-background/40 backdrop-blur-md rounded-full p-1 border border-border/50 shadow-lg">
+          <svg width="40" height="40" viewBox="0 0 48 48" className="drop-shadow-sm">
+            <circle cx="24" cy="24" r="22" className="fill-transparent" />
+            <polygon points="24,6 28,20 24,16 20,20" className="fill-primary" />
+            <polygon points="24,42 28,28 24,32 20,28" className="fill-muted-foreground/60" />
+            <polygon points="42,24 28,20 32,24 28,28" className="fill-muted-foreground/60" />
+            <polygon points="6,24 20,20 16,24 20,28" className="fill-muted-foreground/60" />
+            <circle cx="24" cy="24" r="3" className="fill-foreground/80" />
+            <text x="24" y="12" textAnchor="middle" fontSize="6" className="fill-primary" fontWeight="bold">N</text>
+          </svg>
+        </div>
       </div>
     </div>
   );
