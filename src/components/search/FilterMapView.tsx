@@ -26,7 +26,9 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
       center: [106.8456, -6.2088],
-      zoom: 11,
+      zoom: 13,
+      maxZoom: 18,
+      minZoom: 10,
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
