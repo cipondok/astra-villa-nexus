@@ -243,32 +243,28 @@ const LocationMap = () => {
                 </h3>
                 <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {filteredProvinces.map((province) => {
-                    const colorIndex = provinces.findIndex(p => p.id === province.id);
-                    const bgColor = getProvinceColor(colorIndex);
                     const propertyCount = getPropertyCount(province.name);
                     return (
-                      <motion.div
+                      <motion.button
                         key={province.id}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => handleProvinceClick(province.id, province.name)}
-                        style={{
-                          backgroundColor: selectedProvince === province.id ? undefined : bgColor,
-                        }}
-                        className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md cursor-pointer transition-colors border border-transparent hover:border-primary/30 ${
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium transition-all border ${
                           selectedProvince === province.id
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-foreground hover:opacity-90'
+                            ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                            : 'bg-muted/50 text-foreground border-border hover:bg-primary/10 hover:border-primary/40 hover:text-primary dark:text-foreground'
                         }`}
                       >
-                        <span className="text-[10px] sm:text-xs font-medium">{province.name}</span>
-                        <div className="flex items-center gap-0.5 bg-background/70 rounded px-0.5 sm:px-1 py-0.5">
-                          <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-primary" />
-                          <span className="text-[8px] sm:text-[10px] font-semibold text-primary">
-                            {propertyCount >= 1000 ? `${(propertyCount / 1000).toFixed(1)}K` : propertyCount}
-                          </span>
-                        </div>
-                      </motion.div>
+                        <span>{province.name}</span>
+                        <span className={`text-[8px] sm:text-[9px] ${
+                          selectedProvince === province.id 
+                            ? 'text-primary-foreground/80' 
+                            : 'text-muted-foreground'
+                        }`}>
+                          ({propertyCount >= 1000 ? `${(propertyCount / 1000).toFixed(1)}K` : propertyCount})
+                        </span>
+                      </motion.button>
                     );
                   })}
                 </div>
