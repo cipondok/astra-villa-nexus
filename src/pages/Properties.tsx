@@ -158,8 +158,8 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Slim Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2 shadow-md backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between gap-2">
             {/* Left: Navigation */}
