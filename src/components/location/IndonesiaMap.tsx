@@ -376,24 +376,24 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
                   onClick={() => handleProvinceClick(name)}
                   style={{ pointerEvents: 'all' }}
                 >
-                  {/* Pin marker shape */}
+                  {/* Pin marker shape - larger */}
                   <ellipse 
                     cx={0} 
                     cy={0} 
-                    rx={isLarge ? 8 : 6} 
-                    ry={isLarge ? 5 : 4} 
+                    rx={isLarge ? 14 : 10} 
+                    ry={isLarge ? 9 : 7} 
                     fill={isDark ? 'hsl(25, 90%, 50%)' : 'hsl(25, 85%, 55%)'} 
                     stroke={isDark ? 'hsl(25, 90%, 70%)' : 'hsl(25, 85%, 40%)'}
-                    strokeWidth={0.5}
+                    strokeWidth={0.8}
                     opacity={0.95}
                   />
-                  {/* Count text */}
+                  {/* Count text - larger */}
                   <text
                     textAnchor="middle"
-                    y={1}
+                    y={2}
                     style={{
                       fontFamily: 'system-ui, sans-serif',
-                      fontSize: isLarge ? '4px' : '3.5px',
+                      fontSize: isLarge ? '7px' : '6px',
                       fontWeight: 'bold',
                       fill: 'white',
                       pointerEvents: 'none',
@@ -417,7 +417,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
         </p>
       </div>
 
-      {/* Hover info panel - Glassy style - Responsive */}
+      {/* Hover info panel - Glassy style - Responsive with property count */}
       <AnimatePresence>
         {hoveredProvinceName && (
           <motion.div
@@ -431,12 +431,19 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
               <div className="h-8 w-8 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl bg-primary/80 backdrop-blur-sm flex items-center justify-center shrink-0">
                 <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="font-bold text-foreground text-xs sm:text-base">{hoveredProvinceName}</p>
-                <p className="text-[10px] sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">
+                <p className="text-[10px] sm:text-sm text-muted-foreground">
                   {provinceCodeMap[hoveredProvinceName] || 'ID'}
                 </p>
-                <p className="text-[10px] sm:text-xs text-primary font-medium">Klik untuk lihat →</p>
+                {/* Property count display */}
+                <div className="flex items-center gap-1 mt-1 sm:mt-1.5 bg-orange-500/20 rounded px-1.5 py-0.5 w-fit">
+                  <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500" />
+                  <span className="text-[10px] sm:text-xs font-bold text-orange-600 dark:text-orange-400">
+                    {(provincePropertyCounts[hoveredProvinceName] || 0).toLocaleString()} properti
+                  </span>
+                </div>
+                <p className="text-[10px] sm:text-xs text-primary font-medium mt-1">Klik untuk lihat →</p>
               </div>
             </div>
           </motion.div>
