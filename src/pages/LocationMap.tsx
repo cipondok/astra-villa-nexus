@@ -98,19 +98,19 @@ const LocationMap = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6"
+          className="text-center mb-4"
         >
-          <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full mb-3">
-            <MapPin className="h-3 w-3" />
-            <span className="text-xs font-medium">Jelajahi Lokasi</span>
+          <div className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full mb-2">
+            <MapPin className="h-2.5 w-2.5" />
+            <span className="text-[10px] font-medium">Jelajahi Lokasi</span>
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-lg md:text-xl font-bold text-foreground mb-1">
             Peta Properti Indonesia
           </h1>
-          <p className="text-xs text-muted-foreground max-w-xl mx-auto">
-            Temukan properti impian Anda di seluruh Indonesia. Klik pada peta untuk melihat properti di setiap provinsi.
+          <p className="text-[10px] text-muted-foreground max-w-md mx-auto leading-tight">
+            Temukan properti impian Anda di seluruh Indonesia. Klik pada peta untuk melihat properti.
           </p>
         </motion.div>
 
