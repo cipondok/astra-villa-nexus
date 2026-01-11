@@ -172,36 +172,50 @@ const LocationMap = () => {
                 />
               </div>
               
-              {/* Row 2: Popular Provinces */}
+              {/* Row 2: Popular Provinces with Progress Bars */}
               <div>
                 <span className="text-xs font-semibold text-foreground flex items-center gap-1 mb-2">
                   <TrendingUp className="h-3 w-3 text-primary" />
                   Populer:
                 </span>
-                <div className="flex flex-wrap gap-1 sm:gap-1.5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
                   {popularProvinces.map((province, index) => {
-                    const colorIndex = provinces.findIndex(p => p.id === province.id);
-                    const bgColor = getProvinceColor(colorIndex >= 0 ? colorIndex : index);
+                    const maxCount = Math.max(...popularProvinces.map(p => p.properties), 1);
+                    const percentage = (province.properties / maxCount) * 100;
                     return (
                       <motion.div
                         key={province.id}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => handleProvinceClick(province.id, province.name)}
-                        style={{
-                          backgroundColor: selectedProvince === province.id ? undefined : bgColor,
-                        }}
-                        className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full cursor-pointer transition-colors ${
+                        className={`p-2 rounded-lg cursor-pointer transition-all border ${
                           selectedProvince === province.id
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-foreground hover:opacity-80'
+                            ? 'bg-primary/10 border-primary'
+                            : 'bg-muted/30 border-border hover:border-primary/50'
                         }`}
                       >
-                        <province.icon className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                        <span className="text-[10px] sm:text-xs font-medium">{province.name}</span>
-                        <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-[8px] sm:text-[10px] px-0.5 sm:px-1 py-0 h-3 sm:h-4 bg-background/60">
-                          {province.properties.toLocaleString()}
-                        </Badge>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] sm:text-xs font-medium text-foreground truncate">
+                            {province.name}
+                          </span>
+                          <province.icon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary shrink-0" />
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-1.5 sm:h-2 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${percentage}%` }}
+                            transition={{ duration: 0.8, delay: index * 0.1 }}
+                            className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full"
+                          />
+                        </div>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-[8px] sm:text-[10px] text-muted-foreground">
+                            {province.properties.toLocaleString()}
+                          </span>
+                          <span className="text-[8px] sm:text-[10px] font-medium text-primary">
+                            {percentage.toFixed(0)}%
+                          </span>
+                        </div>
                       </motion.div>
                     );
                   })}
