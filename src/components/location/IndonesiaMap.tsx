@@ -32,12 +32,67 @@ const provinceCodeMap: Record<string, string> = {
   'North Maluku': 'IDMU', 'West Papua': 'IDPB',
 };
 
-// Theme-aware map colors using CSS custom properties
+// Multi-color palette for provinces (theme-aware)
+const getProvinceColors = (isDark: boolean) => {
+  const lightColors = [
+    'hsl(45, 85%, 65%)',   // Gold
+    'hsl(200, 70%, 60%)',  // Blue
+    'hsl(150, 60%, 55%)',  // Teal
+    'hsl(280, 60%, 65%)',  // Purple
+    'hsl(15, 80%, 60%)',   // Orange
+    'hsl(340, 70%, 65%)',  // Pink
+    'hsl(180, 55%, 50%)',  // Cyan
+    'hsl(100, 50%, 55%)',  // Green
+    'hsl(35, 90%, 60%)',   // Amber
+    'hsl(260, 55%, 60%)',  // Violet
+    'hsl(170, 60%, 50%)',  // Emerald
+    'hsl(5, 75%, 60%)',    // Red
+  ];
+  
+  const darkColors = [
+    'hsl(45, 80%, 50%)',   // Gold
+    'hsl(200, 65%, 45%)',  // Blue
+    'hsl(150, 55%, 40%)',  // Teal
+    'hsl(280, 55%, 50%)',  // Purple
+    'hsl(15, 75%, 50%)',   // Orange
+    'hsl(340, 65%, 50%)',  // Pink
+    'hsl(180, 50%, 40%)',  // Cyan
+    'hsl(100, 45%, 40%)',  // Green
+    'hsl(35, 85%, 50%)',   // Amber
+    'hsl(260, 50%, 50%)',  // Violet
+    'hsl(170, 55%, 40%)',  // Emerald
+    'hsl(5, 70%, 50%)',    // Red
+  ];
+  
+  return isDark ? darkColors : lightColors;
+};
+
+// Get color for a province based on its index
+const getProvinceColor = (index: number, isDark: boolean) => {
+  const colors = getProvinceColors(isDark);
+  return colors[index % colors.length];
+};
+
+// Get hover color (slightly darker/lighter)
+const getHoverColor = (index: number, isDark: boolean) => {
+  const colors = getProvinceColors(isDark);
+  const baseColor = colors[index % colors.length];
+  // Parse and adjust lightness
+  const match = baseColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  if (match) {
+    const h = parseInt(match[1]);
+    const s = parseInt(match[2]);
+    const l = parseInt(match[3]);
+    const newL = isDark ? Math.min(l + 15, 70) : Math.max(l - 10, 30);
+    return `hsl(${h}, ${s}%, ${newL}%)`;
+  }
+  return baseColor;
+};
+
+// Theme-aware map colors
 const getMapColors = (isDark: boolean) => ({
-  base: isDark ? 'hsl(220, 40%, 25%)' : 'hsl(220, 30%, 75%)',
-  hover: isDark ? 'hsl(45, 93%, 50%)' : 'hsl(45, 93%, 47%)',
   selected: isDark ? 'hsl(45, 93%, 55%)' : 'hsl(45, 93%, 42%)',
-  border: isDark ? 'hsl(220, 40%, 35%)' : 'hsl(220, 20%, 88%)',
+  border: isDark ? 'hsl(220, 40%, 35%)' : 'hsl(220, 20%, 95%)',
   background: isDark ? 'hsl(220, 50%, 8%)' : 'hsl(220, 30%, 96%)',
 });
 
@@ -233,9 +288,11 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
           {provinceGeographies ? (
             <Geographies geography={provinceGeographies}>
               {({ geographies }) =>
-                geographies.map((geo) => {
+                geographies.map((geo, index) => {
                   const provinceName = getProvinceName(geo.properties);
                   const isSelected = selectedProvince === provinceName.toLowerCase().replace(/\s+/g, '-');
+                  const provinceColor = getProvinceColor(index, isDark);
+                  const hoverColor = getHoverColor(index, isDark);
 
                   return (
                     <Geography
@@ -250,14 +307,14 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
                       onClick={() => handleProvinceClick(provinceName)}
                       style={{
                         default: {
-                          fill: isSelected ? mapColors.selected : mapColors.base,
+                          fill: isSelected ? mapColors.selected : provinceColor,
                           stroke: mapColors.border,
                           strokeWidth: 0.5,
                           outline: 'none',
                           cursor: 'pointer',
                         },
                         hover: {
-                          fill: mapColors.hover,
+                          fill: isSelected ? mapColors.selected : hoverColor,
                           stroke: mapColors.border,
                           strokeWidth: 0.8,
                           outline: 'none',
