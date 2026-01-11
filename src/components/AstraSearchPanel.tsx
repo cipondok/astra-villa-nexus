@@ -2426,7 +2426,7 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
-                <Button onClick={() => toggleSearchType('location')} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} title={currentText.location}>
+                <Button onClick={() => window.location.href = '/location'} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} title={currentText.location}>
                   <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
                 </Button>
                 <Button onClick={() => toggleSearchType('nearby')} variant="ghost" size="sm" aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("p-0 rounded-md relative transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
