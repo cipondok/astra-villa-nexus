@@ -1,5 +1,6 @@
-import { useState, memo } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+import { feature } from 'topojson-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ZoomIn, ZoomOut, Maximize2, Compass } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -51,10 +52,10 @@ interface IndonesiaMapProps {
 }
 
 const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: IndonesiaMapProps) => {
-  const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [hoveredProvinceName, setHoveredProvinceName] = useState<string | null>(null);
   const [position, setPosition] = useState({ coordinates: [118, -2] as [number, number], zoom: 1 });
   const [isDragging, setIsDragging] = useState(false);
+  const [provinceGeographies, setProvinceGeographies] = useState<GeoJSON.FeatureCollection | null>(null);
   const navigate = useNavigate();
 
   const getProvinceName = (properties: Record<string, unknown>): string => {
@@ -110,6 +111,42 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   const handleReset = () => {
     setPosition({ coordinates: [118, -2], zoom: 1 });
   };
+
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProvinces = async () => {
+      try {
+        const res = await fetch(INDONESIA_TOPO_JSON);
+        const topology = await res.json();
+
+        // This file contains multiple objects; we specifically want admin-1 provinces.
+        const obj = topology?.objects?.states_provinces;
+        if (!obj) throw new Error('TopoJSON missing objects.states_provinces');
+
+        const fc = feature(topology, obj) as GeoJSON.FeatureCollection;
+
+        // Filter out "minor island" / null-name features to avoid "Unknown" hover.
+        const cleaned: GeoJSON.FeatureCollection = {
+          type: 'FeatureCollection',
+          features: (fc.features || []).filter((f: any) => {
+            const n = f?.properties?.name;
+            return typeof n === 'string' && n.trim().length > 0;
+          }),
+        };
+
+        if (isMounted) setProvinceGeographies(cleaned);
+      } catch (e) {
+        console.error('Failed to load province geographies:', e);
+      }
+    };
+
+    loadProvinces();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="relative w-full aspect-[2.5/1] rounded-2xl overflow-hidden shadow-2xl border border-border/30 bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50">
@@ -171,53 +208,52 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
             setTimeout(() => setIsDragging(false), 100);
           }}
         >
-          <Geographies geography={INDONESIA_TOPO_JSON}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const provinceName = getProvinceName(geo.properties);
-                const isHovered = hoveredProvince === geo.rsmKey;
-                const isSelected = selectedProvince === provinceName.toLowerCase().replace(/\s+/g, '-');
-                
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    onMouseEnter={() => {
-                      setHoveredProvince(geo.rsmKey);
-                      setHoveredProvinceName(provinceName);
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredProvince(null);
-                      setHoveredProvinceName(null);
-                    }}
-                    onClick={() => handleProvinceClick(provinceName)}
-                    style={{
-                      default: {
-                        fill: isSelected ? mapColors.selected : mapColors.base,
-                        stroke: mapColors.border,
-                        strokeWidth: 0.5,
-                        outline: 'none',
-                        cursor: 'pointer',
-                      },
-                      hover: {
-                        fill: mapColors.hover,
-                        stroke: mapColors.border,
-                        strokeWidth: 0.8,
-                        outline: 'none',
-                        cursor: 'pointer',
-                      },
-                      pressed: {
-                        fill: mapColors.selected,
-                        stroke: mapColors.border,
-                        strokeWidth: 1,
-                        outline: 'none',
-                      },
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
+          {provinceGeographies ? (
+            <Geographies geography={provinceGeographies}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const provinceName = getProvinceName(geo.properties);
+                  const isSelected = selectedProvince === provinceName.toLowerCase().replace(/\s+/g, '-');
+
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      onMouseEnter={() => {
+                        setHoveredProvinceName(provinceName);
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredProvinceName(null);
+                      }}
+                      onClick={() => handleProvinceClick(provinceName)}
+                      style={{
+                        default: {
+                          fill: isSelected ? mapColors.selected : mapColors.base,
+                          stroke: mapColors.border,
+                          strokeWidth: 0.5,
+                          outline: 'none',
+                          cursor: 'pointer',
+                        },
+                        hover: {
+                          fill: mapColors.hover,
+                          stroke: mapColors.border,
+                          strokeWidth: 0.8,
+                          outline: 'none',
+                          cursor: 'pointer',
+                        },
+                        pressed: {
+                          fill: mapColors.selected,
+                          stroke: mapColors.border,
+                          strokeWidth: 1,
+                          outline: 'none',
+                        },
+                      }}
+                    />
+                  );
+                })
+              }
+            </Geographies>
+          ) : null}
         </ZoomableGroup>
       </ComposableMap>
 
