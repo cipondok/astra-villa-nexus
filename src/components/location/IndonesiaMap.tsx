@@ -54,6 +54,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [hoveredProvinceName, setHoveredProvinceName] = useState<string | null>(null);
   const [position, setPosition] = useState({ coordinates: [118, -2] as [number, number], zoom: 1 });
+  const [isDragging, setIsDragging] = useState(false);
   const navigate = useNavigate();
 
   const getProvinceName = (properties: Record<string, unknown>): string => {
@@ -61,6 +62,10 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   };
 
   const handleProvinceClick = (provinceName: string) => {
+    // Prevent click during drag
+    if (isDragging) return;
+    
+    console.log('Province clicked:', provinceName);
     const code = provinceCodeMap[provinceName] || 'ID';
     const province: Province = {
       id: provinceName.toLowerCase().replace(/\s+/g, '-'),
@@ -142,7 +147,12 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
         <ZoomableGroup
           zoom={position.zoom}
           center={position.coordinates}
-          onMoveEnd={(pos) => setPosition(pos)}
+          onMoveStart={() => setIsDragging(true)}
+          onMoveEnd={(pos) => {
+            setPosition(pos);
+            // Small delay to allow click to be blocked during drag
+            setTimeout(() => setIsDragging(false), 100);
+          }}
         >
           <Geographies geography={INDONESIA_TOPO_JSON}>
             {({ geographies }) =>
