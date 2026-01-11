@@ -9,23 +9,34 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-// Multi-color palette for provinces (same as map) - muted/softer colors
+// Harmonized color palette for provinces - earthy & professional tones
 const provinceColors = [
-  'hsl(45, 45%, 75%)',   // Gold
-  'hsl(200, 40%, 70%)',  // Blue
-  'hsl(150, 35%, 68%)',  // Teal
-  'hsl(280, 35%, 72%)',  // Purple
-  'hsl(15, 45%, 70%)',   // Orange
-  'hsl(340, 40%, 72%)',  // Pink
-  'hsl(180, 35%, 65%)',  // Cyan
-  'hsl(100, 30%, 68%)',  // Green
-  'hsl(35, 50%, 72%)',   // Amber
-  'hsl(260, 35%, 70%)',  // Violet
-  'hsl(170, 35%, 65%)',  // Emerald
-  'hsl(5, 40%, 70%)',    // Red
+  'hsl(210, 35%, 78%)',  // Soft Blue
+  'hsl(160, 30%, 72%)',  // Sage
+  'hsl(35, 40%, 75%)',   // Sand
+  'hsl(190, 30%, 70%)',  // Aqua
+  'hsl(25, 35%, 72%)',   // Terracotta light
+  'hsl(145, 25%, 68%)',  // Mint
+  'hsl(220, 30%, 75%)',  // Periwinkle
+  'hsl(45, 35%, 73%)',   // Wheat
+  'hsl(175, 28%, 68%)',  // Teal light
+  'hsl(15, 30%, 70%)',   // Coral light
+  'hsl(200, 32%, 72%)',  // Steel blue
+  'hsl(80, 25%, 70%)',   // Olive light
 ];
 
 const getProvinceColor = (index: number) => provinceColors[index % provinceColors.length];
+
+// Property counts for each province (mock data)
+const provincePropertyCounts: Record<string, number> = {
+  'aceh': 1250, 'sumut': 3420, 'sumbar': 2180, 'riau': 2890, 'kepri': 1560,
+  'jambi': 980, 'sumsel': 2340, 'bengkulu': 720, 'babel': 890, 'lampung': 1870,
+  'banten': 4560, 'jakarta': 15420, 'jabar': 12350, 'jateng': 5890, 'yogya': 3210,
+  'jatim': 8920, 'kalbar': 1340, 'kalteng': 890, 'kalsel': 1560, 'kaltim': 2340,
+  'kaltara': 560, 'sulut': 1120, 'gorontalo': 420, 'sulteng': 780, 'sulbar': 540,
+  'sulsel': 3420, 'sultra': 890, 'bali': 6540, 'ntb': 1890, 'ntt': 1230,
+  'malut': 340, 'maluku': 560, 'papuabarat': 280, 'papua': 450,
+};
 
 // Static provinces list for sidebar
 const provinces = [
@@ -193,6 +204,7 @@ const LocationMap = () => {
                   {filteredProvinces.map((province) => {
                     const colorIndex = provinces.findIndex(p => p.id === province.id);
                     const bgColor = getProvinceColor(colorIndex);
+                    const propertyCount = provincePropertyCounts[province.id] || 0;
                     return (
                       <motion.div
                         key={province.id}
@@ -202,14 +214,19 @@ const LocationMap = () => {
                         style={{
                           backgroundColor: selectedProvince === province.id ? undefined : bgColor,
                         }}
-                        className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md cursor-pointer transition-colors ${
+                        className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md cursor-pointer transition-colors border border-transparent hover:border-primary/30 ${
                           selectedProvince === province.id
                             ? 'bg-primary text-primary-foreground'
-                            : 'text-foreground hover:opacity-80'
+                            : 'text-foreground hover:opacity-90'
                         }`}
                       >
-                        <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
-                        <span className="text-[10px] sm:text-xs">{province.name}</span>
+                        <span className="text-[10px] sm:text-xs font-medium">{province.name}</span>
+                        <div className="flex items-center gap-0.5 bg-background/70 rounded px-0.5 sm:px-1 py-0.5">
+                          <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-primary" />
+                          <span className="text-[8px] sm:text-[10px] font-semibold text-primary">
+                            {propertyCount >= 1000 ? `${(propertyCount / 1000).toFixed(1)}K` : propertyCount}
+                          </span>
+                        </div>
                       </motion.div>
                     );
                   })}

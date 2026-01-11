@@ -32,36 +32,36 @@ const provinceCodeMap: Record<string, string> = {
   'North Maluku': 'IDMU', 'West Papua': 'IDPB',
 };
 
-// Multi-color palette for provinces (theme-aware) - muted/softer colors
+// Harmonized color palette for provinces - earthy & professional tones
 const getProvinceColors = (isDark: boolean) => {
   const lightColors = [
-    'hsl(45, 45%, 75%)',   // Gold
-    'hsl(200, 40%, 70%)',  // Blue
-    'hsl(150, 35%, 68%)',  // Teal
-    'hsl(280, 35%, 72%)',  // Purple
-    'hsl(15, 45%, 70%)',   // Orange
-    'hsl(340, 40%, 72%)',  // Pink
-    'hsl(180, 35%, 65%)',  // Cyan
-    'hsl(100, 30%, 68%)',  // Green
-    'hsl(35, 50%, 72%)',   // Amber
-    'hsl(260, 35%, 70%)',  // Violet
-    'hsl(170, 35%, 65%)',  // Emerald
-    'hsl(5, 40%, 70%)',    // Red
+    'hsl(210, 35%, 78%)',  // Soft Blue
+    'hsl(160, 30%, 72%)',  // Sage
+    'hsl(35, 40%, 75%)',   // Sand
+    'hsl(190, 30%, 70%)',  // Aqua
+    'hsl(25, 35%, 72%)',   // Terracotta light
+    'hsl(145, 25%, 68%)',  // Mint
+    'hsl(220, 30%, 75%)',  // Periwinkle
+    'hsl(45, 35%, 73%)',   // Wheat
+    'hsl(175, 28%, 68%)',  // Teal light
+    'hsl(15, 30%, 70%)',   // Coral light
+    'hsl(200, 32%, 72%)',  // Steel blue
+    'hsl(80, 25%, 70%)',   // Olive light
   ];
   
   const darkColors = [
-    'hsl(45, 40%, 35%)',   // Gold
-    'hsl(200, 35%, 32%)',  // Blue
-    'hsl(150, 30%, 30%)',  // Teal
-    'hsl(280, 30%, 35%)',  // Purple
-    'hsl(15, 40%, 35%)',   // Orange
-    'hsl(340, 35%, 35%)',  // Pink
-    'hsl(180, 30%, 30%)',  // Cyan
-    'hsl(100, 25%, 30%)',  // Green
-    'hsl(35, 45%, 35%)',   // Amber
-    'hsl(260, 30%, 35%)',  // Violet
-    'hsl(170, 30%, 30%)',  // Emerald
-    'hsl(5, 35%, 35%)',    // Red
+    'hsl(210, 30%, 32%)',  // Soft Blue
+    'hsl(160, 25%, 28%)',  // Sage
+    'hsl(35, 35%, 30%)',   // Sand
+    'hsl(190, 25%, 28%)',  // Aqua
+    'hsl(25, 30%, 30%)',   // Terracotta
+    'hsl(145, 20%, 26%)',  // Mint
+    'hsl(220, 25%, 32%)',  // Periwinkle
+    'hsl(45, 30%, 30%)',   // Wheat
+    'hsl(175, 22%, 26%)',  // Teal
+    'hsl(15, 25%, 28%)',   // Coral
+    'hsl(200, 27%, 30%)',  // Steel blue
+    'hsl(80, 20%, 28%)',   // Olive
   ];
   
   return isDark ? darkColors : lightColors;
