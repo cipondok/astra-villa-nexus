@@ -117,40 +117,40 @@ const LocationMap = () => {
           className="mb-6"
         >
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               {/* Search and Popular in row */}
-              <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <div className="relative flex-shrink-0 md:w-64">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
+                <div className="relative flex-shrink-0 md:w-48">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                   <Input
                     placeholder="Cari provinsi..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-8 h-7 text-xs"
                   />
                 </div>
                 
                 {/* Popular Provinces - Wrap */}
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-semibold text-foreground whitespace-nowrap flex items-center gap-1">
-                    <TrendingUp className="h-4 w-4 text-primary" />
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-xs font-semibold text-foreground whitespace-nowrap flex items-center gap-1">
+                    <TrendingUp className="h-3 w-3 text-primary" />
                     Populer:
                   </span>
                   {popularProvinces.map((province) => (
                     <motion.div
                       key={province.id}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => handleProvinceClick(province.id, province.name)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-colors ${
+                      className={`flex items-center gap-1 px-2 py-1 rounded-full cursor-pointer transition-colors ${
                         selectedProvince === province.id
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-muted/50 hover:bg-muted'
                       }`}
                     >
-                      <province.icon className="h-3.5 w-3.5" />
-                      <span className="text-sm font-medium">{province.name}</span>
-                      <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-xs">
+                      <province.icon className="h-2.5 w-2.5" />
+                      <span className="text-xs font-medium">{province.name}</span>
+                      <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-[10px] px-1 py-0 h-4">
                         {province.properties.toLocaleString()}
                       </Badge>
                     </motion.div>
@@ -160,25 +160,25 @@ const LocationMap = () => {
 
               {/* All Provinces - Wrap */}
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-primary" />
+                <h3 className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
+                  <Filter className="h-3 w-3 text-primary" />
                   Semua Provinsi
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {filteredProvinces.map((province) => (
                     <motion.div
                       key={province.id}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => handleProvinceClick(province.id, province.name)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                      className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer transition-colors ${
                         selectedProvince === province.id
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-muted/50 hover:bg-muted'
                       }`}
                     >
-                      <MapPin className="h-3.5 w-3.5" />
-                      <span className="text-sm">{province.name}</span>
+                      <MapPin className="h-2.5 w-2.5" />
+                      <span className="text-xs">{province.name}</span>
                     </motion.div>
                   ))}
                 </div>
