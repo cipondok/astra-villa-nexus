@@ -33,6 +33,37 @@ const provinceCodeMap: Record<string, string> = {
   'North Maluku': 'IDMU', 'West Papua': 'IDPB',
 };
 
+// Normalize province names from various formats to standard Indonesian names
+const normalizeProvinceName = (name: string): string => {
+  const normalizations: Record<string, string> = {
+    'Jakarta Raya': 'DKI Jakarta',
+    'DI Yogyakarta': 'Yogyakarta',
+    'Yogyakarta': 'Yogyakarta',
+    'West Java': 'Jawa Barat',
+    'Central Java': 'Jawa Tengah',
+    'East Java': 'Jawa Timur',
+    'West Sumatra': 'Sumatera Barat',
+    'North Sumatra': 'Sumatera Utara',
+    'South Sumatra': 'Sumatera Selatan',
+    'West Kalimantan': 'Kalimantan Barat',
+    'Central Kalimantan': 'Kalimantan Tengah',
+    'South Kalimantan': 'Kalimantan Selatan',
+    'East Kalimantan': 'Kalimantan Timur',
+    'North Kalimantan': 'Kalimantan Utara',
+    'North Sulawesi': 'Sulawesi Utara',
+    'Central Sulawesi': 'Sulawesi Tengah',
+    'South Sulawesi': 'Sulawesi Selatan',
+    'Southeast Sulawesi': 'Sulawesi Tenggara',
+    'West Sulawesi': 'Sulawesi Barat',
+    'West Nusa Tenggara': 'Nusa Tenggara Barat',
+    'East Nusa Tenggara': 'Nusa Tenggara Timur',
+    'North Maluku': 'Maluku Utara',
+    'West Papua': 'Papua Barat',
+    'Kepulauan Bangka Belitung': 'Bangka Belitung',
+  };
+  return normalizations[name] || name;
+};
+
 // Province coordinates for markers (longitude, latitude)
 const provinceCoordinates: Record<string, [number, number]> = {
   'Aceh': [96.5, 4.7], 'Sumatera Utara': [99.0, 2.5], 'Sumatera Barat': [100.5, -0.9],
@@ -180,18 +211,21 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
     // Prevent click during drag
     if (isDragging) return;
     
-    console.log('Province clicked:', provinceName);
-    const code = provinceCodeMap[provinceName] || 'ID';
+    // Normalize the province name to standard Indonesian name
+    const normalizedName = normalizeProvinceName(provinceName);
+    console.log('Province clicked:', provinceName, '-> normalized to:', normalizedName);
+    
+    const code = provinceCodeMap[provinceName] || provinceCodeMap[normalizedName] || 'ID';
     const province: Province = {
-      id: provinceName.toLowerCase().replace(/\s+/g, '-'),
-      name: provinceName,
+      id: normalizedName.toLowerCase().replace(/\s+/g, '-'),
+      name: normalizedName,
       code: code
     };
     
     if (onProvinceSelect) {
       onProvinceSelect(province);
     } else {
-      navigate(`/properties?location=${encodeURIComponent(provinceName)}`);
+      navigate(`/properties?location=${encodeURIComponent(normalizedName)}`);
     }
   };
 
