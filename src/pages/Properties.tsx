@@ -104,7 +104,7 @@ const Properties = () => {
   }, [locationFilter]);
 
   // Fetch properties
-  const { data: properties = [], isLoading } = useQuery({
+  const { data: properties = [], isLoading, error } = useQuery({
     queryKey: ['properties', searchQuery, filterType, locationFilter],
     queryFn: async () => {
       let query = supabase
@@ -155,6 +155,110 @@ const Properties = () => {
     }
     return "/placeholder.svg";
   };
+
+  // Show full-page loading when coming from location selection
+  if (isLoading && locationFilter) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header always visible */}
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 shadow-md">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/location')}
+                  className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                >
+                  <ArrowLeft className="h-3 w-3 mr-1" />
+                  Peta
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/')}
+                  className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                >
+                  <Home className="h-3 w-3 mr-1" />
+                  Beranda
+                </Button>
+              </div>
+              <h1 className="text-sm font-semibold">Properti di {locationFilter}</h1>
+              <Badge className="bg-white/20 text-primary-foreground text-[10px] px-2">
+                {locationFilter}
+              </Badge>
+            </div>
+          </div>
+        </div>
+        
+        {/* Loading content */}
+        <div className="flex-1 flex items-center justify-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
+          >
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Building2 className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">Memuat Properti...</h3>
+            <p className="text-xs text-muted-foreground">Mencari properti di {locationFilter}</p>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 shadow-md">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/location')}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <ArrowLeft className="h-3 w-3 mr-1" />
+                Peta
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/')}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <Home className="h-3 w-3 mr-1" />
+                Beranda
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+              <X className="h-8 w-8 text-destructive" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">Gagal memuat properti</h3>
+            <p className="text-xs text-muted-foreground mb-4">Silakan coba lagi</p>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/location')}
+              className="text-xs h-8"
+            >
+              Kembali ke Peta
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
