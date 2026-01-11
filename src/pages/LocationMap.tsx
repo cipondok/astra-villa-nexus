@@ -120,38 +120,6 @@ const LocationMap = () => {
     navigate(`/properties?location=${encodeURIComponent(provinceName)}`);
   };
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center gap-4"
-        >
-          <div className="relative">
-            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <MapPin className="h-8 w-8 text-primary animate-pulse" />
-            </div>
-            <Loader2 className="absolute -top-1 -right-1 h-6 w-6 text-primary animate-spin" />
-          </div>
-          <div className="text-center">
-            <h3 className="text-sm font-semibold text-foreground mb-1">Memuat Peta</h3>
-            <p className="text-xs text-muted-foreground">Mengambil data properti...</p>
-          </div>
-          <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: '0%' }}
-              animate={{ width: '100%' }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full"
-            />
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-6">
