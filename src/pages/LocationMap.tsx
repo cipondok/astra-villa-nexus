@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight } from 'lucide-react';
+import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft } from 'lucide-react';
 import { IndonesiaMap, Province } from '@/components/location/IndonesiaMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -120,7 +120,18 @@ const LocationMap = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6">
+        {/* Back Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/')}
+          className="mb-3 h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-3 w-3 mr-1" />
+          Beranda
+        </Button>
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
