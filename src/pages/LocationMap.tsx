@@ -121,7 +121,7 @@ const LocationMap = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <main className="container mx-auto px-4 py-4">
         {/* Header */}
         <motion.div
@@ -129,7 +129,7 @@ const LocationMap = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-4"
         >
-          <div className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full mb-2">
+          <div className="inline-flex items-center gap-1 bg-primary/10 backdrop-blur-sm text-primary px-2 py-1 rounded-full mb-2 border border-primary/20">
             <MapPin className="h-2.5 w-2.5" />
             <span className="text-[10px] font-medium">Jelajahi Lokasi</span>
           </div>
@@ -154,14 +154,14 @@ const LocationMap = () => {
           />
         </motion.div>
 
-        {/* Province List - Horizontal Scroll */}
+        {/* Province List - Glassy Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <Card>
+          <Card className="glass-card border-border/30 shadow-lg">
             <CardContent className="p-3 space-y-3">
               {/* Row 1: Search Input */}
               <div className="relative w-full md:w-64">
@@ -170,7 +170,7 @@ const LocationMap = () => {
                   placeholder="Cari provinsi..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 h-7 text-xs"
+                  className="pl-8 h-7 text-xs bg-background/50 backdrop-blur-sm border-border/40"
                 />
               </div>
               
@@ -190,10 +190,10 @@ const LocationMap = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleProvinceClick(province.id, province.name)}
-                        className={`p-2 rounded-lg cursor-pointer transition-all border ${
+                        className={`p-2 rounded-lg cursor-pointer transition-all border backdrop-blur-sm ${
                           selectedProvince === province.id
-                            ? 'bg-primary/10 border-primary'
-                            : 'bg-muted/30 border-border hover:border-primary/50'
+                            ? 'bg-primary/15 border-primary shadow-md'
+                            : 'bg-background/40 border-border/40 hover:border-primary/50 hover:bg-background/60'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1">
@@ -239,10 +239,10 @@ const LocationMap = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleProvinceClick(province.id, province.name)}
-                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium transition-all border ${
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium transition-all border backdrop-blur-sm ${
                           selectedProvince === province.id
-                            ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                            : 'bg-muted/50 text-foreground border-border hover:bg-primary/10 hover:border-primary/40 hover:text-primary dark:text-foreground'
+                            ? 'bg-primary text-primary-foreground border-primary shadow-md'
+                            : 'bg-background/50 text-foreground border-border/40 hover:bg-primary/10 hover:border-primary/40 hover:text-primary dark:text-foreground'
                         }`}
                       >
                         <span>{province.name}</span>
