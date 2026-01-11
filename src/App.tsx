@@ -90,13 +90,10 @@ const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
 
-// Lazy loading fallback component
+// Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="text-center space-y-3">
-      <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-      <p className="text-sm text-muted-foreground">Loading...</p>
-    </div>
+  <div className="min-h-[50vh] flex items-center justify-center">
+    <Loader2 className="h-6 w-6 animate-spin text-primary" />
   </div>
 );
 
@@ -208,15 +205,23 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  // Only show initial loading on first app load (not on navigation)
+  const [isLoading, setIsLoading] = useState(() => {
+    // Check if we've already loaded in this session
+    const hasLoaded = sessionStorage.getItem('astra_app_loaded');
+    return !hasLoaded;
+  });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        sessionStorage.setItem('astra_app_loaded', 'true');
+      }, 1500);
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
 
   return (
     <ErrorBoundary>
