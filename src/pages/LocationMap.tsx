@@ -153,7 +153,7 @@ const LocationMap = () => {
                   <TrendingUp className="h-3 w-3 text-primary" />
                   Populer:
                 </span>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {popularProvinces.map((province, index) => {
                     const colorIndex = provinces.findIndex(p => p.id === province.id);
                     const bgColor = getProvinceColor(colorIndex >= 0 ? colorIndex : index);
@@ -166,15 +166,15 @@ const LocationMap = () => {
                         style={{
                           backgroundColor: selectedProvince === province.id ? undefined : bgColor,
                         }}
-                        className={`flex items-center gap-1 px-2 py-1 rounded-full cursor-pointer transition-colors ${
+                        className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full cursor-pointer transition-colors ${
                           selectedProvince === province.id
                             ? 'bg-primary text-primary-foreground'
                             : 'text-foreground hover:opacity-80'
                         }`}
                       >
-                        <province.icon className="h-2.5 w-2.5" />
-                        <span className="text-xs font-medium">{province.name}</span>
-                        <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-[10px] px-1 py-0 h-4 bg-background/60">
+                        <province.icon className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+                        <span className="text-[10px] sm:text-xs font-medium">{province.name}</span>
+                        <Badge variant={selectedProvince === province.id ? "secondary" : "outline"} className="text-[8px] sm:text-[10px] px-0.5 sm:px-1 py-0 h-3 sm:h-4 bg-background/60">
                           {province.properties.toLocaleString()}
                         </Badge>
                       </motion.div>
@@ -185,11 +185,11 @@ const LocationMap = () => {
 
               {/* All Provinces - Wrap */}
               <div>
-                <h3 className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
-                  <Filter className="h-3 w-3 text-primary" />
+                <h3 className="text-[10px] sm:text-xs font-semibold text-foreground mb-1.5 sm:mb-2 flex items-center gap-1 sm:gap-1.5">
+                  <Filter className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary" />
                   Semua Provinsi
                 </h3>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {filteredProvinces.map((province) => {
                     const colorIndex = provinces.findIndex(p => p.id === province.id);
                     const bgColor = getProvinceColor(colorIndex);
@@ -202,14 +202,14 @@ const LocationMap = () => {
                         style={{
                           backgroundColor: selectedProvince === province.id ? undefined : bgColor,
                         }}
-                        className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer transition-colors ${
+                        className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md cursor-pointer transition-colors ${
                           selectedProvince === province.id
                             ? 'bg-primary text-primary-foreground'
                             : 'text-foreground hover:opacity-80'
                         }`}
                       >
-                        <MapPin className="h-2.5 w-2.5" />
-                        <span className="text-xs">{province.name}</span>
+                        <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+                        <span className="text-[10px] sm:text-xs">{province.name}</span>
                       </motion.div>
                     );
                   })}
