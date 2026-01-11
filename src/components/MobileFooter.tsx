@@ -108,13 +108,13 @@ const MobileFooter = () => {
           <Building2 className="h-3.5 w-3.5" />
           <span>Rent</span>
         </button>
+        <button onClick={() => navigate('/location')} className="text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+          <MapPin className="h-3.5 w-3.5" />
+          <span>Map</span>
+        </button>
         <button onClick={() => navigate('/community')} className="text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
           <Users className="h-3.5 w-3.5" />
           <span>Community</span>
-        </button>
-        <button onClick={() => navigate('/development')} className="text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-          <Info className="h-3.5 w-3.5" />
-          <span>Dev</span>
         </button>
       </div>
 

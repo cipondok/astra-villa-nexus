@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp, ArrowUpRight, ChevronDown, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, Shield, FileText, Cookie } from "lucide-react";
+import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp, ArrowUpRight, ChevronDown, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, Shield, FileText, Cookie, MapPin } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ProfessionalFooterProps {
@@ -126,6 +126,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 { to: "/", label: currentText.home, icon: Home },
                 { to: "/dijual", label: currentText.buy, icon: ShoppingCart },
                 { to: "/disewa", label: currentText.rent, icon: Key },
+                { to: "/location", label: language === "en" ? "Location Map" : "Peta Lokasi", icon: MapPin },
                 { to: "/community", label: currentText.community, icon: UsersRound },
                 { to: "/development", label: language === "en" ? "Development" : "Pengembangan", icon: Construction },
               ].map((link) => (
