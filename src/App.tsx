@@ -105,13 +105,14 @@ const AppContent = () => {
   const location = useLocation();
   const { language } = useLanguage();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings'].includes(location.pathname);
+  const isFullScreenRoute = location.pathname === '/properties' || location.pathname.startsWith('/properties/') || location.pathname === '/location';
   const { isMobile } = useIsMobile();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <GlobalLoadingIndicator />
-      {!isAdminRoute && <Navigation />}
-      <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12'}>
+      {!isAdminRoute && !isFullScreenRoute && <Navigation />}
+      <main className={isAdminRoute || isFullScreenRoute ? '' : 'pt-10 md:pt-11 lg:pt-12'}>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
