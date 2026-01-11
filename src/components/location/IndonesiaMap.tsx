@@ -1,5 +1,5 @@
 import { useEffect, useState, memo } from 'react';
-import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, ZoomableGroup, Marker } from 'react-simple-maps';
 import { feature } from 'topojson-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ZoomIn, ZoomOut, Maximize2, Compass } from 'lucide-react';
@@ -30,6 +30,34 @@ const provinceCodeMap: Record<string, string> = {
   'Southeast Sulawesi': 'IDSG', 'West Sulawesi': 'IDSR',
   'West Nusa Tenggara': 'IDNB', 'East Nusa Tenggara': 'IDNT',
   'North Maluku': 'IDMU', 'West Papua': 'IDPB',
+};
+
+// Province coordinates for markers (longitude, latitude)
+const provinceCoordinates: Record<string, [number, number]> = {
+  'Aceh': [96.5, 4.7], 'Sumatera Utara': [99.0, 2.5], 'Sumatera Barat': [100.5, -0.9],
+  'Riau': [102.0, 0.5], 'Kepulauan Riau': [104.5, 1.0], 'Jambi': [103.5, -1.6],
+  'Sumatera Selatan': [104.5, -3.0], 'Bengkulu': [102.3, -3.8], 'Bangka Belitung': [106.5, -2.5],
+  'Lampung': [105.0, -5.0], 'Banten': [106.0, -6.4], 'DKI Jakarta': [106.85, -6.2],
+  'Jakarta Raya': [106.85, -6.2], 'Jawa Barat': [107.5, -6.9], 'Jawa Tengah': [110.0, -7.2],
+  'Yogyakarta': [110.4, -7.8], 'DI Yogyakarta': [110.4, -7.8], 'Jawa Timur': [112.5, -7.5],
+  'Bali': [115.2, -8.4], 'Nusa Tenggara Barat': [117.0, -8.6], 'Nusa Tenggara Timur': [121.0, -9.5],
+  'Kalimantan Barat': [110.0, 0.0], 'Kalimantan Tengah': [114.0, -1.5],
+  'Kalimantan Selatan': [115.5, -3.3], 'Kalimantan Timur': [117.0, 0.5], 'Kalimantan Utara': [117.0, 3.0],
+  'Sulawesi Utara': [124.8, 1.5], 'Gorontalo': [122.5, 0.6], 'Sulawesi Tengah': [121.0, -1.4],
+  'Sulawesi Barat': [119.4, -2.8], 'Sulawesi Selatan': [120.0, -4.0], 'Sulawesi Tenggara': [122.0, -4.0],
+  'Maluku': [128.0, -3.2], 'Maluku Utara': [127.5, 1.5], 'Papua Barat': [133.0, -1.5], 'Papua': [138.0, -4.5],
+};
+
+// Property counts for each province
+const provincePropertyCounts: Record<string, number> = {
+  'Aceh': 1250, 'Sumatera Utara': 3420, 'Sumatera Barat': 2180, 'Riau': 2890, 'Kepulauan Riau': 1560,
+  'Jambi': 980, 'Sumatera Selatan': 2340, 'Bengkulu': 720, 'Bangka Belitung': 890, 'Lampung': 1870,
+  'Banten': 4560, 'DKI Jakarta': 15420, 'Jakarta Raya': 15420, 'Jawa Barat': 12350, 'Jawa Tengah': 5890,
+  'Yogyakarta': 3210, 'DI Yogyakarta': 3210, 'Jawa Timur': 8920, 'Kalimantan Barat': 1340,
+  'Kalimantan Tengah': 890, 'Kalimantan Selatan': 1560, 'Kalimantan Timur': 2340, 'Kalimantan Utara': 560,
+  'Sulawesi Utara': 1120, 'Gorontalo': 420, 'Sulawesi Tengah': 780, 'Sulawesi Barat': 540,
+  'Sulawesi Selatan': 3420, 'Sulawesi Tenggara': 890, 'Bali': 6540, 'Nusa Tenggara Barat': 1890,
+  'Nusa Tenggara Timur': 1230, 'Maluku Utara': 340, 'Maluku': 560, 'Papua Barat': 280, 'Papua': 450,
 };
 
 // Harmonized color palette for provinces - earthy & professional tones
@@ -333,6 +361,50 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
               }
             </Geographies>
           ) : null}
+          
+          {/* Property count markers on provinces */}
+          {Object.entries(provinceCoordinates).map(([name, coords]) => {
+            const count = provincePropertyCounts[name] || 0;
+            if (count < 500) return null; // Only show markers for provinces with 500+ properties
+            const displayCount = count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K` : count.toString();
+            const isLarge = count >= 5000;
+            
+            return (
+              <Marker key={name} coordinates={coords}>
+                <g 
+                  className="cursor-pointer"
+                  onClick={() => handleProvinceClick(name)}
+                  style={{ pointerEvents: 'all' }}
+                >
+                  {/* Pin marker shape */}
+                  <ellipse 
+                    cx={0} 
+                    cy={0} 
+                    rx={isLarge ? 8 : 6} 
+                    ry={isLarge ? 5 : 4} 
+                    fill={isDark ? 'hsl(25, 90%, 50%)' : 'hsl(25, 85%, 55%)'} 
+                    stroke={isDark ? 'hsl(25, 90%, 70%)' : 'hsl(25, 85%, 40%)'}
+                    strokeWidth={0.5}
+                    opacity={0.95}
+                  />
+                  {/* Count text */}
+                  <text
+                    textAnchor="middle"
+                    y={1}
+                    style={{
+                      fontFamily: 'system-ui, sans-serif',
+                      fontSize: isLarge ? '4px' : '3.5px',
+                      fontWeight: 'bold',
+                      fill: 'white',
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    {displayCount}
+                  </text>
+                </g>
+              </Marker>
+            );
+          })}
         </ZoomableGroup>
       </ComposableMap>
 
