@@ -158,216 +158,246 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-8 md:py-12">
+      {/* Slim Header */}
+      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-4 md:py-6">
         <div className="container mx-auto px-4">
           {/* Back Navigation */}
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-2">
             {locationFilter && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/location')}
-                className="text-white/80 hover:text-white hover:bg-white/20 h-8 px-2 text-xs"
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
               >
-                <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-                Kembali ke Peta
+                <ArrowLeft className="h-3 w-3 mr-1" />
+                Peta
               </Button>
             )}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate('/')}
-              className="text-white/80 hover:text-white hover:bg-white/20 h-8 px-2 text-xs"
+              className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
             >
-              <Home className="h-3.5 w-3.5 mr-1" />
+              <Home className="h-3 w-3 mr-1" />
               Beranda
             </Button>
           </div>
           
-          <h1 className="text-2xl md:text-4xl font-bold mb-2">
-            {locationFilter ? `Properti di ${locationFilter}` : 'Properties'}
-          </h1>
-          <p className="text-sm md:text-xl opacity-90">
-            {locationFilter 
-              ? `Menampilkan ${properties.length} properti di wilayah ${locationFilter}`
-              : 'Discover your perfect home from our extensive collection'
-            }
-          </p>
-          
-          {/* Location Filter Badge */}
-          {locationFilter && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4"
-            >
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h1 className="text-lg md:text-xl font-bold">
+                {locationFilter ? `Properti di ${locationFilter}` : 'Properties'}
+              </h1>
+              <p className="text-[10px] md:text-xs opacity-80">
+                {isLoading ? 'Memuat...' : `${properties.length} properti ditemukan`}
+              </p>
+            </div>
+            
+            {/* Location Filter Badge */}
+            {locationFilter && (
               <Badge 
                 variant="secondary" 
-                className="bg-white/20 text-white border-white/30 px-3 py-1.5 text-sm cursor-pointer hover:bg-white/30"
+                className="bg-white/20 text-primary-foreground border-white/30 px-2 py-0.5 text-[10px] cursor-pointer hover:bg-white/30"
                 onClick={handleClearLocationFilter}
               >
-                <MapPin className="h-3.5 w-3.5 mr-1.5" />
+                <MapPin className="h-2.5 w-2.5 mr-1" />
                 {locationFilter}
-                <X className="h-3.5 w-3.5 ml-2" />
+                <X className="h-2.5 w-2.5 ml-1.5" />
               </Badge>
-            </motion.div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="container mx-auto px-4 py-4">
+        {/* Compact Search and Filters */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <div className="flex-1 min-w-[200px] relative">
+            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder="Search properties by title, location, or city..."
+              placeholder="Cari properti..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-8 h-8 text-xs"
             />
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button
               variant={filterType === 'all' ? 'default' : 'outline'}
+              size="sm"
               onClick={() => setFilterType('all')}
+              className="h-8 px-2.5 text-[10px]"
             >
-              All
+              Semua
             </Button>
             <Button
               variant={filterType === 'sale' ? 'default' : 'outline'}
+              size="sm"
               onClick={() => setFilterType('sale')}
+              className="h-8 px-2.5 text-[10px]"
             >
-              For Sale
+              Dijual
             </Button>
             <Button
               variant={filterType === 'rent' ? 'default' : 'outline'}
+              size="sm"
               onClick={() => setFilterType('rent')}
+              className="h-8 px-2.5 text-[10px]"
             >
-              For Rent
+              Disewa
             </Button>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('grid')}
+              className="h-8 w-8 p-0"
             >
-              <Grid3X3 className="h-4 w-4" />
+              <Grid3X3 className="h-3.5 w-3.5" />
             </Button>
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('list')}
+              className="h-8 w-8 p-0"
             >
-              <List className="h-4 w-4" />
+              <List className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
 
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-muted-foreground">
-            {isLoading ? 'Loading...' : `${properties.length} properties found`}
-          </p>
-        </div>
-
-        {/* Properties Grid/List */}
+        {/* Properties Grid/List - Compact Cards */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <div className="h-48 bg-muted rounded-t-lg"></div>
-                <CardContent className="p-4">
-                  <div className="h-4 bg-muted rounded mb-2"></div>
-                  <div className="h-3 bg-muted rounded mb-4 w-2/3"></div>
-                  <div className="flex gap-2">
-                    <div className="h-6 bg-muted rounded w-16"></div>
-                    <div className="h-6 bg-muted rounded w-16"></div>
-                  </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            {[...Array(10)].map((_, i) => (
+              <Card key={i} className="animate-pulse overflow-hidden">
+                <div className="h-28 bg-muted"></div>
+                <CardContent className="p-2">
+                  <div className="h-3 bg-muted rounded mb-1.5"></div>
+                  <div className="h-2.5 bg-muted rounded w-2/3"></div>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : properties.length === 0 ? (
-          <div className="text-center py-12">
-            <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No properties found</h3>
-            <p className="text-muted-foreground">Try adjusting your search criteria</p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12"
+          >
+            <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+              <Building2 className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">Tidak ada properti</h3>
+            <p className="text-xs text-muted-foreground mb-4">Coba ubah kriteria pencarian Anda</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate('/location')}
+              className="text-xs h-8"
+            >
+              <MapPin className="h-3 w-3 mr-1.5" />
+              Lihat Peta
+            </Button>
+          </motion.div>
         ) : (
-          <div className={viewMode === 'grid' 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
-            : "space-y-4"
-          }>
-            {properties.map((property) => (
-              <Card 
-                key={property.id} 
-                className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
-                  viewMode === 'list' ? 'flex flex-row' : ''
-                }`}
-                onClick={() => handlePropertyClick(property.id)}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={viewMode === 'grid' 
+              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" 
+              : "space-y-2"
+            }
+          >
+            {properties.map((property, index) => (
+              <motion.div
+                key={property.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.03 }}
               >
-                <div className={viewMode === 'list' ? 'w-64 flex-shrink-0' : ''}>
-                  <img
-                    src={getImageUrl(property)}
-                    alt={property.title}
-                    className={`object-cover ${
-                      viewMode === 'list' ? 'w-full h-full' : 'w-full h-48'
-                    }`}
-                  />
-                </div>
-                <div className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant={property.listing_type === 'sale' ? 'default' : 'secondary'}>
-                      For {property.listing_type === 'sale' ? 'Sale' : 'Rent'}
+                <Card 
+                  className={`overflow-hidden hover:shadow-md transition-all cursor-pointer border-border/50 hover:border-primary/30 ${
+                    viewMode === 'list' ? 'flex flex-row' : ''
+                  }`}
+                  onClick={() => handlePropertyClick(property.id)}
+                >
+                  <div className={viewMode === 'list' ? 'w-32 flex-shrink-0' : 'relative'}>
+                    <img
+                      src={getImageUrl(property)}
+                      alt={property.title}
+                      className={`object-cover ${
+                        viewMode === 'list' ? 'w-full h-full' : 'w-full h-28 sm:h-32'
+                      }`}
+                    />
+                    {/* Overlay Badge */}
+                    <Badge 
+                      className={`absolute top-1.5 left-1.5 text-[8px] px-1.5 py-0 h-4 ${
+                        property.listing_type === 'sale' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-secondary text-secondary-foreground'
+                      }`}
+                    >
+                      {property.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                     </Badge>
-                    <Button variant="ghost" size="sm" className="p-1">
-                      <Heart className="h-4 w-4" />
+                    {/* Heart Button */}
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="absolute top-1 right-1 h-6 w-6 p-0 bg-background/60 backdrop-blur-sm hover:bg-background/80 rounded-full"
+                      onClick={(e) => { e.stopPropagation(); }}
+                    >
+                      <Heart className="h-3 w-3" />
                     </Button>
                   </div>
                   
-                  <h3 className="font-semibold text-lg mb-2 line-clamp-1">{property.title}</h3>
-                  
-                  <div className="flex items-center text-muted-foreground mb-2">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    <span className="text-sm line-clamp-1">{property.location}, {property.city}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 mb-3 text-sm text-muted-foreground">
-                    {property.bedrooms && (
-                      <div className="flex items-center">
-                        <Bed className="h-4 w-4 mr-1" />
-                        {property.bedrooms}
-                      </div>
-                    )}
-                    {property.bathrooms && (
-                      <div className="flex items-center">
-                        <Bath className="h-4 w-4 mr-1" />
-                        {property.bathrooms}
-                      </div>
-                    )}
-                    {property.area_sqm && (
-                      <div className="flex items-center">
-                        <Maximize className="h-4 w-4 mr-1" />
-                        {property.area_sqm}m²
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold text-primary">
-                      {formatCurrency(property.price)}
+                  <div className={`p-2 ${viewMode === 'list' ? 'flex-1 flex flex-col justify-center' : ''}`}>
+                    <h3 className="font-semibold text-xs mb-0.5 line-clamp-1">{property.title}</h3>
+                    
+                    <div className="flex items-center text-muted-foreground mb-1">
+                      <MapPin className="h-2.5 w-2.5 mr-0.5 shrink-0" />
+                      <span className="text-[10px] line-clamp-1">{property.location}</span>
                     </div>
-                    <Badge variant="outline">{property.property_type}</Badge>
+                    
+                    <div className="flex items-center gap-2 mb-1.5 text-[10px] text-muted-foreground">
+                      {property.bedrooms && (
+                        <div className="flex items-center gap-0.5">
+                          <Bed className="h-2.5 w-2.5" />
+                          <span>{property.bedrooms}</span>
+                        </div>
+                      )}
+                      {property.bathrooms && (
+                        <div className="flex items-center gap-0.5">
+                          <Bath className="h-2.5 w-2.5" />
+                          <span>{property.bathrooms}</span>
+                        </div>
+                      )}
+                      {property.area_sqm && (
+                        <div className="flex items-center gap-0.5">
+                          <Maximize className="h-2.5 w-2.5" />
+                          <span>{property.area_sqm}m²</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-bold text-primary">
+                        {formatCurrency(property.price)}
+                      </div>
+                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">
+                        {property.property_type}
+                      </Badge>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
