@@ -12,106 +12,27 @@ interface Province {
   region: 'sumatera' | 'jawa' | 'kalimantan' | 'sulawesi' | 'bali-nusa' | 'maluku' | 'papua';
 }
 
-// Accurate vector paths for Indonesian provinces
-const provinces: Province[] = [
-  // SUMATERA
-  { id: 'aceh', name: 'Aceh', region: 'sumatera',
-    path: 'M95.2,47.8l-2.5,3.1l-4.8,2.1l-3.2,4.5l0.8,5.2l3.1,4.1l5.6,2.3l4.2,-1.8l3.5,-4.2l1.2,-5.8l-2.1,-4.6l-3.8,-3.2z' },
-  { id: 'sumut', name: 'Sumatera Utara', region: 'sumatera',
-    path: 'M93.5,69.2l-3.2,2.8l-2.1,5.4l1.5,6.8l4.2,5.1l6.5,3.2l5.8,-0.5l4.1,-3.8l1.8,-6.2l-1.2,-5.8l-4.5,-4.2l-6.8,-2.1z' },
-  { id: 'sumbar', name: 'Sumatera Barat', region: 'sumatera',
-    path: 'M85.6,95.4l-2.8,4.5l-1.2,6.2l2.1,5.8l4.8,4.1l5.2,1.2l4.1,-2.5l2.1,-5.1l-0.5,-6.5l-3.5,-4.8l-5.8,-2.1z' },
-  { id: 'riau', name: 'Riau', region: 'sumatera',
-    path: 'M100.5,92.1l3.8,2.1l6.2,0.8l5.5,3.5l3.2,5.8l-0.8,5.2l-4.1,4.1l-6.5,1.2l-5.1,-2.8l-3.2,-5.5l-0.5,-6.8z' },
-  { id: 'kepri', name: 'Kepulauan Riau', region: 'sumatera',
-    path: 'M128.4,85.6l3.5,1.8l4.8,0.5l3.8,2.8l1.2,4.5l-1.8,3.8l-4.1,2.1l-4.5,-0.8l-3.2,-3.5l-0.8,-4.8l0.5,-4.2z' },
-  { id: 'jambi', name: 'Jambi', region: 'sumatera',
-    path: 'M98.2,115.8l2.5,3.2l5.1,2.8l4.5,4.5l1.8,5.8l-2.1,4.5l-5.2,2.1l-5.5,-1.5l-3.8,-4.2l-1.5,-5.8l1.2,-5.2z' },
-  { id: 'sumsel', name: 'Sumatera Selatan', region: 'sumatera',
-    path: 'M102.8,138.4l4.2,2.8l5.8,1.8l5.2,4.1l2.5,6.2l-1.2,5.5l-4.5,3.8l-6.2,0.5l-5.5,-3.2l-3.5,-5.8l-0.5,-6.5l2.1,-5.2z' },
-  { id: 'bengkulu', name: 'Bengkulu', region: 'sumatera',
-    path: 'M82.5,118.2l-2.1,4.8l-0.5,6.5l2.8,5.5l4.5,3.8l4.2,0.8l2.8,-3.5l0.5,-5.8l-2.5,-5.2l-4.8,-4.1z' },
-  { id: 'babel', name: 'Bangka Belitung', region: 'sumatera',
-    path: 'M135.8,132.5l4.2,1.2l4.5,3.5l2.1,5.2l-1.5,4.8l-4.8,2.5l-5.2,-0.8l-3.5,-4.2l-0.5,-5.5l2.2,-4.5z' },
-  { id: 'lampung', name: 'Lampung', region: 'sumatera',
-    path: 'M108.5,165.2l3.5,3.8l4.8,2.5l3.2,5.2l0.5,5.8l-3.2,4.5l-5.5,1.8l-5.2,-2.1l-3.8,-4.8l-1.2,-5.8l2.5,-5.2z' },
+// Province codes matching the user's reference
+const provinceNames: Record<string, string> = {
+  'IDAC': 'Aceh', 'IDBA': 'Bali', 'IDBB': 'Bangka-Belitung', 'IDBE': 'Bengkulu',
+  'IDBT': 'Banten', 'IDGO': 'Gorontalo', 'IDJA': 'Jambi', 'IDJB': 'Jawa Barat',
+  'IDJI': 'Jawa Timur', 'IDJK': 'Jakarta Raya', 'IDJT': 'Jawa Tengah',
+  'IDKB': 'Kalimantan Barat', 'IDKI': 'Kalimantan Timur', 'IDKR': 'Kepulauan Riau',
+  'IDKS': 'Kalimantan Selatan', 'IDKT': 'Kalimantan Tengah', 'IDKU': 'Kalimantan Utara',
+  'IDLA': 'Lampung', 'IDMA': 'Maluku', 'IDMU': 'Maluku Utara',
+  'IDNB': 'Nusa Tenggara Barat', 'IDNT': 'Nusa Tenggara Timur',
+  'IDPA': 'Papua', 'IDPB': 'Papua Barat', 'IDRI': 'Riau',
+  'IDSA': 'Sulawesi Utara', 'IDSB': 'Sumatera Barat', 'IDSG': 'Sulawesi Tenggara',
+  'IDSN': 'Sulawesi Selatan', 'IDSR': 'Sulawesi Barat', 'IDSS': 'Sumatera Selatan',
+  'IDST': 'Sulawesi Tengah', 'IDSU': 'Sumatera Utara', 'IDYO': 'Yogyakarta'
+};
 
-  // JAWA
-  { id: 'banten', name: 'Banten', region: 'jawa',
-    path: 'M148.5,185.2l3.2,2.5l5.5,1.8l4.2,3.8l1.5,4.8l-2.5,4.2l-5.2,1.5l-4.5,-2.1l-3.2,-4.5l-0.8,-5.2l1.2,-4.5z' },
-  { id: 'jakarta', name: 'DKI Jakarta', region: 'jawa',
-    path: 'M165.8,188.5l2.8,1.5l3.2,2.8l1.5,3.8l-1.2,3.5l-3.5,1.8l-3.2,-1.5l-2.1,-3.2l-0.5,-3.8l1.5,-3.2z' },
-  { id: 'jabar', name: 'Jawa Barat', region: 'jawa',
-    path: 'M162.5,198.2l4.5,2.1l6.8,1.2l5.5,3.5l4.2,5.5l1.2,5.8l-2.8,4.8l-5.8,2.5l-6.5,-0.5l-5.2,-3.8l-3.5,-5.5l-0.8,-6.2l1.2,-5.2z' },
-  { id: 'jateng', name: 'Jawa Tengah', region: 'jawa',
-    path: 'M185.2,205.8l5.2,1.8l7.5,0.5l6.2,3.2l5.5,5.2l2.1,6.5l-1.8,5.2l-5.5,3.8l-7.2,0.8l-6.5,-2.5l-4.8,-5.2l-2.5,-6.5l0.8,-5.8z' },
-  { id: 'yogya', name: 'DI Yogyakarta', region: 'jawa',
-    path: 'M202.5,228.5l2.8,1.5l3.8,2.5l1.8,4.2l-1.2,3.8l-3.5,2.1l-3.8,-1.2l-2.5,-3.5l-0.5,-4.2l1.5,-3.5z' },
-  { id: 'jatim', name: 'Jawa Timur', region: 'jawa',
-    path: 'M212.8,208.5l5.8,1.5l8.2,2.1l6.8,4.5l5.2,6.2l1.8,6.8l-2.5,5.5l-6.2,3.2l-7.8,0.5l-6.5,-3.2l-4.8,-5.8l-2.1,-6.8l0.5,-6.2z' },
-
-  // KALIMANTAN
-  { id: 'kalbar', name: 'Kalimantan Barat', region: 'kalimantan',
-    path: 'M175.2,108.5l5.5,2.8l8.2,1.5l6.8,4.2l4.5,6.5l1.2,7.2l-2.1,6.5l-5.8,4.8l-7.5,1.8l-6.2,-2.5l-5.5,-5.8l-3.2,-7.2l0.5,-7.5l2.8,-6.5z' },
-  { id: 'kalteng', name: 'Kalimantan Tengah', region: 'kalimantan',
-    path: 'M195.5,145.2l6.2,2.1l8.5,1.8l7.2,4.8l5.2,6.8l1.5,7.5l-2.5,6.2l-6.5,4.2l-8.2,1.2l-7.2,-2.8l-5.5,-6.2l-2.8,-7.8l0.8,-7.2z' },
-  { id: 'kalsel', name: 'Kalimantan Selatan', region: 'kalimantan',
-    path: 'M218.5,178.2l5.5,2.5l6.8,3.8l4.2,5.5l1.5,6.2l-2.1,5.2l-5.5,3.5l-6.2,0.5l-5.2,-3.2l-3.5,-5.8l-1.2,-6.5l2.5,-5.8z' },
-  { id: 'kaltim', name: 'Kalimantan Timur', region: 'kalimantan',
-    path: 'M225.8,125.5l5.8,3.2l7.5,4.5l5.5,6.8l3.2,7.5l-0.5,6.8l-4.2,5.5l-6.8,3.2l-7.2,-0.8l-5.8,-4.5l-4.2,-6.8l-1.5,-7.5l2.2,-6.5z' },
-  { id: 'kaltara', name: 'Kalimantan Utara', region: 'kalimantan',
-    path: 'M235.2,95.8l4.8,2.8l6.2,4.2l4.5,5.8l2.1,6.5l-1.5,5.5l-5.2,4.2l-6.5,1.2l-5.5,-2.5l-4.2,-5.2l-2.1,-6.5l1.2,-5.8z' },
-
-  // SULAWESI
-  { id: 'sulut', name: 'Sulawesi Utara', region: 'sulawesi',
-    path: 'M295.8,92.5l4.5,2.1l5.8,3.8l3.5,5.2l0.8,5.5l-2.5,4.8l-5.2,2.5l-5.5,-1.2l-4.2,-4.2l-2.1,-5.5l1.2,-5.2z' },
-  { id: 'gorontalo', name: 'Gorontalo', region: 'sulawesi',
-    path: 'M285.5,108.2l3.2,1.8l4.2,3.2l2.5,4.5l-0.5,4.2l-3.5,2.8l-4.5,0.5l-3.2,-2.8l-1.8,-4.2l0.5,-4.5z' },
-  { id: 'sulteng', name: 'Sulawesi Tengah', region: 'sulawesi',
-    path: 'M278.5,118.5l5.2,2.5l6.8,4.2l5.5,6.2l2.8,6.8l-1.2,5.8l-5.2,4.5l-7.2,1.5l-6.5,-2.8l-4.8,-5.8l-2.5,-7.2l1.5,-6.2z' },
-  { id: 'sulbar', name: 'Sulawesi Barat', region: 'sulawesi',
-    path: 'M268.2,148.5l3.5,2.2l4.8,3.8l2.8,5.2l0.5,5.5l-2.5,4.5l-5.2,2.2l-4.8,-1.5l-3.2,-4.5l-1.2,-5.5l1.8,-5.2z' },
-  { id: 'sulsel', name: 'Sulawesi Selatan', region: 'sulawesi',
-    path: 'M275.8,168.5l5.2,2.8l6.5,4.5l4.2,6.2l1.5,6.5l-2.2,5.5l-5.8,3.5l-6.5,0.5l-5.2,-3.5l-3.5,-6.2l-1.2,-6.8l2.5,-5.5z' },
-  { id: 'sultra', name: 'Sulawesi Tenggara', region: 'sulawesi',
-    path: 'M295.2,158.5l5.5,2.5l6.2,4.2l4.5,5.8l1.8,6.2l-1.5,5.5l-5.2,3.8l-6.5,0.8l-5.5,-3.2l-3.8,-5.8l-1.2,-6.5l2.2,-5.5z' },
-
-  // BALI & NUSA TENGGARA
-  { id: 'bali', name: 'Bali', region: 'bali-nusa',
-    path: 'M248.5,225.2l3.2,1.8l4.2,2.8l2.5,4.2l0.5,4.5l-2.2,3.5l-4.5,1.8l-4.2,-1.5l-2.8,-3.8l-0.8,-4.5l1.5,-4.2z' },
-  { id: 'ntb', name: 'Nusa Tenggara Barat', region: 'bali-nusa',
-    path: 'M262.5,228.5l4.5,1.5l5.8,2.8l4.2,4.5l1.5,5.2l-1.8,4.5l-5.2,2.5l-5.5,-0.8l-4.2,-3.8l-2.1,-5.2l0.8,-5.5z' },
-  { id: 'ntt', name: 'Nusa Tenggara Timur', region: 'bali-nusa',
-    path: 'M282.5,232.8l6.2,1.8l8.5,2.5l6.8,4.2l4.5,5.5l1.2,5.8l-2.5,4.8l-6.8,2.5l-7.5,-0.5l-6.2,-3.8l-4.5,-5.8l-2.1,-6.2l1.2,-5.5z' },
-
-  // MALUKU
-  { id: 'malut', name: 'Maluku Utara', region: 'maluku',
-    path: 'M328.5,98.2l4.8,2.5l5.5,4.2l3.5,5.5l1.2,5.8l-2.1,4.8l-5.5,2.5l-5.2,-1.2l-4.2,-4.2l-2.5,-5.5l0.8,-5.2z' },
-  { id: 'maluku', name: 'Maluku', region: 'maluku',
-    path: 'M338.5,128.5l5.8,2.8l6.5,4.5l4.2,6.2l1.5,6.8l-2.2,5.5l-6.2,3.5l-6.8,0.5l-5.5,-3.5l-3.8,-6.2l-1.2,-6.8l2.5,-5.8z' },
-
-  // PAPUA
-  { id: 'papuabarat', name: 'Papua Barat', region: 'papua',
-    path: 'M368.5,118.5l6.5,2.8l8.2,4.5l5.8,6.5l2.5,7.2l-1.2,6.2l-5.5,4.8l-7.5,1.5l-6.8,-2.8l-5.2,-5.8l-2.8,-7.2l1.2,-6.5z' },
-  { id: 'papua', name: 'Papua', region: 'papua',
-    path: 'M395.5,125.8l8.5,3.5l12.2,5.2l9.5,7.8l6.2,9.5l2.5,10.2l-1.8,8.5l-6.5,6.8l-9.8,3.5l-10.5,-1.2l-8.5,-5.5l-6.2,-8.2l-3.5,-9.5l0.8,-9.2l3.2,-8.5z' },
-  { id: 'papuaselatan', name: 'Papua Selatan', region: 'papua',
-    path: 'M388.5,178.5l5.8,3.2l7.2,5.5l4.5,6.8l1.8,7.2l-2.5,5.5l-6.5,3.5l-7.2,0.5l-5.8,-3.8l-3.8,-6.5l-1.2,-7.2l2.5,-5.8z' },
-  { id: 'papuatengah', name: 'Papua Tengah', region: 'papua',
-    path: 'M405.5,165.8l6.2,3.5l7.5,5.8l4.2,7.2l1.2,7.5l-2.8,5.8l-6.8,3.2l-7.5,-0.5l-5.8,-4.5l-3.5,-7.2l-0.8,-7.5l3.2,-5.8z' },
-  { id: 'papuapegunungan', name: 'Papua Pegunungan', region: 'papua',
-    path: 'M398.2,148.5l5.5,2.8l6.8,4.8l4.2,6.2l1.5,6.5l-2.5,5.2l-6.2,3.2l-6.5,0.2l-5.2,-3.5l-3.5,-5.8l-1.2,-6.5l2.8,-5.2z' },
-];
-
-// Region colors - natural earth-toned map colors
-const regionColors: Record<string, { base: string; hover: string; selected: string; dark: string }> = {
-  'sumatera': { base: '#a8d5ba', hover: '#8fcea3', selected: '#5cb85c', dark: '#3d8b40' },
-  'jawa': { base: '#f9d77e', hover: '#f7c94b', selected: '#f0ad4e', dark: '#c68c2e' },
-  'kalimantan': { base: '#b8e0b8', hover: '#9bd69b', selected: '#5cb85c', dark: '#4a9c4a' },
-  'sulawesi': { base: '#a3d4f7', hover: '#7bc4f4', selected: '#5bc0de', dark: '#31a2c7' },
-  'bali-nusa': { base: '#e8b4d8', hover: '#de94c8', selected: '#d07cb8', dark: '#a85c94' },
-  'maluku': { base: '#b8e8e8', hover: '#94dede', selected: '#5bc0de', dark: '#3da5a5' },
-  'papua': { base: '#f5b8a8', hover: '#f19a85', selected: '#d9534f', dark: '#b94a47' },
+// Unified green color scheme matching reference image
+const mapColors = {
+  base: '#7d9d78',      // Sage green from reference
+  hover: '#6b8b66',     // Darker on hover
+  selected: '#5a7a55',  // Even darker when selected
+  border: '#ffffff',    // White borders between provinces
 };
 
 interface IndonesiaMapProps {
