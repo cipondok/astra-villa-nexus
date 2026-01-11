@@ -2,12 +2,50 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight } from 'lucide-react';
-import { IndonesiaMap, provinces, Province } from '@/components/location/IndonesiaMap';
+import { IndonesiaMap, Province } from '@/components/location/IndonesiaMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+// Static provinces list for sidebar
+const provinces = [
+  { id: 'aceh', code: 'IDAC', name: 'Aceh' },
+  { id: 'sumut', code: 'IDSU', name: 'Sumatera Utara' },
+  { id: 'sumbar', code: 'IDSB', name: 'Sumatera Barat' },
+  { id: 'riau', code: 'IDRI', name: 'Riau' },
+  { id: 'kepri', code: 'IDKR', name: 'Kepulauan Riau' },
+  { id: 'jambi', code: 'IDJA', name: 'Jambi' },
+  { id: 'sumsel', code: 'IDSS', name: 'Sumatera Selatan' },
+  { id: 'bengkulu', code: 'IDBE', name: 'Bengkulu' },
+  { id: 'babel', code: 'IDBB', name: 'Bangka Belitung' },
+  { id: 'lampung', code: 'IDLA', name: 'Lampung' },
+  { id: 'banten', code: 'IDBT', name: 'Banten' },
+  { id: 'jakarta', code: 'IDJK', name: 'DKI Jakarta' },
+  { id: 'jabar', code: 'IDJB', name: 'Jawa Barat' },
+  { id: 'jateng', code: 'IDJT', name: 'Jawa Tengah' },
+  { id: 'yogya', code: 'IDYO', name: 'Yogyakarta' },
+  { id: 'jatim', code: 'IDJI', name: 'Jawa Timur' },
+  { id: 'kalbar', code: 'IDKB', name: 'Kalimantan Barat' },
+  { id: 'kalteng', code: 'IDKT', name: 'Kalimantan Tengah' },
+  { id: 'kalsel', code: 'IDKS', name: 'Kalimantan Selatan' },
+  { id: 'kaltim', code: 'IDKI', name: 'Kalimantan Timur' },
+  { id: 'kaltara', code: 'IDKU', name: 'Kalimantan Utara' },
+  { id: 'sulut', code: 'IDSA', name: 'Sulawesi Utara' },
+  { id: 'gorontalo', code: 'IDGO', name: 'Gorontalo' },
+  { id: 'sulteng', code: 'IDST', name: 'Sulawesi Tengah' },
+  { id: 'sulbar', code: 'IDSR', name: 'Sulawesi Barat' },
+  { id: 'sulsel', code: 'IDSN', name: 'Sulawesi Selatan' },
+  { id: 'sultra', code: 'IDSG', name: 'Sulawesi Tenggara' },
+  { id: 'bali', code: 'IDBA', name: 'Bali' },
+  { id: 'ntb', code: 'IDNB', name: 'Nusa Tenggara Barat' },
+  { id: 'ntt', code: 'IDNT', name: 'Nusa Tenggara Timur' },
+  { id: 'malut', code: 'IDMU', name: 'Maluku Utara' },
+  { id: 'maluku', code: 'IDMA', name: 'Maluku' },
+  { id: 'papuabarat', code: 'IDPB', name: 'Papua Barat' },
+  { id: 'papua', code: 'IDPA', name: 'Papua' },
+];
 
 const LocationMap = () => {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
