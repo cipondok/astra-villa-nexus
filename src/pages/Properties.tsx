@@ -236,7 +236,7 @@ const Properties = () => {
                 </div>
 
                 <div className="text-center flex-1 min-w-0">
-                  <h1 className="leading-tight text-[10px] sm:text-xs md:text-sm font-normal truncate">
+                  <h1 className="leading-tight text-[4px] sm:text-xs md:text-sm font-normal truncate">
                     Properti di {locationFilter}
                   </h1>
                   <p className="text-[8px] sm:text-[9px] opacity-70 truncate">
