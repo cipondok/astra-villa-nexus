@@ -21,25 +21,73 @@ if (typeof window !== 'undefined' && 'performance' in window) {
   });
 }
 
-// Register Service Worker for PWA - Non-blocking with update check
+// Register Service Worker for PWA - robust update handling
 if ('serviceWorker' in navigator) {
-  const registerSW = () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('SW registered: ', registration);
-        }
-        
-        // Check for updates periodically
-        setInterval(() => {
-          registration.update();
-        }, 60000); // Check every minute
-      })
-      .catch((registrationError) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('SW registration failed: ', registrationError);
-        }
+  const recoverFromStaleCacheOnce = async () => {
+    const key = '__sw_recovery_attempted__';
+    if (sessionStorage.getItem(key) === '1') return;
+    sessionStorage.setItem(key, '1');
+
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(r => r.unregister()));
+
+      if ('caches' in window) {
+        const names = await caches.keys();
+        await Promise.all(names.map(n => caches.delete(n)));
+      }
+    } finally {
+      window.location.reload();
+    }
+  };
+
+  // Auto-recover when a chunk/module fails to load (common with stale SW cache)
+  window.addEventListener('error', (event: any) => {
+    const message = String(event?.message || '');
+    if (message.includes('Importing a module script failed')) {
+      recoverFromStaleCacheOnce();
+    }
+  });
+
+  const registerSW = async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      await registration.update();
+
+      // If an update is already waiting, activate it immediately
+      if (registration.waiting && navigator.serviceWorker.controller) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+
+      registration.addEventListener('updatefound', () => {
+        const worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+            // Activate new SW ASAP to prevent mismatched chunks
+            registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
       });
+
+      // Reload when the new SW takes control
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+
+      // Check for updates periodically
+      setInterval(() => {
+        registration.update();
+      }, 60000);
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('SW registered: ', registration);
+      }
+    } catch (registrationError) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('SW registration failed: ', registrationError);
+      }
+    }
   };
 
   if ('requestIdleCallback' in window) {
@@ -48,7 +96,6 @@ if ('serviceWorker' in navigator) {
     setTimeout(registerSW, 100);
   }
 }
-
 const container = document.getElementById("root");
 
 if (!container) {
