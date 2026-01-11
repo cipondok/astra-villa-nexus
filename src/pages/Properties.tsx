@@ -159,38 +159,39 @@ const Properties = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Slim Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-4 md:py-6">
+      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2">
         <div className="container mx-auto px-4">
-          {/* Back Navigation */}
-          <div className="flex items-center gap-2 mb-2">
-            {locationFilter && (
+          <div className="flex items-center justify-between gap-2">
+            {/* Left: Navigation */}
+            <div className="flex items-center gap-1.5">
+              {locationFilter && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/location')}
+                  className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-5 px-1.5 text-[9px]"
+                >
+                  <ArrowLeft className="h-2.5 w-2.5 mr-0.5" />
+                  Peta
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/location')}
-                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+                onClick={() => navigate('/')}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-5 px-1.5 text-[9px]"
               >
-                <ArrowLeft className="h-3 w-3 mr-1" />
-                Peta
+                <Home className="h-2.5 w-2.5 mr-0.5" />
+                Beranda
               </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
-            >
-              <Home className="h-3 w-3 mr-1" />
-              Beranda
-            </Button>
-          </div>
-          
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <h1 className="text-lg md:text-xl font-bold">
+            </div>
+            
+            {/* Center: Title */}
+            <div className="text-center flex-1">
+              <h1 className="text-sm font-semibold leading-tight">
                 {locationFilter ? `Properti di ${locationFilter}` : 'Properties'}
               </h1>
-              <p className="text-[10px] md:text-xs opacity-80">
+              <p className="text-[9px] opacity-70">
                 {isLoading ? 'Memuat...' : `${properties.length} properti ditemukan`}
               </p>
             </div>
