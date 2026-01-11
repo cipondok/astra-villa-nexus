@@ -160,7 +160,7 @@ interface IndonesiaMapProps {
 
 const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: IndonesiaMapProps) => {
   const [hoveredProvinceName, setHoveredProvinceName] = useState<string | null>(null);
-  const [position, setPosition] = useState({ coordinates: [118, -2] as [number, number], zoom: 1.2 });
+  const [position, setPosition] = useState({ coordinates: [118, -2] as [number, number], zoom: 1.1 });
   const [isDragging, setIsDragging] = useState(false);
   const [provinceGeographies, setProvinceGeographies] = useState<GeoJSON.FeatureCollection | null>(null);
   const [isDark, setIsDark] = useState(false);
@@ -240,7 +240,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince }: Indonesia
   };
 
   const handleReset = () => {
-    setPosition({ coordinates: [118, -2], zoom: 1.2 });
+    setPosition({ coordinates: [118, -2], zoom: 1.1 });
   };
 
 
