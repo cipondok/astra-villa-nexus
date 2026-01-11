@@ -359,10 +359,42 @@ const PropertyDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-3 text-sm text-muted-foreground">Loading property...</p>
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header always visible during loading */}
+        <div className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2 shadow-md">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate(-1)}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <ArrowLeft className="h-3 w-3 mr-1" />
+                Kembali
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/')}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <Home className="h-3 w-3 mr-1" />
+                Beranda
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Loading content */}
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="text-center">
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Building2 className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">Memuat Detail Properti...</h3>
+            <p className="text-xs text-muted-foreground">Mohon tunggu sebentar</p>
+          </div>
         </div>
       </div>
     );
@@ -370,10 +402,60 @@ const PropertyDetail: React.FC = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-lg sm:text-2xl font-bold text-foreground mb-2">Property Not Found</h1>
-          <p className="text-sm text-muted-foreground">This property doesn't exist or has been removed.</p>
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header always visible on error */}
+        <div className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-2 shadow-md">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate(-1)}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <ArrowLeft className="h-3 w-3 mr-1" />
+                Kembali
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/')}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <Home className="h-3 w-3 mr-1" />
+                Beranda
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/properties')}
+                className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/20 h-6 px-2 text-[10px]"
+              >
+                <MapPin className="h-3 w-3 mr-1" />
+                Properti
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Error content */}
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="text-center">
+            <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+              <X className="h-8 w-8 text-destructive" />
+            </div>
+            <h1 className="text-lg font-bold text-foreground mb-2">Properti Tidak Ditemukan</h1>
+            <p className="text-sm text-muted-foreground mb-4">Properti ini tidak ada atau telah dihapus.</p>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/properties')}
+              className="text-xs h-8"
+            >
+              <MapPin className="h-3 w-3 mr-1" />
+              Lihat Properti Lain
+            </Button>
+          </div>
         </div>
       </div>
     );
