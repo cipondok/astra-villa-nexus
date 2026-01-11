@@ -97,34 +97,34 @@ const Properties = () => {
   };
 
   // Update search query when location filter changes
+  // Sync search query with location filter only on mount or when filter changes
   useEffect(() => {
-    if (locationFilter) {
+    if (locationFilter && searchQuery !== locationFilter) {
       setSearchQuery(locationFilter);
     }
   }, [locationFilter]);
 
-  // Fetch properties
-  const { data: properties = [], isLoading, error } = useQuery({
-    queryKey: ['properties', searchQuery, filterType, locationFilter],
+  // Fetch properties - simplified query for better performance
+  const { data: properties = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['properties-by-location', filterType, locationFilter],
     queryFn: async () => {
       let query = supabase
         .from('properties')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(100); // Limit for performance
 
-      // Apply location filter from URL
+      // Apply location filter from URL - simplified query
       if (locationFilter) {
         const searchTerms = getSearchTerms(locationFilter);
-        // Build OR query for all possible location names
-        const orConditions = searchTerms.flatMap(term => [
-          `title.ilike.%${term}%`,
+        // Use only the most relevant terms (max 3) to reduce query complexity
+        const priorityTerms = searchTerms.slice(0, 3);
+        const orConditions = priorityTerms.flatMap(term => [
           `location.ilike.%${term}%`,
           `city.ilike.%${term}%`,
           `state.ilike.%${term}%`
         ]).join(',');
         query = query.or(orConditions);
-      } else if (searchQuery) {
-        query = query.or(`title.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%,state.ilike.%${searchQuery}%`);
       }
 
       if (filterType !== 'all') {
@@ -135,6 +135,9 @@ const Properties = () => {
       if (error) throw error;
       return data as Property[];
     },
+    retry: 2, // Retry on failure
+    retryDelay: 1000,
+    staleTime: 30 * 1000, // Cache for 30 seconds
   });
 
   const handlePropertyClick = (propertyId: string) => {
@@ -246,14 +249,24 @@ const Properties = () => {
             </div>
             <h3 className="text-sm font-semibold mb-1">Gagal memuat properti</h3>
             <p className="text-xs text-muted-foreground mb-4">Silakan coba lagi</p>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/location')}
-              className="text-xs h-8"
-            >
-              Kembali ke Peta
-            </Button>
+            <div className="flex gap-2 justify-center">
+              <Button 
+                variant="default" 
+                size="sm"
+                onClick={() => refetch()}
+                className="text-xs h-8"
+              >
+                Coba Lagi
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/location')}
+                className="text-xs h-8"
+              >
+                Kembali ke Peta
+              </Button>
+            </div>
           </div>
         </div>
       </div>
