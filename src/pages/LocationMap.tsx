@@ -9,20 +9,20 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-// Multi-color palette for provinces (same as map)
+// Multi-color palette for provinces (same as map) - muted/softer colors
 const provinceColors = [
-  'hsl(45, 85%, 65%)',   // Gold
-  'hsl(200, 70%, 60%)',  // Blue
-  'hsl(150, 60%, 55%)',  // Teal
-  'hsl(280, 60%, 65%)',  // Purple
-  'hsl(15, 80%, 60%)',   // Orange
-  'hsl(340, 70%, 65%)',  // Pink
-  'hsl(180, 55%, 50%)',  // Cyan
-  'hsl(100, 50%, 55%)',  // Green
-  'hsl(35, 90%, 60%)',   // Amber
-  'hsl(260, 55%, 60%)',  // Violet
-  'hsl(170, 60%, 50%)',  // Emerald
-  'hsl(5, 75%, 60%)',    // Red
+  'hsl(45, 45%, 75%)',   // Gold
+  'hsl(200, 40%, 70%)',  // Blue
+  'hsl(150, 35%, 68%)',  // Teal
+  'hsl(280, 35%, 72%)',  // Purple
+  'hsl(15, 45%, 70%)',   // Orange
+  'hsl(340, 40%, 72%)',  // Pink
+  'hsl(180, 35%, 65%)',  // Cyan
+  'hsl(100, 30%, 68%)',  // Green
+  'hsl(35, 50%, 72%)',   // Amber
+  'hsl(260, 35%, 70%)',  // Violet
+  'hsl(170, 35%, 65%)',  // Emerald
+  'hsl(5, 40%, 70%)',    // Red
 ];
 
 const getProvinceColor = (index: number) => provinceColors[index % provinceColors.length];
@@ -135,25 +135,25 @@ const LocationMap = () => {
           className="mb-6"
         >
           <Card>
-            <CardContent className="p-3">
-              {/* Search and Popular in row */}
-              <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
-                <div className="relative flex-shrink-0 md:w-48">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-                  <Input
-                    placeholder="Cari provinsi..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 h-7 text-xs"
-                  />
-                </div>
-                
-                {/* Popular Provinces - Wrap */}
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-xs font-semibold text-foreground whitespace-nowrap flex items-center gap-1">
-                    <TrendingUp className="h-3 w-3 text-primary" />
-                    Populer:
-                  </span>
+            <CardContent className="p-3 space-y-3">
+              {/* Row 1: Search Input */}
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                <Input
+                  placeholder="Cari provinsi..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-8 h-7 text-xs"
+                />
+              </div>
+              
+              {/* Row 2: Popular Provinces */}
+              <div>
+                <span className="text-xs font-semibold text-foreground flex items-center gap-1 mb-2">
+                  <TrendingUp className="h-3 w-3 text-primary" />
+                  Populer:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
                   {popularProvinces.map((province, index) => {
                     const colorIndex = provinces.findIndex(p => p.id === province.id);
                     const bgColor = getProvinceColor(colorIndex >= 0 ? colorIndex : index);
