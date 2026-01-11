@@ -25,6 +25,7 @@ import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
+import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
 
 // Critical pages - load immediately
 import Index from '@/pages/Index';
@@ -110,6 +111,7 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <GlobalLoadingIndicator />
       {!isAdminRoute && <Navigation />}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12'}>
         <Suspense fallback={<PageLoader />}>
