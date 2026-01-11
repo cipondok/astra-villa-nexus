@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, X, SlidersHorizontal } from 'lucide-react';
+import { Search, X, SlidersHorizontal, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -160,6 +161,16 @@ export function StickyHeaderSearch({
                 >
                   <Search className="h-4 w-4 mr-1.5" />
                   {t.search}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = '/location'}
+                  className="h-9 px-2.5 rounded-lg border-border/40 text-xs"
+                >
+                  <MapPin className="h-3.5 w-3.5 mr-1" />
+                  Map
                 </Button>
                 {onOpenFilters && (
                   <Button
