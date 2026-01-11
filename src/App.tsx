@@ -26,6 +26,7 @@ import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
+import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
 
 // Critical pages - load immediately
 import Index from '@/pages/Index';
@@ -237,6 +238,7 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
+                            <NewArrivalsPopup />
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
