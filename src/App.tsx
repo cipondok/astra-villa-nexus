@@ -86,6 +86,7 @@ const JointVentures = lazy(() => import('@/pages/partners/JointVentures'));
 const SharedSearch = lazy(() => import('@/pages/SharedSearch'));
 const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
+const LocationMap = lazy(() => import('@/pages/LocationMap'));
 
 // Lazy loading fallback component
 const PageLoader = () => (
@@ -180,6 +181,8 @@ const AppContent = () => {
             <Route path="/astra-development" element={<AstraDevelopment />} />
             <Route path="/membership" element={<MembershipPage />} />
             <Route path="/bookings" element={<BookingsPage />} />
+            <Route path="/location" element={<LocationMap />} />
+            <Route path="/location-map" element={<LocationMap />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
