@@ -86,7 +86,7 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [106.8456, -6.2088], // Jakarta coordinates
-      zoom: 11,
+      zoom: 14,
     });
 
     // Add navigation controls
