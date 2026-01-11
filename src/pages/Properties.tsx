@@ -274,7 +274,7 @@ const Properties = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {/* Sub-header with location info - fixed (reliable across scroll containers) */}
       {locationFilter && (
         <>
@@ -321,62 +321,64 @@ const Properties = () => {
       )}
 
       <div className="container mx-auto px-4 py-4">
-        {/* Compact Search and Filters */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Cari properti..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-8 text-xs"
-            />
-          </div>
-          
-          <div className="flex gap-1">
-            <Button
-              variant={filterType === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterType('all')}
-              className="h-8 px-2.5 text-[10px]"
-            >
-              Semua
-            </Button>
-            <Button
-              variant={filterType === 'sale' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterType('sale')}
-              className="h-8 px-2.5 text-[10px]"
-            >
-              Dijual
-            </Button>
-            <Button
-              variant={filterType === 'rent' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterType('rent')}
-              className="h-8 px-2.5 text-[10px]"
-            >
-              Disewa
-            </Button>
-          </div>
+        {/* Compact Search and Filters - Glassy */}
+        <div className="glass-card border-border/30 shadow-lg rounded-xl p-3 mb-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex-1 min-w-[200px] relative">
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Cari properti..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 h-8 text-xs bg-background/50 backdrop-blur-sm border-border/40"
+              />
+            </div>
+            
+            <div className="flex gap-1">
+              <Button
+                variant={filterType === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterType('all')}
+                className={`h-8 px-2.5 text-[10px] ${filterType !== 'all' ? 'bg-background/50 backdrop-blur-sm border-border/40' : ''}`}
+              >
+                Semua
+              </Button>
+              <Button
+                variant={filterType === 'sale' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterType('sale')}
+                className={`h-8 px-2.5 text-[10px] ${filterType !== 'sale' ? 'bg-background/50 backdrop-blur-sm border-border/40' : ''}`}
+              >
+                Dijual
+              </Button>
+              <Button
+                variant={filterType === 'rent' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterType('rent')}
+                className={`h-8 px-2.5 text-[10px] ${filterType !== 'rent' ? 'bg-background/50 backdrop-blur-sm border-border/40' : ''}`}
+              >
+                Disewa
+              </Button>
+            </div>
 
-          <div className="flex gap-1">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="h-8 w-8 p-0"
-            >
-              <Grid3X3 className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className="h-8 w-8 p-0"
-            >
-              <List className="h-3.5 w-3.5" />
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className={`h-8 w-8 p-0 ${viewMode !== 'grid' ? 'bg-background/50 backdrop-blur-sm border-border/40' : ''}`}
+              >
+                <Grid3X3 className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className={`h-8 w-8 p-0 ${viewMode !== 'list' ? 'bg-background/50 backdrop-blur-sm border-border/40' : ''}`}
+              >
+                <List className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -384,11 +386,11 @@ const Properties = () => {
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {[...Array(10)].map((_, i) => (
-              <Card key={i} className="animate-pulse overflow-hidden">
-                <div className="h-28 bg-muted"></div>
+              <Card key={i} className="animate-pulse overflow-hidden glass-card border-border/30">
+                <div className="h-28 bg-muted/50"></div>
                 <CardContent className="p-2">
-                  <div className="h-3 bg-muted rounded mb-1.5"></div>
-                  <div className="h-2.5 bg-muted rounded w-2/3"></div>
+                  <div className="h-3 bg-muted/50 rounded mb-1.5"></div>
+                  <div className="h-2.5 bg-muted/50 rounded w-2/3"></div>
                 </CardContent>
               </Card>
             ))}
@@ -397,9 +399,9 @@ const Properties = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-12"
+            className="text-center py-12 glass-card border-border/30 rounded-xl"
           >
-            <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+            <div className="h-16 w-16 rounded-full bg-muted/30 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
               <Building2 className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-sm font-semibold mb-1">Tidak ada properti</h3>
@@ -408,7 +410,7 @@ const Properties = () => {
               variant="outline" 
               size="sm" 
               onClick={() => navigate('/location')}
-              className="text-xs h-8"
+              className="text-xs h-8 bg-background/50 backdrop-blur-sm border-border/40"
             >
               <MapPin className="h-3 w-3 mr-1.5" />
               Lihat Peta
@@ -431,7 +433,7 @@ const Properties = () => {
                 transition={{ delay: index * 0.03 }}
               >
                 <Card 
-                  className={`overflow-hidden hover:shadow-md transition-all cursor-pointer border-border/50 hover:border-primary/30 ${
+                  className={`overflow-hidden hover:shadow-lg transition-all cursor-pointer glass-card border-border/30 hover:border-primary/40 ${
                     viewMode === 'list' ? 'flex flex-row' : ''
                   }`}
                   onClick={() => handlePropertyClick(property.id)}
@@ -498,7 +500,7 @@ const Properties = () => {
                       <div className="text-sm font-bold text-primary">
                         {formatCurrency(property.price)}
                       </div>
-                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">
+                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-background/50 backdrop-blur-sm border-border/40">
                         {property.property_type}
                       </Badge>
                     </div>
