@@ -57,7 +57,9 @@ import {
   CheckCircle,
   XCircle,
   Info,
-  Archive
+  Archive,
+  RefreshCw,
+  CloudDownload
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -96,6 +98,8 @@ const LocationManagement = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<Location | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncMode, setSyncMode] = useState<'full' | 'districts'>('districts');
   
   const queryClient = useQueryClient();
 
@@ -338,6 +342,34 @@ const LocationManagement = () => {
     return acc;
   }, {} as any);
 
+  // Sync locations from official API
+  const handleSyncLocations = async () => {
+    setIsSyncing(true);
+    try {
+      toast.info('Starting sync...', { description: 'This may take several minutes for full sync.' });
+      
+      const { data, error } = await supabase.functions.invoke('sync-indonesia-locations', {
+        body: { mode: syncMode }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success('Sync completed!', {
+          description: `Provinces: ${data.stats.provinces}, Cities: ${data.stats.cities}, Districts: ${data.stats.districts}, Villages: ${data.stats.villages}`
+        });
+        queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
+      } else {
+        throw new Error(data?.error || 'Sync failed');
+      }
+    } catch (err: any) {
+      console.error('Sync error:', err);
+      toast.error('Sync failed', { description: err.message });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   if (error) {
     return (
       <Card>
@@ -408,7 +440,32 @@ const LocationManagement = () => {
               )}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              {/* Sync from Official API */}
+              <div className="flex items-center gap-2">
+                <Select value={syncMode} onValueChange={(v: 'full' | 'districts') => setSyncMode(v)}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="districts">Districts Only</SelectItem>
+                    <SelectItem value="full">Full (+ Villages)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSyncLocations}
+                  disabled={isSyncing}
+                >
+                  {isSyncing ? (
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <CloudDownload className="h-4 w-4 mr-2" />
+                  )}
+                  {isSyncing ? 'Syncing...' : 'Sync from BPS'}
+                </Button>
+              </div>
+
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
                   <Button onClick={() => resetForm()}>
