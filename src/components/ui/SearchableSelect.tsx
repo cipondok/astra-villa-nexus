@@ -13,6 +13,7 @@ interface SearchableSelectProps {
   onChange: (value: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
+  noResultsText?: string;
   disabled?: boolean;
   className?: string;
 }
@@ -21,8 +22,9 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   options,
   value,
   onChange,
-  placeholder = "Select...",
-  searchPlaceholder = "Search...",
+  placeholder = "Pilih...",
+  searchPlaceholder = "Cari...",
+  noResultsText = "Tidak ditemukan",
   disabled = false,
   className = ""
 }) => {
@@ -123,7 +125,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
           <div className="max-h-48 overflow-y-auto overscroll-contain">
             {filteredOptions.length === 0 ? (
               <div className="px-3 py-6 text-center text-sm text-muted-foreground">
-                No results found
+                {noResultsText}
               </div>
             ) : (
               filteredOptions.map((opt) => (

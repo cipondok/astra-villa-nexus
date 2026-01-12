@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, ChevronRight, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import PillSelector from "@/components/ui/PillSelector";
+import SearchableSelect from "@/components/ui/SearchableSelect";
 
 interface LocationSelectorProps {
   selectedState: string;
@@ -141,33 +141,38 @@ const LocationSelector = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <Label htmlFor="state">{t.province} *</Label>
-          <PillSelector
+          <SearchableSelect
             options={provinces.map(p => ({ value: p, label: p }))}
             value={selectedState}
             onChange={handleStateChange}
             placeholder={t.selectProvince}
+            searchPlaceholder={language === 'id' ? 'Cari provinsi...' : 'Search province...'}
             className="mt-1"
           />
         </div>
 
         <div>
           <Label htmlFor="city">{t.city} *</Label>
-          <PillSelector
+          <SearchableSelect
             options={cities.map(c => ({ value: c, label: c }))}
             value={selectedCity}
             onChange={handleCityChange}
             placeholder={!selectedState ? t.selectProvince : t.selectCity}
+            searchPlaceholder={language === 'id' ? 'Cari kota...' : 'Search city...'}
+            disabled={!selectedState}
             className="mt-1"
           />
         </div>
 
         <div>
           <Label htmlFor="district">{t.district} *</Label>
-          <PillSelector
+          <SearchableSelect
             options={districts.map(d => ({ value: d, label: d }))}
             value={selectedDistrict}
             onChange={handleDistrictChange}
             placeholder={!selectedCity ? t.selectCity : t.selectDistrict}
+            searchPlaceholder={language === 'id' ? 'Cari kecamatan...' : 'Search district...'}
+            disabled={!selectedCity}
             className="mt-1"
           />
         </div>
@@ -176,11 +181,13 @@ const LocationSelector = ({
           <Label htmlFor="subdistrict">
             {t.subdistrict} {subdistricts.length === 0 && selectedDistrict ? t.optional : '*'}
           </Label>
-          <PillSelector
+          <SearchableSelect
             options={subdistricts.map(s => ({ value: s, label: s }))}
             value={selectedSubdistrict}
             onChange={onSubdistrictChange}
             placeholder={!selectedDistrict ? t.selectDistrict : t.selectSubdistrict}
+            searchPlaceholder={language === 'id' ? 'Cari kelurahan...' : 'Search subdistrict...'}
+            disabled={!selectedDistrict}
             className="mt-1"
           />
         </div>
