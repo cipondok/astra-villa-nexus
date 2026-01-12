@@ -62,29 +62,29 @@ export const NewArrivalsPopup = () => {
           >
             <div className="bg-background border border-border rounded-xl shadow-2xl overflow-hidden">
               {/* Header with gradient */}
-              <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 p-3 pb-6 sm:p-4 sm:pb-7">
+              <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 px-3 py-2.5 sm:px-4 sm:py-3">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleClose}
-                  className="absolute top-1.5 right-1.5 h-6 w-6 p-0 text-white/80 hover:text-white hover:bg-white/20 sm:top-2 sm:right-2 sm:h-7 sm:w-7"
+                  className="absolute top-1 right-1 h-6 w-6 p-0 text-white/80 hover:text-white hover:bg-white/20 sm:top-1.5 sm:right-1.5"
                 >
-                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <X className="h-3.5 w-3.5" />
                 </Button>
-                
-                <div className="flex items-center gap-1.5 mb-1.5 sm:gap-2 sm:mb-2">
-                  <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center sm:h-7 sm:w-7">
-                    <Sparkles className="h-3 w-3 text-white sm:h-3.5 sm:w-3.5" />
+
+                <div className="flex items-center gap-1.5">
+                  <div className="h-6 w-6 rounded-full bg-white/15 flex items-center justify-center">
+                    <Sparkles className="h-3 w-3 text-white" />
                   </div>
-                  <span className="text-[10px] font-medium text-white/90 uppercase tracking-wider sm:text-xs">
+                  <span className="text-[10px] font-medium text-white/90 uppercase tracking-wider">
                     Baru Tiba
                   </span>
                 </div>
-                
-                <h2 className="text-base font-bold text-white mb-0.5 sm:text-lg sm:mb-1">
+
+                <h2 className="mt-1 text-sm font-bold text-white leading-tight sm:text-base">
                   Selamat Datang! 🎉
                 </h2>
-                <p className="text-xs text-white/80 sm:text-sm">
+                <p className="mt-0.5 text-[11px] text-white/80 leading-snug sm:text-xs">
                   Temukan properti impian Anda bersama Astra
                 </p>
               </div>
