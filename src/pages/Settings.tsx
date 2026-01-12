@@ -190,32 +190,34 @@ const Settings = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="security" className="w-full">
-          <TabsList className="flex w-full h-9 mb-3 bg-muted/50 p-1 rounded-lg overflow-x-auto gap-1">
-            <TabsTrigger value="security" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
-              <Shield className="h-3.5 w-3.5" />
-              <span>Security</span>
-            </TabsTrigger>
-            <TabsTrigger value="account" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
-              <Mail className="h-3.5 w-3.5" />
-              <span>Account</span>
-            </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
-              <User className="h-3.5 w-3.5" />
-              <span>Prefs</span>
-            </TabsTrigger>
-            <TabsTrigger value="theme" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
-              <Palette className="h-3.5 w-3.5" />
-              <span>Theme</span>
-            </TabsTrigger>
-            <TabsTrigger value="activity" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
-              <Activity className="h-3.5 w-3.5" />
-              <span>Activity</span>
-            </TabsTrigger>
-            <TabsTrigger value="cache" className="flex-1 min-w-fit text-xs gap-1 px-2 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md">
-              <Database className="h-3.5 w-3.5" />
-              <span>Cache</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto -mx-2 px-2 pb-1">
+            <TabsList className="inline-flex w-max min-w-full sm:flex sm:w-full h-9 sm:h-10 mb-3 bg-muted/60 dark:bg-muted/40 p-1 rounded-lg gap-0.5 border border-border/50">
+              <TabsTrigger value="security" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">Security</span>
+              </TabsTrigger>
+              <TabsTrigger value="account" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">Account</span>
+              </TabsTrigger>
+              <TabsTrigger value="preferences" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <User className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">Prefs</span>
+              </TabsTrigger>
+              <TabsTrigger value="theme" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">Theme</span>
+              </TabsTrigger>
+              <TabsTrigger value="activity" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <Activity className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">Activity</span>
+              </TabsTrigger>
+              <TabsTrigger value="cache" className="flex-shrink-0 flex-1 min-w-fit text-[10px] sm:text-xs gap-1 px-2 sm:px-3 py-1.5 text-foreground/70 data-[state=active]:text-foreground data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md transition-all">
+                <Database className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline">Cache</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Security Alerts Tab */}
           <TabsContent value="security" className="space-y-2">
