@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useCallback, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,16 @@ interface LocationSelectorProps {
   onLocationChange: (location: string) => void;
 }
 
+// Helper to normalize text (Title Case)
+const normalizeText = (text: string): string => {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
 const LocationSelector = ({
   selectedState,
   selectedCity,
@@ -31,6 +41,7 @@ const LocationSelector = ({
   onLocationChange
 }: LocationSelectorProps) => {
   const { language } = useLanguage();
+  const prevLocationRef = useRef<string>('');
 
   const t = {
     en: {
@@ -60,91 +71,132 @@ const LocationSelector = ({
       optional: "(Opsional)",
     }
   }[language];
+
   // Fetch all locations
   const { data: locations } = useQuery({
     queryKey: ['locations'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('locations')
-        .select('*')
-        .eq('is_active', true)
-        .order('province_name', { ascending: true })
-        .order('city_name', { ascending: true })
-        .order('district_name', { ascending: true })
-        .order('subdistrict_name', { ascending: true });
+        .select('province_name, city_name, district_name, subdistrict_name')
+        .eq('is_active', true);
       
       if (error) throw error;
       return data || [];
     },
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 
-  // Get unique provinces (sorted alphabetically)
-  const provinces = locations 
-    ? [...new Set(locations.map(loc => loc.province_name).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, 'id'))
-    : [];
+  // Normalize and deduplicate provinces
+  const provinces = useMemo(() => {
+    if (!locations) return [];
+    const uniqueProvinces = new Map<string, string>();
+    locations.forEach(loc => {
+      if (loc.province_name) {
+        const normalized = normalizeText(loc.province_name);
+        if (!uniqueProvinces.has(normalized.toLowerCase())) {
+          uniqueProvinces.set(normalized.toLowerCase(), normalized);
+        }
+      }
+    });
+    return Array.from(uniqueProvinces.values()).sort((a, b) => a.localeCompare(b, 'id'));
+  }, [locations]);
 
-  // Get cities/regencies for selected province (case-insensitive match)
-  const cities = locations 
-    ? [...new Set(locations
-        .filter(loc => loc.province_name?.toLowerCase() === selectedState?.toLowerCase())
-        .map(loc => loc.city_name)
-        .filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, 'id'))
-    : [];
+  // Get cities for selected province
+  const cities = useMemo(() => {
+    if (!locations || !selectedState) return [];
+    const stateLower = selectedState.toLowerCase();
+    const uniqueCities = new Map<string, string>();
+    locations
+      .filter(loc => loc.province_name?.toLowerCase() === stateLower)
+      .forEach(loc => {
+        if (loc.city_name) {
+          const normalized = normalizeText(loc.city_name);
+          if (!uniqueCities.has(normalized.toLowerCase())) {
+            uniqueCities.set(normalized.toLowerCase(), normalized);
+          }
+        }
+      });
+    return Array.from(uniqueCities.values()).sort((a, b) => a.localeCompare(b, 'id'));
+  }, [locations, selectedState]);
 
-  // Get districts for selected province and city (case-insensitive match)
-  const districts = locations
-    ? [...new Set(locations
-        .filter(loc => 
-          loc.province_name?.toLowerCase() === selectedState?.toLowerCase() && 
-          loc.city_name?.toLowerCase() === selectedCity?.toLowerCase()
-        )
-        .map(loc => loc.district_name)
-        .filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, 'id'))
-    : [];
+  // Get districts for selected city
+  const districts = useMemo(() => {
+    if (!locations || !selectedState || !selectedCity) return [];
+    const stateLower = selectedState.toLowerCase();
+    const cityLower = selectedCity.toLowerCase();
+    const uniqueDistricts = new Map<string, string>();
+    locations
+      .filter(loc => 
+        loc.province_name?.toLowerCase() === stateLower && 
+        loc.city_name?.toLowerCase() === cityLower
+      )
+      .forEach(loc => {
+        if (loc.district_name) {
+          const normalized = normalizeText(loc.district_name);
+          if (!uniqueDistricts.has(normalized.toLowerCase())) {
+            uniqueDistricts.set(normalized.toLowerCase(), normalized);
+          }
+        }
+      });
+    return Array.from(uniqueDistricts.values()).sort((a, b) => a.localeCompare(b, 'id'));
+  }, [locations, selectedState, selectedCity]);
 
-  // Get subdistricts/villages for selected province, city, and district (case-insensitive match)
-  const subdistricts = locations
-    ? [...new Set(locations
-        .filter(loc => 
-          loc.province_name?.toLowerCase() === selectedState?.toLowerCase() && 
-          loc.city_name?.toLowerCase() === selectedCity?.toLowerCase() && 
-          loc.district_name?.toLowerCase() === selectedDistrict?.toLowerCase()
-        )
-        .map(loc => loc.subdistrict_name)
-        .filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, 'id'))
-    : [];
+  // Get subdistricts for selected district
+  const subdistricts = useMemo(() => {
+    if (!locations || !selectedState || !selectedCity || !selectedDistrict) return [];
+    const stateLower = selectedState.toLowerCase();
+    const cityLower = selectedCity.toLowerCase();
+    const districtLower = selectedDistrict.toLowerCase();
+    const uniqueSubdistricts = new Map<string, string>();
+    locations
+      .filter(loc => 
+        loc.province_name?.toLowerCase() === stateLower && 
+        loc.city_name?.toLowerCase() === cityLower &&
+        loc.district_name?.toLowerCase() === districtLower
+      )
+      .forEach(loc => {
+        if (loc.subdistrict_name) {
+          const normalized = normalizeText(loc.subdistrict_name);
+          if (!uniqueSubdistricts.has(normalized.toLowerCase())) {
+            uniqueSubdistricts.set(normalized.toLowerCase(), normalized);
+          }
+        }
+      });
+    return Array.from(uniqueSubdistricts.values()).sort((a, b) => a.localeCompare(b, 'id'));
+  }, [locations, selectedState, selectedCity, selectedDistrict]);
 
-  // Update location string when selections change
+  // Update location string when selections change (prevent infinite loop)
   useEffect(() => {
     if (selectedState && selectedCity && selectedDistrict) {
-      // Build location string - subdistrict is optional
       const parts = [selectedSubdistrict, selectedDistrict, selectedCity, selectedState].filter(Boolean);
       const locationString = parts.join(', ');
-      onLocationChange(locationString);
+      
+      // Only call if the location actually changed
+      if (locationString !== prevLocationRef.current) {
+        prevLocationRef.current = locationString;
+        onLocationChange(locationString);
+      }
     }
   }, [selectedState, selectedCity, selectedDistrict, selectedSubdistrict, onLocationChange]);
 
-  const handleStateChange = (state: string) => {
+  const handleStateChange = useCallback((state: string) => {
     onStateChange(state);
     onCityChange('');
     onDistrictChange('');
     onSubdistrictChange('');
-  };
+  }, [onStateChange, onCityChange, onDistrictChange, onSubdistrictChange]);
 
-  const handleCityChange = (city: string) => {
+  const handleCityChange = useCallback((city: string) => {
     onCityChange(city);
     onDistrictChange('');
     onSubdistrictChange('');
-  };
+  }, [onCityChange, onDistrictChange, onSubdistrictChange]);
 
-  const handleDistrictChange = (district: string) => {
+  const handleDistrictChange = useCallback((district: string) => {
     onDistrictChange(district);
     onSubdistrictChange('');
-  };
+  }, [onDistrictChange, onSubdistrictChange]);
 
   return (
     <div className="space-y-4">
@@ -168,7 +220,7 @@ const LocationSelector = ({
             value={selectedCity}
             onChange={handleCityChange}
             placeholder={!selectedState ? t.selectProvince : t.selectCity}
-            searchPlaceholder={language === 'id' ? 'Cari kota...' : 'Search city...'}
+            searchPlaceholder={language === 'id' ? 'Cari kota/kabupaten...' : 'Search city/regency...'}
             disabled={!selectedState}
             className="mt-1"
           />
@@ -196,7 +248,7 @@ const LocationSelector = ({
             value={selectedSubdistrict}
             onChange={onSubdistrictChange}
             placeholder={!selectedDistrict ? t.selectDistrict : t.selectSubdistrict}
-            searchPlaceholder={language === 'id' ? 'Cari kelurahan...' : 'Search subdistrict...'}
+            searchPlaceholder={language === 'id' ? 'Cari kelurahan/desa...' : 'Search subdistrict/village...'}
             disabled={!selectedDistrict}
             className="mt-1"
           />
@@ -205,9 +257,9 @@ const LocationSelector = ({
 
       {/* No subdistricts available notice */}
       {selectedDistrict && subdistricts.length === 0 && (
-        <Alert className="bg-yellow-50 border-yellow-200">
-          <AlertCircle className="h-4 w-4 text-yellow-600" />
-          <AlertDescription className="text-yellow-800">
+        <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-800">
+          <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <AlertDescription className="text-amber-800 dark:text-amber-200">
             {t.noSubdistrictsAvailable}
           </AlertDescription>
         </Alert>
@@ -215,23 +267,23 @@ const LocationSelector = ({
 
       {/* Location Preview */}
       {selectedState && selectedCity && selectedDistrict && (
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center gap-2 text-blue-800">
+        <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
+          <div className="flex items-center gap-2 text-primary">
             <MapPin className="h-4 w-4" />
-            <span className="font-medium">{t.selectedLocation}</span>
+            <span className="font-medium text-sm">{t.selectedLocation}</span>
           </div>
-          <div className="text-blue-700 font-medium mt-1 flex flex-wrap items-center gap-1">
+          <div className="text-foreground font-medium mt-1 flex flex-wrap items-center gap-1 text-sm">
             {selectedSubdistrict && (
               <>
-                {selectedSubdistrict}
-                <ChevronRight className="h-3 w-3" />
+                <span>{selectedSubdistrict}</span>
+                <ChevronRight className="h-3 w-3 text-muted-foreground" />
               </>
             )}
-            {selectedDistrict}
-            <ChevronRight className="h-3 w-3" />
-            {selectedCity}
-            <ChevronRight className="h-3 w-3" />
-            {selectedState}
+            <span>{selectedDistrict}</span>
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            <span>{selectedCity}</span>
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            <span>{selectedState}</span>
           </div>
         </div>
       )}
