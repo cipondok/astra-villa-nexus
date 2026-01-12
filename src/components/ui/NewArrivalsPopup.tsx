@@ -89,7 +89,7 @@ export const NewArrivalsPopup = () => {
               
               {/* Content */}
               <div className="p-3 -mt-3 sm:p-4 sm:-mt-4">
-                <div className="bg-muted/50 rounded-lg p-2.5 mb-3 sm:rounded-xl sm:p-3 sm:mb-4">
+                <div className="bg-muted/70 backdrop-blur-sm rounded-lg p-2.5 mb-3 sm:rounded-xl sm:p-3 sm:mb-4">
                   <div className="flex items-center gap-2 mb-2 sm:gap-3 sm:mb-3">
                     <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0 sm:h-9 sm:w-9 sm:rounded-lg">
                       <Home className="h-4 w-4 text-primary sm:h-4.5 sm:w-4.5" />
