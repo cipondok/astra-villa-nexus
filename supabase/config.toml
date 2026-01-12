@@ -87,3 +87,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.midtrans-webhook]
     verify_jwt = false
+
+  [functions.sync-indonesia-locations]
+    verify_jwt = false
