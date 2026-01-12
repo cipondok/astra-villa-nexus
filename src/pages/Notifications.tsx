@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,7 +16,8 @@ import {
   Building2,
   AlertTriangle,
   Trash2,
-  CheckCheck
+  CheckCheck,
+  ArrowLeft
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
@@ -34,6 +36,7 @@ interface Notification {
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState("all");
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Fetch user notifications
   const { data: notifications = [], isLoading, refetch } = useQuery({
@@ -114,15 +117,23 @@ const Notifications = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Compact Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-4 sm:py-6">
+      {/* Compact Header with Back Button */}
+      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 sm:py-4">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
-              <BellRing className="h-5 w-5 sm:h-6 sm:w-6" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(-1)}
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-primary-foreground hover:bg-white/20"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <BellRing className="h-4 w-4 sm:h-5 sm:w-5" />
               <div>
-                <h1 className="text-lg sm:text-xl font-bold">Notifications</h1>
-                <p className="text-[10px] sm:text-xs opacity-80 hidden sm:block">Stay updated with your activities</p>
+                <h1 className="text-sm sm:text-lg font-bold">Notifications</h1>
+                <p className="text-[9px] sm:text-xs opacity-80 hidden sm:block">Stay updated with your activities</p>
               </div>
             </div>
             {unreadCount > 0 && (

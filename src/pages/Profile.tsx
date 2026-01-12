@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AvatarUpload } from '@/components/profile/AvatarUpload';
 import { useNavigate } from 'react-router-dom';
-import { User, Settings, LogOut, Home, Edit2, Save, X } from 'lucide-react';
+import { User, Settings, LogOut, Home, Edit2, Save, X, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
@@ -109,9 +109,17 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
       <div className="max-w-4xl mx-auto px-2 py-2">{/* Even more compact */}
-        {/* Header Section */}
+        {/* Header Section with Back Button */}
         <div className="mb-2 animate-fade-in">
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(-1)}
+              className="h-7 w-7 p-0"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
               <User className="h-3.5 w-3.5 text-primary" />
             </div>
