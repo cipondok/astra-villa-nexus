@@ -60,7 +60,7 @@ export const NewArrivalsPopup = () => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[10000] mx-auto max-w-[280px] sm:max-w-xs md:max-w-sm"
           >
-            <div className="bg-background border border-border rounded-lg shadow-2xl overflow-hidden">
+            <div className="bg-background/70 backdrop-blur-md border border-border/50 rounded-lg shadow-2xl overflow-hidden">
               {/* Header - slim */}
               <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 px-2.5 py-2 sm:px-3 sm:py-2.5">
                 <Button
