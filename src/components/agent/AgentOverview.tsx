@@ -153,24 +153,24 @@ const AgentOverview = () => {
   const CurrentIcon = agentMembership.currentLevel.icon;
 
   return (
-    <div className="space-y-3">
-      {/* Unified Agent Control Panel - All in One */}
+    <div className="space-y-2 sm:space-y-3 px-1 sm:px-0">
+      {/* Unified Agent Control Panel - Mobile Optimized */}
       <div className="glass-card bg-gradient-to-br from-teal-50/50 via-card to-cyan-50/30 dark:from-teal-950/30 dark:via-card dark:to-cyan-950/20 rounded-lg overflow-hidden shadow-lg shadow-teal-500/20 border border-teal-200/50 dark:border-teal-800/50">
-        <div className="p-3 md:p-4">
-          {/* Header Row */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-500/40">
-                <Users className="h-5 w-5 md:h-6 md:w-6 text-white" />
+        <div className="p-2 sm:p-3 md:p-4">
+          {/* Header Row - Stack on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md shadow-teal-500/40 shrink-0">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-sm md:text-base font-bold text-teal-900 dark:text-teal-100">Agent Control Panel</h1>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs md:text-sm text-teal-600 dark:text-teal-400">Online</span>
-                  <Badge className="ml-1 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-2 py-0.5 text-[10px] md:text-xs shadow-sm">
-                    <CurrentIcon className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5" />
-                    {agentMembership.currentLevel.name} Agent
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xs sm:text-sm md:text-base font-bold text-teal-900 dark:text-teal-100 truncate">Agent Control Panel</h1>
+                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 flex-wrap">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-[10px] sm:text-xs md:text-sm text-teal-600 dark:text-teal-400">Online</span>
+                  <Badge className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-1.5 sm:px-2 py-0 sm:py-0.5 text-[8px] sm:text-[10px] md:text-xs shadow-sm">
+                    <CurrentIcon className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 mr-0.5" />
+                    <span className="hidden xs:inline">{agentMembership.currentLevel.name}</span> Agent
                   </Badge>
                 </div>
               </div>
@@ -179,83 +179,86 @@ const AgentOverview = () => {
             <Button 
               onClick={handleAddListing}
               size="sm"
-              className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-8 md:h-9 text-xs md:text-sm px-3 md:px-4 shadow-md"
+              className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-7 sm:h-8 md:h-9 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 shadow-md w-full sm:w-auto"
             >
-              <PlusCircle className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1" />
+              <PlusCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 mr-1" />
               Add Property
             </Button>
           </div>
           
-          {/* Stats Grid */}
-          <div className="grid grid-cols-4 gap-2 md:gap-3 mt-3 pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
-            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
-              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalListings}</div>
-              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Properties</div>
+          {/* Stats Grid - 2x2 on mobile, 4 cols on larger */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3 mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
+            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
+              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalListings}</div>
+              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Properties</div>
             </div>
-            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
-              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.activeListings}</div>
-              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Active</div>
+            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
+              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.activeListings}</div>
+              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Active</div>
             </div>
-            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
-              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.pendingListings}</div>
-              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Pending</div>
+            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
+              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.pendingListings}</div>
+              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Pending</div>
             </div>
-            <div className="text-center p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-lg">
-              <div className="text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalClients}</div>
-              <div className="text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Clients</div>
+            <div className="text-center p-1.5 sm:p-2 md:p-3 bg-teal-100/50 dark:bg-teal-900/30 rounded-md sm:rounded-lg">
+              <div className="text-base sm:text-lg md:text-xl font-bold text-teal-800 dark:text-teal-200">{stats.totalClients}</div>
+              <div className="text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">Clients</div>
             </div>
           </div>
 
           {/* Membership + Profile Progress Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 mt-3 pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
+          <div className="grid grid-cols-1 gap-1.5 sm:gap-2 md:gap-3 mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-teal-200/50 dark:border-teal-800/50">
             {/* Membership Progress */}
-            <div className="p-2.5 md:p-3 bg-gradient-to-br from-teal-200/50 to-cyan-200/50 dark:from-teal-800/50 dark:to-cyan-800/50 rounded-lg">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <Crown className="h-4 w-4 md:h-5 md:w-5 text-teal-600 dark:text-teal-300" />
-                  <span className="text-xs md:text-sm font-semibold text-teal-800 dark:text-teal-200">
+            <div className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-br from-teal-200/50 to-cyan-200/50 dark:from-teal-800/50 dark:to-cyan-800/50 rounded-md sm:rounded-lg">
+              <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-teal-600 dark:text-teal-300 shrink-0" />
+                  <span className="text-[10px] sm:text-xs md:text-sm font-semibold text-teal-800 dark:text-teal-200 truncate">
                     Level {agentMembership.currentLevel.level}: {agentMembership.currentLevel.name}
                   </span>
                 </div>
-                <span className="text-sm md:text-base font-bold text-teal-700 dark:text-teal-300">{agentMembership.progress.percentage}%</span>
+                <span className="text-xs sm:text-sm md:text-base font-bold text-teal-700 dark:text-teal-300 shrink-0">{agentMembership.progress.percentage}%</span>
               </div>
-              <Progress value={agentMembership.progress.percentage} className="h-1.5 md:h-2 mb-1.5" />
-              <div className="flex items-center justify-between text-[10px] md:text-xs text-teal-600 dark:text-teal-400">
+              <Progress value={agentMembership.progress.percentage} className="h-1 sm:h-1.5 md:h-2 mb-1 sm:mb-1.5" />
+              <div className="flex items-center justify-between text-[9px] sm:text-[10px] md:text-xs text-teal-600 dark:text-teal-400">
                 <span>{agentMembership.progress.current}/{agentMembership.progress.required} sales to {agentMembership.nextLevel.name}</span>
               </div>
-              <div className="flex flex-wrap gap-1 mt-2">
-                {agentMembership.benefits.slice(0, 3).map((benefit, index) => (
-                  <Badge key={index} variant="outline" className="text-[9px] md:text-[10px] px-1.5 py-0.5 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-white/50 dark:bg-teal-900/50">
+              <div className="flex flex-wrap gap-0.5 sm:gap-1 mt-1.5 sm:mt-2">
+                {agentMembership.benefits.slice(0, 2).map((benefit, index) => (
+                  <Badge key={index} variant="outline" className="text-[8px] sm:text-[9px] md:text-[10px] px-1 sm:px-1.5 py-0 sm:py-0.5 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-white/50 dark:bg-teal-900/50">
                     {benefit}
                   </Badge>
                 ))}
+                <Badge variant="outline" className="hidden sm:inline-flex text-[9px] md:text-[10px] px-1.5 py-0.5 border-teal-400/50 text-teal-700 dark:text-teal-300 bg-white/50 dark:bg-teal-900/50">
+                  {agentMembership.benefits[2]}
+                </Badge>
               </div>
             </div>
 
             {/* Profile Completion */}
-            <div className="p-2.5 md:p-3 bg-gradient-to-br from-amber-100/50 to-orange-100/50 dark:from-amber-900/30 dark:to-orange-900/30 rounded-lg">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400" />
-                  <span className="text-xs md:text-sm font-semibold text-amber-800 dark:text-amber-200">Profile Completion</span>
+            <div className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-br from-amber-100/50 to-orange-100/50 dark:from-amber-900/30 dark:to-orange-900/30 rounded-md sm:rounded-lg">
+              <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <span className="text-[10px] sm:text-xs md:text-sm font-semibold text-amber-800 dark:text-amber-200">Profile</span>
                 </div>
-                <span className="text-sm md:text-base font-bold text-amber-700 dark:text-amber-300">
+                <span className="text-xs sm:text-sm md:text-base font-bold text-amber-700 dark:text-amber-300">
                   {profile?.profile_completion_percentage || 0}%
                 </span>
               </div>
-              <Progress value={profile?.profile_completion_percentage || 0} className="h-1.5 md:h-2 mb-1.5" />
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] md:text-xs text-amber-600 dark:text-amber-400">
-                  {(profile?.profile_completion_percentage || 0) < 70 ? 'Complete for 3x more leads!' : 'Great profile!'}
+              <Progress value={profile?.profile_completion_percentage || 0} className="h-1 sm:h-1.5 md:h-2 mb-1 sm:mb-1.5" />
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[9px] sm:text-[10px] md:text-xs text-amber-600 dark:text-amber-400 truncate">
+                  {(profile?.profile_completion_percentage || 0) < 70 ? 'Complete for 3x leads!' : 'Great profile!'}
                 </span>
                 <Button 
                   onClick={() => setActiveTab("settings")}
                   variant="outline"
                   size="sm"
-                  className="h-6 md:h-7 text-[10px] md:text-xs px-2 border-amber-400/50 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                  className="h-5 sm:h-6 md:h-7 text-[9px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 border-amber-400/50 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50 shrink-0"
                 >
-                  <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
-                  Complete
+                  <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline">Complete</span>
                 </Button>
               </div>
             </div>
@@ -263,21 +266,23 @@ const AgentOverview = () => {
         </div>
       </div>
 
-      {/* Main Dashboard Tabs - Mobile App Style */}
+      {/* Main Dashboard Tabs - Scrollable on mobile */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-2">
-        <TabsList className="flex w-full h-9 md:h-10 p-0.5 bg-muted/30 border border-border/50 rounded-lg overflow-x-auto gap-0.5 scrollbar-hide">
-          <TabsTrigger value="overview" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
-          <TabsTrigger value="add-property" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Add</TabsTrigger>
-          <TabsTrigger value="my-properties" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
-          <TabsTrigger value="clients" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
-          <TabsTrigger value="bookings" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
-          <TabsTrigger value="payouts" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
-          <TabsTrigger value="feedback" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
-          <TabsTrigger value="support" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Support</TabsTrigger>
-          <TabsTrigger value="tools" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
-          <TabsTrigger value="settings" className="flex-1 min-w-fit text-[10px] md:text-xs px-2 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-1 px-1 pb-1">
+          <TabsList className="inline-flex w-max min-w-full sm:w-full h-8 sm:h-9 md:h-10 p-0.5 bg-muted/30 border border-border/50 rounded-lg gap-0.5">
+            <TabsTrigger value="overview" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+            <TabsTrigger value="add-property" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Add</TabsTrigger>
+            <TabsTrigger value="my-properties" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
+            <TabsTrigger value="clients" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Clients</TabsTrigger>
+            <TabsTrigger value="analytics" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Analytics</TabsTrigger>
+            <TabsTrigger value="bookings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Bookings</TabsTrigger>
+            <TabsTrigger value="payouts" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Payouts</TabsTrigger>
+            <TabsTrigger value="feedback" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
+            <TabsTrigger value="support" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Support</TabsTrigger>
+            <TabsTrigger value="tools" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tools</TabsTrigger>
+            <TabsTrigger value="settings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="space-y-2">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
