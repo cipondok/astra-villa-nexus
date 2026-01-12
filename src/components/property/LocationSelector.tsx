@@ -6,6 +6,7 @@ import { MapPin, ChevronRight, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import SearchableSelect from "@/components/ui/SearchableSelect";
+import { useCentralLocation } from "@/hooks/useCentralLocation";
 
 interface LocationSelectorProps {
   selectedState: string;
@@ -42,6 +43,20 @@ const LocationSelector = ({
 }: LocationSelectorProps) => {
   const { language } = useLanguage();
   const prevLocationRef = useRef<string>('');
+  
+  // Get centralized location settings
+  const { defaultProvince, defaultCity, isLoaded: locationSettingsLoaded } = useCentralLocation();
+  
+  // Apply default location settings on mount
+  useEffect(() => {
+    if (locationSettingsLoaded && !selectedState && defaultProvince?.name) {
+      onStateChange(defaultProvince.name);
+      if (defaultCity?.name) {
+        // Small delay to ensure state is set first
+        setTimeout(() => onCityChange(defaultCity.name), 100);
+      }
+    }
+  }, [locationSettingsLoaded, defaultProvince, defaultCity, selectedState]);
 
   const t = {
     en: {
