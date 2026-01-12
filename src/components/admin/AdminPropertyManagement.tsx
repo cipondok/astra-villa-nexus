@@ -1,14 +1,11 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter } from "lucide-react";
+import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
-import LocationDatabaseManager from "./LocationDatabaseManager";
 import DiagnosticDashboard from "./DiagnosticDashboard";
-import SystemStatusChecker from "./SystemStatusChecker";
 import PropertySlideSettings from "./PropertySlideSettings";
 import PropertyDisplaySettings from "./PropertyDisplaySettings";
 import Property3DViewSettings from "./Property3DViewSettings";
@@ -16,6 +13,7 @@ import PropertySmartPreview from "./PropertySmartPreview";
 import PropertyTestPanel from "./PropertyTestPanel";
 import AdminAccessChecker from "./AdminAccessChecker";
 import PropertyFilterSettings from "./settings/PropertyFilterSettings";
+import IndonesianLocationManager from "./property/IndonesianLocationManager";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -154,7 +152,7 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="locations" className="mt-3">
-          <LocationDatabaseManager />
+          <IndonesianLocationManager />
         </TabsContent>
 
         <TabsContent value="filters" className="mt-3">
