@@ -11,17 +11,19 @@ import MarketAnalysis from "./tools/MarketAnalysis";
 
 const AgentTools = () => {
   return (
-    <div className="space-y-6">
-      <Tabs defaultValue="property-listings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
-          <TabsTrigger value="property-listings">Properties</TabsTrigger>
-          <TabsTrigger value="create-listing">Create Listing</TabsTrigger>
-          <TabsTrigger value="clients">Clients</TabsTrigger>
-          <TabsTrigger value="schedule-viewings">Viewings</TabsTrigger>
-          <TabsTrigger value="call-log">Calls</TabsTrigger>
-          <TabsTrigger value="email-templates">Emails</TabsTrigger>
-          <TabsTrigger value="market-analysis">Market</TabsTrigger>
-        </TabsList>
+    <div className="space-y-2 sm:space-y-4 md:space-y-6">
+      <Tabs defaultValue="property-listings" className="space-y-2 sm:space-y-4">
+        <div className="overflow-x-auto -mx-1 px-1 pb-1">
+          <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-4 lg:grid-cols-7 h-8 sm:h-9 md:h-10">
+            <TabsTrigger value="property-listings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Properties</TabsTrigger>
+            <TabsTrigger value="create-listing" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Create</TabsTrigger>
+            <TabsTrigger value="clients" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Clients</TabsTrigger>
+            <TabsTrigger value="schedule-viewings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Viewings</TabsTrigger>
+            <TabsTrigger value="call-log" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Calls</TabsTrigger>
+            <TabsTrigger value="email-templates" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Emails</TabsTrigger>
+            <TabsTrigger value="market-analysis" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Market</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="property-listings">
           <PropertyListings />

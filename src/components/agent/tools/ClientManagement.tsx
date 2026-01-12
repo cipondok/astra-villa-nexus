@@ -68,95 +68,99 @@ const ClientManagement = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5" />
+      <CardHeader className="p-3 sm:p-4 md:p-6">
+        <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg">
+          <Users className="h-4 w-4 sm:h-5 sm:w-5" />
           Client Management
         </CardTitle>
-        <CardDescription>Manage your clients and track their property interests</CardDescription>
+        <CardDescription className="text-[10px] sm:text-xs md:text-sm">Manage clients and track interests</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex gap-2">
+      <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
               <Input
                 placeholder="Search clients..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="pl-8 sm:pl-9 h-8 sm:h-9 md:h-10 text-xs sm:text-sm"
               />
             </div>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button className="h-8 sm:h-9 md:h-10 text-[10px] sm:text-xs md:text-sm">
+              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5" />
               Add Client
             </Button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-2 sm:space-y-3 md:space-y-4">
             {filteredClients.map((client) => (
-              <div key={client.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-lg">{client.name}</h3>
-                    <div className="flex flex-col gap-1 text-sm text-muted-foreground mt-1">
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-3 w-3" />
-                        <span>{client.email}</span>
+              <div key={client.id} className="border rounded-lg p-2.5 sm:p-3 md:p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-xs sm:text-sm md:text-lg truncate">{client.name}</h3>
+                    <div className="flex flex-col gap-0.5 sm:gap-1 text-[10px] sm:text-xs md:text-sm text-muted-foreground mt-0.5 sm:mt-1">
+                      <div className="flex items-center gap-1.5 sm:gap-2 truncate">
+                        <Mail className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
+                        <span className="truncate">{client.email}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-3 w-3" />
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
                         <span>{client.phone}</span>
                       </div>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(client.status)} className="capitalize">
+                  <Badge variant={getStatusColor(client.status)} className="capitalize text-[8px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 shrink-0">
                     {client.status}
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Interested in:</span>
-                    <p className="font-medium">{client.interestedIn}</p>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4 text-[10px] sm:text-xs md:text-sm">
+                  <div className="min-w-0">
+                    <span className="text-muted-foreground">Interested:</span>
+                    <p className="font-medium truncate">{client.interestedIn}</p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-muted-foreground">Budget:</span>
-                    <p className="font-medium">{client.budget}</p>
+                    <p className="font-medium truncate">{client.budget}</p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-muted-foreground">Last Contact:</span>
                     <p className="font-medium">{client.lastContact}</p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-muted-foreground">Notes:</span>
-                    <p className="font-medium">{client.notes}</p>
+                    <p className="font-medium truncate">{client.notes}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                   <Button 
                     size="sm" 
                     variant="outline"
                     onClick={() => handleCallClient(client.phone)}
+                    className="h-6 sm:h-7 md:h-8 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5"
                   >
-                    <Phone className="h-3 w-3 mr-1" />
+                    <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                     Call
                   </Button>
                   <Button 
                     size="sm" 
                     variant="outline"
                     onClick={() => handleEmailClient(client.email)}
+                    className="h-6 sm:h-7 md:h-8 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5"
                   >
-                    <Mail className="h-3 w-3 mr-1" />
+                    <Mail className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                     Email
                   </Button>
                   <Button 
                     size="sm" 
                     variant="outline"
+                    className="h-6 sm:h-7 md:h-8 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-2.5"
                   >
-                    <MessageSquare className="h-3 w-3 mr-1" />
-                    Message
+                    <MessageSquare className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
+                    <span className="hidden xs:inline">Message</span>
+                    <span className="xs:hidden">Msg</span>
                   </Button>
                 </div>
               </div>

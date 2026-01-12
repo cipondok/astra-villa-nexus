@@ -39,8 +39,8 @@ const AgentDashboard = () => {
   return (
     <AlertProvider>
       <div className="min-h-screen bg-background">
-        <div className="pt-8 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto py-8">
+        <div className="pt-4 sm:pt-6 md:pt-8 px-2 sm:px-4 md:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-4 sm:py-6 md:py-8">
             <AgentOverview />
           </div>
         </div>

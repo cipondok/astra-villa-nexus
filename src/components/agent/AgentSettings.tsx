@@ -145,19 +145,19 @@ const AgentSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-3 sm:space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
         <div>
-          <h2 className="text-2xl font-bold">Agent Settings</h2>
-          <p className="text-muted-foreground">Manage your agent profile and preferences</p>
+          <h2 className="text-base sm:text-lg md:text-2xl font-bold">Agent Settings</h2>
+          <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Manage your profile and preferences</p>
         </div>
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
+      <Tabs defaultValue="profile" className="space-y-2 sm:space-y-4">
+        <TabsList className="grid w-full grid-cols-3 h-8 sm:h-9 md:h-10">
+          <TabsTrigger value="profile" className="text-[10px] sm:text-xs md:text-sm px-1 sm:px-2">Profile</TabsTrigger>
+          <TabsTrigger value="notifications" className="text-[10px] sm:text-xs md:text-sm px-1 sm:px-2">Notifications</TabsTrigger>
+          <TabsTrigger value="security" className="text-[10px] sm:text-xs md:text-sm px-1 sm:px-2">Security</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-4">
@@ -167,64 +167,64 @@ const AgentSettings = () => {
           )}
           
           <Card data-edit-profile>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Agent Profile & Company Information
+            <CardHeader className="p-3 sm:p-4 md:p-6">
+              <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base md:text-lg">
+                <User className="h-4 w-4 sm:h-5 sm:w-5" />
+                Profile & Company Info
               </CardTitle>
-              <CardDescription>Complete your professional profile to get 3x more leads</CardDescription>
+              <CardDescription className="text-[10px] sm:text-xs md:text-sm">Complete your profile for 3x more leads</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-3 sm:space-y-4 md:space-y-6 p-3 sm:p-4 md:p-6 pt-0">
               {/* Profile Picture Section */}
-              <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                <Avatar className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20">
                   <AvatarImage src={profile?.avatar_url || undefined} />
-                  <AvatarFallback className="text-lg font-semibold">
+                  <AvatarFallback className="text-sm sm:text-base md:text-lg font-semibold">
                     {getUserInitials()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="space-y-2">
-                  <Button variant="outline" size="sm">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Professional Photo
+                <div className="space-y-1.5 sm:space-y-2 text-center sm:text-left">
+                  <Button variant="outline" size="sm" className="h-7 sm:h-8 text-[10px] sm:text-xs">
+                    <Upload className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+                    Upload Photo
                   </Button>
-                  <p className="text-sm text-muted-foreground">
-                    Professional headshot builds client trust. JPG, PNG or GIF. Max size 5MB.
+                  <p className="text-[9px] sm:text-xs md:text-sm text-muted-foreground">
+                    JPG, PNG or GIF. Max 5MB.
                   </p>
                 </div>
               </div>
 
               {/* Basic Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4">
                 <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" value={user?.email || ""} disabled />
+                  <Label htmlFor="email" className="text-[10px] sm:text-xs md:text-sm">Email Address</Label>
+                  <Input id="email" value={user?.email || ""} disabled className="h-8 sm:h-9 md:h-10 text-xs sm:text-sm" />
                 </div>
                 <div>
-                  <Label>Agent Status</Label>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="default">Active Agent</Badge>
-                    <Badge variant="outline">{profile?.verification_status || 'Pending'}</Badge>
+                  <Label className="text-[10px] sm:text-xs md:text-sm">Agent Status</Label>
+                  <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
+                    <Badge variant="default" className="text-[8px] sm:text-[10px] md:text-xs px-1.5 sm:px-2">Active</Badge>
+                    <Badge variant="outline" className="text-[8px] sm:text-[10px] md:text-xs px-1.5 sm:px-2">{profile?.verification_status || 'Pending'}</Badge>
                   </div>
                 </div>
               </div>
 
               {/* Editable Fields */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-lg font-medium">Personal & Professional Information</h4>
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <h4 className="text-xs sm:text-sm md:text-base font-medium">Personal & Professional Info</h4>
                   {!editMode ? (
-                    <Button onClick={() => setEditMode(true)} variant="outline">
-                      <Settings className="h-4 w-4 mr-2" />
+                    <Button onClick={() => setEditMode(true)} variant="outline" size="sm" className="h-7 sm:h-8 text-[10px] sm:text-xs w-full sm:w-auto">
+                      <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
                       Edit Profile
                     </Button>
                   ) : (
-                    <div className="space-x-2">
-                      <Button onClick={handleSave} disabled={loading || !!phoneError}>
-                        <Save className="h-4 w-4 mr-2" />
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <Button onClick={handleSave} disabled={loading || !!phoneError} size="sm" className="h-7 sm:h-8 text-[10px] sm:text-xs flex-1 sm:flex-none">
+                        <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                         {loading ? 'Saving...' : 'Save'}
                       </Button>
-                      <Button onClick={handleCancel} variant="outline">
+                      <Button onClick={handleCancel} variant="outline" size="sm" className="h-7 sm:h-8 text-[10px] sm:text-xs flex-1 sm:flex-none">
                         Cancel
                       </Button>
                     </div>
