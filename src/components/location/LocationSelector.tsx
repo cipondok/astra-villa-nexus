@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import React, { useState, useEffect, useMemo } from 'react';
+import SearchableSelect from "@/components/ui/SearchableSelect";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { MapPin } from "lucide-react";
@@ -131,48 +131,37 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Province Selection */}
         <div>
-          <Select value={selectedProvince} onValueChange={handleProvinceChange}>
-            <SelectTrigger>
-              <SelectValue placeholder={loading ? "Memuat provinsi..." : "Pilih Provinsi"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua Provinsi</SelectItem>
-              {provinces.map((province) => (
-                <SelectItem key={province.code} value={province.code}>
-                  {province.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SearchableSelect
+            options={[
+              { value: 'all', label: 'Semua Provinsi' },
+              ...provinces.map(p => ({ value: p.code, label: p.name }))
+            ]}
+            value={selectedProvince}
+            onChange={handleProvinceChange}
+            placeholder={loading ? "Memuat provinsi..." : "Pilih Provinsi"}
+            searchPlaceholder="Cari provinsi..."
+          />
         </div>
 
         {/* City Selection */}
         <div>
-          <Select 
-            value={selectedCity} 
-            onValueChange={onCityChange}
+          <SearchableSelect
+            options={[
+              { value: 'all', label: 'Semua Kota/Kabupaten' },
+              ...cities.map(c => ({ value: c.code, label: `${c.type} ${c.name}` }))
+            ]}
+            value={selectedCity}
+            onChange={onCityChange}
+            placeholder={
+              !selectedProvince || selectedProvince === 'all' 
+                ? "Pilih provinsi dulu" 
+                : loading 
+                  ? "Memuat kota..." 
+                  : "Pilih Kota/Kabupaten"
+            }
+            searchPlaceholder="Cari kota..."
             disabled={!selectedProvince || selectedProvince === 'all' || cities.length === 0}
-          >
-            <SelectTrigger>
-              <SelectValue 
-                placeholder={
-                  !selectedProvince || selectedProvince === 'all' 
-                    ? "Pilih provinsi dulu" 
-                    : loading 
-                      ? "Memuat kota..." 
-                      : "Pilih Kota/Kabupaten"
-                } 
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua Kota/Kabupaten</SelectItem>
-              {cities.map((city) => (
-                <SelectItem key={city.code} value={city.code}>
-                  {city.type} {city.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
         </div>
       </div>
     </div>
