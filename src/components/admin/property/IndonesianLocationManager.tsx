@@ -8,7 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Plus, Edit, Trash2, Globe, Building2, Home } from 'lucide-react';
+import { MapPin, Plus, Edit, Trash2, Globe, Building2, Home, RefreshCw, CloudDownload } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -43,6 +44,8 @@ const IndonesianLocationManager = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [selectedSubdistrict, setSelectedSubdistrict] = useState('all');
   const [selectedPostalCode, setSelectedPostalCode] = useState('all');
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncMode, setSyncMode] = useState<'full' | 'districts'>('districts');
   const [newLocation, setNewLocation] = useState({
     province_code: '',
     province_name: '',
@@ -201,6 +204,38 @@ const IndonesianLocationManager = () => {
       showError('Error', error.message);
     }
   });
+
+  // Sync locations from official BPS API
+  const handleSyncLocations = async () => {
+    setIsSyncing(true);
+    try {
+      toast.info('Memulai sinkronisasi...', { 
+        description: syncMode === 'full' 
+          ? 'Sinkronisasi lengkap mungkin memakan waktu beberapa menit.' 
+          : 'Sinkronisasi hingga level kecamatan.'
+      });
+      
+      const { data, error } = await supabase.functions.invoke('sync-indonesia-locations', {
+        body: { mode: syncMode }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success('Sinkronisasi selesai!', {
+          description: `Provinsi: ${data.stats.provinces}, Kota/Kab: ${data.stats.cities}, Kecamatan: ${data.stats.districts}, Kelurahan: ${data.stats.villages}`
+        });
+        queryClient.invalidateQueries({ queryKey: ['locations'] });
+      } else {
+        throw new Error(data?.error || 'Sinkronisasi gagal');
+      }
+    } catch (err: any) {
+      console.error('Sync error:', err);
+      toast.error('Sinkronisasi gagal', { description: err.message });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const resetForm = () => {
     setNewLocation({
@@ -419,13 +454,38 @@ const IndonesianLocationManager = () => {
                   </>
                 )}
               </div>
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button onClick={() => { resetForm(); setEditingLocation(null); }}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Tambah Lokasi
-                  </Button>
-                </DialogTrigger>
+              <div className="flex items-center gap-2">
+                {/* Sync from Official API */}
+                <Select value={syncMode} onValueChange={(v: 'full' | 'districts') => setSyncMode(v)}>
+                  <SelectTrigger className="w-36">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="districts">Hingga Kecamatan</SelectItem>
+                    <SelectItem value="full">Lengkap (+ Desa)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSyncLocations}
+                  disabled={isSyncing}
+                  className="whitespace-nowrap"
+                >
+                  {isSyncing ? (
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <CloudDownload className="h-4 w-4 mr-2" />
+                  )}
+                  {isSyncing ? 'Sinkronisasi...' : 'Sinkron dari BPS'}
+                </Button>
+                
+                <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => { resetForm(); setEditingLocation(null); }}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Tambah Lokasi
+                    </Button>
+                  </DialogTrigger>
                 <DialogContent className="max-w-4xl">
                   <DialogHeader>
                     <DialogTitle>
@@ -562,6 +622,7 @@ const IndonesianLocationManager = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              </div>
             </div>
 
             <TabsContent value="provinces" className="space-y-4">
