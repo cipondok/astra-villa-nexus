@@ -307,54 +307,54 @@ const PayoutManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
         <div>
-          <h2 className="text-2xl font-bold">Payout Management</h2>
-          <p className="text-muted-foreground">Manage your earnings and payout preferences</p>
+          <h2 className="text-sm sm:text-lg md:text-2xl font-bold">Payout Management</h2>
+          <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Manage earnings and payouts</p>
         </div>
-        <Button onClick={fetchAllData} className="bg-primary hover:bg-primary/90">
-          Refresh Data
+        <Button onClick={fetchAllData} size="sm" className="bg-primary hover:bg-primary/90 h-7 sm:h-8 md:h-9 text-[10px] sm:text-xs md:text-sm">
+          Refresh
         </Button>
       </div>
 
       {/* Balance Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 md:gap-6">
         <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-100">Available Balance</p>
-                <p className="text-2xl font-bold">{formatCurrency(availableBalance)}</p>
+                <p className="text-[10px] sm:text-xs md:text-sm text-green-100">Available Balance</p>
+                <p className="text-sm sm:text-lg md:text-2xl font-bold">{formatCurrency(availableBalance)}</p>
               </div>
-              <Wallet className="h-8 w-8 text-green-100" />
+              <Wallet className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-green-100" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Pending Requests</p>
-                <p className="text-2xl font-bold">{payoutRequests.filter(r => r.status === 'pending').length}</p>
+                <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Pending</p>
+                <p className="text-sm sm:text-lg md:text-2xl font-bold">{payoutRequests.filter(r => r.status === 'pending').length}</p>
               </div>
-              <Clock className="h-8 w-8 text-muted-foreground" />
+              <Clock className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Earnings</p>
-                <p className="text-2xl font-bold">
+                <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Total Earned</p>
+                <p className="text-sm sm:text-lg md:text-2xl font-bold">
                   {formatCurrency(payoutTransactions.reduce((sum, t) => sum + t.amount, 0))}
                 </p>
               </div>
-              <TrendingUp className="h-8 w-8 text-muted-foreground" />
+              <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -362,12 +362,14 @@ const PayoutManagement = () => {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="request">Request Payout</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-1 px-1 pb-1">
+          <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-4 h-8 sm:h-9 md:h-10">
+            <TabsTrigger value="overview" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Overview</TabsTrigger>
+            <TabsTrigger value="request" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Request</TabsTrigger>
+            <TabsTrigger value="history" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">History</TabsTrigger>
+            <TabsTrigger value="settings" className="flex-shrink-0 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">Settings</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">

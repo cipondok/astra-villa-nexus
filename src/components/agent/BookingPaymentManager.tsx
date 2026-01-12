@@ -317,33 +317,33 @@ const BookingPaymentManager = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
         <div>
-          <h2 className="text-2xl font-bold">Booking & Payment Management</h2>
-          <p className="text-muted-foreground">Manage all your bookings and payment transactions</p>
+          <h2 className="text-sm sm:text-lg md:text-2xl font-bold">Booking & Payment</h2>
+          <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Manage bookings and payments</p>
         </div>
-        <Button onClick={fetchAllData} className="bg-primary hover:bg-primary/90">
-          Refresh Data
+        <Button onClick={fetchAllData} size="sm" className="bg-primary hover:bg-primary/90 h-7 sm:h-8 md:h-9 text-[10px] sm:text-xs md:text-sm">
+          Refresh
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
         <div className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <Input
               placeholder="Search bookings..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
+              className="pl-8 sm:pl-9 h-8 sm:h-9 md:h-10 text-xs sm:text-sm"
             />
           </div>
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-36 md:w-48 h-8 sm:h-9 md:h-10 text-xs sm:text-sm">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -359,20 +359,22 @@ const BookingPaymentManager = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="vendor-bookings" className="flex items-center gap-2">
-            <Building className="h-4 w-4" />
-            Service Bookings ({vendorBookings.length})
-          </TabsTrigger>
-          <TabsTrigger value="rental-bookings" className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
-            Property Rentals ({rentalBookings.length})
-          </TabsTrigger>
-          <TabsTrigger value="payments" className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4" />
-            Payment Logs ({paymentLogs.length})
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-1 px-1 pb-1">
+          <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-3 h-8 sm:h-9 md:h-10">
+            <TabsTrigger value="vendor-bookings" className="flex-shrink-0 flex items-center gap-1 sm:gap-2 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">
+              <Building className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Services</span> ({vendorBookings.length})
+            </TabsTrigger>
+            <TabsTrigger value="rental-bookings" className="flex-shrink-0 flex items-center gap-1 sm:gap-2 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">
+              <Home className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Rentals</span> ({rentalBookings.length})
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="flex-shrink-0 flex items-center gap-1 sm:gap-2 text-[9px] sm:text-[10px] md:text-xs px-2 sm:px-3">
+              <CreditCard className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Payments</span> ({paymentLogs.length})
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Vendor Bookings Tab */}
         <TabsContent value="vendor-bookings" className="space-y-4">
