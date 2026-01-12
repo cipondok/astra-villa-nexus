@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PropertyFilters } from "./AdvancedPropertyFilters";
 import { Loader2 } from 'lucide-react';
 import DOMPurify from 'dompurify';
+import { useLocationSettings } from '@/stores/locationSettingsStore';
 
 interface FilterMapViewProps {
   filters: PropertyFilters;
@@ -15,6 +16,16 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const { settings, fetchSettings } = useLocationSettings();
+  const { defaultMapCenter } = settings;
+
+  // Fetch location settings on mount
+  useEffect(() => {
+    if (!settings.isLoaded) {
+      fetchSettings();
+    }
+  }, [settings.isLoaded, fetchSettings]);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -22,24 +33,27 @@ export const FilterMapView = ({ filters }: FilterMapViewProps) => {
     const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTgzZnN0In0.JfxWbLcAYW83y5b-A5hLUQ';
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
+    const center: [number, number] = [defaultMapCenter.longitude, defaultMapCenter.latitude];
+    const zoom = defaultMapCenter.zoom;
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      center: [106.8456, -6.2088],
-      zoom: 15,
+      center,
+      zoom,
       maxZoom: 20,
       minZoom: 10,
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
     map.current.on('load', () => {
-      // Ensure we start close-in even if the map reflows after mount
-      map.current?.jumpTo({ center: [106.8456, -6.2088], zoom: 15 });
+      // Use centralized location settings for initial position
+      map.current?.jumpTo({ center, zoom });
       setIsLoading(false);
     });
 
     return () => map.current?.remove();
-  }, []);
+  }, [defaultMapCenter.longitude, defaultMapCenter.latitude, defaultMapCenter.zoom]);
 
   useEffect(() => {
     const fetchProperties = async () => {
