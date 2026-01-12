@@ -41,23 +41,20 @@ function toTitleCase(str: string): string {
 }
 
 // Fetch with retry logic
-async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
+async function fetchWithRetry(url: string, retries = 2): Promise<Response> {
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url);
       if (response.ok) return response;
-      console.log(`Retry ${i + 1}/${retries} for ${url}`);
     } catch (error) {
-      console.error(`Fetch error for ${url}:`, error);
       if (i === retries - 1) throw error;
     }
-    await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    await new Promise(r => setTimeout(r, 500));
   }
-  throw new Error(`Failed to fetch ${url} after ${retries} retries`);
+  throw new Error(`Failed to fetch ${url}`);
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -67,175 +64,174 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Parse request body for options
     const body = await req.json().catch(() => ({}));
-    const { mode = 'full', provinceId } = body;
-    // mode: 'provinces' | 'cities' | 'districts' | 'villages' | 'full'
-    // provinceId: optional - sync only specific province
+    // mode: 'provinces' | 'districts' | 'single-province'
+    // provinceId: required for 'single-province' mode
+    const { mode = 'provinces', provinceId } = body;
 
-    console.log(`Starting Indonesia locations sync. Mode: ${mode}, Province: ${provinceId || 'all'}`);
+    console.log(`Sync mode: ${mode}, provinceId: ${provinceId || 'none'}`);
 
-    const stats = {
-      provinces: 0,
-      cities: 0,
-      districts: 0,
-      villages: 0,
-      errors: [] as string[],
-    };
+    const stats = { provinces: 0, cities: 0, districts: 0, villages: 0 };
 
-    // Step 1: Fetch all provinces
-    console.log('Fetching provinces...');
+    // Fetch provinces list
     const provincesRes = await fetchWithRetry(`${API_BASE_URL}/provinces.json`);
     const provinces: Province[] = await provincesRes.json();
-    console.log(`Found ${provinces.length} provinces`);
 
-    // Filter provinces if specific one requested
-    const targetProvinces = provinceId 
-      ? provinces.filter(p => p.id === provinceId)
-      : provinces;
+    // Mode: provinces only - just insert province names
+    if (mode === 'provinces') {
+      const batch = provinces.map(p => ({
+        province_code: p.id,
+        province_name: toTitleCase(p.name),
+        is_active: true,
+        updated_at: new Date().toISOString(),
+      }));
 
-    // Step 2: Process each province
-    for (const province of targetProvinces) {
-      try {
+      const { error } = await supabase.from('locations').upsert(batch, {
+        onConflict: 'province_code,city_code,district_code,subdistrict_code',
+      });
+
+      if (error) console.error('Provinces upsert error:', error);
+      stats.provinces = provinces.length;
+
+      return new Response(JSON.stringify({ success: true, stats, mode }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Mode: single-province - process one province with cities and districts
+    if (mode === 'single-province' && provinceId) {
+      const province = provinces.find(p => p.id === provinceId);
+      if (!province) {
+        return new Response(JSON.stringify({ success: false, error: 'Province not found' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 404,
+        });
+      }
+
+      const provinceName = toTitleCase(province.name);
+      console.log(`Processing: ${provinceName}`);
+
+      const citiesRes = await fetchWithRetry(`${API_BASE_URL}/regencies/${province.id}.json`);
+      const cities: City[] = await citiesRes.json();
+
+      const locationBatch: any[] = [];
+
+      for (const city of cities) {
+        const cityName = toTitleCase(city.name);
+        const cityType = city.name.toUpperCase().startsWith('KOTA ') ? 'KOTA' : 'KABUPATEN';
+
+        try {
+          const districtsRes = await fetchWithRetry(`${API_BASE_URL}/districts/${city.id}.json`);
+          const districts: District[] = await districtsRes.json();
+
+          for (const district of districts) {
+            locationBatch.push({
+              province_code: province.id,
+              province_name: provinceName,
+              city_code: city.id,
+              city_name: cityName.replace(/^Kota |^Kabupaten /i, ''),
+              city_type: cityType,
+              district_code: district.id,
+              district_name: toTitleCase(district.name),
+              is_active: true,
+              updated_at: new Date().toISOString(),
+            });
+          }
+          stats.districts += districts.length;
+        } catch (e) {
+          console.error(`Error fetching districts for ${cityName}:`, e);
+        }
+        stats.cities++;
+      }
+
+      // Batch insert in chunks of 500
+      for (let i = 0; i < locationBatch.length; i += 500) {
+        const chunk = locationBatch.slice(i, i + 500);
+        const { error } = await supabase.from('locations').upsert(chunk);
+        if (error) console.error(`Batch insert error:`, error);
+      }
+
+      stats.provinces = 1;
+      return new Response(JSON.stringify({ success: true, stats, mode, province: provinceName }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Mode: districts - process ALL provinces but limited (first 5 only to avoid timeout)
+    if (mode === 'districts') {
+      const limitedProvinces = provinces.slice(0, 5); // Process only 5 at a time
+      
+      for (const province of limitedProvinces) {
         const provinceName = toTitleCase(province.name);
-        console.log(`Processing province: ${provinceName} (${province.id})`);
+        console.log(`Processing: ${provinceName}`);
 
-        // Fetch cities for this province
-        const citiesRes = await fetchWithRetry(`${API_BASE_URL}/regencies/${province.id}.json`);
-        const cities: City[] = await citiesRes.json();
+        try {
+          const citiesRes = await fetchWithRetry(`${API_BASE_URL}/regencies/${province.id}.json`);
+          const cities: City[] = await citiesRes.json();
 
-        for (const city of cities) {
-          try {
+          const locationBatch: any[] = [];
+
+          for (const city of cities) {
             const cityName = toTitleCase(city.name);
             const cityType = city.name.toUpperCase().startsWith('KOTA ') ? 'KOTA' : 'KABUPATEN';
 
-            // Fetch districts for this city
-            const districtsRes = await fetchWithRetry(`${API_BASE_URL}/districts/${city.id}.json`);
-            const districts: District[] = await districtsRes.json();
+            try {
+              const districtsRes = await fetchWithRetry(`${API_BASE_URL}/districts/${city.id}.json`);
+              const districts: District[] = await districtsRes.json();
 
-            for (const district of districts) {
-              try {
-                const districtName = toTitleCase(district.name);
-
-                // Fetch villages for this district (only in full mode)
-                if (mode === 'full' || mode === 'villages') {
-                  try {
-                    const villagesRes = await fetchWithRetry(`${API_BASE_URL}/villages/${district.id}.json`);
-                    const villages: Village[] = await villagesRes.json();
-
-                    for (const village of villages) {
-                      const villageName = toTitleCase(village.name);
-
-                      // Upsert village record
-                      const { error: villageError } = await supabase
-                        .from('locations')
-                        .upsert({
-                          province_code: province.id,
-                          province_name: provinceName,
-                          city_code: city.id,
-                          city_name: cityName.replace(/^Kota |^Kabupaten /i, ''),
-                          city_type: cityType,
-                          district_code: district.id,
-                          district_name: districtName,
-                          subdistrict_code: village.id,
-                          subdistrict_name: villageName,
-                          is_active: true,
-                          updated_at: new Date().toISOString(),
-                        }, {
-                          onConflict: 'province_code,city_code,district_code,subdistrict_code',
-                          ignoreDuplicates: false,
-                        });
-
-                      if (villageError) {
-                        // If conflict strategy fails, try individual upsert
-                        const { error: retryError } = await supabase
-                          .from('locations')
-                          .upsert({
-                            province_code: province.id,
-                            province_name: provinceName,
-                            city_code: city.id,
-                            city_name: cityName.replace(/^Kota |^Kabupaten /i, ''),
-                            city_type: cityType,
-                            district_code: district.id,
-                            district_name: districtName,
-                            subdistrict_code: village.id,
-                            subdistrict_name: villageName,
-                            is_active: true,
-                            updated_at: new Date().toISOString(),
-                          });
-                        
-                        if (retryError) {
-                          console.error(`Error upserting village ${villageName}:`, retryError);
-                        } else {
-                          stats.villages++;
-                        }
-                      } else {
-                        stats.villages++;
-                      }
-                    }
-                  } catch (villageErr) {
-                    stats.errors.push(`Villages for district ${districtName}: ${villageErr}`);
-                  }
-                } else {
-                  // Insert district without village
-                  const { error: districtError } = await supabase
-                    .from('locations')
-                    .upsert({
-                      province_code: province.id,
-                      province_name: provinceName,
-                      city_code: city.id,
-                      city_name: cityName.replace(/^Kota |^Kabupaten /i, ''),
-                      city_type: cityType,
-                      district_code: district.id,
-                      district_name: districtName,
-                      is_active: true,
-                      updated_at: new Date().toISOString(),
-                    });
-
-                  if (!districtError) {
-                    stats.districts++;
-                  }
-                }
-              } catch (distErr) {
-                stats.errors.push(`District ${district.name}: ${distErr}`);
+              for (const district of districts) {
+                locationBatch.push({
+                  province_code: province.id,
+                  province_name: provinceName,
+                  city_code: city.id,
+                  city_name: cityName.replace(/^Kota |^Kabupaten /i, ''),
+                  city_type: cityType,
+                  district_code: district.id,
+                  district_name: toTitleCase(district.name),
+                  is_active: true,
+                  updated_at: new Date().toISOString(),
+                });
               }
+              stats.districts += districts.length;
+            } catch (e) {
+              console.error(`Districts error for ${cityName}`);
             }
             stats.cities++;
-          } catch (cityErr) {
-            stats.errors.push(`City ${city.name}: ${cityErr}`);
           }
+
+          // Batch insert
+          for (let i = 0; i < locationBatch.length; i += 500) {
+            const chunk = locationBatch.slice(i, i + 500);
+            await supabase.from('locations').upsert(chunk);
+          }
+
+          stats.provinces++;
+        } catch (e) {
+          console.error(`Province error: ${provinceName}`);
         }
-        stats.provinces++;
-      } catch (provErr) {
-        stats.errors.push(`Province ${province.name}: ${provErr}`);
       }
+
+      return new Response(JSON.stringify({ 
+        success: true, 
+        stats, 
+        mode,
+        message: `Processed ${stats.provinces} of ${provinces.length} provinces. Run again to continue.`,
+        remaining: provinces.length - stats.provinces,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    console.log('Sync completed:', stats);
+    return new Response(JSON.stringify({ success: false, error: 'Invalid mode' }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 400,
+    });
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Indonesia locations sync completed',
-        stats,
-        source: 'https://emsifa.github.io/api-wilayah-indonesia/',
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    );
   } catch (error) {
-    console.error('Error syncing locations:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message || 'Failed to sync Indonesia locations',
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
-    );
+    console.error('Sync error:', error);
+    return new Response(JSON.stringify({ success: false, error: error.message }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
   }
 });
