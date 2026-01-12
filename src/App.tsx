@@ -89,6 +89,8 @@ const SharedSearch = lazy(() => import('@/pages/SharedSearch'));
 const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const Help = lazy(() => import('@/pages/Help'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -183,6 +185,9 @@ const AppContent = () => {
             <Route path="/bookings" element={<BookingsPage />} />
             <Route path="/location" element={<LocationMap />} />
             <Route path="/location-map" element={<LocationMap />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/support" element={<Contact />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
