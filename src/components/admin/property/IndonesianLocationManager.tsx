@@ -45,7 +45,8 @@ const IndonesianLocationManager = () => {
   const [selectedSubdistrict, setSelectedSubdistrict] = useState('all');
   const [selectedPostalCode, setSelectedPostalCode] = useState('all');
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncMode, setSyncMode] = useState<'full' | 'districts'>('districts');
+  const [syncMode, setSyncMode] = useState<'provinces' | 'districts' | 'single-province'>('provinces');
+  const [selectedSyncProvince, setSelectedSyncProvince] = useState<string>('');
   const [newLocation, setNewLocation] = useState({
     province_code: '',
     province_name: '',
@@ -207,24 +208,36 @@ const IndonesianLocationManager = () => {
 
   // Sync locations from official BPS API
   const handleSyncLocations = async () => {
+    if (syncMode === 'single-province' && !selectedSyncProvince) {
+      toast.error('Pilih provinsi terlebih dahulu');
+      return;
+    }
+    
     setIsSyncing(true);
     try {
-      toast.info('Memulai sinkronisasi...', { 
-        description: syncMode === 'full' 
-          ? 'Sinkronisasi lengkap mungkin memakan waktu beberapa menit.' 
-          : 'Sinkronisasi hingga level kecamatan.'
-      });
+      const modeDescriptions = {
+        'provinces': 'Mengambil daftar provinsi saja...',
+        'districts': 'Sinkronisasi 5 provinsi dengan kota & kecamatan...',
+        'single-province': 'Sinkronisasi provinsi terpilih...',
+      };
+      
+      toast.info('Memulai sinkronisasi...', { description: modeDescriptions[syncMode] });
       
       const { data, error } = await supabase.functions.invoke('sync-indonesia-locations', {
-        body: { mode: syncMode }
+        body: { 
+          mode: syncMode,
+          provinceId: syncMode === 'single-province' ? selectedSyncProvince : undefined
+        }
       });
 
       if (error) throw error;
 
       if (data?.success) {
-        toast.success('Sinkronisasi selesai!', {
-          description: `Provinsi: ${data.stats.provinces}, Kota/Kab: ${data.stats.cities}, Kecamatan: ${data.stats.districts}, Kelurahan: ${data.stats.villages}`
-        });
+        let description = `Provinsi: ${data.stats.provinces}, Kota/Kab: ${data.stats.cities}, Kecamatan: ${data.stats.districts}`;
+        if (data.remaining) {
+          description += ` | Sisa: ${data.remaining} provinsi`;
+        }
+        toast.success('Sinkronisasi selesai!', { description });
         queryClient.invalidateQueries({ queryKey: ['locations'] });
       } else {
         throw new Error(data?.error || 'Sinkronisasi gagal');
@@ -454,21 +467,39 @@ const IndonesianLocationManager = () => {
                   </>
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                {/* Sync from Official API */}
-                <Select value={syncMode} onValueChange={(v: 'full' | 'districts') => setSyncMode(v)}>
-                  <SelectTrigger className="w-36">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Sync Mode Selection */}
+                <Select value={syncMode} onValueChange={(v: 'provinces' | 'districts' | 'single-province') => setSyncMode(v)}>
+                  <SelectTrigger className="w-44">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="districts">Hingga Kecamatan</SelectItem>
-                    <SelectItem value="full">Lengkap (+ Desa)</SelectItem>
+                    <SelectItem value="provinces">Provinsi Saja</SelectItem>
+                    <SelectItem value="districts">5 Provinsi + Kecamatan</SelectItem>
+                    <SelectItem value="single-province">Pilih Provinsi</SelectItem>
                   </SelectContent>
                 </Select>
+                
+                {/* Province selector for single-province mode */}
+                {syncMode === 'single-province' && (
+                  <Select value={selectedSyncProvince} onValueChange={setSelectedSyncProvince}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Pilih Provinsi..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {provinces.map((prov) => (
+                        <SelectItem key={prov.code} value={prov.code}>
+                          {prov.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                
                 <Button 
                   variant="outline" 
                   onClick={handleSyncLocations}
-                  disabled={isSyncing}
+                  disabled={isSyncing || (syncMode === 'single-province' && !selectedSyncProvince)}
                   className="whitespace-nowrap"
                 >
                   {isSyncing ? (
