@@ -58,7 +58,7 @@ export const NewArrivalsPopup = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] w-[85%] max-w-xs sm:max-w-sm"
+            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[10000] mx-auto max-w-[280px] sm:max-w-xs md:max-w-sm"
           >
             <div className="bg-background border border-border rounded-xl shadow-2xl overflow-hidden">
               {/* Header with gradient */}
