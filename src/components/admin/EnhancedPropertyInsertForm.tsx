@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { formatIDR } from "@/utils/currency";
+import { useCentralLocation } from "@/hooks/useCentralLocation";
 
 interface PropertyFormData {
   title: string;
@@ -87,6 +88,9 @@ const EnhancedPropertyInsertForm = () => {
   const { user } = useAuth();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  
+  // Get centralized location settings
+  const { defaultProvince, defaultCity, isLoaded: locationSettingsLoaded } = useCentralLocation();
 
   const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
@@ -107,6 +111,17 @@ const EnhancedPropertyInsertForm = () => {
     three_d_model_url: "",
     virtual_tour_url: ""
   });
+  
+  // Apply centralized location settings when they load
+  useEffect(() => {
+    if (locationSettingsLoaded && defaultProvince?.name && !formData.state) {
+      setFormData(prev => ({
+        ...prev,
+        state: defaultProvince.name,
+        city: defaultCity?.name || "",
+      }));
+    }
+  }, [locationSettingsLoaded, defaultProvince, defaultCity]);
 
   const [images, setImages] = useState<ImageUpload[]>([]);
   const [thumbnailId, setThumbnailId] = useState<string>("");
