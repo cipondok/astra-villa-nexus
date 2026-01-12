@@ -58,86 +58,86 @@ export const NewArrivalsPopup = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] w-[90%] max-w-sm"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] w-[85%] max-w-xs sm:max-w-sm"
           >
-            <div className="bg-background border border-border rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-background border border-border rounded-xl shadow-2xl overflow-hidden">
               {/* Header with gradient */}
-              <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 p-4 pb-8">
+              <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 p-3 pb-6 sm:p-4 sm:pb-7">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleClose}
-                  className="absolute top-2 right-2 h-7 w-7 p-0 text-white/80 hover:text-white hover:bg-white/20"
+                  className="absolute top-1.5 right-1.5 h-6 w-6 p-0 text-white/80 hover:text-white hover:bg-white/20 sm:top-2 sm:right-2 sm:h-7 sm:w-7"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
                 
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <Sparkles className="h-4 w-4 text-white" />
+                <div className="flex items-center gap-1.5 mb-1.5 sm:gap-2 sm:mb-2">
+                  <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center sm:h-7 sm:w-7">
+                    <Sparkles className="h-3 w-3 text-white sm:h-3.5 sm:w-3.5" />
                   </div>
-                  <span className="text-xs font-medium text-white/90 uppercase tracking-wider">
+                  <span className="text-[10px] font-medium text-white/90 uppercase tracking-wider sm:text-xs">
                     Baru Tiba
                   </span>
                 </div>
                 
-                <h2 className="text-xl font-bold text-white mb-1">
+                <h2 className="text-base font-bold text-white mb-0.5 sm:text-lg sm:mb-1">
                   Selamat Datang! 🎉
                 </h2>
-                <p className="text-sm text-white/80">
+                <p className="text-xs text-white/80 sm:text-sm">
                   Temukan properti impian Anda bersama Astra
                 </p>
               </div>
               
               {/* Content */}
-              <div className="p-4 -mt-4">
-                <div className="bg-muted/50 rounded-xl p-3 mb-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Home className="h-5 w-5 text-primary" />
+              <div className="p-3 -mt-3 sm:p-4 sm:-mt-4">
+                <div className="bg-muted/50 rounded-lg p-2.5 mb-3 sm:rounded-xl sm:p-3 sm:mb-4">
+                  <div className="flex items-center gap-2 mb-2 sm:gap-3 sm:mb-3">
+                    <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0 sm:h-9 sm:w-9 sm:rounded-lg">
+                      <Home className="h-4 w-4 text-primary sm:h-4.5 sm:w-4.5" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground">Properti Terbaru</h3>
-                      <p className="text-xs text-muted-foreground">100+ listing baru minggu ini</p>
+                      <h3 className="text-xs font-semibold text-foreground sm:text-sm">Properti Terbaru</h3>
+                      <p className="text-[10px] text-muted-foreground sm:text-xs">100+ listing baru minggu ini</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
-                      <MapPin className="h-5 w-5 text-orange-500" />
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="h-8 w-8 rounded-md bg-orange-500/10 flex items-center justify-center shrink-0 sm:h-9 sm:w-9 sm:rounded-lg">
+                      <MapPin className="h-4 w-4 text-orange-500 sm:h-4.5 sm:w-4.5" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground">Jelajahi Peta</h3>
-                      <p className="text-xs text-muted-foreground">Cari berdasarkan lokasi favorit</p>
+                      <h3 className="text-xs font-semibold text-foreground sm:text-sm">Jelajahi Peta</h3>
+                      <p className="text-[10px] text-muted-foreground sm:text-xs">Cari berdasarkan lokasi favorit</p>
                     </div>
                   </div>
                 </div>
                 
                 {/* Actions */}
-                <div className="flex gap-2">
+                <div className="flex gap-1.5 sm:gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleViewMap}
-                    className="flex-1 h-9 text-xs"
+                    className="flex-1 h-8 text-[10px] sm:h-9 sm:text-xs"
                   >
-                    <MapPin className="h-3.5 w-3.5 mr-1.5" />
+                    <MapPin className="h-3 w-3 mr-1 sm:h-3.5 sm:w-3.5 sm:mr-1.5" />
                     Lihat Peta
                   </Button>
                   <Button
                     size="sm"
                     onClick={handleExplore}
-                    className="flex-1 h-9 text-xs bg-primary hover:bg-primary/90"
+                    className="flex-1 h-8 text-[10px] bg-primary hover:bg-primary/90 sm:h-9 sm:text-xs"
                   >
                     Jelajahi
-                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+                    <ArrowRight className="h-3 w-3 ml-1 sm:h-3.5 sm:w-3.5 sm:ml-1.5" />
                   </Button>
                 </div>
                 
                 {/* Skip link */}
                 <button
                   onClick={handleClose}
-                  className="w-full mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="w-full mt-2 text-[10px] text-muted-foreground hover:text-foreground transition-colors sm:mt-3 sm:text-xs"
                 >
                   Lewati untuk sekarang
                 </button>
