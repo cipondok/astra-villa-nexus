@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter } from "lucide-react";
+import { Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter, Globe } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
@@ -14,6 +14,7 @@ import PropertyTestPanel from "./PropertyTestPanel";
 import AdminAccessChecker from "./AdminAccessChecker";
 import PropertyFilterSettings from "./settings/PropertyFilterSettings";
 import IndonesianLocationManager from "./property/IndonesianLocationManager";
+import CentralLocationSettings from "./location/CentralLocationSettings";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -41,7 +42,7 @@ const AdminPropertyManagement = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <div className="bg-card backdrop-blur-sm rounded-lg border border-border p-1 shadow-sm">
-          <TabsList className="grid w-full grid-cols-10 bg-transparent gap-0.5 h-8">
+          <TabsList className="grid w-full grid-cols-11 bg-transparent gap-0.5 h-8">
             <TabsTrigger 
               value="diagnostic" 
               className="flex items-center gap-1 text-xs px-2 h-7"
@@ -152,7 +153,10 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="locations" className="mt-3">
-          <IndonesianLocationManager />
+          <div className="space-y-4">
+            <CentralLocationSettings />
+            <IndonesianLocationManager />
+          </div>
         </TabsContent>
 
         <TabsContent value="filters" className="mt-3">

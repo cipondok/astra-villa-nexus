@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { formatIDR } from '@/utils/currency';
 import { useToast } from '@/hooks/use-toast';
+import { useCentralLocation } from '@/hooks/useCentralLocation';
 
 interface SavedArea {
   id: string;
@@ -62,6 +63,9 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
   const [heatmapMode, setHeatmapMode] = useState<'density' | 'price'>('density');
   const [heatmapFilter, setHeatmapFilter] = useState<{ min: number; max: number; zone: string } | null>(null);
   const { toast } = useToast();
+  
+  // Use centralized location settings
+  const { mapCenter, zoom: defaultZoom } = useCentralLocation();
 
   // Load saved areas from localStorage on mount
   useEffect(() => {
@@ -81,12 +85,12 @@ const PropertyMapView: React.FC<PropertyMapViewProps> = ({ properties, onPropert
 
     mapboxgl.accessToken = mapboxToken;
 
-    // Initialize map centered on Indonesia
+    // Initialize map using centralized location settings
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [106.8456, -6.2088], // Jakarta coordinates
-      zoom: 14,
+      center: mapCenter,
+      zoom: defaultZoom,
     });
 
     // Add navigation controls
