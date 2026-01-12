@@ -60,32 +60,30 @@ export const NewArrivalsPopup = () => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[10000] mx-auto max-w-[280px] sm:max-w-xs md:max-w-sm"
           >
-            <div className="bg-background border border-border rounded-xl shadow-2xl overflow-hidden">
-              {/* Header with gradient */}
-              <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 px-3 py-2.5 sm:px-4 sm:py-3">
+            <div className="bg-background border border-border rounded-lg shadow-2xl overflow-hidden">
+              {/* Header - slim */}
+              <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 px-2.5 py-2 sm:px-3 sm:py-2.5">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleClose}
-                  className="absolute top-1 right-1 h-6 w-6 p-0 text-white/80 hover:text-white hover:bg-white/20 sm:top-1.5 sm:right-1.5"
+                  className="absolute top-1 right-1 h-5 w-5 p-0 text-white/80 hover:text-white hover:bg-white/20"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-3 w-3" />
                 </Button>
 
-                <div className="flex items-center gap-1.5">
-                  <div className="h-6 w-6 rounded-full bg-white/15 flex items-center justify-center">
-                    <Sparkles className="h-3 w-3 text-white" />
-                  </div>
-                  <span className="text-[10px] font-medium text-white/90 uppercase tracking-wider">
+                <div className="flex items-center gap-1">
+                  <Sparkles className="h-2.5 w-2.5 text-white/90" />
+                  <span className="text-[8px] font-medium text-white/80 uppercase tracking-wider">
                     Baru Tiba
                   </span>
                 </div>
 
-                <h2 className="mt-1 text-sm font-bold text-white leading-tight sm:text-base">
+                <h2 className="mt-0.5 text-xs font-semibold text-white leading-tight sm:text-sm">
                   Selamat Datang! 🎉
                 </h2>
-                <p className="mt-0.5 text-[11px] text-white/80 leading-snug sm:text-xs">
-                  Temukan properti impian Anda bersama Astra
+                <p className="text-[9px] text-white/70 leading-tight sm:text-[10px]">
+                  Temukan properti impian Anda
                 </p>
               </div>
               
