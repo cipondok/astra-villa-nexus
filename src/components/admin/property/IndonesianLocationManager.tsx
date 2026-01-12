@@ -191,6 +191,15 @@ const IndonesianLocationManager = () => {
       resetForm();
     },
     onError: (error: any) => {
+      // 23505 = unique_violation (duplicate entry)
+      const isDuplicate = error?.code === '23505' ||
+        /locations_no_true_duplicates_uidx/i.test(String(error?.message || ''));
+
+      if (isDuplicate) {
+        showError('Duplicate entry', 'This exact location already exists in the database.');
+        return;
+      }
+
       showError('Error', error.message);
     }
   });
