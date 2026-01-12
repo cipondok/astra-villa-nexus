@@ -30,13 +30,13 @@ const PillSelector = ({ options, value, onChange, placeholder, className = "" }:
     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
-  // Calculate dropdown position when it opens
+  // Calculate dropdown position when it opens (viewport-relative for fixed positioning)
   useEffect(() => {
     if (showOptions && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       setDropdownPosition({
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.left + window.scrollX,
+        top: rect.bottom + 4,
+        left: rect.left,
         width: rect.width
       });
     }
