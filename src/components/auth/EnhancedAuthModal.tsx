@@ -416,7 +416,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       {/* Compact Modal - Smaller Size */}
       <div className="relative w-full max-w-[300px] md:max-w-[340px] animate-in slide-in-from-top-4 fade-in zoom-in-95 duration-300 origin-center">
         {/* Glass Card */}
-        <div className="bg-background/95 backdrop-blur-xl border border-border/30 rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-background/70 backdrop-blur-xl border border-border/30 rounded-xl shadow-2xl overflow-hidden">
           {/* Countdown Timer */}
           {!hasInteraction && !isLoading && !isSuccess && countdown > 0 && (
             <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
@@ -473,7 +473,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
           </div>
 
           {/* Content */}
-          <div className="px-4 py-3 space-y-3">
+          <div className="px-3 py-2 space-y-2">
             {/* Success State */}
             {isSuccess && (
               <Alert className="border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/50 py-2">
@@ -496,13 +496,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             <Button 
               onClick={handleGoogleSignIn}
               disabled={isLoading || isSuccess}
-              className="w-full h-9 bg-background hover:bg-muted text-foreground border border-border font-medium rounded-lg text-xs flex items-center justify-center gap-2"
+              className="w-full h-8 bg-background hover:bg-muted text-foreground border border-border font-medium rounded-lg text-[10px] flex items-center justify-center gap-1.5"
             >
               {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <>
-                  <svg className="h-4 w-4" viewBox="0 0 24 24">
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -545,12 +545,12 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             </div>
 
             {/* Toggle Buttons */}
-            <div className="flex bg-muted/50 rounded-lg p-0.5">
+            <div className="flex bg-muted/50 rounded-md p-0.5">
               <button
                 type="button"
                 onClick={() => { setIsLogin(true); setErrors({}); handleInteraction(); }}
                 disabled={isLoading}
-                className={`flex-1 py-2 px-3 text-xs font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-1.5 px-2 text-[10px] font-medium rounded-md transition-all duration-200 ${
                   isLogin 
                     ? 'bg-primary text-primary-foreground shadow-sm' 
                     : 'text-muted-foreground hover:text-foreground'
@@ -562,7 +562,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                 type="button"
                 onClick={() => { setIsLogin(false); setErrors({}); handleInteraction(); }}
                 disabled={isLoading}
-                className={`flex-1 py-2 px-3 text-xs font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-1.5 px-2 text-[10px] font-medium rounded-md transition-all duration-200 ${
                   !isLogin 
                     ? 'bg-primary text-primary-foreground shadow-sm' 
                     : 'text-muted-foreground hover:text-foreground'
@@ -574,7 +574,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
             {/* Login Form */}
             {isLogin && (
-              <form onSubmit={handleLogin} className="space-y-2.5 animate-in fade-in duration-200">
+              <form onSubmit={handleLogin} className="space-y-2 animate-in fade-in duration-200">
                 {/* Email or WhatsApp field */}
                 {authMethod === "email" ? (
                   <div className="space-y-1">
@@ -588,7 +588,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={loginData.email}
                       onChange={(e) => { setLoginData(prev => ({ ...prev, email: e.target.value })); handleInteraction(); }}
                       disabled={isLoading}
-                      className={`h-8 text-xs bg-background border-border rounded-lg ${errors.email ? "border-destructive" : ""}`}
+                      className={`h-7 text-[10px] bg-background border-border rounded-md ${errors.email ? "border-destructive" : ""}`}
                     />
                     {errors.email && (
                       <p className="text-[10px] text-destructive">{errors.email}</p>
@@ -607,9 +607,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                         value={loginData.whatsapp}
                         onChange={(e) => { setLoginData(prev => ({ ...prev, whatsapp: e.target.value })); handleInteraction(); }}
                         disabled={isLoading}
-                        className={`h-8 text-xs bg-background border-border rounded-lg pl-8 ${errors.whatsapp ? "border-destructive" : ""}`}
+                        className={`h-7 text-[10px] bg-background border-border rounded-md pl-7 ${errors.whatsapp ? "border-destructive" : ""}`}
                       />
-                      <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <Phone className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                     </div>
                     {errors.whatsapp && (
                       <p className="text-[10px] text-destructive">{errors.whatsapp}</p>
@@ -629,17 +629,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={loginData.password}
                       onChange={(e) => { setLoginData(prev => ({ ...prev, password: e.target.value })); handleInteraction(); }}
                       disabled={isLoading}
-                      className={`h-8 text-xs bg-background border-border pr-8 rounded-lg ${errors.password ? "border-destructive" : ""}`}
+                      className={`h-7 text-[10px] bg-background border-border pr-7 rounded-md ${errors.password ? "border-destructive" : ""}`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent text-muted-foreground"
+                      className="absolute right-0 top-0 h-7 w-7 p-0 hover:bg-transparent text-muted-foreground"
                       onClick={() => { setShowPassword(!showPassword); handleInteraction(); }}
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   {errors.password && (
@@ -672,17 +672,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
                 <Button 
                   type="submit" 
-                  className="w-full h-8 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg text-xs"
+                  className="w-full h-7 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md text-[10px]"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                       {currentText.signingIn}
                     </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                      <CheckCircle className="mr-1 h-3 w-3" />
                       {currentText.success}
                     </>
                   ) : (
@@ -694,7 +694,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
             {/* Register Form */}
             {!isLogin && (
-              <form onSubmit={handleRegister} className="space-y-2.5 animate-in fade-in duration-200">
+              <form onSubmit={handleRegister} className="space-y-2 animate-in fade-in duration-200">
                 <div className="space-y-1">
                   <Label htmlFor="register-name" className="text-[10px] font-medium text-foreground">
                     {currentText.fullName}
@@ -706,7 +706,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={registerData.fullName}
                     onChange={(e) => { setRegisterData(prev => ({ ...prev, fullName: e.target.value })); handleInteraction(); }}
                     disabled={isLoading}
-                    className={`h-8 text-xs bg-background border-border rounded-lg ${errors.fullName ? "border-destructive" : ""}`}
+                    className={`h-7 text-[10px] bg-background border-border rounded-md ${errors.fullName ? "border-destructive" : ""}`}
                   />
                   {errors.fullName && (
                     <p className="text-[10px] text-destructive">{errors.fullName}</p>
@@ -726,7 +726,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.email}
                       onChange={(e) => { setRegisterData(prev => ({ ...prev, email: e.target.value })); handleInteraction(); }}
                       disabled={isLoading}
-                      className={`h-8 text-xs bg-background border-border rounded-lg ${errors.email ? "border-destructive" : ""}`}
+                      className={`h-7 text-[10px] bg-background border-border rounded-md ${errors.email ? "border-destructive" : ""}`}
                     />
                     <EmailValidationIndicator email={registerData.email} />
                     {errors.email && (
@@ -746,9 +746,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                         value={registerData.whatsapp}
                         onChange={(e) => { setRegisterData(prev => ({ ...prev, whatsapp: e.target.value })); handleInteraction(); }}
                         disabled={isLoading}
-                        className={`h-8 text-xs bg-background border-border rounded-lg pl-8 ${errors.whatsapp ? "border-destructive" : ""}`}
+                        className={`h-7 text-[10px] bg-background border-border rounded-md pl-7 ${errors.whatsapp ? "border-destructive" : ""}`}
                       />
-                      <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <Phone className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                     </div>
                     {errors.whatsapp && (
                       <p className="text-[10px] text-destructive">{errors.whatsapp}</p>
@@ -768,17 +768,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.password}
                       onChange={(e) => { setRegisterData(prev => ({ ...prev, password: e.target.value })); handleInteraction(); }}
                       disabled={isLoading}
-                      className={`h-8 text-xs bg-background border-border pr-8 rounded-lg ${errors.password ? "border-destructive" : ""}`}
+                      className={`h-7 text-[10px] bg-background border-border pr-7 rounded-md ${errors.password ? "border-destructive" : ""}`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent text-muted-foreground"
+                      className="absolute right-0 top-0 h-7 w-7 p-0 hover:bg-transparent text-muted-foreground"
                       onClick={() => { setShowPassword(!showPassword); handleInteraction(); }}
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   <PasswordStrengthBar password={registerData.password} showTips={false} />
@@ -799,17 +799,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.confirmPassword}
                       onChange={(e) => { setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value })); handleInteraction(); }}
                       disabled={isLoading}
-                      className={`h-8 text-xs bg-background border-border pr-8 rounded-lg ${errors.confirmPassword ? "border-destructive" : ""}`}
+                      className={`h-7 text-[10px] bg-background border-border pr-7 rounded-md ${errors.confirmPassword ? "border-destructive" : ""}`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent text-muted-foreground"
+                      className="absolute right-0 top-0 h-7 w-7 p-0 hover:bg-transparent text-muted-foreground"
                       onClick={() => { setShowConfirmPassword(!showConfirmPassword); handleInteraction(); }}
                       disabled={isLoading}
                     >
-                      {showConfirmPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      {showConfirmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   {registerData.confirmPassword && registerData.password !== registerData.confirmPassword && (
@@ -822,17 +822,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
                 <Button 
                   type="submit" 
-                  className="w-full h-8 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg text-xs"
+                  className="w-full h-7 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-md text-[10px]"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                       {currentText.creatingAccount}
                     </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                      <CheckCircle className="mr-1 h-3 w-3" />
                       {currentText.success}
                     </>
                   ) : (
@@ -843,7 +843,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             )}
 
             {/* Switch Form Link */}
-            <div className="text-center pt-2 border-t border-border">
+            <div className="text-center pt-1.5 border-t border-border">
               <button
                 type="button"
                 onClick={() => { setIsLogin(!isLogin); setErrors({}); handleInteraction(); }}
