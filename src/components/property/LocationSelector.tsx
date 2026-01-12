@@ -20,15 +20,19 @@ interface LocationSelectorProps {
   onLocationChange: (location: string) => void;
 }
 
-// Helper to normalize text (Title Case)
+// Helper to normalize text (Title Case + whitespace normalization)
 const normalizeText = (text: string): string => {
   if (!text) return '';
-  return text
+  const cleaned = text.trim().replace(/\s+/g, ' ');
+  return cleaned
     .toLowerCase()
     .split(' ')
+    .filter(Boolean)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
+
+const normalizeKey = (text: string) => normalizeText(text).toLowerCase();
 
 const LocationSelector = ({
   selectedState,
@@ -109,8 +113,9 @@ const LocationSelector = ({
     locations.forEach(loc => {
       if (loc.province_name) {
         const normalized = normalizeText(loc.province_name);
-        if (!uniqueProvinces.has(normalized.toLowerCase())) {
-          uniqueProvinces.set(normalized.toLowerCase(), normalized);
+        const key = normalizeKey(loc.province_name);
+        if (!uniqueProvinces.has(key)) {
+          uniqueProvinces.set(key, normalized);
         }
       }
     });
@@ -120,64 +125,73 @@ const LocationSelector = ({
   // Get cities for selected province
   const cities = useMemo(() => {
     if (!locations || !selectedState) return [];
-    const stateLower = selectedState.toLowerCase();
+    const stateKey = normalizeKey(selectedState);
     const uniqueCities = new Map<string, string>();
+
     locations
-      .filter(loc => loc.province_name?.toLowerCase() === stateLower)
+      .filter(loc => (loc.province_name ? normalizeKey(loc.province_name) === stateKey : false))
       .forEach(loc => {
         if (loc.city_name) {
           const normalized = normalizeText(loc.city_name);
-          if (!uniqueCities.has(normalized.toLowerCase())) {
-            uniqueCities.set(normalized.toLowerCase(), normalized);
+          const key = normalizeKey(loc.city_name);
+          if (!uniqueCities.has(key)) {
+            uniqueCities.set(key, normalized);
           }
         }
       });
+
     return Array.from(uniqueCities.values()).sort((a, b) => a.localeCompare(b, 'id'));
   }, [locations, selectedState]);
 
   // Get districts for selected city
   const districts = useMemo(() => {
     if (!locations || !selectedState || !selectedCity) return [];
-    const stateLower = selectedState.toLowerCase();
-    const cityLower = selectedCity.toLowerCase();
+    const stateKey = normalizeKey(selectedState);
+    const cityKey = normalizeKey(selectedCity);
+
     const uniqueDistricts = new Map<string, string>();
     locations
-      .filter(loc => 
-        loc.province_name?.toLowerCase() === stateLower && 
-        loc.city_name?.toLowerCase() === cityLower
+      .filter(loc =>
+        (loc.province_name ? normalizeKey(loc.province_name) === stateKey : false) &&
+        (loc.city_name ? normalizeKey(loc.city_name) === cityKey : false)
       )
       .forEach(loc => {
         if (loc.district_name) {
           const normalized = normalizeText(loc.district_name);
-          if (!uniqueDistricts.has(normalized.toLowerCase())) {
-            uniqueDistricts.set(normalized.toLowerCase(), normalized);
+          const key = normalizeKey(loc.district_name);
+          if (!uniqueDistricts.has(key)) {
+            uniqueDistricts.set(key, normalized);
           }
         }
       });
+
     return Array.from(uniqueDistricts.values()).sort((a, b) => a.localeCompare(b, 'id'));
   }, [locations, selectedState, selectedCity]);
 
   // Get subdistricts for selected district
   const subdistricts = useMemo(() => {
     if (!locations || !selectedState || !selectedCity || !selectedDistrict) return [];
-    const stateLower = selectedState.toLowerCase();
-    const cityLower = selectedCity.toLowerCase();
-    const districtLower = selectedDistrict.toLowerCase();
+    const stateKey = normalizeKey(selectedState);
+    const cityKey = normalizeKey(selectedCity);
+    const districtKey = normalizeKey(selectedDistrict);
+
     const uniqueSubdistricts = new Map<string, string>();
     locations
-      .filter(loc => 
-        loc.province_name?.toLowerCase() === stateLower && 
-        loc.city_name?.toLowerCase() === cityLower &&
-        loc.district_name?.toLowerCase() === districtLower
+      .filter(loc =>
+        (loc.province_name ? normalizeKey(loc.province_name) === stateKey : false) &&
+        (loc.city_name ? normalizeKey(loc.city_name) === cityKey : false) &&
+        (loc.district_name ? normalizeKey(loc.district_name) === districtKey : false)
       )
       .forEach(loc => {
         if (loc.subdistrict_name) {
           const normalized = normalizeText(loc.subdistrict_name);
-          if (!uniqueSubdistricts.has(normalized.toLowerCase())) {
-            uniqueSubdistricts.set(normalized.toLowerCase(), normalized);
+          const key = normalizeKey(loc.subdistrict_name);
+          if (!uniqueSubdistricts.has(key)) {
+            uniqueSubdistricts.set(key, normalized);
           }
         }
       });
+
     return Array.from(uniqueSubdistricts.values()).sort((a, b) => a.localeCompare(b, 'id'));
   }, [locations, selectedState, selectedCity, selectedDistrict]);
 
