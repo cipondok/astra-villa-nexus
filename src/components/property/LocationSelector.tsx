@@ -78,34 +78,44 @@ const LocationSelector = ({
     },
   });
 
-  // Get unique provinces
-  const provinces = locations ? [...new Set(locations.map(loc => loc.province_name))] : [];
+  // Get unique provinces (sorted alphabetically)
+  const provinces = locations 
+    ? [...new Set(locations.map(loc => loc.province_name).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'id'))
+    : [];
 
-  // Get cities for selected province
+  // Get cities/regencies for selected province (case-insensitive match)
   const cities = locations 
     ? [...new Set(locations
-        .filter(loc => loc.province_name === selectedState)
-        .map(loc => loc.city_name))]
+        .filter(loc => loc.province_name?.toLowerCase() === selectedState?.toLowerCase())
+        .map(loc => loc.city_name)
+        .filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'id'))
     : [];
 
-  // Get districts for selected province and city
+  // Get districts for selected province and city (case-insensitive match)
   const districts = locations
     ? [...new Set(locations
-        .filter(loc => loc.province_name === selectedState && loc.city_name === selectedCity)
+        .filter(loc => 
+          loc.province_name?.toLowerCase() === selectedState?.toLowerCase() && 
+          loc.city_name?.toLowerCase() === selectedCity?.toLowerCase()
+        )
         .map(loc => loc.district_name)
         .filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'id'))
     : [];
 
-  // Get subdistricts for selected province, city, and district
+  // Get subdistricts/villages for selected province, city, and district (case-insensitive match)
   const subdistricts = locations
     ? [...new Set(locations
         .filter(loc => 
-          loc.province_name === selectedState && 
-          loc.city_name === selectedCity && 
-          loc.district_name === selectedDistrict
+          loc.province_name?.toLowerCase() === selectedState?.toLowerCase() && 
+          loc.city_name?.toLowerCase() === selectedCity?.toLowerCase() && 
+          loc.district_name?.toLowerCase() === selectedDistrict?.toLowerCase()
         )
         .map(loc => loc.subdistrict_name)
         .filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'id'))
     : [];
 
   // Update location string when selections change
