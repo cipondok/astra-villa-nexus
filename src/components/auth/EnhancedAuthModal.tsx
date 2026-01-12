@@ -416,7 +416,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       {/* Compact Modal - Smaller Size */}
       <div className="relative w-full max-w-[300px] md:max-w-[340px] animate-in slide-in-from-top-4 fade-in zoom-in-95 duration-300 origin-center">
         {/* Glass Card */}
-        <div className="bg-background/70 backdrop-blur-xl border border-border/30 rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-card/95 dark:bg-background/70 backdrop-blur-xl border border-border/40 dark:border-border/30 rounded-xl shadow-2xl overflow-hidden">
           {/* Countdown Timer */}
           {!hasInteraction && !isLoading && !isSuccess && countdown > 0 && (
             <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
@@ -451,7 +451,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
           )}
 
           {/* Header */}
-          <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-gradient-to-r from-primary/10 to-accent/10">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-primary/20 bg-gradient-to-r from-primary/15 via-primary/10 to-accent/15">
             <div className="flex items-center gap-2">
               <h2 className="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 ASTRA Villa
@@ -473,7 +473,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
           </div>
 
           {/* Content */}
-          <div className="px-3 py-2 space-y-2">
+          <div className="px-3 py-2 space-y-2 bg-card/50 dark:bg-transparent">
             {/* Success State */}
             {isSuccess && (
               <Alert className="border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/50 py-2">
