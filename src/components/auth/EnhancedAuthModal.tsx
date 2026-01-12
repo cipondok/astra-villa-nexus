@@ -451,14 +451,14 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
           )}
 
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border/30 bg-gradient-to-r from-primary/10 to-accent/10">
-            <div>
-              <h2 className="text-sm font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-gradient-to-r from-primary/10 to-accent/10">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 ASTRA Villa
               </h2>
-              <p className="text-[10px] text-muted-foreground">
+              <span className="text-[9px] text-muted-foreground">
                 {isLogin ? 'Welcome back!' : 'Join us today'}
-              </p>
+              </span>
             </div>
             <Button 
               ref={closeRef}
@@ -466,9 +466,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               size="sm" 
               onClick={handleClose} 
               disabled={isLoading}
-              className="h-6 w-6 p-0 hover:bg-muted rounded-full text-muted-foreground"
+              className="h-5 w-5 p-0 hover:bg-muted rounded-full text-muted-foreground"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3 w-3" />
             </Button>
           </div>
 
