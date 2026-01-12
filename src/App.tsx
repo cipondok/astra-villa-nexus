@@ -119,6 +119,7 @@ const AppContent = () => {
             <Route path="/" element={<Index />} />
             <Route path="/search" element={<Search />} />
             <Route path="/saved" element={<Saved />} />
+            <Route path="/favorites" element={<Saved />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/astra-tokens" element={<AstraTokensPage />} />
