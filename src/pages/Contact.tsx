@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageCircle, Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
+import { MessageCircle, Phone, Mail, MapPin, Clock, Send, CheckCircle, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
 import { useTheme } from "@/components/ThemeProvider";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +16,7 @@ const Contact = () => {
   const { language, setLanguage } = useLanguage();
   const { theme } = useTheme();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -128,14 +130,24 @@ const Contact = () => {
       
       <div className="pt-16 sm:pt-20 pb-8 px-2 sm:px-4 md:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-6 sm:mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4">
-              {currentText.title}
-            </h1>
-            <p className="text-sm sm:text-lg md:text-xl text-muted-foreground">
-              {currentText.subtitle}
-            </p>
+          {/* Back Button + Header */}
+          <div className="flex items-center gap-2 mb-4 sm:mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(-1)}
+              className="h-8 w-8 p-0"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
+                {currentText.title}
+              </h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {currentText.subtitle}
+              </p>
+            </div>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
