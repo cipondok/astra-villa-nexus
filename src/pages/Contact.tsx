@@ -310,11 +310,26 @@ const Contact = () => {
                   <h3 className="font-semibold text-xs sm:text-sm text-foreground mb-2">
                     {language === 'en' ? 'Quick Actions' : 'Aksi Cepat'}
                   </h3>
-                  <Button variant="outline" className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm"
+                    onClick={() => {
+                      toast({
+                        title: language === 'en' ? 'Live Chat' : 'Live Chat',
+                        description: language === 'en' ? 'Live chat feature coming soon!' : 'Fitur live chat segera hadir!',
+                      });
+                    }}
+                  >
                     <MessageCircle className="h-4 w-4 mr-2" />
                     {language === 'en' ? 'Start Live Chat' : 'Mulai Live Chat'}
                   </Button>
-                  <Button variant="outline" className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start h-9 sm:h-10 text-xs sm:text-sm"
+                    onClick={() => {
+                      window.location.href = 'tel:+622112345678';
+                    }}
+                  >
                     <Phone className="h-4 w-4 mr-2" />
                     {language === 'en' ? 'Call Support' : 'Hubungi Support'}
                   </Button>
