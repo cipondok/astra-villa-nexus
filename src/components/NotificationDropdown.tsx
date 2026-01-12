@@ -114,27 +114,27 @@ const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = 
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-lg shadow-lg z-50">
+        <div className="absolute right-0 top-full mt-1 w-72 bg-card border border-border rounded-md shadow-lg z-50">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h3 className="font-semibold text-foreground">Notifications</h3>
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+            <h3 className="text-xs font-semibold text-foreground">Notifications</h3>
+            <div className="flex items-center gap-1">
               {unreadCount > 0 && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={markAllAsRead}
-                  className="text-xs"
+                  className="h-6 px-1.5 text-[10px]"
                 >
-                  <Check className="h-3 w-3 mr-1" />
-                  Mark all read
+                  <Check className="h-2.5 w-2.5 mr-0.5" />
+                  Read all
                 </Button>
               )}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearAllNotifications}
-                className="text-xs text-destructive hover:text-destructive"
+                className="h-6 w-6 p-0 text-destructive hover:text-destructive"
               >
                 <Trash2 className="h-3 w-3" />
               </Button>
@@ -142,99 +142,68 @@ const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = 
           </div>
 
           {/* Notifications List */}
-          <ScrollArea className="max-h-96">
+          <ScrollArea className="max-h-72">
             {notifications.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground">
-                <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No notifications yet</p>
+              <div className="p-4 text-center text-muted-foreground">
+                <Bell className="h-6 w-6 mx-auto mb-1 opacity-50" />
+                <p className="text-xs">No notifications</p>
               </div>
             ) : (
-              <div className="p-2">
+              <div className="p-1.5">
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
+                    className={`flex items-start gap-2 p-2 rounded cursor-pointer transition-colors hover:bg-muted/50 ${
                       !notification.read ? 'bg-primary/5' : ''
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >
                     {/* Icon */}
-                    <div className="flex-shrink-0 mt-1">
+                    <div className="flex-shrink-0 mt-0.5">
                       {getNotificationIcon(notification.type)}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-foreground">
-                            {notification.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {notification.message}
-                          </p>
-                          
-                          {/* Property Image */}
-                          {notification.propertyImage && (
-                            <div className="mt-2">
-                              <img
-                                src={notification.propertyImage}
-                                alt="Property"
-                                className="w-12 h-8 object-cover rounded"
-                              />
-                            </div>
-                          )}
-                          
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
-                          </p>
-                        </div>
+                      <p className="text-xs font-medium text-foreground line-clamp-1">
+                        {notification.title}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground line-clamp-1">
+                        {notification.message}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
+                      </p>
+                    </div>
 
-                        {/* Actions */}
-                        <div className="flex items-center gap-1 ml-2">
-                          {notification.type === 'favorite' && notification.propertyId && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => handleRemoveFromFavorites(e, notification)}
-                              className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                              title="Remove from favorites"
-                            >
-                              <Heart className="h-3 w-3 fill-current" />
-                            </Button>
-                          )}
-                          
-                          {notification.propertyId && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleNotificationClick(notification)}
-                              className="h-6 w-6 p-0"
-                              title="View property"
-                            >
-                              <Eye className="h-3 w-3" />
-                            </Button>
-                          )}
-                          
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeNotification(notification.id);
-                            }}
-                            className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
-                            title="Remove notification"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
+                    {/* Actions */}
+                    <div className="flex items-center gap-0.5">
+                      {notification.propertyId && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleNotificationClick(notification)}
+                          className="h-5 w-5 p-0"
+                        >
+                          <Eye className="h-2.5 w-2.5" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeNotification(notification.id);
+                        }}
+                        className="h-5 w-5 p-0 text-muted-foreground hover:text-destructive"
+                      >
+                        <X className="h-2.5 w-2.5" />
+                      </Button>
                     </div>
 
                     {/* Unread indicator */}
                     {!notification.read && (
-                      <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2"></div>
+                      <div className="flex-shrink-0 w-1.5 h-1.5 bg-primary rounded-full mt-1"></div>
                     )}
                   </div>
                 ))}
@@ -244,7 +213,7 @@ const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = 
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="p-3 border-t border-border">
+            <div className="px-2 py-1.5 border-t border-border">
               <Button
                 variant="ghost"
                 size="sm"
@@ -252,9 +221,9 @@ const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = 
                   onNavigate?.('/saved');
                   setIsOpen(false);
                 }}
-                className="w-full text-sm"
+                className="w-full h-7 text-xs"
               >
-                View all saved properties
+                View all saved
               </Button>
             </div>
           )}
