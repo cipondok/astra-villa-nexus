@@ -47,24 +47,45 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
     setUploading(key);
 
     try {
-      const fileExt = file.name.split('.').pop();
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        showError('Authentication Required', 'Please log in to upload images');
+        setUploading(null);
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'png';
       const fileName = `branding/${key}_${Date.now()}.${fileExt}`;
+
+      console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
 
       const { error: uploadError, data } = await supabase.storage
         .from('system-assets')
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, file, { 
+          upsert: true,
+          contentType: file.type
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Supabase upload error:', uploadError);
+        throw uploadError;
+      }
+
+      console.log('Upload successful:', data);
 
       const { data: urlData } = supabase.storage
         .from('system-assets')
         .getPublicUrl(fileName);
 
+      console.log('Public URL:', urlData.publicUrl);
+
       onInputChange(key, urlData.publicUrl);
       showSuccess('Upload Complete', 'Image uploaded successfully');
     } catch (error: any) {
-      console.error('Upload error:', error);
-      showError('Upload Failed', error.message || 'Failed to upload image');
+      console.error('Upload error details:', error);
+      const errorMessage = error.message || error.error_description || 'Failed to upload image';
+      showError('Upload Failed', errorMessage);
     } finally {
       setUploading(null);
     }
