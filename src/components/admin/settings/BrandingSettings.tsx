@@ -5,11 +5,11 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Image as ImageIcon, 
-  Upload, 
-  LayoutTemplate, 
-  MessageCircle, 
+import {
+  Image as ImageIcon,
+  Upload,
+  LayoutTemplate,
+  MessageCircle,
   Mail,
   Home,
   Trash2,
@@ -18,8 +18,9 @@ import {
   RefreshCw,
   Download,
   Copy,
-  Check
+  Check,
 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAlert } from '@/contexts/AlertContext';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,6 +52,7 @@ const LOGO_SIZES = [
 
 const BrandingSettings = ({ settings, loading, onInputChange, onSave }: BrandingSettingsProps) => {
   const { showSuccess, showError } = useAlert();
+  const queryClient = useQueryClient();
   const [uploading, setUploading] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [logoPrompt, setLogoPrompt] = useState('');
@@ -145,6 +147,9 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
 
       onInputChange(key, urlData.publicUrl);
       await persistSetting(key, urlData.publicUrl);
+
+      // Ensure the rest of the app (e.g. navigation) refreshes immediately
+      queryClient.invalidateQueries({ queryKey: ["system-setting"] });
 
       showSuccess("Upload Complete", "Image uploaded and saved successfully");
       return true;
