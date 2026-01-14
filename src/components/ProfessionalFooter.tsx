@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp, ArrowUpRight, ChevronDown, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, CircleHelp, PhoneCall, Shield, FileText, Cookie, MapPin } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import fallbackLogo from "@/assets/astra-logo.png";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -10,6 +13,23 @@ interface ProfessionalFooterProps {
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const [isPartnersOpen, setIsPartnersOpen] = useState(false);
+
+  // Fetch footer logo from system settings
+  const { data: footerLogoUrl } = useQuery({
+    queryKey: ["system-setting", "footerLogo"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("system_settings")
+        .select("value")
+        .eq("category", "general")
+        .eq("key", "footerLogo")
+        .maybeSingle();
+      if (error) return null;
+      return (data?.value as string) || null;
+    },
+    staleTime: 5_000,
+    refetchOnMount: "always",
+  });
 
   const text = {
     en: {
@@ -94,10 +114,23 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           {/* Company Info */}
           <div className="col-span-2 md:col-span-1 space-y-2">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-gradient-to-br from-primary to-accent rounded-lg">
-                <Rocket className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-bold text-white">{currentText.company}</span>
+              {footerLogoUrl ? (
+                <img 
+                  src={footerLogoUrl} 
+                  alt={currentText.company}
+                  className="h-8 w-auto object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = fallbackLogo;
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="p-1.5 bg-gradient-to-br from-primary to-accent rounded-lg">
+                    <Rocket className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-white">{currentText.company}</span>
+                </>
+              )}
             </div>
             <p className="text-[10px] text-slate-400 leading-relaxed">{currentText.tagline}</p>
             <div className="flex flex-col gap-1">
