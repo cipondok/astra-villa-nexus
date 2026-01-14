@@ -174,9 +174,9 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-background/30 backdrop-blur-2xl border-b border-primary/10 shadow-2xl shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-700">
+      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-background/30 backdrop-blur-2xl border-b border-primary/10 shadow-2xl shadow-primary/5 h-14 md:h-16 lg:h-18 transition-all duration-700">
         <div className="w-full mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
+          <div className="flex items-center justify-between h-14 md:h-16 lg:h-18 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation */}
             <div 
               className="flex items-center space-x-2 cursor-pointer group flex-shrink-0" 
@@ -184,19 +184,28 @@ const Navigation = () => {
             >
               {headerLogoUrl ? (
                 <div className="relative group/logo">
-                  {/* AI Glow Effect Background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-accent/30 to-primary/40 blur-xl opacity-0 group-hover/logo:opacity-100 transition-all duration-700 animate-pulse scale-150" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-pink-500/20 blur-lg opacity-60 group-hover/logo:opacity-100 transition-all duration-500 scale-125" />
+                  {/* Animated AI Glow Ring */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-primary to-purple-500 rounded-full blur-xl opacity-40 group-hover/logo:opacity-80 animate-[pulse_2s_ease-in-out_infinite] transition-all duration-700" />
+                  <div className="absolute -inset-1 bg-gradient-to-br from-primary/50 via-accent/40 to-primary/50 rounded-lg blur-md opacity-60 group-hover/logo:opacity-100 transition-all duration-500" />
+                  
+                  {/* Rotating Gradient Border Effect */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 via-primary to-purple-500 rounded-lg opacity-30 group-hover/logo:opacity-70 animate-[spin_8s_linear_infinite] transition-all duration-500" style={{ filter: 'blur(2px)' }} />
                   
                   {/* Logo with AI Effects */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-10 md:h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(var(--primary),0.4)] group-hover/logo:drop-shadow-[0_0_15px_rgba(var(--primary),0.6)] transition-all duration-500 group-hover/logo:scale-110"
+                    className="relative h-12 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.5)] group-hover/logo:drop-shadow-[0_0_20px_rgba(139,92,246,0.7)] transition-all duration-500 group-hover/logo:scale-105 rounded-md"
                   />
                   
-                  {/* Sparkle Effect */}
-                  <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-primary/80 animate-pulse opacity-70 group-hover/logo:opacity-100 group-hover/logo:text-accent transition-all duration-500" />
+                  {/* Sparkle Effects */}
+                  <Sparkles className="absolute -top-2 -right-2 h-4 w-4 text-cyan-400 animate-[pulse_1.5s_ease-in-out_infinite] opacity-80 group-hover/logo:opacity-100 transition-all duration-500" />
+                  <Sparkles className="absolute -bottom-1 -left-1 h-3 w-3 text-purple-400 animate-[pulse_2s_ease-in-out_infinite_0.5s] opacity-60 group-hover/logo:opacity-100 transition-all duration-500" />
+                  
+                  {/* AI Brain Icon Overlay */}
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/40 animate-[bounce_2s_ease-in-out_infinite]">
+                    <Brain className="h-3 w-3 text-white" />
+                  </div>
                 </div>
               ) : (
                 <>
