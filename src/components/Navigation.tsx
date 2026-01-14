@@ -183,16 +183,16 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <div className="relative group/logo">
-                  {/* Subtle Holographic Shimmer */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover/logo:translate-x-[200%] transition-transform duration-1000 ease-out" />
-                  
+                <div className="relative group/logo overflow-hidden rounded-sm">
                   {/* Logo */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-12 md:h-14 lg:h-16 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105 group-hover/logo:brightness-110"
+                    className="relative h-12 md:h-14 lg:h-16 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
                   />
+                  
+                  {/* Subtle Shine Reflection Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-150%] group-hover/logo:translate-x-[150%] transition-transform duration-700 ease-out pointer-events-none" />
                 </div>
               ) : (
                 <>
