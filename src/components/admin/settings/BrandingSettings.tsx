@@ -59,8 +59,8 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
   const [masterLogo, setMasterLogo] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  const handleFileUpload = async (key: string, file: File) => {
-    if (!file) return;
+  const handleFileUpload = async (key: string, file: File): Promise<boolean> => {
+    if (!file) return false;
 
     const validTypes = [
       "image/jpeg",
@@ -70,13 +70,16 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       "image/svg+xml",
     ];
     if (!validTypes.includes(file.type)) {
-      showError("Invalid File", "Please upload an image file (JPG, PNG, GIF, WebP, or SVG)");
-      return;
+      showError(
+        "Invalid File",
+        "Please upload an image file (JPG, PNG, GIF, WebP, or SVG)"
+      );
+      return false;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       showError("File Too Large", "Please upload an image smaller than 5MB");
-      return;
+      return false;
     }
 
     setUploading(key);
@@ -105,14 +108,20 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       } = await supabase.auth.getSession();
       if (!session) {
         showError("Authentication Required", "Please log in to upload images");
-        setUploading(null);
-        return;
+        return false;
       }
 
       const fileExt = file.name.split(".").pop()?.toLowerCase() || "png";
       const fileName = `branding/${key}_${Date.now()}.${fileExt}`;
 
-      console.log("Uploading file:", fileName, "Size:", file.size, "Type:", file.type);
+      console.log(
+        "Uploading file:",
+        fileName,
+        "Size:",
+        file.size,
+        "Type:",
+        file.type
+      );
 
       const { error: uploadError, data } = await supabase.storage
         .from("system-assets")
@@ -128,7 +137,9 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
 
       console.log("Upload successful:", data);
 
-      const { data: urlData } = supabase.storage.from("system-assets").getPublicUrl(fileName);
+      const { data: urlData } = supabase.storage
+        .from("system-assets")
+        .getPublicUrl(fileName);
 
       console.log("Public URL:", urlData.publicUrl);
 
@@ -136,10 +147,13 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       await persistSetting(key, urlData.publicUrl);
 
       showSuccess("Upload Complete", "Image uploaded and saved successfully");
+      return true;
     } catch (error: any) {
       console.error("Upload error details:", error);
-      const errorMessage = error?.message || error?.error_description || "Failed to upload image";
+      const errorMessage =
+        error?.message || error?.error_description || "Failed to upload image";
       showError("Upload Failed", errorMessage);
+      return false;
     } finally {
       setUploading(null);
     }
@@ -283,12 +297,15 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       // Convert data URL to blob and upload
       const response = await fetch(logo.dataUrl);
       const blob = await response.blob();
-      const file = new File([blob], `${logo.key}.png`, { type: 'image/png' });
-      
-      await handleFileUpload(logo.key, file);
-      showSuccess("Logo Applied", `${logo.size} has been applied`);
+      const file = new File([blob], `${logo.key}.png`, { type: "image/png" });
+
+      const ok = await handleFileUpload(logo.key, file);
+      if (ok) {
+        showSuccess("Logo Applied", `${logo.size} has been applied`);
+      }
     } catch (error: any) {
-      showError("Apply Failed", "Failed to apply logo");
+      console.error("Apply logo error:", error);
+      showError("Apply Failed", error?.message || "Failed to apply logo");
     }
   };
 
