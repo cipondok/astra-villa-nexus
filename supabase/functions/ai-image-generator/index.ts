@@ -67,21 +67,30 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Lovable AI Gateway error:', response.status, errorText);
-      
-      if (response.status === 429) {
+
+      const lower = errorText.toLowerCase();
+
+      // Lovable AI may return 500 with a billing message in the body.
+      if (response.status === 402 || lower.includes('billing hard limit') || lower.includes('payment required')) {
         return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'Usage limit reached. Please add credits to continue.' }),
+          JSON.stringify({
+            error: 'AI image generation is currently unavailable because the workspace has reached its usage/billing limit. Please add credits in Lovable Workspace → Usage, then try again.'
+          }),
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
-      throw new Error(`AI Gateway error: ${response.status}`);
+
+      if (response.status === 429 || lower.includes('rate limit')) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please wait a bit and try again.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ error: 'AI Gateway error', details: errorText.slice(0, 500) }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = await response.json();
