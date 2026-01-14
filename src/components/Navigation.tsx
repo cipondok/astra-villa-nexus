@@ -183,7 +183,7 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <div className="relative group/logo overflow-visible rounded-sm mt-3">
+                <div className="relative group/logo overflow-hidden rounded-sm mt-3">
                   {/* Logo - overflows header downward */}
                   <img 
                     src={headerLogoUrl} 
@@ -191,8 +191,8 @@ const Navigation = () => {
                     className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
                   />
                   
-                  {/* Subtle Shine Reflection Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-150%] group-hover/logo:translate-x-[150%] transition-transform duration-700 ease-out pointer-events-none" />
+                  {/* Continuous Shine Reflection Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer pointer-events-none" />
                 </div>
               ) : (
                 <>
