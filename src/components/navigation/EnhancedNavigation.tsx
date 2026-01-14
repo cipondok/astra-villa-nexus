@@ -1,8 +1,7 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Shield, Settings, Headphones } from "lucide-react";
+import { Menu, X, LogOut, Shield, Headphones } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
@@ -56,22 +55,40 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
     };
   }, [isOpen]);
 
+  const { data: headerLogoUrl } = useQuery({
+    queryKey: ["system-setting", "headerLogo"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("system_settings")
+        .select("value")
+        .eq("category", "general")
+        .eq("key", "headerLogo")
+        .maybeSingle();
+
+      if (error) return null;
+      return (data?.value as string) || null;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
+  });
+
   const { data: adminData } = useQuery({
-    queryKey: ['admin-status', user?.id],
+    queryKey: ["admin-status", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      
+
       const { data, error } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('user_id', user.id)
+        .from("admin_users")
+        .select("*")
+        .eq("user_id", user.id)
         .single();
-      
+
       if (error) return null;
       return data;
     },
     enabled: !!user?.id,
   });
+
 
   const text = {
     en: {
@@ -123,7 +140,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
         <div className="flex justify-between items-center h-12 md:h-14 lg:h-16">
           {/* Animated Logo */}
           <Link to="/" className="scale-90 md:scale-100 origin-left">
-            <AnimatedLogo />
+            <AnimatedLogo src={headerLogoUrl} alt="ASTRA Villa" />
           </Link>
 
           {/* Desktop Navigation */}
