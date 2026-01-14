@@ -498,6 +498,70 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
         </CardContent>
       </Card>
 
+      {/* Upload New Logos Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Upload className="h-5 w-5 text-primary" />
+            Upload Logos
+          </CardTitle>
+          <CardDescription>
+            Upload logos for different areas of your website
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {ALL_LOGO_KEYS.filter(item => !settings[item.key]).map((item) => (
+              <div key={item.key} className="p-4 bg-muted/20 rounded-lg border border-dashed space-y-3">
+                <div>
+                  <p className="font-medium text-sm">{item.label}</p>
+                  <p className="text-xs text-muted-foreground">{item.description}</p>
+                  <p className="text-xs text-muted-foreground">Recommended: {item.size}</p>
+                </div>
+                
+                <div className="flex items-center justify-center p-6 bg-muted/30 rounded border border-dashed min-h-[80px]">
+                  <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
+                </div>
+
+                <input
+                  id={`upload-${item.key}`}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(item.key, file);
+                    e.target.value = '';
+                  }}
+                />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full"
+                  disabled={uploading === item.key}
+                  onClick={() => document.getElementById(`upload-${item.key}`)?.click()}
+                >
+                  {uploading === item.key ? (
+                    <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
+                  ) : (
+                    <Upload className="h-3 w-3 mr-2" />
+                  )}
+                  Upload {item.label}
+                </Button>
+              </div>
+            ))}
+          </div>
+          {ALL_LOGO_KEYS.filter(item => !settings[item.key]).length === 0 && (
+            <Alert>
+              <Check className="h-4 w-4" />
+              <AlertDescription>
+                All logo slots are filled! You can replace or delete existing logos above.
+              </AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
       {/* AI Logo Generator */}
       <Card>
         <CardHeader>
