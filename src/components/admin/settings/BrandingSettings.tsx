@@ -84,6 +84,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       category: "general",
       key: settingKey,
       value,
+      is_public: true,
       description: `System setting for ${settingKey}`,
     };
 
