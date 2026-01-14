@@ -119,7 +119,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 <img 
                   src={footerLogoUrl} 
                   alt={currentText.company}
-                  className="h-16 md:h-20 w-auto object-contain"
+                  className="h-16 md:h-20 max-w-[180px] object-contain object-left"
+                  style={{ background: 'transparent' }}
                   onError={(e) => {
                     e.currentTarget.src = fallbackLogo;
                   }}
