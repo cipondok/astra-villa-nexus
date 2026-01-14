@@ -192,7 +192,7 @@ const Navigation = () => {
                   />
                   
                   {/* Continuous Shine Reflection Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent w-1/4 animate-shimmer pointer-events-none" />
                 </div>
               ) : (
                 <>
