@@ -112,40 +112,49 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         {/* Main Footer Grid - Compact */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-4">
           {/* Company Info */}
-          <div className="col-span-2 md:col-span-1 space-y-2">
-            <div className="flex items-center gap-2">
+          <div className="col-span-2 md:col-span-1 space-y-3">
+            {/* Logo - Larger and prominent */}
+            <div className="flex items-center">
               {footerLogoUrl ? (
                 <img 
                   src={footerLogoUrl} 
                   alt={currentText.company}
-                  className="h-12 w-auto object-contain"
+                  className="h-16 md:h-20 w-auto object-contain"
                   onError={(e) => {
                     e.currentTarget.src = fallbackLogo;
                   }}
                 />
               ) : (
-                <>
-                  <div className="p-1.5 bg-gradient-to-br from-primary to-accent rounded-lg">
-                    <Rocket className="w-4 h-4 text-white" />
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-gradient-to-br from-primary to-accent rounded-lg">
+                    <Rocket className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-white">{currentText.company}</span>
-                </>
+                  <span className="text-lg font-bold text-white">{currentText.company}</span>
+                </div>
               )}
             </div>
-            <p className="text-[10px] text-slate-400 leading-relaxed">{currentText.tagline}</p>
-            <div className="flex flex-col gap-1">
-              <a href="tel:+622112345678" className="flex items-center gap-1.5 text-[10px] text-slate-400 hover:text-primary transition-colors">
-                <Phone className="w-3 h-3 flex-shrink-0" />+62 21 1234 5678
+            
+            <p className="text-xs text-slate-400 leading-relaxed">{currentText.tagline}</p>
+            
+            {/* Location & Contact - Well arranged */}
+            <div className="flex flex-col gap-2 pt-1">
+              <div className="flex items-start gap-2 text-xs text-slate-400">
+                <MapPin className="w-4 h-4 flex-shrink-0 text-primary mt-0.5" />
+                <span>Jl. Sunset Road No. 88, Seminyak, Bali 80361, Indonesia</span>
+              </div>
+              <a href="tel:+622112345678" className="flex items-center gap-2 text-xs text-slate-400 hover:text-primary transition-colors">
+                <Phone className="w-4 h-4 flex-shrink-0" />+62 21 1234 5678
               </a>
-              <a href="mailto:info@astravilla.com" className="flex items-center gap-1.5 text-[10px] text-slate-400 hover:text-primary transition-colors">
-                <Mail className="w-3 h-3 flex-shrink-0" />info@astravilla.com
+              <a href="mailto:info@astravilla.com" className="flex items-center gap-2 text-xs text-slate-400 hover:text-primary transition-colors">
+                <Mail className="w-4 h-4 flex-shrink-0" />info@astravilla.com
               </a>
             </div>
+            
             {/* Social Icons */}
-            <div className="flex gap-2 pt-1">
+            <div className="flex gap-2 pt-2">
               {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                <a key={i} href="#" className="p-1.5 bg-white/10 hover:bg-primary/20 rounded-lg text-slate-400 hover:text-primary transition-all">
-                  <Icon className="w-3 h-3" />
+                <a key={i} href="#" className="p-2 bg-white/10 hover:bg-primary/20 rounded-lg text-slate-400 hover:text-primary transition-all">
+                  <Icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
