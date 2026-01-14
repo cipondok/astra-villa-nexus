@@ -4,6 +4,8 @@ import UnreadBadge from "./UnreadBadge";
 import { Icons } from "@/components/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -45,6 +47,23 @@ const ChatButton = ({
   const [isScrolling, setIsScrolling] = useState(false);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch chatbot logo from system settings
+  const { data: chatbotLogoUrl } = useQuery({
+    queryKey: ["system-setting", "chatbotLogo"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("system_settings")
+        .select("value")
+        .eq("category", "general")
+        .eq("key", "chatbotLogo")
+        .maybeSingle();
+      if (error) return null;
+      return (data?.value as string) || null;
+    },
+    staleTime: 5_000,
+    refetchOnMount: "always",
+  });
 
   // Load saved position on mount
   useEffect(() => {
@@ -255,6 +274,19 @@ const ChatButton = ({
                       "h-7 w-7 transition-colors duration-300",
                       isButtonActive ? "text-foreground" : "text-foreground/60"
                     )} aria-hidden="true" />
+                  ) : chatbotLogoUrl ? (
+                    <img 
+                      src={chatbotLogoUrl}
+                      alt="AI Assistant"
+                      className={cn(
+                        "h-[55px] w-[55px] rounded-full object-cover transition-all duration-500",
+                        isButtonActive 
+                          ? "drop-shadow-[0_0_8px_hsla(48,100%,50%,0.5)]" 
+                          : "opacity-70",
+                        !isDragging && isButtonActive && "hover:rotate-12"
+                      )} 
+                      aria-hidden="true" 
+                    />
                   ) : (
                     <Icons.aiLogo 
                       className={cn(

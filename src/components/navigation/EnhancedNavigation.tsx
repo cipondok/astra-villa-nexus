@@ -68,7 +68,8 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
       if (error) return null;
       return (data?.value as string) || null;
     },
-    staleTime: 60_000,
+    staleTime: 5_000,
+    refetchOnMount: "always",
     refetchOnWindowFocus: true,
   });
 
