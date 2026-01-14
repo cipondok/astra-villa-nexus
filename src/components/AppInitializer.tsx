@@ -30,10 +30,10 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   }, [speed]);
 
   useEffect(() => {
-    // Simple loading timeout
+    // Show loading screen for a reasonable duration
     const timeout = setTimeout(() => {
       setInitializationComplete(true);
-    }, 300);
+    }, 2000); // Show welcome screen for 2 seconds
 
     return () => clearTimeout(timeout);
   }, []);
