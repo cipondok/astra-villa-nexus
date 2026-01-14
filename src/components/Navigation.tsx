@@ -18,6 +18,8 @@ import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
 import UserIconWithBadge from "./ui/UserIconWithBadge";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,6 +31,21 @@ const Navigation = () => {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Fetch header logo from system settings
+  const { data: headerLogoUrl } = useQuery({
+    queryKey: ['header-logo'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'headerLogo')
+        .maybeSingle();
+      
+      if (error || !data) return null;
+      return typeof data.value === 'string' ? data.value : null;
+    },
+  });
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -165,13 +182,23 @@ const Navigation = () => {
               className="flex items-center space-x-2 cursor-pointer group flex-shrink-0" 
               onClick={() => navigate('/')}
             >
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/40 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                <Brain className="h-4 w-4 text-background animate-pulse group-hover:text-primary-foreground transition-colors duration-500" />
-              </div>
-              <div className="hidden sm:flex items-center space-x-1">
-                <span className="text-lg font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">ASTRA</span>
-                <span className="text-lg font-bold bg-gradient-to-r from-accent via-primary to-foreground bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">Villa</span>
-              </div>
+              {headerLogoUrl ? (
+                <img 
+                  src={headerLogoUrl} 
+                  alt="ASTRA Villa" 
+                  className="h-8 w-auto object-contain"
+                />
+              ) : (
+                <>
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/40 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                    <Brain className="h-4 w-4 text-background animate-pulse group-hover:text-primary-foreground transition-colors duration-500" />
+                  </div>
+                  <div className="hidden sm:flex items-center space-x-1">
+                    <span className="text-lg font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">ASTRA</span>
+                    <span className="text-lg font-bold bg-gradient-to-r from-accent via-primary to-foreground bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">Villa</span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Enhanced Desktop Navigation - Main Menu */}
