@@ -187,6 +187,11 @@ const config: Config = {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(100%)" }
         },
+        "shimmer": {
+          "0%": { transform: "translateX(-150%) skewX(-12deg)" },
+          "50%": { transform: "translateX(150%) skewX(-12deg)" },
+          "100%": { transform: "translateX(-150%) skewX(-12deg)" }
+        },
         "typing-dot": {
           "0%, 60%, 100%": {
             transform: "translateY(0) scale(1)",
@@ -277,6 +282,7 @@ const config: Config = {
         "ai-search-pulse": "ai-search-pulse 2s ease-in-out infinite",
         "ai-particle-float": "ai-particle-float 3s ease-in-out infinite",
         "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
+        "shimmer": "shimmer 3s ease-in-out infinite",
         "typing-dot": "typing-dot 1.4s ease-in-out infinite",
         "chat-float": "chat-float 8s ease-in-out infinite",
         "chat-float-mobile": "chat-float-mobile 8s ease-in-out infinite",
