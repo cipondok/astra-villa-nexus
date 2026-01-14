@@ -81,6 +81,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
 
   const loadSettings = async () => {
     try {
+      // Fetch loading page settings
       const { data, error } = await supabase
         .from('system_settings')
         .select('*')
@@ -88,8 +89,24 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
       
       if (error) {
         console.error('Error loading loading page settings:', error);
-        setIsLoading(false);
-        return;
+      }
+
+      // Fetch welcome screen logo from general settings
+      const { data: logoData } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'welcomeScreenLogo')
+        .maybeSingle();
+
+      // Fallback to header logo if no welcome screen logo
+      let welcomeLogo = logoData?.value;
+      if (!welcomeLogo || welcomeLogo === '') {
+        const { data: headerLogoData } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('key', 'headerLogo')
+          .maybeSingle();
+        welcomeLogo = headerLogoData?.value;
       }
 
       if (data && data.length > 0) {
@@ -105,8 +122,18 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           acc[setting.key] = value;
           return acc;
         }, {} as any);
+        
+        // Use welcome screen logo from settings if available
+        if (welcomeLogo && typeof welcomeLogo === 'string') {
+          settingsObj.logoImageUrl = welcomeLogo;
+        }
+        
         setSettings(prev => ({ ...prev, ...settingsObj }));
+      } else if (welcomeLogo && typeof welcomeLogo === 'string') {
+        // Even if no loading_page settings, still apply welcome logo
+        setSettings(prev => ({ ...prev, logoImageUrl: welcomeLogo }));
       }
+      
       setIsLoading(false);
     } catch (error) {
       console.error('Error loading settings:', error);
