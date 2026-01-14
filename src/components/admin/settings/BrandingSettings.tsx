@@ -328,30 +328,31 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
             placeholder={placeholder}
             className="flex-1"
           />
-          <div className="relative">
-            <input
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleFileUpload(settingsKey, file);
-              }}
-              disabled={uploading === settingsKey}
-            />
-            <Button 
-              type="button" 
-              variant="outline" 
-              size="icon"
-              disabled={uploading === settingsKey}
-            >
-              {uploading === settingsKey ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              ) : (
-                <Upload className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
+          <input
+            id={`file-upload-${settingsKey}`}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFileUpload(settingsKey, file);
+              e.target.value = '';
+            }}
+            disabled={uploading === settingsKey}
+          />
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="icon"
+            disabled={uploading === settingsKey}
+            onClick={() => document.getElementById(`file-upload-${settingsKey}`)?.click()}
+          >
+            {uploading === settingsKey ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            ) : (
+              <Upload className="h-4 w-4" />
+            )}
+          </Button>
           {settings[settingsKey] && (
             <>
               <Button 
@@ -463,18 +464,20 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
                       )}
                     </Button>
                     
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        onChange={handleMasterLogoUpload}
-                      />
-                      <Button variant="outline">
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload Existing
-                      </Button>
-                    </div>
+                    <input
+                      id="master-logo-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleMasterLogoUpload}
+                    />
+                    <Button 
+                      variant="outline"
+                      onClick={() => document.getElementById('master-logo-upload')?.click()}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Existing
+                    </Button>
                   </div>
 
                   {/* Master Logo Preview */}
