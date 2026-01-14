@@ -183,15 +183,25 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <img 
-                  src={headerLogoUrl} 
-                  alt="ASTRA Villa" 
-                  className="h-8 w-auto object-contain"
-                />
+                <div className="relative group/logo">
+                  {/* AI Glow Effect Background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-accent/30 to-primary/40 blur-xl opacity-0 group-hover/logo:opacity-100 transition-all duration-700 animate-pulse scale-150" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-pink-500/20 blur-lg opacity-60 group-hover/logo:opacity-100 transition-all duration-500 scale-125" />
+                  
+                  {/* Logo with AI Effects */}
+                  <img 
+                    src={headerLogoUrl} 
+                    alt="ASTRA Villa" 
+                    className="relative h-10 md:h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(var(--primary),0.4)] group-hover/logo:drop-shadow-[0_0_15px_rgba(var(--primary),0.6)] transition-all duration-500 group-hover/logo:scale-110"
+                  />
+                  
+                  {/* Sparkle Effect */}
+                  <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-primary/80 animate-pulse opacity-70 group-hover/logo:opacity-100 group-hover/logo:text-accent transition-all duration-500" />
+                </div>
               ) : (
                 <>
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/40 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                    <Brain className="h-4 w-4 text-background animate-pulse group-hover:text-primary-foreground transition-colors duration-500" />
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary/80 via-accent/70 to-primary/60 backdrop-blur-sm border border-primary/40 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                    <Brain className="h-5 w-5 md:h-6 md:w-6 text-background animate-pulse group-hover:text-primary-foreground transition-colors duration-500" />
                   </div>
                   <div className="hidden sm:flex items-center space-x-1">
                     <span className="text-lg font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg group-hover:scale-110 transition-all duration-500 group-hover:drop-shadow-2xl">ASTRA</span>
