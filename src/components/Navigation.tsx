@@ -183,7 +183,7 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <div className="relative group/logo overflow-visible rounded-sm">
+                <div className="relative group/logo overflow-visible rounded-sm mt-1">
                   {/* Logo - Large, overflows header */}
                   <img 
                     src={headerLogoUrl} 
