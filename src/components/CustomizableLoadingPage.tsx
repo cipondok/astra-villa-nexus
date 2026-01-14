@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import astraLogo from '@/assets/astra-logo.png';
 
 interface LoadingPageProps {
   message?: string;
@@ -43,13 +44,13 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     enabled: true,
     message: 'Initializing ASTRA Villa...',
     subMessage: 'Please wait while we prepare your experience',
-    logoText: 'ASTRA Villa',
-    logoSubtext: '',
+    logoText: '',
+    logoSubtext: 'PREMIUM REAL ESTATE',
     showConnectionStatus: true,
-    logoImageUrl: '',
-    imageSize: 100,
+    logoImageUrl: astraLogo,
+    imageSize: 120,
     imagePosition: 'top',
-    showBothTextAndImage: false,
+    showBothTextAndImage: true,
     imageAlignment: 'center',
     textAlignment: 'center',
     animationType: 'gradient',
@@ -268,17 +269,21 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
   // If settings are still loading, show a simple fallback
   if (isLoading) {
     return (
-      <div className="bg-black text-white flex items-center justify-center min-h-screen">
+      <div className="bg-background text-foreground flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center space-y-6">
-          <div className="text-4xl md:text-6xl font-extrabold tracking-widest animate-pulse">
-            ASTRA <span className="text-indigo-400">Villa</span>
+          <img 
+            src={astraLogo} 
+            alt="ASTRA Villa" 
+            className="w-24 h-24 object-contain animate-pulse"
+          />
+          <div className="text-sm text-muted-foreground tracking-[0.3em]">
+            PREMIUM REAL ESTATE
           </div>
           <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce"></div>
-            <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+            <div className="w-2 h-2 bg-primary/80 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
           </div>
-          <p className="text-sm text-gray-400">Loading configuration...</p>
         </div>
       </div>
     );
