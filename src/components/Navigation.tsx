@@ -183,12 +183,12 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <div className="relative group/logo overflow-visible rounded-sm mt-1">
-                  {/* Logo - Large, overflows header */}
+                <div className="relative group/logo overflow-visible rounded-sm mt-3">
+                  {/* Logo - overflows header downward */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-16 md:h-20 lg:h-24 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
+                    className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
                   />
                   
                   {/* Subtle Shine Reflection Effect */}
