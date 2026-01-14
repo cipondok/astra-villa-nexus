@@ -168,7 +168,16 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
         body: { prompt: fullPrompt }
       });
 
-      if (response.error) throw response.error;
+      // Handle edge function errors
+      if (response.error) {
+        const errMsg = response.error?.message || String(response.error);
+        throw new Error(errMsg);
+      }
+
+      // Check for API error in response data
+      if (response.data?.error) {
+        throw new Error(response.data.error);
+      }
 
       const imageUrl = response.data?.imageUrl || response.data?.image;
       
@@ -181,7 +190,14 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       
     } catch (error: any) {
       console.error("Logo generation error:", error);
-      showError("Generation Failed", error.message || "Failed to generate logo");
+      const message = error?.message || "Failed to generate logo";
+      
+      // Check for billing/limit errors
+      if (message.toLowerCase().includes('billing') || message.toLowerCase().includes('limit')) {
+        showError("AI Generation Unavailable", "The workspace has reached its usage limit. Please use 'Upload Existing' to manually upload a logo instead.");
+      } else {
+        showError("Generation Failed", message);
+      }
     } finally {
       setGenerating(false);
     }
