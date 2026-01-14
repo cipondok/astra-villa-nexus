@@ -55,6 +55,7 @@ const LOGO_SIZES = [
 const ALL_LOGO_KEYS = [
   { key: 'headerLogo', label: 'Header Logo', description: 'Main logo in top header', size: '200x60px' },
   { key: 'footerLogo', label: 'Footer Logo', description: 'Logo in website footer', size: '180x50px' },
+  { key: 'welcomeScreenLogo', label: 'Welcome Screen Logo', description: 'Logo on app loading/welcome screen', size: '200x200px' },
   { key: 'faviconUrl', label: 'Favicon', description: 'Browser tab icon', size: '64x64px' },
   { key: 'emailLogoUrl', label: 'Email Logo', description: 'Logo in email templates', size: '300x80px' },
   { key: 'mobileAppIcon', label: 'Mobile App Icon', description: 'PWA/mobile app icon', size: '512x512px' },
