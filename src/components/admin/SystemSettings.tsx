@@ -71,19 +71,19 @@ const SystemSettings = () => {
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-11 min-w-fit">
-            <TabsTrigger value="general" className="whitespace-nowrap">General & SEO</TabsTrigger>
-            <TabsTrigger value="branding" className="whitespace-nowrap">Branding</TabsTrigger>
-            <TabsTrigger value="security" className="whitespace-nowrap">Security</TabsTrigger>
-            <TabsTrigger value="notifications" className="whitespace-nowrap">Notifications</TabsTrigger>
-            <TabsTrigger value="files" className="whitespace-nowrap">Files</TabsTrigger>
-            <TabsTrigger value="discounts" className="whitespace-nowrap">Discounts</TabsTrigger>
-            <TabsTrigger value="filters" className="whitespace-nowrap">Property Filters</TabsTrigger>
-            <TabsTrigger value="centralized-filters" className="whitespace-nowrap">Centralized Filters</TabsTrigger>
-            <TabsTrigger value="astra-tokens" className="whitespace-nowrap">ASTRA Tokens</TabsTrigger>
-            <TabsTrigger value="system" className="whitespace-nowrap">System Monitor</TabsTrigger>
-            <TabsTrigger value="backup" className="whitespace-nowrap">Backup</TabsTrigger>
+        <div className="overflow-x-auto pb-1">
+          <TabsList className="inline-flex h-10 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
+            <TabsTrigger value="general">General & SEO</TabsTrigger>
+            <TabsTrigger value="branding">Branding</TabsTrigger>
+            <TabsTrigger value="security">Security</TabsTrigger>
+            <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="files">Files</TabsTrigger>
+            <TabsTrigger value="discounts">Discounts</TabsTrigger>
+            <TabsTrigger value="filters">Property Filters</TabsTrigger>
+            <TabsTrigger value="centralized-filters">Centralized Filters</TabsTrigger>
+            <TabsTrigger value="astra-tokens">ASTRA Tokens</TabsTrigger>
+            <TabsTrigger value="system">System Monitor</TabsTrigger>
+            <TabsTrigger value="backup">Backup</TabsTrigger>
           </TabsList>
         </div>
 
