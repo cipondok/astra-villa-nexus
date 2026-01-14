@@ -240,7 +240,10 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
   const resizeImage = (src: string, width: number, height: number): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      // Only set crossOrigin for external URLs, not for data URLs
+      if (!src.startsWith('data:')) {
+        img.crossOrigin = 'anonymous';
+      }
       img.onload = () => {
         const canvas = document.createElement('canvas');
         canvas.width = width;
@@ -252,18 +255,24 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
           return;
         }
 
+        // Clear canvas with transparent background
+        ctx.clearRect(0, 0, width, height);
+
         // Calculate scaling to fit while maintaining aspect ratio
         const scale = Math.min(width / img.width, height / img.height);
-        const x = (width - img.width * scale) / 2;
-        const y = (height - img.height * scale) / 2;
+        const scaledWidth = img.width * scale;
+        const scaledHeight = img.height * scale;
+        const x = (width - scaledWidth) / 2;
+        const y = (height - scaledHeight) / 2;
 
-        ctx.fillStyle = 'transparent';
-        ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
 
         resolve(canvas.toDataURL('image/png'));
       };
-      img.onerror = () => reject(new Error('Failed to load image'));
+      img.onerror = (e) => {
+        console.error('Image load error:', e);
+        reject(new Error('Failed to load image for resizing'));
+      };
       img.src = src;
     });
   };
