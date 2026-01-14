@@ -18,6 +18,7 @@ import DiscountSettings from './settings/DiscountSettings';
 import PropertyFilterSettings from './settings/PropertyFilterSettings';
 import CentralizedFilterManager from './CentralizedFilterManager';
 import AstraTokenSettingsWrapper from './settings/AstraTokenSettingsWrapper';
+import BrandingSettings from './settings/BrandingSettings';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -71,8 +72,9 @@ const SystemSettings = () => {
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-10 min-w-fit">
+          <TabsList className="grid w-full grid-cols-11 min-w-fit">
             <TabsTrigger value="general" className="whitespace-nowrap">General & SEO</TabsTrigger>
+            <TabsTrigger value="branding" className="whitespace-nowrap">Branding</TabsTrigger>
             <TabsTrigger value="security" className="whitespace-nowrap">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="whitespace-nowrap">Notifications</TabsTrigger>
             <TabsTrigger value="files" className="whitespace-nowrap">Files</TabsTrigger>
@@ -87,6 +89,15 @@ const SystemSettings = () => {
 
         <TabsContent value="general" className="space-y-4">
           <GeneralSettings 
+            settings={settings}
+            loading={loading}
+            onInputChange={handleInputChange}
+            onSave={saveSettings}
+          />
+        </TabsContent>
+
+        <TabsContent value="branding" className="space-y-4">
+          <BrandingSettings 
             settings={settings}
             loading={loading}
             onInputChange={handleInputChange}

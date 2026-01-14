@@ -52,7 +52,19 @@ export const useSystemSettings = () => {
     googleSiteVerification: '',
     bingSiteVerification: '',
     yandexVerification: '',
-    pinterestVerification: ''
+    pinterestVerification: '',
+    // Branding Settings
+    headerLogo: '',
+    footerLogo: '',
+    welcomePageImage: '',
+    welcomePageBackgroundImage: '',
+    chatbotLogo: '',
+    faviconUrl: '',
+    defaultPropertyImage: '',
+    defaultAvatarImage: '',
+    emailLogoUrl: '',
+    loginPageBackground: '',
+    mobileAppIcon: ''
   });
   const [loading, setLoading] = useState(false);
 
