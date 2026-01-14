@@ -184,28 +184,15 @@ const Navigation = () => {
             >
               {headerLogoUrl ? (
                 <div className="relative group/logo">
-                  {/* Animated AI Glow Ring */}
-                  <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-primary to-purple-500 rounded-full blur-xl opacity-40 group-hover/logo:opacity-80 animate-[pulse_2s_ease-in-out_infinite] transition-all duration-700" />
-                  <div className="absolute -inset-1 bg-gradient-to-br from-primary/50 via-accent/40 to-primary/50 rounded-lg blur-md opacity-60 group-hover/logo:opacity-100 transition-all duration-500" />
+                  {/* Subtle Holographic Shimmer */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover/logo:translate-x-[200%] transition-transform duration-1000 ease-out" />
                   
-                  {/* Rotating Gradient Border Effect */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 via-primary to-purple-500 rounded-lg opacity-30 group-hover/logo:opacity-70 animate-[spin_8s_linear_infinite] transition-all duration-500" style={{ filter: 'blur(2px)' }} />
-                  
-                  {/* Logo with AI Effects */}
+                  {/* Logo */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-12 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.5)] group-hover/logo:drop-shadow-[0_0_20px_rgba(139,92,246,0.7)] transition-all duration-500 group-hover/logo:scale-105 rounded-md"
+                    className="relative h-12 md:h-14 lg:h-16 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105 group-hover/logo:brightness-110"
                   />
-                  
-                  {/* Sparkle Effects */}
-                  <Sparkles className="absolute -top-2 -right-2 h-4 w-4 text-cyan-400 animate-[pulse_1.5s_ease-in-out_infinite] opacity-80 group-hover/logo:opacity-100 transition-all duration-500" />
-                  <Sparkles className="absolute -bottom-1 -left-1 h-3 w-3 text-purple-400 animate-[pulse_2s_ease-in-out_infinite_0.5s] opacity-60 group-hover/logo:opacity-100 transition-all duration-500" />
-                  
-                  {/* AI Brain Icon Overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/40 animate-[bounce_2s_ease-in-out_infinite]">
-                    <Brain className="h-3 w-3 text-white" />
-                  </div>
                 </div>
               ) : (
                 <>
