@@ -109,7 +109,7 @@ const ProfessionalFooter = ({
           {/* Company Info */}
           <div className="col-span-2 md:col-span-1 space-y-3">
             {/* Logo - Larger and prominent */}
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-start">
               {footerLogoUrl ? <img src={footerLogoUrl} alt={currentText.company} className="h-16 md:h-20 max-w-[180px] object-left object-cover" style={{
               background: 'transparent'
             }} onError={e => {
