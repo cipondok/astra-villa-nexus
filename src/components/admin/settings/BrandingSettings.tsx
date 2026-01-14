@@ -32,60 +32,91 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
     if (!file) return;
 
     // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    const validTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/svg+xml",
+    ];
     if (!validTypes.includes(file.type)) {
-      showError('Invalid File', 'Please upload an image file (JPG, PNG, GIF, WebP, or SVG)');
+      showError("Invalid File", "Please upload an image file (JPG, PNG, GIF, WebP, or SVG)");
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      showError('File Too Large', 'Please upload an image smaller than 5MB');
+      showError("File Too Large", "Please upload an image smaller than 5MB");
       return;
     }
 
     setUploading(key);
 
+    const persistSetting = async (settingKey: string, value: string) => {
+      // Ensure the uploaded logo is actually saved to DB (so the header can read it)
+      const payload = {
+        category: "general",
+        key: settingKey,
+        value,
+        description: `System setting for ${settingKey}`,
+      };
+
+      // Most setups use a unique constraint on (category, key). If yours is only (key), we fall back.
+      const attempt = async (onConflict: string) =>
+        supabase.from("system_settings").upsert(payload, { onConflict });
+
+      const { error: err1 } = await attempt("category,key");
+      if (!err1) return;
+
+      const { error: err2 } = await attempt("key");
+      if (err2) throw err2;
+    };
+
     try {
       // Check if user is authenticated
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
-        showError('Authentication Required', 'Please log in to upload images');
+        showError("Authentication Required", "Please log in to upload images");
         setUploading(null);
         return;
       }
 
-      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'png';
+      const fileExt = file.name.split(".").pop()?.toLowerCase() || "png";
       const fileName = `branding/${key}_${Date.now()}.${fileExt}`;
 
-      console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
+      console.log("Uploading file:", fileName, "Size:", file.size, "Type:", file.type);
 
       const { error: uploadError, data } = await supabase.storage
-        .from('system-assets')
-        .upload(fileName, file, { 
+        .from("system-assets")
+        .upload(fileName, file, {
           upsert: true,
-          contentType: file.type
+          contentType: file.type,
         });
 
       if (uploadError) {
-        console.error('Supabase upload error:', uploadError);
+        console.error("Supabase upload error:", uploadError);
         throw uploadError;
       }
 
-      console.log('Upload successful:', data);
+      console.log("Upload successful:", data);
 
-      const { data: urlData } = supabase.storage
-        .from('system-assets')
-        .getPublicUrl(fileName);
+      const { data: urlData } = supabase.storage.from("system-assets").getPublicUrl(fileName);
 
-      console.log('Public URL:', urlData.publicUrl);
+      console.log("Public URL:", urlData.publicUrl);
 
+      // Update UI state immediately
       onInputChange(key, urlData.publicUrl);
-      showSuccess('Upload Complete', 'Image uploaded successfully');
+
+      // Persist immediately so other pages/components (e.g. header) can read it
+      await persistSetting(key, urlData.publicUrl);
+
+      showSuccess("Upload Complete", "Image uploaded and saved successfully");
     } catch (error: any) {
-      console.error('Upload error details:', error);
-      const errorMessage = error.message || error.error_description || 'Failed to upload image';
-      showError('Upload Failed', errorMessage);
+      console.error("Upload error details:", error);
+      const errorMessage = error?.message || error?.error_description || "Failed to upload image";
+      showError("Upload Failed", errorMessage);
     } finally {
       setUploading(null);
     }
