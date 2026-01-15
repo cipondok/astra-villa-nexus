@@ -68,10 +68,18 @@ const fetchDatabaseStatistics = async (): Promise<DatabaseTableInfo[]> => {
 const fetchRealtimeStats = async () => {
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   
-  const [users, properties, vendors, propertyOwner, vendorReq, agent, alerts, activity] = await Promise.all([
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('properties').select('*', { count: 'exact', head: true }),
-    supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true),
+  // Use secure RPC function to get platform stats
+  const { data: platformStats } = await supabase.rpc('get_platform_stats');
+  
+  const statsData = (platformStats as Array<{
+    total_users: number;
+    total_properties: number;
+    total_bookings: number;
+    total_vendors: number;
+    active_sessions: number;
+  }> | null)?.[0];
+
+  const [propertyOwner, vendorReq, agent, alerts, activity] = await Promise.all([
     supabase.from('property_owner_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
     supabase.from('vendor_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
     supabase.from('agent_registration_requests').select('*', { count: 'exact', head: true }).in('status', ['pending', 'under_review']),
@@ -80,9 +88,9 @@ const fetchRealtimeStats = async () => {
   ]);
 
   return {
-    totalUsers: users.count || 0,
-    totalProperties: properties.count || 0,
-    totalVendors: vendors.count || 0,
+    totalUsers: Number(statsData?.total_users) || 0,
+    totalProperties: Number(statsData?.total_properties) || 0,
+    totalVendors: Number(statsData?.total_vendors) || 0,
     pendingUpgrades: (propertyOwner.count || 0) + (vendorReq.count || 0) + (agent.count || 0),
     activeAlerts: alerts.count || 0,
     recentActivity: activity.count || 0,

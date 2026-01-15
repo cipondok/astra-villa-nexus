@@ -55,9 +55,18 @@ const ProjectProgressReport = () => {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['project-progress-stats', refreshKey],
     queryFn: async () => {
+      // Use secure RPC function to get platform stats
+      const { data: platformStats } = await supabase.rpc('get_platform_stats');
+      
+      const statsData = (platformStats as Array<{
+        total_users: number;
+        total_properties: number;
+        total_bookings: number;
+        total_vendors: number;
+        active_sessions: number;
+      }> | null)?.[0];
+
       const [
-        profiles,
-        properties,
         vendors,
         agents,
         propertyOwners,
@@ -72,8 +81,6 @@ const ProjectProgressReport = () => {
         bookings,
         favorites
       ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
         supabase.from('agent_registration_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
         supabase.from('property_owner_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
@@ -90,8 +97,8 @@ const ProjectProgressReport = () => {
       ]);
 
       return {
-        users: profiles.count || 0,
-        properties: properties.count || 0,
+        users: Number(statsData?.total_users) || 0,
+        properties: Number(statsData?.total_properties) || 0,
         vendors: vendors.count || 0,
         agents: agents.count || 0,
         propertyOwners: propertyOwners.count || 0,
@@ -103,7 +110,7 @@ const ProjectProgressReport = () => {
         chatSessions: chatSessions.count || 0,
         pendingErrors: errorLogs.count || 0,
         services: vendorServices.count || 0,
-        bookings: bookings.count || 0,
+        bookings: Number(statsData?.total_bookings) || bookings.count || 0,
         favorites: favorites.count || 0
       };
     }

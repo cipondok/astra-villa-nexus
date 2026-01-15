@@ -8,14 +8,16 @@ import WebTrafficAnalytics from './WebTrafficAnalytics';
 import { SearchAnalytics } from './SearchAnalytics';
 
 const SystemAnalytics = () => {
-  // Fetch real user count
+  // Fetch real user count using secure RPC function
   const { data: userCount = 0 } = useQuery({
     queryKey: ['total-users'],
     queryFn: async () => {
-      const { count } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-      return count || 0;
+      const { data, error } = await supabase.rpc('get_total_user_count');
+      if (error) {
+        console.error('Error fetching user count:', error);
+        return 0;
+      }
+      return Number(data) || 0;
     },
   });
 

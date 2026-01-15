@@ -91,16 +91,22 @@ const AdvancedAdminDashboard = () => {
   React.useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [users, properties] = await Promise.all([
-          supabase.from('profiles').select('id', { count: 'exact', head: true }),
-          supabase.from('properties').select('id', { count: 'exact', head: true })
-        ]);
+        // Use secure RPC function to get platform stats
+        const { data: platformStats } = await supabase.rpc('get_platform_stats');
+        
+        const statsData = (platformStats as Array<{
+          total_users: number;
+          total_properties: number;
+          total_bookings: number;
+          total_vendors: number;
+          active_sessions: number;
+        }> | null)?.[0];
         
         setHeaderCounts({
-          users: users.count || 0,
-          properties: properties.count || 0,
-          alerts: 0, // Will be updated when admin_alerts table is available
-          vendors: 0  // Will be updated when vendor table is available
+          users: Number(statsData?.total_users) || 0,
+          properties: Number(statsData?.total_properties) || 0,
+          alerts: 0,
+          vendors: Number(statsData?.total_vendors) || 0
         });
       } catch (error) {
         console.error('Error fetching counts:', error);

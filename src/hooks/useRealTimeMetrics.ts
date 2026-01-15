@@ -25,17 +25,30 @@ export const useRealTimeMetrics = () => {
 
   const fetchMetrics = async () => {
     try {
-      const [usersResult, propertiesResult, alertsResult, sessionsResult] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
-        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
-        supabase.from('user_device_sessions').select('*', { count: 'exact', head: true }).eq('is_active', true)
+      // Use secure RPC function to get platform stats (bypasses RLS safely for admins)
+      const { data: stats, error: statsError } = await supabase.rpc('get_platform_stats');
+      
+      const [alertsResult] = await Promise.all([
+        supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false)
       ]);
 
+      if (statsError) {
+        console.error('Error fetching platform stats:', statsError);
+      }
+
+      // Type assertion for the stats result
+      const platformStats = (stats as Array<{
+        total_users: number;
+        total_properties: number;
+        total_bookings: number;
+        total_vendors: number;
+        active_sessions: number;
+      }> | null)?.[0];
+      
       setMetrics({
-        totalUsers: usersResult.count || 0,
-        totalProperties: propertiesResult.count || 0,
-        activeUsers: sessionsResult.count || 0,
+        totalUsers: Number(platformStats?.total_users) || 0,
+        totalProperties: Number(platformStats?.total_properties) || 0,
+        activeUsers: Number(platformStats?.active_sessions) || 0,
         pendingAlerts: alertsResult.count || 0,
         systemHealth: Math.floor(Math.random() * 10) + 90, // Simulated health score
         lastUpdated: new Date(),

@@ -151,9 +151,18 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
   const { data: dbStats, isLoading: dbLoading, refetch: refetchDb } = useQuery({
     queryKey: ['launch-db-stats'],
     queryFn: async () => {
-      const [users, properties, activities, alerts, errors, admins] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
+      // Use secure RPC function to get platform stats
+      const { data: platformStats } = await supabase.rpc('get_platform_stats');
+      
+      const statsData = (platformStats as Array<{
+        total_users: number;
+        total_properties: number;
+        total_bookings: number;
+        total_vendors: number;
+        active_sessions: number;
+      }> | null)?.[0];
+
+      const [activities, alerts, errors, admins] = await Promise.all([
         supabase.from('activity_logs').select('*', { count: 'exact', head: true }),
         supabase.from('admin_alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
         supabase.from('error_logs').select('*', { count: 'exact', head: true }),
@@ -161,8 +170,8 @@ const LaunchReadinessDashboard: React.FC<LaunchReadinessProps> = ({ onSectionCha
       ]);
       
       return {
-        totalUsers: users.count || 0,
-        totalProperties: properties.count || 0,
+        totalUsers: Number(statsData?.total_users) || 0,
+        totalProperties: Number(statsData?.total_properties) || 0,
         totalActivities: activities.count || 0,
         pendingAlerts: alerts.count || 0,
         errorCount: errors.count || 0,
