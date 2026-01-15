@@ -50,18 +50,21 @@ const SimpleUserManagement = () => {
   const queryClient = useQueryClient();
 
   // Fetch users
-  const { data: users, isLoading, refetch } = useQuery({
-    queryKey: ['users'],
+  const {
+    data: users,
+    error: usersError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['users', user?.id],
+    enabled: !!user,
     queryFn: async (): Promise<User[]> => {
       const { data, error } = await supabase.rpc('get_admin_profiles', {
         p_role: null,
         p_limit: 500,
         p_offset: 0,
       });
-      if (error) {
-        console.error('[SimpleUserManagement] get_admin_profiles failed:', error);
-        return [];
-      }
+      if (error) throw error;
       return (data as User[]) || [];
     },
   });
@@ -207,6 +210,19 @@ const SimpleUserManagement = () => {
 
   return (
     <div className="space-y-6">
+      {usersError && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Access / Data Error</CardTitle>
+            <CardDescription>
+              Signed in as: {user?.email || user?.id}
+              <br />
+              {String((usersError as any)?.message || usersError)}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+
       {/* Header with Create User */}
       <div className="flex items-center justify-between">
         <div>
