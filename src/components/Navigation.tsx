@@ -191,8 +191,8 @@ const Navigation = () => {
                     className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
                   />
                   
-                  {/* Continuous Shine Reflection Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent w-1/4 animate-shimmer pointer-events-none" />
+                  {/* Continuous Shine Reflection Effect - Narrow beam */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-[10%] animate-shimmer pointer-events-none" />
                 </div>
               ) : (
                 <>
