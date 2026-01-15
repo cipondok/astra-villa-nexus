@@ -269,6 +269,34 @@ const config: Config = {
         "collapse-up": {
           from: { height: "var(--radix-collapsible-content-height)", opacity: "1" },
           to: { height: "0", opacity: "0" }
+        },
+        "sparkle": {
+          "0%, 100%": {
+            opacity: "0",
+            transform: "scale(0) rotate(0deg)"
+          },
+          "50%": {
+            opacity: "1",
+            transform: "scale(1) rotate(180deg)"
+          }
+        },
+        "sparkle-float": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(0) scale(0)"
+          },
+          "20%": {
+            opacity: "1",
+            transform: "translateY(-5px) scale(1)"
+          },
+          "80%": {
+            opacity: "1",
+            transform: "translateY(-15px) scale(0.8)"
+          },
+          "100%": {
+            opacity: "0",
+            transform: "translateY(-20px) scale(0)"
+          }
         }
       },
       animation: {
@@ -292,6 +320,10 @@ const config: Config = {
         "slide-out-bottom": "slide-out-bottom 0.3s ease-in",
         "collapse-down": "collapse-down 0.2s ease-out",
         "collapse-up": "collapse-up 0.2s ease-out",
+        "sparkle": "sparkle 2s ease-in-out infinite",
+        "sparkle-delayed": "sparkle 2s ease-in-out infinite 0.5s",
+        "sparkle-delayed-2": "sparkle 2s ease-in-out infinite 1s",
+        "sparkle-float": "sparkle-float 3s ease-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(48, 100%, 50%) 0%, hsl(45, 90%, 60%) 100%)',
