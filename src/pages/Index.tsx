@@ -479,7 +479,7 @@ const Index = () => {
 
   // Mobile-first responsive layout wrapper
   const content = (
-    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-gradient-to-br from-background via-secondary/30 to-muted/50">
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background">
       {/* Network Status Indicator */}
       <NetworkStatusIndicator onStatusChange={setIsOnline} />
 
@@ -489,17 +489,14 @@ const Index = () => {
         initialQuery={quickSearch}
       />
 
-      {/* Background Wallpaper Layer */}
-      <div 
-        className={cn(isMobile ? "absolute" : "fixed", "inset-0 z-0 opacity-20 dark:opacity-15 pointer-events-none")}
-        style={backgroundStyle}
-      />
+      {/* ASTRA Development Style Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5 pointer-events-none" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
       
       {/* Content Layer with mobile-first responsive backdrop */}
       <div className={cn(
         "relative z-10 min-h-stable md:min-h-screen",
-        "bg-background/95 dark:bg-background/98",
-        "backdrop-blur-sm",
         "safe-area-mobile",
         // Mobile-specific padding
         "px-0 md:px-2",
@@ -642,7 +639,7 @@ const Index = () => {
         <div className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 space-y-2 sm:space-y-3 md:space-y-4">
           <div className="w-full max-w-7xl mx-auto space-y-2 sm:space-y-3 md:space-y-4">
             {hasSearched ? (
-              <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border-0">
+              <section className="bg-background/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border border-border/40 hover:border-primary/30 transition-all duration-300">
                 <div className="p-2 sm:p-3 md:p-4 lg:p-6">
                   {/* Active Filter Pills */}
                   <Suspense fallback={null}>
@@ -655,7 +652,7 @@ const Index = () => {
                   
                   <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6 mt-1.5 sm:mt-2 md:mt-4">
                     <div>
-                      <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+                      <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                         {t.searchResults}
                       </h2>
                       <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">
@@ -678,7 +675,7 @@ const Index = () => {
                   {isSearching && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-3 md:mb-4">
                       {[...Array(6)].map((_, i) => (
-                        <div key={i} className="animate-pulse bg-muted/50 rounded-lg sm:rounded-xl h-48 sm:h-56 md:h-64" 
+                        <div key={i} className="animate-pulse bg-muted/50 rounded-lg sm:rounded-xl h-48 sm:h-56 md:h-64 border border-border/40" 
                           style={{ animationDelay: `${i * 100}ms` }} 
                         />
                       ))}
@@ -686,7 +683,7 @@ const Index = () => {
                   )}
                   
                   {viewMode === 'grid' && !isSearching && (
-                    <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />)}</div>}>
+                    <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-64 rounded-lg border border-border/40" />)}</div>}>
                       <PropertyGridView
                         properties={searchResults}
                         onPropertyClick={handlePropertyClick}
@@ -713,7 +710,7 @@ const Index = () => {
                   )}
 
                   {viewMode === 'list' && !isSearching && (
-                    <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg" />)}</div>}>
+                    <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-32 rounded-lg border border-border/40" />)}</div>}>
                       <PropertyListView
                         properties={searchResults}
                         onPropertyClick={handlePropertyClick}
@@ -740,7 +737,7 @@ const Index = () => {
                   )}
 
                   {viewMode === 'map' && !isSearching && (
-                    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                    <Suspense fallback={<div className="animate-pulse h-96 bg-muted/50 rounded-lg border border-border/40" />}>
                       <PropertyMapView
                         properties={searchResults}
                         onPropertyClick={handlePropertyClick}
@@ -754,10 +751,10 @@ const Index = () => {
                 {/* Featured Ads Carousel - Auto-sliding */}
                 <div className="w-full max-w-full mx-auto">
                   <Suspense fallback={
-                    <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm rounded-2xl p-6">
+                    <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/40">
                       <div className="animate-pulse">
-                        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4" />
-                        <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded" />
+                        <div className="h-8 bg-muted/50 rounded w-48 mb-4" />
+                        <div className="h-32 bg-muted/50 rounded" />
                       </div>
                     </div>
                   }>
@@ -768,20 +765,20 @@ const Index = () => {
                 {/* AI Recommended Properties - Lazy Loaded */}
                 <div className="section-compact mb-3 md:mb-6">
                   <Suspense fallback={
-                    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20 p-3 md:p-6">
+                    <div className="bg-background/50 backdrop-blur-sm rounded-2xl shadow-lg border border-border/40 hover:border-primary/30 transition-all duration-300 p-3 md:p-6">
                       <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg animate-pulse" />
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-primary to-primary/80 rounded-lg animate-pulse" />
                         <div className="flex-1">
-                          <div className="h-5 md:h-6 bg-gray-200 dark:bg-gray-700 rounded w-32 md:w-48 mb-1.5 md:mb-2 animate-pulse" />
-                          <div className="h-3 md:h-4 bg-gray-200 dark:bg-gray-700 rounded w-48 md:w-64 animate-pulse" />
+                          <div className="h-5 md:h-6 bg-muted/50 rounded w-32 md:w-48 mb-1.5 md:mb-2 animate-pulse" />
+                          <div className="h-3 md:h-4 bg-muted/50 rounded w-48 md:w-64 animate-pulse" />
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                         {[...Array(3)].map((_, i) => (
                           <div key={i} className="animate-pulse">
-                            <div className="bg-gray-200 dark:bg-gray-700 h-40 md:h-48 rounded-lg mb-2" />
-                            <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-3/4 mb-1.5 md:mb-2" />
-                            <div className="bg-gray-200 dark:bg-gray-700 h-3 md:h-4 rounded w-1/2" />
+                            <div className="bg-muted/50 h-40 md:h-48 rounded-lg mb-2 border border-border/40" />
+                            <div className="bg-muted/50 h-3 md:h-4 rounded w-3/4 mb-1.5 md:mb-2" />
+                            <div className="bg-muted/50 h-3 md:h-4 rounded w-1/2" />
                           </div>
                         ))}
                       </div>
@@ -793,7 +790,7 @@ const Index = () => {
 
                 {/* Trending Searches Widget */}
                 <div className="section-compact mb-3 md:mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-48 md:h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                  <Suspense fallback={<div className="animate-pulse h-48 md:h-64 bg-muted/50 rounded-lg border border-border/40" />}>
                     <TrendingSearchesWidget 
                       onSearchClick={(trendFilters) => {
                         setFilters(prev => ({ ...prev, ...trendFilters }));
@@ -805,7 +802,7 @@ const Index = () => {
 
                 {/* ASTRA Villa Features Section */}
                 <div className="w-full max-w-full mx-auto mb-3 md:mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-24 md:h-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                  <Suspense fallback={<div className="animate-pulse h-24 md:h-32 bg-muted/50 rounded-lg border border-border/40" />}>
                     <AstraVillaFeatures />
                   </Suspense>
                 </div>
@@ -814,21 +811,21 @@ const Index = () => {
 
                 {/* Properties for Sale Section - Compact */}
                 <div id="sale-section" className="section-compact">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-muted/50 rounded-lg border border-border/40" />}>
                     <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
 
                 {/* Properties for Rent Section - Compact */}
                 <div id="rent-section" className="section-compact">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-muted/50 rounded-lg border border-border/40" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
 
                 {/* Marketplace Services Section */}
                 <div id="marketplace-services-section" className="section-compact mt-8">
-                  <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 dark:bg-gray-700 rounded-lg" />}>
+                  <Suspense fallback={<div className="animate-pulse h-64 bg-muted/50 rounded-lg border border-border/40" />}>
                     <MarketplaceServices />
                   </Suspense>
                 </div>
