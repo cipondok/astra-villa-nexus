@@ -35,9 +35,12 @@ const UsersHub = () => {
     queryKey: ['user-hub-stats'],
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_admin_profile_stats');
-      if (error) throw error;
-      
-      const stats = data?.[0];
+      if (error) {
+        console.error('[UsersHub] get_admin_profile_stats failed:', error);
+        return null;
+      }
+
+      const stats = (Array.isArray(data) ? data[0] : data) as any;
       return {
         total: Number(stats?.total || 0),
         generalUsers: Number(stats?.general_users || 0),
@@ -48,7 +51,7 @@ const UsersHub = () => {
         admins: Number(stats?.admins || 0),
         suspended: Number(stats?.suspended || 0),
         pending: Number(stats?.pending || 0),
-        activeToday: Number(stats?.active_today || 0)
+        activeToday: Number(stats?.active_today || 0),
       };
     },
     refetchInterval: 30000,
