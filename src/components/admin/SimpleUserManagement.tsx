@@ -50,9 +50,15 @@ const SimpleUserManagement = () => {
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: async (): Promise<User[]> => {
-      const { data, error } = await supabase
-        .rpc('get_admin_profiles', { p_role: null, p_limit: 500, p_offset: 0 });
-      if (error) throw error;
+      const { data, error } = await supabase.rpc('get_admin_profiles', {
+        p_role: null,
+        p_limit: 500,
+        p_offset: 0,
+      });
+      if (error) {
+        console.error('[SimpleUserManagement] get_admin_profiles failed:', error);
+        return [];
+      }
       return (data as User[]) || [];
     },
   });
