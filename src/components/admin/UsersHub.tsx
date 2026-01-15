@@ -32,14 +32,16 @@ const UsersHub = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { data: userStats, refetch: refetchStats } = useQuery({
-    queryKey: ['user-hub-stats'],
+  const {
+    data: userStats,
+    error: userStatsError,
+    refetch: refetchStats,
+  } = useQuery({
+    queryKey: ['user-hub-stats', user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_admin_profile_stats');
-      if (error) {
-        console.error('[UsersHub] get_admin_profile_stats failed:', error);
-        return null;
-      }
+      if (error) throw error;
 
       const stats = (Array.isArray(data) ? data[0] : data) as any;
       return {
@@ -74,7 +76,7 @@ const UsersHub = () => {
     admins: 0,
     suspended: 0,
     pending: 0,
-    activeToday: 0
+    activeToday: 0,
   };
 
   if (!user) {
@@ -90,6 +92,19 @@ const UsersHub = () => {
 
   return (
     <div className="space-y-6">
+      {userStatsError && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Access / Data Error</CardTitle>
+            <CardDescription>
+              Signed in as: {user.email || user.id}
+              <br />
+              {String((userStatsError as any)?.message || userStatsError)}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+
 
       {/* Compact Micro Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
