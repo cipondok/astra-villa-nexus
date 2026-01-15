@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/contexts/LanguageContext';
 import astraLogo from '@/assets/astra-logo.png';
 
 interface LoadingPageProps {
@@ -35,17 +36,43 @@ interface LoadingPageSettings {
   customCSS: string;
 }
 
+const text = {
+  en: {
+    defaultMessage: "Initializing ASTRA Villa...",
+    defaultSubMessage: "Please wait while we prepare your experience",
+    logoSubtext: "PREMIUM REAL ESTATE",
+    checkingDatabase: "Checking database...",
+    databaseReady: "Database ready",
+    databaseUnavailable: "Database unavailable",
+    workingOffline: "Working offline",
+    initializing: "Initializing...",
+  },
+  id: {
+    defaultMessage: "Menginisialisasi ASTRA Villa...",
+    defaultSubMessage: "Harap tunggu sementara kami menyiapkan pengalaman Anda",
+    logoSubtext: "REAL ESTAT PREMIUM",
+    checkingDatabase: "Memeriksa database...",
+    databaseReady: "Database siap",
+    databaseUnavailable: "Database tidak tersedia",
+    workingOffline: "Bekerja offline",
+    initializing: "Menginisialisasi...",
+  },
+};
+
 const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({ 
-  message: propMessage = 'Initializing ASTRA Villa...',
+  message: propMessage,
   showConnectionStatus: propShowConnectionStatus = false,
   connectionStatus = 'connecting'
 }) => {
+  const { language } = useLanguage();
+  const t = text[language];
+
   const [settings, setSettings] = useState<LoadingPageSettings>({
     enabled: true,
-    message: 'Initializing ASTRA Villa...',
-    subMessage: 'Please wait while we prepare your experience',
+    message: t.defaultMessage,
+    subMessage: t.defaultSubMessage,
     logoText: '',
-    logoSubtext: 'PREMIUM REAL ESTATE',
+    logoSubtext: t.logoSubtext,
     showConnectionStatus: true,
     logoImageUrl: astraLogo,
     imageSize: 120,
@@ -148,15 +175,15 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
   const getConnectionMessage = () => {
     switch (connectionStatus) {
       case 'connecting':
-        return 'Checking database...';
+        return t.checkingDatabase;
       case 'connected':
-        return 'Database ready';
+        return t.databaseReady;
       case 'error':
-        return 'Database unavailable';
+        return t.databaseUnavailable;
       case 'offline':
-        return 'Working offline';
+        return t.workingOffline;
       default:
-        return 'Initializing...';
+        return t.initializing;
     }
   };
 

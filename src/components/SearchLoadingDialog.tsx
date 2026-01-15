@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Bot, Search, Sparkles } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SearchLoadingDialogProps {
   open: boolean;
@@ -9,38 +10,64 @@ interface SearchLoadingDialogProps {
   searchQuery?: string;
 }
 
+const text = {
+  en: {
+    aiPowered: "AI-Powered Property Search",
+    searchingFor: "Searching for:",
+    complete: "complete",
+    propertiesFound: "properties found",
+    searchCompleted: "Search completed!",
+    steps: [
+      "Initializing ASTRA AI search...",
+      "Analyzing your preferences...",
+      "Scanning property database...",
+      "Applying intelligent filters...",
+      "Ranking best matches...",
+      "Finalizing results..."
+    ],
+  },
+  id: {
+    aiPowered: "Pencarian Properti Berbasis AI",
+    searchingFor: "Mencari:",
+    complete: "selesai",
+    propertiesFound: "properti ditemukan",
+    searchCompleted: "Pencarian selesai!",
+    steps: [
+      "Menginisialisasi pencarian ASTRA AI...",
+      "Menganalisis preferensi Anda...",
+      "Memindai database properti...",
+      "Menerapkan filter cerdas...",
+      "Memeringkat kecocokan terbaik...",
+      "Menyelesaikan hasil..."
+    ],
+  },
+};
+
 export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
   open,
   onOpenChange,
   searchQuery = ""
 }) => {
+  const { language } = useLanguage();
+  const t = text[language];
   const [progress, setProgress] = useState(0);
   const [searchCount, setSearchCount] = useState<number | null>(null);
-  const [currentStep, setCurrentStep] = useState("Initializing search...");
-
-  const searchSteps = [
-    "Initializing ASTRA AI search...",
-    "Analyzing your preferences...",
-    "Scanning property database...",
-    "Applying intelligent filters...",
-    "Ranking best matches...",
-    "Finalizing results..."
-  ];
+  const [currentStep, setCurrentStep] = useState(t.steps[0]);
 
   useEffect(() => {
     if (open) {
       setProgress(0);
       setSearchCount(null);
-      setCurrentStep(searchSteps[0]);
+      setCurrentStep(t.steps[0]);
 
       const interval = setInterval(() => {
         setProgress(prev => {
           const newProgress = Math.min(prev + (100 / 30), 95); // 30 intervals over 3 seconds
           
           // Update step based on progress
-          const stepIndex = Math.floor((newProgress / 100) * searchSteps.length);
-          if (stepIndex < searchSteps.length) {
-            setCurrentStep(searchSteps[stepIndex]);
+          const stepIndex = Math.floor((newProgress / 100) * t.steps.length);
+          if (stepIndex < t.steps.length) {
+            setCurrentStep(t.steps[stepIndex]);
           }
           
           return newProgress;
@@ -58,7 +85,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
       // Complete after exactly 3 seconds
       const timeout = setTimeout(() => {
         setProgress(100);
-        setCurrentStep("Search completed!");
+        setCurrentStep(t.searchCompleted);
         setTimeout(() => {
           onOpenChange(false);
         }, 500);
@@ -70,7 +97,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
         clearTimeout(timeout);
       };
     }
-  }, [open, onOpenChange]);
+  }, [open, onOpenChange, t]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,7 +120,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
               ASTRA Villa
             </h3>
             <p className="text-sm text-muted-foreground font-medium">
-              AI-Powered Property Search
+              {t.aiPowered}
             </p>
           </div>
 
@@ -102,7 +129,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
             <div className="bg-muted/50 rounded-lg px-4 py-2 border border-primary/10">
               <div className="flex items-center gap-2 text-sm">
                 <Search className="h-3 w-3 text-primary" />
-                <span className="text-muted-foreground">Searching for:</span>
+                <span className="text-muted-foreground">{t.searchingFor}</span>
                 <span className="font-medium text-foreground">"{searchQuery}"</span>
               </div>
             </div>
@@ -115,11 +142,11 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
               className="h-2 bg-muted/50"
             />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{Math.round(progress)}% complete</span>
+              <span>{Math.round(progress)}% {t.complete}</span>
               {searchCount !== null && (
                 <span className="flex items-center gap-1">
                   <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                  {searchCount} properties found
+                  {searchCount} {t.propertiesFound}
                 </span>
               )}
             </div>
