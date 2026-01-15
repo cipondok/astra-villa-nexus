@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -26,11 +27,11 @@ import CustomerServiceUserManagement from './CustomerServiceUserManagement';
 import SimpleUserManagement from './SimpleUserManagement';
 
 const UsersHub = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch user statistics using RPC to avoid RLS/HEAD issues
   const { data: userStats, refetch: refetchStats } = useQuery({
     queryKey: ['user-hub-stats'],
     queryFn: async () => {
@@ -75,6 +76,17 @@ const UsersHub = () => {
     pending: 0,
     activeToday: 0
   };
+
+  if (!user) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>User Management</CardTitle>
+          <CardDescription>Please sign in with an admin account to view users.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
