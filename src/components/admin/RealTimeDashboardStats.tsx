@@ -11,13 +11,18 @@ const RealTimeDashboardStats = () => {
     queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
       try {
-        const [
-          usersResult,
-          propertiesResult,
-          vendorsBusinessProfilesResult
-        ] = await Promise.all([
-          supabase.from('profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('properties').select('*', { count: 'exact', head: true }),
+        // Use secure RPC function to get platform stats
+        const { data: platformStats, error: rpcError } = await supabase.rpc('get_platform_stats');
+        
+        const statsData = (platformStats as Array<{
+          total_users: number;
+          total_properties: number;
+          total_bookings: number;
+          total_vendors: number;
+          active_sessions: number;
+        }> | null)?.[0];
+
+        const [vendorsBusinessProfilesResult] = await Promise.all([
           supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true })
         ]);
 
@@ -70,9 +75,9 @@ const RealTimeDashboardStats = () => {
         );
 
         return {
-          totalUsers: usersResult.count || 0,
+          totalUsers: Number(statsData?.total_users) || 0,
           activeUsers: uniqueActiveUsers,
-          totalProperties: propertiesResult.count || 0,
+          totalProperties: Number(statsData?.total_properties) || 0,
           totalVendors,
           totalOrders: ordersCount,
           systemErrors: errorsCount,

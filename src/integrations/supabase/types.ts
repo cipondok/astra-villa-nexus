@@ -10634,6 +10634,16 @@ export type Database = {
           vendor_id: string
         }[]
       }
+      get_platform_stats: {
+        Args: never
+        Returns: {
+          active_sessions: number
+          total_bookings: number
+          total_properties: number
+          total_users: number
+          total_vendors: number
+        }[]
+      }
       get_profiles_with_roles: {
         Args: never
         Returns: {
@@ -10988,6 +10998,7 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_total_user_count: { Args: never; Returns: number }
       get_user_financial_summary: {
         Args: { p_user_id?: string }
         Returns: Json

@@ -150,17 +150,24 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
     queryKey: ['admin-platform-stats'],
     queryFn: async () => {
       try {
+        // Use secure RPC function to get platform stats
+        const { data: platformStats, error: rpcError } = await supabase.rpc('get_platform_stats');
+        
+        const statsData = (platformStats as Array<{
+          total_users: number;
+          total_properties: number;
+          total_bookings: number;
+          total_vendors: number;
+          active_sessions: number;
+        }> | null)?.[0];
+
         const [
-          usersResult,
-          propertiesResult,
           vendorsResult,
           ordersResult,
           articlesResult,
           analyticsResult,
           activeUsersResult
         ] = await Promise.all([
-          supabase.from('profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('properties').select('*', { count: 'exact', head: true }),
           supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true),
           supabase.from('orders').select('*', { count: 'exact', head: true }),
           supabase.from('articles').select('*', { count: 'exact', head: true }),
@@ -170,8 +177,8 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         ]);
 
         return {
-          totalUsers: usersResult.count || 0,
-          totalProperties: propertiesResult.count || 0,
+          totalUsers: Number(statsData?.total_users) || 0,
+          totalProperties: Number(statsData?.total_properties) || 0,
           totalVendors: vendorsResult.count || 0,
           totalOrders: ordersResult.count || 0,
           totalArticles: articlesResult.count || 0,
