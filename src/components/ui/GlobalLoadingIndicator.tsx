@@ -3,8 +3,22 @@ import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useIsFetching } from '@tanstack/react-query';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+const text = {
+  en: {
+    loading: "Loading...",
+    slowConnection: "Slow connection...",
+  },
+  id: {
+    loading: "Memuat...",
+    slowConnection: "Koneksi lambat...",
+  },
+};
 
 export const GlobalLoadingIndicator = () => {
+  const { language } = useLanguage();
+  const t = text[language];
   const [isNavigating, setIsNavigating] = useState(false);
   const [isSlowConnection, setIsSlowConnection] = useState(false);
   const location = useLocation();
@@ -71,7 +85,7 @@ export const GlobalLoadingIndicator = () => {
           >
             <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
             <span className="text-xs font-medium text-foreground">
-              {isSlowConnection ? 'Koneksi lambat...' : 'Memuat...'}
+              {isSlowConnection ? t.slowConnection : t.loading}
             </span>
           </motion.div>
         </>

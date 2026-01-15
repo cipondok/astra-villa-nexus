@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useConnectionSpeed } from '@/hooks/useConnectionSpeed';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LoadingPageProps {
   message?: string;
@@ -8,32 +9,61 @@ interface LoadingPageProps {
   connectionStatus?: 'connecting' | 'connected' | 'error' | 'offline';
 }
 
+const text = {
+  en: {
+    defaultMessage: "Loading, please wait...",
+    slowInternet: "Slow internet detected - ISP issue",
+    noInternet: "No internet - Check your connection",
+    checkingDatabase: "Checking database...",
+    databaseReady: "Database ready",
+    databaseUnavailable: "Database unavailable",
+    workingOffline: "Working offline",
+    initializing: "Initializing...",
+    slowConnectionNote: "Please wait... This may take longer due to your internet connection",
+  },
+  id: {
+    defaultMessage: "Memuat, harap tunggu...",
+    slowInternet: "Koneksi lambat terdeteksi - Masalah ISP",
+    noInternet: "Tidak ada internet - Periksa koneksi Anda",
+    checkingDatabase: "Memeriksa database...",
+    databaseReady: "Database siap",
+    databaseUnavailable: "Database tidak tersedia",
+    workingOffline: "Bekerja offline",
+    initializing: "Menginisialisasi...",
+    slowConnectionNote: "Harap tunggu... Ini mungkin memakan waktu lebih lama karena koneksi internet Anda",
+  },
+};
+
 const LoadingPage: React.FC<LoadingPageProps> = ({ 
-  message = "Loading, please wait...",
+  message,
   showConnectionStatus = false,
   connectionStatus = 'connecting'
 }) => {
   const { speed, isSlowConnection } = useConnectionSpeed();
+  const { language } = useLanguage();
+  const t = text[language];
+
+  const displayMessage = message || t.defaultMessage;
 
   const getConnectionMessage = () => {
     if (speed === 'slow') {
-      return 'Slow internet detected - ISP issue';
+      return t.slowInternet;
     }
     if (speed === 'offline') {
-      return 'No internet - Check your connection';
+      return t.noInternet;
     }
 
     switch (connectionStatus) {
       case 'connecting':
-        return 'Checking database...';
+        return t.checkingDatabase;
       case 'connected':
-        return 'Database ready';
+        return t.databaseReady;
       case 'error':
-        return 'Database unavailable';
+        return t.databaseUnavailable;
       case 'offline':
-        return 'Working offline';
+        return t.workingOffline;
       default:
-        return 'Initializing...';
+        return t.initializing;
     }
   };
 
@@ -78,7 +108,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           <div className="w-3 h-3 bg-cyan-400 rounded-full animate-dot-flash" style={{ animationDelay: '0.4s' }}></div>
         </div>
         
-        <p className="text-sm text-gray-400 tracking-wide">{message}</p>
+        <p className="text-sm text-gray-400 tracking-wide">{displayMessage}</p>
         
         {showConnectionStatus && (
           <div className="flex flex-col items-center space-y-2">
@@ -94,7 +124,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
             </div>
             {isSlowConnection && (
               <p className="text-xs text-gray-500 text-center max-w-xs">
-                Please wait... This may take longer due to your internet connection
+                {t.slowConnectionNote}
               </p>
             )}
           </div>
