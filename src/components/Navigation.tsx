@@ -191,8 +191,16 @@ const Navigation = () => {
                     className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
                   />
                   
-                  {/* Continuous Shine Reflection Effect - Narrow beam */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-[10%] animate-shimmer pointer-events-none" />
+                  {/* Golden Sparkle Effects */}
+                  <div className="absolute top-1 right-2 pointer-events-none">
+                    <Sparkles className="h-3 w-3 text-amber-400 animate-sparkle drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]" />
+                  </div>
+                  <div className="absolute top-3 right-5 pointer-events-none">
+                    <Sparkles className="h-2 w-2 text-yellow-300 animate-sparkle-delayed drop-shadow-[0_0_3px_rgba(253,224,71,0.8)]" />
+                  </div>
+                  <div className="absolute bottom-2 left-3 pointer-events-none">
+                    <Sparkles className="h-2.5 w-2.5 text-amber-300 animate-sparkle-delayed-2 drop-shadow-[0_0_4px_rgba(252,211,77,0.8)]" />
+                  </div>
                 </div>
               ) : (
                 <>
