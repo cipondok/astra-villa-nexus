@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -64,6 +65,7 @@ interface SessionTracking {
 }
 
 const EnhancedUserManagement = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [suspensionFilter, setSuspensionFilter] = useState("all");
@@ -74,49 +76,24 @@ const EnhancedUserManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch enhanced users with levels and roles
-  const { data: users, isLoading } = useQuery({
-    queryKey: ['enhanced-users'],
+  // Fetch users via admin-only RPC (profiles table is protected by RLS)
+  const {
+    data: users,
+    isLoading,
+    error: usersError,
+  } = useQuery({
+    queryKey: ['enhanced-users', user?.id],
+    enabled: !!user,
     queryFn: async (): Promise<EnhancedUser[]> => {
-      // Fetch profiles with user_levels
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          user_levels (
-            name,
-            max_properties,
-            max_listings
-          )
-        `)
-        .order('created_at', { ascending: false });
-      
-      if (profilesError) throw profilesError;
-      
-      // Fetch roles from user_roles table
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role')
-        .eq('is_active', true);
-      
-      if (rolesError) throw rolesError;
-      
-      // Map roles to users (get primary role - prefer admin/agent/vendor over general_user)
-      const roleMap = new Map<string, UserRole>();
-      const rolePriority: UserRole[] = ['admin', 'agent', 'vendor', 'property_owner', 'customer_service', 'general_user'];
-      
-      roles?.forEach(r => {
-        const currentRole = roleMap.get(r.user_id);
-        const newRole = r.role as UserRole;
-        if (!currentRole || rolePriority.indexOf(newRole) < rolePriority.indexOf(currentRole)) {
-          roleMap.set(r.user_id, newRole);
-        }
+      const { data, error } = await supabase.rpc('get_admin_profiles', {
+        p_role: null,
+        p_limit: 1000,
+        p_offset: 0,
       });
-      
-      return (profiles || []).map(profile => ({
-        ...profile,
-        role: roleMap.get(profile.id) || 'general_user'
-      }));
+      if (error) throw error;
+
+      // get_admin_profiles already returns a derived primary role
+      return (data as EnhancedUser[]) || [];
     },
   });
 
@@ -352,6 +329,13 @@ const EnhancedUserManagement = () => {
       <Card>
         <CardHeader>
           <CardTitle>Users ({filteredUsers.length})</CardTitle>
+          {usersError && (
+            <CardDescription>
+              Signed in as: {user?.email || user?.id}
+              <br />
+              {String((usersError as any)?.message || usersError)}
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading ? (
