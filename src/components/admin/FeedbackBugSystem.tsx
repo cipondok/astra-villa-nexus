@@ -56,7 +56,7 @@ interface HealthMetric {
 
 const text = {
   en: {
-    title: "Feedback & System Health",
+    pageTitle: "Feedback & System Health",
     subtitle: "Bug reports, feedback, system updates, and health monitoring",
     feedbackTab: "Feedback",
     bugsTab: "Bug Reports",
@@ -77,7 +77,7 @@ const text = {
     medium: "Medium",
     high: "High",
     critical: "Critical",
-    title: "Title",
+    feedbackTitle: "Title",
     description: "Description",
     submit: "Submit",
     status: "Status",
@@ -113,7 +113,7 @@ const text = {
     activeUsers: "Active Users"
   },
   id: {
-    title: "Umpan Balik & Kesehatan Sistem",
+    pageTitle: "Umpan Balik & Kesehatan Sistem",
     subtitle: "Laporan bug, umpan balik, pembaruan sistem, dan pemantauan kesehatan",
     feedbackTab: "Umpan Balik",
     bugsTab: "Laporan Bug",
@@ -134,7 +134,7 @@ const text = {
     medium: "Sedang",
     high: "Tinggi",
     critical: "Kritis",
-    title: "Judul",
+    feedbackTitle: "Judul",
     description: "Deskripsi",
     submit: "Kirim",
     status: "Status",
@@ -254,7 +254,7 @@ const FeedbackBugSystem = () => {
       const { error } = await supabase
         .from('user_feedback')
         .insert({
-          feedback_type: formType,
+          feedback_type: formType as "bug_report" | "feature_request" | "general_feedback" | "complaint",
           severity: formSeverity,
           title: formTitle,
           description: formDescription,
@@ -330,7 +330,7 @@ const FeedbackBugSystem = () => {
         <div>
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Activity className="h-6 w-6 text-primary" />
-            {t.title}
+            {t.pageTitle}
           </h2>
           <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
@@ -382,7 +382,7 @@ const FeedbackBugSystem = () => {
                   </div>
                 </div>
                 <div>
-                  <Label>{t.title}</Label>
+                  <Label>{t.feedbackTitle}</Label>
                   <Input 
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
@@ -486,7 +486,7 @@ const FeedbackBugSystem = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t.title}</TableHead>
+                        <TableHead>{t.feedbackTitle}</TableHead>
                         <TableHead>{t.feedbackType}</TableHead>
                         <TableHead>{t.severity}</TableHead>
                         <TableHead>{t.status}</TableHead>
@@ -535,7 +535,7 @@ const FeedbackBugSystem = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t.title}</TableHead>
+                        <TableHead>{t.feedbackTitle}</TableHead>
                         <TableHead>{t.severity}</TableHead>
                         <TableHead>{t.status}</TableHead>
                         <TableHead>{t.date}</TableHead>

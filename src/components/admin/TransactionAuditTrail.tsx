@@ -21,9 +21,9 @@ interface AuditLog {
   new_status: string | null;
   changed_by: string | null;
   change_reason: string | null;
-  ip_address: string | null;
+  ip_address: unknown;
   created_at: string;
-  metadata: Record<string, any>;
+  metadata: unknown;
 }
 
 const text = {
@@ -291,7 +291,7 @@ const TransactionAuditTrail = () => {
                           </div>
                         </TableCell>
                         <TableCell className="font-mono text-xs text-muted-foreground">
-                          {log.ip_address || '-'}
+                          {String(log.ip_address) || '-'}
                         </TableCell>
                       </TableRow>
                     );
