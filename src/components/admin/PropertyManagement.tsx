@@ -331,61 +331,80 @@ const PropertyManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="properties" className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                Properties
-              </TabsTrigger>
-              <TabsTrigger value="locations" className="flex items-center gap-2">
-                <Location className="h-4 w-4" />
-                Locations
-              </TabsTrigger>
-              <TabsTrigger value="categories" className="flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
-                Categories
-              </TabsTrigger>
-              <TabsTrigger value="approval" className="flex items-center gap-2">
-                <FileCheck className="h-4 w-4" />
-                Approval
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="search-filters" className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                Filters
-              </TabsTrigger>
-              <TabsTrigger value="watermark" className="flex items-center gap-2">
-                <Droplets className="h-4 w-4" />
-                Watermark
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="flex items-center gap-2">
-                <Settings className="h-4 w-4" />
-                Settings
-              </TabsTrigger>
-            </TabsList>
+    <div className="space-y-3 p-1 md:p-0">
+      {/* Professional Header */}
+      <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 dark:from-emerald-500/20 dark:via-teal-500/20 dark:to-cyan-500/20 rounded-lg border border-emerald-200/50 dark:border-emerald-800/50 p-3">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+            <Building className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-foreground">Property Management</h2>
+              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 text-[9px] px-1.5 py-0 h-4">
+                <TrendingUp className="h-2.5 w-2.5 mr-0.5" />
+                {allProperties.length} Properties
+              </Badge>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Manage property listings, approvals, and content</p>
+          </div>
+        </div>
+      </div>
+
+      <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-3">
+        <TabsList className="h-7 p-0.5 bg-emerald-100/50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 grid w-full grid-cols-8">
+          <TabsTrigger value="properties" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <Building className="h-3 w-3 mr-0.5" />
+            Properties
+          </TabsTrigger>
+          <TabsTrigger value="locations" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <Location className="h-3 w-3 mr-0.5" />
+            Locations
+          </TabsTrigger>
+          <TabsTrigger value="categories" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <Building2 className="h-3 w-3 mr-0.5" />
+            Categories
+          </TabsTrigger>
+          <TabsTrigger value="approval" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <FileCheck className="h-3 w-3 mr-0.5" />
+            Approval
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <BarChart3 className="h-3 w-3 mr-0.5" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="search-filters" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <Filter className="h-3 w-3 mr-0.5" />
+            Filters
+          </TabsTrigger>
+          <TabsTrigger value="watermark" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <Droplets className="h-3 w-3 mr-0.5" />
+            Watermark
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="text-[9px] h-6 px-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+            <Settings className="h-3 w-3 mr-0.5" />
+            Settings
+          </TabsTrigger>
+        </TabsList>
 
             {/* Properties Tab - Enhanced with pagination and search */}
-            <TabsContent value="properties" className="space-y-6">
+            <TabsContent value="properties" className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">Property Listings</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Manage property listings, approvals, and content - {allProperties.length} total properties, showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of page {currentPage}
+                  <h3 className="text-xs font-semibold">Property Listings</h3>
+                  <p className="text-[9px] text-muted-foreground">
+                    {allProperties.length} total • Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} (Page {currentPage})
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => refetch()}>
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                <div className="flex gap-1.5">
+                  <Button variant="outline" size="sm" onClick={() => refetch()} className="h-6 text-[10px] px-2">
+                    <RefreshCw className="h-3 w-3 mr-1" />
                     Refresh
                   </Button>
                   <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button>
-                        <Plus className="h-4 w-4 mr-2" />
+                      <Button size="sm" className="h-6 text-[10px] px-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white">
+                        <Plus className="h-3 w-3 mr-1" />
                         Add Property
                       </Button>
                     </DialogTrigger>

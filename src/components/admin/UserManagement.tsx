@@ -282,39 +282,49 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            User Management
-          </h2>
-          <p className="text-xs text-muted-foreground">Manage users, roles, levels & permissions</p>
+    <div className="space-y-3 p-1 md:p-0">
+      {/* Professional Header */}
+      <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50 p-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
+              <Users className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-bold text-foreground">User Management</h2>
+                <Badge className="bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700 text-[9px] px-1.5 py-0 h-4">
+                  <Activity className="h-2.5 w-2.5 mr-0.5" />
+                  {stats.total} Users
+                </Badge>
+              </div>
+              <p className="text-[10px] text-muted-foreground">Manage users, roles, levels & permissions</p>
+            </div>
+          </div>
+          <Button size="sm" className="h-7 text-[10px] px-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white">
+            <UserPlus className="h-3 w-3 mr-1" />
+            Add User
+          </Button>
         </div>
-        <Button size="sm" className="h-8 text-xs gap-1.5">
-          <UserPlus className="h-3.5 w-3.5" />
-          Add User
-        </Button>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+      <div className="grid grid-cols-4 md:grid-cols-8 gap-1.5">
         {[
-          { label: 'Total', value: stats.total, icon: <Users className="h-3.5 w-3.5" />, color: 'text-blue-500' },
-          { label: 'Active', value: stats.active, icon: <CheckCircle className="h-3.5 w-3.5" />, color: 'text-green-500' },
-          { label: 'Suspended', value: stats.suspended, icon: <Ban className="h-3.5 w-3.5" />, color: 'text-red-500' },
-          { label: 'Pending', value: stats.pending, icon: <Clock className="h-3.5 w-3.5" />, color: 'text-yellow-500' },
-          { label: 'Admins', value: stats.admins, icon: <Shield className="h-3.5 w-3.5" />, color: 'text-orange-500' },
-          { label: 'Agents', value: stats.agents, icon: <Building className="h-3.5 w-3.5" />, color: 'text-blue-500' },
-          { label: 'Vendors', value: stats.vendors, icon: <Star className="h-3.5 w-3.5" />, color: 'text-purple-500' },
-          { label: 'Owners', value: stats.owners, icon: <Building className="h-3.5 w-3.5" />, color: 'text-green-500' },
+          { label: 'Total', value: stats.total, icon: <Users className="h-3 w-3" />, color: 'blue', borderColor: 'border-blue-200 dark:border-blue-800', bgColor: 'bg-blue-50/50 dark:bg-blue-900/20' },
+          { label: 'Active', value: stats.active, icon: <CheckCircle className="h-3 w-3" />, color: 'green', borderColor: 'border-green-200 dark:border-green-800', bgColor: 'bg-green-50/50 dark:bg-green-900/20' },
+          { label: 'Suspended', value: stats.suspended, icon: <Ban className="h-3 w-3" />, color: 'red', borderColor: 'border-red-200 dark:border-red-800', bgColor: 'bg-red-50/50 dark:bg-red-900/20' },
+          { label: 'Pending', value: stats.pending, icon: <Clock className="h-3 w-3" />, color: 'yellow', borderColor: 'border-yellow-200 dark:border-yellow-800', bgColor: 'bg-yellow-50/50 dark:bg-yellow-900/20' },
+          { label: 'Admins', value: stats.admins, icon: <Shield className="h-3 w-3" />, color: 'orange', borderColor: 'border-orange-200 dark:border-orange-800', bgColor: 'bg-orange-50/50 dark:bg-orange-900/20' },
+          { label: 'Agents', value: stats.agents, icon: <Building className="h-3 w-3" />, color: 'cyan', borderColor: 'border-cyan-200 dark:border-cyan-800', bgColor: 'bg-cyan-50/50 dark:bg-cyan-900/20' },
+          { label: 'Vendors', value: stats.vendors, icon: <Star className="h-3 w-3" />, color: 'purple', borderColor: 'border-purple-200 dark:border-purple-800', bgColor: 'bg-purple-50/50 dark:bg-purple-900/20' },
+          { label: 'Owners', value: stats.owners, icon: <Building className="h-3 w-3" />, color: 'emerald', borderColor: 'border-emerald-200 dark:border-emerald-800', bgColor: 'bg-emerald-50/50 dark:bg-emerald-900/20' },
         ].map((stat) => (
-          <Card key={stat.label} className="p-2">
-            <div className="flex items-center gap-1.5">
-              <span className={stat.color}>{stat.icon}</span>
+          <Card key={stat.label} className={`p-2 ${stat.borderColor} ${stat.bgColor}`}>
+            <div className="flex items-center gap-1">
+              <span className={`text-${stat.color}-600`}>{stat.icon}</span>
               <div>
-                <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                <p className="text-[9px] text-muted-foreground">{stat.label}</p>
                 <p className="text-sm font-bold">{stat.value}</p>
               </div>
             </div>
@@ -323,19 +333,19 @@ const UserManagement = () => {
       </div>
 
       {/* Filters */}
-      <Card className="p-3">
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+      <Card className="p-2 border-indigo-200/50 dark:border-indigo-800/50">
+        <div className="flex flex-wrap gap-1.5">
+          <div className="relative flex-1 min-w-[180px]">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
             <Input
               placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 h-8 text-xs"
+              className="pl-7 h-7 text-[10px]"
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-[130px] h-8 text-xs">
+            <SelectTrigger className="w-[110px] h-7 text-[10px]">
               <SelectValue placeholder="Role" />
             </SelectTrigger>
             <SelectContent>
@@ -346,7 +356,7 @@ const UserManagement = () => {
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[120px] h-8 text-xs">
+            <SelectTrigger className="w-[100px] h-7 text-[10px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -360,23 +370,26 @@ const UserManagement = () => {
       </Card>
 
       {/* Users Table */}
-      <Card>
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="text-sm font-medium flex items-center justify-between">
-            <span>Users ({filteredUsers.length})</span>
+      <Card className="border-indigo-200/50 dark:border-indigo-800/50">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs font-medium flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Users className="h-3.5 w-3.5 text-indigo-600" />
+              Users ({filteredUsers.length})
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="h-[500px]">
+          <ScrollArea className="h-[450px]">
             {isLoading ? (
-              <div className="text-center py-8 text-sm text-muted-foreground">Loading users...</div>
+              <div className="text-center py-6 text-[10px] text-muted-foreground">Loading users...</div>
             ) : filteredUsers.length === 0 ? (
-              <div className="text-center py-8 text-sm text-muted-foreground">No users found</div>
+              <div className="text-center py-6 text-[10px] text-muted-foreground">No users found</div>
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="text-xs">
-                    <TableHead className="w-[250px]">User</TableHead>
+                  <TableRow className="text-[10px]">
+                    <TableHead className="w-[220px]">User</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Level</TableHead>
                     <TableHead>Status</TableHead>
