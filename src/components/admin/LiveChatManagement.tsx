@@ -140,146 +140,148 @@ const LiveChatManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Admin Live Chat Header */}
-      <Card className="bg-gradient-to-br from-primary/5 via-primary/10 to-secondary/5 border-none">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-6">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 rounded-lg border border-green-200/50 dark:border-green-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+            <MessageSquare className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold">Live Chat Administration</h2>
+              <Badge className="bg-green-500/20 text-green-700 dark:text-green-400 text-[9px] px-1.5 py-0 h-4">Live</Badge>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Monitor and manage chat operations</p>
+          </div>
+        </div>
+        <Button 
+          onClick={() => setShowChatManager(true)}
+          size="sm"
+          className="h-7 text-[10px]"
+        >
+          <Activity className="h-3 w-3 mr-1" />
+          Chat Manager
+        </Button>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="p-2 rounded-lg border bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
+              <Clock className="h-3 w-3 text-orange-600" />
+            </div>
             <div>
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-                <MessageSquare className="h-8 w-8" />
-                Live Chat Administration
-              </h1>
-              <p className="text-muted-foreground text-lg mt-2">
-                Monitor and manage customer support chat operations
-              </p>
-            </div>
-            <Button 
-              onClick={() => setShowChatManager(true)}
-              className="flex items-center gap-2"
-            >
-              <Activity className="h-4 w-4" />
-              Open Chat Manager
-            </Button>
-          </div>
-
-          {/* Admin Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-orange-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{stats.waitingSessions}</div>
-                  <div className="text-muted-foreground text-sm">Waiting</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Activity className="h-5 w-5 text-green-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{stats.activeSessions}</div>
-                  <div className="text-muted-foreground text-sm">Active</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <MessageSquare className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{stats.totalSessions}</div>
-                  <div className="text-muted-foreground text-sm">Total</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-purple-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{stats.resolvedToday}</div>
-                  <div className="text-muted-foreground text-sm">Resolved Today</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                  <UserCheck className="h-5 w-5 text-cyan-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{stats.onlineAgents}</div>
-                  <div className="text-muted-foreground text-sm">Online Agents</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
-                  <Users className="h-5 w-5 text-indigo-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{stats.totalAgents}</div>
-                  <div className="text-muted-foreground text-sm">Total Agents</div>
-                </div>
-              </div>
+              <div className="text-sm font-bold text-foreground">{stats.waitingSessions}</div>
+              <div className="text-[9px] text-muted-foreground">Waiting</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        
+        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
+              <Activity className="h-3 w-3 text-green-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{stats.activeSessions}</div>
+              <div className="text-[9px] text-muted-foreground">Active</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+              <MessageSquare className="h-3 w-3 text-blue-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{stats.totalSessions}</div>
+              <div className="text-[9px] text-muted-foreground">Total</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+              <TrendingUp className="h-3 w-3 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{stats.resolvedToday}</div>
+              <div className="text-[9px] text-muted-foreground">Resolved</div>
+            </div>
+          </div>
+        </div>
 
-      {/* Admin Management Tabs */}
+        <div className="p-2 rounded-lg border bg-cyan-50/50 dark:bg-cyan-950/20 border-cyan-200/50 dark:border-cyan-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-cyan-500/20 rounded flex items-center justify-center">
+              <UserCheck className="h-3 w-3 text-cyan-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{stats.onlineAgents}</div>
+              <div className="text-[9px] text-muted-foreground">Online</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-2 rounded-lg border bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-200/50 dark:border-indigo-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-indigo-500/20 rounded flex items-center justify-center">
+              <Users className="h-3 w-3 text-indigo-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{stats.totalAgents}</div>
+              <div className="text-[9px] text-muted-foreground">Agents</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <Activity className="h-4 w-4" />
+        <TabsList className="grid w-full grid-cols-3 h-8 p-0.5 bg-muted/50">
+          <TabsTrigger value="overview" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+            <Activity className="h-3 w-3" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="sessions" className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
-            Chat Sessions
+          <TabsTrigger value="sessions" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+            <MessageSquare className="h-3 w-3" />
+            Sessions
           </TabsTrigger>
-          <TabsTrigger value="agents" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
+          <TabsTrigger value="agents" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+            <Users className="h-3 w-3" />
             Agents
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5" />
-                  Recent Activity
-                </CardTitle>
+        <TabsContent value="overview" className="space-y-4 mt-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <Card className="border-orange-200/50 dark:border-orange-800/30">
+              <CardHeader className="p-3 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
+                    <AlertCircle className="h-3 w-3 text-orange-600" />
+                  </div>
+                  <CardTitle className="text-xs">Recent Activity</CardTitle>
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-3 pt-0">
+                <div className="space-y-2">
                   {isLoadingSessions ? (
-                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
+                    <div className="text-center py-3 text-[10px] text-muted-foreground">Loading...</div>
                   ) : (
                     allSessions?.slice(0, 5).map(session => (
-                      <div key={session.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
+                      <div key={session.id} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
                         <div>
-                          <p className="font-medium">{session.customer_name}</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-[10px] font-medium">{session.customer_name}</p>
+                          <p className="text-[9px] text-muted-foreground">
                             {new Date(session.started_at).toLocaleString()}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           {getPriorityBadge(session.priority)}
                           {getStatusBadge(session.status)}
                         </div>
@@ -290,25 +292,27 @@ const LiveChatManagement = () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Agent Status
-                </CardTitle>
+            <Card className="border-purple-200/50 dark:border-purple-800/30">
+              <CardHeader className="p-3 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+                    <Users className="h-3 w-3 text-purple-600" />
+                  </div>
+                  <CardTitle className="text-xs">Agent Status</CardTitle>
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-3 pt-0">
+                <div className="space-y-2">
                   {isLoadingAgents ? (
-                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
+                    <div className="text-center py-3 text-[10px] text-muted-foreground">Loading...</div>
                   ) : (
                     agents?.slice(0, 5).map(agent => (
-                      <div key={agent.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
+                      <div key={agent.id} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
                         <div>
-                          <p className="font-medium">{agent.full_name || 'No Name'}</p>
-                          <p className="text-sm text-muted-foreground">{agent.email}</p>
+                          <p className="text-[10px] font-medium">{agent.full_name || 'No Name'}</p>
+                          <p className="text-[9px] text-muted-foreground">{agent.email}</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           {getAvailabilityBadge(agent.availability_status)}
                         </div>
                       </div>
@@ -320,12 +324,17 @@ const LiveChatManagement = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="sessions">
-          <Card>
-            <CardHeader>
-              <CardTitle>All Chat Sessions</CardTitle>
+        <TabsContent value="sessions" className="mt-3">
+          <Card className="border-blue-200/50 dark:border-blue-800/30">
+            <CardHeader className="p-3 pb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+                  <MessageSquare className="h-3 w-3 text-blue-600" />
+                </div>
+                <CardTitle className="text-xs">All Chat Sessions</CardTitle>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 pt-0">
               {isLoadingSessions ? (
                 <div className="text-center py-8 text-muted-foreground">Loading sessions...</div>
               ) : (
@@ -367,12 +376,17 @@ const LiveChatManagement = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="agents">
-          <Card>
-            <CardHeader>
-              <CardTitle>Customer Service Agents</CardTitle>
+        <TabsContent value="agents" className="mt-3">
+          <Card className="border-purple-200/50 dark:border-purple-800/30">
+            <CardHeader className="p-3 pb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+                  <Users className="h-3 w-3 text-purple-600" />
+                </div>
+                <CardTitle className="text-xs">Customer Service Agents</CardTitle>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 pt-0">
               {isLoadingAgents ? (
                 <div className="text-center py-8 text-muted-foreground">Loading agents...</div>
               ) : (

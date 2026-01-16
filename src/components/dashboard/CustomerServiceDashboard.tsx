@@ -33,7 +33,8 @@ import {
   CheckCircle,
   User,
   MessageSquare,
-  Clock
+  Clock,
+  Headphones
 } from "lucide-react";
 import LiveChatManager from "./LiveChatManager";
 import CSNavSidebar from "./cs/CSNavSidebar";
@@ -436,16 +437,19 @@ const CustomerServiceDashboard = () => {
             </div>
             
             {/* Main Header */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10">
+              <div className="flex items-center gap-3">
                 <SidebarTrigger />
-                <div>
-                  <h1 className="text-2xl font-bold text-foreground">Customer Service Dashboard</h1>
-                  <p className="text-muted-foreground">Manage support tickets and customer inquiries</p>
+                <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Headphones className="h-4 w-4 text-white" />
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                {/* Static status removed - now using draggable version */}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-sm font-bold text-foreground">Customer Service Dashboard</h1>
+                    <Badge className="bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-[9px] px-1.5 py-0 h-4">Active</Badge>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Manage support tickets and customer inquiries</p>
+                </div>
               </div>
             </div>
           </div>
@@ -461,30 +465,30 @@ const CustomerServiceDashboard = () => {
         availableTickets={availableTickets}
       />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-6 h-8 p-0.5 bg-muted/50">
+          <TabsTrigger value="dashboard" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-700 dark:data-[state=active]:text-cyan-400">
+            <BarChart3 className="h-3 w-3" />
             Dashboard
           </TabsTrigger>
-          <TabsTrigger value="my-tickets" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
+          <TabsTrigger value="my-tickets" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-700 dark:data-[state=active]:text-orange-400">
+            <FileText className="h-3 w-3" />
             My Tickets ({myOpenTickets})
           </TabsTrigger>
-          <TabsTrigger value="inquiries" className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
+          <TabsTrigger value="inquiries" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400">
+            <MessageSquare className="h-3 w-3" />
             Inquiries ({pendingInquiries})
           </TabsTrigger>
-          <TabsTrigger value="available" className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
+          <TabsTrigger value="available" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">
+            <Clock className="h-3 w-3" />
             Available ({availableTickets})
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
+          <TabsTrigger value="analytics" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-700 dark:data-[state=active]:text-green-400">
+            <BarChart3 className="h-3 w-3" />
             Analytics
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
+          <TabsTrigger value="settings" className="flex items-center gap-1 text-[10px] h-7 data-[state=active]:bg-slate-500/20 data-[state=active]:text-slate-700 dark:data-[state=active]:text-slate-400">
+            <Settings className="h-3 w-3" />
             Settings
           </TabsTrigger>
         </TabsList>
