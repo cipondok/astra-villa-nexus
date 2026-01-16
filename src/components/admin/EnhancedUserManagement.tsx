@@ -280,25 +280,52 @@ const EnhancedUserManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 p-1 md:p-0">
+      {/* Professional Header */}
+      <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50 p-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
+              <Shield className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-bold text-foreground">User Management</h2>
+                <Badge className="bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700 text-[9px] px-1.5 py-0 h-4">
+                  {filteredUsers.length} Users
+                </Badge>
+              </div>
+              <p className="text-[10px] text-muted-foreground">Manage users, roles, levels & permissions</p>
+            </div>
+          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" className="h-7 text-[10px] px-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white">
+                <UserPlus className="h-3 w-3 mr-1" />
+                Add User
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+        </div>
+      </div>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex gap-4">
-            <div className="flex-1">
+      <Card className="border-indigo-200/50 dark:border-indigo-800/50">
+        <CardContent className="p-2">
+          <div className="flex flex-wrap gap-1.5">
+            <div className="flex-1 min-w-[180px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3" />
                 <Input
                   placeholder="Search users..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-7 h-7 text-[10px]"
                 />
               </div>
             </div>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[120px] h-7 text-[10px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
               <SelectContent>
@@ -312,7 +339,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={suspensionFilter} onValueChange={setSuspensionFilter}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-[100px] h-7 text-[10px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -326,24 +353,27 @@ const EnhancedUserManagement = () => {
       </Card>
 
       {/* Users Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Users ({filteredUsers.length})</CardTitle>
+      <Card className="border-indigo-200/50 dark:border-indigo-800/50">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs font-medium flex items-center gap-1.5">
+            <Shield className="h-3.5 w-3.5 text-indigo-600" />
+            Users ({filteredUsers.length})
+          </CardTitle>
           {usersError && (
-            <CardDescription>
+            <CardDescription className="text-[9px]">
               Signed in as: {user?.email || user?.id}
               <br />
               {String((usersError as any)?.message || usersError)}
             </CardDescription>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {isLoading ? (
-            <div className="text-center py-8">Loading users...</div>
+            <div className="text-center py-6 text-[10px] text-muted-foreground">Loading users...</div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="text-[10px]">
                   <TableHead>User</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead>Level</TableHead>
