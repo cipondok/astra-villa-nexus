@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { 
-  DollarSign, Calculator, Activity, History, Bug, 
-  Building, Home, Wrench, Bell
-} from "lucide-react";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { DollarSign, Calculator, Activity, History, Bug } from "lucide-react";
 import TransactionManagementHub from "./TransactionManagementHub";
 import IndonesianTaxConfiguration from "./IndonesianTaxConfiguration";
 import RealTimeTransactionMonitor from "./RealTimeTransactionMonitor";
@@ -86,23 +84,33 @@ const TransactionManagementTabs = () => {
         </TabsList>
 
         <TabsContent value="transactions" className="mt-6">
-          <TransactionManagementHub />
+          <ErrorBoundary>
+            <TransactionManagementHub />
+          </ErrorBoundary>
         </TabsContent>
 
         <TabsContent value="tax-config" className="mt-6">
-          <IndonesianTaxConfiguration />
+          <ErrorBoundary>
+            <IndonesianTaxConfiguration />
+          </ErrorBoundary>
         </TabsContent>
 
         <TabsContent value="live-monitor" className="mt-6">
-          <RealTimeTransactionMonitor />
+          <ErrorBoundary>
+            <RealTimeTransactionMonitor />
+          </ErrorBoundary>
         </TabsContent>
 
         <TabsContent value="audit-trail" className="mt-6">
-          <TransactionAuditTrail />
+          <ErrorBoundary>
+            <TransactionAuditTrail />
+          </ErrorBoundary>
         </TabsContent>
 
         <TabsContent value="feedback-bugs" className="mt-6">
-          <FeedbackBugSystem />
+          <ErrorBoundary>
+            <FeedbackBugSystem />
+          </ErrorBoundary>
         </TabsContent>
       </Tabs>
     </div>
