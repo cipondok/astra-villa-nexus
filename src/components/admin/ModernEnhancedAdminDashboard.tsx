@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminCommandPalette } from "./AdminCommandPalette";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
@@ -93,7 +93,6 @@ const ModernEnhancedAdminDashboard = () => {
           {/* Header */}
           <header className="sticky top-0 z-50 w-full border-b border-border/30 bg-background/60 backdrop-blur-xl shadow-sm">
             <div className="flex h-12 items-center gap-3 px-4">
-              <SidebarTrigger className="-ml-1 h-8 w-8" />
               
               {/* Breadcrumb */}
               <div className="flex-1">
