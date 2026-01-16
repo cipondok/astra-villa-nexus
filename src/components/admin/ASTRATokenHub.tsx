@@ -300,24 +300,30 @@ const ASTRATokenHub = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">ASTRA Token Hub</h1>
-          <p className="text-muted-foreground mt-1">
-            Comprehensive ASTRA token management, analytics, and configuration
-          </p>
+    <div className="space-y-3 animate-in fade-in duration-300">
+      {/* Header - Same style as Dashboard Overview */}
+      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-yellow-500/5 rounded-xl border border-border/30 px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-yellow-500/10">
+            <Coins className="h-5 w-5 text-yellow-600" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold">ASTRA Token Hub</h1>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>Comprehensive token management, analytics & configuration</span>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           {getStatusBadge()}
           <Button
             onClick={refreshAnalytics}
             disabled={loading}
             variant="outline"
             size="sm"
+            className="h-8 text-xs"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
@@ -325,112 +331,181 @@ const ASTRATokenHub = () => {
 
       {/* API Status Alert */}
       {(analytics.apiStatus === 'disconnected' || lastTestResult) && (
-        <Alert className={connectionStatus === 'connected' ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}>
+        <Alert className={`${connectionStatus === 'connected' ? 'border-green-500 bg-green-50 dark:bg-green-950' : 'border-orange-500 bg-orange-50 dark:bg-orange-950'}`}>
           <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
+          <AlertDescription className="text-xs">
             {lastTestResult || 'ASTRA Token API is not configured. Please configure the API in Settings tab first.'}
           </AlertDescription>
         </Alert>
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-6 min-w-fit">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="transactions">Transactions</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-            <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
-          </TabsList>
-        </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
+        <TabsList className="h-10 p-1 bg-muted/50 rounded-lg inline-flex gap-1">
+          <TabsTrigger value="overview" className="h-8 text-xs px-3 gap-1.5">
+            <BarChart3 className="h-3.5 w-3.5" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="h-8 text-xs px-3 gap-1.5">
+            <TrendingUp className="h-3.5 w-3.5" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="users" className="h-8 text-xs px-3 gap-1.5">
+            <Users className="h-3.5 w-3.5" />
+            Users
+          </TabsTrigger>
+          <TabsTrigger value="transactions" className="h-8 text-xs px-3 gap-1.5">
+            <Activity className="h-3.5 w-3.5" />
+            Transactions
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="h-8 text-xs px-3 gap-1.5">
+            <Settings className="h-3.5 w-3.5" />
+            Settings
+          </TabsTrigger>
+          <TabsTrigger value="webhooks" className="h-8 text-xs px-3 gap-1.5">
+            <Globe className="h-3.5 w-3.5" />
+            Webhooks
+          </TabsTrigger>
+        </TabsList>
 
         <TabsContent value="overview">
           {/* Overview Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                <Users className="h-4 w-4 text-blue-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-1.5">
+                  <Users className="h-4 w-4 text-blue-600" />
+                  <span className="text-xs text-blue-700 dark:text-blue-300">Total Users</span>
+                </div>
+                <p className="text-lg font-bold text-blue-900 dark:text-blue-100 mt-1">
                   {loading ? '...' : analytics.totalUsers.toLocaleString()}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  +12% from last month
                 </p>
+                <p className="text-[10px] text-blue-600 dark:text-blue-400">+12% from last month</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Tokens</CardTitle>
-                <Coins className="h-4 w-4 text-green-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {loading ? '...' : `${analytics.totalTokens.toLocaleString()} ASTRA`}
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-1.5">
+                  <Coins className="h-4 w-4 text-green-600" />
+                  <span className="text-xs text-green-700 dark:text-green-300">Total Tokens</span>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  +8% from last month
+                <p className="text-lg font-bold text-green-900 dark:text-green-100 mt-1">
+                  {loading ? '...' : `${analytics.totalTokens.toLocaleString()}`}
                 </p>
+                <p className="text-[10px] text-green-600 dark:text-green-400">+8% from last month</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Transactions</CardTitle>
-                <Activity className="h-4 w-4 text-orange-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
+            <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-orange-200 dark:border-orange-800">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-1.5">
+                  <Activity className="h-4 w-4 text-orange-600" />
+                  <span className="text-xs text-orange-700 dark:text-orange-300">Transactions</span>
+                </div>
+                <p className="text-lg font-bold text-orange-900 dark:text-orange-100 mt-1">
                   {loading ? '...' : analytics.totalTransactions.toLocaleString()}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  +25% from last month
                 </p>
+                <p className="text-[10px] text-orange-600 dark:text-orange-400">+25% from last month</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-                <TrendingUp className="h-4 w-4 text-purple-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {loading ? '...' : analytics.activeUsers}
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-1.5">
+                  <TrendingUp className="h-4 w-4 text-purple-600" />
+                  <span className="text-xs text-purple-700 dark:text-purple-300">Active Users</span>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Currently online
+                <p className="text-lg font-bold text-purple-900 dark:text-purple-100 mt-1">
+                  {loading ? '...' : analytics.activeUsers}
                 </p>
+                <p className="text-[10px] text-purple-600 dark:text-purple-400">Currently online</p>
               </CardContent>
             </Card>
           </div>
 
           {/* Recent Activity Overview */}
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
+          <Card className="mt-3 border-border/30">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Activity className="h-3.5 w-3.5" />
                 Recent Activity Overview
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Token transfers today</span>
-                  <Badge variant="outline">+{analytics.totalTransactions} transactions</Badge>
+            <CardContent className="p-3 pt-0">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 border border-border/20">
+                  <span className="text-xs">Token transfers today</span>
+                  <Badge variant="outline" className="text-[10px] h-5">+{analytics.totalTransactions} transactions</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">New users registered</span>
-                  <Badge variant="outline">+{Math.floor(analytics.totalUsers * 0.1)} users</Badge>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 border border-border/20">
+                  <span className="text-xs">New users registered</span>
+                  <Badge variant="outline" className="text-[10px] h-5">+{Math.floor(analytics.totalUsers * 0.1)} users</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">API calls processed</span>
-                  <Badge variant="outline">+{analytics.totalTransactions * 3} calls</Badge>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 border border-border/20">
+                  <span className="text-xs">API calls processed</span>
+                  <Badge variant="outline" className="text-[10px] h-5">+{analytics.totalTransactions * 3} calls</Badge>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <Card className="border-border/30">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <BarChart3 className="h-3.5 w-3.5" />
+                Token Analytics Dashboard
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 pt-0">
+              <div className="text-xs text-muted-foreground py-6 text-center">
+                Advanced analytics dashboard with charts and metrics will be displayed here when the ASTRA API is fully integrated.
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="users">
+          <Card className="border-border/30">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Users className="h-3.5 w-3.5" />
+                User Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 pt-0">
+              <div className="text-xs text-muted-foreground py-6 text-center">
+                User-specific analytics and management will be displayed here when the ASTRA API is fully integrated.
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="transactions">
+          <Card className="border-border/30">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Activity className="h-3.5 w-3.5" />
+                Recent Transactions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 pt-0">
+              <div className="space-y-1.5">
+                {analytics.recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg border border-border/20">
+                    <div>
+                      <div className="text-xs font-medium">{activity.user}</div>
+                      <div className="text-[10px] text-muted-foreground">{activity.action}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-medium">{activity.amount} ASTRA</div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {new Date(activity.timestamp).toLocaleTimeString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -489,44 +564,46 @@ const ASTRATokenHub = () => {
         </TabsContent>
 
         <TabsContent value="settings">
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Key className="h-5 w-5 mr-2" />
+          <div className="space-y-3">
+            <Card className="border-border/30">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                  <Key className="h-3.5 w-3.5" />
                   API Configuration
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-3 pt-0 space-y-3">
                 <div className="flex items-center space-x-2">
                   <Switch
                     checked={settings.isEnabled}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, isEnabled: checked }))}
                   />
-                  <Label>Enable ASTRA Token API</Label>
+                  <Label className="text-xs">Enable ASTRA Token API</Label>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>API Key *</Label>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">API Key *</Label>
                   <Input
                     type="password"
                     value={settings.apiKey}
                     onChange={(e) => setSettings(prev => ({ ...prev, apiKey: e.target.value }))}
                     placeholder="Enter your ASTRA API key"
+                    className="h-8 text-xs"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground">
                     Required for API authentication. Keep this secure.
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Base URL *</Label>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Base URL *</Label>
                   <Input
                     value={settings.baseUrl}
                     onChange={(e) => setSettings(prev => ({ ...prev, baseUrl: e.target.value }))}
                     placeholder="https://api.astra-token.com"
+                    className="h-8 text-xs"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground">
                     The base URL for ASTRA API endpoints.
                   </p>
                 </div>
@@ -536,9 +613,9 @@ const ASTRATokenHub = () => {
                     checked={settings.testMode}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, testMode: checked }))}
                   />
-                  <Label>Test Mode (Sandbox)</Label>
+                  <Label className="text-xs">Test Mode (Sandbox)</Label>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   When enabled, uses test endpoints for safe testing without affecting live data.
                 </p>
               </CardContent>
@@ -549,15 +626,19 @@ const ASTRATokenHub = () => {
                 onClick={() => testConnection()}
                 disabled={testing || !settings.apiKey || !settings.baseUrl}
                 variant="outline"
+                size="sm"
+                className="h-8 text-xs"
               >
-                <TestTube className={`h-4 w-4 mr-2 ${testing ? 'animate-spin' : ''}`} />
+                <TestTube className={`h-3.5 w-3.5 mr-1.5 ${testing ? 'animate-spin' : ''}`} />
                 Test Connection
               </Button>
               <Button
                 onClick={saveSettings}
                 disabled={loading}
+                size="sm"
+                className="h-8 text-xs"
               >
-                <Save className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                <Save className={`h-3.5 w-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
                 {loading ? 'Saving...' : 'Save Settings'}
               </Button>
             </div>
@@ -565,29 +646,30 @@ const ASTRATokenHub = () => {
         </TabsContent>
 
         <TabsContent value="webhooks">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Globe className="h-5 w-5 mr-2" />
+          <Card className="border-border/30">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Globe className="h-3.5 w-3.5" />
                 Webhooks & Events
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Webhook URL</Label>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs">Webhook URL</Label>
                 <Input
                   value={settings.webhookUrl}
                   onChange={(e) => setSettings(prev => ({ ...prev, webhookUrl: e.target.value }))}
                   placeholder="https://yoursite.com/api/webhooks/astra"
+                  className="h-8 text-xs"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   URL to receive webhook notifications for token events (optional)
                 </p>
               </div>
 
-              <Alert>
-                <Shield className="h-4 w-4" />
-                <AlertDescription>
+              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                <Shield className="h-3.5 w-3.5" />
+                <AlertDescription className="text-xs">
                   Webhooks will be sent for token transfers, balance changes, and transaction confirmations.
                 </AlertDescription>
               </Alert>
