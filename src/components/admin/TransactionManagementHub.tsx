@@ -147,10 +147,10 @@ const TransactionManagementHub = () => {
         .limit(100);
 
       if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
+        query = query.eq('status', statusFilter as "pending" | "processing" | "completed" | "cancelled" | "refunded" | "disputed");
       }
       if (typeFilter !== 'all') {
-        query = query.eq('transaction_type', typeFilter);
+        query = query.eq('transaction_type', typeFilter as "property_sale" | "property_rental" | "vendor_service");
       }
       if (searchTerm) {
         query = query.ilike('transaction_number', `%${searchTerm}%`);
