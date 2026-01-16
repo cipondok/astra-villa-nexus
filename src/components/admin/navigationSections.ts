@@ -48,7 +48,11 @@ import {
   DatabaseZap,
   Cpu,
   TestTube2,
-  Gem
+  Gem,
+  DollarSign,
+  Receipt,
+  History,
+  Calculator
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -61,6 +65,7 @@ export interface NavigationSection {
 
 export const categories = [
   "overview",
+  "transactions",
   "astra-token", 
   "tools",
   "core-management",
@@ -87,6 +92,44 @@ export const navigationSections = {
       label: "Project Map",
       icon: Map,
       description: "Complete visualization of project structure, database, and code analysis",
+      badge: "New"
+    }
+  ],
+
+  transactions: [
+    {
+      key: "transaction-hub",
+      label: "Transaction Management",
+      icon: DollarSign,
+      description: "Manage all transactions - property sales, rentals, and vendor services with real-time monitoring",
+      badge: "New"
+    },
+    {
+      key: "tax-configuration",
+      label: "Indonesian Tax Config",
+      icon: Calculator,
+      description: "Configure PPN 11%, PPh 2.5%, BPHTB 5% and other Indonesian taxes with calculator",
+      badge: "New"
+    },
+    {
+      key: "transaction-monitor",
+      label: "Real-Time Monitor",
+      icon: Activity,
+      description: "Live transaction monitoring with active stats and alerts",
+      badge: "Live"
+    },
+    {
+      key: "audit-trail",
+      label: "Transaction Audit Trail",
+      icon: History,
+      description: "Complete history of all transaction changes and actions",
+      badge: "New"
+    },
+    {
+      key: "feedback-bug-system",
+      label: "Feedback & Bug System",
+      icon: Bug,
+      description: "User feedback, bug reports, system updates, and health monitoring",
       badge: "New"
     }
   ],
@@ -460,6 +503,7 @@ export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
+  transactions: "Transaction Management",
   "astra-token": "ASTRA Token",
   tools: "Tools & Management",
   "core-management": "Core Management",
