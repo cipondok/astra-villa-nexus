@@ -49,10 +49,7 @@ import {
   Cpu,
   TestTube2,
   Gem,
-  DollarSign,
-  Receipt,
-  History,
-  Calculator
+  DollarSign
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -101,35 +98,7 @@ export const navigationSections = {
       key: "transaction-hub",
       label: "Transaction Management",
       icon: DollarSign,
-      description: "Manage all transactions - property sales, rentals, and vendor services with real-time monitoring",
-      badge: "New"
-    },
-    {
-      key: "tax-configuration",
-      label: "Indonesian Tax Config",
-      icon: Calculator,
-      description: "Configure PPN 11%, PPh 2.5%, BPHTB 5% and other Indonesian taxes with calculator",
-      badge: "New"
-    },
-    {
-      key: "transaction-monitor",
-      label: "Real-Time Monitor",
-      icon: Activity,
-      description: "Live transaction monitoring with active stats and alerts",
-      badge: "Live"
-    },
-    {
-      key: "audit-trail",
-      label: "Transaction Audit Trail",
-      icon: History,
-      description: "Complete history of all transaction changes and actions",
-      badge: "New"
-    },
-    {
-      key: "feedback-bug-system",
-      label: "Feedback & Bug System",
-      icon: Bug,
-      description: "User feedback, bug reports, system updates, and health monitoring",
+      description: "Complete transaction management with tabs: Transactions, Tax Config, Live Monitor, Audit Trail, and Feedback",
       badge: "New"
     }
   ],
