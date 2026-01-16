@@ -230,120 +230,129 @@ const TransactionManagementHub = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">{t.title}</h2>
-          <p className="text-muted-foreground">{t.subtitle}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="flex items-center gap-1 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-300">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            {t.realTimeActive}
-          </Badge>
-          <Button variant="outline" size="sm" onClick={fetchTransactions}>
-            <RefreshCw className="h-4 w-4 mr-1" />
-            {t.refresh}
-          </Button>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-1" />
-            {t.exportData}
-          </Button>
-        </div>
-      </div>
+      <Card className="border-border/30">
+        <CardContent className="p-3">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <DollarSign className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold">{t.title}</h2>
+                <p className="text-xs text-muted-foreground">{t.subtitle}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="flex items-center gap-1.5 text-xs h-6 px-2 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-300">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                {t.realTimeActive}
+              </Badge>
+              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={fetchTransactions}>
+                <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                {t.refresh}
+              </Button>
+              <Button variant="outline" size="sm" className="h-7 text-xs">
+                <Download className="h-3.5 w-3.5 mr-1" />
+                {t.exportData}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-blue-600" />
-              <span className="text-sm text-blue-700 dark:text-blue-300">{t.totalTransactions}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <DollarSign className="h-4 w-4 text-blue-600" />
+              <span className="text-xs text-blue-700 dark:text-blue-300">{t.totalTransactions}</span>
             </div>
-            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100 mt-1">{stats.total}</p>
+            <p className="text-lg font-bold text-blue-900 dark:text-blue-100 mt-1">{stats.total}</p>
           </CardContent>
         </Card>
         
         <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm text-yellow-700 dark:text-yellow-300">{t.pendingPayments}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4 text-yellow-600" />
+              <span className="text-xs text-yellow-700 dark:text-yellow-300">{t.pendingPayments}</span>
             </div>
-            <p className="text-2xl font-bold text-yellow-900 dark:text-yellow-100 mt-1">{stats.pending}</p>
+            <p className="text-lg font-bold text-yellow-900 dark:text-yellow-100 mt-1">{stats.pending}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <span className="text-sm text-green-700 dark:text-green-300">{t.completed}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <span className="text-xs text-green-700 dark:text-green-300">{t.completed}</span>
             </div>
-            <p className="text-2xl font-bold text-green-900 dark:text-green-100 mt-1">{stats.completed}</p>
+            <p className="text-lg font-bold text-green-900 dark:text-green-100 mt-1">{stats.completed}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <XCircle className="h-5 w-5 text-red-600" />
-              <span className="text-sm text-red-700 dark:text-red-300">{t.cancelled}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <XCircle className="h-4 w-4 text-red-600" />
+              <span className="text-xs text-red-700 dark:text-red-300">{t.cancelled}</span>
             </div>
-            <p className="text-2xl font-bold text-red-900 dark:text-red-100 mt-1">{stats.cancelled}</p>
+            <p className="text-lg font-bold text-red-900 dark:text-red-100 mt-1">{stats.cancelled}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-purple-600" />
-              <span className="text-sm text-purple-700 dark:text-purple-300">{t.totalRevenue}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <TrendingUp className="h-4 w-4 text-purple-600" />
+              <span className="text-xs text-purple-700 dark:text-purple-300">{t.totalRevenue}</span>
             </div>
-            <p className="text-lg font-bold text-purple-900 dark:text-purple-100 mt-1">{formatIDR(stats.totalRevenue)}</p>
+            <p className="text-sm font-bold text-purple-900 dark:text-purple-100 mt-1">{formatIDR(stats.totalRevenue)}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950 dark:to-indigo-900 border-indigo-200 dark:border-indigo-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Building className="h-5 w-5 text-indigo-600" />
-              <span className="text-sm text-indigo-700 dark:text-indigo-300">{t.taxCollected}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <Building className="h-4 w-4 text-indigo-600" />
+              <span className="text-xs text-indigo-700 dark:text-indigo-300">{t.taxCollected}</span>
             </div>
-            <p className="text-lg font-bold text-indigo-900 dark:text-indigo-100 mt-1">{formatIDR(stats.totalTax)}</p>
+            <p className="text-sm font-bold text-indigo-900 dark:text-indigo-100 mt-1">{formatIDR(stats.totalTax)}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-orange-200 dark:border-orange-800">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Wrench className="h-5 w-5 text-orange-600" />
-              <span className="text-sm text-orange-700 dark:text-orange-300">{t.serviceCharges}</span>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5">
+              <Wrench className="h-4 w-4 text-orange-600" />
+              <span className="text-xs text-orange-700 dark:text-orange-300">{t.serviceCharges}</span>
             </div>
-            <p className="text-lg font-bold text-orange-900 dark:text-orange-100 mt-1">{formatIDR(stats.totalServiceCharges)}</p>
+            <p className="text-sm font-bold text-orange-900 dark:text-orange-100 mt-1">{formatIDR(stats.totalServiceCharges)}</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
-          <TabsTrigger value="all" onClick={() => setTypeFilter('all')}>{t.allTransactions}</TabsTrigger>
-          <TabsTrigger value="property_sale" onClick={() => setTypeFilter('property_sale')}>
-            <Building className="h-4 w-4 mr-1" />
+        <TabsList className="h-9 p-1 bg-muted/50 rounded-lg inline-flex gap-1">
+          <TabsTrigger value="all" onClick={() => setTypeFilter('all')} className="h-7 text-xs px-3">{t.allTransactions}</TabsTrigger>
+          <TabsTrigger value="property_sale" onClick={() => setTypeFilter('property_sale')} className="h-7 text-xs px-3">
+            <Building className="h-3.5 w-3.5 mr-1" />
             {t.propertySales}
           </TabsTrigger>
-          <TabsTrigger value="property_rental" onClick={() => setTypeFilter('property_rental')}>
-            <Home className="h-4 w-4 mr-1" />
+          <TabsTrigger value="property_rental" onClick={() => setTypeFilter('property_rental')} className="h-7 text-xs px-3">
+            <Home className="h-3.5 w-3.5 mr-1" />
             {t.rentals}
           </TabsTrigger>
-          <TabsTrigger value="vendor_service" onClick={() => setTypeFilter('vendor_service')}>
-            <Wrench className="h-4 w-4 mr-1" />
+          <TabsTrigger value="vendor_service" onClick={() => setTypeFilter('vendor_service')} className="h-7 text-xs px-3">
+            <Wrench className="h-3.5 w-3.5 mr-1" />
             {t.vendorServices}
           </TabsTrigger>
-          <TabsTrigger value="alerts">
-            <Bell className="h-4 w-4 mr-1" />
+          <TabsTrigger value="alerts" className="h-7 text-xs px-3">
+            <Bell className="h-3.5 w-3.5 mr-1" />
             {t.alerts}
           </TabsTrigger>
         </TabsList>

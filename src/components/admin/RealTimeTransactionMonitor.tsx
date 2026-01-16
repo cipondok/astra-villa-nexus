@@ -177,119 +177,128 @@ const RealTimeTransactionMonitor = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header with Live Indicator */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
-          {t.title}
-        </h2>
-        <Badge 
-          variant={isConnected ? "default" : "destructive"}
-          className={`flex items-center gap-1 ${isConnected ? 'bg-green-500' : ''}`}
-        >
-          <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-white animate-pulse' : 'bg-white'}`} />
-          {t.liveIndicator}
-        </Badge>
-      </div>
+      <Card className="border-border/30">
+        <CardContent className="p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Activity className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold">{t.title}</h2>
+                <p className="text-xs text-muted-foreground">{t.liveStats}</p>
+              </div>
+            </div>
+            <Badge 
+              variant={isConnected ? "default" : "destructive"}
+              className={`flex items-center gap-1.5 text-xs h-6 px-2 ${isConnected ? 'bg-green-500' : ''}`}
+            >
+              <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-white animate-pulse' : 'bg-white'}`} />
+              {t.liveIndicator}
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
         <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-200 dark:border-blue-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+            <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
               <Zap className="h-4 w-4" />
               <span className="text-xs">{t.activeTransactions}</span>
             </div>
-            <p className="text-xl font-bold mt-1">{stats.activeTransactions}</p>
+            <p className="text-lg font-bold mt-1">{stats.activeTransactions}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-200 dark:border-green-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+            <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400">
               <DollarSign className="h-4 w-4" />
               <span className="text-xs">{t.todayRevenue}</span>
             </div>
-            <p className="text-lg font-bold mt-1">{formatIDR(stats.todayRevenue)}</p>
+            <p className="text-sm font-bold mt-1">{formatIDR(stats.todayRevenue)}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-200 dark:border-purple-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-purple-600 dark:text-purple-400">
+            <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400">
               <TrendingUp className="h-4 w-4" />
               <span className="text-xs">{t.todayTransactions}</span>
             </div>
-            <p className="text-xl font-bold mt-1">{stats.todayTransactions}</p>
+            <p className="text-lg font-bold mt-1">{stats.todayTransactions}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border-yellow-200 dark:border-yellow-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
+            <div className="flex items-center gap-1.5 text-yellow-600 dark:text-yellow-400">
               <Clock className="h-4 w-4" />
               <span className="text-xs">{t.pendingPayments}</span>
             </div>
-            <p className="text-xl font-bold mt-1">{stats.pendingPayments}</p>
+            <p className="text-lg font-bold mt-1">{stats.pendingPayments}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 border-emerald-200 dark:border-emerald-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
               <CheckCircle className="h-4 w-4" />
               <span className="text-xs">{t.completedToday}</span>
             </div>
-            <p className="text-xl font-bold mt-1">{stats.completedToday}</p>
+            <p className="text-lg font-bold mt-1">{stats.completedToday}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-200 dark:border-orange-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
+            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
               <Clock className="h-4 w-4" />
               <span className="text-xs">{t.avgProcessingTime}</span>
             </div>
-            <p className="text-xl font-bold mt-1">{stats.averageProcessingTime} {t.minutes}</p>
+            <p className="text-lg font-bold mt-1">{stats.averageProcessingTime} {t.minutes}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-indigo-500/10 to-indigo-600/10 border-indigo-200 dark:border-indigo-800">
           <CardContent className="p-3">
-            <div className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400">
+            <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
               <TrendingUp className="h-4 w-4" />
               <span className="text-xs">{t.conversionRate}</span>
             </div>
             <div className="mt-1">
-              <p className="text-xl font-bold">{stats.conversionRate}%</p>
-              <Progress value={stats.conversionRate} className="h-1 mt-1" />
+              <p className="text-lg font-bold">{stats.conversionRate}%</p>
+              <Progress value={stats.conversionRate} className="h-1.5 mt-1" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Recent Activity */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Activity className="h-4 w-4" />
+      <Card className="border-border/30">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+            <Activity className="h-3.5 w-3.5" />
             {t.recentActivity}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 pt-0">
           {recentActivity.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4 text-sm">{t.noActivity}</p>
+            <p className="text-center text-muted-foreground py-6 text-xs">{t.noActivity}</p>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {recentActivity.map((activity) => (
                 <div 
                   key={activity.id}
-                  className="flex items-center gap-3 p-2 rounded-lg bg-muted/50 animate-fade-in"
+                  className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/20 animate-fade-in"
                 >
                   {getActivityIcon(activity.status)}
-                  <span className="flex-1 text-sm">{activity.message}</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="flex-1 text-xs">{activity.message}</span>
+                  <span className="text-[10px] text-muted-foreground">
                     {activity.timestamp.toLocaleTimeString('id-ID')}
                   </span>
                 </div>
