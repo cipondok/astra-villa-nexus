@@ -70,6 +70,7 @@ import VisitorAnalytics from "./VisitorAnalytics";
 import TestingDashboard from "./TestingDashboard";
 import VIPAnalyticsDashboard from "./VIPAnalyticsDashboard";
 import BookingManagement from "./BookingManagement";
+import TransactionManagementTabs from "./TransactionManagementTabs";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -151,6 +152,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "bug-error-detection": { label: "Bug Detection", category: "System" },
   "testing-dashboard": { label: "Testing Dashboard", category: "Quality Assurance" },
   "vip-analytics": { label: "VIP Analytics", category: "Analytics" },
+  "transaction-hub": { label: "Transaction Management", category: "Transactions" },
 };
 
 const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
@@ -308,6 +310,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <TestingDashboard />;
       case "vip-analytics":
         return <VIPAnalyticsDashboard onNavigate={onSectionChange} />;
+      case "transaction-hub":
+        return <TransactionManagementTabs />;
       default:
         return <AdminOverview />;
     }
