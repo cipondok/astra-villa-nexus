@@ -193,18 +193,18 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   const maxTraffic = Math.max(...(hourlyTraffic?.map(h => h.count) || [1]), 1);
 
   return (
-    <div className="space-y-1.5 animate-in fade-in duration-300">
-      {/* Compact Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-green-500/5 rounded-lg border border-border/30 px-2 py-1.5">
-        <div className="flex items-center gap-2">
-          <div className="p-1 rounded-md bg-primary/10">
-            <Monitor className="h-3.5 w-3.5 text-primary" />
+    <div className="space-y-3 animate-in fade-in duration-300">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-green-500/5 rounded-xl border border-border/30 px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Monitor className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xs font-bold">Live Monitoring Dashboard</h1>
-            <div className="flex items-center gap-1.5 text-[8px] text-muted-foreground">
-              <span className="flex items-center gap-0.5">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+            <h1 className="text-base font-bold">Live Monitoring Dashboard</h1>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 Online
               </span>
               <span>•</span>
@@ -212,24 +212,24 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
             </div>
           </div>
         </div>
-        <Button variant="ghost" size="sm" className="h-6 px-2 text-[9px]" onClick={() => refetchStats()}>
-          <RefreshCw className="h-2.5 w-2.5 mr-1" />
+        <Button variant="outline" size="sm" className="h-8 px-3 text-xs" onClick={() => refetchStats()}>
+          <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
           Refresh
         </Button>
       </div>
 
       {/* Main Grid - 3 Column Layout */}
-      <div className="grid grid-cols-12 gap-1.5">
+      <div className="grid grid-cols-12 gap-3">
         {/* Left Column - Stats & Quick Actions */}
-        <div className="col-span-12 md:col-span-3 space-y-1.5">
+        <div className="col-span-12 md:col-span-3 space-y-3">
           {/* Key Metrics */}
           <Card className="border-border/30">
-            <CardHeader className="p-1.5 pb-1">
-              <CardTitle className="text-[9px] flex items-center gap-1 text-muted-foreground uppercase tracking-wide">
-                <Activity className="h-2.5 w-2.5" /> Platform Stats
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Activity className="h-3.5 w-3.5" /> Platform Stats
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-1.5 pt-0 space-y-1">
+            <CardContent className="p-3 pt-0 space-y-2">
               <MetricRow icon={Users} label="Users" value={platformStats?.totalUsers || 0} loading={statsLoading} />
               <MetricRow icon={Building2} label="Properties" value={platformStats?.totalProperties || 0} loading={statsLoading} />
               <MetricRow icon={Store} label="Vendors" value={platformStats?.totalVendors || 0} loading={statsLoading} />
@@ -240,12 +240,12 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
           {/* Pending Actions */}
           <Card className="border-border/30">
-            <CardHeader className="p-1.5 pb-1">
-              <CardTitle className="text-[9px] flex items-center gap-1 text-muted-foreground uppercase tracking-wide">
-                <Bell className="h-2.5 w-2.5" /> Pending
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Bell className="h-3.5 w-3.5" /> Pending
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-1.5 pt-0 space-y-0.5">
+            <CardContent className="p-3 pt-0 space-y-1.5">
               <ActionRow 
                 icon={UserCheck} 
                 label="Upgrades" 
@@ -265,7 +265,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
           {/* Quick Nav */}
           <Card className="border-border/30">
-            <CardContent className="p-1.5 grid grid-cols-3 gap-1">
+            <CardContent className="p-3 grid grid-cols-3 gap-2">
               {[
                 { icon: Users, label: "Users", id: "user-management" },
                 { icon: Building2, label: "Props", id: "property-management-hub" },
@@ -277,9 +277,9 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                 <button
                   key={item.id}
                   onClick={() => handleQuickAction(item.id)}
-                  className="flex flex-col items-center gap-0.5 p-1 rounded border border-border/30 hover:bg-accent/50 hover:border-primary/30 transition-all text-[7px]"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border/30 hover:bg-accent/50 hover:border-primary/30 transition-all text-xs"
                 >
-                  <item.icon className="h-2.5 w-2.5 text-muted-foreground" />
+                  <item.icon className="h-4 w-4 text-muted-foreground" />
                   {item.label}
                 </button>
               ))}
@@ -288,27 +288,27 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         </div>
 
         {/* Center Column - Activity & Traffic */}
-        <div className="col-span-12 md:col-span-6 space-y-1.5">
+        <div className="col-span-12 md:col-span-6 space-y-3">
           {/* Live Traffic Chart */}
           <Card className="border-border/30">
-            <CardHeader className="p-1.5 pb-1">
+            <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-[9px] flex items-center gap-1 text-muted-foreground uppercase tracking-wide">
-                  <TrendingUp className="h-2.5 w-2.5" /> Traffic (12h)
+                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                  <TrendingUp className="h-3.5 w-3.5" /> Traffic (12h)
                 </CardTitle>
-                <Badge variant="secondary" className="text-[7px] h-3 px-1">Live</Badge>
+                <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
               </div>
             </CardHeader>
-            <CardContent className="p-1.5 pt-0">
-              <div className="flex items-end justify-between h-14 gap-0.5">
+            <CardContent className="p-3 pt-0">
+              <div className="flex items-end justify-between h-20 gap-1">
                 {hourlyTraffic?.map((hour, idx) => (
                   <div key={idx} className="flex-1 flex flex-col items-center">
                     <div 
-                      className="w-full bg-gradient-to-t from-primary/50 to-primary rounded-sm transition-all hover:from-primary/70 hover:to-primary"
+                      className="w-full bg-gradient-to-t from-primary/50 to-primary rounded transition-all hover:from-primary/70 hover:to-primary"
                       style={{ height: `${Math.max((hour.count / maxTraffic) * 100, 5)}%` }}
                       title={`${hour.count} activities`}
                     />
-                    <span className="text-[6px] text-muted-foreground mt-0.5">{hour.hour}</span>
+                    <span className="text-[10px] text-muted-foreground mt-1">{hour.hour}</span>
                   </div>
                 ))}
               </div>
@@ -317,17 +317,17 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
           {/* Recent Activity Feed */}
           <Card className="border-border/30">
-            <CardHeader className="p-1.5 pb-1">
+            <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-[9px] flex items-center gap-1 text-muted-foreground uppercase tracking-wide">
-                  <MousePointer className="h-2.5 w-2.5" /> Live Activity
+                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                  <MousePointer className="h-3.5 w-3.5" /> Live Activity
                 </CardTitle>
-                <span className="text-[7px] text-muted-foreground">Auto-refresh 10s</span>
+                <span className="text-[10px] text-muted-foreground">Auto-refresh 10s</span>
               </div>
             </CardHeader>
-            <CardContent className="p-1.5 pt-0">
-              <ScrollArea className="h-[120px]">
-                <div className="space-y-0.5">
+            <CardContent className="p-3 pt-0">
+              <ScrollArea className="h-[160px]">
+                <div className="space-y-1.5">
                   {recentActivity && recentActivity.length > 0 ? (
                     recentActivity.map((activity: any, idx: number) => (
                       <motion.div
@@ -335,20 +335,20 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.05 }}
-                        className="flex items-center gap-1.5 p-1 rounded border border-border/20 bg-muted/20 hover:bg-muted/40 transition-colors"
+                        className="flex items-center gap-2 p-2 rounded-lg border border-border/20 bg-muted/20 hover:bg-muted/40 transition-colors"
                       >
-                        <div className="w-1 h-1 rounded-full bg-primary" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[8px] font-medium truncate">{activity.activity_type}</p>
-                          <p className="text-[7px] text-muted-foreground truncate">{activity.activity_description}</p>
+                          <p className="text-xs font-medium truncate">{activity.activity_type}</p>
+                          <p className="text-[10px] text-muted-foreground truncate">{activity.activity_description}</p>
                         </div>
-                        <span className="text-[6px] text-muted-foreground whitespace-nowrap">
+                        <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                           {new Date(activity.created_at).toLocaleTimeString()}
                         </span>
                       </motion.div>
                     ))
                   ) : (
-                    <div className="text-center py-4 text-[8px] text-muted-foreground">
+                    <div className="text-center py-6 text-xs text-muted-foreground">
                       No recent activity
                     </div>
                   )}
@@ -358,7 +358,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           </Card>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-4 gap-1">
+          <div className="grid grid-cols-4 gap-2">
             <SummaryCard label="Sessions" value={platformStats?.activeSessions || 0} icon={Wifi} color="green" />
             <SummaryCard label="Orders" value={platformStats?.totalOrders || 0} icon={FileText} color="blue" />
             <SummaryCard label="Response" value={`${systemHealth?.responseTime || 0}ms`} icon={Clock} color="purple" />
@@ -367,22 +367,22 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         </div>
 
         {/* Right Column - System Health */}
-        <div className="col-span-12 md:col-span-3 space-y-1.5">
+        <div className="col-span-12 md:col-span-3 space-y-3">
           {/* System Status */}
           <Card className="border-border/30">
-            <CardHeader className="p-1.5 pb-1">
-              <CardTitle className="text-[9px] flex items-center gap-1 text-muted-foreground uppercase tracking-wide">
-                <Server className="h-2.5 w-2.5" /> System Health
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <Server className="h-3.5 w-3.5" /> System Health
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-1.5 pt-0 space-y-1.5">
-              <div className={`flex items-center justify-between p-1.5 rounded border ${
+            <CardContent className="p-3 pt-0 space-y-2.5">
+              <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
                 systemHealth?.status === 'healthy' 
                   ? 'bg-green-500/5 border-green-500/30' 
                   : 'bg-orange-500/5 border-orange-500/30'
               }`}>
-                <span className="text-[8px] font-medium">Status</span>
-                <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[7px] h-3.5 px-1.5">
+                <span className="text-xs font-medium">Status</span>
+                <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
                   {systemHealth?.status === 'healthy' ? '● All Systems OK' : '⚠ Issues'}
                 </Badge>
               </div>
@@ -396,12 +396,12 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
           {/* Services Status */}
           <Card className="border-border/30">
-            <CardHeader className="p-1.5 pb-1">
-              <CardTitle className="text-[9px] flex items-center gap-1 text-muted-foreground uppercase tracking-wide">
-                <ShieldCheck className="h-2.5 w-2.5" /> Services
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                <ShieldCheck className="h-3.5 w-3.5" /> Services
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-1.5 pt-0 space-y-0.5">
+            <CardContent className="p-3 pt-0 space-y-1.5">
               <ServiceRow name="API" status="operational" />
               <ServiceRow name="Database" status="operational" />
               <ServiceRow name="Auth" status="operational" />
@@ -414,12 +414,12 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full h-7 text-[8px] gap-1"
+            className="w-full h-9 text-xs gap-1.5"
             onClick={() => handleQuickAction('diagnostic')}
           >
-            <Gauge className="h-3 w-3" />
+            <Gauge className="h-4 w-4" />
             Open Full Diagnostics
-            <ChevronRight className="h-2.5 w-2.5 ml-auto" />
+            <ChevronRight className="h-3.5 w-3.5 ml-auto" />
           </Button>
         </div>
       </div>
@@ -427,7 +427,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   );
 };
 
-// Compact Metric Row
+// Metric Row
 const MetricRow = ({ icon: Icon, label, value, loading, highlight }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
@@ -435,15 +435,15 @@ const MetricRow = ({ icon: Icon, label, value, loading, highlight }: {
   loading?: boolean;
   highlight?: boolean;
 }) => (
-  <div className={`flex items-center justify-between py-0.5 ${highlight ? 'text-green-600 dark:text-green-400' : ''}`}>
-    <div className="flex items-center gap-1">
-      <Icon className="h-2.5 w-2.5 text-muted-foreground" />
-      <span className="text-[8px]">{label}</span>
+  <div className={`flex items-center justify-between py-1 ${highlight ? 'text-green-600 dark:text-green-400' : ''}`}>
+    <div className="flex items-center gap-2">
+      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+      <span className="text-xs">{label}</span>
     </div>
     {loading ? (
-      <div className="h-3 w-8 bg-muted animate-pulse rounded" />
+      <div className="h-4 w-10 bg-muted animate-pulse rounded" />
     ) : (
-      <span className={`text-[9px] font-bold ${highlight ? '' : ''}`}>{value.toLocaleString()}</span>
+      <span className="text-sm font-bold">{value.toLocaleString()}</span>
     )}
   </div>
 );
@@ -458,15 +458,15 @@ const ActionRow = ({ icon: Icon, label, count, onClick, urgent }: {
 }) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center justify-between p-1 rounded transition-all ${
-      urgent ? 'bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30' : 'hover:bg-muted/50'
+    className={`w-full flex items-center justify-between p-2 rounded-lg transition-all ${
+      urgent ? 'bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30' : 'hover:bg-muted/50 border border-transparent'
     }`}
   >
-    <div className="flex items-center gap-1">
-      <Icon className={`h-2.5 w-2.5 ${urgent ? 'text-orange-500' : 'text-muted-foreground'}`} />
-      <span className="text-[8px]">{label}</span>
+    <div className="flex items-center gap-2">
+      <Icon className={`h-4 w-4 ${urgent ? 'text-orange-500' : 'text-muted-foreground'}`} />
+      <span className="text-xs">{label}</span>
     </div>
-    <Badge variant={urgent ? 'destructive' : 'secondary'} className="text-[7px] h-3.5 px-1">
+    <Badge variant={urgent ? 'destructive' : 'secondary'} className="text-[10px] h-5 px-2">
       {count}
     </Badge>
   </button>
@@ -487,10 +487,10 @@ const SummaryCard = ({ label, value, icon: Icon, color }: {
   };
   
   return (
-    <div className="rounded border border-border/30 p-1 text-center">
-      <Icon className={`h-2.5 w-2.5 mx-auto ${colors[color].split(' ')[0]}`} />
-      <div className="text-[9px] font-bold mt-0.5">{value}</div>
-      <div className="text-[6px] text-muted-foreground">{label}</div>
+    <div className="rounded-lg border border-border/30 p-2.5 text-center">
+      <Icon className={`h-4 w-4 mx-auto ${colors[color].split(' ')[0]}`} />
+      <div className="text-sm font-bold mt-1">{value}</div>
+      <div className="text-[10px] text-muted-foreground">{label}</div>
     </div>
   );
 };
@@ -510,15 +510,15 @@ const HealthBar = ({ label, value, icon: Icon, isStatus }: {
   };
 
   return (
-    <div className="space-y-0.5">
+    <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          <Icon className="h-2 w-2 text-muted-foreground" />
-          <span className="text-[7px]">{label}</span>
+        <div className="flex items-center gap-1.5">
+          <Icon className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[11px]">{label}</span>
         </div>
-        <span className="text-[7px] font-medium">{isStatus ? (value === 100 ? 'OK' : 'Error') : `${value}%`}</span>
+        <span className="text-[11px] font-medium">{isStatus ? (value === 100 ? 'OK' : 'Error') : `${value}%`}</span>
       </div>
-      <div className="h-1 bg-muted rounded-full overflow-hidden">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div className={`h-full ${getColor(value)} transition-all`} style={{ width: `${value}%` }} />
       </div>
     </div>
@@ -534,11 +534,11 @@ const ServiceRow = ({ name, status }: { name: string; status: 'operational' | 'd
   };
 
   return (
-    <div className="flex items-center justify-between py-0.5">
-      <span className="text-[8px]">{name}</span>
-      <div className="flex items-center gap-1">
-        <div className={`w-1.5 h-1.5 rounded-full ${statusConfig[status].color}`} />
-        <span className="text-[7px] text-muted-foreground">{statusConfig[status].text}</span>
+    <div className="flex items-center justify-between py-1">
+      <span className="text-xs">{name}</span>
+      <div className="flex items-center gap-1.5">
+        <div className={`w-2 h-2 rounded-full ${statusConfig[status].color}`} />
+        <span className="text-[10px] text-muted-foreground">{statusConfig[status].text}</span>
       </div>
     </div>
   );
