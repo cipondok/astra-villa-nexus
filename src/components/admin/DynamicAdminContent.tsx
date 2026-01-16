@@ -24,11 +24,7 @@ import AdminPropertyManagement from "./AdminPropertyManagement";
 import LocationManagement from "./LocationManagement";
 import SystemToolsDashboard from "./SystemToolsDashboard";
 import MediaGallery from "./MediaGallery";
-import TransactionManagementHub from "./TransactionManagementHub";
-import IndonesianTaxConfiguration from "./IndonesianTaxConfiguration";
-import RealTimeTransactionMonitor from "./RealTimeTransactionMonitor";
-import TransactionAuditTrail from "./TransactionAuditTrail";
-import FeedbackBugSystem from "./FeedbackBugSystem";
+import TransactionManagementTabs from "./TransactionManagementTabs";
 
 // Move lazy loading outside the component to prevent re-creation on every render
 const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
@@ -48,17 +44,14 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "dashboard":
       case "overview":
         return <AdminOverview onSectionChange={onSectionChange} />;
-      // Transaction Management
+      // Transaction Management - Unified with Tabs
       case "transaction-hub":
-        return <TransactionManagementHub />;
+      case "transactions":
       case "tax-configuration":
-        return <IndonesianTaxConfiguration />;
       case "transaction-monitor":
-        return <RealTimeTransactionMonitor />;
       case "audit-trail":
-        return <TransactionAuditTrail />;
       case "feedback-bug-system":
-        return <FeedbackBugSystem />;
+        return <TransactionManagementTabs />;
       case "users":
       case "user-management":
         return <EnhancedUserManagement />;
