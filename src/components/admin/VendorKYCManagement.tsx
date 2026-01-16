@@ -149,84 +149,106 @@ const VendorKYCManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 rounded-lg border border-emerald-200/50 dark:border-emerald-800/50">
+        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+          <Shield className="h-4 w-4 text-white" />
+        </div>
         <div>
-          <h3 className="text-lg font-semibold">Vendor KYC Management</h3>
-          <p className="text-sm text-muted-foreground">
-            Manage vendor verification status and access levels
-          </p>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold">Vendor KYC Management</h2>
+            <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[9px] px-1.5 py-0 h-4">Verification</Badge>
+          </div>
+          <p className="text-[10px] text-muted-foreground">Manage vendor verification status and access levels</p>
         </div>
       </div>
 
       {/* KYC Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Vendors</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+      <div className="grid grid-cols-5 gap-2">
+        <Card className="border-blue-200/50 dark:border-blue-800/30">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+                <UserCheck className="h-3 w-3 text-blue-600" />
               </div>
-              <UserCheck className="h-8 w-8 text-blue-500" />
+              <div>
+                <div className="text-sm font-bold">{stats.total}</div>
+                <div className="text-[9px] text-muted-foreground">Total</div>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Verified</p>
-                <p className="text-2xl font-bold text-green-600">{stats.verified}</p>
+        <Card className="border-green-200/50 dark:border-green-800/30">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
+                <Shield className="h-3 w-3 text-green-600" />
               </div>
-              <Shield className="h-8 w-8 text-green-500" />
+              <div>
+                <div className="text-sm font-bold text-green-600">{stats.verified}</div>
+                <div className="text-[9px] text-muted-foreground">Verified</div>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
+        <Card className="border-orange-200/50 dark:border-orange-800/30">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-orange-500/20 rounded flex items-center justify-center">
+                <AlertTriangle className="h-3 w-3 text-orange-600" />
               </div>
-              <AlertTriangle className="h-8 w-8 text-orange-500" />
+              <div>
+                <div className="text-sm font-bold text-orange-600">{stats.pending}</div>
+                <div className="text-[9px] text-muted-foreground">Pending</div>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Rejected</p>
-                <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
+        <Card className="border-red-200/50 dark:border-red-800/30">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-red-500/20 rounded flex items-center justify-center">
+                <AlertTriangle className="h-3 w-3 text-red-600" />
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <div>
+                <div className="text-sm font-bold text-red-600">{stats.rejected}</div>
+                <div className="text-[9px] text-muted-foreground">Rejected</div>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Full Access</p>
-                <p className="text-2xl font-bold text-indigo-600">{stats.fullAccess}</p>
+        <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-indigo-500/20 rounded flex items-center justify-center">
+                <FileCheck className="h-3 w-3 text-indigo-600" />
               </div>
-              <FileCheck className="h-8 w-8 text-indigo-500" />
+              <div>
+                <div className="text-sm font-bold text-indigo-600">{stats.fullAccess}</div>
+                <div className="text-[9px] text-muted-foreground">Full Access</div>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* KYC Status Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Vendor KYC Status</CardTitle>
-          <CardDescription>Review and manage vendor verification and access levels</CardDescription>
+      <Card className="border-emerald-200/50 dark:border-emerald-800/30">
+        <CardHeader className="p-3 pb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-emerald-500/20 rounded flex items-center justify-center">
+              <Shield className="h-3 w-3 text-emerald-600" />
+            </div>
+            <div>
+              <CardTitle className="text-xs">Vendor KYC Status</CardTitle>
+              <CardDescription className="text-[9px]">Review and manage verification</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <Table>

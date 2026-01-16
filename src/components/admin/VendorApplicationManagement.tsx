@@ -22,7 +22,8 @@ import {
   FileText,
   ShieldAlert,
   TrendingUp,
-  Users
+  Users,
+  ClipboardList
 } from "lucide-react";
 
 interface VendorApplication {
@@ -431,27 +432,37 @@ const VendorApplicationManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 rounded-lg border border-yellow-200/50 dark:border-yellow-800/50">
+        <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center">
+          <ClipboardList className="h-4 w-4 text-white" />
+        </div>
         <div>
-          <h1 className="text-3xl font-bold">Vendor Application Management</h1>
-          <p className="text-muted-foreground">
-            Review and manage vendor registration applications
-          </p>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold">Vendor Applications</h2>
+            <Badge className="bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-[9px] px-1.5 py-0 h-4">Applications</Badge>
+          </div>
+          <p className="text-[10px] text-muted-foreground">Review and manage vendor registration applications</p>
         </div>
       </div>
 
       {renderStatsCards()}
       {renderFilters()}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Applications</CardTitle>
-          <CardDescription>
-            Review and process vendor applications
-          </CardDescription>
+      <Card className="border-yellow-200/50 dark:border-yellow-800/30">
+        <CardHeader className="p-3 pb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-yellow-500/20 rounded flex items-center justify-center">
+              <FileText className="h-3 w-3 text-yellow-600" />
+            </div>
+            <div>
+              <CardTitle className="text-xs">Applications</CardTitle>
+              <CardDescription className="text-[9px]">Review and process vendor applications</CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 pt-0">
           {applications && applications.length > 0 ? (
             <Table>
               <TableHeader>
