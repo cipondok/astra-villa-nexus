@@ -370,8 +370,41 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           </TabsTrigger>
         </TabsList>
 
-        {/* Dashboard Tab */}
+        {/* Dashboard Tab - Live Monitoring */}
         <TabsContent value="dashboard" className="mt-2 md:mt-3 space-y-2 md:space-y-3">
+          {/* Live Monitoring Header */}
+          <Card className="border-border/30 bg-gradient-to-r from-green-500/5 via-background to-blue-500/5">
+            <CardContent className="p-2 md:p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <div className="relative">
+                    <div className="p-1.5 md:p-2 rounded-lg bg-green-500/20">
+                      <Activity className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
+                    </div>
+                    <div className="absolute -top-0.5 -right-0.5 w-2 h-2 md:w-2.5 md:h-2.5 bg-green-500 rounded-full animate-pulse" />
+                  </div>
+                  <div>
+                    <h2 className="text-xs md:text-sm font-bold">Live Platform Monitoring</h2>
+                    <p className="text-[8px] md:text-[10px] text-muted-foreground flex items-center gap-1">
+                      <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      Real-time data • Auto-refresh every 30s
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-[8px] md:text-[9px] h-5 px-2 border-green-500/30 text-green-600 dark:text-green-400">
+                    <Clock className="h-2.5 w-2.5 mr-1" />
+                    {new Date().toLocaleTimeString()}
+                  </Badge>
+                  <Button variant="outline" size="sm" className="h-6 md:h-7 px-2 gap-1" onClick={() => refetchStats()}>
+                    <RefreshCw className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                    <span className="text-[9px] md:text-[10px]">Refresh</span>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
             <StatCard title="Total Users" value={platformStats?.totalUsers || 0} icon={Users} change={platformStats?.userGrowth || 0} color="blue" loading={statsLoading} />
