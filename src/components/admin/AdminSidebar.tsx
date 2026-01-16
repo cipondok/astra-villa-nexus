@@ -98,148 +98,158 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   const openSections = openCategory ? navigationSections[openCategory as keyof typeof navigationSections] : null;
 
   return (
-    <div ref={sidebarRef} className="relative h-full flex">
-      {/* Icon-only Sidebar */}
-      <div className="w-16 h-full bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700/50 flex flex-col py-3 px-2 gap-1 shadow-xl">
-        {categories.map((category) => {
-          const sections = navigationSections[category as keyof typeof navigationSections];
-          if (!sections || sections.length === 0) return null;
-
-          const CategoryIcon = categoryIcons[category] || LayoutDashboard;
-          const isActive = activeCategory === category;
-          const isOpen = openCategory === category;
-          const isHovered = hoveredCategory === category;
-
-          return (
-            <div key={category} className="relative">
-              {/* Icon Button */}
-              <button
-                onClick={() => handleCategoryClick(category)}
-                onMouseEnter={() => setHoveredCategory(category)}
-                onMouseLeave={() => setHoveredCategory(null)}
-                className={cn(
-                  "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 group relative",
-                  isOpen 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" 
-                    : isActive
-                      ? "bg-primary/20 text-primary border border-primary/30"
-                      : "hover:bg-slate-700/70 text-slate-400 hover:text-white"
-                )}
-              >
-                <CategoryIcon className="h-5 w-5" />
-                
-                {/* Active indicator dot */}
-                {isActive && !isOpen && (
-                  <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full" />
-                )}
-              </button>
-
-              {/* Hover Tooltip */}
-              {isHovered && !openCategory && (
-                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 animate-in fade-in-0 slide-in-from-left-2 duration-200">
-                  <div className="px-3 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg shadow-xl border border-slate-700 whitespace-nowrap">
-                    {sectionTitles[category as keyof typeof sectionTitles]}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Flyout Panel */}
-      {openCategory && openSections && (
-        <div className="absolute left-16 top-0 h-full w-72 bg-background border-r border-border shadow-2xl z-40 animate-in slide-in-from-left-4 duration-200">
-          {/* Panel Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-            <div className="flex items-center gap-3">
-              {(() => {
-                const CategoryIcon = categoryIcons[openCategory] || LayoutDashboard;
-                return (
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CategoryIcon className="h-5 w-5 text-primary" />
-                  </div>
-                );
-              })()}
-              <div>
-                <h3 className="font-semibold text-foreground">
-                  {sectionTitles[openCategory as keyof typeof sectionTitles]}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {openSections.length} item{openSections.length !== 1 ? 's' : ''}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setOpenCategory(null)}
-              className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          {/* Panel Content */}
-          <ScrollArea className="h-[calc(100%-73px)]">
-            <div className="p-3 space-y-1">
-              {openSections.map((section) => {
-                const Icon = section.icon;
-                const isActive = section.key === activeSection;
-
-                return (
-                  <button
-                    key={section.key}
-                    onClick={() => handleNavClick(section.key)}
-                    className={cn(
-                      "w-full flex items-start gap-3 p-3 rounded-xl transition-all duration-200 text-left group",
-                      isActive
-                        ? "bg-primary text-primary-foreground shadow-md"
-                        : "hover:bg-muted/80 text-foreground"
-                    )}
-                  >
-                    <div className={cn(
-                      "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors",
-                      isActive 
-                        ? "bg-primary-foreground/20" 
-                        : "bg-muted group-hover:bg-primary/10"
-                    )}>
-                      <Icon className={cn(
-                        "h-4 w-4",
-                        isActive ? "text-primary-foreground" : "text-primary"
-                      )} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className={cn(
-                          "font-medium text-sm truncate",
-                          isActive ? "text-primary-foreground" : "text-foreground"
-                        )}>
-                          {section.label}
-                        </span>
-                        {'badge' in section && section.badge && (
-                          <span className={cn(
-                            "text-[10px] px-1.5 py-0.5 rounded-full font-semibold shrink-0",
-                            isActive 
-                              ? "bg-primary-foreground/20 text-primary-foreground"
-                              : "bg-destructive text-destructive-foreground"
-                          )}>
-                            {String(section.badge)}
-                          </span>
-                        )}
-                      </div>
-                      <p className={cn(
-                        "text-xs mt-0.5 line-clamp-2",
-                        isActive ? "text-primary-foreground/80" : "text-muted-foreground"
-                      )}>
-                        {section.description}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </ScrollArea>
-        </div>
+    <>
+      {/* Backdrop overlay when flyout is open */}
+      {openCategory && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-30 animate-in fade-in-0 duration-200"
+          onClick={() => setOpenCategory(null)}
+        />
       )}
-    </div>
+      
+      <div ref={sidebarRef} className="relative h-full flex z-40">
+        {/* Icon-only Sidebar - Compact */}
+        <div className="w-12 h-full bg-slate-900/95 backdrop-blur-sm border-r border-slate-700/30 flex flex-col py-2 px-1.5 gap-0.5 shadow-lg">
+          {categories.map((category) => {
+            const sections = navigationSections[category as keyof typeof navigationSections];
+            if (!sections || sections.length === 0) return null;
+
+            const CategoryIcon = categoryIcons[category] || LayoutDashboard;
+            const isActive = activeCategory === category;
+            const isOpen = openCategory === category;
+            const isHovered = hoveredCategory === category;
+
+            return (
+              <div key={category} className="relative">
+                {/* Icon Button - Smaller */}
+                <button
+                  onClick={() => handleCategoryClick(category)}
+                  onMouseEnter={() => setHoveredCategory(category)}
+                  onMouseLeave={() => setHoveredCategory(null)}
+                  className={cn(
+                    "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative",
+                    isOpen 
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
+                      : isActive
+                        ? "bg-primary/15 text-primary"
+                        : "hover:bg-slate-700/50 text-slate-400 hover:text-slate-200"
+                  )}
+                >
+                  <CategoryIcon className="h-4 w-4" />
+                  
+                  {/* Active indicator dot */}
+                  {isActive && !isOpen && (
+                    <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-1 bg-primary rounded-full" />
+                  )}
+                </button>
+
+                {/* Hover Tooltip */}
+                {isHovered && !openCategory && (
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 animate-in fade-in-0 slide-in-from-left-1 duration-150">
+                    <div className="px-2 py-1 bg-slate-800/95 backdrop-blur-sm text-white text-xs font-medium rounded-md shadow-lg border border-slate-700/50 whitespace-nowrap">
+                      {sectionTitles[category as keyof typeof sectionTitles]}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Flyout Panel - Compact with transparent bg */}
+        {openCategory && openSections && (
+          <div className="absolute left-12 top-0 h-full w-56 bg-background/95 backdrop-blur-md border-r border-border/50 shadow-xl z-40 animate-in slide-in-from-left-2 duration-150">
+            {/* Panel Header - Compact */}
+            <div className="flex items-center justify-between p-2.5 border-b border-border/50 bg-muted/20">
+              <div className="flex items-center gap-2">
+                {(() => {
+                  const CategoryIcon = categoryIcons[openCategory] || LayoutDashboard;
+                  return (
+                    <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+                      <CategoryIcon className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                  );
+                })()}
+                <div>
+                  <h3 className="font-medium text-sm text-foreground leading-tight">
+                    {sectionTitles[openCategory as keyof typeof sectionTitles]}
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground">
+                    {openSections.length} item{openSections.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setOpenCategory(null)}
+                className="w-6 h-6 rounded-md hover:bg-muted/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            {/* Panel Content - Compact */}
+            <ScrollArea className="h-[calc(100%-52px)]">
+              <div className="p-1.5 space-y-0.5">
+                {openSections.map((section) => {
+                  const Icon = section.icon;
+                  const isActive = section.key === activeSection;
+
+                  return (
+                    <button
+                      key={section.key}
+                      onClick={() => handleNavClick(section.key)}
+                      className={cn(
+                        "w-full flex items-start gap-2 p-2 rounded-lg transition-all duration-150 text-left group",
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "hover:bg-muted/60 text-foreground"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors",
+                        isActive 
+                          ? "bg-primary-foreground/15" 
+                          : "bg-muted/80 group-hover:bg-primary/10"
+                      )}>
+                        <Icon className={cn(
+                          "h-3.5 w-3.5",
+                          isActive ? "text-primary-foreground" : "text-primary"
+                        )} />
+                      </div>
+                      <div className="flex-1 min-w-0 py-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className={cn(
+                            "font-medium text-xs truncate",
+                            isActive ? "text-primary-foreground" : "text-foreground"
+                          )}>
+                            {section.label}
+                          </span>
+                          {'badge' in section && section.badge && (
+                            <span className={cn(
+                              "text-[8px] px-1 py-0.5 rounded-full font-semibold shrink-0",
+                              isActive 
+                                ? "bg-primary-foreground/20 text-primary-foreground"
+                                : "bg-destructive text-destructive-foreground"
+                            )}>
+                              {String(section.badge)}
+                            </span>
+                          )}
+                        </div>
+                        <p className={cn(
+                          "text-[10px] mt-0.5 line-clamp-1",
+                          isActive ? "text-primary-foreground/70" : "text-muted-foreground"
+                        )}>
+                          {section.description}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
