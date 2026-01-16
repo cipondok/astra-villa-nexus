@@ -6508,6 +6508,45 @@ export type Database = {
           },
         ]
       }
+      system_health_metrics: {
+        Row: {
+          component: string
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_unit: string | null
+          metric_value: number
+          recorded_at: string | null
+          status: string | null
+          threshold_critical: number | null
+          threshold_warning: number | null
+        }
+        Insert: {
+          component: string
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_unit?: string | null
+          metric_value: number
+          recorded_at?: string | null
+          status?: string | null
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+        }
+        Update: {
+          component?: string
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_unit?: string | null
+          metric_value?: number
+          recorded_at?: string | null
+          status?: string | null
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+        }
+        Relationships: []
+      }
       system_reports: {
         Row: {
           action_taken: string | null
@@ -6595,6 +6634,128 @@ export type Database = {
         }
         Relationships: []
       }
+      system_updates: {
+        Row: {
+          affects_systems: string[] | null
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_id: string | null
+          downtime_expected: boolean | null
+          downtime_minutes: number | null
+          id: string
+          priority: string | null
+          release_notes: string | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["update_status"] | null
+          title: string
+          title_id: string | null
+          update_type: string
+          updated_at: string | null
+          version: string
+        }
+        Insert: {
+          affects_systems?: string[] | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_id?: string | null
+          downtime_expected?: boolean | null
+          downtime_minutes?: number | null
+          id?: string
+          priority?: string | null
+          release_notes?: string | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["update_status"] | null
+          title: string
+          title_id?: string | null
+          update_type: string
+          updated_at?: string | null
+          version: string
+        }
+        Update: {
+          affects_systems?: string[] | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_id?: string | null
+          downtime_expected?: boolean | null
+          downtime_minutes?: number | null
+          id?: string
+          priority?: string | null
+          release_notes?: string | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["update_status"] | null
+          title?: string
+          title_id?: string | null
+          update_type?: string
+          updated_at?: string | null
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_updates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tax_configurations: {
+        Row: {
+          applicable_to: string[] | null
+          created_at: string | null
+          description: string | null
+          description_id: string | null
+          id: string
+          is_active: boolean | null
+          max_amount: number | null
+          min_amount: number | null
+          rate: number
+          tax_code: string
+          tax_name: string
+          tax_name_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          applicable_to?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          description_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number | null
+          rate: number
+          tax_code: string
+          tax_name: string
+          tax_name_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          applicable_to?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          description_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number | null
+          rate?: number
+          tax_code?: string
+          tax_name?: string
+          tax_name_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ticket_activities: {
         Row: {
           activity_type: string
@@ -6633,6 +6794,145 @@ export type Database = {
           },
         ]
       }
+      transaction_alerts: {
+        Row: {
+          alert_type: string
+          assigned_to: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          is_resolved: boolean | null
+          message: string
+          message_id: string | null
+          metadata: Json | null
+          related_entity_id: string | null
+          related_entity_type: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          title: string
+          title_id: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          assigned_to?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          is_resolved?: boolean | null
+          message: string
+          message_id?: string | null
+          metadata?: Json | null
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          title: string
+          title_id?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          assigned_to?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          is_resolved?: boolean | null
+          message?: string
+          message_id?: string | null
+          metadata?: Json | null
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          title?: string
+          title_id?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_alerts_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_alerts_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_alerts_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "unified_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transaction_audit_log: {
+        Row: {
+          action: string
+          change_reason: string | null
+          changed_by: string | null
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          metadata: Json | null
+          new_status: string | null
+          previous_status: string | null
+          transaction_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          change_reason?: string | null
+          changed_by?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          metadata?: Json | null
+          new_status?: string | null
+          previous_status?: string | null
+          transaction_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          change_reason?: string | null
+          changed_by?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          metadata?: Json | null
+          new_status?: string | null
+          previous_status?: string | null
+          transaction_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_audit_log_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_audit_log_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "unified_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trending_topics: {
         Row: {
           category: string | null
@@ -6662,6 +6962,114 @@ export type Database = {
           trend_score?: number | null
         }
         Relationships: []
+      }
+      unified_transactions: {
+        Row: {
+          base_amount: number
+          booking_id: string | null
+          buyer_id: string | null
+          cancelled_at: string | null
+          completed_at: string | null
+          created_at: string | null
+          currency: string | null
+          due_date: string | null
+          id: string
+          metadata: Json | null
+          notes: string | null
+          paid_at: string | null
+          payment_gateway: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          payment_status: string | null
+          property_id: string | null
+          seller_id: string | null
+          service_charges: number | null
+          status: Database["public"]["Enums"]["transaction_status"] | null
+          subtotal: number
+          tax_breakdown: Json | null
+          total_amount: number
+          total_tax: number | null
+          transaction_number: string
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+          updated_at: string | null
+          vendor_service_id: string | null
+        }
+        Insert: {
+          base_amount: number
+          booking_id?: string | null
+          buyer_id?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          currency?: string | null
+          due_date?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          paid_at?: string | null
+          payment_gateway?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          property_id?: string | null
+          seller_id?: string | null
+          service_charges?: number | null
+          status?: Database["public"]["Enums"]["transaction_status"] | null
+          subtotal: number
+          tax_breakdown?: Json | null
+          total_amount: number
+          total_tax?: number | null
+          transaction_number: string
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string | null
+          vendor_service_id?: string | null
+        }
+        Update: {
+          base_amount?: number
+          booking_id?: string | null
+          buyer_id?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          currency?: string | null
+          due_date?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          paid_at?: string | null
+          payment_gateway?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          property_id?: string | null
+          seller_id?: string | null
+          service_charges?: number | null
+          status?: Database["public"]["Enums"]["transaction_status"] | null
+          subtotal?: number
+          tax_breakdown?: Json | null
+          total_amount?: number
+          total_tax?: number | null
+          transaction_number?: string
+          transaction_type?: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string | null
+          vendor_service_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unified_transactions_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unified_transactions_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_2fa_settings: {
         Row: {
@@ -6892,6 +7300,93 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_feedback: {
+        Row: {
+          actual_behavior: string | null
+          assigned_to: string | null
+          browser_info: Json | null
+          created_at: string | null
+          description: string
+          expected_behavior: string | null
+          feedback_type: Database["public"]["Enums"]["feedback_type"]
+          id: string
+          metadata: Json | null
+          page_url: string | null
+          priority: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          screenshot_urls: string[] | null
+          severity: string | null
+          status: string | null
+          steps_to_reproduce: string | null
+          title: string
+          updated_at: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          actual_behavior?: string | null
+          assigned_to?: string | null
+          browser_info?: Json | null
+          created_at?: string | null
+          description: string
+          expected_behavior?: string | null
+          feedback_type: Database["public"]["Enums"]["feedback_type"]
+          id?: string
+          metadata?: Json | null
+          page_url?: string | null
+          priority?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          screenshot_urls?: string[] | null
+          severity?: string | null
+          status?: string | null
+          steps_to_reproduce?: string | null
+          title: string
+          updated_at?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          actual_behavior?: string | null
+          assigned_to?: string | null
+          browser_info?: Json | null
+          created_at?: string | null
+          description?: string
+          expected_behavior?: string | null
+          feedback_type?: Database["public"]["Enums"]["feedback_type"]
+          id?: string
+          metadata?: Json | null
+          page_url?: string | null
+          priority?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          screenshot_urls?: string[] | null
+          severity?: string | null
+          status?: string | null
+          steps_to_reproduce?: string | null
+          title?: string
+          updated_at?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_feedback_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_filter_preferences: {
         Row: {
@@ -10309,6 +10804,23 @@ export type Database = {
         }
         Relationships: []
       }
+      transaction_summary: {
+        Row: {
+          cancelled: number | null
+          completed: number | null
+          date: string | null
+          pending: number | null
+          total_base_amount: number | null
+          total_revenue: number | null
+          total_service_charges: number | null
+          total_tax_collected: number | null
+          total_transactions: number | null
+          transaction_type:
+            | Database["public"]["Enums"]["transaction_type"]
+            | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_customer_response_secure: {
@@ -10468,6 +10980,7 @@ export type Database = {
         Returns: string
       }
       generate_otp: { Args: never; Returns: string }
+      generate_transaction_number: { Args: never; Returns: string }
       get_admin_profile_stats: {
         Args: never
         Returns: {
@@ -11395,6 +11908,11 @@ export type Database = {
         | "security_monitoring"
         | "order_tracking"
         | "ai_bot_management"
+      feedback_type:
+        | "bug_report"
+        | "feature_request"
+        | "general_feedback"
+        | "complaint"
       indonesian_document_type:
         | "ktp"
         | "npwp"
@@ -11415,6 +11933,15 @@ export type Database = {
         | "per_item"
         | "daily"
         | "fixed"
+      transaction_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "cancelled"
+        | "refunded"
+        | "disputed"
+      transaction_type: "property_sale" | "property_rental" | "vendor_service"
+      update_status: "planned" | "in_progress" | "completed" | "cancelled"
       user_role:
         | "general_user"
         | "property_owner"
@@ -11569,6 +12096,12 @@ export const Constants = {
         "order_tracking",
         "ai_bot_management",
       ],
+      feedback_type: [
+        "bug_report",
+        "feature_request",
+        "general_feedback",
+        "complaint",
+      ],
       indonesian_document_type: [
         "ktp",
         "npwp",
@@ -11584,6 +12117,16 @@ export const Constants = {
         "izin_gangguan",
       ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
+      transaction_status: [
+        "pending",
+        "processing",
+        "completed",
+        "cancelled",
+        "refunded",
+        "disputed",
+      ],
+      transaction_type: ["property_sale", "property_rental", "vendor_service"],
+      update_status: ["planned", "in_progress", "completed", "cancelled"],
       user_role: [
         "general_user",
         "property_owner",
