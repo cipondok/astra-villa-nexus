@@ -156,40 +156,31 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
           })}
         </div>
 
-        {/* Flyout Panel - Compact with transparent bg */}
+        {/* Flyout Panel - Small floating window */}
         {openCategory && openSections && (
-          <div className="absolute left-12 top-0 h-full w-56 bg-background/95 backdrop-blur-md border-r border-border/50 shadow-xl z-40 animate-in slide-in-from-left-2 duration-150">
-            {/* Panel Header - Compact */}
-            <div className="flex items-center justify-between p-2.5 border-b border-border/50 bg-muted/20">
-              <div className="flex items-center gap-2">
+          <div className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-48 bg-popover/95 backdrop-blur-md rounded-lg border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-2 fade-in-0 duration-150 overflow-hidden">
+            {/* Panel Header - Minimal */}
+            <div className="flex items-center justify-between px-2.5 py-2 border-b border-border/40 bg-muted/30">
+              <div className="flex items-center gap-1.5">
                 {(() => {
                   const CategoryIcon = categoryIcons[openCategory] || LayoutDashboard;
-                  return (
-                    <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
-                      <CategoryIcon className="h-3.5 w-3.5 text-primary" />
-                    </div>
-                  );
+                  return <CategoryIcon className="h-3.5 w-3.5 text-primary" />;
                 })()}
-                <div>
-                  <h3 className="font-medium text-sm text-foreground leading-tight">
-                    {sectionTitles[openCategory as keyof typeof sectionTitles]}
-                  </h3>
-                  <p className="text-[10px] text-muted-foreground">
-                    {openSections.length} item{openSections.length !== 1 ? 's' : ''}
-                  </p>
-                </div>
+                <h3 className="font-medium text-xs text-foreground">
+                  {sectionTitles[openCategory as keyof typeof sectionTitles]}
+                </h3>
               </div>
               <button
                 onClick={() => setOpenCategory(null)}
-                className="w-6 h-6 rounded-md hover:bg-muted/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                className="w-5 h-5 rounded hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3 w-3" />
               </button>
             </div>
 
-            {/* Panel Content - Compact */}
-            <ScrollArea className="h-[calc(100%-52px)]">
-              <div className="p-1.5 space-y-0.5">
+            {/* Panel Content - Minimal */}
+            <ScrollArea className="max-h-64">
+              <div className="p-1">
                 {openSections.map((section) => {
                   const Icon = section.icon;
                   const isActive = section.key === activeSection;
@@ -199,49 +190,32 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                       key={section.key}
                       onClick={() => handleNavClick(section.key)}
                       className={cn(
-                        "w-full flex items-start gap-2 p-2 rounded-lg transition-all duration-150 text-left group",
+                        "w-full flex items-center gap-2 px-2 py-1.5 rounded-md transition-all duration-100 text-left",
                         isActive
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "hover:bg-muted/60 text-foreground"
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-muted/70 text-foreground"
                       )}
                     >
-                      <div className={cn(
-                        "w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors",
-                        isActive 
-                          ? "bg-primary-foreground/15" 
-                          : "bg-muted/80 group-hover:bg-primary/10"
+                      <Icon className={cn(
+                        "h-3 w-3 shrink-0",
+                        isActive ? "text-primary-foreground" : "text-primary"
+                      )} />
+                      <span className={cn(
+                        "text-[11px] truncate flex-1",
+                        isActive ? "text-primary-foreground font-medium" : "text-foreground"
                       )}>
-                        <Icon className={cn(
-                          "h-3.5 w-3.5",
-                          isActive ? "text-primary-foreground" : "text-primary"
-                        )} />
-                      </div>
-                      <div className="flex-1 min-w-0 py-0.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className={cn(
-                            "font-medium text-xs truncate",
-                            isActive ? "text-primary-foreground" : "text-foreground"
-                          )}>
-                            {section.label}
-                          </span>
-                          {'badge' in section && section.badge && (
-                            <span className={cn(
-                              "text-[8px] px-1 py-0.5 rounded-full font-semibold shrink-0",
-                              isActive 
-                                ? "bg-primary-foreground/20 text-primary-foreground"
-                                : "bg-destructive text-destructive-foreground"
-                            )}>
-                              {String(section.badge)}
-                            </span>
-                          )}
-                        </div>
-                        <p className={cn(
-                          "text-[10px] mt-0.5 line-clamp-1",
-                          isActive ? "text-primary-foreground/70" : "text-muted-foreground"
+                        {section.label}
+                      </span>
+                      {'badge' in section && section.badge && (
+                        <span className={cn(
+                          "text-[8px] px-1 rounded font-medium shrink-0",
+                          isActive 
+                            ? "bg-primary-foreground/20 text-primary-foreground"
+                            : "bg-destructive/80 text-destructive-foreground"
                         )}>
-                          {section.description}
-                        </p>
-                      </div>
+                          {String(section.badge)}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
