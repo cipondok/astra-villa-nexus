@@ -93,12 +93,11 @@ Deno.serve(async (req) => {
 
     // Mode: provinces only - just insert province names
     if (mode === 'provinces') {
-      // Check existing provinces first
+      // Check existing provinces first - look for empty city_code (province-level entries)
       const { data: existing } = await supabase
         .from('locations')
         .select('province_code')
-        .is('city_code', null)
-        .or('city_code.eq.');
+        .eq('city_code', '');
       
       const existingCodes = new Set((existing || []).map(e => e.province_code));
       
@@ -108,13 +107,13 @@ Deno.serve(async (req) => {
         const record = {
           province_code: p.id,
           province_name: provinceName,
-          city_code: null, // Use null instead of empty string
-          city_name: null,
+          city_code: '', // Empty string for province-level entries
+          city_name: '',
           city_type: 'KABUPATEN',
-          district_code: null,
-          district_name: null,
-          subdistrict_code: null,
-          subdistrict_name: null,
+          district_code: '',
+          district_name: '',
+          subdistrict_code: '',
+          subdistrict_name: '',
           area_name: provinceName,
           is_active: true,
           updated_at: new Date().toISOString(),
@@ -126,7 +125,7 @@ Deno.serve(async (req) => {
             .from('locations')
             .update(record)
             .eq('province_code', p.id)
-            .is('city_code', null);
+            .eq('city_code', '');
           
           if (error && error.code !== '23505') {
             console.error('Province update error:', error);
