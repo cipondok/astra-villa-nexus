@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, CreditCard, Smartphone, Building, Settings, CheckCircle, XCircle } from 'lucide-react';
+import { CreditCard, Smartphone, Building, CheckCircle, Save } from 'lucide-react';
 
 const IndonesianPaymentGateways = () => {
   const [activeGateways, setActiveGateways] = useState({
@@ -31,6 +31,8 @@ const IndonesianPaymentGateways = () => {
   const paymentMethods = [
     {
       category: 'E-Wallets',
+      icon: Smartphone,
+      color: 'border-l-emerald-500',
       methods: [
         { id: 'gopay', name: 'GoPay', logo: '🏍️', fee: '2.9%', status: 'active', transactions: 15420 },
         { id: 'ovo', name: 'OVO', logo: '💜', fee: '2.9%', status: 'active', transactions: 12350 },
@@ -41,20 +43,24 @@ const IndonesianPaymentGateways = () => {
     },
     {
       category: 'Bank Transfer',
+      icon: Building,
+      color: 'border-l-blue-500',
       methods: [
-        { id: 'bca', name: 'BCA Virtual Account', logo: '🏦', fee: '4000', status: 'active', transactions: 23450 },
-        { id: 'mandiri', name: 'Mandiri Virtual Account', logo: '🏛️', fee: '4000', status: 'inactive', transactions: 0 },
-        { id: 'bni', name: 'BNI Virtual Account', logo: '🏢', fee: '4000', status: 'inactive', transactions: 0 },
-        { id: 'bri', name: 'BRI Virtual Account', logo: '🏪', fee: '4000', status: 'inactive', transactions: 0 },
-        { id: 'permata', name: 'Permata Virtual Account', logo: '💎', fee: '4000', status: 'inactive', transactions: 0 }
+        { id: 'bca', name: 'BCA VA', logo: '🏦', fee: '4000', status: 'active', transactions: 23450 },
+        { id: 'mandiri', name: 'Mandiri VA', logo: '🏛️', fee: '4000', status: 'inactive', transactions: 0 },
+        { id: 'bni', name: 'BNI VA', logo: '🏢', fee: '4000', status: 'inactive', transactions: 0 },
+        { id: 'bri', name: 'BRI VA', logo: '🏪', fee: '4000', status: 'inactive', transactions: 0 },
+        { id: 'permata', name: 'Permata VA', logo: '💎', fee: '4000', status: 'inactive', transactions: 0 }
       ]
     },
     {
       category: 'Others',
+      icon: CreditCard,
+      color: 'border-l-purple-500',
       methods: [
         { id: 'qris', name: 'QRIS', logo: '📱', fee: '0.7%', status: 'active', transactions: 5670 },
         { id: 'kredivo', name: 'Kredivo', logo: '💳', fee: '2.95%', status: 'inactive', transactions: 0 },
-        { id: 'akulaku', name: 'Akulaku PayLater', logo: '🛍️', fee: '2.95%', status: 'inactive', transactions: 0 }
+        { id: 'akulaku', name: 'Akulaku', logo: '🛍️', fee: '2.95%', status: 'inactive', transactions: 0 }
       ]
     }
   ];
@@ -66,107 +72,82 @@ const IndonesianPaymentGateways = () => {
     }));
   };
 
+  const stats = [
+    { label: 'Active Gateways', value: Object.values(activeGateways).filter(Boolean).length, icon: CheckCircle, color: 'text-emerald-400' },
+    { label: 'Monthly Txns', value: '65.6K', icon: CreditCard, color: 'text-blue-400' },
+    { label: 'Success Rate', value: '98.5%', icon: CheckCircle, color: 'text-green-400' },
+    { label: 'Revenue', value: 'Rp 2.3B', icon: Building, color: 'text-purple-400' }
+  ];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">Indonesian Payment Gateways</h2>
+          <p className="text-[10px] text-muted-foreground">Manage local payment integrations</p>
+        </div>
+      </div>
+
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="configuration">Configuration</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="fees">Fee Structure</TabsTrigger>
+        <TabsList className="h-8 bg-muted/50">
+          <TabsTrigger value="overview" className="h-6 px-3 text-xs">Overview</TabsTrigger>
+          <TabsTrigger value="configuration" className="h-6 px-3 text-xs">Config</TabsTrigger>
+          <TabsTrigger value="analytics" className="h-6 px-3 text-xs">Analytics</TabsTrigger>
+          <TabsTrigger value="fees" className="h-6 px-3 text-xs">Fees</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Active Gateways</p>
-                    <p className="text-2xl font-bold">
-                      {Object.values(activeGateways).filter(Boolean).length}
-                    </p>
+        <TabsContent value="overview" className="space-y-3 mt-3">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-4 gap-2">
+            {stats.map((stat) => (
+              <Card key={stat.label} className="bg-card/50 border-border/50">
+                <CardContent className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[9px] text-muted-foreground">{stat.label}</p>
+                      <p className="text-lg font-bold text-foreground">{stat.value}</p>
+                    </div>
+                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-500" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Monthly Transactions</p>
-                    <p className="text-2xl font-bold">65,650</p>
-                  </div>
-                  <CreditCard className="h-8 w-8 text-blue-500" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Success Rate</p>
-                    <p className="text-2xl font-bold">98.5%</p>
-                  </div>
-                  <CheckCircle className="h-8 w-8 text-green-500" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                    <p className="text-2xl font-bold">Rp 2.3B</p>
-                  </div>
-                  <Building className="h-8 w-8 text-purple-500" />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           {/* Payment Methods by Category */}
           {paymentMethods.map((category) => (
-            <Card key={category.category}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {category.category === 'E-Wallets' && <Smartphone className="h-5 w-5" />}
-                  {category.category === 'Bank Transfer' && <Building className="h-5 w-5" />}
-                  {category.category === 'Others' && <CreditCard className="h-5 w-5" />}
+            <Card key={category.category} className={`bg-card/50 border-border/50 border-l-2 ${category.color}`}>
+              <CardHeader className="py-2 px-3">
+                <CardTitle className="flex items-center gap-2 text-xs text-foreground">
+                  <category.icon className="h-4 w-4" />
                   {category.category}
                 </CardTitle>
-                <CardDescription>
-                  Manage {category.category.toLowerCase()} payment options
-                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <CardContent className="px-3 pb-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {category.methods.map((method) => (
-                    <div key={method.id} className="p-4 border rounded-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{method.logo}</span>
+                    <div key={method.id} className="p-2 border border-border/50 rounded-md bg-background/30">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-base">{method.logo}</span>
                           <div>
-                            <h4 className="font-semibold">{method.name}</h4>
-                            <p className="text-sm text-muted-foreground">Fee: {method.fee}</p>
+                            <p className="text-xs font-medium text-foreground">{method.name}</p>
+                            <p className="text-[9px] text-muted-foreground">Fee: {method.fee}</p>
                           </div>
                         </div>
                         <Switch
-                          checked={activeGateways[method.id]}
+                          checked={activeGateways[method.id as keyof typeof activeGateways]}
                           onCheckedChange={() => toggleGateway(method.id)}
+                          className="scale-75"
                         />
                       </div>
                       <div className="flex items-center justify-between">
-                        <Badge variant={method.status === 'active' ? 'default' : 'secondary'}>
+                        <Badge variant={method.status === 'active' ? 'default' : 'secondary'} className="text-[8px] px-1 py-0">
                           {method.status}
                         </Badge>
-                        <span className="text-sm text-muted-foreground">
-                          {method.transactions.toLocaleString()} txns
+                        <span className="text-[9px] text-muted-foreground">
+                          {method.transactions.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -177,27 +158,27 @@ const IndonesianPaymentGateways = () => {
           ))}
         </TabsContent>
 
-        <TabsContent value="configuration" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Gateway Configuration</CardTitle>
-              <CardDescription>Configure payment gateway settings and API keys</CardDescription>
+        <TabsContent value="configuration" className="mt-3">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-orange-500">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs text-foreground">Gateway Configuration</CardTitle>
+              <CardDescription className="text-[10px]">Configure API keys and settings</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+            <CardContent className="px-3 pb-3 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
                   <div>
-                    <Label htmlFor="midtrans-server">Midtrans Server Key</Label>
-                    <Input id="midtrans-server" type="password" placeholder="SB-Mid-server-..." />
+                    <Label className="text-[10px] text-muted-foreground">Midtrans Server Key</Label>
+                    <Input type="password" placeholder="SB-Mid-server-..." className="h-8 text-xs bg-background/50" />
                   </div>
                   <div>
-                    <Label htmlFor="midtrans-client">Midtrans Client Key</Label>
-                    <Input id="midtrans-client" placeholder="SB-Mid-client-..." />
+                    <Label className="text-[10px] text-muted-foreground">Midtrans Client Key</Label>
+                    <Input placeholder="SB-Mid-client-..." className="h-8 text-xs bg-background/50" />
                   </div>
                   <div>
-                    <Label htmlFor="environment">Environment</Label>
+                    <Label className="text-[10px] text-muted-foreground">Environment</Label>
                     <Select defaultValue="sandbox">
-                      <SelectTrigger>
+                      <SelectTrigger className="h-8 text-xs bg-background/50">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -207,128 +188,123 @@ const IndonesianPaymentGateways = () => {
                     </Select>
                   </div>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <div>
-                    <Label htmlFor="xendit-secret">Xendit Secret Key</Label>
-                    <Input id="xendit-secret" type="password" placeholder="xnd_development_..." />
+                    <Label className="text-[10px] text-muted-foreground">Xendit Secret Key</Label>
+                    <Input type="password" placeholder="xnd_development_..." className="h-8 text-xs bg-background/50" />
                   </div>
                   <div>
-                    <Label htmlFor="xendit-public">Xendit Public Key</Label>
-                    <Input id="xendit-public" placeholder="xnd_public_development_..." />
+                    <Label className="text-[10px] text-muted-foreground">Xendit Public Key</Label>
+                    <Input placeholder="xnd_public_development_..." className="h-8 text-xs bg-background/50" />
                   </div>
                   <div>
-                    <Label htmlFor="webhook-url">Webhook URL</Label>
-                    <Input id="webhook-url" placeholder="https://yoursite.com/webhook" />
+                    <Label className="text-[10px] text-muted-foreground">Webhook URL</Label>
+                    <Input placeholder="https://yoursite.com/webhook" className="h-8 text-xs bg-background/50" />
                   </div>
                 </div>
               </div>
-              <Button className="w-full">Save Configuration</Button>
+              <Button size="sm" className="h-7 text-xs w-full">
+                <Save className="h-3 w-3 mr-1" />
+                Save Configuration
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="analytics" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Payment Method Distribution</CardTitle>
+        <TabsContent value="analytics" className="mt-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Card className="bg-card/50 border-border/50 border-l-2 border-l-cyan-500">
+              <CardHeader className="py-2 px-3">
+                <CardTitle className="text-xs text-foreground">Payment Distribution</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span>GoPay</span>
-                    <span className="font-semibold">35.2%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>BCA Virtual Account</span>
-                    <span className="font-semibold">28.7%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>OVO</span>
-                    <span className="font-semibold">18.9%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>ShopeePay</span>
-                    <span className="font-semibold">12.4%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Others</span>
-                    <span className="font-semibold">4.8%</span>
-                  </div>
+              <CardContent className="px-3 pb-3">
+                <div className="space-y-2">
+                  {[
+                    { name: 'GoPay', pct: 35.2, color: 'bg-emerald-500' },
+                    { name: 'BCA VA', pct: 28.7, color: 'bg-blue-500' },
+                    { name: 'OVO', pct: 18.9, color: 'bg-purple-500' },
+                    { name: 'ShopeePay', pct: 12.4, color: 'bg-orange-500' },
+                    { name: 'Others', pct: 4.8, color: 'bg-gray-500' }
+                  ].map((item) => (
+                    <div key={item.name} className="space-y-1">
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-foreground">{item.name}</span>
+                        <span className="text-muted-foreground">{item.pct}%</span>
+                      </div>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className={`h-full ${item.color} rounded-full`} style={{ width: `${item.pct}%` }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
             
-            <Card>
-              <CardHeader>
-                <CardTitle>Transaction Success Rates</CardTitle>
+            <Card className="bg-card/50 border-border/50 border-l-2 border-l-green-500">
+              <CardHeader className="py-2 px-3">
+                <CardTitle className="text-xs text-foreground">Success Rates</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span>E-Wallets</span>
-                    <Badge className="bg-green-100 text-green-800">99.2%</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Bank Transfer</span>
-                    <Badge className="bg-green-100 text-green-800">98.7%</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>QRIS</span>
-                    <Badge className="bg-green-100 text-green-800">97.8%</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Buy Now Pay Later</span>
-                    <Badge className="bg-yellow-100 text-yellow-800">95.3%</Badge>
-                  </div>
+              <CardContent className="px-3 pb-3">
+                <div className="space-y-2">
+                  {[
+                    { name: 'E-Wallets', rate: '99.2%', status: 'success' },
+                    { name: 'Bank Transfer', rate: '98.7%', status: 'success' },
+                    { name: 'QRIS', rate: '97.8%', status: 'success' },
+                    { name: 'BNPL', rate: '95.3%', status: 'warning' }
+                  ].map((item) => (
+                    <div key={item.name} className="flex items-center justify-between py-1 border-b border-border/30 last:border-0">
+                      <span className="text-[10px] text-foreground">{item.name}</span>
+                      <Badge 
+                        variant="outline" 
+                        className={`text-[9px] px-1.5 py-0 ${
+                          item.status === 'success' 
+                            ? 'border-emerald-500/50 text-emerald-400' 
+                            : 'border-yellow-500/50 text-yellow-400'
+                        }`}
+                      >
+                        {item.rate}
+                      </Badge>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="fees" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Fee Structure</CardTitle>
-              <CardDescription>Current payment gateway fees and charges</CardDescription>
+        <TabsContent value="fees" className="mt-3">
+          <Card className="bg-card/50 border-border/50 border-l-2 border-l-amber-500">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs text-foreground">Fee Structure</CardTitle>
+              <CardDescription className="text-[10px]">Current gateway fees</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-3 pb-3">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-4">Payment Method</th>
-                      <th className="text-left p-4">MDR Fee</th>
-                      <th className="text-left p-4">Fixed Fee</th>
-                      <th className="text-left p-4">Settlement</th>
+                    <tr className="border-b border-border/50">
+                      <th className="text-left py-2 text-[10px] font-medium text-muted-foreground">Method</th>
+                      <th className="text-left py-2 text-[10px] font-medium text-muted-foreground">MDR</th>
+                      <th className="text-left py-2 text-[10px] font-medium text-muted-foreground">Fixed</th>
+                      <th className="text-left py-2 text-[10px] font-medium text-muted-foreground">Settlement</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b">
-                      <td className="p-4">🏍️ GoPay</td>
-                      <td className="p-4">2.9%</td>
-                      <td className="p-4">-</td>
-                      <td className="p-4">T+1</td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="p-4">💜 OVO</td>
-                      <td className="p-4">2.9%</td>
-                      <td className="p-4">-</td>
-                      <td className="p-4">T+1</td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="p-4">🏦 BCA VA</td>
-                      <td className="p-4">-</td>
-                      <td className="p-4">Rp 4,000</td>
-                      <td className="p-4">T+1</td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="p-4">📱 QRIS</td>
-                      <td className="p-4">0.7%</td>
-                      <td className="p-4">-</td>
-                      <td className="p-4">T+1</td>
-                    </tr>
+                    {[
+                      { name: '🏍️ GoPay', mdr: '2.9%', fixed: '-', settle: 'T+1' },
+                      { name: '💜 OVO', mdr: '2.9%', fixed: '-', settle: 'T+1' },
+                      { name: '🏦 BCA VA', mdr: '-', fixed: 'Rp 4K', settle: 'T+1' },
+                      { name: '📱 QRIS', mdr: '0.7%', fixed: '-', settle: 'T+1' }
+                    ].map((row, idx) => (
+                      <tr key={idx} className="border-b border-border/30 last:border-0">
+                        <td className="py-2 text-foreground">{row.name}</td>
+                        <td className="py-2 text-muted-foreground">{row.mdr}</td>
+                        <td className="py-2 text-muted-foreground">{row.fixed}</td>
+                        <td className="py-2">
+                          <Badge variant="outline" className="text-[8px] px-1 py-0">{row.settle}</Badge>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
