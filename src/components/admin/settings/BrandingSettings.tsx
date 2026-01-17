@@ -3,14 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import {
   Image as ImageIcon,
   Upload,
-  LayoutTemplate,
-  MessageCircle,
-  Mail,
-  Home,
   Trash2,
   Wand2,
   Sparkles,
@@ -19,6 +15,7 @@ import {
   Copy,
   Check,
   AlertCircle,
+  Save,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -51,20 +48,19 @@ const LOGO_SIZES = [
   { name: 'Chatbot Avatar', width: 128, height: 128, key: 'chatbotLogo' },
 ];
 
-// All logo settings keys for the current logos section
 const ALL_LOGO_KEYS = [
-  { key: 'headerLogo', label: 'Header Logo', description: 'Main logo in top header', size: '200x60px' },
-  { key: 'footerLogo', label: 'Footer Logo', description: 'Logo in website footer', size: '180x50px' },
-  { key: 'welcomeScreenLogo', label: 'Welcome Screen Logo', description: 'Logo on app loading/welcome screen', size: '200x200px' },
-  { key: 'faviconUrl', label: 'Favicon', description: 'Browser tab icon', size: '64x64px' },
-  { key: 'emailLogoUrl', label: 'Email Logo', description: 'Logo in email templates', size: '300x80px' },
-  { key: 'mobileAppIcon', label: 'Mobile App Icon', description: 'PWA/mobile app icon', size: '512x512px' },
-  { key: 'chatbotLogo', label: 'Chatbot Avatar', description: 'AI chatbot avatar', size: '128x128px' },
-  { key: 'welcomePageImage', label: 'Welcome Hero Image', description: 'Main hero image', size: '1920x1080px' },
-  { key: 'welcomePageBackgroundImage', label: 'Welcome Background', description: 'Welcome section background', size: '1920x1200px' },
-  { key: 'loginPageBackground', label: 'Login Background', description: 'Login page background', size: '1920x1080px' },
-  { key: 'defaultPropertyImage', label: 'Default Property Image', description: 'Fallback property image', size: '800x600px' },
-  { key: 'defaultAvatarImage', label: 'Default Avatar', description: 'Fallback user avatar', size: '200x200px' },
+  { key: 'headerLogo', label: 'Header', description: 'Main header logo', size: '200x60' },
+  { key: 'footerLogo', label: 'Footer', description: 'Footer logo', size: '180x50' },
+  { key: 'welcomeScreenLogo', label: 'Welcome', description: 'Loading screen', size: '200x200' },
+  { key: 'faviconUrl', label: 'Favicon', description: 'Browser tab', size: '64x64' },
+  { key: 'emailLogoUrl', label: 'Email', description: 'Email templates', size: '300x80' },
+  { key: 'mobileAppIcon', label: 'App Icon', description: 'PWA/mobile', size: '512x512' },
+  { key: 'chatbotLogo', label: 'Chatbot', description: 'AI avatar', size: '128x128' },
+  { key: 'welcomePageImage', label: 'Hero', description: 'Main hero', size: '1920x1080' },
+  { key: 'welcomePageBackgroundImage', label: 'Welcome BG', description: 'Welcome bg', size: '1920x1200' },
+  { key: 'loginPageBackground', label: 'Login BG', description: 'Login bg', size: '1920x1080' },
+  { key: 'defaultPropertyImage', label: 'Property', description: 'Fallback property', size: '800x600' },
+  { key: 'defaultAvatarImage', label: 'Avatar', description: 'Fallback avatar', size: '200x200' },
 ];
 
 const BrandingSettings = ({ settings, loading, onInputChange, onSave }: BrandingSettingsProps) => {
@@ -79,188 +75,93 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  // Persist setting to database
   const persistSetting = async (settingKey: string, value: string) => {
-    const payload = {
-      category: "general",
-      key: settingKey,
-      value,
-      is_public: true,
-      description: `System setting for ${settingKey}`,
-    };
-
-    const attempt = async (onConflict: string) =>
-      supabase.from("system_settings").upsert(payload, { onConflict });
-
+    const payload = { category: "general", key: settingKey, value, is_public: true, description: `System setting for ${settingKey}` };
+    const attempt = async (onConflict: string) => supabase.from("system_settings").upsert(payload, { onConflict });
     const { error: err1 } = await attempt("category,key");
     if (!err1) return;
-
     const { error: err2 } = await attempt("key");
     if (err2) throw err2;
   };
 
   const handleFileUpload = async (key: string, file: File): Promise<boolean> => {
     if (!file) return false;
-
-    const validTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/svg+xml",
-    ];
+    const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
     if (!validTypes.includes(file.type)) {
-      showError(
-        "Invalid File",
-        "Please upload an image file (JPG, PNG, GIF, WebP, or SVG)"
-      );
+      showError("Invalid File", "Please upload an image file");
       return false;
     }
-
     if (file.size > 5 * 1024 * 1024) {
-      showError("File Too Large", "Please upload an image smaller than 5MB");
+      showError("File Too Large", "Max 5MB");
       return false;
     }
-
     setUploading(key);
-
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        showError("Authentication Required", "Please log in to upload images");
+        showError("Auth Required", "Please log in");
         return false;
       }
-
       const fileExt = file.name.split(".").pop()?.toLowerCase() || "png";
       const fileName = `branding/${key}_${Date.now()}.${fileExt}`;
-
-      console.log(
-        "Uploading file:",
-        fileName,
-        "Size:",
-        file.size,
-        "Type:",
-        file.type
-      );
-
-      const { error: uploadError, data } = await supabase.storage
-        .from("system-assets")
-        .upload(fileName, file, {
-          upsert: true,
-          contentType: file.type,
-        });
-
-      if (uploadError) {
-        console.error("Supabase upload error:", uploadError);
-        throw uploadError;
-      }
-
-      console.log("Upload successful:", data);
-
-      const { data: urlData } = supabase.storage
-        .from("system-assets")
-        .getPublicUrl(fileName);
-
-      console.log("Public URL:", urlData.publicUrl);
-
+      const { error: uploadError } = await supabase.storage.from("system-assets").upload(fileName, file, { upsert: true, contentType: file.type });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from("system-assets").getPublicUrl(fileName);
       onInputChange(key, urlData.publicUrl);
       await persistSetting(key, urlData.publicUrl);
-
-      // Ensure the rest of the app (e.g. navigation) refreshes immediately
       queryClient.invalidateQueries({ queryKey: ["system-setting"] });
-
-      showSuccess("Upload Complete", "Image uploaded and saved successfully");
+      showSuccess("Uploaded", "Image saved successfully");
       return true;
     } catch (error: any) {
-      console.error("Upload error details:", error);
-      const errorMessage =
-        error?.message || error?.error_description || "Failed to upload image";
-      showError("Upload Failed", errorMessage);
+      showError("Upload Failed", error?.message || "Failed to upload");
       return false;
     } finally {
       setUploading(null);
     }
   };
 
-  // Delete a logo
   const handleDeleteLogo = async (key: string) => {
     setDeleting(key);
     try {
       onInputChange(key, '');
       await persistSetting(key, '');
       queryClient.invalidateQueries({ queryKey: ["system-setting"] });
-      showSuccess("Logo Deleted", "The logo has been removed successfully");
+      showSuccess("Deleted", "Logo removed");
     } catch (error: any) {
-      console.error("Delete error:", error);
-      showError("Delete Failed", error?.message || "Failed to delete logo");
+      showError("Delete Failed", error?.message || "Failed to delete");
     } finally {
       setDeleting(null);
     }
   };
 
-  // Generate logo using AI
   const generateLogo = async () => {
     if (!logoPrompt.trim()) {
-      showError("Prompt Required", "Please enter a description for your logo");
+      showError("Prompt Required", "Enter a description");
       return;
     }
-
     setGenerating(true);
     setMasterLogo(null);
     setGeneratedLogos([]);
-    
     try {
       const stylePrompts: Record<string, string> = {
-        modern: "modern minimalist clean design with simple geometric shapes",
-        classic: "classic elegant professional design with refined typography",
-        playful: "playful creative colorful design with friendly aesthetic",
-        tech: "futuristic tech-inspired design with sleek digital elements",
-        luxury: "luxurious premium design with gold accents and sophisticated feel",
+        modern: "modern minimalist clean design",
+        classic: "classic elegant professional design",
+        playful: "playful creative colorful design",
+        tech: "futuristic tech-inspired design",
+        luxury: "luxurious premium design with gold accents",
       };
-
-      const fullPrompt = `Create a professional company logo for: ${logoPrompt}. Style: ${stylePrompts[logoStyle]}. The logo should be centered, on a transparent or simple background, suitable for business branding. High quality vector-style logo.`;
-
-      console.log("Calling AI image generator with prompt:", fullPrompt.substring(0, 100));
-
-      const response = await supabase.functions.invoke('ai-image-generator', {
-        body: { prompt: fullPrompt }
-      });
-
-      console.log("AI response:", response);
-
-      // Handle edge function errors
-      if (response.error) {
-        const errMsg = response.error?.message || String(response.error);
-        throw new Error(errMsg);
-      }
-
-      // Check for API error in response data
-      if (response.data?.error) {
-        throw new Error(response.data.error);
-      }
-
+      const fullPrompt = `Create a professional company logo for: ${logoPrompt}. Style: ${stylePrompts[logoStyle]}. High quality vector-style logo.`;
+      const response = await supabase.functions.invoke('ai-image-generator', { body: { prompt: fullPrompt } });
+      if (response.error) throw new Error(response.error?.message || String(response.error));
+      if (response.data?.error) throw new Error(response.data.error);
       const imageUrl = response.data?.imageUrl || response.data?.image;
-      
-      if (!imageUrl) {
-        console.error("No image in response:", response.data);
-        throw new Error("No image generated - please try again");
-      }
-
-      console.log("Master logo generated successfully");
+      if (!imageUrl) throw new Error("No image generated");
       setMasterLogo(imageUrl);
-      showSuccess("Logo Generated", "Your logo has been created! Now click 'Generate All Size Variants' to create all logo sizes.");
-      
+      showSuccess("Generated", "Now generate size variants");
     } catch (error: any) {
-      console.error("Logo generation error:", error);
-      const message = error?.message || "Failed to generate logo";
-      
-      // Check for billing/limit errors
-      if (message.toLowerCase().includes('billing') || message.toLowerCase().includes('limit') || message.toLowerCase().includes('payment')) {
-        showError("AI Generation Unavailable", "The workspace has reached its usage limit. Please upload an existing logo instead.");
-      } else if (message.toLowerCase().includes('rate limit')) {
-        showError("Rate Limited", "Too many requests. Please wait a moment and try again.");
+      const message = error?.message || "Failed to generate";
+      if (message.toLowerCase().includes('billing') || message.toLowerCase().includes('limit')) {
+        showError("AI Unavailable", "Usage limit reached. Upload an existing logo instead.");
       } else {
         showError("Generation Failed", message);
       }
@@ -269,226 +170,139 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
     }
   };
 
-  // Generate size variants from master logo
   const generateSizeVariants = async () => {
     if (!masterLogo) {
-      showError("No Master Logo", "Please generate or upload a master logo first");
+      showError("No Master Logo", "Create a master logo first");
       return;
     }
-
     setGenerating(true);
     try {
       const variants: GeneratedLogo[] = [];
-
       for (const size of LOGO_SIZES) {
-        // Create resized version using canvas
         const resized = await resizeImage(masterLogo, size.width, size.height);
-        variants.push({
-          size: size.name,
-          width: size.width,
-          height: size.height,
-          dataUrl: resized,
-          key: size.key
-        });
+        variants.push({ size: size.name, width: size.width, height: size.height, dataUrl: resized, key: size.key });
       }
-
       setGeneratedLogos(variants);
-      showSuccess("Variants Generated", `Created ${variants.length} logo size variants. Click 'Apply' on each to save.`);
+      showSuccess("Variants Ready", `Created ${variants.length} sizes`);
     } catch (error: any) {
-      console.error("Resize error:", error);
-      showError("Resize Failed", "Failed to generate size variants. Please try again.");
+      showError("Resize Failed", "Failed to generate variants");
     } finally {
       setGenerating(false);
     }
   };
 
-  // Resize image using canvas
   const resizeImage = (src: string, width: number, height: number): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      // Only set crossOrigin for external URLs, not for data URLs
-      if (!src.startsWith('data:')) {
-        img.crossOrigin = 'anonymous';
-      }
+      if (!src.startsWith('data:')) img.crossOrigin = 'anonymous';
       img.onload = () => {
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        
-        if (!ctx) {
-          reject(new Error('Canvas context not available'));
-          return;
-        }
-
-        // Clear canvas with transparent background
+        if (!ctx) { reject(new Error('Canvas context not available')); return; }
         ctx.clearRect(0, 0, width, height);
-
-        // Calculate scaling to fit while maintaining aspect ratio
         const scale = Math.min(width / img.width, height / img.height);
         const scaledWidth = img.width * scale;
         const scaledHeight = img.height * scale;
         const x = (width - scaledWidth) / 2;
         const y = (height - scaledHeight) / 2;
-
         ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
-
         resolve(canvas.toDataURL('image/png'));
       };
-      img.onerror = (e) => {
-        console.error('Image load error:', e);
-        reject(new Error('Failed to load image for resizing'));
-      };
+      img.onerror = () => reject(new Error('Failed to load image'));
       img.src = src;
     });
   };
 
-  // Apply generated logo to settings
   const applyLogo = async (logo: GeneratedLogo) => {
     setUploading(logo.key);
     try {
-      // Convert data URL to blob and upload
       const response = await fetch(logo.dataUrl);
       const blob = await response.blob();
       const file = new File([blob], `${logo.key}.png`, { type: "image/png" });
-
       const ok = await handleFileUpload(logo.key, file);
-      if (ok) {
-        showSuccess("Logo Applied", `${logo.size} has been saved successfully`);
-      }
+      if (ok) showSuccess("Applied", `${logo.size} saved`);
     } catch (error: any) {
-      console.error("Apply logo error:", error);
-      showError("Apply Failed", error?.message || "Failed to apply logo");
+      showError("Apply Failed", error?.message || "Failed to apply");
     }
   };
 
-  // Copy logo URL
   const copyLogoUrl = (key: string, url: string) => {
     navigator.clipboard.writeText(url);
     setCopiedKey(key);
-    showSuccess("Copied", "URL copied to clipboard");
+    showSuccess("Copied", "URL copied");
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  // Handle master logo file upload
   const handleMasterLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (event) => {
       setMasterLogo(event.target?.result as string);
       setGeneratedLogos([]);
-      showSuccess("Logo Loaded", "Master logo loaded. Now click 'Generate All Size Variants'.");
+      showSuccess("Loaded", "Now generate size variants");
     };
-    reader.onerror = () => {
-      showError("Load Failed", "Failed to load the image file");
-    };
+    reader.onerror = () => showError("Load Failed", "Failed to load image");
     reader.readAsDataURL(file);
   };
 
-  // Get current logos that have values
   const currentLogos = ALL_LOGO_KEYS.filter(item => settings[item.key]);
+  const emptyLogos = ALL_LOGO_KEYS.filter(item => !settings[item.key]);
 
   return (
-    <div className="space-y-6">
-      {/* Current Website Logos Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5 text-primary" />
-            Current Website Logos
+    <div className="space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <ImageIcon className="h-4 w-4 text-primary" />
+            Branding Settings
+          </h2>
+          <p className="text-[10px] text-muted-foreground">Manage logos and branding assets</p>
+        </div>
+        <Button size="sm" onClick={onSave} disabled={loading} className="h-7 text-xs px-3">
+          <Save className="h-3 w-3 mr-1" />
+          {loading ? 'Saving...' : 'Save'}
+        </Button>
+      </div>
+
+      {/* Current Logos */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground flex items-center gap-2">
+            <ImageIcon className="h-3.5 w-3.5" />
+            Current Logos ({currentLogos.length})
           </CardTitle>
-          <CardDescription>
-            View, change, or delete your existing logos and branding images
-          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 pb-3">
           {currentLogos.length === 0 ? (
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                No logos configured yet. Use the AI Generator below to create logos, or upload existing ones.
-              </AlertDescription>
+            <Alert className="bg-muted/30 border-border/50">
+              <AlertCircle className="h-3 w-3" />
+              <AlertDescription className="text-[10px]">No logos configured yet. Use AI Generator or upload.</AlertDescription>
             </Alert>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
               {currentLogos.map((item) => (
-                <div key={item.key} className="p-4 bg-muted/30 rounded-lg border space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-sm">{item.label}</p>
-                      <p className="text-xs text-muted-foreground">{item.description}</p>
-                      <p className="text-xs text-muted-foreground">{item.size}</p>
-                    </div>
+                <div key={item.key} className="p-2 bg-background/30 rounded-md border border-border/50 space-y-2">
+                  <div>
+                    <p className="text-[10px] font-medium text-foreground">{item.label}</p>
+                    <p className="text-[8px] text-muted-foreground">{item.size}</p>
                   </div>
-                  
-                  <div className="flex items-center justify-center p-3 bg-white dark:bg-black rounded border min-h-[80px]">
-                    <img 
-                      src={settings[item.key]} 
-                      alt={item.label}
-                      className="max-h-16 max-w-full object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
+                  <div className="flex items-center justify-center p-2 bg-white dark:bg-black rounded border border-border/30 h-12">
+                    <img src={settings[item.key]} alt={item.label} className="max-h-8 max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </div>
-
-                  <div className="flex gap-2">
-                    {/* Replace/Upload new */}
-                    <input
-                      id={`replace-${item.key}`}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleFileUpload(item.key, file);
-                        e.target.value = '';
-                      }}
-                    />
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex-1"
-                      disabled={uploading === item.key}
-                      onClick={() => document.getElementById(`replace-${item.key}`)?.click()}
-                    >
-                      {uploading === item.key ? (
-                        <RefreshCw className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <>
-                          <Upload className="h-3 w-3 mr-1" />
-                          Change
-                        </>
-                      )}
+                  <div className="flex gap-1">
+                    <input id={`replace-${item.key}`} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(item.key, file); e.target.value = ''; }} />
+                    <Button size="sm" variant="outline" className="flex-1 h-5 text-[8px] px-1" disabled={uploading === item.key} onClick={() => document.getElementById(`replace-${item.key}`)?.click()}>
+                      {uploading === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Upload className="h-2 w-2" />}
                     </Button>
-
-                    {/* Copy URL */}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => copyLogoUrl(item.key, settings[item.key])}
-                    >
-                      {copiedKey === item.key ? (
-                        <Check className="h-3 w-3 text-green-500" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
+                    <Button size="sm" variant="outline" className="h-5 w-5 p-0" onClick={() => copyLogoUrl(item.key, settings[item.key])}>
+                      {copiedKey === item.key ? <Check className="h-2 w-2 text-emerald-500" /> : <Copy className="h-2 w-2" />}
                     </Button>
-
-                    {/* Delete */}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={deleting === item.key}
-                      onClick={() => handleDeleteLogo(item.key)}
-                    >
-                      {deleting === item.key ? (
-                        <RefreshCw className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-3 w-3 text-destructive" />
-                      )}
+                    <Button size="sm" variant="outline" className="h-5 w-5 p-0" disabled={deleting === item.key} onClick={() => handleDeleteLogo(item.key)}>
+                      {deleting === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Trash2 className="h-2 w-2 text-destructive" />}
                     </Button>
                   </div>
                 </div>
@@ -498,249 +312,119 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
         </CardContent>
       </Card>
 
-      {/* Upload New Logos Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5 text-primary" />
-            Upload Logos
-          </CardTitle>
-          <CardDescription>
-            Upload logos for different areas of your website
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ALL_LOGO_KEYS.filter(item => !settings[item.key]).map((item) => (
-              <div key={item.key} className="p-4 bg-muted/20 rounded-lg border border-dashed space-y-3">
-                <div>
-                  <p className="font-medium text-sm">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.description}</p>
-                  <p className="text-xs text-muted-foreground">Recommended: {item.size}</p>
+      {/* Upload Empty Slots */}
+      {emptyLogos.length > 0 && (
+        <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+          <CardHeader className="py-2 px-3">
+            <CardTitle className="text-xs text-foreground flex items-center gap-2">
+              <Upload className="h-3.5 w-3.5" />
+              Upload Logos ({emptyLogos.length} empty)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-3 pb-3">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+              {emptyLogos.map((item) => (
+                <div key={item.key} className="p-2 bg-muted/20 rounded-md border border-dashed border-border/50 space-y-2">
+                  <div>
+                    <p className="text-[10px] font-medium text-foreground">{item.label}</p>
+                    <p className="text-[8px] text-muted-foreground">{item.size}</p>
+                  </div>
+                  <div className="flex items-center justify-center p-2 bg-muted/30 rounded border border-dashed h-10">
+                    <ImageIcon className="h-4 w-4 text-muted-foreground/50" />
+                  </div>
+                  <input id={`upload-${item.key}`} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(item.key, file); e.target.value = ''; }} />
+                  <Button size="sm" variant="outline" className="w-full h-5 text-[8px]" disabled={uploading === item.key} onClick={() => document.getElementById(`upload-${item.key}`)?.click()}>
+                    {uploading === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Upload className="h-2 w-2 mr-1" />}
+                    Upload
+                  </Button>
                 </div>
-                
-                <div className="flex items-center justify-center p-6 bg-muted/30 rounded border border-dashed min-h-[80px]">
-                  <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
-                </div>
-
-                <input
-                  id={`upload-${item.key}`}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleFileUpload(item.key, file);
-                    e.target.value = '';
-                  }}
-                />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-full"
-                  disabled={uploading === item.key}
-                  onClick={() => document.getElementById(`upload-${item.key}`)?.click()}
-                >
-                  {uploading === item.key ? (
-                    <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
-                  ) : (
-                    <Upload className="h-3 w-3 mr-2" />
-                  )}
-                  Upload {item.label}
-                </Button>
-              </div>
-            ))}
-          </div>
-          {ALL_LOGO_KEYS.filter(item => !settings[item.key]).length === 0 && (
-            <Alert>
-              <Check className="h-4 w-4" />
-              <AlertDescription>
-                All logo slots are filled! You can replace or delete existing logos above.
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* AI Logo Generator */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-purple-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground flex items-center gap-2">
+            <Sparkles className="h-3.5 w-3.5" />
             AI Logo Generator
           </CardTitle>
-          <CardDescription>
-            Generate a master logo with AI and automatically create all size variants, or upload an existing logo
-          </CardDescription>
+          <CardDescription className="text-[10px]">Generate a master logo and create all size variants</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Step 1: Generate or Upload Master */}
-          <div className="space-y-4">
+        <CardContent className="px-3 pb-3 space-y-3">
+          {/* Step 1 */}
+          <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">1</div>
-              <Label className="text-base font-medium">Create Master Logo</Label>
+              <Badge variant="outline" className="text-[9px] px-1.5 py-0">1</Badge>
+              <Label className="text-[10px] font-medium text-foreground">Create Master Logo</Label>
             </div>
-            
-            <div className="grid gap-4 pl-10">
-              <div className="space-y-2">
-                <Label>Logo Description</Label>
-                <Textarea
-                  value={logoPrompt}
-                  onChange={(e) => setLogoPrompt(e.target.value)}
-                  placeholder="e.g., A luxury real estate company with modern architecture focus, elegant and professional..."
-                  rows={3}
-                />
-              </div>
-              
-              <div className="flex gap-4">
-                <div className="flex-1 space-y-2">
-                  <Label>Style</Label>
-                  <Select value={logoStyle} onValueChange={setLogoStyle}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="modern">Modern & Minimal</SelectItem>
-                      <SelectItem value="classic">Classic & Elegant</SelectItem>
-                      <SelectItem value="playful">Playful & Creative</SelectItem>
-                      <SelectItem value="tech">Tech & Futuristic</SelectItem>
-                      <SelectItem value="luxury">Luxury & Premium</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
+            <div className="space-y-2 pl-5">
+              <Textarea value={logoPrompt} onChange={(e) => setLogoPrompt(e.target.value)} placeholder="Describe your logo..." rows={2} className="text-xs bg-background/50 resize-none" />
               <div className="flex gap-2">
-                <Button 
-                  onClick={generateLogo} 
-                  disabled={generating || !logoPrompt.trim()}
-                  className="flex-1"
-                >
-                  {generating ? (
-                    <>
-                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="h-4 w-4 mr-2" />
-                      Generate with AI
-                    </>
-                  )}
+                <Select value={logoStyle} onValueChange={setLogoStyle}>
+                  <SelectTrigger className="h-7 text-xs flex-1 bg-background/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="modern">Modern</SelectItem>
+                    <SelectItem value="classic">Classic</SelectItem>
+                    <SelectItem value="playful">Playful</SelectItem>
+                    <SelectItem value="tech">Tech</SelectItem>
+                    <SelectItem value="luxury">Luxury</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button size="sm" onClick={generateLogo} disabled={generating || !logoPrompt.trim()} className="h-7 text-xs">
+                  {generating ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3 mr-1" />}
+                  Generate
                 </Button>
-                
-                <input
-                  id="master-logo-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleMasterLogoUpload}
-                />
-                <Button 
-                  variant="outline"
-                  onClick={() => document.getElementById('master-logo-upload')?.click()}
-                  disabled={generating}
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Existing
+                <input id="master-logo-upload" type="file" accept="image/*" className="hidden" onChange={handleMasterLogoUpload} />
+                <Button variant="outline" size="sm" onClick={() => document.getElementById('master-logo-upload')?.click()} disabled={generating} className="h-7 text-xs">
+                  <Upload className="h-3 w-3 mr-1" />
+                  Upload
                 </Button>
               </div>
-
-              {/* Master Logo Preview */}
               {masterLogo && (
-                <div className="p-4 bg-muted/50 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm text-muted-foreground">Master Logo Preview</Label>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => {
-                        setMasterLogo(null);
-                        setGeneratedLogos([]);
-                      }}
-                    >
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      Clear
+                <div className="p-2 bg-muted/30 rounded-md">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[9px] text-muted-foreground">Master Preview</span>
+                    <Button size="sm" variant="ghost" className="h-5 text-[9px] px-1" onClick={() => { setMasterLogo(null); setGeneratedLogos([]); }}>
+                      <Trash2 className="h-2 w-2 mr-0.5" /> Clear
                     </Button>
                   </div>
-                  <div className="flex items-center justify-center p-4 bg-white dark:bg-black rounded-lg border">
-                    <img 
-                      src={masterLogo} 
-                      alt="Master Logo" 
-                      className="max-h-40 max-w-full object-contain"
-                    />
+                  <div className="flex items-center justify-center p-2 bg-white dark:bg-black rounded border h-20">
+                    <img src={masterLogo} alt="Master" className="max-h-16 max-w-full object-contain" />
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Step 2: Generate Variants */}
-          <div className="space-y-4 pt-4 border-t">
+          {/* Step 2 */}
+          <div className="space-y-2 pt-2 border-t border-border/30">
             <div className="flex items-center gap-2">
-              <div className={`flex items-center justify-center h-8 w-8 rounded-full text-sm font-medium ${masterLogo ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>2</div>
-              <Label className={`text-base font-medium ${!masterLogo ? 'text-muted-foreground' : ''}`}>Generate Size Variants</Label>
+              <Badge variant={masterLogo ? "outline" : "secondary"} className="text-[9px] px-1.5 py-0">2</Badge>
+              <Label className={`text-[10px] font-medium ${!masterLogo ? 'text-muted-foreground' : 'text-foreground'}`}>Generate Variants</Label>
             </div>
-
-            <div className="pl-10">
-              <Button 
-                onClick={generateSizeVariants} 
-                disabled={generating || !masterLogo}
-                variant="secondary"
-                className="w-full"
-              >
-                {generating ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                    Generating Variants...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Generate All Size Variants
-                  </>
-                )}
+            <div className="pl-5">
+              <Button size="sm" variant="secondary" onClick={generateSizeVariants} disabled={generating || !masterLogo} className="h-7 text-xs w-full">
+                {generating ? <RefreshCw className="h-3 w-3 animate-spin mr-1" /> : <Sparkles className="h-3 w-3 mr-1" />}
+                Generate All Sizes
               </Button>
-
-              {!masterLogo && (
-                <p className="text-sm text-muted-foreground mt-2 text-center">
-                  First create a master logo above, then generate size variants
-                </p>
-              )}
-
-              {/* Generated Variants Grid */}
+              {!masterLogo && <p className="text-[9px] text-muted-foreground mt-1 text-center">Create master logo first</p>}
               {generatedLogos.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-2">
                   {generatedLogos.map((logo) => (
-                    <div key={logo.key} className="p-4 bg-muted/50 rounded-lg space-y-2">
-                      <div className="text-sm font-medium">{logo.size}</div>
-                      <div className="text-xs text-muted-foreground">{logo.width}x{logo.height}px</div>
-                      <div className="flex items-center justify-center p-2 bg-white dark:bg-black rounded border min-h-[60px]">
-                        <img 
-                          src={logo.dataUrl} 
-                          alt={logo.size}
-                          style={{ maxWidth: Math.min(logo.width, 80), maxHeight: Math.min(logo.height, 60) }}
-                          className="object-contain"
-                        />
+                    <div key={logo.key} className="p-2 bg-muted/30 rounded-md space-y-1">
+                      <p className="text-[9px] font-medium text-foreground">{logo.size}</p>
+                      <p className="text-[7px] text-muted-foreground">{logo.width}x{logo.height}</p>
+                      <div className="flex items-center justify-center p-1 bg-white dark:bg-black rounded border h-10">
+                        <img src={logo.dataUrl} alt={logo.size} style={{ maxWidth: Math.min(logo.width, 50), maxHeight: 32 }} className="object-contain" />
                       </div>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="w-full"
-                        disabled={uploading === logo.key}
-                        onClick={() => applyLogo(logo)}
-                      >
-                        {uploading === logo.key ? (
-                          <>
-                            <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                            Applying...
-                          </>
-                        ) : (
-                          <>
-                            <Download className="h-3 w-3 mr-1" />
-                            Apply
-                          </>
-                        )}
+                      <Button size="sm" variant="outline" className="w-full h-5 text-[8px]" disabled={uploading === logo.key} onClick={() => applyLogo(logo)}>
+                        {uploading === logo.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Download className="h-2 w-2 mr-0.5" />}
+                        Apply
                       </Button>
                     </div>
                   ))}
@@ -750,13 +434,6 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
           </div>
         </CardContent>
       </Card>
-
-      {/* Save Button */}
-      <div className="flex justify-end pt-4">
-        <Button onClick={onSave} disabled={loading} size="lg">
-          {loading ? 'Saving Branding Settings...' : 'Save Branding Settings'}
-        </Button>
-      </div>
     </div>
   );
 };

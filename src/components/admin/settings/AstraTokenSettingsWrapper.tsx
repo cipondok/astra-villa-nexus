@@ -27,18 +27,18 @@ class ErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 border border-red-200 rounded-lg bg-red-50">
-          <h3 className="text-lg font-semibold text-red-700 mb-2">Token Settings Error</h3>
-          <p className="text-red-600 mb-3">Something went wrong loading the token settings.</p>
-          <details className="mb-3">
-            <summary className="text-sm text-red-600 cursor-pointer">Error details</summary>
-            <pre className="text-xs mt-2 p-2 bg-red-100 rounded">
+        <div className="p-3 border border-destructive/30 rounded-md bg-destructive/5">
+          <h3 className="text-xs font-semibold text-destructive mb-1">Token Settings Error</h3>
+          <p className="text-[10px] text-destructive/80 mb-2">Something went wrong loading the token settings.</p>
+          <details className="mb-2">
+            <summary className="text-[9px] text-destructive/70 cursor-pointer">Error details</summary>
+            <pre className="text-[8px] mt-1 p-1.5 bg-destructive/10 rounded text-destructive/80">
               {this.state.error?.message || 'Unknown error'}
             </pre>
           </details>
           <button 
             onClick={() => this.setState({ hasError: false, error: undefined })}
-            className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+            className="bg-destructive text-destructive-foreground px-2 py-1 rounded text-[10px] hover:bg-destructive/90"
           >
             Try again
           </button>
