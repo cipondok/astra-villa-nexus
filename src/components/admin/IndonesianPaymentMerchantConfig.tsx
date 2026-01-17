@@ -6,24 +6,21 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   CreditCard, 
   Smartphone, 
   Building2, 
-  Settings, 
   CheckCircle, 
   XCircle, 
   Copy,
   Eye,
   EyeOff,
   RefreshCw,
-  AlertTriangle,
   Wallet,
   Globe,
-  Key
+  Save
 } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -78,7 +75,7 @@ const IndonesianPaymentMerchantConfig = () => {
   const [showSecrets, setShowSecrets] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState<keyof MerchantConfigs>('gopay');
 
-  const merchantLabels = {
+  const merchantLabels: Record<keyof MerchantConfigs, string> = {
     gopay: 'GoPay',
     ovo: 'OVO',
     dana: 'DANA',
@@ -88,7 +85,7 @@ const IndonesianPaymentMerchantConfig = () => {
     virtual_account: 'Virtual Account'
   };
 
-  const merchantIcons = {
+  const merchantIcons: Record<keyof MerchantConfigs, React.ElementType> = {
     gopay: Smartphone,
     ovo: Wallet,
     dana: CreditCard,
@@ -96,6 +93,16 @@ const IndonesianPaymentMerchantConfig = () => {
     shopeepay: CreditCard,
     bank_transfer: Building2,
     virtual_account: Building2
+  };
+
+  const merchantColors: Record<keyof MerchantConfigs, string> = {
+    gopay: 'border-l-emerald-500',
+    ovo: 'border-l-purple-500',
+    dana: 'border-l-blue-500',
+    linkaja: 'border-l-red-500',
+    shopeepay: 'border-l-orange-500',
+    bank_transfer: 'border-l-cyan-500',
+    virtual_account: 'border-l-teal-500'
   };
 
   useEffect(() => {
@@ -119,11 +126,11 @@ const IndonesianPaymentMerchantConfig = () => {
         const loadedConfigs = { ...configs };
         
         data.forEach(setting => {
-          const [merchant, field] = setting.key.replace('payment_', '').split('_', 2);
-          const remaining = setting.key.replace(`payment_${merchant}_`, '');
+          const [, merchant, ...rest] = setting.key.split('_');
+          const remaining = rest.join('_');
           
           if (loadedConfigs[merchant as keyof MerchantConfigs]) {
-            let value = setting.value;
+            let value: any = setting.value;
             
             if (remaining === 'isEnabled') {
               value = String(value) === 'true';
@@ -159,78 +166,24 @@ const IndonesianPaymentMerchantConfig = () => {
       }
       
       const settingsToSave = [
-        { 
-          key: `payment_${merchant}_merchantId`, 
-          value: config.merchantId,
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} Merchant ID`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_apiKey`, 
-          value: config.apiKey,
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} API Key`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_secretKey`, 
-          value: config.secretKey,
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} Secret Key`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_isEnabled`, 
-          value: config.isEnabled.toString(),
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} enabled status`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_environment`, 
-          value: config.environment,
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} environment`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_webhookUrl`, 
-          value: config.webhookUrl,
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} webhook URL`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_timeout`, 
-          value: config.timeout.toString(),
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} timeout`,
-          is_public: false
-        },
-        { 
-          key: `payment_${merchant}_description`, 
-          value: config.description,
-          category: 'indonesian_payment',
-          description: `${merchantLabels[merchant]} description`,
-          is_public: false
-        }
+        { key: `payment_${merchant}_merchantId`, value: config.merchantId, category: 'indonesian_payment', description: `${merchantLabels[merchant]} Merchant ID`, is_public: false },
+        { key: `payment_${merchant}_apiKey`, value: config.apiKey, category: 'indonesian_payment', description: `${merchantLabels[merchant]} API Key`, is_public: false },
+        { key: `payment_${merchant}_secretKey`, value: config.secretKey, category: 'indonesian_payment', description: `${merchantLabels[merchant]} Secret Key`, is_public: false },
+        { key: `payment_${merchant}_isEnabled`, value: config.isEnabled.toString(), category: 'indonesian_payment', description: `${merchantLabels[merchant]} enabled status`, is_public: false },
+        { key: `payment_${merchant}_environment`, value: config.environment, category: 'indonesian_payment', description: `${merchantLabels[merchant]} environment`, is_public: false },
+        { key: `payment_${merchant}_webhookUrl`, value: config.webhookUrl, category: 'indonesian_payment', description: `${merchantLabels[merchant]} webhook URL`, is_public: false },
+        { key: `payment_${merchant}_timeout`, value: config.timeout.toString(), category: 'indonesian_payment', description: `${merchantLabels[merchant]} timeout`, is_public: false },
+        { key: `payment_${merchant}_description`, value: config.description, category: 'indonesian_payment', description: `${merchantLabels[merchant]} description`, is_public: false }
       ];
 
       const { error } = await supabase
         .from('system_settings')
-        .upsert(settingsToSave, {
-          onConflict: 'key,category',
-          ignoreDuplicates: false
-        });
+        .upsert(settingsToSave, { onConflict: 'key,category', ignoreDuplicates: false });
 
-      if (error) {
-        throw new Error(`Failed to save configuration: ${error.message}`);
-      }
+      if (error) throw new Error(`Failed to save configuration: ${error.message}`);
 
       showSuccess('Configuration Saved', `${merchantLabels[merchant]} configuration saved successfully`);
       await loadConfigurations();
-      
     } catch (error: any) {
       console.error('Save error:', error);
       showError('Save Failed', `Could not save configuration: ${error.message || 'Unknown error'}`);
@@ -251,13 +204,9 @@ const IndonesianPaymentMerchantConfig = () => {
     setConnectionStatus({ ...connectionStatus, [merchant]: null });
     
     try {
-      // Simulate API test - replace with actual API calls
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock successful connection
       setConnectionStatus({ ...connectionStatus, [merchant]: 'connected' });
       showSuccess('Connection Test Passed', `${merchantLabels[merchant]} API connection successful`);
-      
     } catch (error: any) {
       setConnectionStatus({ ...connectionStatus, [merchant]: 'disconnected' });
       showError('Connection Test Failed', `Failed to connect to ${merchantLabels[merchant]}: ${error.message}`);
@@ -269,10 +218,7 @@ const IndonesianPaymentMerchantConfig = () => {
   const handleConfigChange = (merchant: keyof MerchantConfigs, field: keyof PaymentMerchantConfig, value: any) => {
     setConfigs(prev => ({
       ...prev,
-      [merchant]: {
-        ...prev[merchant],
-        [field]: value
-      }
+      [merchant]: { ...prev[merchant], [field]: value }
     }));
   };
 
@@ -293,56 +239,58 @@ const IndonesianPaymentMerchantConfig = () => {
     const status = connectionStatus[merchant];
 
     return (
-      <Card className="bg-slate-800/50 border-slate-700/50">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between text-white">
-            <div className="flex items-center">
-              <Icon className="h-5 w-5 mr-2" />
+      <Card className={`bg-card/50 border-border/50 border-l-2 ${merchantColors[merchant]}`}>
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center justify-between text-xs text-foreground">
+            <div className="flex items-center gap-2">
+              <Icon className="h-4 w-4" />
               {merchantLabels[merchant]} Configuration
             </div>
             {status && (
-              <Badge variant={status === 'connected' ? 'default' : 'destructive'}>
+              <Badge 
+                variant={status === 'connected' ? 'default' : 'destructive'} 
+                className="text-[8px] px-1.5 py-0"
+              >
                 {status === 'connected' ? (
-                  <CheckCircle className="h-3 w-3 mr-1" />
+                  <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
                 ) : (
-                  <XCircle className="h-3 w-3 mr-1" />
+                  <XCircle className="h-2.5 w-2.5 mr-0.5" />
                 )}
                 {status === 'connected' ? 'Connected' : 'Disconnected'}
               </Badge>
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-white">Merchant ID</Label>
-              <div className="flex space-x-2">
+        <CardContent className="px-3 pb-3 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Merchant ID</Label>
+              <div className="flex gap-1">
                 <Input
                   value={config.merchantId}
                   onChange={(e) => handleConfigChange(merchant, 'merchantId', e.target.value)}
                   placeholder="Enter merchant ID"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className="h-7 text-xs bg-background/50"
                 />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => copyToClipboard(config.merchantId)}
                   disabled={!config.merchantId}
+                  className="h-7 w-7 p-0"
                 >
-                  <Copy className="h-4 w-4" />
+                  <Copy className="h-3 w-3" />
                 </Button>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-white">Environment</Label>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Environment</Label>
               <Select
                 value={config.environment}
-                onValueChange={(value: 'sandbox' | 'production') => 
-                  handleConfigChange(merchant, 'environment', value)
-                }
+                onValueChange={(value: 'sandbox' | 'production') => handleConfigChange(merchant, 'environment', value)}
               >
-                <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                <SelectTrigger className="h-7 text-xs bg-background/50">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -352,111 +300,110 @@ const IndonesianPaymentMerchantConfig = () => {
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-white">API Key</Label>
-              <div className="flex space-x-2">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">API Key</Label>
+              <div className="flex gap-1">
                 <Input
                   type={showSecrets[`${merchant}_apiKey`] ? 'text' : 'password'}
                   value={config.apiKey}
                   onChange={(e) => handleConfigChange(merchant, 'apiKey', e.target.value)}
                   placeholder="Enter API key"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className="h-7 text-xs bg-background/50"
                 />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => toggleSecretVisibility(merchant, 'apiKey')}
+                  className="h-7 w-7 p-0"
                 >
-                  {showSecrets[`${merchant}_apiKey`] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showSecrets[`${merchant}_apiKey`] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                 </Button>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-white">Secret Key</Label>
-              <div className="flex space-x-2">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Secret Key</Label>
+              <div className="flex gap-1">
                 <Input
                   type={showSecrets[`${merchant}_secretKey`] ? 'text' : 'password'}
                   value={config.secretKey}
                   onChange={(e) => handleConfigChange(merchant, 'secretKey', e.target.value)}
                   placeholder="Enter secret key"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className="h-7 text-xs bg-background/50"
                 />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => toggleSecretVisibility(merchant, 'secretKey')}
+                  className="h-7 w-7 p-0"
                 >
-                  {showSecrets[`${merchant}_secretKey`] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showSecrets[`${merchant}_secretKey`] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                 </Button>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-white">Webhook URL</Label>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Webhook URL</Label>
               <Input
                 value={config.webhookUrl}
                 onChange={(e) => handleConfigChange(merchant, 'webhookUrl', e.target.value)}
                 placeholder="https://your-domain.com/webhook"
-                className="bg-slate-700/50 border-slate-600 text-white"
+                className="h-7 text-xs bg-background/50"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-white">Timeout (ms)</Label>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Timeout (ms)</Label>
               <Input
                 type="number"
                 value={config.timeout}
                 onChange={(e) => handleConfigChange(merchant, 'timeout', parseInt(e.target.value))}
-                className="bg-slate-700/50 border-slate-600 text-white"
+                className="h-7 text-xs bg-background/50"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-white">Description</Label>
+          <div className="space-y-1">
+            <Label className="text-[10px] text-muted-foreground">Description</Label>
             <Textarea
               value={config.description}
               onChange={(e) => handleConfigChange(merchant, 'description', e.target.value)}
-              placeholder="Describe this payment method configuration"
-              className="bg-slate-700/50 border-slate-600 text-white"
+              placeholder="Describe this payment method"
+              className="h-14 text-xs bg-background/50 resize-none"
             />
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.isEnabled}
-              onCheckedChange={(checked) => handleConfigChange(merchant, 'isEnabled', checked)}
-            />
-            <Label className="text-white">Enable {merchantLabels[merchant]}</Label>
-          </div>
-
-          <div className="flex space-x-2">
-            <Button 
-              onClick={() => saveConfiguration(merchant)} 
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                'Save Configuration'
-              )}
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => testConnection(merchant)} 
-              disabled={isCurrentTesting}
-            >
-              {isCurrentTesting ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Globe className="h-4 w-4 mr-2" />
-              )}
-              Test Connection
-            </Button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={config.isEnabled}
+                onCheckedChange={(checked) => handleConfigChange(merchant, 'isEnabled', checked)}
+                className="scale-75"
+              />
+              <Label className="text-[10px] text-foreground">Enable {merchantLabels[merchant]}</Label>
+            </div>
+            
+            <div className="flex gap-1">
+              <Button 
+                size="sm"
+                onClick={() => saveConfiguration(merchant)} 
+                disabled={loading}
+                className="h-6 text-[10px] px-2"
+              >
+                {loading ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3 mr-1" />}
+                Save
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => testConnection(merchant)} 
+                disabled={isCurrentTesting}
+                className="h-6 text-[10px] px-2"
+              >
+                {isCurrentTesting ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Globe className="h-3 w-3 mr-1" />}
+                Test
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -464,38 +411,38 @@ const IndonesianPaymentMerchantConfig = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Compact Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Indonesian Payment Merchant Configuration</h2>
-          <p className="text-gray-400">Configure Indonesian payment gateway integrations</p>
+          <h2 className="text-sm font-semibold text-foreground">Indonesian Payment Merchant Config</h2>
+          <p className="text-[10px] text-muted-foreground">Configure Indonesian payment gateway integrations</p>
         </div>
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {Object.entries(configs).map(([key, config]) => {
-          const merchant = key as keyof MerchantConfigs;
-          const Icon = merchantIcons[merchant];
-          const status = connectionStatus[merchant];
+      <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
+        {(Object.entries(configs) as [keyof MerchantConfigs, PaymentMerchantConfig][]).map(([key, config]) => {
+          const Icon = merchantIcons[key];
+          const status = connectionStatus[key];
           
           return (
-            <Card key={key} className="bg-slate-800/50 border-slate-700/50">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Icon className="h-5 w-5 text-blue-400" />
-                    <span className="text-white font-medium">{merchantLabels[merchant]}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+            <Card 
+              key={key} 
+              className={`bg-card/50 border-border/50 cursor-pointer hover:bg-accent/10 transition-colors ${activeTab === key ? 'ring-1 ring-primary' : ''}`}
+              onClick={() => setActiveTab(key)}
+            >
+              <CardContent className="p-2">
+                <div className="flex flex-col items-center gap-1">
+                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-[9px] font-medium text-foreground text-center">{merchantLabels[key]}</span>
+                  <div className="flex items-center gap-1">
                     {config.isEnabled ? (
-                      <Badge variant="default" className="bg-green-600">Enabled</Badge>
+                      <Badge variant="default" className="text-[7px] px-1 py-0">On</Badge>
                     ) : (
-                      <Badge variant="secondary">Disabled</Badge>
+                      <Badge variant="secondary" className="text-[7px] px-1 py-0">Off</Badge>
                     )}
-                    {status === 'connected' && (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    )}
+                    {status === 'connected' && <CheckCircle className="h-2.5 w-2.5 text-emerald-400" />}
                   </div>
                 </div>
               </CardContent>
@@ -504,29 +451,26 @@ const IndonesianPaymentMerchantConfig = () => {
         })}
       </div>
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as keyof MerchantConfigs)} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-7 bg-slate-800/50">
-          {Object.entries(merchantLabels).map(([key, label]) => (
-            <TabsTrigger key={key} value={key} className="text-sm">
-              {label}
-            </TabsTrigger>
-          ))}
+      {/* Tab Configuration */}
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as keyof MerchantConfigs)} className="w-full">
+        <TabsList className="h-7 bg-muted/50 w-full justify-start overflow-x-auto">
+          {(Object.keys(configs) as (keyof MerchantConfigs)[]).map((key) => {
+            const Icon = merchantIcons[key];
+            return (
+              <TabsTrigger key={key} value={key} className="h-5 px-2 text-[10px] gap-1">
+                <Icon className="h-3 w-3" />
+                {merchantLabels[key]}
+              </TabsTrigger>
+            );
+          })}
         </TabsList>
 
-        {Object.keys(configs).map((merchant) => (
-          <TabsContent key={merchant} value={merchant} className="space-y-4">
-            {renderMerchantConfig(merchant as keyof MerchantConfigs)}
+        {(Object.keys(configs) as (keyof MerchantConfigs)[]).map((key) => (
+          <TabsContent key={key} value={key} className="mt-3">
+            {renderMerchantConfig(key)}
           </TabsContent>
         ))}
       </Tabs>
-
-      <Alert className="bg-blue-900/20 border-blue-500/30">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertDescription className="text-blue-200">
-          <strong>Important:</strong> Always test configurations in sandbox environment before enabling production mode. 
-          Ensure webhook URLs are accessible and properly configured for payment notifications.
-        </AlertDescription>
-      </Alert>
     </div>
   );
 };
