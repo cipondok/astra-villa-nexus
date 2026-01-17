@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Save, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { Shield, Save, Eye, EyeOff, ExternalLink, Info } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 
 const CaptchaSettings = () => {
@@ -89,7 +90,6 @@ const CaptchaSettings = () => {
       ];
 
       for (const setting of settingsToSave) {
-        // Check if setting exists
         const { data: existing } = await supabase
           .from('system_settings')
           .select('id')
@@ -97,41 +97,23 @@ const CaptchaSettings = () => {
           .single();
 
         if (existing) {
-          // Update existing setting
           const { error } = await supabase
             .from('system_settings')
-            .update({
-              value: setting.value,
-              updated_at: new Date().toISOString()
-            })
+            .update({ value: setting.value, updated_at: new Date().toISOString() })
             .eq('key', setting.key);
-
           if (error) throw error;
         } else {
-          // Insert new setting
           const { error } = await supabase
             .from('system_settings')
-            .insert({
-              key: setting.key,
-              value: setting.value,
-              category: 'security'
-            });
-
+            .insert({ key: setting.key, value: setting.value, category: 'security' });
           if (error) throw error;
         }
       }
 
-      toast({
-        title: "Success",
-        description: "Captcha settings saved successfully",
-      });
+      toast({ title: "Success", description: "Captcha settings saved successfully" });
     } catch (error) {
       console.error('Error saving captcha settings:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save captcha settings",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to save captcha settings", variant: "destructive" });
     } finally {
       setIsSaving(false);
     }
@@ -140,193 +122,161 @@ const CaptchaSettings = () => {
   const updateActionSetting = (action: string, enabled: boolean) => {
     setSettings(prev => ({
       ...prev,
-      captcha_actions: {
-        ...prev.captcha_actions,
-        [action]: enabled
-      }
+      captcha_actions: { ...prev.captcha_actions, [action]: enabled }
     }));
   };
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Loading...</CardTitle>
+      <Card className="bg-card/50 border-border/50">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="text-sm text-foreground">Loading...</CardTitle>
         </CardHeader>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary" />
-            <CardTitle>reCAPTCHA Configuration</CardTitle>
-          </div>
-          <CardDescription>
-            Configure Google reCAPTCHA v3 for form protection
-          </CardDescription>
+    <div className="space-y-3">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Shield className="h-4 w-4 text-primary" />
+            Captcha Security
+          </h2>
+          <p className="text-[10px] text-muted-foreground">Configure Google reCAPTCHA v3 protection</p>
+        </div>
+        <Button size="sm" onClick={saveSettings} disabled={isSaving || !settings.captcha_enabled} className="h-7 text-xs px-3">
+          <Save className="h-3 w-3 mr-1" />
+          {isSaving ? "Saving..." : "Save"}
+        </Button>
+      </div>
+
+      {/* Main Configuration */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground">reCAPTCHA Configuration</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Master Enable Switch */}
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="space-y-1">
-              <Label className="text-base font-medium">Enable Captcha Protection</Label>
-              <p className="text-sm text-muted-foreground">
-                Master switch to enable/disable captcha across all forms
-              </p>
+        <CardContent className="px-3 pb-3 space-y-3">
+          {/* Master Switch */}
+          <div className="flex items-center justify-between p-2 border border-border/50 rounded-md bg-background/30">
+            <div>
+              <Label className="text-[10px] font-medium text-foreground">Enable Captcha Protection</Label>
+              <p className="text-[9px] text-muted-foreground">Master switch for all forms</p>
             </div>
             <Switch
               checked={settings.captcha_enabled}
               onCheckedChange={(checked) => setSettings({ ...settings, captcha_enabled: checked })}
+              className="scale-75"
             />
           </div>
 
           {/* API Keys */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="site_key">
-                reCAPTCHA Site Key (Public)
-              </Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Site Key (Public)</Label>
               <Input
-                id="site_key"
                 value={settings.recaptcha_site_key}
                 onChange={(e) => setSettings({ ...settings, recaptcha_site_key: e.target.value })}
-                placeholder="6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                placeholder="6LcXXXXXXXXXXXXXX"
                 disabled={!settings.captcha_enabled}
+                className="h-7 text-xs bg-background/50"
               />
-              <p className="text-xs text-muted-foreground">
-                Your public site key - safe to expose in frontend code
-              </p>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="secret_key">
-                reCAPTCHA Secret Key (Private)
-              </Label>
-              <div className="relative">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Secret Key (Private)</Label>
+              <div className="flex gap-1">
                 <Input
-                  id="secret_key"
                   type={showSecretKey ? "text" : "password"}
                   value={settings.recaptcha_secret_key}
                   onChange={(e) => setSettings({ ...settings, recaptcha_secret_key: e.target.value })}
-                  placeholder="6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                  placeholder="6LcXXXXXXXXXXXXXX"
                   disabled={!settings.captcha_enabled}
-                  className="pr-10"
+                  className="h-7 text-xs bg-background/50"
                 />
                 <Button
-                  type="button"
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3"
                   onClick={() => setShowSecretKey(!showSecretKey)}
                   disabled={!settings.captcha_enabled}
+                  className="h-7 w-7 p-0"
                 >
-                  {showSecretKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showSecretKey ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                ⚠️ Keep this secret! Used for server-side verification
-              </p>
             </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="w-full"
-            >
-              <a
-                href="https://www.google.com/recaptcha/admin"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Get reCAPTCHA Keys
-              </a>
-            </Button>
           </div>
 
-          {/* Minimum Score */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>
-                Minimum Score Threshold: {settings.captcha_minimum_score.toFixed(1)}
-              </Label>
-              <Slider
-                value={[settings.captcha_minimum_score]}
-                onValueChange={([value]) => setSettings({ ...settings, captcha_minimum_score: value })}
-                min={0}
-                max={1}
-                step={0.1}
-                disabled={!settings.captcha_enabled}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0.0 (Bot)</span>
-                <span>0.5 (Balanced)</span>
-                <span>1.0 (Human)</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Lower scores = stricter (may block real users). Higher scores = more lenient (may allow bots).
-              </p>
+          <Button variant="outline" size="sm" asChild className="h-6 text-[10px] w-full">
+            <a href="https://www.google.com/recaptcha/admin" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1">
+              <ExternalLink className="h-3 w-3" />
+              Get reCAPTCHA Keys
+            </a>
+          </Button>
+
+          {/* Score Threshold */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-[10px] text-muted-foreground">Minimum Score</Label>
+              <Badge variant="outline" className="text-[9px] px-1.5 py-0">{settings.captcha_minimum_score.toFixed(1)}</Badge>
+            </div>
+            <Slider
+              value={[settings.captcha_minimum_score]}
+              onValueChange={([value]) => setSettings({ ...settings, captcha_minimum_score: value })}
+              min={0}
+              max={1}
+              step={0.1}
+              disabled={!settings.captcha_enabled}
+              className="w-full"
+            />
+            <div className="flex justify-between text-[8px] text-muted-foreground">
+              <span>0.0 Bot</span>
+              <span>0.5 Balanced</span>
+              <span>1.0 Human</span>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Form-Specific Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Form Protection Settings</CardTitle>
-          <CardDescription>
-            Enable captcha for specific forms individually
-          </CardDescription>
+      {/* Form Protection */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground">Form Protection</CardTitle>
+          <CardDescription className="text-[10px]">Enable captcha per form</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {Object.entries(settings.captcha_actions).map(([action, enabled]) => (
-            <div key={action} className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <Label className="font-medium capitalize">
+        <CardContent className="px-3 pb-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {Object.entries(settings.captcha_actions).map(([action, enabled]) => (
+              <div key={action} className="flex items-center justify-between p-2 border border-border/50 rounded-md bg-background/30">
+                <Label className="text-[9px] font-medium capitalize text-foreground">
                   {action.replace(/_/g, ' ')}
                 </Label>
+                <Switch
+                  checked={enabled && settings.captcha_enabled}
+                  onCheckedChange={(checked) => updateActionSetting(action, checked)}
+                  disabled={!settings.captcha_enabled}
+                  className="scale-[0.6]"
+                />
               </div>
-              <Switch
-                checked={enabled && settings.captcha_enabled}
-                onCheckedChange={(checked) => updateActionSetting(action, checked)}
-                disabled={!settings.captcha_enabled}
-              />
-            </div>
-          ))}
+            ))}
+          </div>
         </CardContent>
       </Card>
 
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button
-          onClick={saveSettings}
-          disabled={isSaving || !settings.captcha_enabled}
-          className="gap-2"
-        >
-          <Save className="h-4 w-4" />
-          {isSaving ? "Saving..." : "Save Settings"}
-        </Button>
-      </div>
-
       {/* Info Card */}
-      <Card className="border-primary/50 bg-primary/5">
-        <CardHeader>
-          <CardTitle className="text-sm">Setup Instructions</CardTitle>
+      <Card className="bg-primary/5 border-primary/20 border-l-2 border-l-primary">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-[10px] text-foreground flex items-center gap-1">
+            <Info className="h-3 w-3" />
+            Setup Instructions
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>1. Get your reCAPTCHA keys from Google reCAPTCHA Admin Console</p>
-          <p>2. Add the Site Key above (safe to expose publicly)</p>
-          <p>3. Store the Secret Key in Supabase Edge Function secrets as <code className="bg-muted px-1 py-0.5 rounded">RECAPTCHA_SECRET_KEY</code></p>
-          <p>4. Enable captcha protection and configure minimum score threshold</p>
-          <p>5. Choose which forms require captcha protection</p>
+        <CardContent className="px-3 pb-3 space-y-1 text-[9px] text-muted-foreground">
+          <p>1. Get keys from Google reCAPTCHA Admin Console</p>
+          <p>2. Add Site Key above (public)</p>
+          <p>3. Store Secret Key in Edge Function secrets as <code className="bg-muted px-1 py-0.5 rounded text-[8px]">RECAPTCHA_SECRET_KEY</code></p>
+          <p>4. Enable protection and configure score threshold</p>
         </CardContent>
       </Card>
     </div>
