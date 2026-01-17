@@ -21,10 +21,10 @@ interface Property {
 }
 
 const ComparisonRow = ({ label, values }: { label: string; values: (string | number)[] }) => (
-  <div className="grid grid-cols-4 gap-4 py-3 border-b border-gray-100">
-    <div className="font-medium text-gray-700">{label}</div>
+  <div className="grid grid-cols-4 gap-3 py-2 border-b border-border/50">
+    <div className="text-xs font-medium">{label}</div>
     {values.map((value, index) => (
-      <div key={index} className="text-gray-600">
+      <div key={index} className="text-xs text-muted-foreground">
         {value || 'N/A'}
       </div>
     ))}
@@ -110,10 +110,10 @@ export const PropertyComparison = () => {
   // Show loading or authentication message
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center p-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading properties...</p>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-3"></div>
+          <p className="text-xs text-muted-foreground">Loading properties...</p>
         </div>
       </div>
     );
@@ -121,14 +121,14 @@ export const PropertyComparison = () => {
 
   if (error && error.message.includes('Authentication required')) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center p-6">
         <div className="text-center">
-          <div className="mb-4">
-            <BarChart3 className="h-12 w-12 text-gray-400 mx-auto" />
+          <div className="mb-3">
+            <BarChart3 className="h-8 w-8 text-muted-foreground mx-auto" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Authentication Required</h3>
-          <p className="text-gray-600 mb-4">Please log in to view and compare properties.</p>
-          <Button onClick={() => window.location.href = '/auth'}>
+          <h3 className="text-sm font-semibold mb-1">Authentication Required</h3>
+          <p className="text-xs text-muted-foreground mb-3">Please log in to view and compare properties.</p>
+          <Button size="sm" onClick={() => window.location.href = '/auth'}>
             Go to Login
           </Button>
         </div>
@@ -137,17 +137,17 @@ export const PropertyComparison = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5" />
+        <CardHeader className="p-3">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <BarChart3 className="h-4 w-4 text-primary" />
             Property Comparison Tool
           </CardTitle>
-          <p className="text-gray-400">Compare up to 3 properties side by side</p>
+          <p className="text-[11px] text-muted-foreground">Compare up to 3 properties side by side</p>
           <div className="flex items-center gap-2">
-            <Badge variant="outline">
+            <Badge variant="outline" className="text-[10px]">
               {selectedProperties.length}/3 Selected
             </Badge>
             {selectedProperties.length > 0 && (
@@ -155,7 +155,7 @@ export const PropertyComparison = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleClearComparison}
-                className="h-7"
+                className="h-6 text-[10px]"
               >
                 Clear All
               </Button>
@@ -166,45 +166,45 @@ export const PropertyComparison = () => {
 
       {/* Add Properties Section */}
       <Card>
-        <CardHeader>
-          <CardTitle>
+        <CardHeader className="p-3">
+          <CardTitle className="text-sm">
             Add Properties to Compare
           </CardTitle>
-          <CardDescription>Search and select properties to compare</CardDescription>
+          <CardDescription className="text-[11px]">Search and select properties to compare</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-3 pt-0">
+          <div className="space-y-3">
             <div>
-              <Label htmlFor="search">Search Properties</Label>
+              <Label htmlFor="search" className="text-xs">Search Properties</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5" />
                 <Input
                   id="search"
                   type="text"
                   placeholder="Search by property name or location..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-8 h-8 text-xs"
                 />
               </div>
             </div>
 
-            <div className="max-h-96 overflow-y-auto space-y-4">
+            <div className="max-h-80 overflow-y-auto space-y-2">
               {filteredProperties.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-6 text-xs text-muted-foreground">
                   {searchTerm ? 'No properties found matching your search.' : 'No properties available for comparison.'}
                 </div>
               ) : (
                 filteredProperties.map((property) => (
-                  <div key={property.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                  <div key={property.id} className="flex items-center justify-between p-3 border border-border/50 rounded-lg hover:bg-accent/50 transition-colors">
                     <div className="flex-1">
-                      <h3 className="font-medium">{property.title}</h3>
-                      <p className="text-sm text-gray-500">{property.location}</p>
-                      <p className="text-sm font-medium text-blue-600">{formatPrice(property.price)}</p>
-                      <div className="flex gap-4 mt-1">
-                        <span className="text-xs text-gray-500">{property.bedrooms} bed</span>
-                        <span className="text-xs text-gray-500">{property.bathrooms} bath</span>
-                        <span className="text-xs text-gray-500">{property.area_sqm} m²</span>
+                      <h3 className="text-xs font-medium">{property.title}</h3>
+                      <p className="text-[10px] text-muted-foreground">{property.location}</p>
+                      <p className="text-[11px] font-medium text-primary">{formatPrice(property.price)}</p>
+                      <div className="flex gap-3 mt-0.5">
+                        <span className="text-[10px] text-muted-foreground">{property.bedrooms} bed</span>
+                        <span className="text-[10px] text-muted-foreground">{property.bathrooms} bath</span>
+                        <span className="text-[10px] text-muted-foreground">{property.area_sqm} m²</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export const PropertyComparison = () => {
                         <img
                           src={property.image_urls[0]}
                           alt={property.title}
-                          className="w-16 h-16 object-cover rounded-md"
+                          className="w-12 h-12 object-cover rounded-md"
                         />
                       )}
                       <Button
@@ -220,8 +220,9 @@ export const PropertyComparison = () => {
                         disabled={selectedProperties.length >= 3 || selectedProperties.some(p => p.id === property.id)}
                         size="sm"
                         variant="outline"
+                        className="h-7 text-[10px]"
                       >
-                        {selectedProperties.some(p => p.id === property.id) ? 'Added' : 'Add to Compare'}
+                        {selectedProperties.some(p => p.id === property.id) ? 'Added' : 'Add'}
                       </Button>
                     </div>
                   </div>
@@ -235,37 +236,37 @@ export const PropertyComparison = () => {
       {/* Comparison Table */}
       {selectedProperties.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle>Property Comparison</CardTitle>
-            <CardDescription>Side by side comparison of selected properties</CardDescription>
+          <CardHeader className="p-3">
+            <CardTitle className="text-sm">Property Comparison</CardTitle>
+            <CardDescription className="text-[11px]">Side by side comparison of selected properties</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="p-3 pt-0">
+            <div className="space-y-3">
               {/* Property Images and Basic Info */}
-              <div className="grid grid-cols-4 gap-4">
-                <div className="font-medium text-gray-700">Property</div>
+              <div className="grid grid-cols-4 gap-3">
+                <div className="text-xs font-medium">Property</div>
                 {selectedProperties.map((property, index) => (
                   <div key={property.id} className="relative">
                     {property.image_urls && property.image_urls[0] ? (
                       <img
                         src={property.image_urls[0]}
                         alt={property.title}
-                        className="w-full h-32 object-cover rounded-lg"
+                        className="w-full h-24 object-cover rounded-lg"
                       />
                     ) : (
-                      <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-400">No Image</span>
+                      <div className="w-full h-24 bg-muted rounded-lg flex items-center justify-center">
+                        <span className="text-[10px] text-muted-foreground">No Image</span>
                       </div>
                     )}
                     <Button
                       variant="destructive"
                       size="sm"
-                      className="absolute top-2 right-2 h-6 w-6 p-0"
+                      className="absolute top-1 right-1 h-5 w-5 p-0"
                       onClick={() => handleRemoveFromComparison(property.id)}
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-2.5 w-2.5" />
                     </Button>
-                    <h3 className="font-medium mt-2 text-sm">{property.title}</h3>
+                    <h3 className="text-xs font-medium mt-1.5">{property.title}</h3>
                   </div>
                 ))}
               </div>
@@ -303,12 +304,13 @@ export const PropertyComparison = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-4">
+              <div className="flex gap-2 pt-3">
                 {selectedProperties.map((property) => (
                   <Button
                     key={property.id}
                     variant="outline"
-                    className="flex-1"
+                    size="sm"
+                    className="flex-1 h-7 text-[10px]"
                     onClick={() => window.open(`/properties/${property.id}`, '_blank')}
                   >
                     View Details
