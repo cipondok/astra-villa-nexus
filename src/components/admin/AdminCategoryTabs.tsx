@@ -81,25 +81,19 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
 
   return (
-    <div className="mb-3 animate-in fade-in slide-in-from-top-2 duration-300">
-      {/* Category Header */}
-      <div className={`bg-gradient-to-r ${categoryColor} rounded-t-lg px-4 py-2.5 flex items-center gap-3`}>
-        <div className="p-1.5 bg-white/20 rounded-lg">
-          <CategoryIcon className="h-4 w-4 text-white" />
+    <div className="mb-2 animate-in fade-in slide-in-from-top-1 duration-200">
+      {/* Compact Combined Header + Tabs */}
+      <div className="bg-background/80 backdrop-blur-sm border border-border/40 rounded-lg overflow-hidden">
+        {/* Mini Header */}
+        <div className={`bg-gradient-to-r ${categoryColor} px-2.5 py-1.5 flex items-center gap-2`}>
+          <CategoryIcon className="h-3 w-3 text-white" />
+          <span className="text-[10px] font-semibold text-white">{categoryTitle}</span>
+          <span className="text-[9px] text-white/60">({categorySections.length})</span>
         </div>
-        <div className="flex-1">
-          <h2 className="text-sm font-semibold text-white">{categoryTitle}</h2>
-          <p className="text-[10px] text-white/70">{categorySections.length} sections available</p>
-        </div>
-        <Badge className="bg-white/20 text-white border-0 text-[10px]">
-          {categorySections.filter(s => s.key === activeSection).length > 0 ? 'Active' : ''}
-        </Badge>
-      </div>
 
-      {/* Tabs Container */}
-      <div className="bg-muted/30 border border-t-0 border-border/40 rounded-b-lg">
+        {/* Compact Tabs */}
         <ScrollArea className="w-full">
-          <div className="flex items-center gap-1 p-1.5">
+          <div className="flex items-center gap-0.5 p-1 bg-muted/20">
             {categorySections.map((section) => {
               const Icon = section.icon;
               const isActive = section.key === activeSection;
@@ -109,29 +103,27 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
                   key={section.key}
                   onClick={() => onSectionChange(section.key)}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap shrink-0",
+                    "flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-all duration-150 whitespace-nowrap shrink-0",
                     isActive
-                      ? `bg-gradient-to-r ${categoryColor} text-white shadow-md`
-                      : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                      ? `bg-gradient-to-r ${categoryColor} text-white shadow-sm`
+                      : "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
                   )}
                 >
                   <Icon className={cn(
-                    "h-3.5 w-3.5",
+                    "h-2.5 w-2.5",
                     isActive ? "text-white" : "text-current"
                   )} />
-                  <span>{section.label}</span>
+                  <span className="max-w-[80px] truncate">{section.label}</span>
                   {'badge' in section && section.badge && (
                     <Badge 
-                      variant={isActive ? "secondary" : "outline"}
+                      variant="secondary"
                       className={cn(
-                        "text-[9px] px-1.5 py-0 h-4",
+                        "text-[7px] px-1 py-0 h-3 leading-none",
                         isActive 
-                          ? "bg-white/20 text-white border-0" 
+                          ? "bg-white/25 text-white border-0" 
                           : String(section.badge) === 'New' 
-                            ? "bg-green-500/10 text-green-600 border-green-500/30"
-                            : String(section.badge) === 'Coming Soon'
-                              ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/30"
-                              : "bg-primary/10 text-primary border-primary/30"
+                            ? "bg-green-500/15 text-green-600 border-0"
+                            : "bg-primary/10 text-primary border-0"
                       )}
                     >
                       {String(section.badge)}
@@ -141,7 +133,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
               );
             })}
           </div>
-          <ScrollBar orientation="horizontal" className="h-1.5" />
+          <ScrollBar orientation="horizontal" className="h-1" />
         </ScrollArea>
       </div>
     </div>
