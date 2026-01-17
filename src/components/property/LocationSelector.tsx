@@ -269,14 +269,19 @@ const LocationSelector = ({
         </div>
 
         <div>
-          <Label htmlFor="subdistrict" className="flex items-center gap-2">
-            {t.subdistrict} {subdistricts.length === 0 && selectedDistrict ? t.optional : '*'}
-            {selectedDistrict && subdistricts.length > 0 && (
-              <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                {subdistricts.length} {language === 'id' ? 'total' : 'total'}
-              </span>
-            )}
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="subdistrict" className="flex items-center gap-2">
+              {t.subdistrict} {subdistricts.length === 0 && selectedDistrict ? t.optional : '*'}
+              {selectedDistrict && subdistricts.length > 0 && (
+                <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                  {subdistricts.length} {language === 'id' ? 'di kecamatan ini' : 'in this district'}
+                </span>
+              )}
+            </Label>
+            <span className="text-[10px] text-muted-foreground" title="75.753 Desa + 8.486 Kelurahan + 37 Transmigrasi">
+              🇮🇩 84.276 total
+            </span>
+          </div>
           <SearchableSelect
             options={subdistricts.map(s => ({ value: s, label: s }))}
             value={selectedSubdistrict}
