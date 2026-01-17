@@ -19,77 +19,79 @@ interface GeneralSettingsProps {
 
 const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSettingsProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Basic Site Configuration */}
-      <Card className="border-l-4 border-l-blue-500">
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <Globe className="h-4 w-4 text-blue-500" />
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <Globe className="h-3.5 w-3.5 text-primary" />
             Basic Site Configuration
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4 pt-0 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+        <CardContent className="px-3 pb-3 pt-0 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label htmlFor="siteName" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Site Name</Label>
+              <Label htmlFor="siteName" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Site Name</Label>
               <Input
                 id="siteName"
                 value={settings.siteName || ''}
                 onChange={(e) => onInputChange('siteName', e.target.value)}
                 placeholder="Enter your site name"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="siteTagline" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Tagline</Label>
+              <Label htmlFor="siteTagline" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Tagline</Label>
               <Input
                 id="siteTagline"
                 value={settings.seoTagline || ''}
                 onChange={(e) => onInputChange('seoTagline', e.target.value)}
                 placeholder="Brief description or slogan"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="siteDescription" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Description</Label>
+            <Label htmlFor="siteDescription" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Description</Label>
             <Textarea
               id="siteDescription"
               value={settings.siteDescription || ''}
               onChange={(e) => onInputChange('siteDescription', e.target.value)}
               placeholder="Describe your website's purpose"
               rows={2}
-              className="text-xs min-h-[50px]"
+              className="text-xs min-h-[40px] bg-background/50 border-border/50"
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
               <div>
-                <Label htmlFor="maintenanceMode" className="text-xs font-medium">Maintenance Mode</Label>
-                <p className="text-[9px] text-muted-foreground">Temporarily disable access</p>
+                <Label htmlFor="maintenanceMode" className="text-[10px] font-medium text-foreground">Maintenance Mode</Label>
+                <p className="text-[8px] text-muted-foreground">Temporarily disable access</p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Switch
                   id="maintenanceMode"
                   checked={settings.maintenanceMode || false}
                   onCheckedChange={(checked) => onInputChange('maintenanceMode', checked)}
+                  className="scale-75"
                 />
                 {settings.maintenanceMode && (
-                  <Badge variant="destructive" className="text-[9px]">On</Badge>
+                  <Badge variant="destructive" className="text-[8px] h-4 px-1">On</Badge>
                 )}
               </div>
             </div>
-            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+            <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
               <div>
-                <Label htmlFor="registrationEnabled" className="text-xs font-medium">User Registration</Label>
-                <p className="text-[9px] text-muted-foreground">Allow new users</p>
+                <Label htmlFor="registrationEnabled" className="text-[10px] font-medium text-foreground">User Registration</Label>
+                <p className="text-[8px] text-muted-foreground">Allow new users</p>
               </div>
               <Switch
                 id="registrationEnabled"
                 checked={settings.registrationEnabled !== false}
                 onCheckedChange={(checked) => onInputChange('registrationEnabled', checked)}
+                className="scale-75"
               />
             </div>
           </div>
@@ -97,89 +99,90 @@ const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSe
       </Card>
 
       {/* SEO Configuration */}
-      <Card className="border-l-4 border-l-green-500">
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <Search className="h-4 w-4 text-green-500" />
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <Search className="h-3.5 w-3.5 text-accent" />
             SEO Configuration
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4 pt-0 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+        <CardContent className="px-3 pb-3 pt-0 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label htmlFor="seoTitle" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">SEO Title</Label>
+              <Label htmlFor="seoTitle" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">SEO Title</Label>
               <Input
                 id="seoTitle"
                 value={settings.seoTitle || settings.siteName || ''}
                 onChange={(e) => onInputChange('seoTitle', e.target.value)}
                 placeholder="Title for search engines"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="seoKeywords" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Keywords</Label>
+              <Label htmlFor="seoKeywords" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Keywords</Label>
               <Input
                 id="seoKeywords"
                 value={settings.seoKeywords || ''}
                 onChange={(e) => onInputChange('seoKeywords', e.target.value)}
                 placeholder="property, real estate, villa"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="seoDescription" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Meta Description</Label>
+            <Label htmlFor="seoDescription" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Meta Description</Label>
             <Textarea
               id="seoDescription"
               value={settings.seoDescription || settings.siteDescription || ''}
               onChange={(e) => onInputChange('seoDescription', e.target.value)}
               placeholder="Description for search engines (155-160 chars)"
               rows={2}
-              className="text-xs min-h-[50px]"
+              className="text-xs min-h-[40px] bg-background/50 border-border/50"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Social Media Integration */}
-      <Card className="border-l-4 border-l-purple-500">
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <Image className="h-4 w-4 text-purple-500" />
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-secondary">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <Image className="h-3.5 w-3.5 text-secondary" />
             Social Media Integration
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4 pt-0 space-y-3">
-          <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+        <CardContent className="px-3 pb-3 pt-0 space-y-2">
+          <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
             <div>
-              <Label htmlFor="enableOpenGraph" className="text-xs font-medium">Enable Open Graph</Label>
-              <p className="text-[9px] text-muted-foreground">Optimize sharing on Facebook, LinkedIn</p>
+              <Label htmlFor="enableOpenGraph" className="text-[10px] font-medium text-foreground">Enable Open Graph</Label>
+              <p className="text-[8px] text-muted-foreground">Optimize sharing on Facebook, LinkedIn</p>
             </div>
             <Switch
               id="enableOpenGraph"
               checked={settings.enableOpenGraph !== false}
               onCheckedChange={(checked) => onInputChange('enableOpenGraph', checked)}
+              className="scale-75"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label htmlFor="ogImage" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Social Image URL</Label>
+              <Label htmlFor="ogImage" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Social Image URL</Label>
               <Input
                 id="ogImage"
                 value={settings.ogImage || ''}
                 onChange={(e) => onInputChange('ogImage', e.target.value)}
                 placeholder="https://example.com/share.jpg"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="twitterSite" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Twitter Handle</Label>
+              <Label htmlFor="twitterSite" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Twitter Handle</Label>
               <Input
                 id="twitterSite"
                 value={settings.twitterSite || ''}
                 onChange={(e) => onInputChange('twitterSite', e.target.value)}
                 placeholder="@yoursite"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
           </div>
@@ -187,57 +190,59 @@ const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSe
       </Card>
 
       {/* Analytics & Tracking */}
-      <Card className="border-l-4 border-l-yellow-500">
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <Tags className="h-4 w-4 text-yellow-500" />
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-destructive">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <Tags className="h-3.5 w-3.5 text-destructive" />
             Analytics & Tracking
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4 pt-0 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+        <CardContent className="px-3 pb-3 pt-0 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label htmlFor="googleAnalyticsId" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Google Analytics ID</Label>
+              <Label htmlFor="googleAnalyticsId" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Google Analytics ID</Label>
               <Input
                 id="googleAnalyticsId"
                 value={settings.googleAnalyticsId || ''}
                 onChange={(e) => onInputChange('googleAnalyticsId', e.target.value)}
                 placeholder="G-XXXXXXXXXX"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="facebookPixelId" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Facebook Pixel ID</Label>
+              <Label htmlFor="facebookPixelId" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Facebook Pixel ID</Label>
               <Input
                 id="facebookPixelId"
                 value={settings.facebookPixelId || ''}
                 onChange={(e) => onInputChange('facebookPixelId', e.target.value)}
                 placeholder="123456789012345"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
               <div>
-                <Label htmlFor="enableAnalytics" className="text-xs font-medium">Enable Analytics</Label>
-                <p className="text-[9px] text-muted-foreground">Track user behavior</p>
+                <Label htmlFor="enableAnalytics" className="text-[10px] font-medium text-foreground">Enable Analytics</Label>
+                <p className="text-[8px] text-muted-foreground">Track user behavior</p>
               </div>
               <Switch
                 id="enableAnalytics"
                 checked={settings.enableAnalytics !== false}
                 onCheckedChange={(checked) => onInputChange('enableAnalytics', checked)}
+                className="scale-75"
               />
             </div>
-            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+            <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
               <div>
-                <Label htmlFor="enableCookieConsent" className="text-xs font-medium">Cookie Consent</Label>
-                <p className="text-[9px] text-muted-foreground">Show consent banner</p>
+                <Label htmlFor="enableCookieConsent" className="text-[10px] font-medium text-foreground">Cookie Consent</Label>
+                <p className="text-[8px] text-muted-foreground">Show consent banner</p>
               </div>
               <Switch
                 id="enableCookieConsent"
                 checked={settings.enableCookieConsent !== false}
                 onCheckedChange={(checked) => onInputChange('enableCookieConsent', checked)}
+                className="scale-75"
               />
             </div>
           </div>
@@ -245,45 +250,47 @@ const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSe
       </Card>
 
       {/* Technical SEO */}
-      <Card className="border-l-4 border-l-red-500">
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <FileText className="h-4 w-4 text-red-500" />
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <FileText className="h-3.5 w-3.5 text-primary" />
             Technical SEO
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4 pt-0 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+        <CardContent className="px-3 pb-3 pt-0 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
               <div>
-                <Label htmlFor="enableSitemap" className="text-xs font-medium">Auto Sitemap</Label>
-                <p className="text-[9px] text-muted-foreground">Generate XML sitemap</p>
+                <Label htmlFor="enableSitemap" className="text-[10px] font-medium text-foreground">Auto Sitemap</Label>
+                <p className="text-[8px] text-muted-foreground">Generate XML sitemap</p>
               </div>
               <Switch
                 id="enableSitemap"
                 checked={settings.enableSitemap !== false}
                 onCheckedChange={(checked) => onInputChange('enableSitemap', checked)}
+                className="scale-75"
               />
             </div>
-            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+            <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
               <div>
-                <Label htmlFor="enableSchemaMarkup" className="text-xs font-medium">Schema Markup</Label>
-                <p className="text-[9px] text-muted-foreground">Structured data</p>
+                <Label htmlFor="enableSchemaMarkup" className="text-[10px] font-medium text-foreground">Schema Markup</Label>
+                <p className="text-[8px] text-muted-foreground">Structured data</p>
               </div>
               <Switch
                 id="enableSchemaMarkup"
                 checked={settings.enableSchemaMarkup !== false}
                 onCheckedChange={(checked) => onInputChange('enableSchemaMarkup', checked)}
+                className="scale-75"
               />
             </div>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="organizationType" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Organization Type</Label>
+            <Label htmlFor="organizationType" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Organization Type</Label>
             <Select
               value={settings.organizationType || 'RealEstateAgent'}
               onValueChange={(value) => onInputChange('organizationType', value)}
             >
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger className="h-7 text-xs bg-background/50 border-border/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -298,33 +305,33 @@ const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSe
       </Card>
 
       {/* Webmaster Verification */}
-      <Card className="border-l-4 border-l-cyan-500">
-        <CardHeader className="py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <ExternalLink className="h-4 w-4 text-cyan-500" />
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <ExternalLink className="h-3.5 w-3.5 text-accent" />
             Search Engine Verification
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4 pt-0">
-          <div className="grid grid-cols-2 gap-3">
+        <CardContent className="px-3 pb-3 pt-0">
+          <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label htmlFor="googleSiteVerification" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Google Search Console</Label>
+              <Label htmlFor="googleSiteVerification" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Google Search Console</Label>
               <Input
                 id="googleSiteVerification"
                 value={settings.googleSiteVerification || ''}
                 onChange={(e) => onInputChange('googleSiteVerification', e.target.value)}
                 placeholder="Verification meta tag"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="bingSiteVerification" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Bing Webmaster</Label>
+              <Label htmlFor="bingSiteVerification" className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Bing Webmaster</Label>
               <Input
                 id="bingSiteVerification"
                 value={settings.bingSiteVerification || ''}
                 onChange={(e) => onInputChange('bingSiteVerification', e.target.value)}
                 placeholder="Bing verification code"
-                className="h-8 text-xs"
+                className="h-7 text-xs bg-background/50 border-border/50"
               />
             </div>
           </div>
@@ -333,7 +340,7 @@ const GeneralSettings = ({ settings, loading, onInputChange, onSave }: GeneralSe
 
       {/* Save Button */}
       <div className="flex justify-end pt-2">
-        <Button onClick={onSave} disabled={loading} size="sm" className="h-8 text-xs">
+        <Button onClick={onSave} disabled={loading} size="sm" className="h-6 text-[10px] px-2">
           {loading ? 'Saving...' : 'Save All Settings'}
         </Button>
       </div>

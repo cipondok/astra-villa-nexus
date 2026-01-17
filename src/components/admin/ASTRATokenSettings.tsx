@@ -9,7 +9,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Settings, 
   Coins, 
   CheckCircle, 
   AlertTriangle, 
@@ -75,7 +74,6 @@ const ASTRATokenSettings = () => {
           testMode: settingsMap.testMode === 'true'
         }));
 
-        // Auto-check connection status if API is enabled and configured
         if (settingsMap.isEnabled === 'true' && settingsMap.apiKey && settingsMap.baseUrl) {
           setTimeout(() => testConnection(settingsMap), 1000);
         }
@@ -109,7 +107,6 @@ const ASTRATokenSettings = () => {
 
       showSuccess('Settings Saved', 'ASTRA token settings have been saved successfully');
       
-      // Auto-test connection after saving if enabled
       if (settings.isEnabled && settings.apiKey && settings.baseUrl) {
         setTimeout(() => testConnection(settings), 500);
       }
@@ -151,7 +148,6 @@ const ASTRATokenSettings = () => {
       });
 
       if (response.ok) {
-        const data = await response.json().catch(() => ({}));
         setConnectionStatus('connected');
         setLastTestResult(`Connection successful! Response: ${response.status} ${response.statusText}`);
         showSuccess('Connection Test', 'ASTRA Token API connection successful');
@@ -178,23 +174,23 @@ const ASTRATokenSettings = () => {
     switch (connectionStatus) {
       case 'connected':
         return (
-          <Badge className="bg-green-100 text-green-800 border-green-200">
-            <CheckCircle className="h-3 w-3 mr-1" />
+          <Badge className="bg-primary/20 text-primary border border-primary/30 text-[8px] h-4 px-1.5">
+            <CheckCircle className="h-2.5 w-2.5 mr-1" />
             Connected
           </Badge>
         );
       case 'testing':
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-            <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+          <Badge className="bg-accent/20 text-accent border border-accent/30 text-[8px] h-4 px-1.5">
+            <RefreshCw className="h-2.5 w-2.5 mr-1 animate-spin" />
             Testing...
           </Badge>
         );
       case 'disconnected':
       default:
         return (
-          <Badge variant="destructive">
-            <AlertTriangle className="h-3 w-3 mr-1" />
+          <Badge variant="destructive" className="text-[8px] h-4 px-1.5">
+            <AlertTriangle className="h-2.5 w-2.5 mr-1" />
             Disconnected
           </Badge>
         );
@@ -202,126 +198,136 @@ const ASTRATokenSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">ASTRA Token Settings</h2>
-          <p className="text-gray-400">Configure ASTRA token API settings and connection</p>
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Coins className="h-3.5 w-3.5 text-primary" />
+            ASTRA Token Settings
+          </h2>
+          <p className="text-[10px] text-muted-foreground">Configure ASTRA token API settings and connection</p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           {getConnectionBadge()}
           <Button
             onClick={() => testConnection()}
             disabled={testing || !settings.apiKey || !settings.baseUrl}
             variant="outline"
             size="sm"
+            className="h-6 text-[10px] px-2 bg-background/50 border-border/50"
           >
-            <TestTube className={`h-4 w-4 mr-2 ${testing ? 'animate-spin' : ''}`} />
-            {testing ? 'Testing...' : 'Test API'}
+            <TestTube className={`h-3 w-3 mr-1 ${testing ? 'animate-spin' : ''}`} />
+            Test API
           </Button>
         </div>
       </div>
 
       {/* Connection Status Alert */}
       {lastTestResult && (
-        <Alert className={connectionStatus === 'connected' ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription className="font-medium">
-            <strong>Last Test Result:</strong> {lastTestResult}
+        <Alert className={`py-2 ${connectionStatus === 'connected' ? 'bg-primary/10 border-primary/30' : 'bg-destructive/10 border-destructive/30'}`}>
+          <AlertTriangle className="h-3 w-3" />
+          <AlertDescription className="text-[10px]">
+            <strong>Last Test:</strong> {lastTestResult}
           </AlertDescription>
         </Alert>
       )}
 
-      <Tabs defaultValue="api" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 bg-slate-800/50">
-          <TabsTrigger value="api">API Configuration</TabsTrigger>
-          <TabsTrigger value="webhooks">Webhooks & Events</TabsTrigger>
+      <Tabs defaultValue="api" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-2 h-7 bg-muted/30">
+          <TabsTrigger value="api" className="text-[10px] h-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            API Configuration
+          </TabsTrigger>
+          <TabsTrigger value="webhooks" className="text-[10px] h-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            Webhooks & Events
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="api" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Key className="h-5 w-5 mr-2" />
+        <TabsContent value="api" className="space-y-3">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs font-semibold text-foreground flex items-center gap-2">
+                <Key className="h-3.5 w-3.5 text-primary" />
                 API Configuration
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
+            <CardContent className="px-3 pb-3 pt-0 space-y-3">
+              <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
+                <Label className="text-[10px] text-muted-foreground">Enable ASTRA Token API</Label>
                 <Switch
                   checked={settings.isEnabled}
                   onCheckedChange={(checked) => setSettings(prev => ({ ...prev, isEnabled: checked }))}
+                  className="scale-75"
                 />
-                <Label className="text-white">Enable ASTRA Token API</Label>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-white">API Key *</Label>
+              <div className="space-y-1">
+                <Label className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">API Key *</Label>
                 <Input
                   type="password"
                   value={settings.apiKey}
                   onChange={(e) => setSettings(prev => ({ ...prev, apiKey: e.target.value }))}
                   placeholder="Enter your ASTRA API key"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className="h-7 text-xs bg-background/50 border-border/50"
                 />
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   Required for API authentication. Keep this secure.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-white">Base URL *</Label>
+              <div className="space-y-1">
+                <Label className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Base URL *</Label>
                 <Input
                   value={settings.baseUrl}
                   onChange={(e) => setSettings(prev => ({ ...prev, baseUrl: e.target.value }))}
                   placeholder="https://api.astra-token.com"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className="h-7 text-xs bg-background/50 border-border/50"
                 />
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   The base URL for ASTRA API endpoints.
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-between p-1.5 bg-muted/20 rounded border border-border/30">
+                <div>
+                  <Label className="text-[10px] text-muted-foreground">Test Mode (Sandbox)</Label>
+                  <p className="text-[8px] text-muted-foreground">Use test endpoints for safe testing</p>
+                </div>
                 <Switch
                   checked={settings.testMode}
                   onCheckedChange={(checked) => setSettings(prev => ({ ...prev, testMode: checked }))}
+                  className="scale-75"
                 />
-                <Label className="text-white">Test Mode (Sandbox)</Label>
               </div>
-              <p className="text-xs text-gray-400">
-                When enabled, uses test endpoints for safe testing without affecting live data.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="webhooks" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Globe className="h-5 w-5 mr-2" />
+        <TabsContent value="webhooks" className="space-y-3">
+          <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs font-semibold text-foreground flex items-center gap-2">
+                <Globe className="h-3.5 w-3.5 text-accent" />
                 Webhooks & Events
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Webhook URL</Label>
+            <CardContent className="px-3 pb-3 pt-0 space-y-3">
+              <div className="space-y-1">
+                <Label className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">Webhook URL</Label>
                 <Input
                   value={settings.webhookUrl}
                   onChange={(e) => setSettings(prev => ({ ...prev, webhookUrl: e.target.value }))}
                   placeholder="https://yoursite.com/api/webhooks/astra"
-                  className="bg-slate-700/50 border-slate-600 text-white"
+                  className="h-7 text-xs bg-background/50 border-border/50"
                 />
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   URL to receive webhook notifications for token events (optional)
                 </p>
               </div>
 
-              <Alert>
-                <Shield className="h-4 w-4" />
-                <AlertDescription>
+              <Alert className="py-2 bg-muted/20 border-border/30">
+                <Shield className="h-3 w-3" />
+                <AlertDescription className="text-[10px] text-muted-foreground">
                   Webhooks will be sent for token transfers, balance changes, and transaction confirmations.
                 </AlertDescription>
               </Alert>
@@ -331,21 +337,24 @@ const ASTRATokenSettings = () => {
       </Tabs>
 
       {/* Save Button */}
-      <div className="flex justify-end space-x-2">
+      <div className="flex justify-end gap-2 pt-2">
         <Button
           onClick={() => testConnection()}
           disabled={testing || !settings.apiKey || !settings.baseUrl}
           variant="outline"
+          size="sm"
+          className="h-6 text-[10px] px-2 bg-background/50 border-border/50"
         >
-          <TestTube className={`h-4 w-4 mr-2 ${testing ? 'animate-spin' : ''}`} />
+          <TestTube className={`h-2.5 w-2.5 mr-1 ${testing ? 'animate-spin' : ''}`} />
           Test Connection
         </Button>
         <Button
           onClick={saveSettings}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700"
+          size="sm"
+          className="h-6 text-[10px] px-2"
         >
-          <Save className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <Save className={`h-2.5 w-2.5 mr-1 ${loading ? 'animate-spin' : ''}`} />
           {loading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>
