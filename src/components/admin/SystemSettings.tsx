@@ -69,21 +69,21 @@ const SystemSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="overflow-x-auto pb-1">
-          <TabsList className="inline-flex h-10 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
-            <TabsTrigger value="general">General & SEO</TabsTrigger>
-            <TabsTrigger value="branding">Branding</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="files">Files</TabsTrigger>
-            <TabsTrigger value="discounts">Discounts</TabsTrigger>
-            <TabsTrigger value="filters">Property Filters</TabsTrigger>
-            <TabsTrigger value="centralized-filters">Centralized Filters</TabsTrigger>
-            <TabsTrigger value="astra-tokens">ASTRA Tokens</TabsTrigger>
-            <TabsTrigger value="system">System Monitor</TabsTrigger>
-            <TabsTrigger value="backup">Backup</TabsTrigger>
+          <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
+            <TabsTrigger value="general" className="text-xs h-6 px-3">General & SEO</TabsTrigger>
+            <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
+            <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
+            <TabsTrigger value="notifications" className="text-xs h-6 px-3">Notifications</TabsTrigger>
+            <TabsTrigger value="files" className="text-xs h-6 px-3">Files</TabsTrigger>
+            <TabsTrigger value="discounts" className="text-xs h-6 px-3">Discounts</TabsTrigger>
+            <TabsTrigger value="filters" className="text-xs h-6 px-3">Property Filters</TabsTrigger>
+            <TabsTrigger value="centralized-filters" className="text-xs h-6 px-3">Centralized Filters</TabsTrigger>
+            <TabsTrigger value="astra-tokens" className="text-xs h-6 px-3">ASTRA Tokens</TabsTrigger>
+            <TabsTrigger value="system" className="text-xs h-6 px-3">System Monitor</TabsTrigger>
+            <TabsTrigger value="backup" className="text-xs h-6 px-3">Backup</TabsTrigger>
           </TabsList>
         </div>
 
