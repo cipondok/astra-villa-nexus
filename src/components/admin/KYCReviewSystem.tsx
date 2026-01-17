@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, User, FileText, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
+import { Shield, User, FileText, CheckCircle, XCircle, Clock, Search, Users, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const KYCReviewSystem = () => {
@@ -40,100 +40,122 @@ const KYCReviewSystem = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
-      case 'approved':
-        return <Badge variant="default"><CheckCircle className="w-3 h-3 mr-1" />Approved</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Rejected</Badge>;
-      default:
-        return <Badge variant="outline">Unknown</Badge>;
-    }
+    const styles: Record<string, string> = {
+      pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
+      approved: "bg-green-100 text-green-700 border-green-200",
+      rejected: "bg-red-100 text-red-700 border-red-200"
+    };
+    const icons: Record<string, React.ReactNode> = {
+      pending: <Clock className="w-3 h-3 mr-1" />,
+      approved: <CheckCircle className="w-3 h-3 mr-1" />,
+      rejected: <XCircle className="w-3 h-3 mr-1" />
+    };
+    return (
+      <Badge variant="outline" className={`text-[10px] ${styles[status]}`}>
+        {icons[status]}
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </Badge>
+    );
   };
 
+  const totalApplications = kycApplications.pending.length + kycApplications.approved.length + kycApplications.rejected.length;
+
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2">
-          <Shield className="w-6 h-6" />
-          KYC Review System
-        </h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          Review and manage Know Your Customer (KYC) applications
-        </p>
+    <div className="space-y-4">
+      {/* Professional Header */}
+      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent rounded-xl border border-indigo-200/50">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-500/10 rounded-lg">
+            <Shield className="h-5 w-5 text-indigo-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              KYC Review System
+              <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-[10px]">
+                {kycApplications.pending.length} Pending
+              </Badge>
+            </h2>
+            <p className="text-xs text-muted-foreground">Review and manage Know Your Customer (KYC) applications</p>
+          </div>
+        </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Pending Reviews
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{kycApplications.pending.length}</div>
-            <Badge variant="secondary" className="mt-1">Needs attention</Badge>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              Approved
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{kycApplications.approved.length}</div>
-            <Badge variant="outline" className="mt-1">This week</Badge>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <XCircle className="w-4 h-4" />
-              Rejected
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{kycApplications.rejected.length}</div>
-            <Badge variant="outline" className="mt-1">This week</Badge>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Total Applications
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">
-              {kycApplications.pending.length + kycApplications.approved.length + kycApplications.rejected.length}
+      {/* Compact Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-white">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
+                <p className="text-xl font-bold text-yellow-700">{kycApplications.pending.length}</p>
+              </div>
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <Clock className="h-4 w-4 text-yellow-600" />
+              </div>
             </div>
-            <Badge variant="secondary" className="mt-1">All time</Badge>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-white">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Approved</p>
+                <p className="text-xl font-bold text-green-700">{kycApplications.approved.length}</p>
+              </div>
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-white">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Rejected</p>
+                <p className="text-xl font-bold text-red-700">{kycApplications.rejected.length}</p>
+              </div>
+              <div className="p-2 bg-red-100 rounded-lg">
+                <XCircle className="h-4 w-4 text-red-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-white">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Total</p>
+                <p className="text-xl font-bold text-blue-700">{totalApplications}</p>
+              </div>
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Users className="h-4 w-4 text-blue-600" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>KYC Applications</CardTitle>
-          <div className="flex flex-col sm:flex-row gap-4">
+      {/* Applications Card */}
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-3 bg-gradient-to-r from-indigo-50 to-transparent">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <FileText className="h-4 w-4 text-indigo-600" />
+            KYC Applications
+          </CardTitle>
+          <div className="flex flex-col sm:flex-row gap-3 mt-3">
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input 
                 placeholder="Search applications..." 
-                className="pl-10"
+                className="pl-10 h-8 text-sm"
               />
             </div>
             <Select>
-              <SelectTrigger className="w-full sm:w-48">
+              <SelectTrigger className="w-full sm:w-40 h-8 text-xs">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -145,81 +167,86 @@ const KYCReviewSystem = () => {
             </Select>
           </div>
         </CardHeader>
-        <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="pending" className="text-xs sm:text-sm">
+        <CardContent className="pt-3">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
+            <TabsList className="h-9 p-1 bg-muted/50">
+              <TabsTrigger value="pending" className="text-xs h-7 px-3 data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700">
+                <Clock className="h-3 w-3 mr-1" />
                 Pending ({kycApplications.pending.length})
               </TabsTrigger>
-              <TabsTrigger value="approved" className="text-xs sm:text-sm">
+              <TabsTrigger value="approved" className="text-xs h-7 px-3 data-[state=active]:bg-green-100 data-[state=active]:text-green-700">
+                <CheckCircle className="h-3 w-3 mr-1" />
                 Approved ({kycApplications.approved.length})
               </TabsTrigger>
-              <TabsTrigger value="rejected" className="text-xs sm:text-sm">
+              <TabsTrigger value="rejected" className="text-xs h-7 px-3 data-[state=active]:bg-red-100 data-[state=active]:text-red-700">
+                <XCircle className="h-3 w-3 mr-1" />
                 Rejected ({kycApplications.rejected.length})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="pending" className="space-y-4">
+            <TabsContent value="pending" className="space-y-3">
               {kycApplications.pending.map((application) => (
-                <div key={application.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border rounded-lg">
+                <div key={application.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium">{application.name}</h4>
+                      <h4 className="font-medium text-sm">{application.name}</h4>
                       {getStatusBadge(application.status)}
                     </div>
-                    <p className="text-sm text-muted-foreground">{application.email}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">{application.email}</p>
+                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                       <span>Submitted: {application.submitDate}</span>
                       <span className="flex items-center gap-1">
                         <FileText className="w-3 h-3" />
-                        {application.documents} documents
+                        {application.documents} docs
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 mt-3 sm:mt-0">
+                  <div className="flex gap-2 mt-2 sm:mt-0">
                     <Button 
                       size="sm" 
                       variant="outline"
                       onClick={() => handleApprove(application.id, application.name)}
+                      className="h-7 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
                     >
-                      <CheckCircle className="w-4 h-4 mr-1" />
+                      <CheckCircle className="w-3 h-3 mr-1" />
                       Approve
                     </Button>
                     <Button 
                       size="sm" 
                       variant="outline"
                       onClick={() => handleReject(application.id, application.name)}
+                      className="h-7 text-xs bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
                     >
-                      <XCircle className="w-4 h-4 mr-1" />
+                      <XCircle className="w-3 h-3 mr-1" />
                       Reject
                     </Button>
-                    <Button size="sm" variant="outline">
-                      View Details
+                    <Button size="sm" variant="outline" className="h-7 text-xs">
+                      View
                     </Button>
                   </div>
                 </div>
               ))}
             </TabsContent>
 
-            <TabsContent value="approved" className="space-y-4">
+            <TabsContent value="approved" className="space-y-3">
               {kycApplications.approved.map((application) => (
-                <div key={application.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border rounded-lg">
+                <div key={application.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium">{application.name}</h4>
+                      <h4 className="font-medium text-sm">{application.name}</h4>
                       {getStatusBadge(application.status)}
                     </div>
-                    <p className="text-sm text-muted-foreground">{application.email}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">{application.email}</p>
+                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                       <span>Approved: {application.submitDate}</span>
                       <span className="flex items-center gap-1">
                         <FileText className="w-3 h-3" />
-                        {application.documents} documents
+                        {application.documents} docs
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 mt-3 sm:mt-0">
-                    <Button size="sm" variant="outline">
+                  <div className="flex gap-2 mt-2 sm:mt-0">
+                    <Button size="sm" variant="outline" className="h-7 text-xs">
                       View Details
                     </Button>
                   </div>
@@ -227,28 +254,29 @@ const KYCReviewSystem = () => {
               ))}
             </TabsContent>
 
-            <TabsContent value="rejected" className="space-y-4">
+            <TabsContent value="rejected" className="space-y-3">
               {kycApplications.rejected.map((application) => (
-                <div key={application.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border rounded-lg">
+                <div key={application.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium">{application.name}</h4>
+                      <h4 className="font-medium text-sm">{application.name}</h4>
                       {getStatusBadge(application.status)}
                     </div>
-                    <p className="text-sm text-muted-foreground">{application.email}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">{application.email}</p>
+                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                       <span>Rejected: {application.submitDate}</span>
                       <span className="flex items-center gap-1">
                         <FileText className="w-3 h-3" />
-                        {application.documents} documents
+                        {application.documents} docs
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 mt-3 sm:mt-0">
-                    <Button size="sm" variant="outline">
+                  <div className="flex gap-2 mt-2 sm:mt-0">
+                    <Button size="sm" variant="outline" className="h-7 text-xs bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100">
+                      <AlertCircle className="w-3 h-3 mr-1" />
                       Review Again
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" className="h-7 text-xs">
                       View Details
                     </Button>
                   </div>
