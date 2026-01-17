@@ -368,10 +368,14 @@ WHERE NOT EXISTS (
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case "ERROR": return "text-red-600 bg-red-100";
-      case "WARNING": return "text-yellow-600 bg-yellow-100";
-      case "LOG": return "text-blue-600 bg-blue-100";
-      default: return "text-gray-600 bg-gray-100";
+      case "ERROR":
+        return "text-destructive bg-destructive/10";
+      case "WARNING":
+        return "text-foreground bg-secondary";
+      case "LOG":
+        return "text-muted-foreground bg-muted";
+      default:
+        return "text-muted-foreground bg-muted";
     }
   };
 
