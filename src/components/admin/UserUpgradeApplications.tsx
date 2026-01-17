@@ -271,13 +271,13 @@ const UserUpgradeApplications = () => {
   const getTypeBadge = (type: string) => {
     switch (type) {
       case 'property_owner': 
-        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Property Owner</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-blue-50 text-blue-700 border-blue-200">Owner</Badge>;
       case 'vendor': 
-        return <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">Vendor</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-purple-50 text-purple-700 border-purple-200">Vendor</Badge>;
       case 'agent': 
-        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Agent</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-green-50 text-green-700 border-green-200">Agent</Badge>;
       default: 
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">Unknown</Badge>;
     }
   };
 
@@ -285,13 +285,13 @@ const UserUpgradeApplications = () => {
     switch (status) {
       case 'pending':
       case 'under_review':
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="text-[8px] px-1 py-0 h-4 bg-yellow-100 text-yellow-800"><Clock className="h-2.5 w-2.5 mr-0.5" />Pending</Badge>;
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
+        return <Badge className="text-[8px] px-1 py-0 h-4 bg-green-100 text-green-800"><CheckCircle className="h-2.5 w-2.5 mr-0.5" />Approved</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
+        return <Badge className="text-[8px] px-1 py-0 h-4 bg-red-100 text-red-800"><XCircle className="h-2.5 w-2.5 mr-0.5" />Rejected</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">{status}</Badge>;
     }
   };
 
@@ -302,132 +302,123 @@ const UserUpgradeApplications = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">User Upgrade Applications</h1>
-          <p className="text-muted-foreground">Review and process user role upgrade requests</p>
+          <h1 className="text-base font-bold">User Upgrade Applications</h1>
+          <p className="text-[10px] text-muted-foreground">Review and process user role upgrade requests</p>
         </div>
-        <Button onClick={() => refetch()} variant="outline" size="sm">
-          <RefreshCw className="h-4 w-4 mr-2" />
+        <Button onClick={() => refetch()} variant="outline" size="sm" className="h-7 text-[10px]">
+          <RefreshCw className="h-3 w-3 mr-1" />
           Refresh
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <Users className="h-8 w-8 text-muted-foreground" />
+      <div className="grid grid-cols-4 gap-2">
+        <Card className="p-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] text-muted-foreground">Total</p>
+              <p className="text-lg font-bold">{stats.total}</p>
             </div>
-          </CardContent>
+            <Users className="h-5 w-5 text-muted-foreground" />
+          </div>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
-              </div>
-              <Clock className="h-8 w-8 text-yellow-600" />
+        <Card className="p-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] text-muted-foreground">Pending</p>
+              <p className="text-lg font-bold text-yellow-600">{stats.pending}</p>
             </div>
-          </CardContent>
+            <Clock className="h-5 w-5 text-yellow-600" />
+          </div>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Approved</p>
-                <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+        <Card className="p-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] text-muted-foreground">Approved</p>
+              <p className="text-lg font-bold text-green-600">{stats.approved}</p>
             </div>
-          </CardContent>
+            <CheckCircle className="h-5 w-5 text-green-600" />
+          </div>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Rejected</p>
-                <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
-              </div>
-              <XCircle className="h-8 w-8 text-red-600" />
+        <Card className="p-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] text-muted-foreground">Rejected</p>
+              <p className="text-lg font-bold text-red-600">{stats.rejected}</p>
             </div>
-          </CardContent>
+            <XCircle className="h-5 w-5 text-red-600" />
+          </div>
         </Card>
       </div>
 
       {/* Applications Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Applications</CardTitle>
-          <CardDescription>Click on an application to review and process</CardDescription>
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs">Applications</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-4">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="pending">
-                Pending {stats.pending > 0 && <Badge className="ml-2 bg-yellow-500">{stats.pending}</Badge>}
+            <TabsList className="mb-2 h-7">
+              <TabsTrigger value="all" className="text-[10px] h-6 px-2">All</TabsTrigger>
+              <TabsTrigger value="pending" className="text-[10px] h-6 px-2">
+                Pending {stats.pending > 0 && <Badge className="ml-1 text-[8px] h-4 px-1 bg-yellow-500">{stats.pending}</Badge>}
               </TabsTrigger>
-              <TabsTrigger value="approved">Approved</TabsTrigger>
-              <TabsTrigger value="rejected">Rejected</TabsTrigger>
+              <TabsTrigger value="approved" className="text-[10px] h-6 px-2">Approved</TabsTrigger>
+              <TabsTrigger value="rejected" className="text-[10px] h-6 px-2">Rejected</TabsTrigger>
             </TabsList>
 
-            <TabsContent value={activeTab}>
+            <TabsContent value={activeTab} className="mt-0">
               {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <RefreshCw className="h-6 w-6 animate-spin" />
+                <div className="flex justify-center py-4">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
                 </div>
               ) : applications && applications.length > 0 ? (
-                <ScrollArea className="h-[500px]">
-                  <Table>
+                <ScrollArea className="h-[350px]">
+                  <Table className="text-[10px]">
                     <TableHeader>
-                      <TableRow>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Details</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Submitted</TableHead>
-                        <TableHead>Actions</TableHead>
+                      <TableRow className="bg-muted/30">
+                        <TableHead className="text-[9px] font-semibold py-1.5 px-2">Type</TableHead>
+                        <TableHead className="text-[9px] font-semibold py-1.5 px-2">Name</TableHead>
+                        <TableHead className="text-[9px] font-semibold py-1.5 px-2">Details</TableHead>
+                        <TableHead className="text-[9px] font-semibold py-1.5 px-2">Status</TableHead>
+                        <TableHead className="text-[9px] font-semibold py-1.5 px-2">Date</TableHead>
+                        <TableHead className="text-[9px] font-semibold py-1.5 px-2">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {applications.map((app) => (
-                        <TableRow key={`${app.type}-${app.id}`}>
-                          <TableCell>{getTypeBadge(app.type)}</TableCell>
-                          <TableCell className="font-medium">
+                        <TableRow key={`${app.type}-${app.id}`} className="hover:bg-muted/20">
+                          <TableCell className="py-1.5 px-2">{getTypeBadge(app.type)}</TableCell>
+                          <TableCell className="py-1.5 px-2 text-[10px] font-medium max-w-[100px] truncate">
                             {app.full_name || app.business_name || 'N/A'}
                           </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
+                          <TableCell className="py-1.5 px-2 text-[9px] text-muted-foreground max-w-[120px] truncate">
                             {app.type === 'property_owner' && app.owner_type && (
-                              <span>{app.owner_type} • {app.province}, {app.city}</span>
+                              <span>{app.owner_type}</span>
                             )}
                             {app.type === 'vendor' && app.business_type && (
                               <span>{app.business_type}</span>
                             )}
                             {app.type === 'agent' && (
-                              <span>{app.business_type} {app.company_name && `• ${app.company_name}`}</span>
+                              <span>{app.business_type}</span>
                             )}
                           </TableCell>
-                          <TableCell>{getStatusBadge(app.status)}</TableCell>
-                          <TableCell className="text-sm">
-                            {format(new Date(app.created_at), 'MMM dd, yyyy HH:mm')}
+                          <TableCell className="py-1.5 px-2">{getStatusBadge(app.status)}</TableCell>
+                          <TableCell className="py-1.5 px-2 text-[9px] text-muted-foreground">
+                            {format(new Date(app.created_at), 'MMM dd')}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="py-1.5 px-2">
                             <Button 
-                              variant="outline" 
-                              size="sm"
+                              variant="ghost" 
+                              size="icon"
+                              className="h-5 w-5"
                               onClick={() => openReviewDialog(app)}
                             >
-                              <Eye className="h-4 w-4 mr-1" />
-                              Review
+                              <Eye className="h-3 w-3" />
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -436,7 +427,7 @@ const UserUpgradeApplications = () => {
                   </Table>
                 </ScrollArea>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-center py-4 text-[10px] text-muted-foreground">
                   No applications found
                 </div>
               )}
