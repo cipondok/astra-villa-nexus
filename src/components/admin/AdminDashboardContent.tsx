@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Home, ChevronRight } from "lucide-react";
+import { AdminCategoryTabs } from "./AdminCategoryTabs";
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
@@ -372,6 +373,14 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
             </div>
           </div>
         </div>
+      )}
+
+      {/* Category Tabs - Shows all related links for current category */}
+      {!isOverview && onSectionChange && (
+        <AdminCategoryTabs 
+          activeSection={activeSection} 
+          onSectionChange={onSectionChange} 
+        />
       )}
 
       {renderContent()}
