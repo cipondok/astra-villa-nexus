@@ -340,68 +340,51 @@ const VerificationManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-blue-500" />
-              Owner Verifications
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalOwners}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.pendingOwners} pending • {stats.verifiedOwners} verified
-            </p>
-          </CardContent>
+    <div className="space-y-3">
+      {/* Stats Cards - Compact */}
+      <div className="grid grid-cols-3 gap-2">
+        <Card className="p-2">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-blue-500" />
+            <div>
+              <p className="text-lg font-bold">{stats.totalOwners}</p>
+              <p className="text-[9px] text-muted-foreground">Owners • {stats.pendingOwners} pending</p>
+            </div>
+          </div>
         </Card>
         
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-purple-500" />
-              Vendor Verifications
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalVendors}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.pendingVendors} pending • {stats.verifiedVendors} verified
-            </p>
-          </CardContent>
+        <Card className="p-2">
+          <div className="flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-purple-500" />
+            <div>
+              <p className="text-lg font-bold">{stats.totalVendors}</p>
+              <p className="text-[9px] text-muted-foreground">Vendors • {stats.pendingVendors} pending</p>
+            </div>
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-orange-500" />
-              Action Required
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingOwners + stats.pendingVendors}</div>
-            <p className="text-xs text-muted-foreground">
-              Total pending verifications
-            </p>
-          </CardContent>
+        <Card className="p-2">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-orange-500" />
+            <div>
+              <p className="text-lg font-bold text-orange-600">{stats.pendingOwners + stats.pendingVendors}</p>
+              <p className="text-[9px] text-muted-foreground">Action Required</p>
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Verification Tabs */}
       <Card>
-        <CardHeader>
+        <CardHeader className="py-2 px-3">
           <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Verification Requests</CardTitle>
-              <CardDescription>Manage owner and vendor verifications</CardDescription>
-            </div>
-            <div className="flex gap-2">
+            <CardTitle className="text-xs">Verification Requests</CardTitle>
+            <div className="flex gap-1">
               <Button
                 size="sm"
                 variant={statusFilter === 'all' ? 'default' : 'outline'}
                 onClick={() => setStatusFilter('all')}
+                className="h-6 text-[9px] px-2"
               >
                 All
               </Button>
@@ -409,6 +392,7 @@ const VerificationManagement = () => {
                 size="sm"
                 variant={statusFilter === 'pending' ? 'default' : 'outline'}
                 onClick={() => setStatusFilter('pending')}
+                className="h-6 text-[9px] px-2"
               >
                 Pending
               </Button>
@@ -416,17 +400,18 @@ const VerificationManagement = () => {
                 size="sm"
                 variant={statusFilter === 'verified' ? 'default' : 'outline'}
                 onClick={() => setStatusFilter('verified')}
+                className="h-6 text-[9px] px-2"
               >
                 Verified
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2">
           <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="owners" className="gap-2">
-                <ShieldCheck className="h-4 w-4" />
+            <TabsList className="grid w-full grid-cols-2 h-7">
+              <TabsTrigger value="owners" className="text-[10px] h-6 gap-1">
+                <ShieldCheck className="h-3 w-3" />
                 Owners ({stats.totalOwners})
               </TabsTrigger>
               <TabsTrigger value="vendors" className="gap-2">

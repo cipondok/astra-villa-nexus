@@ -300,113 +300,109 @@ const BookingManagement: React.FC = () => {
             </Select>
           </div>
 
-          {/* Bookings Table */}
           <Card>
             <CardContent className="p-0">
-              <Table>
+              <Table className="text-[10px]">
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Property</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Date & Time</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="text-[9px] font-semibold py-1.5 px-2">Property</TableHead>
+                    <TableHead className="text-[9px] font-semibold py-1.5 px-2">Customer</TableHead>
+                    <TableHead className="text-[9px] font-semibold py-1.5 px-2">Type</TableHead>
+                    <TableHead className="text-[9px] font-semibold py-1.5 px-2">Date</TableHead>
+                    <TableHead className="text-[9px] font-semibold py-1.5 px-2">Status</TableHead>
+                    <TableHead className="text-[9px] font-semibold py-1.5 px-2 text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {bookingsLoading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8">
-                        <RefreshCw className="h-5 w-5 animate-spin mx-auto text-muted-foreground" />
+                      <TableCell colSpan={6} className="text-center py-4">
+                        <RefreshCw className="h-4 w-4 animate-spin mx-auto text-muted-foreground" />
                       </TableCell>
                     </TableRow>
                   ) : filteredBookings.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={6} className="text-center py-4 text-[10px] text-muted-foreground">
                         No bookings found
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredBookings.map((booking: any) => (
-                      <TableRow key={booking.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
+                      <TableRow key={booking.id} className="hover:bg-muted/20">
+                        <TableCell className="py-1.5 px-2">
+                          <div className="flex items-center gap-1.5">
                             {booking.properties?.images?.[0] ? (
                               <img
                                 src={booking.properties.images[0]}
                                 alt={booking.properties?.title}
-                                className="h-10 w-10 rounded object-cover"
+                                className="h-6 w-6 rounded object-cover"
                               />
                             ) : (
-                              <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
-                                <Building2 className="h-4 w-4 text-muted-foreground" />
+                              <div className="h-6 w-6 rounded bg-muted flex items-center justify-center">
+                                <Building2 className="h-3 w-3 text-muted-foreground" />
                               </div>
                             )}
                             <div className="min-w-0">
-                              <p className="font-medium text-sm truncate max-w-[150px]">
-                                {booking.properties?.title || 'Unknown Property'}
+                              <p className="text-[10px] font-medium truncate max-w-[100px]">
+                                {booking.properties?.title || 'Unknown'}
                               </p>
-                              <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+                              <p className="text-[8px] text-muted-foreground truncate max-w-[100px]">
                                 {booking.properties?.city}
                               </p>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-muted-foreground shrink-0" />
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium truncate max-w-[120px]">
-                                {booking.requester?.full_name || 'Unknown'}
-                              </p>
-                              <p className="text-xs text-muted-foreground truncate max-w-[120px]">
-                                {booking.requester?.email}
-                              </p>
-                            </div>
+                        <TableCell className="py-1.5 px-2">
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-medium truncate max-w-[80px]">
+                              {booking.requester?.full_name || 'Unknown'}
+                            </p>
+                            <p className="text-[8px] text-muted-foreground truncate max-w-[80px]">
+                              {booking.requester?.email}
+                            </p>
                           </div>
                         </TableCell>
-                        <TableCell>{getBookingTypeBadge(booking.booking_type)}</TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            <p>{format(new Date(booking.scheduled_date), 'MMM d, yyyy')}</p>
-                            <p className="text-xs text-muted-foreground">{booking.scheduled_time}</p>
+                        <TableCell className="py-1.5 px-2">{getBookingTypeBadge(booking.booking_type)}</TableCell>
+                        <TableCell className="py-1.5 px-2">
+                          <div className="text-[9px]">
+                            <p>{format(new Date(booking.scheduled_date), 'MMM d')}</p>
+                            <p className="text-[8px] text-muted-foreground">{booking.scheduled_time}</p>
                           </div>
                         </TableCell>
-                        <TableCell>{getStatusBadge(booking.status)}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="py-1.5 px-2">{getStatusBadge(booking.status)}</TableCell>
+                        <TableCell className="py-1.5 px-2 text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <MoreVertical className="h-4 w-4" />
+                              <Button variant="ghost" size="icon" className="h-5 w-5">
+                                <MoreVertical className="h-3 w-3" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => { setSelectedBooking(booking); setDetailsOpen(true); }}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View Details
+                              <DropdownMenuItem onClick={() => { setSelectedBooking(booking); setDetailsOpen(true); }} className="text-[11px]">
+                                <Eye className="h-3 w-3 mr-2" />
+                                View
                               </DropdownMenuItem>
                               {booking.status === 'pending' && (
                                 <>
-                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'confirmed' })}>
-                                    <CheckCircle className="h-4 w-4 mr-2 text-blue-500" />
+                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'confirmed' })} className="text-[11px]">
+                                    <CheckCircle className="h-3 w-3 mr-2 text-blue-500" />
                                     Confirm
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'cancelled' })}>
-                                    <XCircle className="h-4 w-4 mr-2 text-red-500" />
+                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'cancelled' })} className="text-[11px]">
+                                    <XCircle className="h-3 w-3 mr-2 text-red-500" />
                                     Cancel
                                   </DropdownMenuItem>
                                 </>
                               )}
                               {booking.status === 'confirmed' && (
                                 <>
-                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'completed' })}>
-                                    <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                                    Mark Completed
+                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'completed' })} className="text-[11px]">
+                                    <CheckCircle className="h-3 w-3 mr-2 text-green-500" />
+                                    Complete
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'no_show' })}>
-                                    <AlertCircle className="h-4 w-4 mr-2 text-gray-500" />
-                                    Mark No Show
+                                  <DropdownMenuItem onClick={() => updateStatusMutation.mutate({ bookingId: booking.id, status: 'no_show' })} className="text-[11px]">
+                                    <AlertCircle className="h-3 w-3 mr-2 text-gray-500" />
+                                    No Show
                                   </DropdownMenuItem>
                                 </>
                               )}

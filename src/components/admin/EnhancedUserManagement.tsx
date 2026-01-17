@@ -371,102 +371,100 @@ const EnhancedUserManagement = () => {
           {isLoading ? (
             <div className="text-center py-6 text-[10px] text-muted-foreground">Loading users...</div>
           ) : (
-            <Table>
+            <Table className="text-[10px]">
               <TableHeader>
-                <TableRow className="text-[10px]">
-                  <TableHead>User</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Level</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
+                <TableRow className="bg-muted/30">
+                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">User</TableHead>
+                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Role</TableHead>
+                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Level</TableHead>
+                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Status</TableHead>
+                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Created</TableHead>
+                  <TableHead className="text-[9px] font-semibold py-1.5 px-2">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
+                  <TableRow key={user.id} className="hover:bg-muted/20">
+                    <TableCell className="py-1.5 px-2">
                       <div>
-                        <div className="font-medium">{user.full_name || 'No Name'}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                        <div className="text-[10px] font-medium truncate max-w-[120px]">{user.full_name || 'No Name'}</div>
+                        <div className="text-[9px] text-muted-foreground truncate max-w-[120px]">{user.email}</div>
                         {user.is_suspended && (
-                          <div className="text-xs text-red-600 mt-1">
-                            Suspended: {user.suspension_reason}
-                          </div>
+                          <div className="text-[8px] text-red-600 truncate">Suspended</div>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <Badge variant="outline">{(user.role || 'general_user').replace('_', ' ').toUpperCase()}</Badge>
-                        <Select 
-                          value={user.role || 'general_user'} 
-                          onValueChange={(role: UserRole) => updateUserRoleMutation.mutate({ userId: user.id, role })}
-                        >
-                          <SelectTrigger className="w-[100px] h-6 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="general_user">General User</SelectItem>
-                            <SelectItem value="property_owner">Property Owner</SelectItem>
-                            <SelectItem value="agent">Agent</SelectItem>
-                            <SelectItem value="vendor">Vendor</SelectItem>
-                            <SelectItem value="customer_service">Customer Service</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <TableCell className="py-1.5 px-2">
+                      <Select 
+                        value={user.role || 'general_user'} 
+                        onValueChange={(role: UserRole) => updateUserRoleMutation.mutate({ userId: user.id, role })}
+                      >
+                        <SelectTrigger className="w-[80px] h-5 text-[9px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general_user" className="text-[10px]">User</SelectItem>
+                          <SelectItem value="property_owner" className="text-[10px]">Owner</SelectItem>
+                          <SelectItem value="agent" className="text-[10px]">Agent</SelectItem>
+                          <SelectItem value="vendor" className="text-[10px]">Vendor</SelectItem>
+                          <SelectItem value="customer_service" className="text-[10px]">CS</SelectItem>
+                          <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-1.5 px-2">
                       {user.user_levels ? (
-                        <div>
-                          <div className="font-medium">{user.user_levels.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {user.user_levels.max_properties} props, {user.user_levels.max_listings} listings
-                          </div>
-                        </div>
+                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">
+                          {user.user_levels.name}
+                        </Badge>
                       ) : (
                         <Select 
                           value={user.user_level_id || ""} 
                           onValueChange={(value) => updateUserLevelMutation.mutate({ userId: user.id, levelId: value })}
                         >
-                          <SelectTrigger className="w-[120px] h-8">
-                            <SelectValue placeholder="Assign Level" />
+                          <SelectTrigger className="w-[70px] h-5 text-[9px]">
+                            <SelectValue placeholder="--" />
                           </SelectTrigger>
                           <SelectContent>
                             {userLevels?.map((level) => (
-                              <SelectItem key={level.id} value={level.id}>{level.name}</SelectItem>
+                              <SelectItem key={level.id} value={level.id} className="text-[10px]">{level.name}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       )}
                     </TableCell>
-                    <TableCell>{getStatusBadge(user)}</TableCell>
-                    <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
+                    <TableCell className="py-1.5 px-2">{getStatusBadge(user)}</TableCell>
+                    <TableCell className="py-1.5 px-2 text-[9px] text-muted-foreground">
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="py-1.5 px-2">
+                      <div className="flex gap-1">
                         <Button
-                          size="sm"
-                          variant="outline"
+                          size="icon"
+                          variant="ghost"
+                          className="h-5 w-5"
                           onClick={() => setSecurityModalUser(user.id)}
                         >
-                          <Monitor className="h-4 w-4" />
+                          <Monitor className="h-3 w-3" />
                         </Button>
                         {user.is_suspended ? (
                           <Button
-                            size="sm"
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5 text-green-600"
                             onClick={() => unsuspendUserMutation.mutate(user.id)}
                             disabled={unsuspendUserMutation.isPending}
                           >
-                            <UserCheck className="h-4 w-4" />
+                            <UserCheck className="h-3 w-3" />
                           </Button>
                         ) : (
                           <Button
-                            size="sm"
-                            variant="destructive"
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5 text-red-600"
                             onClick={() => setSelectedUser(user)}
                           >
-                            <Ban className="h-4 w-4" />
+                            <Ban className="h-3 w-3" />
                           </Button>
                         )}
                       </div>

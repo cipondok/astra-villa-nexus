@@ -1,0 +1,128 @@
+/* Compact Admin Table Styles */
+
+/* Compact table base */
+.admin-compact-table {
+  font-size: 11px;
+}
+
+.admin-compact-table th {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 6px 8px;
+  background: hsl(var(--muted) / 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.admin-compact-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+.admin-compact-table tr {
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.admin-compact-table tr:hover {
+  background: hsl(var(--muted) / 0.3);
+}
+
+/* Compact card styles */
+.admin-compact-card .card-header {
+  padding: 8px 12px;
+}
+
+.admin-compact-card .card-title {
+  font-size: 12px;
+}
+
+.admin-compact-card .card-content {
+  padding: 8px 12px;
+}
+
+/* Compact stats grid */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.admin-stat-card {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: hsl(var(--muted) / 0.2);
+  border: 1px solid hsl(var(--border) / 0.3);
+}
+
+.admin-stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-stat-label {
+  font-size: 9px;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Compact form elements */
+.admin-compact-input {
+  height: 28px;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.admin-compact-select {
+  height: 28px;
+  font-size: 11px;
+}
+
+.admin-compact-button {
+  height: 26px;
+  font-size: 10px;
+  padding: 0 10px;
+}
+
+/* Compact badge */
+.admin-compact-badge {
+  font-size: 9px;
+  padding: 1px 6px;
+  height: 18px;
+  line-height: 16px;
+}
+
+/* Compact avatar */
+.admin-compact-avatar {
+  width: 24px;
+  height: 24px;
+}
+
+/* Ultra compact table variant */
+.admin-ultra-compact-table th {
+  font-size: 9px;
+  padding: 4px 6px;
+}
+
+.admin-ultra-compact-table td {
+  font-size: 10px;
+  padding: 4px 6px;
+}
+
+/* Row action buttons */
+.admin-row-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.admin-row-actions button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+.admin-row-actions button svg {
+  width: 12px;
+  height: 12px;
+}
