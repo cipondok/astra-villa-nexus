@@ -93,44 +93,71 @@ Deno.serve(async (req) => {
 
     // Mode: provinces only - just insert province names
     if (mode === 'provinces') {
-      const batch = provinces.map(p => ({
-        province_code: p.id,
-        province_name: toTitleCase(p.name),
-        city_code: '',
-        city_name: '',
-        city_type: 'KABUPATEN',
-        area_name: toTitleCase(p.name),
-        is_active: true,
-        updated_at: new Date().toISOString(),
-      }));
-
-      // Check existing provinces
+      // Check existing provinces first
       const { data: existing } = await supabase
         .from('locations')
         .select('province_code')
-        .eq('city_code', '');
+        .is('city_code', null)
+        .or('city_code.eq.');
       
       const existingCodes = new Set((existing || []).map(e => e.province_code));
       
-      for (const p of batch) {
-        if (existingCodes.has(p.province_code)) {
-          stats.updated++;
-          changes.push({ type: 'province', name: p.province_name, action: 'updated' });
+      // Process one by one to avoid duplicate key issues
+      for (const p of provinces) {
+        const provinceName = toTitleCase(p.name);
+        const record = {
+          province_code: p.id,
+          province_name: provinceName,
+          city_code: null, // Use null instead of empty string
+          city_name: null,
+          city_type: 'KABUPATEN',
+          district_code: null,
+          district_name: null,
+          subdistrict_code: null,
+          subdistrict_name: null,
+          area_name: provinceName,
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        };
+
+        if (existingCodes.has(p.id)) {
+          // Update existing
+          const { error } = await supabase
+            .from('locations')
+            .update(record)
+            .eq('province_code', p.id)
+            .is('city_code', null);
+          
+          if (error && error.code !== '23505') {
+            console.error('Province update error:', error);
+            stats.errors++;
+          } else {
+            stats.updated++;
+            changes.push({ type: 'province', name: provinceName, action: 'updated' });
+          }
         } else {
-          stats.inserted++;
-          changes.push({ type: 'province', name: p.province_name, action: 'inserted' });
+          // Insert new
+          const { error } = await supabase
+            .from('locations')
+            .insert(record);
+          
+          if (error) {
+            if (error.code === '23505') {
+              // Already exists, try update instead
+              stats.updated++;
+              changes.push({ type: 'province', name: provinceName, action: 'updated' });
+            } else {
+              console.error('Province insert error:', error);
+              stats.errors++;
+            }
+          } else {
+            stats.inserted++;
+            changes.push({ type: 'province', name: provinceName, action: 'inserted' });
+          }
         }
+        stats.provinces++;
       }
 
-      const { error } = await supabase.from('locations').upsert(batch, {
-        onConflict: 'province_code,city_code,district_code,subdistrict_code',
-      });
-
-      if (error) {
-        console.error('Provinces upsert error:', error);
-        stats.errors++;
-      }
-      stats.provinces = provinces.length;
       progress.push(`Selesai: ${stats.inserted} baru, ${stats.updated} diperbarui`);
 
       return new Response(JSON.stringify({ 
@@ -138,7 +165,7 @@ Deno.serve(async (req) => {
         stats, 
         mode,
         progress,
-        changes: changes.slice(0, 20), // Limit for response size
+        changes: changes.slice(0, 20),
         totalChanges: changes.length
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
