@@ -69,28 +69,28 @@ const UserExperienceTips = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
+        <CardHeader className="p-3">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <Zap className="h-4 w-4 text-primary" />
             Performance Tips
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[11px]">
             Optimize your platform's performance with these best practices
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-3 pt-0">
+          <div className="space-y-2">
             {performanceTips.map((tip, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors">
+              <div key={index} className="flex items-start gap-2 p-2 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors">
                 <div className="text-muted-foreground mt-0.5">
                   {tip.icon}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm leading-relaxed">{tip.text}</p>
+                  <p className="text-[11px] leading-relaxed">{tip.text}</p>
                 </div>
-                <Badge variant={getPriorityColor(tip.priority)} className="text-xs">
+                <Badge variant={getPriorityColor(tip.priority)} className="text-[9px]">
                   {tip.priority}
                 </Badge>
               </div>
@@ -100,26 +100,26 @@ const UserExperienceTips = () => {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+        <CardHeader className="p-3">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <Users className="h-4 w-4 text-primary" />
             User Engagement
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[11px]">
             Improve user engagement and conversion rates
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-3 pt-0">
+          <div className="space-y-2">
             {engagementTips.map((tip, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors">
+              <div key={index} className="flex items-start gap-2 p-2 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors">
                 <div className="text-muted-foreground mt-0.5">
                   {tip.icon}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm leading-relaxed">{tip.text}</p>
+                  <p className="text-[11px] leading-relaxed">{tip.text}</p>
                 </div>
-                <Badge variant={getImpactColor(tip.impact)} className="text-xs">
+                <Badge variant={getImpactColor(tip.impact)} className="text-[9px]">
                   {tip.impact}
                 </Badge>
               </div>

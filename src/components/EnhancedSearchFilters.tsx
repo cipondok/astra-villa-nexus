@@ -132,57 +132,57 @@ const EnhancedSearchFilters = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white">Enhanced Search Filters</h2>
-          <p className="text-gray-400">Advanced property search with multiple filter options</p>
+          <h2 className="text-sm font-semibold">Enhanced Search Filters</h2>
+          <p className="text-[11px] text-muted-foreground">Advanced property search with multiple filter options</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-blue-400 border-blue-400">
+          <Badge variant="outline" className="text-[10px] text-primary border-primary/50">
             {getActiveFilterCount()} Active Filters
           </Badge>
-          <Button onClick={clearAllFilters} variant="outline" size="sm">
-            <Trash2 className="h-4 w-4 mr-2" />
+          <Button onClick={clearAllFilters} variant="outline" size="sm" className="h-7 text-[10px]">
+            <Trash2 className="h-3 w-3 mr-1.5" />
             Clear All
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Main Filters */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-3">
           {/* Location & Basic Search */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Search className="h-4 w-4 text-primary" />
                 Location & Search
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-3 pt-0 space-y-3">
               <div>
-                <Label>Location</Label>
+                <Label className="text-xs">Location</Label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <MapPin className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5" />
                   <Input
                     placeholder="Search by location, area, or landmark..."
                     value={filters.location}
                     onChange={(e) => updateFilter('location', e.target.value)}
-                    className="pl-10"
+                    className="pl-8 h-8 text-xs"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label>Listing Type</Label>
+                  <Label className="text-xs">Listing Type</Label>
                   <Select 
                     value={filters.listingType} 
                     onValueChange={(value) => updateFilter('listingType', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -195,12 +195,12 @@ const EnhancedSearchFilters = () => {
                 </div>
 
                 <div>
-                  <Label>Sort By</Label>
+                  <Label className="text-xs">Sort By</Label>
                   <Select 
                     value={filters.sortBy} 
                     onValueChange={(value) => updateFilter('sortBy', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -218,14 +218,14 @@ const EnhancedSearchFilters = () => {
 
           {/* Property Type */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Home className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Home className="h-4 w-4 text-primary" />
                 Property Type
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <CardContent className="p-3 pt-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {propertyTypes.map((type) => {
                   const Icon = type.icon;
                   const isSelected = filters.propertyTypes.includes(type.value);
@@ -234,14 +234,14 @@ const EnhancedSearchFilters = () => {
                       key={type.value}
                       className={`cursor-pointer transition-all ${
                         isSelected
-                          ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950'
-                          : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                          ? 'ring-2 ring-primary bg-primary/10'
+                          : 'hover:bg-accent/50'
                       }`}
                       onClick={() => toggleArrayFilter('propertyTypes', type.value)}
                     >
-                      <CardContent className="p-4 text-center">
-                        <Icon className="h-6 w-6 mx-auto mb-2 text-blue-600" />
-                        <span className="text-sm font-medium">{type.label}</span>
+                      <CardContent className="p-2.5 text-center">
+                        <Icon className="h-4 w-4 mx-auto mb-1 text-primary" />
+                        <span className="text-[10px] font-medium">{type.label}</span>
                       </CardContent>
                     </Card>
                   );
@@ -252,14 +252,14 @@ const EnhancedSearchFilters = () => {
 
           {/* Price Range */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <DollarSign className="h-4 w-4 text-primary" />
                 Price Range
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="px-2">
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="px-1">
                 <Slider
                   value={filters.priceRange}
                   onValueChange={(value) => updateFilter('priceRange', value as [number, number])}
@@ -268,7 +268,7 @@ const EnhancedSearchFilters = () => {
                   className="w-full"
                 />
               </div>
-              <div className="flex justify-between text-sm text-gray-600">
+              <div className="flex justify-between text-[10px] text-muted-foreground">
                 <span>{formatPrice(filters.priceRange[0])}</span>
                 <span>{formatPrice(filters.priceRange[1])}</span>
               </div>
@@ -277,20 +277,21 @@ const EnhancedSearchFilters = () => {
 
           {/* Bedrooms & Bathrooms */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bed className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Bed className="h-4 w-4 text-primary" />
                 Bedrooms & Bathrooms
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-3 pt-0 space-y-3">
               <div>
-                <Label className="mb-2 block">Bedrooms</Label>
-                <div className="flex gap-2">
+                <Label className="text-xs mb-1.5 block">Bedrooms</Label>
+                <div className="flex gap-1.5">
                   {[1, 2, 3, 4, 5, 6].map((num) => (
                     <Button
                       key={num}
                       size="sm"
+                      className="h-7 text-[10px] px-2.5"
                       variant={filters.bedrooms.includes(num) ? "default" : "outline"}
                       onClick={() => toggleArrayFilter('bedrooms', num.toString())}
                     >
@@ -301,12 +302,13 @@ const EnhancedSearchFilters = () => {
               </div>
 
               <div>
-                <Label className="mb-2 block">Bathrooms</Label>
-                <div className="flex gap-2">
+                <Label className="text-xs mb-1.5 block">Bathrooms</Label>
+                <div className="flex gap-1.5">
                   {[1, 2, 3, 4, 5].map((num) => (
                     <Button
                       key={num}
                       size="sm"
+                      className="h-7 text-[10px] px-2.5"
                       variant={filters.bathrooms.includes(num) ? "default" : "outline"}
                       onClick={() => toggleArrayFilter('bathrooms', num.toString())}
                     >
@@ -320,14 +322,14 @@ const EnhancedSearchFilters = () => {
 
           {/* Area Range */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Square className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Square className="h-4 w-4 text-primary" />
                 Area Size (m²)
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="px-2">
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="px-1">
                 <Slider
                   value={filters.areaRange}
                   onValueChange={(value) => updateFilter('areaRange', value as [number, number])}
@@ -336,7 +338,7 @@ const EnhancedSearchFilters = () => {
                   className="w-full"
                 />
               </div>
-              <div className="flex justify-between text-sm text-gray-600">
+              <div className="flex justify-between text-[10px] text-muted-foreground">
                 <span>{filters.areaRange[0]} m²</span>
                 <span>{filters.areaRange[1]}+ m²</span>
               </div>
@@ -345,22 +347,22 @@ const EnhancedSearchFilters = () => {
 
           {/* Amenities */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Star className="h-4 w-4 text-primary" />
                 Amenities
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <CardContent className="p-3 pt-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {amenities.map((amenity) => (
-                  <div key={amenity} className="flex items-center space-x-2">
+                  <div key={amenity} className="flex items-center space-x-1.5">
                     <Checkbox
                       id={amenity}
                       checked={filters.amenities.includes(amenity)}
                       onCheckedChange={() => toggleArrayFilter('amenities', amenity)}
                     />
-                    <Label htmlFor={amenity} className="text-sm cursor-pointer">
+                    <Label htmlFor={amenity} className="text-[10px] cursor-pointer">
                       {amenity}
                     </Label>
                   </div>
@@ -371,22 +373,22 @@ const EnhancedSearchFilters = () => {
 
           {/* Special Features */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Settings className="h-4 w-4 text-primary" />
                 Special Features
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <CardContent className="p-3 pt-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {specialFeatures.map((feature) => (
-                  <div key={feature} className="flex items-center space-x-2">
+                  <div key={feature} className="flex items-center space-x-1.5">
                     <Checkbox
                       id={feature}
                       checked={filters.features.includes(feature)}
                       onCheckedChange={() => toggleArrayFilter('features', feature)}
                     />
-                    <Label htmlFor={feature} className="text-sm cursor-pointer">
+                    <Label htmlFor={feature} className="text-[10px] cursor-pointer">
                       {feature}
                     </Label>
                   </div>
@@ -397,30 +399,30 @@ const EnhancedSearchFilters = () => {
         </div>
 
         {/* Sidebar - Saved Filters & Quick Actions */}
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* Saved Filters */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Filter className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Filter className="h-4 w-4 text-primary" />
                 Saved Filters
               </CardTitle>
-              <CardDescription>Quick access to frequently used filters</CardDescription>
+              <CardDescription className="text-[10px]">Quick access to frequently used filters</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-3 pt-0 space-y-2">
               {savedFilters.map((filter, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-2 bg-accent/50 rounded-lg">
                   <div>
-                    <div className="font-medium text-sm">{filter.name}</div>
-                    <div className="text-xs text-gray-500">{filter.count} properties</div>
+                    <div className="text-xs font-medium">{filter.name}</div>
+                    <div className="text-[10px] text-muted-foreground">{filter.count} properties</div>
                   </div>
-                  <Button size="sm" variant="ghost">
+                  <Button size="sm" variant="ghost" className="h-6 text-[10px]">
                     Apply
                   </Button>
                 </div>
               ))}
-              <Button size="sm" variant="outline" className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button size="sm" variant="outline" className="w-full h-7 text-[10px]">
+                <Plus className="h-3 w-3 mr-1.5" />
                 Save Current Filter
               </Button>
             </CardContent>
@@ -428,18 +430,18 @@ const EnhancedSearchFilters = () => {
 
           {/* Date Range */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+            <CardHeader className="p-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Calendar className="h-4 w-4 text-primary" />
                 Date Range
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 pt-0">
               <Select 
                 value={filters.dateRange} 
                 onValueChange={(value) => updateFilter('dateRange', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -455,23 +457,23 @@ const EnhancedSearchFilters = () => {
 
           {/* Filter Summary */}
           <Card>
-            <CardHeader>
-              <CardTitle>Filter Summary</CardTitle>
+            <CardHeader className="p-3">
+              <CardTitle className="text-sm">Filter Summary</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-sm">
+            <CardContent className="p-3 pt-0 space-y-1.5">
+              <div className="text-[11px]">
                 <strong>{getActiveFilterCount()}</strong> filters applied
               </div>
               {filters.location && (
-                <Badge variant="secondary">Location: {filters.location}</Badge>
+                <Badge variant="secondary" className="text-[10px]">Location: {filters.location}</Badge>
               )}
               {filters.propertyTypes.length > 0 && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="text-[10px]">
                   {filters.propertyTypes.length} Property Types
                 </Badge>
               )}
               {filters.amenities.length > 0 && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="text-[10px]">
                   {filters.amenities.length} Amenities
                 </Badge>
               )}
