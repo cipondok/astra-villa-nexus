@@ -1,26 +1,27 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Users, Camera, Clock, FileText, Upload, Bell, MapPin } from "lucide-react";
+import { ImageCompressor } from "@/components/ui/ImageCompressor";
 
 const UserExperienceTips = () => {
   const performanceTips = [
     {
-      icon: <Camera className="h-4 w-4" />,
+      icon: <Camera className="h-3.5 w-3.5" />,
       text: "Use image compression before uploading (recommended: WebP format)",
       priority: "High"
     },
     {
-      icon: <FileText className="h-4 w-4" />,
+      icon: <FileText className="h-3.5 w-3.5" />,
       text: "Keep property descriptions under 500 words for better readability",
       priority: "Medium"
     },
     {
-      icon: <Upload className="h-4 w-4" />,
+      icon: <Upload className="h-3.5 w-3.5" />,
       text: "Use the bulk upload feature for multiple properties",
       priority: "Medium"
     },
     {
-      icon: <Bell className="h-4 w-4" />,
+      icon: <Bell className="h-3.5 w-3.5" />,
       text: "Enable browser notifications for real-time updates",
       priority: "Low"
     }
@@ -28,22 +29,22 @@ const UserExperienceTips = () => {
 
   const engagementTips = [
     {
-      icon: <Camera className="h-4 w-4" />,
+      icon: <Camera className="h-3.5 w-3.5" />,
       text: "Add high-quality photos (minimum 1200x800px resolution)",
       impact: "Essential"
     },
     {
-      icon: <Users className="h-4 w-4" />,
+      icon: <Users className="h-3.5 w-3.5" />,
       text: "Include virtual tours to increase engagement by 40%",
       impact: "High"
     },
     {
-      icon: <Clock className="h-4 w-4" />,
+      icon: <Clock className="h-3.5 w-3.5" />,
       text: "Respond to inquiries within 2 hours for better conversion",
       impact: "Critical"
     },
     {
-      icon: <MapPin className="h-4 w-4" />,
+      icon: <MapPin className="h-3.5 w-3.5" />,
       text: "Use descriptive titles with location and key features",
       impact: "Medium"
     }
@@ -70,6 +71,27 @@ const UserExperienceTips = () => {
 
   return (
     <div className="space-y-3">
+      {/* Image Compression Tool */}
+      <Card>
+        <CardHeader className="p-3">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <Camera className="h-4 w-4 text-primary" />
+            Image Compression Tool
+          </CardTitle>
+          <CardDescription className="text-[11px]">
+            Compress images to WebP format before uploading for optimal performance
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          <ImageCompressor 
+            maxFiles={5}
+            showPreview={true}
+            autoCompress={true}
+            forceWebP={true}
+          />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader className="p-3">
           <CardTitle className="flex items-center gap-2 text-sm">
