@@ -72,6 +72,7 @@ import TestingDashboard from "./TestingDashboard";
 import VIPAnalyticsDashboard from "./VIPAnalyticsDashboard";
 import BookingManagement from "./BookingManagement";
 import TransactionManagementTabs from "./TransactionManagementTabs";
+import LiveChatManagement from "./LiveChatManagement";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -100,6 +101,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "ai-bot-management": { label: "AI Bot Management", category: "AI & Tools" },
   "feedback-management": { label: "Feedback", category: "Content" },
   "customer-service": { label: "Customer Service", category: "Support" },
+  "chat-management": { label: "Chat Management", category: "Support" },
   "contact-management": { label: "Contacts", category: "Support" },
   "vendors-hub": { label: "Vendors Hub", category: "Vendors & Services" },
   "homepage-slider": { label: "Homepage Slider", category: "Content" },
@@ -205,6 +207,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <FeedbackManagement />;
       case "customer-service":
         return <CustomerServiceCenter />;
+      case "chat-management":
+        return <LiveChatManagement />;
       case "contact-management":
         return <ContactManagement />;
       case "vendors-hub":
