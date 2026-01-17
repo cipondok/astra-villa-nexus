@@ -269,14 +269,19 @@ const LocationSelector = ({
         </div>
 
         <div>
-          <Label htmlFor="subdistrict">
+          <Label htmlFor="subdistrict" className="flex items-center gap-2">
             {t.subdistrict} {subdistricts.length === 0 && selectedDistrict ? t.optional : '*'}
+            {selectedDistrict && subdistricts.length > 0 && (
+              <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                {subdistricts.length} {language === 'id' ? 'total' : 'total'}
+              </span>
+            )}
           </Label>
           <SearchableSelect
             options={subdistricts.map(s => ({ value: s, label: s }))}
             value={selectedSubdistrict}
             onChange={onSubdistrictChange}
-            placeholder={!selectedDistrict ? t.selectDistrict : t.selectSubdistrict}
+            placeholder={!selectedDistrict ? t.selectDistrict : `${t.selectSubdistrict}${subdistricts.length > 0 ? ` (${subdistricts.length})` : ''}`}
             searchPlaceholder={language === 'id' ? 'Cari kelurahan/desa...' : 'Search subdistrict/village...'}
             disabled={!selectedDistrict}
             className="mt-1"

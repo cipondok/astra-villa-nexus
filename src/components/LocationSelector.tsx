@@ -377,14 +377,21 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
         {/* Subdistrict/Village */}
         <div>
-          <Label htmlFor="subdistrict" className="text-sm">Subdistrict/Village</Label>
+          <Label htmlFor="subdistrict" className="text-sm flex items-center gap-2">
+            Kelurahan/Desa
+            {value.district_code && subdistricts.length > 0 && (
+              <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                {subdistricts.length} total
+              </span>
+            )}
+          </Label>
           <Select
             value={value.subdistrict_code || ''}
             onValueChange={handleSubdistrictChange}
             disabled={disabled || loading || !value.district_code}
           >
             <SelectTrigger id="subdistrict">
-              <SelectValue placeholder="Select Subdistrict" />
+              <SelectValue placeholder={subdistricts.length > 0 ? `Select Kelurahan/Desa (${subdistricts.length})` : "Select Kelurahan/Desa"} />
             </SelectTrigger>
             <SelectContent>
               {subdistricts.map((subdistrict) => (
