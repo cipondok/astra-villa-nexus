@@ -129,9 +129,9 @@ const IndonesianLocationManager = () => {
     Array.from(new Map(locations.filter(l => l.province_code === selectedProvince).map(l => [l.city_code, { code: l.city_code, name: l.city_name }])).values()) : [];
   const cities = uniqueCities.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Get all unique cities for cities tab dropdown
+  // Get all unique cities for cities tab dropdown - exclude province-only entries (empty city_code)
   const allUniqueCities = locations ? 
-    Array.from(new Map(locations.map(l => [l.city_code, { code: l.city_code, name: l.city_name, province: l.province_name }])).values()) : [];
+    Array.from(new Map(locations.filter(l => l.city_code && l.city_code.trim() !== '').map(l => [l.city_code, { code: l.city_code, name: l.city_name, province: l.province_name }])).values()) : [];
   const allCities = allUniqueCities.sort((a, b) => a.name.localeCompare(b.name));
 
   // Get all unique districts for districts tab dropdown
