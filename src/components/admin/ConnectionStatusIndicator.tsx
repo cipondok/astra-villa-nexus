@@ -30,27 +30,27 @@ const ConnectionStatusIndicator = () => {
   const getStatusIcon = () => {
     switch (connectionStatus) {
       case 'connected':
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+        return <CheckCircle2 className="h-3.5 w-3.5 text-primary" />;
       case 'connecting':
       case 'retry':
-        return <RefreshCw className={`h-5 w-5 text-blue-500 ${(isLoading || isRetrying) ? 'animate-spin' : ''}`} />;
+        return <RefreshCw className={`h-3.5 w-3.5 text-accent ${(isLoading || isRetrying) ? 'animate-spin' : ''}`} />;
       case 'error':
-        return <AlertCircle className="h-5 w-5 text-yellow-500" />;
+        return <AlertCircle className="h-3.5 w-3.5 text-warning" />;
       case 'offline':
-        return <WifiOff className="h-5 w-5 text-red-500" />;
+        return <WifiOff className="h-3.5 w-3.5 text-destructive" />;
       default:
-        return <Wifi className="h-5 w-5 text-gray-500" />;
+        return <Wifi className="h-3.5 w-3.5 text-muted-foreground" />;
     }
   };
 
-  const getStatusColor = () => {
+  const getStatusBorderColor = () => {
     switch (connectionStatus) {
-      case 'connected': return 'bg-green-50 border-green-200';
+      case 'connected': return 'border-l-primary';
       case 'connecting': 
-      case 'retry': return 'bg-blue-50 border-blue-200';
-      case 'error': return 'bg-yellow-50 border-yellow-200';
-      case 'offline': return 'bg-red-50 border-red-200';
-      default: return 'bg-gray-50 border-gray-200';
+      case 'retry': return 'border-l-accent';
+      case 'error': return 'border-l-warning';
+      case 'offline': return 'border-l-destructive';
+      default: return 'border-l-muted';
     }
   };
 
@@ -70,63 +70,66 @@ const ConnectionStatusIndicator = () => {
     : 100;
 
   return (
-    <Card className={`${getStatusColor()} transition-colors duration-200`}>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2">
+    <Card className={`bg-card/50 border-border/50 border-l-4 ${getStatusBorderColor()} transition-colors duration-200`}>
+      <CardHeader className="py-2 px-3">
+        <CardTitle className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1.5">
             {getStatusIcon()}
-            Database Connection
+            <span className="text-foreground">Database</span>
           </div>
-          <Badge variant={isConnected ? 'default' : 'destructive'}>
+          <Badge 
+            variant={isConnected ? 'default' : 'destructive'}
+            className="text-[8px] h-4 px-1.5"
+          >
             {getStatusText()}
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="px-3 pb-3 pt-0 space-y-2">
         {/* Connection Health Score */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="flex items-center gap-1">
-              <Activity className="h-3 w-3" />
-              Health Score
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-[9px]">
+            <span className="flex items-center gap-1 text-muted-foreground">
+              <Activity className="h-2.5 w-2.5" />
+              Health
             </span>
-            <span className="font-medium">{healthScore}%</span>
+            <span className="font-medium text-foreground">{healthScore}%</span>
           </div>
           <Progress value={healthScore} className="h-1" />
         </div>
 
         {/* Connection Metrics */}
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="space-y-1">
-            <div className="text-muted-foreground">Response Time</div>
-            <div className="font-medium">
+        <div className="grid grid-cols-2 gap-2 text-[9px]">
+          <div>
+            <div className="text-muted-foreground">Response</div>
+            <div className="font-medium text-foreground">
               {metrics.averageResponseTime > 0 ? `${Math.round(metrics.averageResponseTime)}ms` : 'N/A'}
             </div>
           </div>
-          <div className="space-y-1">
+          <div>
             <div className="text-muted-foreground">Failures</div>
-            <div className="font-medium">{metrics.consecutiveFailures}</div>
+            <div className="font-medium text-foreground">{metrics.consecutiveFailures}</div>
           </div>
         </div>
 
         {/* Last Checked */}
         {lastChecked && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3 w-3" />
-            Last checked: {lastChecked.toLocaleTimeString()}
+          <div className="flex items-center gap-1 text-[8px] text-muted-foreground">
+            <Clock className="h-2.5 w-2.5" />
+            {lastChecked.toLocaleTimeString()}
           </div>
         )}
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-1">
           <Button 
             size="sm" 
             variant="outline" 
             onClick={retryConnection}
             disabled={isLoading || isRetrying}
-            className="flex-1"
+            className="flex-1 h-6 text-[9px]"
           >
-            <RefreshCw className={`h-3 w-3 mr-1 ${(isLoading || isRetrying) ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-2.5 w-2.5 mr-1 ${(isLoading || isRetrying) ? 'animate-spin' : ''}`} />
             Retry
           </Button>
           {connectionStatus === 'offline' && (
@@ -134,7 +137,7 @@ const ConnectionStatusIndicator = () => {
               size="sm" 
               variant="default" 
               onClick={resetConnection}
-              className="flex-1"
+              className="flex-1 h-6 text-[9px]"
             >
               Reset
             </Button>
@@ -143,10 +146,10 @@ const ConnectionStatusIndicator = () => {
 
         {/* Error Message */}
         {(connectionStatus === 'error' || connectionStatus === 'offline') && (
-          <div className="text-xs text-muted-foreground p-2 bg-white/50 rounded border">
+          <div className="text-[8px] text-muted-foreground p-1.5 bg-muted/30 rounded border border-border/50">
             {connectionStatus === 'offline' 
-              ? 'Unable to reach database after multiple attempts. Check your internet connection.'
-              : 'Experiencing connection issues. Retrying automatically...'
+              ? 'Unable to reach database. Check connection.'
+              : 'Connection issues. Retrying...'
             }
           </div>
         )}

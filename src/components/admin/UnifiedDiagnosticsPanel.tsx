@@ -154,63 +154,63 @@ const UnifiedDiagnosticsPanel = () => {
   const databaseChecks = generateDatabaseChecks();
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
+    <div className="space-y-3">
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="flex items-center gap-2 text-xs text-foreground">
+            <Activity className="h-3.5 w-3.5" />
             Complete System Diagnostics & Health Monitor
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7">
-              <TabsTrigger value="overview" className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
+        <CardContent className="px-3 pb-3 pt-0">
+          <Tabs defaultValue="overview" className="space-y-3">
+            <TabsList className="inline-flex h-7 w-auto gap-0.5 bg-muted/40 p-0.5 rounded-md border border-border/30 flex-wrap">
+              <TabsTrigger value="overview" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="code" className="flex items-center gap-2">
-                <Code className="h-4 w-4" />
+              <TabsTrigger value="code" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <Code className="h-3 w-3" />
                 Code
               </TabsTrigger>
-              <TabsTrigger value="functions" className="flex items-center gap-2">
-                <Zap className="h-4 w-4" />
+              <TabsTrigger value="functions" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <Zap className="h-3 w-3" />
                 Functions
               </TabsTrigger>
-              <TabsTrigger value="bugs" className="flex items-center gap-2">
-                <Bug className="h-4 w-4" />
+              <TabsTrigger value="bugs" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <Bug className="h-3 w-3" />
                 Bugs
               </TabsTrigger>
-              <TabsTrigger value="database" className="flex items-center gap-2">
-                <Database className="h-4 w-4" />
+              <TabsTrigger value="database" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <Database className="h-3 w-3" />
                 Database
               </TabsTrigger>
-              <TabsTrigger value="security" className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
+              <TabsTrigger value="security" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <Shield className="h-3 w-3" />
                 Security
               </TabsTrigger>
-              <TabsTrigger value="alerts" className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
+              <TabsTrigger value="alerts" className="text-[10px] h-6 px-2 flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
                 Alerts
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-6">
+            <TabsContent value="overview" className="space-y-3">
               <RealTimeSystemHealth />
             </TabsContent>
 
-            <TabsContent value="code" className="space-y-6">
+            <TabsContent value="code" className="space-y-3">
               <CodeHealthChecker 
                 issues={codeIssues}
                 healthScore={82}
               />
             </TabsContent>
 
-            <TabsContent value="functions" className="space-y-6">
+            <TabsContent value="functions" className="space-y-3">
               <FunctionHealthChecker functions={functionStatus} />
             </TabsContent>
 
-            <TabsContent value="bugs" className="space-y-6">
+            <TabsContent value="bugs" className="space-y-3">
               <BugDetectionSystem 
                 bugs={bugs}
                 trendDirection="down"
@@ -219,7 +219,7 @@ const UnifiedDiagnosticsPanel = () => {
               />
             </TabsContent>
 
-            <TabsContent value="database" className="space-y-6">
+            <TabsContent value="database" className="space-y-3">
               <DatabaseHealthChecker 
                 checks={databaseChecks}
                 connectionStatus="connected"
@@ -231,25 +231,25 @@ const UnifiedDiagnosticsPanel = () => {
               <SupabaseDiagnosticsPanel />
             </TabsContent>
 
-            <TabsContent value="security" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5" />
+            <TabsContent value="security" className="space-y-3">
+              <Card className="bg-card/50 border-border/50 border-l-4 border-l-secondary">
+                <CardHeader className="py-2 px-3">
+                  <CardTitle className="flex items-center gap-2 text-xs text-foreground">
+                    <Shield className="h-3.5 w-3.5" />
                     Security Monitoring
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Security monitoring and vulnerability scanning</p>
-                    <p className="text-sm mt-2">Coming soon with advanced threat detection</p>
+                <CardContent className="px-3 pb-3 pt-0">
+                  <div className="text-center py-6 text-muted-foreground">
+                    <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-xs">Security monitoring and vulnerability scanning</p>
+                    <p className="text-[10px] mt-1">Coming soon with advanced threat detection</p>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="alerts" className="space-y-6">
+            <TabsContent value="alerts" className="space-y-3">
               <EnhancedAlertManagement />
             </TabsContent>
           </Tabs>
