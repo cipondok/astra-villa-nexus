@@ -1,3 +1,9 @@
+/* All @import statements MUST be at the very top */
+@import './styles/mobile-optimizations.css';
+@import './styles/mobile-first-responsive.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,16 +29,6 @@
 .snap-start {
   scroll-snap-align: start;
 }
-
-/* Import mobile optimizations */
-@import './styles/mobile-optimizations.css';
-@import './styles/mobile-first-responsive.css';
-
-/* Apple System Fonts */
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 /* Mobile-First Base Styles */
 html {
