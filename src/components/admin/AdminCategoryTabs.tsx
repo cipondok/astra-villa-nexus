@@ -36,20 +36,20 @@ const categoryIcons: Record<string, LucideIcon> = {
   "help": HelpCircle,
 };
 
-const categoryColors: Record<string, string> = {
-  "overview": "from-blue-500 to-cyan-500",
-  "transactions": "from-green-500 to-emerald-500",
-  "astra-token": "from-yellow-500 to-orange-500",
-  "tools": "from-slate-500 to-zinc-500",
-  "core-management": "from-violet-500 to-purple-500",
-  "customer-service": "from-pink-500 to-rose-500",
-  "vendor-management": "from-orange-500 to-amber-500",
-  "analytics-monitoring": "from-indigo-500 to-blue-500",
-  "content-settings": "from-teal-500 to-cyan-500",
-  "system-settings": "from-gray-500 to-slate-500",
-  "technical": "from-red-500 to-rose-500",
-  "features": "from-emerald-500 to-green-500",
-  "help": "from-sky-500 to-blue-500",
+const categoryThemes: Record<string, { header: string; active: string }> = {
+  overview: { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
+  transactions: { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
+  "astra-token": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
+  tools: { header: "bg-muted text-foreground", active: "bg-primary text-primary-foreground" },
+  "core-management": { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
+  "customer-service": { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
+  "vendor-management": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
+  "analytics-monitoring": { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
+  "content-settings": { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
+  "system-settings": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
+  technical: { header: "bg-destructive text-destructive-foreground", active: "bg-destructive text-destructive-foreground" },
+  features: { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
+  help: { header: "bg-muted text-foreground", active: "bg-primary text-primary-foreground" },
 };
 
 interface AdminCategoryTabsProps {
@@ -77,7 +77,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
 
   const categorySections = navigationSections[activeCategory as keyof typeof navigationSections] || [];
   const CategoryIcon = categoryIcons[activeCategory] || LayoutDashboard;
-  const categoryColor = categoryColors[activeCategory] || "from-gray-500 to-slate-500";
+  const theme = categoryThemes[activeCategory] || categoryThemes.overview;
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
 
   return (
@@ -85,10 +85,10 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
       {/* Compact Combined Header + Tabs */}
       <div className="bg-background/80 backdrop-blur-sm border border-border/40 rounded-lg overflow-hidden">
         {/* Mini Header */}
-        <div className={`bg-gradient-to-r ${categoryColor} px-2.5 py-1.5 flex items-center gap-2`}>
-          <CategoryIcon className="h-3 w-3 text-white" />
-          <span className="text-[10px] font-semibold text-white">{categoryTitle}</span>
-          <span className="text-[9px] text-white/60">({categorySections.length})</span>
+        <div className={cn("px-2.5 py-1.5 flex items-center gap-2", theme.header)}>
+          <CategoryIcon className="h-3 w-3" />
+          <span className="text-[10px] font-semibold">{categoryTitle}</span>
+          <span className="text-[9px] opacity-70">({categorySections.length})</span>
         </div>
 
         {/* Compact Tabs */}
@@ -105,7 +105,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
                   className={cn(
                     "flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-all duration-150 whitespace-nowrap shrink-0",
                     isActive
-                      ? `bg-gradient-to-r ${categoryColor} text-white shadow-sm`
+                      ? cn("shadow-sm", theme.active)
                       : "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
                   )}
                 >
