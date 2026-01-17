@@ -71,26 +71,13 @@ const UserExperienceTips = () => {
 
   return (
     <div className="space-y-3">
-      {/* Image Compression Tool */}
-      <Card>
-        <CardHeader className="p-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Camera className="h-4 w-4 text-primary" />
-            Image Compression Tool
-          </CardTitle>
-          <CardDescription className="text-[11px]">
-            Compress images to WebP format before uploading for optimal performance
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-3 pt-0">
-          <ImageCompressor 
-            maxFiles={5}
-            showPreview={true}
-            autoCompress={true}
-            forceWebP={true}
-          />
-        </CardContent>
-      </Card>
+      {/* Image Compression Tool - standalone without extra Card wrapper */}
+      <ImageCompressor 
+        maxFiles={5}
+        showPreview={true}
+        autoCompress={true}
+        forceWebP={true}
+      />
 
       <Card>
         <CardHeader className="p-3">
