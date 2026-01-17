@@ -234,114 +234,119 @@ const SecurityMonitoringDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Security Monitoring</h2>
-          <p className="text-gray-400">Monitor login attempts, security events, and threats</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={timeFilter} onValueChange={setTimeFilter}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1h">Last Hour</SelectItem>
-              <SelectItem value="24h">Last 24h</SelectItem>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={fetchSecurityData} variant="outline" size="sm">
-            <Activity className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
+    <div className="space-y-3">
+      {/* Compact Header */}
+      <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-destructive text-destructive-foreground shadow-sm">
+              <Shield className="h-4 w-4" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold text-foreground">Security Monitoring</h1>
+              <p className="text-[10px] text-muted-foreground">Monitor login attempts, security events, and threats</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select value={timeFilter} onValueChange={setTimeFilter}>
+              <SelectTrigger className="w-24 h-7 text-[10px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1h" className="text-[10px]">Last Hour</SelectItem>
+                <SelectItem value="24h" className="text-[10px]">Last 24h</SelectItem>
+                <SelectItem value="7d" className="text-[10px]">Last 7 days</SelectItem>
+                <SelectItem value="30d" className="text-[10px]">Last 30 days</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={fetchSecurityData} variant="outline" size="sm" className="h-7 text-[10px]">
+              <Activity className="h-3 w-3 mr-1" />
+              Refresh
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Security Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Attempts</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{securityStats.totalAttempts}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Failed Attempts</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-500">{securityStats.failedAttempts}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unique IPs</CardTitle>
-            <Globe className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{securityStats.uniqueIPs}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Lockouts</CardTitle>
-            <Lock className="h-4 w-4 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-500">{securityStats.activeLockouts}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">High Risk Events</CardTitle>
-            <Shield className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-500">{securityStats.highRiskEvents}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-500">
-              {securityStats.successRate.toFixed(1)}%
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+        <Card className="border-l-4 border-l-primary">
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between">
+              <Activity className="h-3.5 w-3.5 text-muted-foreground" />
             </div>
+            <div className="text-lg font-bold">{securityStats.totalAttempts}</div>
+            <div className="text-[9px] text-muted-foreground">Total Attempts</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-destructive">
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between">
+              <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
+            </div>
+            <div className="text-lg font-bold text-destructive">{securityStats.failedAttempts}</div>
+            <div className="text-[9px] text-muted-foreground">Failed</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-accent">
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between">
+              <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+            <div className="text-lg font-bold">{securityStats.uniqueIPs}</div>
+            <div className="text-[9px] text-muted-foreground">Unique IPs</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-secondary">
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between">
+              <Lock className="h-3.5 w-3.5 text-secondary-foreground" />
+            </div>
+            <div className="text-lg font-bold text-secondary-foreground">{securityStats.activeLockouts}</div>
+            <div className="text-[9px] text-muted-foreground">Lockouts</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-destructive">
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between">
+              <Shield className="h-3.5 w-3.5 text-destructive" />
+            </div>
+            <div className="text-lg font-bold text-destructive">{securityStats.highRiskEvents}</div>
+            <div className="text-[9px] text-muted-foreground">High Risk</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-primary">
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between">
+              <TrendingUp className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <div className="text-lg font-bold text-primary">{securityStats.successRate.toFixed(1)}%</div>
+            <div className="text-[9px] text-muted-foreground">Success Rate</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-1 bg-gray-800/50 p-1 rounded-lg">
+      <div className="flex space-x-1 bg-muted/30 p-1 rounded-lg border border-border/40">
         {[
           { id: 'overview', label: 'Login Attempts', icon: Activity },
-          { id: 'lockouts', label: 'Account Lockouts', icon: Lock },
+          { id: 'lockouts', label: 'Lockouts', icon: Lock },
           { id: 'security', label: 'Security Events', icon: Shield }
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-medium transition-colors ${
               activeTab === tab.id
                 ? 'bg-primary text-primary-foreground'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
             }`}
           >
-            <tab.icon className="h-4 w-4" />
+            <tab.icon className="h-3 w-3" />
             {tab.label}
           </button>
         ))}

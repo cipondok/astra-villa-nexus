@@ -39,20 +39,17 @@ const PerformanceMonitor = () => {
 
   useEffect(() => {
     loadPerformanceData();
-    const interval = setInterval(loadPerformanceData, 10000); // Update every 10 seconds
+    const interval = setInterval(loadPerformanceData, 10000);
     return () => clearInterval(interval);
   }, []);
 
   const loadPerformanceData = async () => {
-    // Get cache size
     const size = await getCacheSize();
     setCacheSize(size);
 
-    // Get React Query cache stats
     const stats = cacheUtils.getCacheStats();
     setCacheStats(stats);
 
-    // Get performance metrics
     if ('performance' in window) {
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
       const paint = performance.getEntriesByType('paint');
@@ -75,27 +72,19 @@ const PerformanceMonitor = () => {
 
   const getPerformanceScore = () => {
     if (!performanceMetrics) return 0;
-    
     const { firstContentfulPaint, totalLoadTime } = performanceMetrics;
-    
-    // Simple scoring based on Core Web Vitals thresholds
     let score = 100;
-    
-    // FCP scoring (good: <1.8s, poor: >3s)
     if (firstContentfulPaint > 3000) score -= 30;
     else if (firstContentfulPaint > 1800) score -= 15;
-    
-    // Total load time scoring (good: <3s, poor: >5s)
     if (totalLoadTime > 5000) score -= 30;
     else if (totalLoadTime > 3000) score -= 15;
-    
     return Math.max(score, 0);
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-500';
-    if (score >= 70) return 'text-yellow-500';
-    return 'text-red-500';
+    if (score >= 90) return 'text-primary';
+    if (score >= 70) return 'text-secondary-foreground';
+    return 'text-destructive';
   };
 
   const formatBytes = (bytes: number) => {
@@ -107,47 +96,49 @@ const PerformanceMonitor = () => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-red-500/10 rounded-lg border border-yellow-200/50 dark:border-yellow-800/50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center">
-            <Zap className="h-4 w-4 text-white" />
+    <div className="space-y-3">
+      {/* Compact Header */}
+      <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-secondary text-secondary-foreground shadow-sm">
+              <Zap className="h-4 w-4" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold text-foreground">Performance Monitor</h1>
+              <p className="text-[10px] text-muted-foreground">Monitor app performance, cache usage, and optimizations</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-sm font-bold">Performance Monitor</h2>
-            <p className="text-[10px] text-muted-foreground">Monitor app performance, cache usage, and optimizations</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {updateAvailable && (
-            <Button onClick={updateApp} size="sm" className="h-7 text-[10px] bg-blue-600 hover:bg-blue-700">
-              <Download className="h-3 w-3 mr-1" />
-              Update
+          <div className="flex items-center gap-2">
+            {updateAvailable && (
+              <Button onClick={updateApp} size="sm" className="h-7 text-[10px]">
+                <Download className="h-3 w-3 mr-1" />
+                Update
+              </Button>
+            )}
+            <Button onClick={loadPerformanceData} variant="outline" size="sm" className="h-7 text-[10px]">
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Refresh
             </Button>
-          )}
-          <Button onClick={loadPerformanceData} variant="outline" size="sm" className="h-7 text-[10px]">
-            <RefreshCw className="h-3 w-3 mr-1" />
-            Refresh
-          </Button>
+          </div>
         </div>
       </div>
 
       {/* Performance Score */}
-      <Card className="border-yellow-200/50 dark:border-yellow-800/30">
+      <Card className="border-l-4 border-l-primary">
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-2">
-            <Zap className="h-3 w-3 text-yellow-600" />
+            <Zap className="h-3 w-3 text-primary" />
             Performance Score
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 pt-0">
           <div className="flex items-center gap-3">
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold">
               <span className={getScoreColor(getPerformanceScore())}>
                 {getPerformanceScore()}
               </span>
-              <span className="text-sm text-muted-foreground">/100</span>
+              <span className="text-xs text-muted-foreground">/100</span>
             </div>
             <div className="flex-1">
               <Progress value={getPerformanceScore()} className="h-1.5" />
@@ -156,176 +147,155 @@ const PerformanceMonitor = () => {
         </CardContent>
       </Card>
 
-      {/* Performance Metrics */}
+      {/* Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50">
-          <div className="flex items-center gap-2">
-            <Clock className="h-3 w-3 text-blue-600" />
-            <span className="text-[9px] text-muted-foreground">First Paint</span>
-          </div>
-          <div className="text-sm font-bold mt-1">
-            {performanceMetrics ? `${Math.round(performanceMetrics.firstPaint)}ms` : '--'}
-          </div>
-        </div>
+        <Card className="border border-border/40">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <Clock className="h-3 w-3 text-primary" />
+              <span className="text-[9px] text-muted-foreground">First Paint</span>
+            </div>
+            <div className="text-sm font-bold mt-1">
+              {performanceMetrics ? `${Math.round(performanceMetrics.firstPaint)}ms` : '--'}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50">
-          <div className="flex items-center gap-2">
-            <Activity className="h-3 w-3 text-green-600" />
-            <span className="text-[9px] text-muted-foreground">Contentful Paint</span>
-          </div>
-          <div className="text-sm font-bold mt-1">
-            {performanceMetrics ? `${Math.round(performanceMetrics.firstContentfulPaint)}ms` : '--'}
-          </div>
-        </div>
+        <Card className="border border-border/40">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <Activity className="h-3 w-3 text-primary" />
+              <span className="text-[9px] text-muted-foreground">Contentful Paint</span>
+            </div>
+            <div className="text-sm font-bold mt-1">
+              {performanceMetrics ? `${Math.round(performanceMetrics.firstContentfulPaint)}ms` : '--'}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50">
-          <div className="flex items-center gap-2">
-            <Globe className="h-3 w-3 text-purple-600" />
-            <span className="text-[9px] text-muted-foreground">DOM Ready</span>
-          </div>
-          <div className="text-sm font-bold mt-1">
-            {performanceMetrics ? `${performanceMetrics.domContentLoaded}ms` : '--'}
-          </div>
-        </div>
+        <Card className="border border-border/40">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <Globe className="h-3 w-3 text-primary" />
+              <span className="text-[9px] text-muted-foreground">DOM Ready</span>
+            </div>
+            <div className="text-sm font-bold mt-1">
+              {performanceMetrics ? `${performanceMetrics.domContentLoaded}ms` : '--'}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="p-2 rounded-lg border bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50">
-          <div className="flex items-center gap-2">
-            <Zap className="h-3 w-3 text-orange-600" />
-            <span className="text-[9px] text-muted-foreground">Total Load</span>
-          </div>
-          <div className="text-sm font-bold mt-1">
-            {performanceMetrics ? `${Math.round(performanceMetrics.totalLoadTime / 1000)}s` : '--'}
-          </div>
-        </div>
+        <Card className="border border-border/40">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-2">
+              <Zap className="h-3 w-3 text-primary" />
+              <span className="text-[9px] text-muted-foreground">Total Load</span>
+            </div>
+            <div className="text-sm font-bold mt-1">
+              {performanceMetrics ? `${Math.round(performanceMetrics.totalLoadTime / 1000)}s` : '--'}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Service Worker Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wifi className="h-5 w-5" />
-            Service Worker Status
-          </CardTitle>
-          <CardDescription>Offline capabilities and caching status</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Support:</span>
-              <Badge variant={isSupported ? "default" : "destructive"}>
-                {isSupported ? 'Supported' : 'Not Supported'}
-              </Badge>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Registration:</span>
-              <Badge variant={isRegistered ? "default" : "destructive"}>
-                {isRegistered ? 'Active' : 'Inactive'}
-              </Badge>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Connection:</span>
-              <Badge variant={isOnline ? "default" : "destructive"}>
-                {isOnline ? 'Online' : 'Offline'}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Cache Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <HardDrive className="h-5 w-5" />
-              Storage Usage
+      {/* Service Worker & Cache */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <Card className="border-l-4 border-l-accent">
+          <CardHeader className="p-3 pb-2">
+            <CardTitle className="flex items-center gap-2 text-xs">
+              <Wifi className="h-3.5 w-3.5" />
+              Service Worker
             </CardTitle>
-            <CardDescription>Browser storage and cache usage</CardDescription>
+            <CardDescription className="text-[10px]">Offline capabilities</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {cacheSize && (
+          <CardContent className="p-3 pt-0">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="flex items-center gap-1">
+                <span className="text-[9px]">Support:</span>
+                <Badge variant={isSupported ? "default" : "destructive"} className="text-[8px] px-1 py-0 h-4">
+                  {isSupported ? 'Yes' : 'No'}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[9px]">Active:</span>
+                <Badge variant={isRegistered ? "default" : "destructive"} className="text-[8px] px-1 py-0 h-4">
+                  {isRegistered ? 'Yes' : 'No'}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[9px]">Online:</span>
+                <Badge variant={isOnline ? "default" : "destructive"} className="text-[8px] px-1 py-0 h-4">
+                  {isOnline ? 'Yes' : 'No'}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-secondary">
+          <CardHeader className="p-3 pb-2">
+            <CardTitle className="flex items-center gap-2 text-xs">
+              <HardDrive className="h-3.5 w-3.5" />
+              Storage
+            </CardTitle>
+            <CardDescription className="text-[10px]">Cache usage</CardDescription>
+          </CardHeader>
+          <CardContent className="p-3 pt-0 space-y-2">
+            {cacheSize ? (
               <>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Used Storage:</span>
+                <div className="flex justify-between items-center text-[10px]">
+                  <span>Used:</span>
                   <span className="font-mono">{formatBytes(cacheSize.used)}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Available:</span>
-                  <span className="font-mono">{formatBytes(cacheSize.available)}</span>
-                </div>
-                <Progress 
-                  value={(cacheSize.used / cacheSize.available) * 100} 
-                  className="h-2"
-                />
+                <Progress value={(cacheSize.used / cacheSize.available) * 100} className="h-1" />
                 <div className="flex gap-2">
-                  <Button 
-                    onClick={requestPersistentStorage} 
-                    variant="outline" 
-                    size="sm"
-                    className="flex-1"
-                  >
-                    Request Persistent Storage
+                  <Button onClick={requestPersistentStorage} variant="outline" size="sm" className="flex-1 h-6 text-[9px]">
+                    Persist
                   </Button>
-                  <Button 
-                    onClick={handleClearAllCaches} 
-                    variant="outline" 
-                    size="sm"
-                    className="flex-1"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Clear Cache
+                  <Button onClick={handleClearAllCaches} variant="outline" size="sm" className="flex-1 h-6 text-[9px]">
+                    <Trash2 className="h-2.5 w-2.5 mr-1" />
+                    Clear
                   </Button>
                 </div>
               </>
-            )}
-            {!cacheSize && (
-              <p className="text-sm text-gray-500">Storage information not available</p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Query Cache Stats
-            </CardTitle>
-            <CardDescription>React Query cache statistics</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {cacheStats && (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{cacheStats.totalQueries}</div>
-                    <div className="text-xs text-gray-500">Total Queries</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{cacheStats.activeCaches}</div>
-                    <div className="text-xs text-gray-500">Active Caches</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{cacheStats.staleCaches}</div>
-                    <div className="text-xs text-gray-500">Stale Caches</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-red-500">{cacheStats.errorCaches}</div>
-                    <div className="text-xs text-gray-500">Error Caches</div>
-                  </div>
-                </div>
-                <Button 
-                  onClick={() => cacheUtils.clearAll()} 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                >
-                  Clear Query Cache
-                </Button>
-              </>
+            ) : (
+              <p className="text-[10px] text-muted-foreground">Not available</p>
             )}
           </CardContent>
         </Card>
       </div>
+
+      {/* Query Cache */}
+      <Card className="border-l-4 border-l-primary">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="flex items-center gap-2 text-xs">
+            <Activity className="h-3.5 w-3.5" />
+            Query Cache Stats
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          {cacheStats && (
+            <div className="grid grid-cols-4 gap-2 text-center">
+              <div>
+                <div className="text-lg font-bold">{cacheStats.totalQueries}</div>
+                <div className="text-[8px] text-muted-foreground">Total</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold">{cacheStats.activeCaches}</div>
+                <div className="text-[8px] text-muted-foreground">Active</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold">{cacheStats.staleCaches}</div>
+                <div className="text-[8px] text-muted-foreground">Stale</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-destructive">{cacheStats.errorCaches}</div>
+                <div className="text-[8px] text-muted-foreground">Errors</div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
