@@ -10,7 +10,6 @@ import {
   TrendingUp, 
   Users, 
   Activity,
-  BarChart3,
   RefreshCw,
   AlertTriangle,
   CheckCircle
@@ -116,23 +115,23 @@ const ASTRATokenAnalytics = () => {
     switch (analytics.apiStatus) {
       case 'connected':
         return (
-          <Badge className="bg-green-100 text-green-800 border-green-200">
-            <CheckCircle className="h-3 w-3 mr-1" />
+          <Badge className="bg-primary/20 text-primary border border-primary/30 text-[8px] h-4 px-1.5">
+            <CheckCircle className="h-2.5 w-2.5 mr-1" />
             API Connected
           </Badge>
         );
       case 'checking':
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-            <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+          <Badge className="bg-accent/20 text-accent border border-accent/30 text-[8px] h-4 px-1.5">
+            <RefreshCw className="h-2.5 w-2.5 mr-1 animate-spin" />
             Checking
           </Badge>
         );
       case 'disconnected':
       default:
         return (
-          <Badge variant="destructive">
-            <AlertTriangle className="h-3 w-3 mr-1" />
+          <Badge variant="destructive" className="text-[8px] h-4 px-1.5">
+            <AlertTriangle className="h-2.5 w-2.5 mr-1" />
             API Disconnected
           </Badge>
         );
@@ -140,22 +139,23 @@ const ASTRATokenAnalytics = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">ASTRA Token Analytics</h2>
-          <p className="text-gray-400">Monitor token usage and user activity</p>
+          <h2 className="text-sm font-semibold text-foreground">ASTRA Token Analytics</h2>
+          <p className="text-[10px] text-muted-foreground">Monitor token usage and user activity</p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           {getStatusBadge()}
           <Button
             onClick={refreshAnalytics}
             disabled={loading}
             variant="outline"
             size="sm"
+            className="h-6 text-[10px] px-2 bg-background/50 border-border/50"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3 w-3 mr-1 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
@@ -163,79 +163,79 @@ const ASTRATokenAnalytics = () => {
 
       {/* API Status Alert */}
       {analytics.apiStatus === 'disconnected' && (
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
+        <Alert className="py-2 bg-destructive/10 border-destructive/30">
+          <AlertTriangle className="h-3 w-3" />
+          <AlertDescription className="text-[10px] text-destructive">
             ASTRA Token API is not configured. Please configure the API in System Settings first.
           </AlertDescription>
         </Alert>
       )}
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-3 h-7 bg-muted/30">
+          <TabsTrigger value="overview" className="text-[10px] h-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+          <TabsTrigger value="users" className="text-[10px] h-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Users</TabsTrigger>
+          <TabsTrigger value="transactions" className="text-[10px] h-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Transactions</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
+        <TabsContent value="overview" className="space-y-3">
           {/* Overview Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Total Users</CardTitle>
-                <Users className="h-4 w-4 text-blue-400" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+            <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-2 px-3">
+                <CardTitle className="text-[10px] font-medium text-muted-foreground">Total Users</CardTitle>
+                <Users className="h-3.5 w-3.5 text-primary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">
+              <CardContent className="px-3 pb-2 pt-0">
+                <div className="text-lg font-bold text-foreground">
                   {loading ? '...' : analytics.totalUsers.toLocaleString()}
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   +12% from last month
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Total Tokens</CardTitle>
-                <Coins className="h-4 w-4 text-green-400" />
+            <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-2 px-3">
+                <CardTitle className="text-[10px] font-medium text-muted-foreground">Total Tokens</CardTitle>
+                <Coins className="h-3.5 w-3.5 text-accent" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">
-                  {loading ? '...' : `${analytics.totalTokens.toLocaleString()} ASTRA`}
+              <CardContent className="px-3 pb-2 pt-0">
+                <div className="text-lg font-bold text-foreground">
+                  {loading ? '...' : `${analytics.totalTokens.toLocaleString()}`}
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   +8% from last month
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Transactions</CardTitle>
-                <Activity className="h-4 w-4 text-orange-400" />
+            <Card className="bg-card/50 border-border/50 border-l-4 border-l-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-2 px-3">
+                <CardTitle className="text-[10px] font-medium text-muted-foreground">Transactions</CardTitle>
+                <Activity className="h-3.5 w-3.5 text-secondary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">
+              <CardContent className="px-3 pb-2 pt-0">
+                <div className="text-lg font-bold text-foreground">
                   {loading ? '...' : analytics.totalTransactions.toLocaleString()}
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   +25% from last month
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Active Users</CardTitle>
-                <TrendingUp className="h-4 w-4 text-purple-400" />
+            <Card className="bg-card/50 border-border/50 border-l-4 border-l-destructive">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-2 px-3">
+                <CardTitle className="text-[10px] font-medium text-muted-foreground">Active Users</CardTitle>
+                <TrendingUp className="h-3.5 w-3.5 text-destructive" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">
+              <CardContent className="px-3 pb-2 pt-0">
+                <div className="text-lg font-bold text-foreground">
                   {loading ? '...' : analytics.activeUsers}
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-[8px] text-muted-foreground">
                   Currently online
                 </p>
               </CardContent>
@@ -243,35 +243,35 @@ const ASTRATokenAnalytics = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="users" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white">User Activity</CardTitle>
+        <TabsContent value="users" className="space-y-3">
+          <Card className="bg-card/50 border-border/50">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs font-semibold text-foreground">User Activity</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-sm text-gray-400">
+            <CardContent className="px-3 pb-3 pt-0">
+              <div className="text-[10px] text-muted-foreground">
                 User-specific analytics will be displayed here when the ASTRA API is fully integrated.
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="transactions" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white">Recent Transactions</CardTitle>
+        <TabsContent value="transactions" className="space-y-3">
+          <Card className="bg-card/50 border-border/50">
+            <CardHeader className="py-2 px-3">
+              <CardTitle className="text-xs font-semibold text-foreground">Recent Transactions</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <CardContent className="px-3 pb-3 pt-0">
+              <div className="space-y-2">
                 {analytics.recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <div key={activity.id} className="flex items-center justify-between p-2 bg-muted/20 rounded border border-border/30">
                     <div>
-                      <div className="font-medium text-white">{activity.user}</div>
-                      <div className="text-sm text-gray-400">{activity.action}</div>
+                      <div className="text-[10px] font-medium text-foreground">{activity.user}</div>
+                      <div className="text-[8px] text-muted-foreground">{activity.action}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium text-white">{activity.amount} ASTRA</div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-[10px] font-medium text-foreground">{activity.amount} ASTRA</div>
+                      <div className="text-[8px] text-muted-foreground">
                         {new Date(activity.timestamp).toLocaleTimeString()}
                       </div>
                     </div>
