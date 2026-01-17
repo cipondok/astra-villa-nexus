@@ -267,22 +267,24 @@ const CloudflareSettings = () => {
 
   const getSyncStatusBadge = () => {
     if (!config.sync_status) return null;
-    
-    const statusConfig = {
-      synced: { icon: CheckCircle2, color: "bg-green-500", text: "Synced" },
-      syncing: { icon: RefreshCw, color: "bg-blue-500", text: "Syncing" },
-      failed: { icon: XCircle, color: "bg-red-500", text: "Failed" },
-      pending: { icon: Clock, color: "bg-yellow-500", text: "Pending" },
-    }[config.sync_status] || { icon: AlertCircle, color: "bg-gray-500", text: "Unknown" };
+
+    const statusConfig =
+      ({
+        synced: { icon: CheckCircle2, textClass: "text-primary", text: "Synced" },
+        syncing: { icon: RefreshCw, textClass: "text-primary", text: "Syncing" },
+        failed: { icon: XCircle, textClass: "text-destructive", text: "Failed" },
+        pending: { icon: Clock, textClass: "text-muted-foreground", text: "Pending" },
+      } as const)[config.sync_status as keyof typeof config] ||
+      ({ icon: AlertCircle, textClass: "text-muted-foreground", text: "Unknown" } as const);
 
     const Icon = statusConfig.icon;
 
     return (
-      <Badge variant="outline" className="flex items-center gap-1">
-        <Icon className={`h-3 w-3 ${statusConfig.color} text-white rounded-full p-0.5`} />
+      <Badge variant="outline" className="flex items-center gap-1 text-[11px]">
+        <Icon className={`h-3 w-3 ${statusConfig.textClass}`} />
         {statusConfig.text}
         {config.last_sync_at && (
-          <span className="ml-1 text-xs text-muted-foreground">
+          <span className="ml-1 text-[10px] text-muted-foreground">
             {new Date(config.last_sync_at).toLocaleString()}
           </span>
         )}

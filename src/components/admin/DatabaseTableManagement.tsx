@@ -208,12 +208,12 @@ const DatabaseTableManagement = () => {
 
   if (!isSuperAdmin) {
     return (
-      <Card className="border-red-500/20">
-        <CardContent className="p-6 text-center">
-          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
-          <p className="text-red-700">Super administrator privileges required for database management.</p>
-          <p className="text-sm text-red-600 mt-2">
+      <Card className="border-destructive/30 bg-destructive/5">
+        <CardContent className="p-4 text-center">
+          <Shield className="h-8 w-8 text-destructive mx-auto mb-2" />
+          <h3 className="text-sm font-semibold">Access Denied</h3>
+          <p className="text-xs text-muted-foreground">Super administrator privileges required for database management.</p>
+          <p className="mt-2 text-[11px] text-muted-foreground">
             Current user: {user?.email || 'Not logged in'}
             <br />
             Super admin status: {isSuperAdmin ? 'Granted' : 'Denied'}
@@ -224,16 +224,16 @@ const DatabaseTableManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Super Admin Header */}
-      <Card className="border-red-500/20 bg-red-50/50">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <Crown className="h-6 w-6 text-red-600" />
+      <Card className="border-destructive/30 bg-destructive/5">
+        <CardContent className="p-3">
+          <div className="flex items-center gap-2">
+            <Crown className="h-4 w-4 text-destructive" />
             <div>
-              <h3 className="font-semibold text-red-900">Super Administrator Database Control</h3>
-              <p className="text-sm text-red-700">
-                Full database management access for {user?.email} - Handle with extreme caution
+              <h3 className="text-sm font-semibold">Super Administrator Database Control</h3>
+              <p className="text-[11px] text-muted-foreground">
+                Full database management access for {user?.email} — handle with extreme caution
               </p>
             </div>
           </div>
