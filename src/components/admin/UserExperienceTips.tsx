@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Zap, Users, Camera, Clock, FileText, Upload, Bell, MapPin } from "lucide-react";
 import { ImageCompressor } from "@/components/ui/ImageCompressor";
+import { InquiryResponseTracker } from "./InquiryResponseTracker";
 
 const UserExperienceTips = () => {
   const performanceTips = [
@@ -39,11 +40,6 @@ const UserExperienceTips = () => {
       impact: "High"
     },
     {
-      icon: <Clock className="h-3.5 w-3.5" />,
-      text: "Respond to inquiries within 2 hours for better conversion",
-      impact: "Critical"
-    },
-    {
       icon: <MapPin className="h-3.5 w-3.5" />,
       text: "Use descriptive titles with location and key features",
       impact: "Medium"
@@ -71,13 +67,16 @@ const UserExperienceTips = () => {
 
   return (
     <div className="space-y-3">
-      {/* Image Compression Tool - standalone without extra Card wrapper */}
+      {/* Image Compression Tool */}
       <ImageCompressor 
         maxFiles={5}
         showPreview={true}
         autoCompress={true}
         forceWebP={true}
       />
+
+      {/* Inquiry Response Tracker - 2 hour response target */}
+      <InquiryResponseTracker />
 
       <Card>
         <CardHeader className="p-3">
