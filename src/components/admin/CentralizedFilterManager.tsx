@@ -103,39 +103,63 @@ const CentralizedFilterManager = () => {
               <Plus className="h-3 w-3 mr-1" />Add Filter
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-sm">
+          <DialogContent className="max-w-sm bg-card/95 border-border/50">
             <DialogHeader>
-              <DialogTitle className="text-sm">Add Filter</DialogTitle>
-              <DialogDescription className="text-[10px]">Create a new filter for all search panels</DialogDescription>
+              <DialogTitle className="text-sm text-foreground">Add Filter</DialogTitle>
+              <DialogDescription className="text-[10px] text-muted-foreground">
+                Create a new filter for all search panels
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-3 py-2">
               <div className="space-y-1">
-                <Label className="text-[10px] text-muted-foreground">Category</Label>
-                <Select value={newFilter.filter_category} onValueChange={(value) => setNewFilter({...newFilter, filter_category: value})}>
-                  <SelectTrigger className="h-7 text-xs bg-background/50"><SelectValue placeholder="Select" /></SelectTrigger>
+                <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Category</Label>
+                <Select value={newFilter.filter_category} onValueChange={(value) => setNewFilter({ ...newFilter, filter_category: value })}>
+                  <SelectTrigger className="h-7 text-xs bg-background/50 border-border/50">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {categories.map((cat) => (<SelectItem key={cat} value={cat}>{cat.replace('_', ' ')}</SelectItem>))}
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat.replace('_', ' ')}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px] text-muted-foreground">Name</Label>
-                <Input value={newFilter.filter_name} onChange={(e) => setNewFilter({...newFilter, filter_name: e.target.value})} className="h-7 text-xs bg-background/50" placeholder="Filter name" />
+                <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Name</Label>
+                <Input
+                  value={newFilter.filter_name}
+                  onChange={(e) => setNewFilter({ ...newFilter, filter_name: e.target.value })}
+                  className="h-7 text-xs bg-background/50 border-border/50"
+                  placeholder="Filter name"
+                />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Type</Label>
-                  <Select value={newFilter.filter_type} onValueChange={(value) => setNewFilter({...newFilter, filter_type: value})}>
-                    <SelectTrigger className="h-7 text-xs bg-background/50"><SelectValue /></SelectTrigger>
+                  <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Type</Label>
+                  <Select value={newFilter.filter_type} onValueChange={(value) => setNewFilter({ ...newFilter, filter_type: value })}>
+                    <SelectTrigger className="h-7 text-xs bg-background/50 border-border/50">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
-                      {filterTypes.map((type) => (<SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>))}
+                      {filterTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Listing</Label>
-                  <Select value={newFilter.listing_type} onValueChange={(value: 'sale' | 'rent') => setNewFilter({...newFilter, listing_type: value})}>
-                    <SelectTrigger className="h-7 text-xs bg-background/50"><SelectValue /></SelectTrigger>
+                  <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Listing</Label>
+                  <Select
+                    value={newFilter.listing_type}
+                    onValueChange={(value: 'sale' | 'rent') => setNewFilter({ ...newFilter, listing_type: value })}
+                  >
+                    <SelectTrigger className="h-7 text-xs bg-background/50 border-border/50">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="sale">Sale</SelectItem>
                       <SelectItem value="rent">Rent</SelectItem>
@@ -145,8 +169,17 @@ const CentralizedFilterManager = () => {
               </div>
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" className="h-6 text-[10px]" onClick={() => setIsAddingFilter(false)}>Cancel</Button>
-              <Button size="sm" className="h-6 text-[10px]" onClick={handleAddFilter}>Add</Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 text-[10px] px-2 bg-background/50 border-border/50"
+                onClick={() => setIsAddingFilter(false)}
+              >
+                Cancel
+              </Button>
+              <Button size="sm" className="h-6 text-[10px] px-2" onClick={handleAddFilter}>
+                Add
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -154,21 +187,23 @@ const CentralizedFilterManager = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
-        <Card className="bg-card/50 border-border/50">
+        <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
           <CardContent className="p-2 text-center">
-            <p className="text-lg font-bold text-blue-400">{filters.length}</p>
+            <p className="text-lg font-bold text-foreground">{filters.length}</p>
             <p className="text-[9px] text-muted-foreground">Categories</p>
           </CardContent>
         </Card>
-        <Card className="bg-card/50 border-border/50">
+        <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
           <CardContent className="p-2 text-center">
-            <p className="text-lg font-bold text-emerald-400">{totalOptions}</p>
+            <p className="text-lg font-bold text-foreground">{totalOptions}</p>
             <p className="text-[9px] text-muted-foreground">Total Filters</p>
           </CardContent>
         </Card>
-        <Card className="bg-card/50 border-border/50">
+        <Card className="bg-card/50 border-border/50 border-l-4 border-l-secondary">
           <CardContent className="p-2 text-center">
-            <p className="text-lg font-bold text-purple-400">{filters.reduce((acc, cat) => acc + cat.options.filter(o => o.is_active).length, 0)}</p>
+            <p className="text-lg font-bold text-foreground">
+              {filters.reduce((acc, cat) => acc + cat.options.filter((o) => o.is_active).length, 0)}
+            </p>
             <p className="text-[9px] text-muted-foreground">Active</p>
           </CardContent>
         </Card>
