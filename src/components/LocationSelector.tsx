@@ -377,14 +377,19 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
         {/* Subdistrict/Village */}
         <div>
-          <Label htmlFor="subdistrict" className="text-sm flex items-center gap-2">
-            Kelurahan/Desa
-            {value.district_code && subdistricts.length > 0 && (
-              <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                {subdistricts.length} total
-              </span>
-            )}
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="subdistrict" className="text-sm flex items-center gap-2">
+              Kelurahan/Desa
+              {value.district_code && subdistricts.length > 0 && (
+                <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                  {subdistricts.length} di kecamatan ini
+                </span>
+              )}
+            </Label>
+            <span className="text-[10px] text-muted-foreground" title="75.753 Desa + 8.486 Kelurahan + 37 Transmigrasi">
+              🇮🇩 84.276 total
+            </span>
+          </div>
           <Select
             value={value.subdistrict_code || ''}
             onValueChange={handleSubdistrictChange}
