@@ -93,14 +93,35 @@ const IndonesianLocationManager = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch locations
+  // Fetch ALL unique provinces first (for accurate count and dropdowns)
+  const { data: allProvinceData } = useQuery({
+    queryKey: ['all-provinces'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_code, province_name')
+        .order('province_name', { ascending: true });
+      if (error) throw error;
+      // Get unique provinces
+      const uniqueMap = new Map<string, { code: string; name: string }>();
+      data?.forEach(l => {
+        if (!uniqueMap.has(l.province_code)) {
+          uniqueMap.set(l.province_code, { code: l.province_code, name: l.province_name });
+        }
+      });
+      return Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    }
+  });
+
+  // Fetch locations (with filters applied)
   const { data: locations, isLoading } = useQuery({
     queryKey: ['locations', searchTerm, selectedProvince, selectedCity],
     queryFn: async () => {
       let query = supabase
         .from('locations')
         .select('*')
-        .order('province_name', { ascending: true });
+        .order('province_name', { ascending: true })
+        .limit(2000); // Increase limit for better coverage
 
       if (searchTerm) {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
@@ -120,10 +141,8 @@ const IndonesianLocationManager = () => {
     }
   });
 
-  // Get unique provinces and cities for filters
-  const uniqueProvinces = locations ? 
-    Array.from(new Map(locations.map(l => [l.province_code, { code: l.province_code, name: l.province_name }])).values()) : [];
-  const provinces = uniqueProvinces.sort((a, b) => a.name.localeCompare(b.name));
+  // Use allProvinceData for accurate province count
+  const provinces = allProvinceData || [];
   
   const uniqueCities = selectedProvince && selectedProvince !== 'all' && locations ?
     Array.from(new Map(locations.filter(l => l.province_code === selectedProvince).map(l => [l.city_code, { code: l.city_code, name: l.city_name }])).values()) : [];
