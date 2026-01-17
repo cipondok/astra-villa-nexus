@@ -71,22 +71,21 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
     return tab.badge || null;
   };
 
-  // Get badge color based on type
   const getBadgeColor = (badgeText: string, badgeType?: string) => {
-    // Check badgeType first for specific styling
+    // badgeType first for specific styling
     if (badgeType === "critical") {
-      return "bg-red-600/20 text-red-600 border-red-600/30 animate-pulse";
+      return "bg-destructive/15 text-destructive border-destructive/30 animate-pulse";
     }
-    
+
     switch (badgeText) {
       case "New":
-        return "bg-green-600/10 text-green-600 border-green-600/20";
+        return "bg-accent/15 text-accent-foreground border-accent/30";
       case "Updated":
         return "bg-primary/10 text-primary border-primary/20";
       case "Beta":
-        return "bg-purple-600/10 text-purple-600 border-purple-600/20";
+        return "bg-secondary/15 text-secondary-foreground border-secondary/30";
       default:
-        return "bg-orange-600/10 text-orange-600 border-orange-600/20";
+        return "bg-muted/40 text-muted-foreground border-border/40";
     }
   };
   const adminTabs: TabItem[] = [

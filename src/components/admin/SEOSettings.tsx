@@ -41,17 +41,17 @@ const SEOSettings = () => {
 
   return (
     <div className="space-y-3 p-1 md:p-0">
-      {/* Professional Header */}
-      <div className="bg-gradient-to-r from-teal-500/10 via-cyan-500/10 to-blue-500/10 dark:from-teal-500/20 dark:via-cyan-500/20 dark:to-blue-500/20 rounded-lg border border-teal-200/50 dark:border-teal-800/50 p-3">
+      {/* Compact Header */}
+      <div className="rounded-lg border border-border/40 bg-muted/20 p-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 shadow-lg">
-              <Search className="h-4 w-4 text-white" />
+            <div className="p-2 rounded-lg bg-primary text-primary-foreground shadow-sm">
+              <Search className="h-4 w-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-bold text-foreground">SEO Configuration</h1>
-                <Badge className="bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700 text-[9px] px-1.5 py-0 h-4">
+                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4">
                   <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
                   Optimized
                 </Badge>
@@ -63,30 +63,30 @@ const SEOSettings = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-        <TabsList className="h-7 p-0.5 bg-teal-100/50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 grid w-full grid-cols-4">
-          <TabsTrigger value="general" className="text-[10px] h-6 px-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+        <TabsList className="h-7 p-0.5 bg-muted/20 border border-border/40 grid w-full grid-cols-4">
+          <TabsTrigger value="general" className="text-[10px] h-6 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Globe className="h-3 w-3 mr-1" />
             General
           </TabsTrigger>
-          <TabsTrigger value="meta" className="text-[10px] h-6 px-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+          <TabsTrigger value="meta" className="text-[10px] h-6 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Settings className="h-3 w-3 mr-1" />
             Meta
           </TabsTrigger>
-          <TabsTrigger value="technical" className="text-[10px] h-6 px-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+          <TabsTrigger value="technical" className="text-[10px] h-6 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <TrendingUp className="h-3 w-3 mr-1" />
             Technical
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="text-[10px] h-6 px-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+          <TabsTrigger value="analytics" className="text-[10px] h-6 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <BarChart3 className="h-3 w-3 mr-1" />
             Analytics
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-3">
-          <Card className="border-teal-200/50 dark:border-teal-800/50">
+          <Card className="border-l-4 border-l-primary">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="flex items-center gap-2 text-xs">
-                <Globe className="h-3.5 w-3.5 text-teal-600" />
+                <Globe className="h-3.5 w-3.5 text-primary" />
                 Basic SEO Settings
               </CardTitle>
             </CardHeader>
@@ -138,7 +138,7 @@ const SEOSettings = () => {
         </TabsContent>
 
         <TabsContent value="meta" className="space-y-3">
-          <Card className="border-teal-200/50 dark:border-teal-800/50">
+          <Card className="border-l-4 border-l-secondary">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs">Meta Tags Configuration</CardTitle>
             </CardHeader>
@@ -170,10 +170,10 @@ const SEOSettings = () => {
               </div>
 
               <div className="grid gap-2 grid-cols-3 mt-3">
-                <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <h4 className="text-[10px] font-medium mb-1">Open Graph</h4>
-                    <Badge className="bg-green-500/20 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 text-[8px] px-1 py-0 h-4">
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
                       <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
                       Enabled
                     </Badge>
@@ -181,10 +181,10 @@ const SEOSettings = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <h4 className="text-[10px] font-medium mb-1">Twitter Cards</h4>
-                    <Badge className="bg-green-500/20 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 text-[8px] px-1 py-0 h-4">
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
                       <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
                       Enabled
                     </Badge>
@@ -192,10 +192,10 @@ const SEOSettings = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <h4 className="text-[10px] font-medium mb-1">JSON-LD</h4>
-                    <Badge className="bg-green-500/20 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 text-[8px] px-1 py-0 h-4">
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
                       <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
                       Enabled
                     </Badge>
@@ -208,7 +208,7 @@ const SEOSettings = () => {
         </TabsContent>
 
         <TabsContent value="technical" className="space-y-3">
-          <Card className="border-teal-200/50 dark:border-teal-800/50">
+          <Card className="border-l-4 border-l-accent">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs">Technical SEO</CardTitle>
             </CardHeader>
@@ -246,26 +246,26 @@ const SEOSettings = () => {
               </div>
 
               <div className="grid gap-2 grid-cols-2 mt-3">
-                <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <div className="flex items-center gap-1 mb-1">
-                      <TrendingUp className="h-3 w-3 text-green-600" />
+                      <TrendingUp className="h-3 w-3 text-primary" />
                       <h4 className="text-[10px] font-medium">Page Speed</h4>
                     </div>
-                    <Badge className="bg-green-500/20 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 text-[8px] px-1 py-0 h-4">
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
                       Good (92/100)
                     </Badge>
                     <p className="text-[8px] text-muted-foreground mt-1">Core Web Vitals optimized</p>
                   </CardContent>
                 </Card>
 
-                <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <div className="flex items-center gap-1 mb-1">
-                      <Globe className="h-3 w-3 text-green-600" />
+                      <Globe className="h-3 w-3 text-primary" />
                       <h4 className="text-[10px] font-medium">SSL Status</h4>
                     </div>
-                    <Badge className="bg-green-500/20 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 text-[8px] px-1 py-0 h-4">
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4">
                       <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
                       Secure
                     </Badge>
@@ -278,10 +278,10 @@ const SEOSettings = () => {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-3">
-          <Card className="border-teal-200/50 dark:border-teal-800/50">
+          <Card className="border-l-4 border-l-primary">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="flex items-center gap-2 text-xs">
-                <BarChart3 className="h-3.5 w-3.5 text-teal-600" />
+                <BarChart3 className="h-3.5 w-3.5 text-primary" />
                 SEO Analytics
               </CardTitle>
             </CardHeader>
@@ -300,32 +300,32 @@ const SEOSettings = () => {
               </div>
 
               <div className="grid gap-2 grid-cols-3">
-                <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <h4 className="text-[10px] font-medium mb-1">Organic Traffic</h4>
-                    <p className="text-lg font-bold text-blue-600">12,543</p>
-                    <Badge className="bg-green-500/20 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 text-[8px] px-1 py-0 h-4 mt-1">
+                    <p className="text-lg font-bold text-foreground">12,543</p>
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4 mt-1">
                       <TrendingUp className="h-2.5 w-2.5 mr-0.5" />
                       +8.5%
                     </Badge>
                   </CardContent>
                 </Card>
 
-                <Card className="border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <h4 className="text-[10px] font-medium mb-1">Keywords Ranking</h4>
-                    <p className="text-lg font-bold text-purple-600">247</p>
-                    <Badge className="bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700 text-[8px] px-1 py-0 h-4 mt-1">
+                    <p className="text-lg font-bold text-foreground">247</p>
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4 mt-1">
                       Top 10 positions
                     </Badge>
                   </CardContent>
                 </Card>
 
-                <Card className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-900/20">
+                <Card className="border border-border/40 bg-muted/20">
                   <CardContent className="p-2">
                     <h4 className="text-[10px] font-medium mb-1">Click-through Rate</h4>
-                    <p className="text-lg font-bold text-orange-600">3.2%</p>
-                    <Badge className="bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700 text-[8px] px-1 py-0 h-4 mt-1">
+                    <p className="text-lg font-bold text-foreground">3.2%</p>
+                    <Badge variant="secondary" className="text-[8px] px-1 py-0 h-4 mt-1">
                       Above average
                     </Badge>
                   </CardContent>
@@ -337,7 +337,7 @@ const SEOSettings = () => {
       </Tabs>
 
       <div className="flex justify-end mt-3">
-        <Button onClick={handleSave} size="sm" className="h-7 text-[10px] px-3 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white">
+        <Button onClick={handleSave} size="sm" className="h-7 text-[10px] px-3">
           <Settings className="h-3 w-3 mr-1" />
           Save SEO Settings
         </Button>
