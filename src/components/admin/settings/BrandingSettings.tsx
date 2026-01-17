@@ -269,7 +269,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       </div>
 
       {/* Current Logos */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground flex items-center gap-2">
             <ImageIcon className="h-3.5 w-3.5" />
@@ -299,7 +299,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
                       {uploading === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Upload className="h-2 w-2" />}
                     </Button>
                     <Button size="sm" variant="outline" className="h-5 w-5 p-0" onClick={() => copyLogoUrl(item.key, settings[item.key])}>
-                      {copiedKey === item.key ? <Check className="h-2 w-2 text-emerald-500" /> : <Copy className="h-2 w-2" />}
+                      {copiedKey === item.key ? <Check className="h-2 w-2 text-primary" /> : <Copy className="h-2 w-2" />}
                     </Button>
                     <Button size="sm" variant="outline" className="h-5 w-5 p-0" disabled={deleting === item.key} onClick={() => handleDeleteLogo(item.key)}>
                       {deleting === item.key ? <RefreshCw className="h-2 w-2 animate-spin" /> : <Trash2 className="h-2 w-2 text-destructive" />}
@@ -314,7 +314,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
 
       {/* Upload Empty Slots */}
       {emptyLogos.length > 0 && (
-        <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+        <Card className="bg-card/50 border-border/50 border-l-4 border-l-accent">
           <CardHeader className="py-2 px-3">
             <CardTitle className="text-xs text-foreground flex items-center gap-2">
               <Upload className="h-3.5 w-3.5" />
@@ -345,7 +345,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
       )}
 
       {/* AI Logo Generator */}
-      <Card className="bg-card/50 border-border/50 border-l-2 border-l-purple-500">
+      <Card className="bg-card/50 border-border/50 border-l-4 border-l-secondary">
         <CardHeader className="py-2 px-3">
           <CardTitle className="text-xs text-foreground flex items-center gap-2">
             <Sparkles className="h-3.5 w-3.5" />
