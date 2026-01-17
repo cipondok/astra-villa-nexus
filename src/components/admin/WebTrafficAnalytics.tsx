@@ -216,227 +216,232 @@ const WebTrafficAnalytics = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Web Traffic Analytics
-              </CardTitle>
-              <CardDescription>
-                Comprehensive website traffic and user behavior analytics
-              </CardDescription>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-teal-500/10 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold">Web Traffic Analytics</h2>
+            <p className="text-[10px] text-muted-foreground">Comprehensive website traffic and user behavior analytics</p>
+          </div>
+        </div>
+        <Select value={timeRange} onValueChange={setTimeRange}>
+          <SelectTrigger className="w-28 h-7 text-[10px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="7" className="text-xs">Last 7 days</SelectItem>
+            <SelectItem value="30" className="text-xs">Last 30 days</SelectItem>
+            <SelectItem value="90" className="text-xs">Last 90 days</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+              <Users className="h-3 w-3 text-blue-600" />
             </div>
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7">Last 7 days</SelectItem>
-                <SelectItem value="30">Last 30 days</SelectItem>
-                <SelectItem value="90">Last 90 days</SelectItem>
-              </SelectContent>
-            </Select>
+            <div>
+              <div className="text-sm font-bold text-foreground">{totalVisitors.toLocaleString()}</div>
+              <div className="text-[9px] text-muted-foreground">Total Visitors</div>
+            </div>
           </div>
+        </div>
+        
+        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
+              <Globe className="h-3 w-3 text-green-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{uniqueVisitors.toLocaleString()}</div>
+              <div className="text-[9px] text-muted-foreground">Unique Visitors</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-2 rounded-lg border bg-yellow-50/50 dark:bg-yellow-950/20 border-yellow-200/50 dark:border-yellow-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-yellow-500/20 rounded flex items-center justify-center">
+              <Eye className="h-3 w-3 text-yellow-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{totalPageViews.toLocaleString()}</div>
+              <div className="text-[9px] text-muted-foreground">Page Views</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+              <Search className="h-3 w-3 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-foreground">{totalSearches.toLocaleString()}</div>
+              <div className="text-[9px] text-muted-foreground">Total Searches</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Traffic Trends Chart */}
+      <Card className="border-blue-200/50 dark:border-blue-800/30">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-2">
+            <TrendingUp className="h-3 w-3 text-blue-600" />
+            Traffic Trends
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Visitors</p>
-                    <p className="text-2xl font-bold">{totalVisitors.toLocaleString()}</p>
+        <CardContent className="p-3 pt-0">
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={dailyStats}>
+              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+              <XAxis dataKey="date" tick={{ fontSize: 9 }} />
+              <YAxis tick={{ fontSize: 9 }} />
+              <Tooltip contentStyle={{ fontSize: '10px' }} />
+              <Area 
+                type="monotone" 
+                dataKey="total_visitors" 
+                stackId="1"
+                stroke="#3B82F6" 
+                fill="#3B82F6" 
+                fillOpacity={0.6}
+                name="Total Visitors"
+              />
+              <Area 
+                type="monotone" 
+                dataKey="unique_visitors" 
+                stackId="2"
+                stroke="#10B981" 
+                fill="#10B981" 
+                fillOpacity={0.6}
+                name="Unique Visitors"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Search Analytics and Device Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Top Search Keywords */}
+        <Card className="border-purple-200/50 dark:border-purple-800/30">
+          <CardHeader className="p-3 pb-2">
+            <CardTitle className="text-xs flex items-center gap-2">
+              <Search className="h-3 w-3 text-purple-600" />
+              Top Search Keywords
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-3 pt-0">
+            <div className="space-y-1.5">
+              {topKeywords?.map((item: any, index) => (
+                <div key={index} className="flex items-center justify-between p-1.5 bg-muted/30 rounded">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-[8px] h-4 px-1">
+                      #{index + 1}
+                    </Badge>
+                    <span className="text-[10px] font-medium">{item.keyword}</span>
                   </div>
-                  <Users className="h-8 w-8 text-blue-600" />
+                  <span className="text-[9px] text-muted-foreground">
+                    {item.count} searches
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Unique Visitors</p>
-                    <p className="text-2xl font-bold">{uniqueVisitors.toLocaleString()}</p>
-                  </div>
-                  <Globe className="h-8 w-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Page Views</p>
-                    <p className="text-2xl font-bold">{totalPageViews.toLocaleString()}</p>
-                  </div>
-                  <Eye className="h-8 w-8 text-yellow-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Searches</p>
-                    <p className="text-2xl font-bold">{totalSearches.toLocaleString()}</p>
-                  </div>
-                  <Search className="h-8 w-8 text-purple-600" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Traffic Trends Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Traffic Trends</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={dailyStats}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Area 
-                    type="monotone" 
-                    dataKey="total_visitors" 
-                    stackId="1"
-                    stroke="#3B82F6" 
-                    fill="#3B82F6" 
-                    fillOpacity={0.6}
-                    name="Total Visitors"
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="unique_visitors" 
-                    stackId="2"
-                    stroke="#10B981" 
-                    fill="#10B981" 
-                    fillOpacity={0.6}
-                    name="Unique Visitors"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Search Analytics and Device Stats */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Top Search Keywords */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5" />
-                  Top Search Keywords
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {topKeywords?.map((item: any, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline" className="text-xs">
-                          #{index + 1}
-                        </Badge>
-                        <span className="font-medium">{item.keyword}</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {item.count} searches
-                      </span>
-                    </div>
+        {/* Device Analytics */}
+        <Card className="border-cyan-200/50 dark:border-cyan-800/30">
+          <CardHeader className="p-3 pb-2">
+            <CardTitle className="text-xs flex items-center gap-2">
+              <Monitor className="h-3 w-3 text-cyan-600" />
+              Device Analytics
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-3 pt-0">
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie
+                  data={deviceStats}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={60}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {deviceStats?.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
-                </div>
-              </CardContent>
-            </Card>
+                </Pie>
+                <Tooltip contentStyle={{ fontSize: '10px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
 
-            {/* Device Analytics */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Device Analytics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={deviceStats}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {deviceStats?.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
+      {/* Top Pages */}
+      <Card className="border-green-200/50 dark:border-green-800/30">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-2">
+            <MousePointer className="h-3 w-3 text-green-600" />
+            Most Visited Pages
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={pageStats} layout="horizontal">
+              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+              <XAxis type="number" tick={{ fontSize: 9 }} />
+              <YAxis dataKey="path" type="category" width={80} tick={{ fontSize: 8 }} />
+              <Tooltip contentStyle={{ fontSize: '10px' }} />
+              <Bar dataKey="views" fill="#3B82F6" radius={[0, 4, 4, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
-          {/* Top Pages */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MousePointer className="h-5 w-5" />
-                Most Visited Pages
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={pageStats} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="path" type="category" width={100} />
-                  <Tooltip />
-                  <Bar dataKey="views" fill="#3B82F6" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Page Views vs Searches */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Page Views vs Searches</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={dailyStats}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line 
-                    type="monotone" 
-                    dataKey="total_page_views" 
-                    stroke="#3B82F6" 
-                    strokeWidth={2}
-                    name="Page Views"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="total_searches" 
-                    stroke="#10B981" 
-                    strokeWidth={2}
-                    name="Searches"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+      {/* Page Views vs Searches */}
+      <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-2">
+            <Eye className="h-3 w-3 text-indigo-600" />
+            Page Views vs Searches
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={dailyStats}>
+              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+              <XAxis dataKey="date" tick={{ fontSize: 9 }} />
+              <YAxis tick={{ fontSize: 9 }} />
+              <Tooltip contentStyle={{ fontSize: '10px' }} />
+              <Line 
+                type="monotone" 
+                dataKey="total_page_views" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Page Views"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="total_searches" 
+                stroke="#10B981" 
+                strokeWidth={2}
+                name="Searches"
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>
