@@ -11613,6 +11613,7 @@ export type Database = {
           verified_documents: number
         }[]
       }
+      has_editor_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -11950,6 +11951,7 @@ export type Database = {
         | "admin"
         | "customer_service"
         | "super_admin"
+        | "editor"
       vendor_verification_status:
         | "unverified"
         | "pending_review"
@@ -12135,6 +12137,7 @@ export const Constants = {
         "admin",
         "customer_service",
         "super_admin",
+        "editor",
       ],
       vendor_verification_status: [
         "unverified",
