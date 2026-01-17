@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mail, Shield, AlertCircle, CheckCircle, Send } from 'lucide-react';
+import { Mail, Shield, AlertCircle, CheckCircle, Send, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -28,7 +28,6 @@ const SMTPSettings = () => {
     isEnabled: false
   });
 
-  // Load SMTP settings on mount
   useEffect(() => {
     loadSettings();
   }, []);
@@ -42,20 +41,11 @@ const SMTPSettings = () => {
         .eq('key', 'config')
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-
-      if (data?.value) {
-        setSettings(data.value as any);
-      }
+      if (error && error.code !== 'PGRST116') throw error;
+      if (data?.value) setSettings(data.value as any);
     } catch (error) {
       console.error('Error loading SMTP settings:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load SMTP settings",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to load SMTP settings", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -72,23 +62,13 @@ const SMTPSettings = () => {
           value: settings,
           description: 'SMTP email configuration',
           is_public: false
-        }, {
-          onConflict: 'category,key'
-        });
+        }, { onConflict: 'category,key' });
 
       if (error) throw error;
-
-      toast({
-        title: "Settings Saved",
-        description: "SMTP configuration has been updated successfully.",
-      });
+      toast({ title: "Settings Saved", description: "SMTP configuration updated successfully" });
     } catch (error) {
       console.error('Error saving SMTP settings:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save SMTP settings",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to save SMTP settings", variant: "destructive" });
     } finally {
       setIsSaving(false);
     }
@@ -118,21 +98,13 @@ const SMTPSettings = () => {
       });
 
       if (error) throw error;
-
       if (data?.success) {
         setIsConnected(true);
-        toast({
-          title: "Connection Successful",
-          description: "SMTP server is reachable and credentials are valid.",
-        });
+        toast({ title: "Connection Successful", description: "SMTP server is reachable" });
       }
     } catch (error) {
       console.error('SMTP test failed:', error);
-      toast({
-        title: "Connection Failed",
-        description: "Could not connect to SMTP server. Please check your settings.",
-        variant: "destructive"
-      });
+      toast({ title: "Connection Failed", description: "Could not connect to SMTP server", variant: "destructive" });
     } finally {
       setIsTesting(false);
     }
@@ -143,115 +115,91 @@ const SMTPSettings = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase.functions.invoke('generate-otp', {
-        body: {
-          purpose: 'email_verification',
-          email: user.email
-        }
+      const { error } = await supabase.functions.invoke('generate-otp', {
+        body: { purpose: 'email_verification', email: user.email }
       });
 
       if (error) throw error;
-
-      toast({
-        title: "Test Email Sent",
-        description: `A test OTP email has been sent to ${user.email}`,
-      });
+      toast({ title: "Test Email Sent", description: `Sent to ${user.email}` });
     } catch (error) {
       console.error('Test email failed:', error);
-      toast({
-        title: "Failed to Send",
-        description: "Could not send test email. Please check your SMTP configuration.",
-        variant: "destructive"
-      });
+      toast({ title: "Failed to Send", description: "Check SMTP configuration", variant: "destructive" });
     }
   };
 
   if (isLoading) {
-    return <div className="p-4">Loading SMTP settings...</div>;
+    return <div className="text-xs text-muted-foreground p-4">Loading SMTP settings...</div>;
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2">
-          <Mail className="w-6 h-6" />
-          SMTP Configuration
-        </h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          Configure email server settings for system notifications
-        </p>
+    <div className="space-y-3">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Mail className="h-4 w-4" />
+            SMTP Configuration
+          </h2>
+          <p className="text-[10px] text-muted-foreground">Configure email server settings</p>
+        </div>
+        <Badge variant={isConnected ? "default" : "secondary"} className="text-[9px] px-1.5 py-0">
+          {isConnected ? (
+            <><CheckCircle className="h-2.5 w-2.5 mr-0.5" /> Connected</>
+          ) : (
+            <><AlertCircle className="h-2.5 w-2.5 mr-0.5" /> Not Connected</>
+          )}
+        </Badge>
       </div>
 
-      <div className="space-y-6">
-        {/* Connection Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Connection Status</span>
-              <Badge variant={isConnected ? "default" : "secondary"}>
-                {isConnected ? (
-                  <>
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Connected
-                  </>
-                ) : (
-                  <>
-                    <AlertCircle className="w-3 h-3 mr-1" />
-                    Not Connected
-                  </>
-                )}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              <div>
-                <p className="text-sm font-medium">Last Test</p>
-                <p className="text-sm text-muted-foreground">
-                  {isConnected ? 'Just now' : 'Never tested'}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium">Email Status</p>
-                <p className="text-sm text-muted-foreground">
-                  {settings.isEnabled ? 'Enabled' : 'Disabled'}
-                </p>
-              </div>
+      {/* Connection Status */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-blue-500">
+        <CardContent className="p-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <p className="text-[9px] text-muted-foreground">Last Test</p>
+              <p className="text-xs font-medium text-foreground">{isConnected ? 'Just now' : 'Never'}</p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* SMTP Configuration */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Server Configuration</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="host">SMTP Host</Label>
-                <Input
-                  id="host"
-                  placeholder="smtp.gmail.com"
-                  value={settings.host}
-                  onChange={(e) => setSettings({...settings, host: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="port">Port</Label>
-                <Input
-                  id="port"
-                  placeholder="587"
-                  value={settings.port}
-                  onChange={(e) => setSettings({...settings, port: e.target.value})}
-                />
-              </div>
+            <div>
+              <p className="text-[9px] text-muted-foreground">Status</p>
+              <p className="text-xs font-medium text-foreground">{settings.isEnabled ? 'Enabled' : 'Disabled'}</p>
             </div>
+            <div>
+              <p className="text-[9px] text-muted-foreground">Encryption</p>
+              <p className="text-xs font-medium text-foreground uppercase">{settings.encryption}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-            <div className="space-y-2">
-              <Label htmlFor="encryption">Encryption</Label>
+      {/* Server Configuration */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-emerald-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground">Server Configuration</CardTitle>
+        </CardHeader>
+        <CardContent className="px-3 pb-3 space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">SMTP Host</Label>
+              <Input
+                placeholder="smtp.gmail.com"
+                value={settings.host}
+                onChange={(e) => setSettings({...settings, host: e.target.value})}
+                className="h-7 text-xs bg-background/50"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Port</Label>
+              <Input
+                placeholder="587"
+                value={settings.port}
+                onChange={(e) => setSettings({...settings, port: e.target.value})}
+                className="h-7 text-xs bg-background/50"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Encryption</Label>
               <Select value={settings.encryption} onValueChange={(value) => setSettings({...settings, encryption: value})}>
-                <SelectTrigger>
+                <SelectTrigger className="h-7 text-xs bg-background/50">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -261,108 +209,97 @@ const SMTPSettings = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="email"
-                  placeholder="your-email@gmail.com"
-                  value={settings.username}
-                  onChange={(e) => setSettings({...settings, username: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={settings.password}
-                  onChange={(e) => setSettings({...settings, password: e.target.value})}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Sender Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Sender Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="fromName">From Name</Label>
-                <Input
-                  id="fromName"
-                  placeholder="Your Company Name"
-                  value={settings.fromName}
-                  onChange={(e) => setSettings({...settings, fromName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="fromEmail">From Email</Label>
-                <Input
-                  id="fromEmail"
-                  type="email"
-                  placeholder="noreply@yourcompany.com"
-                  value={settings.fromEmail}
-                  onChange={(e) => setSettings({...settings, fromEmail: e.target.value})}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Settings & Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Email Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="email-enabled">Enable Email Notifications</Label>
-                <p className="text-sm text-muted-foreground">
-                  Turn on/off all outgoing emails from the system
-                </p>
-              </div>
-              <Switch
-                id="email-enabled"
-                checked={settings.isEnabled}
-                onCheckedChange={(checked) => setSettings({...settings, isEnabled: checked})}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Username</Label>
+              <Input
+                type="email"
+                placeholder="your-email@gmail.com"
+                value={settings.username}
+                onChange={(e) => setSettings({...settings, username: e.target.value})}
+                className="h-7 text-xs bg-background/50"
               />
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button onClick={handleSave} disabled={isSaving} className="flex-1 sm:flex-none">
-                {isSaving ? 'Saving...' : 'Save Configuration'}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={testConnection}
-                disabled={isTesting}
-                className="flex-1 sm:flex-none"
-              >
-                <Shield className="w-4 h-4 mr-2" />
-                {isTesting ? 'Testing...' : 'Test Connection'}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={sendTestEmail}
-                disabled={!isConnected}
-                className="flex-1 sm:flex-none"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                Send Test Email
-              </Button>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Password</Label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={settings.password}
+                onChange={(e) => setSettings({...settings, password: e.target.value})}
+                className="h-7 text-xs bg-background/50"
+              />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Sender Information */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-purple-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground">Sender Information</CardTitle>
+        </CardHeader>
+        <CardContent className="px-3 pb-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">From Name</Label>
+              <Input
+                placeholder="Your Company Name"
+                value={settings.fromName}
+                onChange={(e) => setSettings({...settings, fromName: e.target.value})}
+                className="h-7 text-xs bg-background/50"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">From Email</Label>
+              <Input
+                type="email"
+                placeholder="noreply@yourcompany.com"
+                value={settings.fromEmail}
+                onChange={(e) => setSettings({...settings, fromEmail: e.target.value})}
+                className="h-7 text-xs bg-background/50"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Settings & Actions */}
+      <Card className="bg-card/50 border-border/50 border-l-2 border-l-orange-500">
+        <CardHeader className="py-2 px-3">
+          <CardTitle className="text-xs text-foreground">Email Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="px-3 pb-3 space-y-3">
+          <div className="flex items-center justify-between p-2 border border-border/50 rounded-md bg-background/30">
+            <div>
+              <Label className="text-[10px] font-medium text-foreground">Enable Email Notifications</Label>
+              <p className="text-[9px] text-muted-foreground">Turn on/off all outgoing emails</p>
+            </div>
+            <Switch
+              checked={settings.isEnabled}
+              onCheckedChange={(checked) => setSettings({...settings, isEnabled: checked})}
+              className="scale-75"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <Button size="sm" onClick={handleSave} disabled={isSaving} className="h-7 text-xs flex-1">
+              <Save className="h-3 w-3 mr-1" />
+              {isSaving ? 'Saving...' : 'Save'}
+            </Button>
+            <Button variant="outline" size="sm" onClick={testConnection} disabled={isTesting} className="h-7 text-xs flex-1">
+              <Shield className="h-3 w-3 mr-1" />
+              {isTesting ? 'Testing...' : 'Test'}
+            </Button>
+            <Button variant="outline" size="sm" onClick={sendTestEmail} disabled={!isConnected} className="h-7 text-xs flex-1">
+              <Send className="h-3 w-3 mr-1" />
+              Send Test
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
