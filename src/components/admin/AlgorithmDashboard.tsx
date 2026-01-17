@@ -104,184 +104,167 @@ export function AlgorithmDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Algorithm Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage and monitor AI algorithms and analytics
-          </p>
+      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <Brain className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold">Algorithm Dashboard</h2>
+            <p className="text-[10px] text-muted-foreground">Manage and monitor AI algorithms and analytics</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline">
-            Last updated: {lastUpdated.toLocaleTimeString()}
+          <Badge variant="outline" className="text-[8px] h-5 px-1.5">
+            Updated: {lastUpdated.toLocaleTimeString()}
           </Badge>
-          <Button onClick={loadAlgorithmMetrics} size="sm">
+          <Button onClick={loadAlgorithmMetrics} size="sm" className="h-7 text-[10px]">
             Refresh
           </Button>
         </div>
       </div>
 
       {/* Algorithm Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Search Algorithm</CardTitle>
-            <Search className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">
-                  {metrics?.searchAlgorithm.successRate.toFixed(1)}%
-                </div>
-                <p className="text-xs text-muted-foreground">Success Rate</p>
-              </div>
-              <Button
-                variant={activeAlgorithms.search ? "default" : "secondary"}
-                size="sm"
-                onClick={() => toggleAlgorithm('search')}
-              >
-                {activeAlgorithms.search ? 'Active' : 'Inactive'}
-              </Button>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1.5">
+              <Search className="h-3 w-3 text-blue-600" />
+              <span className="text-[9px] font-medium text-muted-foreground">Search Algorithm</span>
             </div>
-          </CardContent>
-        </Card>
+            <Button
+              variant={activeAlgorithms.search ? "default" : "secondary"}
+              size="sm"
+              className="h-5 text-[8px] px-1.5"
+              onClick={() => toggleAlgorithm('search')}
+            >
+              {activeAlgorithms.search ? 'Active' : 'Off'}
+            </Button>
+          </div>
+          <div className="text-lg font-bold">{metrics?.searchAlgorithm.successRate.toFixed(1)}%</div>
+          <div className="text-[8px] text-muted-foreground">Success Rate</div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recommendations</CardTitle>
-            <Brain className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">
-                  {metrics?.recommendationEngine.clickThroughRate.toFixed(1)}%
-                </div>
-                <p className="text-xs text-muted-foreground">Click-through Rate</p>
-              </div>
-              <Button
-                variant={activeAlgorithms.recommendations ? "default" : "secondary"}
-                size="sm"
-                onClick={() => toggleAlgorithm('recommendations')}
-              >
-                {activeAlgorithms.recommendations ? 'Active' : 'Inactive'}
-              </Button>
+        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1.5">
+              <Brain className="h-3 w-3 text-purple-600" />
+              <span className="text-[9px] font-medium text-muted-foreground">Recommendations</span>
             </div>
-          </CardContent>
-        </Card>
+            <Button
+              variant={activeAlgorithms.recommendations ? "default" : "secondary"}
+              size="sm"
+              className="h-5 text-[8px] px-1.5"
+              onClick={() => toggleAlgorithm('recommendations')}
+            >
+              {activeAlgorithms.recommendations ? 'Active' : 'Off'}
+            </Button>
+          </div>
+          <div className="text-lg font-bold">{metrics?.recommendationEngine.clickThroughRate.toFixed(1)}%</div>
+          <div className="text-[8px] text-muted-foreground">Click-through Rate</div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Behavior Analytics</CardTitle>
-            <Eye className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">
-                  {metrics?.behaviorAnalytics.avgEngagementScore.toFixed(0)}
-                </div>
-                <p className="text-xs text-muted-foreground">Avg Engagement</p>
-              </div>
-              <Button
-                variant={activeAlgorithms.behavior ? "default" : "secondary"}
-                size="sm"
-                onClick={() => toggleAlgorithm('behavior')}
-              >
-                {activeAlgorithms.behavior ? 'Active' : 'Inactive'}
-              </Button>
+        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1.5">
+              <Eye className="h-3 w-3 text-green-600" />
+              <span className="text-[9px] font-medium text-muted-foreground">Behavior Analytics</span>
             </div>
-          </CardContent>
-        </Card>
+            <Button
+              variant={activeAlgorithms.behavior ? "default" : "secondary"}
+              size="sm"
+              className="h-5 text-[8px] px-1.5"
+              onClick={() => toggleAlgorithm('behavior')}
+            >
+              {activeAlgorithms.behavior ? 'Active' : 'Off'}
+            </Button>
+          </div>
+          <div className="text-lg font-bold">{metrics?.behaviorAnalytics.avgEngagementScore.toFixed(0)}</div>
+          <div className="text-[8px] text-muted-foreground">Avg Engagement</div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">3D Optimization</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">
-                  {metrics?.modelOptimization.avgFPS.toFixed(0)}
-                </div>
-                <p className="text-xs text-muted-foreground">Avg FPS</p>
-              </div>
-              <Button
-                variant={activeAlgorithms.optimization ? "default" : "secondary"}
-                size="sm"
-                onClick={() => toggleAlgorithm('optimization')}
-              >
-                {activeAlgorithms.optimization ? 'Active' : 'Inactive'}
-              </Button>
+        <div className="p-2 rounded-lg border bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1.5">
+              <Zap className="h-3 w-3 text-orange-600" />
+              <span className="text-[9px] font-medium text-muted-foreground">3D Optimization</span>
             </div>
-          </CardContent>
-        </Card>
+            <Button
+              variant={activeAlgorithms.optimization ? "default" : "secondary"}
+              size="sm"
+              className="h-5 text-[8px] px-1.5"
+              onClick={() => toggleAlgorithm('optimization')}
+            >
+              {activeAlgorithms.optimization ? 'Active' : 'Off'}
+            </Button>
+          </div>
+          <div className="text-lg font-bold">{metrics?.modelOptimization.avgFPS.toFixed(0)}</div>
+          <div className="text-[8px] text-muted-foreground">Avg FPS</div>
+        </div>
       </div>
 
       {/* Main Dashboard Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="search">Search Insights</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-5 h-8 p-0.5 bg-muted/50">
+          <TabsTrigger value="overview" className="text-[10px] h-7">Overview</TabsTrigger>
+          <TabsTrigger value="settings" className="text-[10px] h-7">Settings</TabsTrigger>
+          <TabsTrigger value="analytics" className="text-[10px] h-7">Analytics</TabsTrigger>
+          <TabsTrigger value="performance" className="text-[10px] h-7">Performance</TabsTrigger>
+          <TabsTrigger value="search" className="text-[10px] h-7">Search</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <TabsContent value="overview" className="space-y-3 mt-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {/* Key Performance Indicators */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+            <Card className="border-indigo-200/50 dark:border-indigo-800/30">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs flex items-center gap-2">
+                  <BarChart3 className="h-3 w-3 text-indigo-600" />
                   Key Performance Indicators
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
+              <CardContent className="p-3 pt-0">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center p-2 bg-muted/30 rounded">
+                    <div className="text-lg font-bold text-primary">
                       {metrics?.searchAlgorithm.totalSearches.toLocaleString()}
                     </div>
-                    <div className="text-sm text-muted-foreground">Total Searches</div>
+                    <div className="text-[9px] text-muted-foreground">Total Searches</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
+                  <div className="text-center p-2 bg-muted/30 rounded">
+                    <div className="text-lg font-bold text-primary">
                       {metrics?.behaviorAnalytics.totalUsers.toLocaleString()}
                     </div>
-                    <div className="text-sm text-muted-foreground">Active Users</div>
+                    <div className="text-[9px] text-muted-foreground">Active Users</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
+                  <div className="text-center p-2 bg-muted/30 rounded">
+                    <div className="text-lg font-bold text-primary">
                       {metrics?.recommendationEngine.totalRecommendations.toLocaleString()}
                     </div>
-                    <div className="text-sm text-muted-foreground">Recommendations</div>
+                    <div className="text-[9px] text-muted-foreground">Recommendations</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
+                  <div className="text-center p-2 bg-muted/30 rounded">
+                    <div className="text-lg font-bold text-primary">
                       {metrics?.modelOptimization.totalModelsLoaded.toLocaleString()}
                     </div>
-                    <div className="text-sm text-muted-foreground">3D Models Loaded</div>
+                    <div className="text-[9px] text-muted-foreground">3D Models Loaded</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Algorithm Health Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
+            <Card className="border-orange-200/50 dark:border-orange-800/30">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs flex items-center gap-2">
+                  <AlertTriangle className="h-3 w-3 text-orange-600" />
                   Algorithm Health Status
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-3 pt-0">
+                <div className="space-y-1.5">
                   <AlgorithmHealthItem
                     name="Search Performance"
                     status={metrics?.searchAlgorithm.avgResponseTime < 500 ? 'healthy' : 'warning'}
@@ -336,24 +319,24 @@ interface AlgorithmHealthItemProps {
 
 function AlgorithmHealthItem({ name, status, value }: AlgorithmHealthItemProps) {
   const statusColors = {
-    healthy: 'text-green-600 bg-green-100',
-    warning: 'text-yellow-600 bg-yellow-100',
-    critical: 'text-red-600 bg-red-100'
+    healthy: 'text-green-600 bg-green-100 dark:bg-green-900/30',
+    warning: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30',
+    critical: 'text-red-600 bg-red-100 dark:bg-red-900/30'
   };
 
   const statusLabels = {
-    healthy: 'Healthy',
-    warning: 'Warning',
-    critical: 'Critical'
+    healthy: 'OK',
+    warning: 'Warn',
+    critical: 'Crit'
   };
 
   return (
-    <div className="flex items-center justify-between p-2 rounded border">
+    <div className="flex items-center justify-between p-1.5 rounded border bg-muted/20">
       <div>
-        <div className="font-medium">{name}</div>
-        <div className="text-sm text-muted-foreground">{value}</div>
+        <div className="text-[10px] font-medium">{name}</div>
+        <div className="text-[8px] text-muted-foreground">{value}</div>
       </div>
-      <Badge className={statusColors[status]}>
+      <Badge className={`${statusColors[status]} text-[8px] h-4 px-1`}>
         {statusLabels[status]}
       </Badge>
     </div>

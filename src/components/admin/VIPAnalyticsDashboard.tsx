@@ -112,88 +112,92 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header with link to User Levels */}
-      {onNavigate && (
-        <div className="flex justify-end">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 via-cyan-500/10 to-pink-500/10 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-600 rounded-lg flex items-center justify-center">
+            <Crown className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold">VIP Analytics Dashboard</h2>
+            <p className="text-[10px] text-muted-foreground">Track VIP member distribution and activity</p>
+          </div>
+        </div>
+        {onNavigate && (
           <Button 
             variant="outline" 
             size="sm" 
-            className="h-8 text-xs gap-1.5"
+            className="h-7 text-[10px] gap-1"
             onClick={() => onNavigate('user-levels')}
           >
-            <Settings className="h-3.5 w-3.5" />
-            Manage User Levels
+            <Settings className="h-3 w-3" />
+            Manage Levels
           </Button>
-        </div>
-      )}
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Total VIP Users
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalVIPUsers}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {vipPercentage}% of all users
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 border-cyan-500/20">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Gem className="h-4 w-4 text-cyan-400" />
-              Diamond Members
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'diamond')?.count || 0}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Top tier members</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Crown className="h-4 w-4 text-purple-400" />
-              Platinum Members
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'platinum')?.count || 0}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Premium tier members</p>
-          </CardContent>
-        </Card>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="p-2 rounded-lg border bg-primary/5 border-primary/20">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-primary/20 rounded flex items-center justify-center">
+              <Users className="h-3 w-3 text-primary" />
+            </div>
+            <div>
+              <div className="text-lg font-bold">{totalVIPUsers}</div>
+              <div className="text-[9px] text-muted-foreground">{vipPercentage}% of all users</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-2 rounded-lg border bg-cyan-50/50 dark:bg-cyan-950/20 border-cyan-200/50 dark:border-cyan-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-cyan-500/20 rounded flex items-center justify-center">
+              <Gem className="h-3 w-3 text-cyan-500" />
+            </div>
+            <div>
+              <div className="text-lg font-bold">
+                {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'diamond')?.count || 0}
+              </div>
+              <div className="text-[9px] text-muted-foreground">Diamond Members</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+              <Crown className="h-3 w-3 text-purple-500" />
+            </div>
+            <div>
+              <div className="text-lg font-bold">
+                {distribution?.find(d => getMembershipFromUserLevel(d.level_name) === 'platinum')?.count || 0}
+              </div>
+              <div className="text-[9px] text-muted-foreground">Platinum Members</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* VIP Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
+        <Card className="border-purple-200/50 dark:border-purple-800/30">
+          <CardHeader className="p-3 pb-2">
+            <CardTitle className="text-xs flex items-center gap-2">
+              <TrendingUp className="h-3 w-3 text-purple-600" />
               VIP Level Distribution
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 pt-0">
             {loadingDistribution ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="h-12 bg-muted animate-pulse rounded" />
+                  <div key={i} className="h-8 bg-muted animate-pulse rounded" />
                 ))}
               </div>
             ) : distribution?.length ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {distribution.map((item) => {
                   const percentage = totalVIPUsers ? (item.count / totalVIPUsers) * 100 : 0;
                   const membership = getMembershipFromUserLevel(item.level_name);
@@ -202,13 +206,13 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
                   return (
                     <div key={item.level_name} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           {getLevelIcon(item.level_name)}
-                          <span className="font-medium">{item.level_name}</span>
+                          <span className="text-[10px] font-medium">{item.level_name}</span>
                         </div>
-                        <Badge variant="secondary">{item.count} users</Badge>
+                        <Badge variant="secondary" className="text-[8px] h-4 px-1">{item.count} users</Badge>
                       </div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                         <div 
                           className="h-full rounded-full transition-all duration-500"
                           style={{ 
@@ -225,43 +229,43 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
                 })}
               </div>
             ) : (
-              <p className="text-muted-foreground text-center py-8">No VIP users yet</p>
+              <p className="text-muted-foreground text-center py-4 text-[10px]">No VIP users yet</p>
             )}
           </CardContent>
         </Card>
 
         {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ArrowUpCircle className="h-5 w-5" />
+        <Card className="border-cyan-200/50 dark:border-cyan-800/30">
+          <CardHeader className="p-3 pb-2">
+            <CardTitle className="text-xs flex items-center gap-2">
+              <ArrowUpCircle className="h-3 w-3 text-cyan-600" />
               Recent VIP Members
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 pt-0">
             {loadingUpgrades ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="h-12 bg-muted animate-pulse rounded" />
+                  <div key={i} className="h-8 bg-muted animate-pulse rounded" />
                 ))}
               </div>
             ) : recentUpgrades?.length ? (
-              <div className="space-y-3">
-                {recentUpgrades.map((upgrade) => (
-                  <div key={upgrade.user_id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+              <div className="space-y-1.5">
+                {recentUpgrades.slice(0, 6).map((upgrade) => (
+                  <div key={upgrade.user_id} className="flex items-center justify-between p-1.5 rounded bg-muted/30">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
                         {upgrade.avatar_url ? (
                           <img src={upgrade.avatar_url} alt="" className="h-full w-full object-cover" />
                         ) : (
-                          <span className="text-xs font-medium">
+                          <span className="text-[8px] font-medium">
                             {upgrade.full_name.charAt(0).toUpperCase()}
                           </span>
                         )}
                       </div>
                       <div>
-                        <p className="font-medium text-sm">{upgrade.full_name}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-medium text-[10px]">{upgrade.full_name}</p>
+                        <p className="text-[8px] text-muted-foreground">
                           {new Date(upgrade.updated_at).toLocaleDateString()}
                         </p>
                       </div>
@@ -271,7 +275,7 @@ export function VIPAnalyticsDashboard({ onNavigate }: VIPAnalyticsDashboardProps
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground text-center py-8">No recent VIP activity</p>
+              <p className="text-muted-foreground text-center py-4 text-[10px]">No recent VIP activity</p>
             )}
           </CardContent>
         </Card>

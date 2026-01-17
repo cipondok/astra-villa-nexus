@@ -178,83 +178,86 @@ export function AIFeedbackAnalytics() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">AI Feedback Analytics</h2>
-          <p className="text-muted-foreground">Track user reactions to AI responses over time</p>
+      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 rounded-lg border border-green-200/50 dark:border-green-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold">AI Feedback Analytics</h2>
+            <p className="text-[10px] text-muted-foreground">Track user reactions to AI responses</p>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Select value={timeRange.toString()} onValueChange={(v) => setTimeRange(Number(v))}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-28 h-7 text-[10px]">
               <SelectValue placeholder="Select range" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="7">Last 7 days</SelectItem>
-              <SelectItem value="30">Last 30 days</SelectItem>
-              <SelectItem value="90">Last 90 days</SelectItem>
-              <SelectItem value="365">Last year</SelectItem>
+              <SelectItem value="7" className="text-xs">Last 7 days</SelectItem>
+              <SelectItem value="30" className="text-xs">Last 30 days</SelectItem>
+              <SelectItem value="90" className="text-xs">Last 90 days</SelectItem>
+              <SelectItem value="365" className="text-xs">Last year</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={handleExportData}>
-            <Download className="w-4 h-4 mr-2" />
-            Export Data
+          <Button variant="outline" onClick={handleExportData} size="sm" className="h-7 text-[10px]">
+            <Download className="w-3 h-3 mr-1" />
+            Export
           </Button>
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Reactions</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{reactionStats?.total_reactions || 0}</div>
-            <p className="text-xs text-muted-foreground">Total feedback received</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Positive Reactions</CardTitle>
-            <ThumbsUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{reactionStats?.positive_reactions || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              {reactionStats?.positive_percentage.toFixed(1)}% of total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Negative Reactions</CardTitle>
-            <ThumbsDown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{reactionStats?.negative_reactions || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              {reactionStats?.negative_percentage.toFixed(1)}% of total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Satisfaction Score</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {reactionStats?.positive_percentage.toFixed(0)}%
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+              <MessageSquare className="h-3 w-3 text-blue-600" />
             </div>
-            <p className="text-xs text-muted-foreground">Positive feedback rate</p>
-          </CardContent>
-        </Card>
+            <div>
+              <div className="text-sm font-bold">{reactionStats?.total_reactions || 0}</div>
+              <div className="text-[9px] text-muted-foreground">Total Reactions</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
+              <ThumbsUp className="h-3 w-3 text-green-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold">{reactionStats?.positive_reactions || 0}</div>
+              <div className="text-[9px] text-muted-foreground">{reactionStats?.positive_percentage.toFixed(1)}% positive</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-2 rounded-lg border bg-red-50/50 dark:bg-red-950/20 border-red-200/50">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-red-500/20 rounded flex items-center justify-center">
+              <ThumbsDown className="h-3 w-3 text-red-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold">{reactionStats?.negative_reactions || 0}</div>
+              <div className="text-[9px] text-muted-foreground">{reactionStats?.negative_percentage.toFixed(1)}% negative</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+              <TrendingUp className="h-3 w-3 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-sm font-bold">{reactionStats?.positive_percentage.toFixed(0)}%</div>
+              <div className="text-[9px] text-muted-foreground">Satisfaction Score</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Charts */}

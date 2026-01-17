@@ -107,111 +107,96 @@ const PerformanceMonitor = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Performance Monitor</h2>
-          <p className="text-gray-400">Monitor app performance, cache usage, and optimizations</p>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-red-500/10 rounded-lg border border-yellow-200/50 dark:border-yellow-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center">
+            <Zap className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold">Performance Monitor</h2>
+            <p className="text-[10px] text-muted-foreground">Monitor app performance, cache usage, and optimizations</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {updateAvailable && (
-            <Button onClick={updateApp} className="bg-blue-600 hover:bg-blue-700">
-              <Download className="h-4 w-4 mr-2" />
-              Update Available
+            <Button onClick={updateApp} size="sm" className="h-7 text-[10px] bg-blue-600 hover:bg-blue-700">
+              <Download className="h-3 w-3 mr-1" />
+              Update
             </Button>
           )}
-          <Button onClick={loadPerformanceData} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
+          <Button onClick={loadPerformanceData} variant="outline" size="sm" className="h-7 text-[10px]">
+            <RefreshCw className="h-3 w-3 mr-1" />
             Refresh
           </Button>
         </div>
       </div>
 
       {/* Performance Score */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5" />
+      <Card className="border-yellow-200/50 dark:border-yellow-800/30">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-2">
+            <Zap className="h-3 w-3 text-yellow-600" />
             Performance Score
           </CardTitle>
-          <CardDescription>Overall application performance rating</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="text-4xl font-bold">
+        <CardContent className="p-3 pt-0">
+          <div className="flex items-center gap-3">
+            <div className="text-2xl font-bold">
               <span className={getScoreColor(getPerformanceScore())}>
                 {getPerformanceScore()}
               </span>
-              <span className="text-xl text-gray-500">/100</span>
+              <span className="text-sm text-muted-foreground">/100</span>
             </div>
             <div className="flex-1">
-              <Progress value={getPerformanceScore()} className="h-2" />
+              <Progress value={getPerformanceScore()} className="h-1.5" />
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Performance Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              First Paint
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {performanceMetrics ? `${Math.round(performanceMetrics.firstPaint)}ms` : 'Loading...'}
-            </div>
-            <p className="text-xs text-muted-foreground">Time to first pixel</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="p-2 rounded-lg border bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50">
+          <div className="flex items-center gap-2">
+            <Clock className="h-3 w-3 text-blue-600" />
+            <span className="text-[9px] text-muted-foreground">First Paint</span>
+          </div>
+          <div className="text-sm font-bold mt-1">
+            {performanceMetrics ? `${Math.round(performanceMetrics.firstPaint)}ms` : '--'}
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Contentful Paint
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {performanceMetrics ? `${Math.round(performanceMetrics.firstContentfulPaint)}ms` : 'Loading...'}
-            </div>
-            <p className="text-xs text-muted-foreground">Time to meaningful content</p>
-          </CardContent>
-        </Card>
+        <div className="p-2 rounded-lg border bg-green-50/50 dark:bg-green-950/20 border-green-200/50">
+          <div className="flex items-center gap-2">
+            <Activity className="h-3 w-3 text-green-600" />
+            <span className="text-[9px] text-muted-foreground">Contentful Paint</span>
+          </div>
+          <div className="text-sm font-bold mt-1">
+            {performanceMetrics ? `${Math.round(performanceMetrics.firstContentfulPaint)}ms` : '--'}
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              DOM Ready
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {performanceMetrics ? `${performanceMetrics.domContentLoaded}ms` : 'Loading...'}
-            </div>
-            <p className="text-xs text-muted-foreground">DOM content loaded</p>
-          </CardContent>
-        </Card>
+        <div className="p-2 rounded-lg border bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50">
+          <div className="flex items-center gap-2">
+            <Globe className="h-3 w-3 text-purple-600" />
+            <span className="text-[9px] text-muted-foreground">DOM Ready</span>
+          </div>
+          <div className="text-sm font-bold mt-1">
+            {performanceMetrics ? `${performanceMetrics.domContentLoaded}ms` : '--'}
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              Total Load
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {performanceMetrics ? `${Math.round(performanceMetrics.totalLoadTime / 1000)}s` : 'Loading...'}
-            </div>
-            <p className="text-xs text-muted-foreground">Complete page load</p>
-          </CardContent>
-        </Card>
+        <div className="p-2 rounded-lg border bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50">
+          <div className="flex items-center gap-2">
+            <Zap className="h-3 w-3 text-orange-600" />
+            <span className="text-[9px] text-muted-foreground">Total Load</span>
+          </div>
+          <div className="text-sm font-bold mt-1">
+            {performanceMetrics ? `${Math.round(performanceMetrics.totalLoadTime / 1000)}s` : '--'}
+          </div>
+        </div>
       </div>
 
       {/* Service Worker Status */}
