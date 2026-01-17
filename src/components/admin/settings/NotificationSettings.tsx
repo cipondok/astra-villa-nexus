@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { Bell, Mail, MessageSquare, AlertTriangle, Users, Calendar } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Bell, AlertTriangle, Calendar, Mail } from 'lucide-react';
 
 interface NotificationSettingsProps {
   settings: any;
@@ -14,169 +14,107 @@ interface NotificationSettingsProps {
 
 const NotificationSettings = ({ settings, onInputChange }: NotificationSettingsProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          Notification Settings
-        </CardTitle>
-        <CardDescription>Configure system notification preferences</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* General Notification Settings */}
-        <div className="space-y-4">
-          <h4 className="text-sm font-medium flex items-center gap-2">
-            <Bell className="h-4 w-4" />
+    <div className="space-y-4">
+      {/* General Notifications */}
+      <Card className="border-l-4 border-l-yellow-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Bell className="h-4 w-4 text-yellow-500" />
             General Notifications
-          </h4>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="emailNotifications">Email Notifications</Label>
-                <p className="text-xs text-muted-foreground">Receive notifications via email</p>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { id: 'emailNotifications', label: 'Email', desc: 'Via email', checked: settings.emailNotifications },
+              { id: 'smsNotifications', label: 'SMS', desc: 'Via SMS', checked: settings.smsNotifications },
+              { id: 'pushNotifications', label: 'Push', desc: 'Browser push', checked: settings.pushNotifications || false },
+              { id: 'inAppNotifications', label: 'In-App', desc: 'Within app', checked: settings.inAppNotifications !== false },
+            ].map(item => (
+              <div key={item.id} className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+                <div>
+                  <Label htmlFor={item.id} className="text-xs font-medium">{item.label}</Label>
+                  <p className="text-[9px] text-muted-foreground">{item.desc}</p>
+                </div>
+                <Switch
+                  id={item.id}
+                  checked={item.checked}
+                  onCheckedChange={(checked) => onInputChange(item.id, checked)}
+                />
               </div>
-              <Switch
-                id="emailNotifications"
-                checked={settings.emailNotifications}
-                onCheckedChange={(checked) => onInputChange('emailNotifications', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="smsNotifications">SMS Notifications</Label>
-                <p className="text-xs text-muted-foreground">Receive notifications via SMS</p>
-              </div>
-              <Switch
-                id="smsNotifications"
-                checked={settings.smsNotifications}
-                onCheckedChange={(checked) => onInputChange('smsNotifications', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="pushNotifications">Push Notifications</Label>
-                <p className="text-xs text-muted-foreground">Browser push notifications</p>
-              </div>
-              <Switch
-                id="pushNotifications"
-                checked={settings.pushNotifications || false}
-                onCheckedChange={(checked) => onInputChange('pushNotifications', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="inAppNotifications">In-App Notifications</Label>
-                <p className="text-xs text-muted-foreground">Show notifications within the app</p>
-              </div>
-              <Switch
-                id="inAppNotifications"
-                checked={settings.inAppNotifications || true}
-                onCheckedChange={(checked) => onInputChange('inAppNotifications', checked)}
-              />
-            </div>
+            ))}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <Separator />
-
-        {/* Admin Alert Categories */}
-        <div className="space-y-4">
-          <h4 className="text-sm font-medium flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
+      {/* Admin Alert Categories */}
+      <Card className="border-l-4 border-l-orange-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <AlertTriangle className="h-4 w-4 text-orange-500" />
             Admin Alert Categories
-          </h4>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="systemAlerts">System Alerts</Label>
-                <p className="text-xs text-muted-foreground">Database errors, server issues</p>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { id: 'systemAlerts', label: 'System', desc: 'DB, server issues', checked: settings.systemAlerts !== false },
+              { id: 'securityAlerts', label: 'Security', desc: 'Login, suspicious', checked: settings.securityAlerts !== false },
+              { id: 'userAlerts', label: 'User Activity', desc: 'Registrations', checked: settings.userAlerts !== false },
+              { id: 'vendorAlerts', label: 'Vendor', desc: 'Service, compliance', checked: settings.vendorAlerts !== false },
+            ].map(item => (
+              <div key={item.id} className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+                <div>
+                  <Label htmlFor={item.id} className="text-xs font-medium">{item.label}</Label>
+                  <p className="text-[9px] text-muted-foreground">{item.desc}</p>
+                </div>
+                <Switch
+                  id={item.id}
+                  checked={item.checked}
+                  onCheckedChange={(checked) => onInputChange(item.id, checked)}
+                />
               </div>
-              <Switch
-                id="systemAlerts"
-                checked={settings.systemAlerts !== false}
-                onCheckedChange={(checked) => onInputChange('systemAlerts', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="securityAlerts">Security Alerts</Label>
-                <p className="text-xs text-muted-foreground">Login attempts, suspicious activity</p>
-              </div>
-              <Switch
-                id="securityAlerts"
-                checked={settings.securityAlerts !== false}
-                onCheckedChange={(checked) => onInputChange('securityAlerts', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="userAlerts">User Activity Alerts</Label>
-                <p className="text-xs text-muted-foreground">New registrations, account issues</p>
-              </div>
-              <Switch
-                id="userAlerts"
-                checked={settings.userAlerts !== false}
-                onCheckedChange={(checked) => onInputChange('userAlerts', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="vendorAlerts">Vendor Alerts</Label>
-                <p className="text-xs text-muted-foreground">Service submissions, compliance issues</p>
-              </div>
-              <Switch
-                id="vendorAlerts"
-                checked={settings.vendorAlerts !== false}
-                onCheckedChange={(checked) => onInputChange('vendorAlerts', checked)}
-              />
-            </div>
+            ))}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <Separator />
-
-        {/* Notification Timing */}
-        <div className="space-y-4">
-          <h4 className="text-sm font-medium flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
+      {/* Notification Timing */}
+      <Card className="border-l-4 border-l-purple-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Calendar className="h-4 w-4 text-purple-500" />
             Notification Timing
-          </h4>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="emailFrequency">Email Frequency</Label>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Email Frequency</Label>
               <Select
                 value={settings.emailFrequency || 'immediate'}
                 onValueChange={(value) => onInputChange('emailFrequency', value)}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select frequency" />
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="immediate">Immediate</SelectItem>
-                  <SelectItem value="hourly">Hourly Digest</SelectItem>
-                  <SelectItem value="daily">Daily Digest</SelectItem>
-                  <SelectItem value="weekly">Weekly Summary</SelectItem>
+                  <SelectItem value="hourly">Hourly</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="quietHours">Quiet Hours</Label>
+            
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Quiet Hours</Label>
               <Select
                 value={settings.quietHours || 'disabled'}
                 onValueChange={(value) => onInputChange('quietHours', value)}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select quiet hours" />
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="disabled">Disabled</SelectItem>
@@ -186,29 +124,29 @@ const NotificationSettings = ({ settings, onInputChange }: NotificationSettingsP
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="alertPriority">Minimum Alert Priority</Label>
+            
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Min Priority</Label>
               <Select
                 value={settings.alertPriority || 'medium'}
                 onValueChange={(value) => onInputChange('alertPriority', value)}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="low">Low</SelectItem>
                   <SelectItem value="medium">Medium</SelectItem>
                   <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="critical">Critical Only</SelectItem>
+                  <SelectItem value="critical">Critical</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="weekendNotifications">Weekend Notifications</Label>
-                <p className="text-xs text-muted-foreground">Receive notifications on weekends</p>
+            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+              <div>
+                <Label htmlFor="weekendNotifications" className="text-xs font-medium">Weekend</Label>
+                <p className="text-[9px] text-muted-foreground">On weekends</p>
               </div>
               <Switch
                 id="weekendNotifications"
@@ -217,45 +155,39 @@ const NotificationSettings = ({ settings, onInputChange }: NotificationSettingsP
               />
             </div>
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <Separator />
-
-        {/* Contact Information */}
-        <div className="space-y-4">
-          <h4 className="text-sm font-medium flex items-center gap-2">
-            <Mail className="h-4 w-4" />
+      {/* Emergency Contact */}
+      <Card className="border-l-4 border-l-red-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Mail className="h-4 w-4 text-red-500" />
             Emergency Contact Settings
-          </h4>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="emergencyEmailAlerts">Emergency Email Alerts</Label>
-                <p className="text-xs text-muted-foreground">Critical system issues via email</p>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { id: 'emergencyEmailAlerts', label: 'Emergency Email', desc: 'Critical issues via email', checked: settings.emergencyEmailAlerts !== false },
+              { id: 'emergencySmsAlerts', label: 'Emergency SMS', desc: 'Critical issues via SMS', checked: settings.emergencySmsAlerts || false },
+            ].map(item => (
+              <div key={item.id} className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+                <div>
+                  <Label htmlFor={item.id} className="text-xs font-medium">{item.label}</Label>
+                  <p className="text-[9px] text-muted-foreground">{item.desc}</p>
+                </div>
+                <Switch
+                  id={item.id}
+                  checked={item.checked}
+                  onCheckedChange={(checked) => onInputChange(item.id, checked)}
+                />
               </div>
-              <Switch
-                id="emergencyEmailAlerts"
-                checked={settings.emergencyEmailAlerts !== false}
-                onCheckedChange={(checked) => onInputChange('emergencyEmailAlerts', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="emergencySmsAlerts">Emergency SMS Alerts</Label>
-                <p className="text-xs text-muted-foreground">Critical system issues via SMS</p>
-              </div>
-              <Switch
-                id="emergencySmsAlerts"
-                checked={settings.emergencySmsAlerts || false}
-                onCheckedChange={(checked) => onInputChange('emergencySmsAlerts', checked)}
-              />
-            </div>
+            ))}
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

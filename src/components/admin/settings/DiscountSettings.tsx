@@ -1,10 +1,11 @@
+
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Percent, Clock, Shield, Bell, Calendar, TrendingDown } from 'lucide-react';
+import { Percent, Shield, TrendingDown } from 'lucide-react';
 
 interface DiscountSettingsProps {
   settings: any;
@@ -13,32 +14,28 @@ interface DiscountSettingsProps {
 
 const DiscountSettings: React.FC<DiscountSettingsProps> = ({ settings, onInputChange }) => {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <TrendingDown className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">Discount System Configuration</h3>
-        <Badge variant="secondary">Active</Badge>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+        <TrendingDown className="h-4 w-4 text-primary" />
+        <h3 className="text-sm font-semibold">Discount System Configuration</h3>
+        <Badge variant="secondary" className="text-[9px]">Active</Badge>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* General Discount Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Percent className="h-4 w-4" />
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* General Settings */}
+        <Card className="border-l-4 border-l-blue-500">
+          <CardHeader className="py-3 px-4">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+              <Percent className="h-4 w-4 text-blue-500" />
               General Settings
             </CardTitle>
-            <CardDescription>
-              Configure basic discount system parameters
-            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="discountEnabled">Enable Discount System</Label>
-                <p className="text-xs text-muted-foreground">
-                  Allow vendors to create discount offers
-                </p>
+          <CardContent className="px-4 pb-4 pt-0 space-y-3">
+            <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+              <div>
+                <Label htmlFor="discountEnabled" className="text-xs font-medium">Enable Discount System</Label>
+                <p className="text-[9px] text-muted-foreground">Allow vendors to create discounts</p>
               </div>
               <Switch
                 id="discountEnabled"
@@ -47,8 +44,8 @@ const DiscountSettings: React.FC<DiscountSettingsProps> = ({ settings, onInputCh
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="maxDiscountPercentage">Maximum Discount Percentage</Label>
+            <div className="space-y-1">
+              <Label htmlFor="maxDiscountPercentage" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Max Discount %</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="maxDiscountPercentage"
@@ -57,17 +54,14 @@ const DiscountSettings: React.FC<DiscountSettingsProps> = ({ settings, onInputCh
                   max="100"
                   value={settings.maxDiscountPercentage}
                   onChange={(e) => onInputChange('maxDiscountPercentage', e.target.value)}
-                  className="w-20"
+                  className="h-8 text-xs w-20"
                 />
-                <span className="text-sm text-muted-foreground">%</span>
+                <span className="text-xs text-muted-foreground">%</span>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Maximum discount percentage vendors can offer (1-100%)
-              </p>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="minDiscountDuration">Minimum Discount Duration</Label>
+            <div className="space-y-1">
+              <Label htmlFor="minDiscountDuration" className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Min Duration</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="minDiscountDuration"
@@ -75,103 +69,65 @@ const DiscountSettings: React.FC<DiscountSettingsProps> = ({ settings, onInputCh
                   min="1"
                   value={settings.minDiscountDuration}
                   onChange={(e) => onInputChange('minDiscountDuration', e.target.value)}
-                  className="w-20"
+                  className="h-8 text-xs w-20"
                 />
-                <span className="text-sm text-muted-foreground">days</span>
+                <span className="text-xs text-muted-foreground">days</span>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Minimum duration for discount campaigns
-              </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Approval & Control Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
+        {/* Approval & Control */}
+        <Card className="border-l-4 border-l-orange-500">
+          <CardHeader className="py-3 px-4">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+              <Shield className="h-4 w-4 text-orange-500" />
               Approval & Control
             </CardTitle>
-            <CardDescription>
-              Manage discount approval workflow and controls
-            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="requireAdminApproval">Require Admin Approval</Label>
-                <p className="text-xs text-muted-foreground">
-                  All discounts must be approved by admin
-                </p>
+          <CardContent className="px-4 pb-4 pt-0 space-y-3">
+            {[
+              { id: 'requireAdminApproval', label: 'Admin Approval', desc: 'All discounts need approval', checked: settings.requireAdminApproval },
+              { id: 'allowSeasonalDiscounts', label: 'Seasonal Discounts', desc: 'Holiday campaigns', checked: settings.allowSeasonalDiscounts },
+              { id: 'discountNotifications', label: 'Notifications', desc: 'Discount activity alerts', checked: settings.discountNotifications },
+            ].map(item => (
+              <div key={item.id} className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+                <div>
+                  <Label htmlFor={item.id} className="text-xs font-medium">{item.label}</Label>
+                  <p className="text-[9px] text-muted-foreground">{item.desc}</p>
+                </div>
+                <Switch
+                  id={item.id}
+                  checked={item.checked}
+                  onCheckedChange={(checked) => onInputChange(item.id, checked)}
+                />
               </div>
-              <Switch
-                id="requireAdminApproval"
-                checked={settings.requireAdminApproval}
-                onCheckedChange={(checked) => onInputChange('requireAdminApproval', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="allowSeasonalDiscounts">Allow Seasonal Discounts</Label>
-                <p className="text-xs text-muted-foreground">
-                  Enable seasonal and holiday discount campaigns
-                </p>
-              </div>
-              <Switch
-                id="allowSeasonalDiscounts"
-                checked={settings.allowSeasonalDiscounts}
-                onCheckedChange={(checked) => onInputChange('allowSeasonalDiscounts', checked)}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="discountNotifications">Discount Notifications</Label>
-                <p className="text-xs text-muted-foreground">
-                  Send notifications about discount activities
-                </p>
-              </div>
-              <Switch
-                id="discountNotifications"
-                checked={settings.discountNotifications}
-                onCheckedChange={(checked) => onInputChange('discountNotifications', checked)}
-              />
-            </div>
+            ))}
           </CardContent>
         </Card>
       </div>
 
-      {/* Discount Analytics Preview */}
+      {/* Stats Overview */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
             <TrendingDown className="h-4 w-4" />
             Discount System Overview
           </CardTitle>
-          <CardDescription>
-            Current discount system status and quick stats
-          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-muted/30 rounded-lg">
-              <div className="text-2xl font-bold text-primary">0</div>
-              <div className="text-xs text-muted-foreground">Active Discounts</div>
-            </div>
-            <div className="text-center p-3 bg-muted/30 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">0</div>
-              <div className="text-xs text-muted-foreground">Approved Today</div>
-            </div>
-            <div className="text-center p-3 bg-muted/30 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">0</div>
-              <div className="text-xs text-muted-foreground">Pending Approval</div>
-            </div>
-            <div className="text-center p-3 bg-muted/30 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">0%</div>
-              <div className="text-xs text-muted-foreground">Avg Discount</div>
-            </div>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: 'Active Discounts', value: '0', color: 'text-primary' },
+              { label: 'Approved Today', value: '0', color: 'text-green-600' },
+              { label: 'Pending Approval', value: '0', color: 'text-orange-600' },
+              { label: 'Avg Discount', value: '0%', color: 'text-blue-600' },
+            ].map((stat, index) => (
+              <div key={index} className="text-center p-3 bg-muted/20 rounded-lg border border-border/50">
+                <div className={`text-lg font-bold ${stat.color}`}>{stat.value}</div>
+                <div className="text-[9px] text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>

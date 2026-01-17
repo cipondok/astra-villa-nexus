@@ -1,13 +1,12 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { 
   Activity, 
   Bell, 
@@ -39,317 +38,228 @@ const SystemMonitoring: React.FC<SystemMonitoringProps> = ({ systemInfo }) => {
 
   const handleSaveSettings = async () => {
     setIsSaving(true);
-    try {
-      // Simulate saving settings
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Settings saved successfully');
-    } catch (error) {
-      console.error('Error saving settings:', error);
-    } finally {
-      setIsSaving(false);
-    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsSaving(false);
   };
 
   const handleTestAlerts = async () => {
     setIsTestingAlerts(true);
-    try {
-      // Simulate testing alerts
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Alert test completed');
-    } catch (error) {
-      console.error('Error testing alerts:', error);
-    } finally {
-      setIsTestingAlerts(false);
-    }
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsTestingAlerts(false);
   };
 
   const handleRunDiagnostics = async () => {
     setIsRunningDiagnostics(true);
-    try {
-      // Simulate running diagnostics
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Diagnostics completed');
-    } catch (error) {
-      console.error('Error running diagnostics:', error);
-    } finally {
-      setIsRunningDiagnostics(false);
-    }
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsRunningDiagnostics(false);
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
-            Real-Time Monitoring Settings
+    <div className="space-y-4">
+      {/* Real-Time Features */}
+      <Card className="border-l-4 border-l-yellow-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Zap className="h-4 w-4 text-yellow-500" />
+            Real-Time Features
           </CardTitle>
-          <CardDescription>
-            Configure system monitoring, alerts, and performance tracking
-          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Real-Time Features */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              Real-Time Features
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1">
-                  <Label>Live Metrics Updates</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Auto-refresh dashboard metrics every 30 seconds
-                  </p>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: 'Live Metrics', desc: 'Auto-refresh 30s' },
+              { label: 'Real-Time Alerts', desc: 'Instant notifications' },
+              { label: 'Performance', desc: 'CPU, memory, DB' },
+              { label: 'User Tracking', desc: 'Active sessions' },
+            ].map((item, index) => (
+              <div key={index} className="flex items-center justify-between p-2 bg-muted/20 rounded-lg border border-border/50">
+                <div>
+                  <Label className="text-xs font-medium">{item.label}</Label>
+                  <p className="text-[9px] text-muted-foreground">{item.desc}</p>
                 </div>
                 <Switch defaultChecked />
               </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1">
-                  <Label>Real-Time Alerts</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Instant notifications for critical events
-                  </p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1">
-                  <Label>Performance Monitoring</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Track CPU, memory, and database performance
-                  </p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1">
-                  <Label>User Activity Tracking</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Monitor active users and sessions
-                  </p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Alert Configuration */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              Alert Configuration
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Alert Refresh Interval</Label>
-                <Select defaultValue="15">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select interval" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="5">5 seconds</SelectItem>
-                    <SelectItem value="15">15 seconds</SelectItem>
-                    <SelectItem value="30">30 seconds</SelectItem>
-                    <SelectItem value="60">1 minute</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Max Alerts Display</Label>
-                <Input type="number" defaultValue="100" min="10" max="1000" />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Auto-Mark Read After</Label>
-                <Select defaultValue="24">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select duration" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 hour</SelectItem>
-                    <SelectItem value="6">6 hours</SelectItem>
-                    <SelectItem value="24">24 hours</SelectItem>
-                    <SelectItem value="168">1 week</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Alert Retention Period</Label>
-                <Select defaultValue="30">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select period" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="7">7 days</SelectItem>
-                    <SelectItem value="30">30 days</SelectItem>
-                    <SelectItem value="90">90 days</SelectItem>
-                    <SelectItem value="365">1 year</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Performance Thresholds */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium flex items-center gap-2">
-              <Server className="h-4 w-4" />
-              Performance Thresholds
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label>CPU Warning Threshold</Label>
-                <div className="flex items-center gap-2">
-                  <Input type="number" defaultValue="70" min="1" max="100" />
-                  <span className="text-sm text-muted-foreground">%</span>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Memory Warning Threshold</Label>
-                <div className="flex items-center gap-2">
-                  <Input type="number" defaultValue="80" min="1" max="100" />
-                  <span className="text-sm text-muted-foreground">%</span>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Response Time Warning</Label>
-                <div className="flex items-center gap-2">
-                  <Input type="number" defaultValue="500" min="1" max="10000" />
-                  <span className="text-sm text-muted-foreground">ms</span>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Database Load Warning</Label>
-                <div className="flex items-center gap-2">
-                  <Input type="number" defaultValue="75" min="1" max="100" />
-                  <span className="text-sm text-muted-foreground">%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* System Status */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              Current System Status
-            </h3>
-            
-            {systemInfo && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                <Card className="bg-blue-50 dark:bg-blue-900/20">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">System Version</p>
-                        <p className="text-sm text-muted-foreground">{systemInfo.version}</p>
-                      </div>
-                      <Badge variant="default" className="bg-blue-500">Active</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card className="bg-green-50 dark:bg-green-900/20">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Active Users</p>
-                        <p className="text-sm text-muted-foreground">{systemInfo.activeUsers} online</p>
-                      </div>
-                      <Badge variant="default" className="bg-green-500">Live</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card className="bg-purple-50 dark:bg-purple-900/20">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Total Properties</p>
-                        <p className="text-sm text-muted-foreground">{systemInfo.totalProperties} listings</p>
-                      </div>
-                      <Badge variant="default" className="bg-purple-500">Updated</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-green-50 dark:bg-green-900/20">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Database</p>
-                      <p className="text-sm text-muted-foreground">Connected</p>
-                    </div>
-                    <Badge variant="default" className="bg-green-500">Healthy</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-blue-50 dark:bg-blue-900/20">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">API Services</p>
-                      <p className="text-sm text-muted-foreground">Operational</p>
-                    </div>
-                    <Badge variant="default" className="bg-blue-500">Active</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-purple-50 dark:bg-purple-900/20">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Monitoring</p>
-                      <p className="text-sm text-muted-foreground">Real-time</p>
-                    </div>
-                    <Badge variant="default" className="bg-purple-500">Live</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-4">
-            <Button onClick={handleSaveSettings} disabled={isSaving}>
-              <Settings className="h-4 w-4 mr-2" />
-              {isSaving ? 'Saving...' : 'Save Settings'}
-            </Button>
-            <Button variant="outline" onClick={handleTestAlerts} disabled={isTestingAlerts}>
-              <Clock className="h-4 w-4 mr-2" />
-              {isTestingAlerts ? 'Testing...' : 'Test Alerts'}
-            </Button>
-            <Button variant="outline" onClick={handleRunDiagnostics} disabled={isRunningDiagnostics}>
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              {isRunningDiagnostics ? 'Running...' : 'Run Diagnostics'}
-            </Button>
+            ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* Alert Configuration */}
+      <Card className="border-l-4 border-l-blue-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Bell className="h-4 w-4 text-blue-500" />
+            Alert Configuration
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Refresh Interval</Label>
+              <Select defaultValue="15">
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5 seconds</SelectItem>
+                  <SelectItem value="15">15 seconds</SelectItem>
+                  <SelectItem value="30">30 seconds</SelectItem>
+                  <SelectItem value="60">1 minute</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Max Alerts</Label>
+              <Input type="number" defaultValue="100" className="h-8 text-xs" />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Auto-Mark Read</Label>
+              <Select defaultValue="24">
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 hour</SelectItem>
+                  <SelectItem value="6">6 hours</SelectItem>
+                  <SelectItem value="24">24 hours</SelectItem>
+                  <SelectItem value="168">1 week</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Retention</Label>
+              <Select defaultValue="30">
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7">7 days</SelectItem>
+                  <SelectItem value="30">30 days</SelectItem>
+                  <SelectItem value="90">90 days</SelectItem>
+                  <SelectItem value="365">1 year</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Performance Thresholds */}
+      <Card className="border-l-4 border-l-red-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Server className="h-4 w-4 text-red-500" />
+            Performance Thresholds
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: 'CPU Warning', unit: '%', defaultValue: '70' },
+              { label: 'Memory Warning', unit: '%', defaultValue: '80' },
+              { label: 'Response Time', unit: 'ms', defaultValue: '500' },
+              { label: 'DB Load', unit: '%', defaultValue: '75' },
+            ].map((item, index) => (
+              <div key={index} className="space-y-1">
+                <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{item.label}</Label>
+                <div className="flex items-center gap-1">
+                  <Input type="number" defaultValue={item.defaultValue} className="h-8 text-xs" />
+                  <span className="text-[10px] text-muted-foreground">{item.unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* System Status */}
+      <Card className="border-l-4 border-l-green-500">
+        <CardHeader className="py-3 px-4">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Database className="h-4 w-4 text-green-500" />
+            Current System Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0 space-y-3">
+          {systemInfo && (
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium">Version</p>
+                    <p className="text-[10px] text-muted-foreground">{systemInfo.version}</p>
+                  </div>
+                  <Badge className="text-[9px] bg-blue-500">Active</Badge>
+                </div>
+              </div>
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium">Active Users</p>
+                    <p className="text-[10px] text-muted-foreground">{systemInfo.activeUsers} online</p>
+                  </div>
+                  <Badge className="text-[9px] bg-green-500">Live</Badge>
+                </div>
+              </div>
+              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium">Properties</p>
+                    <p className="text-[10px] text-muted-foreground">{systemInfo.totalProperties} listings</p>
+                  </div>
+                  <Badge className="text-[9px] bg-purple-500">Updated</Badge>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-3 gap-3">
+            <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium">Database</p>
+                  <p className="text-[10px] text-muted-foreground">Connected</p>
+                </div>
+                <Badge className="text-[9px] bg-green-500">Healthy</Badge>
+              </div>
+            </div>
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium">API Services</p>
+                  <p className="text-[10px] text-muted-foreground">Operational</p>
+                </div>
+                <Badge className="text-[9px] bg-blue-500">Active</Badge>
+              </div>
+            </div>
+            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium">Monitoring</p>
+                  <p className="text-[10px] text-muted-foreground">Real-time</p>
+                </div>
+                <Badge className="text-[9px] bg-purple-500">Live</Badge>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <Button onClick={handleSaveSettings} disabled={isSaving} size="sm" className="h-8 text-xs">
+          <Settings className="h-3 w-3 mr-1" />
+          {isSaving ? 'Saving...' : 'Save Settings'}
+        </Button>
+        <Button variant="outline" onClick={handleTestAlerts} disabled={isTestingAlerts} size="sm" className="h-8 text-xs">
+          <Clock className="h-3 w-3 mr-1" />
+          {isTestingAlerts ? 'Testing...' : 'Test Alerts'}
+        </Button>
+        <Button variant="outline" onClick={handleRunDiagnostics} disabled={isRunningDiagnostics} size="sm" className="h-8 text-xs">
+          <AlertTriangle className="h-3 w-3 mr-1" />
+          {isRunningDiagnostics ? 'Running...' : 'Run Diagnostics'}
+        </Button>
+      </div>
     </div>
   );
 };
