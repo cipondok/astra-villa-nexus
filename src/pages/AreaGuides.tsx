@@ -35,20 +35,24 @@ const AreaGuides = () => {
           count: number;
         }
 
-        // De-duplicate cities and count
+        // De-duplicate cities and count - filter out empty city codes
         const cityMap: { [key: string]: CityData } = {};
         data?.forEach((location: any) => {
-          if (!cityMap[location.city_code]) {
-            cityMap[location.city_code] = {
-              id: location.city_code.toLowerCase(),
-              name: location.city_name,
+          // Skip if city_code is empty or null
+          if (!location.city_code || location.city_code.trim() === '') return;
+          
+          const cityId = location.city_code.toLowerCase();
+          if (!cityMap[cityId]) {
+            cityMap[cityId] = {
+              id: cityId,
+              name: location.city_name || location.city_code,
               count: 0
             };
           }
-          cityMap[location.city_code].count++;
+          cityMap[cityId].count++;
         });
 
-        const uniqueCities: CityData[] = Object.values(cityMap);
+        const uniqueCities: CityData[] = Object.values(cityMap).filter(city => city.id && city.id.trim() !== '');
         setCities(uniqueCities);
         
         // Default to 'jakarta' if available, otherwise first city
@@ -275,11 +279,15 @@ const AreaGuides = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-background/95 backdrop-blur-sm">
-                      {cities.map((city) => (
+                      {cities.length > 0 ? cities.map((city) => (
                         <SelectItem key={city.id} value={city.id} className="hover:bg-primary/10">
                           {city.name}
                         </SelectItem>
-                      ))}
+                      )) : (
+                        <SelectItem value="jakarta" className="hover:bg-primary/10">
+                          Jakarta
+                        </SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
