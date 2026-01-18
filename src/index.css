@@ -148,7 +148,7 @@ body.scroll-locked {
 @layer base {
   :root {
     /* Light Mode - Luxury Deep Navy & Gold Glassy Theme */
-    --background: 220 30% 96%;
+    --background: 220 30% 85%;
     --foreground: 220 50% 12%;
     --card: 220 20% 99%;
     --card-foreground: 220 50% 12%;
