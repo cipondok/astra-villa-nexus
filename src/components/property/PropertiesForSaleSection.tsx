@@ -100,7 +100,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   }
 
   return (
-    <section className="glass-card rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-emerald-50/80 via-white/60 to-green-50/40 dark:from-emerald-950/40 dark:via-gray-900/60 dark:to-green-950/30 backdrop-blur-xl shadow-lg">
+    <section className="rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3">
       <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2">
         <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-green-600 dark:text-green-400" />
         <h2 className="text-[8px] sm:text-[9px] md:text-xs font-semibold text-foreground">
