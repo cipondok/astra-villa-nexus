@@ -93,6 +93,32 @@ const IndonesianLocationManager = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
+  // Fetch accurate counts directly from database using RPC or separate queries
+  const { data: locationStats } = useQuery({
+    queryKey: ['location-stats'],
+    queryFn: async () => {
+      // Get distinct counts for each level
+      const [provincesRes, citiesRes, districtsRes, subdistrictsRes] = await Promise.all([
+        supabase.from('locations').select('province_code').neq('province_code', ''),
+        supabase.from('locations').select('city_code').neq('city_code', '').not('city_code', 'is', null),
+        supabase.from('locations').select('district_code').neq('district_code', '').not('district_code', 'is', null),
+        supabase.from('locations').select('subdistrict_code').neq('subdistrict_code', '').not('subdistrict_code', 'is', null),
+      ]);
+
+      const uniqueProvinces = new Set(provincesRes.data?.map(r => r.province_code) || []);
+      const uniqueCities = new Set(citiesRes.data?.map(r => r.city_code) || []);
+      const uniqueDistricts = new Set(districtsRes.data?.map(r => r.district_code) || []);
+      const uniqueSubdistricts = new Set(subdistrictsRes.data?.map(r => r.subdistrict_code) || []);
+
+      return {
+        provinces: uniqueProvinces.size,
+        cities: uniqueCities.size,
+        districts: uniqueDistricts.size,
+        subdistricts: uniqueSubdistricts.size,
+      };
+    },
+  });
+
   // Fetch province-only rows (city/district/subdistrict empty) to avoid the 1000-row limit
   // NOTE: After sync "Provinsi saja", we store province entries with empty strings (not null) for these codes.
   const { data: allProvinceData } = useQuery({
@@ -213,6 +239,7 @@ const IndonesianLocationManager = () => {
     onSuccess: () => {
       showSuccess('Location Added', 'Location has been added successfully');
       queryClient.invalidateQueries({ queryKey: ['locations'] });
+      queryClient.invalidateQueries({ queryKey: ['location-stats'] });
       setIsAddDialogOpen(false);
       resetForm();
     },
@@ -241,6 +268,7 @@ const IndonesianLocationManager = () => {
     onSuccess: () => {
       showSuccess('Location Updated', 'Location has been updated successfully');
       queryClient.invalidateQueries({ queryKey: ['locations'] });
+      queryClient.invalidateQueries({ queryKey: ['location-stats'] });
       setEditingLocation(null);
     },
     onError: (error: any) => {
@@ -259,6 +287,7 @@ const IndonesianLocationManager = () => {
     onSuccess: () => {
       showSuccess('Location Deleted', 'Location has been deleted successfully');
       queryClient.invalidateQueries({ queryKey: ['locations'] });
+      queryClient.invalidateQueries({ queryKey: ['location-stats'] });
     },
     onError: (error: any) => {
       showError('Error', error.message);
@@ -319,6 +348,8 @@ const IndonesianLocationManager = () => {
         } : null);
         
         queryClient.invalidateQueries({ queryKey: ['locations'] });
+        queryClient.invalidateQueries({ queryKey: ['location-stats'] });
+        queryClient.invalidateQueries({ queryKey: ['all-provinces'] });
         
         let description = `Provinsi: ${data.stats.provinces}, Kota/Kab: ${data.stats.cities}, Kecamatan: ${data.stats.districts}`;
         if (data.stats.villages > 0) {
@@ -589,19 +620,19 @@ const IndonesianLocationManager = () => {
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="provinces" className="flex items-center gap-2">
                 <Globe className="h-4 w-4" />
-                Provinsi ({locations ? Array.from(new Set(locations.map(l => l.province_code))).length : 0})
+                Provinsi ({locationStats?.provinces ?? 0})
               </TabsTrigger>
               <TabsTrigger value="cities" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
-                Kota/Kabupaten ({locations ? Array.from(new Set(locations.map(l => l.city_code))).length : 0})
+                Kota/Kabupaten ({locationStats?.cities ?? 0})
               </TabsTrigger>
               <TabsTrigger value="districts" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
-                Kecamatan ({locations ? Array.from(new Set(locations.map(l => l.district_code).filter(Boolean))).length : 0})
+                Kecamatan ({locationStats?.districts ?? 0})
               </TabsTrigger>
               <TabsTrigger value="subdistricts" className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                Kelurahan/Desa ({locations ? Array.from(new Set(locations.map(l => l.subdistrict_code).filter(Boolean))).length : 0})
+                Kelurahan/Desa ({locationStats?.subdistricts ?? 0})
               </TabsTrigger>
               <TabsTrigger value="manage" className="flex items-center gap-2">
                 <Edit className="h-4 w-4" />
