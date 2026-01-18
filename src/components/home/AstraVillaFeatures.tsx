@@ -69,7 +69,7 @@ const features: Feature[] = [{
 }];
 const AstraVillaFeatures = () => {
   return (
-    <div className="glass-card rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
+    <div className="rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3">
       {/* Section Header - Compact */}
       <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5">
         <Sparkles className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 text-primary" />

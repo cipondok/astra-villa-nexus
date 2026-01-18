@@ -287,7 +287,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   if (recommendations.length === 0 && !isGenerating) return null;
 
   return (
-    <div className={cn("relative glass-card rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-purple-50/80 via-white/60 to-violet-50/40 dark:from-purple-950/40 dark:via-gray-900/60 dark:to-violet-950/30 backdrop-blur-xl shadow-lg", className)}>
+    <div className={cn("relative rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3", className)}>
       <div className="flex items-center justify-between mb-1 sm:mb-1.5 md:mb-2 px-0.5 sm:px-1">
         <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
           <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-purple-600 dark:text-purple-400" />
