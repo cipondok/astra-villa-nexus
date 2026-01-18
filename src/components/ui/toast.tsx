@@ -14,7 +14,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed bottom-0 right-0 z-[100] flex max-h-screen flex-col p-3 sm:p-4 w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md md:max-w-[420px]",
+      "fixed bottom-0 right-0 z-[100] flex max-h-screen flex-col p-2 sm:p-3 w-full max-w-[280px] sm:max-w-[320px]",
       className
     )}
     {...props}
@@ -23,15 +23,15 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-3 overflow-hidden rounded-xl border p-4 sm:p-6 pr-10 shadow-xl transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-lg border p-2.5 sm:p-3 pr-8 shadow-xl backdrop-blur-xl transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-bottom-full",
   {
     variants: {
       variant: {
-        default: "border-border bg-background text-foreground backdrop-blur-sm shadow-lg",
-        destructive: "destructive group border-destructive/50 bg-destructive text-destructive-foreground shadow-lg",
-        success: "border-green-500/50 bg-green-500 text-white shadow-lg dark:bg-green-600",
-        warning: "border-yellow-500/50 bg-yellow-500 text-white shadow-lg dark:bg-yellow-600",
-        info: "border-blue-500/50 bg-blue-500 text-white shadow-lg dark:bg-blue-600",
+        default: "border-white/30 bg-white/70 dark:bg-black/70 text-foreground backdrop-blur-xl shadow-lg",
+        destructive: "destructive group border-destructive/30 bg-destructive/80 text-destructive-foreground backdrop-blur-xl shadow-lg",
+        success: "border-green-500/30 bg-green-500/80 text-white backdrop-blur-xl shadow-lg",
+        warning: "border-yellow-500/30 bg-yellow-500/80 text-white backdrop-blur-xl shadow-lg",
+        info: "border-blue-500/30 bg-blue-500/80 text-white backdrop-blur-xl shadow-lg",
       },
     },
     defaultVariants: {
@@ -45,19 +45,6 @@ const Toast = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
     VariantProps<typeof toastVariants> & { duration?: number }
 >(({ className, variant, duration = 5000, ...props }, ref) => {
-  const [progress, setProgress] = React.useState(100);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        const decrement = (100 / duration) * 50;
-        return Math.max(0, prev - decrement);
-      });
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, [duration]);
-
   return (
     <ToastPrimitives.Root
       ref={ref}
@@ -66,13 +53,6 @@ const Toast = React.forwardRef<
       {...props}
     >
       {props.children}
-      {/* Progress Bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 backdrop-blur-sm">
-        <div
-          className="h-full bg-gradient-to-r from-white/80 to-white/60 transition-all duration-50 ease-linear"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
     </ToastPrimitives.Root>
   )
 })
