@@ -183,6 +183,11 @@ body.scroll-locked {
     --glass-bg: 220 30% 98%;
     --glass-border: 45 50% 70%;
     --glass-shadow: 220 50% 10%;
+    
+    /* Samsung Blue Titanium Colors */
+    --titanium-light: 220 30% 85%;
+    --titanium-white: 220 15% 96%;
+    --samsung-blue-primary: 214 100% 47%;
   }
 
   .dark {
