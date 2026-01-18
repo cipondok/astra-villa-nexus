@@ -28,6 +28,7 @@ import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
 import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
 import SessionExpirationHandler from '@/components/SessionExpirationHandler';
+import AuthNotificationHandler from '@/components/AuthNotificationHandler';
 
 // Critical pages - load immediately
 import Index from '@/pages/Index';
@@ -252,6 +253,7 @@ function App() {
                             <ResponsiveAIChatWidget />
                             <NewArrivalsPopup />
                             <SessionExpirationHandler />
+                            <AuthNotificationHandler />
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
