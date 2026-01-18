@@ -128,7 +128,7 @@ const IndonesianLocationManager = () => {
         .from('locations')
         .select('*')
         .order('province_name', { ascending: true })
-        .limit(2000); // Increase limit for better coverage
+        .limit(50000); // Increased limit for full coverage (Indonesia has ~83,000 kelurahan)
 
       if (searchTerm) {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
