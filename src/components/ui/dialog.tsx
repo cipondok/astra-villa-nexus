@@ -36,12 +36,13 @@ interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof Dialo
   autoClose?: boolean;
   autoCloseTimeout?: number;
   showCountdown?: boolean;
+  hideCloseButton?: boolean;
 }
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, autoClose = true, autoCloseTimeout = 5000, showCountdown = true, ...props }, ref) => {
+>(({ className, children, autoClose = true, autoCloseTimeout = 5000, showCountdown = true, hideCloseButton = false, ...props }, ref) => {
   const [hasInteraction, setHasInteraction] = React.useState(false);
   const [countdown, setCountdown] = React.useState(Math.ceil(autoCloseTimeout / 1000));
   const closeRef = React.useRef<HTMLButtonElement>(null);
@@ -132,13 +133,15 @@ const DialogContent = React.forwardRef<
             </div>
           </div>
         )}
-        <DialogPrimitive.Close 
-          ref={closeRef}
-          className="absolute right-3 top-3 rounded-full p-1 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none"
-        >
-          <X className="h-3.5 w-3.5 text-foreground" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
+        {!hideCloseButton && (
+          <DialogPrimitive.Close 
+            ref={closeRef}
+            className="absolute right-3 top-3 rounded-full p-1 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:pointer-events-none"
+          >
+            <X className="h-3.5 w-3.5 text-foreground" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   );
