@@ -88,6 +88,14 @@ const config: Config = {
         'text': {
           light: 'hsl(var(--text-light))',
           muted: 'hsl(var(--text-muted))',
+        },
+        // Samsung Blue Titanium Colors
+        'titanium': {
+          light: 'hsl(var(--titanium-light))',
+          white: 'hsl(var(--titanium-white))',
+        },
+        'samsung-blue': {
+          DEFAULT: 'hsl(var(--samsung-blue-primary))',
         }
       },
       borderRadius: {
