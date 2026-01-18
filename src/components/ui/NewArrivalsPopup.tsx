@@ -16,13 +16,24 @@ export const NewArrivalsPopup = () => {
     
     if (!hasSeen) {
       // Show popup after a short delay for better UX
-      const timer = setTimeout(() => {
+      const showTimer = setTimeout(() => {
         setIsVisible(true);
       }, 2000);
       
-      return () => clearTimeout(timer);
+      return () => clearTimeout(showTimer);
     }
   }, []);
+
+  // Auto-close after 3 seconds
+  useEffect(() => {
+    if (isVisible) {
+      const autoCloseTimer = setTimeout(() => {
+        handleClose();
+      }, 3000);
+      
+      return () => clearTimeout(autoCloseTimer);
+    }
+  }, [isVisible]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -58,9 +69,9 @@ export const NewArrivalsPopup = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[10000] mx-auto max-w-[280px] sm:max-w-xs md:max-w-sm"
+            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[10000] mx-auto max-w-[220px] sm:max-w-[260px]"
           >
-            <div className="bg-background/70 backdrop-blur-md border border-border/50 rounded-lg shadow-2xl overflow-hidden">
+            <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-white/30 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden">
               {/* Header - slim */}
               <div className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/70 px-2.5 py-2 sm:px-3 sm:py-2.5">
                 <Button
