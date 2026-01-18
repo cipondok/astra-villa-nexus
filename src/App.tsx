@@ -27,6 +27,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
 import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
+import SessionExpirationHandler from '@/components/SessionExpirationHandler';
 
 // Critical pages - load immediately
 import Index from '@/pages/Index';
@@ -250,6 +251,7 @@ function App() {
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
                             <NewArrivalsPopup />
+                            <SessionExpirationHandler />
                           </PropertyComparisonProvider>
                         </NotificationProvider>
                       </AuthProvider>
