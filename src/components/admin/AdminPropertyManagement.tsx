@@ -172,8 +172,8 @@ const AdminPropertyManagement = () => {
 
         <TabsContent value="locations" className="mt-3">
           <div className="space-y-4">
-            <CentralLocationSettings />
             <IndonesianLocationManager />
+            <CentralLocationSettings />
           </div>
         </TabsContent>
 
