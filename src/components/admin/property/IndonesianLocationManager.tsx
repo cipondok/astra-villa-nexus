@@ -93,28 +93,22 @@ const IndonesianLocationManager = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch accurate counts directly from database using RPC or separate queries
+  // Fetch accurate counts directly from database using RPC function (bypasses 1000 row limit)
   const { data: locationStats } = useQuery({
     queryKey: ['location-stats'],
     queryFn: async () => {
-      // Get distinct counts for each level
-      const [provincesRes, citiesRes, districtsRes, subdistrictsRes] = await Promise.all([
-        supabase.from('locations').select('province_code').neq('province_code', ''),
-        supabase.from('locations').select('city_code').neq('city_code', '').not('city_code', 'is', null),
-        supabase.from('locations').select('district_code').neq('district_code', '').not('district_code', 'is', null),
-        supabase.from('locations').select('subdistrict_code').neq('subdistrict_code', '').not('subdistrict_code', 'is', null),
-      ]);
-
-      const uniqueProvinces = new Set(provincesRes.data?.map(r => r.province_code) || []);
-      const uniqueCities = new Set(citiesRes.data?.map(r => r.city_code) || []);
-      const uniqueDistricts = new Set(districtsRes.data?.map(r => r.district_code) || []);
-      const uniqueSubdistricts = new Set(subdistrictsRes.data?.map(r => r.subdistrict_code) || []);
-
-      return {
-        provinces: uniqueProvinces.size,
-        cities: uniqueCities.size,
-        districts: uniqueDistricts.size,
-        subdistricts: uniqueSubdistricts.size,
+      const { data, error } = await supabase.rpc('get_location_stats');
+      
+      if (error) {
+        console.error('Error fetching location stats:', error);
+        return { provinces: 0, cities: 0, districts: 0, subdistricts: 0 };
+      }
+      
+      return data as {
+        provinces: number;
+        cities: number;
+        districts: number;
+        subdistricts: number;
       };
     },
   });
