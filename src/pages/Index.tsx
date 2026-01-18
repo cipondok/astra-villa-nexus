@@ -637,7 +637,7 @@ const Index = () => {
 
         {/* Property Display Section - Glass Effect Background */}
         <div className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 space-y-2 sm:space-y-3 md:space-y-4">
-          <div className="w-full max-w-7xl mx-auto space-y-2 sm:space-y-3 md:space-y-4 glass-effect rounded-2xl p-3 sm:p-4 md:p-6">
+          <div className="w-full max-w-7xl mx-auto space-y-2 sm:space-y-3 md:space-y-4">
             {hasSearched ? (
               <section className="bg-background/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border border-border/40 hover:border-primary/30 transition-all duration-300">
                 <div className="p-2 sm:p-3 md:p-4 lg:p-6">
