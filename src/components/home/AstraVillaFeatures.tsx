@@ -109,7 +109,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
 
   return (
     <div onClick={handleClick} className="group cursor-pointer relative">
-      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-card border border-border/50 p-2 sm:p-2.5 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 hover:border-primary/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/10">
+      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-transparent dark:bg-white/5 border border-border/20 dark:border-white/10 p-2 sm:p-2.5 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 hover:border-primary/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/10">
         {/* Icon Container */}
         <div className="relative">
           <div className={`relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl ${feature.iconBg} shadow-sm`}>
