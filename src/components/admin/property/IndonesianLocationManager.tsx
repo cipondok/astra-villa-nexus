@@ -93,24 +93,31 @@ const IndonesianLocationManager = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch ALL unique provinces first (for accurate count and dropdowns)
+  // Fetch province-only rows (city/district/subdistrict empty) to avoid the 1000-row limit
+  // NOTE: After sync "Provinsi saja", we store province entries with empty strings (not null) for these codes.
   const { data: allProvinceData } = useQuery({
     queryKey: ['all-provinces'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('locations')
         .select('province_code, province_name')
-        .order('province_name', { ascending: true });
+        .eq('city_code', '')
+        .eq('district_code', '')
+        .eq('subdistrict_code', '')
+        .order('province_name', { ascending: true })
+        .limit(200);
+
       if (error) throw error;
-      // Get unique provinces
+
       const uniqueMap = new Map<string, { code: string; name: string }>();
-      data?.forEach(l => {
+      data?.forEach((l) => {
         if (!uniqueMap.has(l.province_code)) {
           uniqueMap.set(l.province_code, { code: l.province_code, name: l.province_name });
         }
       });
+
       return Array.from(uniqueMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-    }
+    },
   });
 
   // Fetch locations (with filters applied)
