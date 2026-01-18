@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Search, Home, Store, Map, Building, Warehouse, Factory, Trees, MapPinned, Briefcase, Crown, ChevronLeft, ChevronRight, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { Building2, Search, Home, Store, Map, Briefcase, Crown, Trees, ChevronLeft, ChevronRight, Sparkles, SlidersHorizontal, LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,6 +10,7 @@ import PropertyCard from '@/components/property/PropertyCard';
 import useEmblaCarousel from 'embla-carousel-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
+import AIToolsTabBar from '@/components/common/AIToolsTabBar';
 
 interface SearchFilters {
   city: string;
@@ -194,15 +195,15 @@ const NewProjects = () => {
     }
   });
 
-  const categories = [
-    { name: 'All Projects', icon: Sparkles, type: 'all', count: Object.values(categoryCounts || {}).reduce((a, b) => a + b, 0) },
-    { name: 'Apartments', icon: Building2, type: 'apartment', count: categoryCounts?.apartment || 0 },
-    { name: 'Houses', icon: Home, type: 'house', count: categoryCounts?.house || 0 },
-    { name: 'Commercial', icon: Store, type: 'commercial', count: categoryCounts?.commercial || 0 },
-    { name: 'Plots', icon: Map, type: 'land', count: categoryCounts?.land || 0 },
-    { name: 'Offices', icon: Briefcase, type: 'office', count: 0 },
-    { name: 'Penthouse', icon: Crown, type: 'penthouse', count: 0 },
-    { name: 'Farm Houses', icon: Trees, type: 'farmhouse', count: 0 },
+  const categories: { name: string; icon: LucideIcon; type: string; count: number; color: string; iconBg: string }[] = [
+    { name: 'All Projects', icon: Sparkles, type: 'all', count: Object.values(categoryCounts || {}).reduce((a, b) => a + b, 0), color: 'text-primary', iconBg: 'bg-primary/10 dark:bg-primary/20' },
+    { name: 'Apartments', icon: Building2, type: 'apartment', count: categoryCounts?.apartment || 0, color: 'text-blue-600 dark:text-blue-400', iconBg: 'bg-blue-100 dark:bg-blue-900/50' },
+    { name: 'Houses', icon: Home, type: 'house', count: categoryCounts?.house || 0, color: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-100 dark:bg-emerald-900/50' },
+    { name: 'Commercial', icon: Store, type: 'commercial', count: categoryCounts?.commercial || 0, color: 'text-purple-600 dark:text-purple-400', iconBg: 'bg-purple-100 dark:bg-purple-900/50' },
+    { name: 'Plots', icon: Map, type: 'land', count: categoryCounts?.land || 0, color: 'text-amber-600 dark:text-amber-400', iconBg: 'bg-amber-100 dark:bg-amber-900/50' },
+    { name: 'Offices', icon: Briefcase, type: 'office', count: 0, color: 'text-cyan-600 dark:text-cyan-400', iconBg: 'bg-cyan-100 dark:bg-cyan-900/50' },
+    { name: 'Penthouse', icon: Crown, type: 'penthouse', count: 0, color: 'text-pink-600 dark:text-pink-400', iconBg: 'bg-pink-100 dark:bg-pink-900/50' },
+    { name: 'Farm Houses', icon: Trees, type: 'farmhouse', count: 0, color: 'text-green-600 dark:text-green-400', iconBg: 'bg-green-100 dark:bg-green-900/50' },
   ];
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', slidesToScroll: 1, containScroll: 'trimSnaps' });
@@ -221,6 +222,9 @@ const NewProjects = () => {
       <div className="container mx-auto px-3 md:px-4 pt-1 pb-4 relative">
         {/* Back Link */}
         <BackToHomeLink sectionId="new-projects-section" />
+
+        {/* AI Tools Tab Bar */}
+        <AIToolsTabBar className="mb-3" />
 
         {/* Centered Header */}
         <div className="text-center mb-2">
@@ -327,22 +331,28 @@ const NewProjects = () => {
             </div>
           </div>
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.type}
-                  onClick={() => setFilters(prev => ({ ...prev, propertyType: cat.type }))}
-                  className={`flex-[0_0_90px] p-2 rounded-lg border transition-all ${
-                    filters.propertyType === cat.type
-                      ? 'bg-primary/10 border-primary/40 text-primary'
-                      : 'bg-card/50 border-border hover:border-primary/30'
-                  }`}
-                >
-                  <cat.icon className="h-4 w-4 mx-auto mb-1" />
-                  <p className="text-[10px] font-medium truncate">{cat.name}</p>
-                  <p className="text-[9px] text-muted-foreground">{cat.count}</p>
-                </button>
-              ))}
+            <div className="flex gap-1.5 md:gap-2">
+              {categories.map((cat) => {
+                const IconComponent = cat.icon;
+                const isActive = filters.propertyType === cat.type;
+                return (
+                  <button
+                    key={cat.type}
+                    onClick={() => setFilters(prev => ({ ...prev, propertyType: cat.type }))}
+                    className={`flex-[0_0_80px] sm:flex-[0_0_90px] p-2 sm:p-2.5 md:p-3 rounded-xl md:rounded-2xl border transition-all duration-300 flex flex-col items-center text-center ${
+                      isActive
+                        ? 'bg-primary/10 border-primary/40 shadow-sm'
+                        : 'bg-transparent dark:bg-white/5 border-border/20 dark:border-white/10 hover:border-primary/30'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl ${isActive ? 'bg-primary/20' : cat.iconBg} shadow-sm mb-1.5`}>
+                      <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 ${isActive ? 'text-primary' : cat.color}`} strokeWidth={1.5} />
+                    </div>
+                    <p className={`text-[8px] sm:text-[9px] md:text-[11px] font-semibold leading-tight line-clamp-2 ${isActive ? 'text-primary' : 'text-foreground'}`}>{cat.name}</p>
+                    <p className="text-[7px] sm:text-[8px] text-muted-foreground">{cat.count}</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

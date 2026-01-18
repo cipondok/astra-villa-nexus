@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import AIToolsTabBar from '@/components/common/AIToolsTabBar';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 const AreaUnitConverter = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -44,15 +46,22 @@ const AreaUnitConverter = () => {
   }, [inputValue, fromUnit, toUnit]);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <Maximize2 className="w-10 h-10 text-primary" />
-          <ArrowRightLeft className="w-8 h-8 text-blue-500" />
+    <div className="min-h-screen bg-background pt-11 md:pt-12">
+      <div className="container mx-auto px-3 md:px-4 py-4 max-w-4xl">
+        {/* Back Link */}
+        <BackToHomeLink sectionId="ai-tools-section" />
+        
+        {/* AI Tools Tab Bar */}
+        <AIToolsTabBar className="mb-4" />
+
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Maximize2 className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+            <ArrowRightLeft className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
+          </div>
+          <h1 className="text-xl md:text-3xl font-bold mb-1">Area Unit Converter</h1>
+          <p className="text-xs md:text-sm text-muted-foreground">Convert between different area measurements instantly</p>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">Area Unit Converter</h1>
-        <p className="text-muted-foreground">Convert between different area measurements instantly</p>
-      </div>
 
       <Card>
         <CardHeader>
@@ -134,6 +143,7 @@ const AreaUnitConverter = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

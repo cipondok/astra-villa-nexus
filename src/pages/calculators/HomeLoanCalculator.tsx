@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AIToolsTabBar from '@/components/common/AIToolsTabBar';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 interface EligibilityCheck {
   eligible: boolean;
@@ -233,30 +235,32 @@ const HomeLoanCalculator = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {/* Modern Header with Language Toggle */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-11 md:pt-12">
+        <div className="container mx-auto px-3 md:px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 p-2 bg-primary/10 rounded-lg">
-                <Home className="w-6 h-6 text-primary" />
-                <Calculator className="w-5 h-5 text-primary/70" />
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 p-1.5 bg-primary/10 rounded-lg">
+                <Home className="w-5 h-5 text-primary" />
+                <Calculator className="w-4 h-4 text-primary/70" />
               </div>
               <div>
-                <h1 className="text-xl md:text-2xl font-bold">{t.title}</h1>
-                <p className="text-xs text-muted-foreground hidden md:block">{t.subtitle}</p>
+                <h1 className="text-base md:text-xl font-bold">{t.title}</h1>
+                <p className="text-[10px] text-muted-foreground hidden md:block">{t.subtitle}</p>
               </div>
             </div>
             
             {/* Language Toggle */}
             <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
-              <TabsList className="grid w-[200px] grid-cols-2">
-                <TabsTrigger value="id" className="gap-2">
-                  <Globe className="w-4 h-4" />
-                  Bahasa
+              <TabsList className="grid w-[140px] md:w-[200px] grid-cols-2 h-8">
+                <TabsTrigger value="id" className="gap-1 text-xs h-7">
+                  <Globe className="w-3 h-3" />
+                  <span className="hidden sm:inline">Bahasa</span>
+                  <span className="sm:hidden">ID</span>
                 </TabsTrigger>
-                <TabsTrigger value="en" className="gap-2">
-                  <Globe className="w-4 h-4" />
-                  English
+                <TabsTrigger value="en" className="gap-1 text-xs h-7">
+                  <Globe className="w-3 h-3" />
+                  <span className="hidden sm:inline">English</span>
+                  <span className="sm:hidden">EN</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -264,7 +268,12 @@ const HomeLoanCalculator = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="container mx-auto px-3 md:px-4 py-4 max-w-5xl">
+        {/* Back Link */}
+        <BackToHomeLink sectionId="ai-tools-section" />
+        
+        {/* AI Tools Tab Bar */}
+        <AIToolsTabBar className="mb-4" />
 
       <Card>
         <CardHeader>
