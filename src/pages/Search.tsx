@@ -11,6 +11,8 @@ import PropertyCard from '@/components/PropertyCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import AIToolsTabBar from '@/components/common/AIToolsTabBar';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 interface Property {
   id: string;
@@ -244,7 +246,7 @@ const Search = () => {
   return (
     <div 
       ref={scrollContainerRef}
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background pt-11 md:pt-12"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -260,7 +262,7 @@ const Search = () => {
             }}
             exit={{ opacity: 0, y: -40 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-primary text-primary-foreground px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"
           >
             <motion.div
               animate={{ 
@@ -272,9 +274,9 @@ const Search = () => {
                 ease: "linear"
               }}
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-3 w-3" />
             </motion.div>
-            <span className="text-sm font-medium">
+            <span className="text-xs font-medium">
               {isRefreshing 
                 ? 'Refreshing...' 
                 : pullDistance >= PULL_THRESHOLD 
@@ -285,6 +287,12 @@ const Search = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* AI Tools Tab Bar */}
+      <div className="container mx-auto px-2 md:px-3 py-2">
+        <BackToHomeLink sectionId="ai-tools-section" />
+        <AIToolsTabBar className="mb-2" />
+      </div>
 
       {/* Slim Search Header */}
       <div className="bg-background/95 backdrop-blur-sm border-b sticky top-11 md:top-12 z-40">

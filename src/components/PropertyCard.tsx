@@ -126,22 +126,22 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
   return (
     <>
-      <Card className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] border-0 bg-card" onClick={handleViewDetails}>
+      <Card className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] border bg-card/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/10 hover:border-primary/30" onClick={handleViewDetails}>
         <div className="relative overflow-hidden rounded-t-lg">
           <img
             src={property.image}
             alt={property.title}
-            className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-28 md:h-32 object-cover group-hover:scale-105 transition-transform duration-300"
           />
           
           {/* Status Badge */}
-          <div className="absolute top-2 left-2 flex gap-1 flex-wrap">
-            <Badge className="bg-primary text-primary-foreground px-2 py-0.5 text-xs font-medium">
+          <div className="absolute top-1.5 left-1.5 flex gap-1 flex-wrap">
+            <Badge className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[9px] font-medium">
               {getTypeLabel(property.type)}
             </Badge>
             {(property.three_d_model_url || property.virtual_tour_url) && (
-              <Badge className="bg-secondary text-secondary-foreground flex items-center gap-1 px-2 py-0.5 text-xs">
-                <Box className="h-2.5 w-2.5" />
+              <Badge className="bg-secondary text-secondary-foreground flex items-center gap-0.5 px-1.5 py-0.5 text-[9px]">
+                <Box className="h-2 w-2" />
                 3D
               </Badge>
             )}
@@ -149,8 +149,8 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
           {/* Featured Badge */}
           {property.featured && (
-            <div className="absolute top-3 right-14">
-              <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold shadow-lg animate-pulse">
+            <div className="absolute top-1.5 right-8">
+              <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-[8px] font-bold shadow px-1 py-0.5">
                 ⭐ Featured
               </Badge>
             </div>
@@ -160,7 +160,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className={`absolute bottom-3 right-3 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 transition-all duration-300 ${
+            className={`absolute bottom-1.5 right-1.5 w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 transition-all duration-300 ${
               isLiked ? 'text-binance-red' : 'text-white'
             }`}
             onClick={(e) => {
@@ -168,138 +168,92 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               setIsLiked(!isLiked);
             }}
           >
-            <Heart className={`h-5 w-5 ${isLiked ? 'fill-current animate-pulse' : ''}`} />
+            <Heart className={`h-3.5 w-3.5 ${isLiked ? 'fill-current animate-pulse' : ''}`} />
           </Button>
         </div>
 
-        <CardContent className="p-4 bg-card">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-base line-clamp-2 text-foreground flex-1">
-              {property.title}
-            </h3>
-          </div>
+        <CardContent className="p-2 md:p-3 bg-card/50">
+          <h3 className="font-semibold text-xs md:text-sm line-clamp-1 text-foreground mb-1.5">
+            {property.title}
+          </h3>
 
-          {/* User Information Section */}
+          {/* Compact User Info */}
           {property.posted_by && (
-            <div className="space-y-3 mb-4">
-              {/* Main User Info */}
-              <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-binance-dark-gray/50 to-binance-gray/50 rounded-xl border border-binance-orange/20">
-                <div className="flex items-center gap-2">
-                  {property.posted_by.avatar_url ? (
-                    <img 
-                      src={property.posted_by.avatar_url} 
-                      alt={property.posted_by.name}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-binance-orange/50"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-binance-orange to-binance-yellow flex items-center justify-center text-black text-sm font-bold">
-                      {property.posted_by.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-binance-orange">
-                      {property.posted_by.name}
-                    </span>
-                    {property.posted_by.user_level && (
-                      <span className="text-xs text-binance-yellow font-bold">
-                        {property.posted_by.user_level}
-                      </span>
-                    )}
+            <div className="flex items-center gap-1.5 p-1.5 bg-muted/50 rounded-md mb-1.5">
+              <div className="flex items-center gap-1.5">
+                {property.posted_by.avatar_url ? (
+                  <img 
+                    src={property.posted_by.avatar_url} 
+                    alt={property.posted_by.name}
+                    className="w-5 h-5 rounded-full object-cover border border-primary/30"
+                  />
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-[9px] font-bold">
+                    {property.posted_by.name.charAt(0).toUpperCase()}
                   </div>
+                )}
+                <span className="text-[10px] font-medium text-foreground/80 truncate max-w-16">
+                  {property.posted_by.name}
+                </span>
+              </div>
+              {property.posted_by.rating && (
+                <div className="flex items-center gap-0.5 ml-auto">
+                  <Star className="h-2.5 w-2.5 fill-yellow-500 text-yellow-500" />
+                  <span className="text-[9px] font-bold text-yellow-600">
+                    {property.posted_by.rating.toFixed(1)}
+                  </span>
                 </div>
-                {property.posted_by.rating && (
-                  <div className="flex items-center gap-1 ml-auto">
-                    <Star className="h-4 w-4 fill-binance-yellow text-binance-yellow" />
-                    <span className="text-sm font-bold text-binance-yellow">
-                      {property.posted_by.rating.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Additional User Information */}
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {/* Customer Feedback Status */}
-                {property.posted_by.customer_feedback_rating && (
-                  <div className="flex items-center gap-1 p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
-                    <TrendingUp className="h-3 w-3 text-amber-600" />
-                    <span className="text-amber-700 dark:text-amber-300 font-medium">
-                      {property.posted_by.customer_feedback_rating.toFixed(1)} 
-                      {property.posted_by.customer_feedback_count && ` (${property.posted_by.customer_feedback_count})`}
-                    </span>
-                  </div>
-                )}
-
-                {/* Joining Date */}
-                {property.posted_by.joining_date && (
-                  <div className="flex items-center gap-1 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
-                    <Calendar className="h-3 w-3 text-blue-600" />
-                    <span className="text-blue-700 dark:text-blue-300 font-medium">
-                      Joined {formatJoiningDate(property.posted_by.joining_date)}
-                    </span>
-                  </div>
-                )}
-
-                {/* Posting Time Ago */}
-                {(property.created_at || property.posted_at) && (
-                  <div className="flex items-center gap-1 p-2 bg-gray-50 dark:bg-gray-900/20 rounded-md border border-gray-200 dark:border-gray-700 col-span-2">
-                    <Clock className="h-3 w-3 text-gray-600" />
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">
-                      Posted {formatTimeAgo(property.posted_at || property.created_at || '')}
-                    </span>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           )}
           
-          <div className="flex items-center text-muted-foreground mb-3">
-            <MapPin className="h-3 w-3 mr-1" />
-            <span className="text-sm line-clamp-1 font-medium">{property.location}</span>
+          <div className="flex items-center text-muted-foreground mb-1.5">
+            <MapPin className="h-2.5 w-2.5 mr-0.5 flex-shrink-0" />
+            <span className="text-[10px] line-clamp-1">{property.location}</span>
           </div>
 
-          <div className="relative price-container mb-3">
-            <div className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent tracking-tight leading-none">
+          <div className="mb-1.5">
+            <div className="text-sm md:text-base font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-none">
               {property.price}
             </div>
-            <div className="text-xs font-medium text-muted-foreground mt-1">
+            <div className="text-[9px] text-muted-foreground">
               {property.type === 'rent' ? 'Per Month' : 'Total Price'}
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded">
-                <Bed className="h-3 w-3 text-primary" />
-                <span>{property.bedrooms}</span>
-              </div>
-              <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded">
-                <Bath className="h-3 w-3 text-primary" />
-                <span>{property.bathrooms}</span>
-              </div>
-              <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded">
-                <Square className="h-3 w-3 text-primary" />
-                <span>{property.area}m²</span>
-              </div>
+          <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground mb-2">
+            <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
+              <Bed className="h-2.5 w-2.5 text-primary" />
+              <span>{property.bedrooms}</span>
+            </div>
+            <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
+              <Bath className="h-2.5 w-2.5 text-primary" />
+              <span>{property.bathrooms}</span>
+            </div>
+            <div className="flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded">
+              <Square className="h-2.5 w-2.5 text-primary" />
+              <span>{property.area}m²</span>
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button 
-              className="flex-1 font-medium transition-all duration-300 text-xs h-8" 
+              size="sm"
+              className="flex-1 font-medium transition-all duration-300 text-[9px] h-6 px-2" 
               onClick={handleViewDetails}
             >
-              <Eye className="h-3 w-3 mr-1" />
-              View Details
+              <Eye className="h-2.5 w-2.5 mr-0.5" />
+              Details
             </Button>
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button 
                 variant="outline"
-                className="font-medium transition-all duration-300 text-xs h-8" 
+                size="sm"
+                className="font-medium transition-all duration-300 text-[9px] h-6 px-2" 
                 onClick={handleView3D}
               >
-                <Box className="h-3 w-3 mr-1" />
-                3D View
+                <Box className="h-2.5 w-2.5 mr-0.5" />
+                3D
               </Button>
             )}
           </div>
