@@ -208,7 +208,7 @@ export default function FeaturedAdsCarousel() {
   const displayProperties = fallbackProperties.length > 0 ? [...fallbackProperties, ...fallbackProperties, ...fallbackProperties] : [];
 
   return (
-    <div className="relative glass-effect rounded-xl md:rounded-2xl p-2 md:p-3 border border-white/30 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden group">
+    <div className="relative rounded-xl md:rounded-2xl p-2 md:p-3 overflow-hidden group">
       {/* Compact Header */}
       <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
         <Star className="h-3 w-3 md:h-4 md:w-4 text-amber-500 dark:text-amber-400" />
