@@ -83,16 +83,20 @@ body {
   }
 }
 
-/* Lock scroll when modal is open */
+/* Lock scroll when modal is open - prevent layout shift */
 html.modal-open,
 body.modal-open,
 body.scroll-locked {
   overflow: hidden;
   touch-action: none;
   overscroll-behavior: contain;
-  position: fixed;
-  width: 100%;
-  height: 100%;
+  /* Keep scrollbar space to prevent layout shift */
+  scrollbar-gutter: stable;
+}
+
+/* Prevent width change when scrollbar hides */
+html {
+  scrollbar-gutter: stable;
 }
 
 #root {
