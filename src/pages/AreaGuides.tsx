@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import AIToolsTabBar from '@/components/common/AIToolsTabBar';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 const AreaGuides = () => {
   const { language } = useLanguage();
@@ -204,20 +206,20 @@ const AreaGuides = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background pt-11 md:pt-12">
       {/* Modern Sticky Header with Glass Effect */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="sticky top-11 md:top-12 z-40 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sm">
+        <div className="container mx-auto px-3 md:px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 group">
-              <div className="flex items-center gap-2 p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <Compass className="w-6 h-6 text-primary animate-pulse" />
+            <div className="flex items-center gap-2 group">
+              <div className="flex items-center gap-1.5 p-2 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Compass className="w-5 h-5 text-primary animate-pulse" />
               </div>
               <div>
-                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                <h1 className="text-base md:text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                   {language === 'id' ? 'Panduan Area' : 'Area Guides'}
                 </h1>
-                <p className="text-xs text-muted-foreground hidden md:block font-medium">
+                <p className="text-[10px] text-muted-foreground hidden md:block font-medium">
                   {language === 'id' ? 'Jelajahi Perumahan Indonesia' : 'Explore Indonesian Housing'}
                 </p>
               </div>
@@ -225,6 +227,12 @@ const AreaGuides = () => {
           </div>
         </div>
       </header>
+
+      {/* AI Tools Tab Bar */}
+      <div className="container mx-auto px-3 md:px-4 py-3">
+        <BackToHomeLink sectionId="ai-tools-section" />
+        <AIToolsTabBar className="mb-4" />
+      </div>
 
       {/* Modern Hero Section with Gradient */}
       <section className="relative py-20 px-4 overflow-hidden">

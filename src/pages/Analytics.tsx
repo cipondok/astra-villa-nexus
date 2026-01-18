@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { format, subDays } from 'date-fns';
+import AIToolsTabBar from '@/components/common/AIToolsTabBar';
+import BackToHomeLink from '@/components/common/BackToHomeLink';
 
 interface AnalyticsData {
   users: {
@@ -155,19 +157,22 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-11 md:pt-12">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3 mb-4">
-            <BarChart3 className="h-8 w-8" />
-            <h1 className="text-4xl font-bold">Analytics Dashboard</h1>
+      <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-6 md:py-10">
+        <div className="container mx-auto px-3 md:px-4">
+          <div className="flex items-center gap-2 mb-2">
+            <BarChart3 className="h-6 w-6 md:h-8 md:w-8" />
+            <h1 className="text-xl md:text-3xl font-bold">Analytics Dashboard</h1>
           </div>
-          <p className="text-xl opacity-90">Comprehensive insights into your platform performance</p>
+          <p className="text-sm md:text-lg opacity-90">Comprehensive insights into your platform performance</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 md:px-4 py-4 md:py-6">
+        {/* Back Link & AI Tools Tab Bar */}
+        <BackToHomeLink sectionId="ai-tools-section" />
+        <AIToolsTabBar className="mb-4" />
         {/* Time Range Selector */}
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-semibold">Platform Overview</h2>
