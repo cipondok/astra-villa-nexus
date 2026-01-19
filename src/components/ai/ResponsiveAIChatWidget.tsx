@@ -1576,8 +1576,13 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         setShowTipsPopup(false);
                         localStorage.setItem('chatbot-seen-tips', 'true');
                       }
-                      // Always open chat when clicking the main button
-                      handleOpen();
+                      // When scrolled down, scroll to top first
+                      if (showScrollToTop) {
+                        scrollToTop();
+                      } else {
+                        // When at top, open chat
+                        handleOpen();
+                      }
                     }}
                     unreadCount={unreadCount}
                     variant={buttonVariant}
@@ -1585,11 +1590,11 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     onOpenSettings={() => setShowSettings(true)}
                     pinnedActions={pinnedActions}
                     onTogglePin={togglePinAction}
-                    showScrollArrow={false}
+                    showScrollArrow={showScrollToTop}
                   />
                 </TooltipTrigger>
                 <TooltipContent side="left">
-                  <p>Open Chat</p>
+                  <p>{showScrollToTop ? 'Scroll to Top' : 'Open Chat'}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
