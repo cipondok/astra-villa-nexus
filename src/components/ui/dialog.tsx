@@ -37,13 +37,12 @@ interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof Dialo
   autoCloseTimeout?: number;
   showCountdown?: boolean;
   hideCloseButton?: boolean;
-  hideOverlay?: boolean;
 }
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, autoClose = true, autoCloseTimeout = 5000, showCountdown = true, hideCloseButton = false, hideOverlay = false, ...props }, ref) => {
+>(({ className, children, autoClose = true, autoCloseTimeout = 5000, showCountdown = true, hideCloseButton = false, ...props }, ref) => {
   const [hasInteraction, setHasInteraction] = React.useState(false);
   const [countdown, setCountdown] = React.useState(Math.ceil(autoCloseTimeout / 1000));
   const closeRef = React.useRef<HTMLButtonElement>(null);
@@ -84,7 +83,7 @@ const DialogContent = React.forwardRef<
 
   return (
     <DialogPortal>
-      {!hideOverlay && <DialogOverlay />}
+      <DialogOverlay />
       <DialogPrimitive.Content
         ref={ref}
         onClick={handleInteraction}

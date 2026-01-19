@@ -222,9 +222,11 @@
   }
 
   /* Flex Direction Mobile Controls */
-  /* IMPORTANT: Do NOT force all `.flex` layouts into column on mobile.
-     Many components intentionally use flex-row with wrapping and will break.
-     Use explicit helper classes instead (e.g., `.mobile-flex-col`, `.mobile-flex-row`). */
+  .mobile-app-layout .flex,
+  .mobile-app-layout .flex-wrap {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
 
   .mobile-app-layout .flex-row-mobile {
     flex-direction: row !important;

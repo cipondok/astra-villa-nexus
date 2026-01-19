@@ -113,7 +113,10 @@ const ResponsiveAIChatWidget = ({
   const [showStarredMessages, setShowStarredMessages] = useState(false);
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
   const [isProcessingVoice, setIsProcessingVoice] = useState(false);
-  const [showTipsPopup, setShowTipsPopup] = useState(false);
+  const [showTipsPopup, setShowTipsPopup] = useState(() => {
+    const hasSeenTips = localStorage.getItem('chatbot-seen-tips');
+    return !hasSeenTips;
+  });
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
@@ -156,12 +159,12 @@ const ResponsiveAIChatWidget = ({
     if (isSyncLoading) return;
     
     const loadPreferences = async () => {
-      // Welcome dialog disabled - chat opens directly on icon click
-      // const hasSeenWelcome = localStorage.getItem('chatbot-seen-welcome');
-      // if (!hasSeenWelcome && !isMobile) {
-      //   setShowWelcomeDialog(true);
-      //   localStorage.setItem('chatbot-seen-welcome', 'true');
-      // }
+      // Check if user has seen welcome dialog
+      const hasSeenWelcome = localStorage.getItem('chatbot-seen-welcome');
+      if (!hasSeenWelcome && !isMobile) {
+        setShowWelcomeDialog(true);
+        localStorage.setItem('chatbot-seen-welcome', 'true');
+      }
 
       if (isAuthenticated) {
         // User is logged in - try to load from cloud first
@@ -1212,17 +1215,21 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     }
   };
 
-  // Smooth drag handlers using framer-motion constraints
-  const handleDragStart = () => {
+  // Drag handlers with snap-to-edge and corner functionality
+  const handleDragStart = (e: React.MouseEvent) => {
     if (isMobile || isMinimized) return;
     setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
   };
 
-  const handleDrag = (event: any, info: { point: { x: number; y: number } }) => {
-    if (isMobile || isMinimized) return;
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging) return;
     
-    const newX = info.point.x - size.width / 2;
-    const newY = info.point.y - 20; // Offset for header drag handle
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
     
     // Constrain to viewport
     const maxX = window.innerWidth - size.width;
@@ -1232,6 +1239,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       x: Math.max(0, Math.min(newX, maxX)),
       y: Math.max(0, Math.min(newY, maxY))
     };
+    
+    setPosition(constrainedPosition);
     
     // Detect snap zones and show indicators
     const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
@@ -1262,61 +1271,53 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     setSnapIndicator(indicator);
   };
 
-  const handleDragEnd = (event: any, info: { point: { x: number; y: number } }) => {
-    if (isMobile || isMinimized) return;
-    
-    setIsDragging(false);
-    setSnapIndicator(null);
-    
-    const newX = info.point.x - size.width / 2;
-    const newY = info.point.y - 20;
-    
-    // Constrain to viewport
-    const maxX = window.innerWidth - size.width;
-    const maxY = window.innerHeight - size.height;
-    
-    let constrainedPosition = {
-      x: Math.max(0, Math.min(newX, maxX)),
-      y: Math.max(0, Math.min(newY, maxY))
-    };
-    
-    // Snap-to-edge and corner functionality
-    const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
-    const edgeMargin = 12;
-    
-    let snappedPosition = { ...constrainedPosition };
-    
-    // Check for corner snapping first (higher priority)
-    if (constrainedPosition.x < cornerThreshold && constrainedPosition.y < cornerThreshold) {
-      snappedPosition = { x: edgeMargin, y: edgeMargin };
-    } else if (constrainedPosition.x > window.innerWidth - size.width - cornerThreshold && constrainedPosition.y < cornerThreshold) {
-      snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: edgeMargin };
-    } else if (constrainedPosition.x < cornerThreshold && constrainedPosition.y > window.innerHeight - size.height - cornerThreshold) {
-      snappedPosition = { x: edgeMargin, y: window.innerHeight - size.height - edgeMargin };
-    } else if (constrainedPosition.x > window.innerWidth - size.width - cornerThreshold && constrainedPosition.y > window.innerHeight - size.height - cornerThreshold) {
-      snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: window.innerHeight - size.height - edgeMargin };
-    }
-    // Then check for edge snapping
-    else {
-      if (constrainedPosition.x < snapThreshold) {
-        snappedPosition.x = edgeMargin;
-      } else if (constrainedPosition.x > window.innerWidth - size.width - snapThreshold) {
-        snappedPosition.x = window.innerWidth - size.width - edgeMargin;
+  const handleDragEnd = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setSnapIndicator(null);
+      
+      // Snap-to-edge and corner functionality
+      const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
+      const edgeMargin = 12; // margin from edge when snapped
+      
+      let snappedPosition = { ...position };
+      
+      // Check for corner snapping first (higher priority)
+      if (position.x < cornerThreshold && position.y < cornerThreshold) {
+        // Snap to top-left corner
+        snappedPosition = { x: edgeMargin, y: edgeMargin };
+      } else if (position.x > window.innerWidth - size.width - cornerThreshold && position.y < cornerThreshold) {
+        // Snap to top-right corner
+        snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: edgeMargin };
+      } else if (position.x < cornerThreshold && position.y > window.innerHeight - size.height - cornerThreshold) {
+        // Snap to bottom-left corner
+        snappedPosition = { x: edgeMargin, y: window.innerHeight - size.height - edgeMargin };
+      } else if (position.x > window.innerWidth - size.width - cornerThreshold && position.y > window.innerHeight - size.height - cornerThreshold) {
+        // Snap to bottom-right corner
+        snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: window.innerHeight - size.height - edgeMargin };
+      }
+      // Then check for edge snapping
+      else {
+        if (position.x < snapThreshold) {
+          snappedPosition.x = edgeMargin;
+        } else if (position.x > window.innerWidth - size.width - snapThreshold) {
+          snappedPosition.x = window.innerWidth - size.width - edgeMargin;
+        }
+        
+        if (position.y < snapThreshold) {
+          snappedPosition.y = edgeMargin;
+        } else if (position.y > window.innerHeight - size.height - snapThreshold) {
+          snappedPosition.y = window.innerHeight - size.height - edgeMargin;
+        }
       }
       
-      if (constrainedPosition.y < snapThreshold) {
-        snappedPosition.y = edgeMargin;
-      } else if (constrainedPosition.y > window.innerHeight - size.height - snapThreshold) {
-        snappedPosition.y = window.innerHeight - size.height - edgeMargin;
-      }
+      // Apply snapped position with animation
+      setPosition(snappedPosition);
+      
+      // Save position to localStorage with timestamp
+      localStorage.setItem('chatbot-position', JSON.stringify(snappedPosition));
+      localStorage.setItem('chatbot-last-modified', new Date().toISOString());
     }
-    
-    // Apply snapped position
-    setPosition(snappedPosition);
-    
-    // Save position to localStorage with timestamp
-    localStorage.setItem('chatbot-position', JSON.stringify(snappedPosition));
-    localStorage.setItem('chatbot-last-modified', new Date().toISOString());
   };
 
   // Resize handlers
@@ -1353,7 +1354,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     }
   };
 
-  // Note: Drag is now handled by framer-motion, no manual mouse event listeners needed for dragging
+  // Add global mouse event listeners for drag and resize
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
+      return () => {
+        window.removeEventListener('mousemove', handleDragMove);
+        window.removeEventListener('mouseup', handleDragEnd);
+      };
+    }
+  }, [isDragging, dragStart, position, size]);
 
   useEffect(() => {
     if (isResizing) {
@@ -1367,26 +1378,27 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
   }, [isResizing, resizeStart]);
 
   // Calculate chat window position and size
-  // Desktop positioning is handled via framer-motion x/y transforms (avoid also setting left/top).
   const getChatWindowStyle = () => {
     if (isMobile) {
-      return {
-        bottom: "0",
-        left: "0",
-        right: "0",
-        top: "auto",
-        height: "90vh",
-        width: "100%",
+      return { 
+        bottom: '0', 
+        left: '0', 
+        right: '0',
+        top: 'auto',
+        height: '90vh',
+        width: '100%'
       };
     }
-
-    // Desktop: size only (position handled by motion x/y)
+    
+    // Desktop: use saved position and size, with mini mode adjustments
     const miniModeWidth = 380;
     const miniModeHeight = 450;
-
-    return {
-      width: viewMode === "mini" ? `${miniModeWidth}px` : `${size.width}px`,
-      height: isMinimized ? "auto" : viewMode === "mini" ? `${miniModeHeight}px` : `${size.height}px`,
+    
+    return { 
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+      width: viewMode === 'mini' ? `${miniModeWidth}px` : `${size.width}px`,
+      height: isMinimized ? 'auto' : viewMode === 'mini' ? `${miniModeHeight}px` : `${size.height}px`
     };
   };
 
@@ -1457,155 +1469,147 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
   return (
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
-      <div
-        className="fixed bottom-3 right-3 z-[99999] pointer-events-auto group"
-        onMouseEnter={handleFirstHover}
-      >
-        {/* Quick-actions UI only when chat is closed */}
-        {!isOpen && (
-          <>
-            {/* Pulsing glow hint animation for first-time users */}
-            {!hasSeenQuickActions && !showQuickActionsHint && (
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
-            )}
-
-            {/* First-time tooltip */}
-            {showTooltip && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
-              >
-                Hover for quick actions
-                <div className="absolute -bottom-2 right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary" />
-              </motion.div>
-            )}
-
-            {/* Quick Action Items - Show on hover, hint, or if pinned */}
-            <div
-              className={cn(
-                "absolute bottom-20 right-0 transition-all duration-700 flex flex-col gap-3",
-                showQuickActionsHint || pinnedActions.size > 0
-                  ? "opacity-100 pointer-events-auto"
-                  : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
-              )}
+      {!isOpen && (
+        <div className="fixed bottom-3 right-3 z-[99999] pointer-events-auto group" onMouseEnter={handleFirstHover}>
+          {/* Pulsing glow hint animation for first-time users */}
+          {!hasSeenQuickActions && !showQuickActionsHint && (
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
+          )}
+          
+          {/* First-time tooltip */}
+          {showTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
             >
-              {/* Scroll to Top */}
-              {(showScrollToTop || pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
-                <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
-                  <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
-                    Scroll to Top
-                  </span>
-                  <div className="relative">
-                    <Button
-                      onClick={onScrollToTop ?? scrollToTop}
-                      className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                      size="icon"
-                    >
-                      <ArrowUp className="h-5 w-5 text-white" />
-                    </Button>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        togglePinAction('scroll-top');
-                      }}
-                      className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                      size="icon"
-                      variant="ghost"
-                    >
-                      {pinnedActions.has('scroll-top') ? (
-                        <PinOff className="h-3 w-3" />
-                      ) : (
-                        <Pin className="h-3 w-3" />
-                      )}
-                    </Button>
-                  </div>
+              Hover for quick actions
+              <div className="absolute -bottom-2 right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary" />
+            </motion.div>
+          )}
+          
+          {/* Quick Action Items - Show on hover, hint, or if pinned */}
+          <div className={cn(
+            "absolute bottom-20 right-0 transition-all duration-700 flex flex-col gap-3",
+            showQuickActionsHint || pinnedActions.size > 0
+              ? "opacity-100 pointer-events-auto" 
+              : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+          )}>
+            {/* Scroll to Top */}
+            {showScrollButton && onScrollToTop && (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
+                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
+                  Scroll to Top
+                </span>
+                <div className="relative">
+                  <Button
+                    onClick={onScrollToTop}
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                    size="icon"
+                  >
+                    <ArrowUp className="h-5 w-5 text-white" />
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePinAction('scroll-top');
+                    }}
+                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    {pinnedActions.has('scroll-top') ? (
+                      <PinOff className="h-3 w-3" />
+                    ) : (
+                      <Pin className="h-3 w-3" />
+                    )}
+                  </Button>
                 </div>
-              )}
-
-              {/* Image Search */}
-              {onImageSearch &&
-                (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
-                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 delay-150 group/action">
-                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
-                      Image Search
-                    </span>
-                    <div className="relative">
-                      <Button
-                        onClick={onImageSearch}
-                        className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
-                        size="icon"
-                      >
-                        <Camera className="h-5 w-5 text-white" />
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          togglePinAction('image-search');
-                        }}
-                        className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                        size="icon"
-                        variant="ghost"
-                      >
-                        {pinnedActions.has('image-search') ? (
-                          <PinOff className="h-3 w-3" />
-                        ) : (
-                          <Pin className="h-3 w-3" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-            </div>
-          </>
-        )}
-
-        {/* Main Chat Button */}
-        <div className="relative">
-          {/* Tips Popup */}
-          <ChatbotTipsPopup
-            isVisible={showTipsPopup && !isOpen}
-            onClose={() => {
-              setShowTipsPopup(false);
-              localStorage.setItem('chatbot-seen-tips', 'true');
-            }}
-          />
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <ChatButton
-                  onClick={() => {
-                    // Hide tips when button is clicked
-                    if (showTipsPopup) {
-                      setShowTipsPopup(false);
-                      localStorage.setItem('chatbot-seen-tips', 'true');
-                    }
-
-                    // Toggle open/close
-                    if (isOpen) {
-                      handleClose();
-                    } else {
-                      handleOpen();
-                    }
-                  }}
-                  unreadCount={unreadCount}
-                  variant={buttonVariant}
-                  onPositionReset={resetToDefaultPosition}
-                  onOpenSettings={() => setShowSettings(true)}
-                  pinnedActions={pinnedActions}
-                  onTogglePin={togglePinAction}
-                  showScrollArrow={showScrollToTop}
-                />
-              </TooltipTrigger>
-              <TooltipContent side="left">
-                <p>{isOpen ? 'Close Chat' : 'Open Chat'}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+              </div>
+            )}
+            
+            {/* Image Search */}
+            {onImageSearch && (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 delay-150 group/action">
+                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
+                  Image Search
+                </span>
+                <div className="relative">
+                  <Button
+                    onClick={onImageSearch}
+                    className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                    size="icon"
+                  >
+                    <Camera className="h-5 w-5 text-white" />
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePinAction('image-search');
+                    }}
+                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    {pinnedActions.has('image-search') ? (
+                      <PinOff className="h-3 w-3" />
+                    ) : (
+                      <Pin className="h-3 w-3" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Main Chat Button */}
+          <div className="relative">
+            {/* Tips Popup */}
+            <ChatbotTipsPopup
+              isVisible={showTipsPopup && !isOpen}
+              onClose={() => {
+                setShowTipsPopup(false);
+                localStorage.setItem('chatbot-seen-tips', 'true');
+              }}
+            />
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ChatButton 
+                    onClick={() => {
+                      // Hide tips when button is clicked
+                      if (showTipsPopup) {
+                        setShowTipsPopup(false);
+                        localStorage.setItem('chatbot-seen-tips', 'true');
+                      }
+                      // When scrolled down, scroll to top first
+                      if (showScrollToTop) {
+                        scrollToTop();
+                      } else {
+                        // When at top, open chat
+                        handleOpen();
+                      }
+                    }}
+                    unreadCount={unreadCount}
+                    variant={buttonVariant}
+                    onPositionReset={resetToDefaultPosition}
+                    onOpenSettings={() => setShowSettings(true)}
+                    pinnedActions={pinnedActions}
+                    onTogglePin={togglePinAction}
+                    showScrollArrow={showScrollToTop}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  <p>{showScrollToTop ? 'Scroll to Top' : 'Open Chat'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Chat window - positioned fixed with backdrop */}
       <AnimatePresence mode="wait">
@@ -1659,38 +1663,18 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           <motion.div 
             ref={chatWindowRef}
             initial={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.9, opacity: 0 }}
-            animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1, x: position.x, y: position.y }}
+            animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1 }}
             exit={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.95, opacity: 0 }}
             transition={{
-              duration: 0.4,
-              ease: [0.25, 0.46, 0.45, 0.94], // Smooth easing curve
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              y: { type: "spring", stiffness: 300, damping: 30 }
-            }}
-            drag={!isMobile && !isMinimized}
-            dragMomentum={false}
-            dragElastic={0.1}
-            dragConstraints={{
-              left: 0,
-              right: window.innerWidth - size.width,
-              top: 0,
-              bottom: window.innerHeight - size.height
-            }}
-            onDragStart={handleDragStart}
-            onDrag={handleDrag}
-            onDragEnd={handleDragEnd}
-            whileDrag={{ 
-              scale: 1.02, 
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4)",
-              cursor: "grabbing"
+              duration: 0.8,
+              ease: [0.25, 0.46, 0.45, 0.94] // Smooth slow easing curve
             }}
             className={cn(
               "fixed z-[99999]",
               // Shadow and overflow
               "shadow-2xl",
               "overflow-visible",
-              !isMobile && !isMinimized && "cursor-grab",
-              isDragging && "cursor-grabbing",
+              isDragging && "cursor-move",
               isResizing && "cursor-nwse-resize"
             )}
             style={getChatWindowStyle()}
@@ -1703,9 +1687,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             <div 
               className={cn(
                 "flex items-center justify-between p-3 border-b-2 border-primary/30 bg-gradient-to-r from-background/95 via-background/90 to-primary/5 backdrop-blur-2xl text-foreground touch-manipulation",
-                !isMobile && !isMinimized && "cursor-grab select-none",
-                isDragging && "cursor-grabbing"
+                !isMobile && !isMinimized && "cursor-move select-none"
               )}
+              onMouseDown={handleDragStart}
               onDoubleClick={handleHeaderDoubleClick}
               onClick={isMobile ? handleHeaderTap : undefined}
               title={isMobile ? "Double-tap to toggle view mode" : !isMobile ? "Double-click to reset position" : undefined}
