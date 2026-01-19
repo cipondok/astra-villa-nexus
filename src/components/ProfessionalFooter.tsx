@@ -236,17 +236,6 @@ const ProfessionalFooter = ({
             </div>
           </div>
 
-          {/* Newsletter */}
-          <div className="col-span-2 md:col-span-1 space-y-2">
-            <h3 className="text-[10px] font-bold text-white uppercase tracking-wider">{currentText.newsletter}</h3>
-            <p className="text-[10px] text-slate-400">{currentText.newsletterText}</p>
-            <div className="flex gap-1.5">
-              <input type="email" placeholder={currentText.emailPlaceholder} className="flex-1 px-2.5 py-1.5 bg-white/10 border border-white/20 rounded-lg text-[10px] text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:border-transparent transition-all" />
-              <button className="bg-gradient-to-r from-primary to-accent text-white px-3 py-1.5 rounded-lg text-[10px] font-medium hover:opacity-90 transition-opacity">
-                {currentText.subscribe}
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Bottom Bar */}
