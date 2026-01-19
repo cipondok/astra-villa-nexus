@@ -93,6 +93,8 @@ const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
+const WNIInvestorPage = lazy(() => import('@/pages/investor/WNIInvestorPage'));
+const WNAInvestorPage = lazy(() => import('@/pages/investor/WNAInvestorPage'));
 
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
@@ -191,6 +193,8 @@ const AppContent = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
             <Route path="/support" element={<Contact />} />
+            <Route path="/investor/wni" element={<WNIInvestorPage />} />
+            <Route path="/investor/wna" element={<WNAInvestorPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
