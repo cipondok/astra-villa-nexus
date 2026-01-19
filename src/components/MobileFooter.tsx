@@ -128,20 +128,20 @@ const MobileFooter = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 rounded-lg"
+            className="h-7 w-7 p-0 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30"
             onClick={() => window.open('https://facebook.com')}
             aria-label="Facebook"
           >
-            <Facebook className="h-3.5 w-3.5 text-muted-foreground" />
+            <Facebook className="h-3.5 w-3.5 text-blue-500" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 rounded-lg"
+            className="h-7 w-7 p-0 rounded-lg bg-gradient-to-br from-pink-500/20 to-purple-500/10 border border-pink-500/30"
             onClick={() => window.open('https://instagram.com')}
             aria-label="Instagram"
           >
-            <Instagram className="h-3.5 w-3.5 text-muted-foreground" />
+            <Instagram className="h-3.5 w-3.5 text-pink-500" />
           </Button>
           <span className="text-[9px] text-muted-foreground/70 pl-1">© 2024</span>
         </div>
