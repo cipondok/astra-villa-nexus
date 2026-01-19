@@ -159,12 +159,12 @@ const ResponsiveAIChatWidget = ({
     if (isSyncLoading) return;
     
     const loadPreferences = async () => {
-      // Check if user has seen welcome dialog
-      const hasSeenWelcome = localStorage.getItem('chatbot-seen-welcome');
-      if (!hasSeenWelcome && !isMobile) {
-        setShowWelcomeDialog(true);
-        localStorage.setItem('chatbot-seen-welcome', 'true');
-      }
+      // Welcome dialog disabled - chat opens directly on icon click
+      // const hasSeenWelcome = localStorage.getItem('chatbot-seen-welcome');
+      // if (!hasSeenWelcome && !isMobile) {
+      //   setShowWelcomeDialog(true);
+      //   localStorage.setItem('chatbot-seen-welcome', 'true');
+      // }
 
       if (isAuthenticated) {
         // User is logged in - try to load from cloud first
