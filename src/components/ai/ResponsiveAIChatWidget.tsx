@@ -113,10 +113,7 @@ const ResponsiveAIChatWidget = ({
   const [showStarredMessages, setShowStarredMessages] = useState(false);
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
   const [isProcessingVoice, setIsProcessingVoice] = useState(false);
-  const [showTipsPopup, setShowTipsPopup] = useState(() => {
-    const hasSeenTips = localStorage.getItem('chatbot-seen-tips');
-    return !hasSeenTips;
-  });
+  const [showTipsPopup, setShowTipsPopup] = useState(false);
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
@@ -1461,142 +1458,157 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
   return (
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
-      {!isOpen && (
-        <div className="fixed bottom-3 right-3 z-[99999] pointer-events-auto group" onMouseEnter={handleFirstHover}>
-          {/* Pulsing glow hint animation for first-time users */}
-          {!hasSeenQuickActions && !showQuickActionsHint && (
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
-          )}
-          
-          {/* First-time tooltip */}
-          {showTooltip && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
+      <div
+        className="fixed bottom-3 right-3 z-[99999] pointer-events-auto group"
+        onMouseEnter={handleFirstHover}
+      >
+        {/* Quick-actions UI only when chat is closed */}
+        {!isOpen && (
+          <>
+            {/* Pulsing glow hint animation for first-time users */}
+            {!hasSeenQuickActions && !showQuickActionsHint && (
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 animate-pulse blur-xl" />
+            )}
+
+            {/* First-time tooltip */}
+            {showTooltip && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
+              >
+                Hover for quick actions
+                <div className="absolute -bottom-2 right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary" />
+              </motion.div>
+            )}
+
+            {/* Quick Action Items - Show on hover, hint, or if pinned */}
+            <div
+              className={cn(
+                "absolute bottom-20 right-0 transition-all duration-700 flex flex-col gap-3",
+                showQuickActionsHint || pinnedActions.size > 0
+                  ? "opacity-100 pointer-events-auto"
+                  : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+              )}
             >
-              Hover for quick actions
-              <div className="absolute -bottom-2 right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary" />
-            </motion.div>
-          )}
-          
-          {/* Quick Action Items - Show on hover, hint, or if pinned */}
-          <div className={cn(
-            "absolute bottom-20 right-0 transition-all duration-700 flex flex-col gap-3",
-            showQuickActionsHint || pinnedActions.size > 0
-              ? "opacity-100 pointer-events-auto" 
-              : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
-          )}>
-            {/* Scroll to Top */}
-            {showScrollButton && onScrollToTop && (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
-                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
-                  Scroll to Top
-                </span>
-                <div className="relative">
-                  <Button
-                    onClick={onScrollToTop}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                    size="icon"
-                  >
-                    <ArrowUp className="h-5 w-5 text-white" />
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      togglePinAction('scroll-top');
-                    }}
-                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    {pinnedActions.has('scroll-top') ? (
-                      <PinOff className="h-3 w-3" />
-                    ) : (
-                      <Pin className="h-3 w-3" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
-            
-            {/* Image Search */}
-            {onImageSearch && (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 delay-150 group/action">
-                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
-                  Image Search
-                </span>
-                <div className="relative">
-                  <Button
-                    onClick={onImageSearch}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
-                    size="icon"
-                  >
-                    <Camera className="h-5 w-5 text-white" />
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      togglePinAction('image-search');
-                    }}
-                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    {pinnedActions.has('image-search') ? (
-                      <PinOff className="h-3 w-3" />
-                    ) : (
-                      <Pin className="h-3 w-3" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          {/* Main Chat Button */}
-          <div className="relative">
-            {/* Tips Popup */}
-            <ChatbotTipsPopup
-              isVisible={showTipsPopup && !isOpen}
-              onClose={() => {
-                setShowTipsPopup(false);
-                localStorage.setItem('chatbot-seen-tips', 'true');
-              }}
-            />
-            
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <ChatButton 
-                    onClick={() => {
-                      // Hide tips when button is clicked
-                      if (showTipsPopup) {
-                        setShowTipsPopup(false);
-                        localStorage.setItem('chatbot-seen-tips', 'true');
-                      }
-                      // Always open chat (scroll-to-top stays in quick actions)
+              {/* Scroll to Top */}
+              {showScrollButton &&
+                onScrollToTop &&
+                (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
+                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
+                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
+                      Scroll to Top
+                    </span>
+                    <div className="relative">
+                      <Button
+                        onClick={onScrollToTop}
+                        className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                        size="icon"
+                      >
+                        <ArrowUp className="h-5 w-5 text-white" />
+                      </Button>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePinAction('scroll-top');
+                        }}
+                        className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                        size="icon"
+                        variant="ghost"
+                      >
+                        {pinnedActions.has('scroll-top') ? (
+                          <PinOff className="h-3 w-3" />
+                        ) : (
+                          <Pin className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+              {/* Image Search */}
+              {onImageSearch &&
+                (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
+                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 delay-150 group/action">
+                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
+                      Image Search
+                    </span>
+                    <div className="relative">
+                      <Button
+                        onClick={onImageSearch}
+                        className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-2xl border-2 border-white/20"
+                        size="icon"
+                      >
+                        <Camera className="h-5 w-5 text-white" />
+                      </Button>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePinAction('image-search');
+                        }}
+                        className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                        size="icon"
+                        variant="ghost"
+                      >
+                        {pinnedActions.has('image-search') ? (
+                          <PinOff className="h-3 w-3" />
+                        ) : (
+                          <Pin className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+            </div>
+          </>
+        )}
+
+        {/* Main Chat Button */}
+        <div className="relative">
+          {/* Tips Popup */}
+          <ChatbotTipsPopup
+            isVisible={showTipsPopup && !isOpen}
+            onClose={() => {
+              setShowTipsPopup(false);
+              localStorage.setItem('chatbot-seen-tips', 'true');
+            }}
+          />
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <ChatButton
+                  onClick={() => {
+                    // Hide tips when button is clicked
+                    if (showTipsPopup) {
+                      setShowTipsPopup(false);
+                      localStorage.setItem('chatbot-seen-tips', 'true');
+                    }
+
+                    // Toggle open/close
+                    if (isOpen) {
+                      handleClose();
+                    } else {
                       handleOpen();
-                    }}
-                    unreadCount={unreadCount}
-                    variant={buttonVariant}
-                    onPositionReset={resetToDefaultPosition}
-                    onOpenSettings={() => setShowSettings(true)}
-                    pinnedActions={pinnedActions}
-                    onTogglePin={togglePinAction}
-                    showScrollArrow={showScrollToTop}
-                  />
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <p>{showScrollToTop ? 'Scroll to Top' : 'Open Chat'}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-          </div>
+                    }
+                  }}
+                  unreadCount={unreadCount}
+                  variant={buttonVariant}
+                  onPositionReset={resetToDefaultPosition}
+                  onOpenSettings={() => setShowSettings(true)}
+                  pinnedActions={pinnedActions}
+                  onTogglePin={togglePinAction}
+                  showScrollArrow={showScrollToTop}
+                />
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p>{isOpen ? 'Close Chat' : 'Open Chat'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-      )}
+      </div>
 
       {/* Chat window - positioned fixed with backdrop */}
       <AnimatePresence mode="wait">
