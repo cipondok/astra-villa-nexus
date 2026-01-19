@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { Globe, Building2, Users, FileText, Briefcase, ArrowRight, CheckCircle, Phone, Shield, Scale, Crown } from "lucide-react";
+import { Globe, Building2, Users, FileText, Briefcase, ArrowRight, CheckCircle, Phone, Shield, Scale, Crown, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -12,137 +11,131 @@ const WNAInvestorPage = () => {
 
   const content = {
     en: {
+      back: "Back",
       hero: {
         badge: "Foreign Investor Program",
         title: "Your Gateway to Indonesia's Property Market",
-        subtitle: "Legal, secure, and professionally managed investment pathways for international investors",
+        subtitle: "Legal, secure investment pathways for international investors",
         cta: "Explore Opportunities"
       },
       stats: [
-        { value: "6.5%", label: "Average Annual ROI" },
-        { value: "100+", label: "Premium Projects" },
-        { value: "500+", label: "Happy Investors" },
-        { value: "24/7", label: "Support Available" }
+        { value: "6.5%", label: "Avg ROI" },
+        { value: "100+", label: "Projects" },
+        { value: "500+", label: "Investors" },
+        { value: "24/7", label: "Support" }
       ],
       ownership: {
-        title: "Legal Ownership Options for Foreign Investors",
-        subtitle: "Understanding your investment pathways under Indonesian law",
+        title: "Legal Ownership Options",
+        subtitle: "Investment pathways under Indonesian law",
         options: [
           { 
-            title: "Hak Pakai (Right to Use)", 
-            desc: "80-year leasehold on properties, renewable",
-            details: ["Direct ownership for foreigners", "Renewable every 30+20+30 years", "Full usage and rental rights", "Can be inherited"]
+            title: "Hak Pakai", 
+            desc: "80-year leasehold, renewable",
+            details: ["Direct ownership", "Renewable 30+20+30 years", "Full rental rights", "Inheritable"]
           },
           { 
-            title: "PT PMA (Foreign Investment Company)", 
-            desc: "Full ownership through Indonesian company",
-            details: ["100% foreign ownership possible", "Commercial & residential properties", "Full property rights", "Business operation rights"]
+            title: "PT PMA", 
+            desc: "Full ownership via company",
+            details: ["100% foreign ownership", "Commercial & residential", "Full property rights", "Business rights"]
           },
           { 
-            title: "Nominee Agreement", 
-            desc: "Structured ownership with legal protection",
-            details: ["Indonesian nominee holds title", "Legally binding agreements", "Full control retained", "Notarized documentation"]
+            title: "Nominee", 
+            desc: "Structured ownership",
+            details: ["Indonesian nominee holds title", "Legally binding", "Full control retained", "Notarized docs"]
           }
         ]
       },
       benefits: {
-        title: "Why Invest in Indonesia with ASTRA Villa?",
+        title: "Why Invest with ASTRA Villa?",
         items: [
-          { icon: Building2, title: "Premium Developments", desc: "Access to exclusive smart-city and luxury developments across Indonesia" },
-          { icon: Scale, title: "Legal Expertise", desc: "Full legal support for ownership structures, permits, and compliance" },
-          { icon: Users, title: "Residency Pathways", desc: "Guidance on long-term stay visas and residency options" },
-          { icon: Briefcase, title: "Business Support", desc: "PT PMA setup, banking, and business establishment assistance" },
-          { icon: Shield, title: "Investment Protection", desc: "Escrow services and guaranteed transparent transactions" },
-          { icon: Crown, title: "VIP Services", desc: "Personal concierge, airport pickup, and relocation support" }
+          { icon: Building2, title: "Premium Developments", desc: "Smart-city & luxury developments" },
+          { icon: Scale, title: "Legal Expertise", desc: "Full legal support & compliance" },
+          { icon: Users, title: "Residency Pathways", desc: "Long-term visa guidance" },
+          { icon: Briefcase, title: "Business Support", desc: "PT PMA setup & banking" },
+          { icon: Shield, title: "Investment Protection", desc: "Escrow & transparent transactions" },
+          { icon: Crown, title: "VIP Services", desc: "Concierge & relocation support" }
         ]
       },
       process: {
         title: "Investment Process",
         steps: [
-          { num: "01", title: "Initial Consultation", desc: "Free consultation to understand your investment goals" },
-          { num: "02", title: "Legal Assessment", desc: "Determine the best ownership structure for your needs" },
-          { num: "03", title: "Property Selection", desc: "Virtual tours and in-person viewings of premium properties" },
-          { num: "04", title: "Due Diligence", desc: "Complete legal checks and verification" },
-          { num: "05", title: "Transaction", desc: "Secure payment processing with escrow protection" },
-          { num: "06", title: "Post-Purchase", desc: "Property management, rental, and ongoing support" }
+          { num: "01", title: "Consultation", desc: "Free goal assessment" },
+          { num: "02", title: "Legal Assessment", desc: "Best ownership structure" },
+          { num: "03", title: "Selection", desc: "Virtual & in-person tours" },
+          { num: "04", title: "Due Diligence", desc: "Complete legal checks" },
+          { num: "05", title: "Transaction", desc: "Secure escrow payment" },
+          { num: "06", title: "Post-Purchase", desc: "Ongoing management" }
         ]
       },
-      locations: {
-        title: "Top Investment Locations",
-        areas: ["Bali", "Jakarta", "Lombok", "Yogyakarta", "Bandung", "Surabaya"]
-      },
       cta: {
-        title: "Start Your Indonesia Investment Journey",
-        subtitle: "Join global investors who trust ASTRA Villa for secure property investments",
+        title: "Start Your Investment Journey",
+        subtitle: "Join global investors who trust ASTRA Villa",
         button: "Schedule Consultation",
-        download: "Download Investment Guide"
+        download: "Investment Guide"
       }
     },
     id: {
+      back: "Kembali",
       hero: {
         badge: "Program Investor Asing",
-        title: "Gerbang Anda ke Pasar Properti Indonesia",
-        subtitle: "Jalur investasi yang legal, aman, dan dikelola secara profesional untuk investor internasional",
+        title: "Gerbang ke Pasar Properti Indonesia",
+        subtitle: "Jalur investasi legal & aman untuk investor internasional",
         cta: "Jelajahi Peluang"
       },
       stats: [
-        { value: "6.5%", label: "ROI Tahunan Rata-rata" },
-        { value: "100+", label: "Proyek Premium" },
-        { value: "500+", label: "Investor Puas" },
-        { value: "24/7", label: "Dukungan Tersedia" }
+        { value: "6.5%", label: "ROI Rata-rata" },
+        { value: "100+", label: "Proyek" },
+        { value: "500+", label: "Investor" },
+        { value: "24/7", label: "Dukungan" }
       ],
       ownership: {
-        title: "Opsi Kepemilikan Legal untuk Investor Asing",
-        subtitle: "Memahami jalur investasi Anda di bawah hukum Indonesia",
+        title: "Opsi Kepemilikan Legal",
+        subtitle: "Jalur investasi di bawah hukum Indonesia",
         options: [
           { 
             title: "Hak Pakai", 
-            desc: "Hak sewa 80 tahun atas properti, dapat diperpanjang",
-            details: ["Kepemilikan langsung untuk WNA", "Dapat diperpanjang setiap 30+20+30 tahun", "Hak penggunaan dan sewa penuh", "Dapat diwariskan"]
+            desc: "Hak sewa 80 tahun, dapat diperpanjang",
+            details: ["Kepemilikan langsung", "Perpanjang 30+20+30 tahun", "Hak sewa penuh", "Dapat diwariskan"]
           },
           { 
-            title: "PT PMA (Perusahaan Investasi Asing)", 
-            desc: "Kepemilikan penuh melalui perusahaan Indonesia",
-            details: ["Kepemilikan asing 100% dimungkinkan", "Properti komersial & residensial", "Hak properti penuh", "Hak operasi bisnis"]
+            title: "PT PMA", 
+            desc: "Kepemilikan penuh via perusahaan",
+            details: ["100% kepemilikan asing", "Komersial & residensial", "Hak properti penuh", "Hak operasi bisnis"]
           },
           { 
-            title: "Perjanjian Nominee", 
-            desc: "Kepemilikan terstruktur dengan perlindungan hukum",
-            details: ["Nominee Indonesia memegang hak milik", "Perjanjian mengikat secara hukum", "Kontrol penuh dipertahankan", "Dokumentasi notaris"]
+            title: "Nominee", 
+            desc: "Kepemilikan terstruktur",
+            details: ["Nominee Indonesia pegang hak", "Mengikat secara hukum", "Kontrol penuh", "Dokumen notaris"]
           }
         ]
       },
       benefits: {
-        title: "Mengapa Investasi di Indonesia dengan ASTRA Villa?",
+        title: "Mengapa Investasi dengan ASTRA Villa?",
         items: [
-          { icon: Building2, title: "Pengembangan Premium", desc: "Akses ke pengembangan smart-city dan mewah eksklusif di seluruh Indonesia" },
-          { icon: Scale, title: "Keahlian Legal", desc: "Dukungan legal penuh untuk struktur kepemilikan, izin, dan kepatuhan" },
-          { icon: Users, title: "Jalur Residensi", desc: "Panduan tentang visa tinggal jangka panjang dan opsi residensi" },
-          { icon: Briefcase, title: "Dukungan Bisnis", desc: "Setup PT PMA, perbankan, dan bantuan pendirian bisnis" },
-          { icon: Shield, title: "Perlindungan Investasi", desc: "Layanan escrow dan transaksi transparan terjamin" },
-          { icon: Crown, title: "Layanan VIP", desc: "Concierge pribadi, penjemputan bandara, dan dukungan relokasi" }
+          { icon: Building2, title: "Pengembangan Premium", desc: "Smart-city & properti mewah" },
+          { icon: Scale, title: "Keahlian Legal", desc: "Dukungan legal & kepatuhan penuh" },
+          { icon: Users, title: "Jalur Residensi", desc: "Panduan visa jangka panjang" },
+          { icon: Briefcase, title: "Dukungan Bisnis", desc: "Setup PT PMA & perbankan" },
+          { icon: Shield, title: "Perlindungan Investasi", desc: "Escrow & transaksi transparan" },
+          { icon: Crown, title: "Layanan VIP", desc: "Concierge & dukungan relokasi" }
         ]
       },
       process: {
         title: "Proses Investasi",
         steps: [
-          { num: "01", title: "Konsultasi Awal", desc: "Konsultasi gratis untuk memahami tujuan investasi Anda" },
-          { num: "02", title: "Penilaian Legal", desc: "Tentukan struktur kepemilikan terbaik untuk kebutuhan Anda" },
-          { num: "03", title: "Pemilihan Properti", desc: "Tur virtual dan kunjungan langsung ke properti premium" },
-          { num: "04", title: "Due Diligence", desc: "Pemeriksaan dan verifikasi legal lengkap" },
-          { num: "05", title: "Transaksi", desc: "Pemrosesan pembayaran aman dengan perlindungan escrow" },
-          { num: "06", title: "Pasca-Pembelian", desc: "Manajemen properti, sewa, dan dukungan berkelanjutan" }
+          { num: "01", title: "Konsultasi", desc: "Penilaian tujuan gratis" },
+          { num: "02", title: "Penilaian Legal", desc: "Struktur kepemilikan terbaik" },
+          { num: "03", title: "Pemilihan", desc: "Tur virtual & langsung" },
+          { num: "04", title: "Due Diligence", desc: "Pemeriksaan legal lengkap" },
+          { num: "05", title: "Transaksi", desc: "Pembayaran escrow aman" },
+          { num: "06", title: "Pasca-Pembelian", desc: "Manajemen berkelanjutan" }
         ]
       },
-      locations: {
-        title: "Lokasi Investasi Teratas",
-        areas: ["Bali", "Jakarta", "Lombok", "Yogyakarta", "Bandung", "Surabaya"]
-      },
       cta: {
-        title: "Mulai Perjalanan Investasi Indonesia Anda",
-        subtitle: "Bergabung dengan investor global yang mempercayai ASTRA Villa untuk investasi properti yang aman",
+        title: "Mulai Perjalanan Investasi",
+        subtitle: "Bergabung dengan investor global yang percaya ASTRA Villa",
         button: "Jadwalkan Konsultasi",
-        download: "Unduh Panduan Investasi"
+        download: "Panduan Investasi"
       }
     }
   };
@@ -150,59 +143,76 @@ const WNAInvestorPage = () => {
   const t = content[language];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background via-accent/5 to-background">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-accent/10">
+        <div className="max-w-7xl mx-auto px-3 py-2 flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="h-7 px-2 text-xs gap-1"
+          >
+            <ChevronLeft className="h-3.5 w-3.5" />
+            {t.back}
+          </Button>
+          <div className="h-4 w-px bg-border" />
+          <span className="text-xs font-medium text-accent">{t.hero.badge}</span>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-background to-blue-500/5" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl opacity-50" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl opacity-50" />
+      <section className="relative pt-4 pb-6 sm:pt-8 sm:pb-10 overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-blue-500/5 pointer-events-none" />
+        <div className="absolute top-10 left-5 w-32 h-32 sm:w-48 sm:h-48 bg-accent/15 rounded-full blur-3xl opacity-60" />
+        <div className="absolute bottom-5 right-5 w-40 h-40 sm:w-64 sm:h-64 bg-blue-500/10 rounded-full blur-3xl opacity-50" />
         
         {/* Global Accent */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-accent to-purple-500" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-accent to-purple-500" />
         
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative z-10 max-w-5xl mx-auto px-3 sm:px-4 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-accent/10 backdrop-blur-sm rounded-full border border-accent/20">
-              <Globe className="h-4 w-4 text-accent" />
-              <span className="text-sm font-medium text-accent">{t.hero.badge}</span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3 bg-accent/10 backdrop-blur-sm rounded-full border border-accent/20">
+              <Globe className="h-3 w-3 text-accent" />
+              <span className="text-[10px] sm:text-xs font-medium text-accent">{t.hero.badge}</span>
             </div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 px-2">
               <span className="bg-gradient-to-r from-accent via-foreground to-blue-500 bg-clip-text text-transparent">
                 {t.hero.title}
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto mb-4 px-2">
               {t.hero.subtitle}
             </p>
             
             <Button
-              size="lg"
+              size="sm"
               onClick={() => navigate('/properties')}
-              className="bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground rounded-xl px-8 py-6 text-lg shadow-xl shadow-accent/25"
+              className="bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground rounded-lg px-4 py-2 text-xs sm:text-sm shadow-lg shadow-accent/20"
             >
               {t.hero.cta}
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Button>
           </motion.div>
 
           {/* Stats */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto"
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="grid grid-cols-4 gap-2 mt-6 max-w-md mx-auto"
           >
             {t.stats.map((stat, idx) => (
-              <div key={idx} className="p-4 rounded-2xl bg-background/60 backdrop-blur-sm border border-border/40">
-                <div className="text-2xl sm:text-3xl font-bold text-accent">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              <div key={idx} className="p-2 rounded-lg bg-background/70 backdrop-blur-sm border border-border/30">
+                <div className="text-sm sm:text-base font-bold text-accent">{stat.value}</div>
+                <div className="text-[9px] sm:text-[10px] text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -210,50 +220,50 @@ const WNAInvestorPage = () => {
       </section>
 
       {/* Ownership Options */}
-      <section className="py-16 sm:py-24 bg-gradient-to-br from-accent/5 via-background to-primary/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-4 sm:py-8 bg-gradient-to-br from-accent/5 via-transparent to-primary/5">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-4 sm:mb-6"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-base sm:text-lg md:text-xl font-bold mb-1">
               {t.ownership.title}
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
               {t.ownership.subtitle}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
             {t.ownership.options.map((option, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: idx * 0.05 }}
+                className={cn(
+                  "p-2.5 sm:p-3 rounded-xl",
+                  "bg-background/80 backdrop-blur-sm",
+                  "border border-accent/15 hover:border-accent/30",
+                  "transition-all duration-300 hover:shadow-md hover:shadow-accent/10"
+                )}
               >
-                <Card className="h-full bg-background/80 backdrop-blur-sm border-accent/20 hover:border-accent/40 hover:shadow-lg transition-all duration-300">
-                  <CardHeader>
-                    <div className="p-3 w-fit rounded-xl bg-accent/10 mb-4">
-                      <Scale className="h-6 w-6 text-accent" />
-                    </div>
-                    <CardTitle className="text-lg">{option.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{option.desc}</p>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {option.details.map((detail, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm">
-                          <CheckCircle className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                          <span className="text-muted-foreground">{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                <div className="p-1.5 w-fit rounded-lg bg-accent/10 mb-1.5">
+                  <Scale className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-semibold mb-0.5">{option.title}</h3>
+                <p className="text-[10px] text-muted-foreground mb-2">{option.desc}</p>
+                <ul className="space-y-0.5">
+                  {option.details.map((detail, i) => (
+                    <li key={i} className="flex items-start gap-1 text-[10px] sm:text-[11px]">
+                      <CheckCircle className="h-2.5 w-2.5 text-accent shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground leading-tight">{detail}</span>
+                    </li>
+                  ))}
+                </ul>
               </motion.div>
             ))}
           </div>
@@ -261,39 +271,39 @@ const WNAInvestorPage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-4 sm:py-8">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-4 sm:mb-6"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-base sm:text-lg md:text-xl font-bold">
               {t.benefits.title}
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
             {t.benefits.items.map((item, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: idx * 0.05 }}
+                className={cn(
+                  "p-2.5 sm:p-3 rounded-xl",
+                  "bg-background/70 backdrop-blur-sm",
+                  "border border-accent/15 hover:border-accent/30",
+                  "transition-all duration-300 hover:shadow-md hover:shadow-accent/10"
+                )}
               >
-                <Card className="h-full bg-background/60 backdrop-blur-sm border-accent/20 hover:border-accent/40 hover:shadow-lg transition-all duration-300">
-                  <CardHeader>
-                    <div className="p-3 w-fit rounded-xl bg-accent/10 mb-4">
-                      <item.icon className="h-6 w-6 text-accent" />
-                    </div>
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{item.desc}</p>
-                  </CardContent>
-                </Card>
+                <div className="p-1.5 w-fit rounded-lg bg-accent/10 mb-1.5">
+                  <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-semibold mb-0.5 text-foreground">{item.title}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -301,34 +311,37 @@ const WNAInvestorPage = () => {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 sm:py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-4 sm:py-8 bg-gradient-to-br from-primary/5 via-transparent to-accent/5">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-4 sm:mb-6"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-base sm:text-lg md:text-xl font-bold">
               {t.process.title}
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
             {t.process.steps.map((step, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="relative"
+                transition={{ delay: idx * 0.05 }}
+                className={cn(
+                  "p-2.5 sm:p-3 rounded-xl",
+                  "bg-background/80 backdrop-blur-sm",
+                  "border border-border/30 hover:border-accent/30",
+                  "transition-all duration-300"
+                )}
               >
-                <div className="p-6 rounded-2xl bg-background/80 backdrop-blur-sm border border-border/40 hover:border-accent/40 transition-all duration-300">
-                  <div className="text-4xl font-bold text-accent/20 mb-4">{step.num}</div>
-                  <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.desc}</p>
-                </div>
+                <div className="text-lg sm:text-xl font-bold text-accent/25 mb-1">{step.num}</div>
+                <h3 className="text-xs sm:text-sm font-semibold mb-0.5">{step.title}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -336,39 +349,39 @@ const WNAInvestorPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 sm:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-4 sm:py-8">
+        <div className="max-w-3xl mx-auto px-3 sm:px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className={cn(
-              "relative rounded-3xl overflow-hidden p-8 sm:p-12 text-center",
-              "bg-gradient-to-br from-accent/20 via-accent/10 to-blue-500/10",
-              "border border-accent/30"
+              "relative rounded-xl sm:rounded-2xl overflow-hidden p-4 sm:p-6 text-center",
+              "bg-gradient-to-br from-accent/15 via-accent/10 to-blue-500/10",
+              "backdrop-blur-sm border border-accent/20"
             )}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-sm sm:text-base md:text-lg font-bold mb-1.5">
               {t.cta.title}
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-4">
               {t.cta.subtitle}
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <Button
-                size="lg"
-                className="bg-gradient-to-r from-accent to-accent/80 text-accent-foreground rounded-xl px-8"
+                size="sm"
+                className="bg-gradient-to-r from-accent to-accent/80 text-accent-foreground rounded-lg px-4 text-xs"
               >
-                <Phone className="mr-2 h-5 w-5" />
+                <Phone className="mr-1.5 h-3.5 w-3.5" />
                 {t.cta.button}
               </Button>
               <Button
-                size="lg"
+                size="sm"
                 variant="outline"
-                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground rounded-xl px-8"
+                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground rounded-lg px-4 text-xs"
               >
-                <FileText className="mr-2 h-5 w-5" />
+                <FileText className="mr-1.5 h-3.5 w-3.5" />
                 {t.cta.download}
               </Button>
             </div>
