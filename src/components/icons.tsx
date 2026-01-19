@@ -6,13 +6,17 @@ import {
   LogOut,
   Home,
 } from "lucide-react";
-import astraLogo from "@/assets/astra-logo.png";
+import astraLogoFallback from "@/assets/astra-logo.png";
 import { cn } from "@/lib/utils";
 
-const MetaAILogo = (props: LucideProps) => (
+interface MetaAILogoProps extends LucideProps {
+  logoUrl?: string;
+}
+
+const MetaAILogo = ({ logoUrl, ...props }: MetaAILogoProps) => (
   <div className="relative inline-flex items-center justify-center">
     <img 
-      src={astraLogo} 
+      src={logoUrl || astraLogoFallback} 
       alt="ASTRA AI" 
       width={props.size || 32}
       height={props.size || 32}
