@@ -1215,21 +1215,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     }
   };
 
-  // Drag handlers with snap-to-edge and corner functionality
-  const handleDragStart = (e: React.MouseEvent) => {
+  // Smooth drag handlers using framer-motion constraints
+  const handleDragStart = () => {
     if (isMobile || isMinimized) return;
     setIsDragging(true);
-    setDragStart({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y
-    });
   };
 
-  const handleDragMove = (e: MouseEvent) => {
-    if (!isDragging) return;
+  const handleDrag = (event: any, info: { point: { x: number; y: number } }) => {
+    if (isMobile || isMinimized) return;
     
-    const newX = e.clientX - dragStart.x;
-    const newY = e.clientY - dragStart.y;
+    const newX = info.point.x - size.width / 2;
+    const newY = info.point.y - 20; // Offset for header drag handle
     
     // Constrain to viewport
     const maxX = window.innerWidth - size.width;
@@ -1239,8 +1235,6 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       x: Math.max(0, Math.min(newX, maxX)),
       y: Math.max(0, Math.min(newY, maxY))
     };
-    
-    setPosition(constrainedPosition);
     
     // Detect snap zones and show indicators
     const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
@@ -1271,53 +1265,61 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     setSnapIndicator(indicator);
   };
 
-  const handleDragEnd = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      setSnapIndicator(null);
-      
-      // Snap-to-edge and corner functionality
-      const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
-      const edgeMargin = 12; // margin from edge when snapped
-      
-      let snappedPosition = { ...position };
-      
-      // Check for corner snapping first (higher priority)
-      if (position.x < cornerThreshold && position.y < cornerThreshold) {
-        // Snap to top-left corner
-        snappedPosition = { x: edgeMargin, y: edgeMargin };
-      } else if (position.x > window.innerWidth - size.width - cornerThreshold && position.y < cornerThreshold) {
-        // Snap to top-right corner
-        snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: edgeMargin };
-      } else if (position.x < cornerThreshold && position.y > window.innerHeight - size.height - cornerThreshold) {
-        // Snap to bottom-left corner
-        snappedPosition = { x: edgeMargin, y: window.innerHeight - size.height - edgeMargin };
-      } else if (position.x > window.innerWidth - size.width - cornerThreshold && position.y > window.innerHeight - size.height - cornerThreshold) {
-        // Snap to bottom-right corner
-        snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: window.innerHeight - size.height - edgeMargin };
-      }
-      // Then check for edge snapping
-      else {
-        if (position.x < snapThreshold) {
-          snappedPosition.x = edgeMargin;
-        } else if (position.x > window.innerWidth - size.width - snapThreshold) {
-          snappedPosition.x = window.innerWidth - size.width - edgeMargin;
-        }
-        
-        if (position.y < snapThreshold) {
-          snappedPosition.y = edgeMargin;
-        } else if (position.y > window.innerHeight - size.height - snapThreshold) {
-          snappedPosition.y = window.innerHeight - size.height - edgeMargin;
-        }
-      }
-      
-      // Apply snapped position with animation
-      setPosition(snappedPosition);
-      
-      // Save position to localStorage with timestamp
-      localStorage.setItem('chatbot-position', JSON.stringify(snappedPosition));
-      localStorage.setItem('chatbot-last-modified', new Date().toISOString());
+  const handleDragEnd = (event: any, info: { point: { x: number; y: number } }) => {
+    if (isMobile || isMinimized) return;
+    
+    setIsDragging(false);
+    setSnapIndicator(null);
+    
+    const newX = info.point.x - size.width / 2;
+    const newY = info.point.y - 20;
+    
+    // Constrain to viewport
+    const maxX = window.innerWidth - size.width;
+    const maxY = window.innerHeight - size.height;
+    
+    let constrainedPosition = {
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY))
+    };
+    
+    // Snap-to-edge and corner functionality
+    const { edge: snapThreshold, corner: cornerThreshold } = getSnapThresholds();
+    const edgeMargin = 12;
+    
+    let snappedPosition = { ...constrainedPosition };
+    
+    // Check for corner snapping first (higher priority)
+    if (constrainedPosition.x < cornerThreshold && constrainedPosition.y < cornerThreshold) {
+      snappedPosition = { x: edgeMargin, y: edgeMargin };
+    } else if (constrainedPosition.x > window.innerWidth - size.width - cornerThreshold && constrainedPosition.y < cornerThreshold) {
+      snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: edgeMargin };
+    } else if (constrainedPosition.x < cornerThreshold && constrainedPosition.y > window.innerHeight - size.height - cornerThreshold) {
+      snappedPosition = { x: edgeMargin, y: window.innerHeight - size.height - edgeMargin };
+    } else if (constrainedPosition.x > window.innerWidth - size.width - cornerThreshold && constrainedPosition.y > window.innerHeight - size.height - cornerThreshold) {
+      snappedPosition = { x: window.innerWidth - size.width - edgeMargin, y: window.innerHeight - size.height - edgeMargin };
     }
+    // Then check for edge snapping
+    else {
+      if (constrainedPosition.x < snapThreshold) {
+        snappedPosition.x = edgeMargin;
+      } else if (constrainedPosition.x > window.innerWidth - size.width - snapThreshold) {
+        snappedPosition.x = window.innerWidth - size.width - edgeMargin;
+      }
+      
+      if (constrainedPosition.y < snapThreshold) {
+        snappedPosition.y = edgeMargin;
+      } else if (constrainedPosition.y > window.innerHeight - size.height - snapThreshold) {
+        snappedPosition.y = window.innerHeight - size.height - edgeMargin;
+      }
+    }
+    
+    // Apply snapped position
+    setPosition(snappedPosition);
+    
+    // Save position to localStorage with timestamp
+    localStorage.setItem('chatbot-position', JSON.stringify(snappedPosition));
+    localStorage.setItem('chatbot-last-modified', new Date().toISOString());
   };
 
   // Resize handlers
@@ -1354,17 +1356,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     }
   };
 
-  // Add global mouse event listeners for drag and resize
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handleDragMove);
-      window.addEventListener('mouseup', handleDragEnd);
-      return () => {
-        window.removeEventListener('mousemove', handleDragMove);
-        window.removeEventListener('mouseup', handleDragEnd);
-      };
-    }
-  }, [isDragging, dragStart, position, size]);
+  // Note: Drag is now handled by framer-motion, no manual mouse event listeners needed for dragging
 
   useEffect(() => {
     if (isResizing) {
@@ -1663,21 +1655,45 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           <motion.div 
             ref={chatWindowRef}
             initial={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.9, opacity: 0 }}
-            animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1 }}
+            animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1, x: position.x, y: position.y }}
             exit={isMobile ? { y: "100%", opacity: 0 } : { scale: 0.95, opacity: 0 }}
             transition={{
-              duration: 0.8,
-              ease: [0.25, 0.46, 0.45, 0.94] // Smooth slow easing curve
+              duration: 0.4,
+              ease: [0.25, 0.46, 0.45, 0.94], // Smooth easing curve
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              y: { type: "spring", stiffness: 300, damping: 30 }
+            }}
+            drag={!isMobile && !isMinimized}
+            dragMomentum={false}
+            dragElastic={0.1}
+            dragConstraints={{
+              left: 0,
+              right: window.innerWidth - size.width,
+              top: 0,
+              bottom: window.innerHeight - size.height
+            }}
+            onDragStart={handleDragStart}
+            onDrag={handleDrag}
+            onDragEnd={handleDragEnd}
+            whileDrag={{ 
+              scale: 1.02, 
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4)",
+              cursor: "grabbing"
             }}
             className={cn(
               "fixed z-[99999]",
               // Shadow and overflow
               "shadow-2xl",
               "overflow-visible",
-              isDragging && "cursor-move",
+              !isMobile && !isMinimized && "cursor-grab",
+              isDragging && "cursor-grabbing",
               isResizing && "cursor-nwse-resize"
             )}
-            style={getChatWindowStyle()}
+            style={{
+              ...getChatWindowStyle(),
+              left: isMobile ? getChatWindowStyle().left : undefined,
+              top: isMobile ? getChatWindowStyle().top : undefined
+            }}
             role="dialog"
             aria-label="AI Chat Assistant"
             aria-modal="true"
@@ -1687,9 +1703,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             <div 
               className={cn(
                 "flex items-center justify-between p-3 border-b-2 border-primary/30 bg-gradient-to-r from-background/95 via-background/90 to-primary/5 backdrop-blur-2xl text-foreground touch-manipulation",
-                !isMobile && !isMinimized && "cursor-move select-none"
+                !isMobile && !isMinimized && "cursor-grab select-none",
+                isDragging && "cursor-grabbing"
               )}
-              onMouseDown={handleDragStart}
               onDoubleClick={handleHeaderDoubleClick}
               onClick={isMobile ? handleHeaderTap : undefined}
               title={isMobile ? "Double-tap to toggle view mode" : !isMobile ? "Double-click to reset position" : undefined}
