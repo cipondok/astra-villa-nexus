@@ -22,6 +22,7 @@ import { useHapticFeedback } from "@/hooks/useHapticFeedback";
 import { useCustomSounds, SoundEvent } from "@/hooks/useCustomSounds";
 import { useChatbotPreferencesSync } from "@/hooks/useChatbotPreferencesSync";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
+import { useChatbotLogo } from "@/hooks/useChatbotLogo";
 import { ChatbotConflictDialog } from "./ChatbotConflictDialog";
 import { ChatbotWelcomeDialog } from "./ChatbotWelcomeDialog";
 import ChatbotTipsPopup from "./ChatbotTipsPopup";
@@ -149,6 +150,9 @@ const ResponsiveAIChatWidget = ({
   
   // Cloud sync for preferences
   const { isAuthenticated, isLoading: isSyncLoading, syncStatus, lastSyncTime, loadFromCloud, saveToCloud, deleteFromCloud } = useChatbotPreferencesSync();
+
+  // Chatbot logo from admin settings
+  const { logoUrl: chatbotLogoUrl } = useChatbotLogo();
 
   // Load preferences from cloud on auth (prioritize cloud over local)
   useEffect(() => {
@@ -1693,7 +1697,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               <div className="flex items-center gap-3">
                 {/* Logo with glassy royal border */}
                 <div className="relative p-1 rounded-xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/20 border border-primary/30 shadow-lg shadow-primary/10">
-                  <Icons.aiLogo className="h-7 w-7" />
+                  <Icons.aiLogo className="h-7 w-7" logoUrl={chatbotLogoUrl} />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ASTRA AI</span>
@@ -1984,7 +1988,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 {isLoading ? (
                   // Show typing indicator when AI is responding
                   <div className="flex items-center gap-3">
-                    <Icons.aiLogo className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Icons.aiLogo className="h-4 w-4 text-primary flex-shrink-0" logoUrl={chatbotLogoUrl} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-xs font-medium text-foreground">ASTRA AI</span>
@@ -2014,7 +2018,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 mt-0.5">
                       {messages[messages.length - 1].role === 'assistant' ? (
-                        <Icons.aiLogo className="h-4 w-4 text-primary" />
+                        <Icons.aiLogo className="h-4 w-4 text-primary" logoUrl={chatbotLogoUrl} />
                       ) : (
                         <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
                           <span className="text-xs text-primary font-medium">
@@ -2040,7 +2044,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 ) : (
                   // No messages yet
                   <div className="flex items-center gap-3">
-                    <Icons.aiLogo className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Icons.aiLogo className="h-4 w-4 text-primary flex-shrink-0" logoUrl={chatbotLogoUrl} />
                     <div className="flex-1">
                       <span className="text-xs font-medium text-foreground">No messages yet</span>
                       <p className="text-xs text-muted-foreground">Click to start chatting</p>
