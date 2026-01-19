@@ -14,6 +14,8 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
       <DialogContent 
         className="max-w-sm p-0 overflow-hidden max-h-[70vh] bg-background/95 backdrop-blur-xl border border-primary/40 shadow-2xl shadow-primary/20"
         hideOverlay
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
       >
         {/* Header with gradient background */}
         <div className="relative bg-gradient-to-br from-primary/30 via-primary/15 to-background/90 p-4 pb-5 border-b border-primary/20">
