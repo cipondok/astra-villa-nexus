@@ -131,20 +131,21 @@ const ChatButton = ({
     isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
   );
 
-  // Premium gold-orange styling with active/inactive states
+  // Premium glassy royal styling with active/inactive states
   const getVariantStyles = () => {
     const activeStyles = cn(
-      "bg-gradient-to-br from-gold-primary via-accent to-orange-primary",
-      "shadow-[0_4px_20px_hsla(48,100%,50%,0.4),0_8px_40px_hsla(33,100%,50%,0.3)]",
-      "border border-gold-primary/30",
+      "bg-gradient-to-br from-background/90 via-background/80 to-primary/20",
+      "shadow-[0_4px_24px_hsla(var(--primary),0.3),0_8px_40px_hsla(var(--primary),0.2)]",
+      "border-2 border-primary/50",
+      "backdrop-blur-xl",
       !isDragging && "animate-chat-float md:animate-chat-float"
     );
 
     const inactiveStyles = cn(
-      "bg-gradient-to-br from-gold-primary/30 via-accent/20 to-orange-primary/30",
-      "shadow-[0_2px_10px_hsla(48,100%,50%,0.1),0_4px_20px_hsla(33,100%,50%,0.08)]",
-      "border border-gold-primary/10",
-      "backdrop-blur-sm"
+      "bg-gradient-to-br from-background/70 via-background/60 to-muted/40",
+      "shadow-[0_2px_12px_hsla(var(--primary),0.1)]",
+      "border border-primary/20",
+      "backdrop-blur-lg"
     );
 
     if (isButtonActive) {
@@ -250,9 +251,8 @@ const ChatButton = ({
           <div className={cn(
             "h-full w-full rounded-full flex items-center justify-center",
             "transition-all duration-500",
-            isButtonActive 
-              ? "bg-gradient-to-br from-gold-primary/20 to-orange-primary/20" 
-              : "bg-transparent"
+            "bg-gradient-to-br from-primary/10 via-transparent to-accent/10",
+            "border border-primary/20"
           )}>
             <div className="relative">
               <AnimatePresence mode="wait">
@@ -315,15 +315,15 @@ const ChatButton = ({
           
           {/* Glow ring effect when active */}
           <motion.div
-            className="absolute inset-0 rounded-full pointer-events-none"
+            className="absolute inset-0 rounded-full pointer-events-none border-2 border-primary/30"
             animate={{
               boxShadow: isButtonActive 
                 ? [
-                    "0 0 0 0 hsla(48, 100%, 50%, 0)",
-                    "0 0 0 8px hsla(48, 100%, 50%, 0.15)",
-                    "0 0 0 0 hsla(48, 100%, 50%, 0)"
+                    "0 0 0 0 hsla(var(--primary), 0)",
+                    "0 0 0 8px hsla(var(--primary), 0.15)",
+                    "0 0 0 0 hsla(var(--primary), 0)"
                   ]
-                : "0 0 0 0 hsla(48, 100%, 50%, 0)"
+                : "0 0 0 0 hsla(var(--primary), 0)"
             }}
             transition={{
               duration: 2,

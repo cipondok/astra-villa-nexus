@@ -43,18 +43,19 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, x: 10 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          exit={{ opacity: 0, scale: 0.9, x: 10 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 10 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           onClick={onClose}
           className={cn(
-            "absolute bottom-full left-1/2 -translate-x-1/2 mb-3 cursor-pointer",
+            "absolute bottom-full right-0 mb-3 cursor-pointer",
             className
           )}
         >
           <div className="relative">
-            <div className="bg-foreground/70 backdrop-blur-sm rounded-xl px-4 py-2.5 whitespace-nowrap">
+            {/* Glassy Royal Border Popup */}
+            <div className="bg-background/80 backdrop-blur-xl rounded-2xl px-4 py-3 border border-primary/40 shadow-xl shadow-primary/20 min-w-[260px] max-w-[300px]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={currentTipIndex}
@@ -62,15 +63,30 @@ const ChatbotTipsPopup = ({ isVisible, onClose, className }: ChatbotTipsPopupPro
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
                   transition={{ duration: 0.2 }}
-                  className="text-xs text-background leading-relaxed"
+                  className="text-xs text-foreground leading-relaxed"
                 >
                   {TIPS[currentTipIndex]}
                 </motion.p>
               </AnimatePresence>
+              
+              {/* Tip indicator dots */}
+              <div className="flex justify-center gap-1 mt-2">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                      currentTipIndex % 3 === i
+                        ? "bg-primary w-3"
+                        : "bg-primary/30"
+                    )}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Chat bubble tail pointing down */}
-            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-foreground/70 rotate-45" />
+            {/* Chat bubble tail pointing down-right toward chatbot */}
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-background/80 border-r border-b border-primary/40 rotate-45" />
           </div>
         </motion.div>
       )}
