@@ -11,18 +11,13 @@ import { cn } from "@/lib/utils";
 
 const MetaAILogo = (props: LucideProps) => (
   <div className="relative inline-flex items-center justify-center">
-    <div className="absolute inset-0 rounded-full" style={{ 
-      width: props.size || 55, 
-      height: props.size || 55,
-      backgroundColor: '#4a3c31'
-    }}></div>
     <img 
       src={astraLogo} 
       alt="ASTRA AI" 
-      width={props.size || 55}
-      height={props.size || 55}
-      className={cn("relative z-10", props.className)}
-      style={{ width: props.size || 55, height: props.size || 55 }}
+      width={props.size || 32}
+      height={props.size || 32}
+      className={cn("relative z-10 object-contain", props.className)}
+      style={{ width: props.size || 32, height: props.size || 32 }}
     />
   </div>
 );
