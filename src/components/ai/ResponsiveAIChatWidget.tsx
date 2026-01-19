@@ -1678,11 +1678,11 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
             aria-label="AI Chat Assistant"
             aria-modal="true"
           >
-          <Card className="h-full w-full flex flex-col border-2 border-primary/30 overflow-hidden bg-background/60 backdrop-blur-xl shadow-2xl rounded-2xl md:rounded-2xl max-h-full relative touch-manipulation">
+          <Card className="h-full w-full flex flex-col border border-primary/30 overflow-hidden glass-card shadow-2xl rounded-2xl md:rounded-2xl max-h-full relative touch-manipulation">
             {/* Header with Close, Minimize, and Sound Toggle - Draggable */}
             <div 
               className={cn(
-                "flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white touch-manipulation",
+                "flex items-center justify-between p-3 border-b border-primary/20 bg-gradient-to-r from-background via-background/95 to-primary/10 backdrop-blur-xl text-foreground touch-manipulation",
                 !isMobile && !isMinimized && "cursor-move select-none"
               )}
               onMouseDown={handleDragStart}
@@ -1756,7 +1756,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-white hover:bg-white/20 rounded-full relative z-10"
+                      className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full relative z-10"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleViewMode();
@@ -1793,7 +1793,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                        className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full"
                         onClick={(e) => e.stopPropagation()}
                         aria-label="Auto-collapse duration"
                         title="Quick auto-collapse settings"
@@ -1893,7 +1893,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                    className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full"
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowSettings(!showSettings);
@@ -1907,7 +1907,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleMute();
@@ -1919,7 +1919,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full transition-colors"
+                  className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMinimized(!isMinimized);
@@ -1937,7 +1937,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-white hover:bg-white/20 rounded-full"
+                  className="h-7 w-7 text-foreground hover:bg-primary/20 rounded-full"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleClose();
