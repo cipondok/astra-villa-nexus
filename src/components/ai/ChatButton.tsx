@@ -1,4 +1,4 @@
-import { GripVertical, Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
+import { Settings, RotateCcw, Pin, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UnreadBadge from "./UnreadBadge";
 import { Icons } from "@/components/icons";
@@ -38,40 +38,13 @@ const ChatButton = ({
   onTogglePin,
   showScrollArrow = false
 }: ChatButtonProps) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isLongPress, setIsLongPress] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
-  const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Chatbot logo from admin settings
   const { logoUrl: chatbotLogoUrl } = useChatbotLogo();
-
-  // Load saved position on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('chat_button_pos');
-    if (saved) {
-      const savedPos = JSON.parse(saved);
-      // Ensure position is within viewport bounds
-      const buttonSize = window.innerWidth >= 768 ? 56 : 48;
-      const maxX = window.innerWidth - buttonSize - 12;
-      const maxY = window.innerHeight - buttonSize - 12;
-      setPosition({
-        x: Math.min(Math.max(12, savedPos.x), maxX),
-        y: Math.min(Math.max(12, savedPos.y), maxY),
-      });
-    } else {
-      // Default: bottom-right corner with mobile-safe margins
-      const buttonSize = window.innerWidth >= 768 ? 56 : 48;
-      setPosition({
-        x: window.innerWidth - buttonSize - 20,
-        y: window.innerHeight - buttonSize - 20,
-      });
-    }
-  }, []);
 
   // Scroll detection - activate button on scroll
   useEffect(() => {
@@ -103,17 +76,16 @@ const ChatButton = ({
   }, [isHovered]);
 
   // Determine if button should be in active state
-  const isButtonActive = isHovered || isActive || isScrolling || isDragging || unreadCount > 0;
+  const isButtonActive = isHovered || isActive || isScrolling || unreadCount > 0;
 
   const baseStyles = cn(
-    "fixed z-[99999]",
+    "relative z-[99999]",
     "h-[55px] w-[55px] rounded-full",
     "transition-all duration-500 ease-out",
     "pointer-events-auto",
-    !isDragging && "transform hover:scale-110 active:scale-95",
-    isDragging && "scale-105",
+    "transform hover:scale-110 active:scale-95",
     "focus:outline-none focus:ring-0 ring-0",
-    isDragging ? "cursor-grabbing" : "cursor-grab hover:cursor-grab"
+    "cursor-pointer"
   );
 
   // Premium glassy royal styling with active/inactive states
@@ -123,7 +95,7 @@ const ChatButton = ({
       "shadow-[0_4px_24px_hsla(var(--primary),0.3),0_8px_40px_hsla(var(--primary),0.2)]",
       "border-2 border-primary/50",
       "backdrop-blur-xl",
-      !isDragging && "animate-chat-float md:animate-chat-float"
+      "animate-chat-float md:animate-chat-float"
     );
 
     const inactiveStyles = cn(
@@ -139,38 +111,13 @@ const ChatButton = ({
     return inactiveStyles;
   };
 
-  // Long press to activate drag (300ms)
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    pressTimerRef.current = setTimeout(() => {
-      setIsLongPress(true);
-      setIsDragging(true);
-    }, 300);
-  };
-
-  const handleMouseUp = () => {
-    if (pressTimerRef.current) {
-      clearTimeout(pressTimerRef.current);
-      pressTimerRef.current = null;
-    }
-
-    if (isDragging) {
-      // Save position to localStorage
-      localStorage.setItem('chat_button_pos', JSON.stringify(position));
-      setIsDragging(false);
-      setIsLongPress(false);
-    } else if (!isLongPress) {
-      // Short click - open chat
-      onClick();
-    }
-    setIsLongPress(false);
+    e.stopPropagation();
+    onClick();
   };
 
   const handleMouseLeave = () => {
-    if (pressTimerRef.current) {
-      clearTimeout(pressTimerRef.current);
-      pressTimerRef.current = null;
-    }
     setIsHovered(false);
     // Only deactivate if not scrolling
     if (!isScrolling) {
@@ -183,28 +130,11 @@ const ChatButton = ({
     setIsActive(true);
   };
 
-  const handleDragEnd = (_: any, info: { point: { x: number; y: number } }) => {
-    const buttonSize = window.innerWidth >= 768 ? 56 : 48;
-    const halfSize = buttonSize / 2;
-    // Constrain to viewport with 20px padding
-    const newX = Math.max(20, Math.min(window.innerWidth - buttonSize - 20, info.point.x - halfSize));
-    const newY = Math.max(20, Math.min(window.innerHeight - buttonSize - 20, info.point.y - halfSize));
-    
-    setPosition({ x: newX, y: newY });
-    localStorage.setItem('chat_button_pos', JSON.stringify({ x: newX, y: newY }));
-    setIsDragging(false);
-  };
-
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <motion.button
-          drag={isDragging}
-          dragMomentum={false}
-          dragElastic={0}
-          onDragEnd={handleDragEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
+          onClick={handleClick}
           onMouseLeave={handleMouseLeave}
           onMouseEnter={handleMouseEnter}
           whileTap={{ scale: 0.95 }}
@@ -217,13 +147,7 @@ const ChatButton = ({
             ease: "easeOut"
           }}
           className={cn("group", baseStyles, getVariantStyles(), className)}
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            display: 'block',
-            visibility: 'visible',
-          }}
-          aria-label={isDragging ? "Dragging chat button" : "Open AI chat assistant (long press to reposition, right-click for options)"}
+          aria-label="Open AI chat assistant"
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
@@ -267,21 +191,13 @@ const ChatButton = ({
                         isButtonActive 
                           ? "drop-shadow-[0_0_8px_hsla(var(--primary),0.5)]" 
                           : "opacity-70",
-                        !isDragging && isButtonActive && "hover:rotate-12"
+                        isButtonActive && "hover:rotate-12"
                       )} 
                       aria-hidden="true" 
                     />
                   )}
                 </motion.div>
               </AnimatePresence>
-              {/* Drag handle indicator - shows on hover */}
-              <GripVertical
-                className={cn(
-                  "absolute -bottom-1 -right-1 h-3 w-3 transition-opacity duration-300",
-                  isDragging ? "opacity-100 text-gold-primary" : "opacity-0 group-hover:opacity-60"
-                )} 
-                aria-hidden="true"
-              />
             </div>
             {unreadCount > 0 && <UnreadBadge count={unreadCount} />}
           </div>
