@@ -47,6 +47,7 @@ const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecom
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
+const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
 
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -797,6 +798,13 @@ const Index = () => {
                         setHasSearched(true);
                       }}
                     />
+                  </Suspense>
+                </div>
+
+                {/* Investor Path Selector - WNI/WNA */}
+                <div className="w-full max-w-full mx-auto mb-3 md:mb-6">
+                  <Suspense fallback={<div className="animate-pulse h-48 md:h-64 bg-muted/50 rounded-lg border border-border/40" />}>
+                    <InvestorPathSelector />
                   </Suspense>
                 </div>
 
