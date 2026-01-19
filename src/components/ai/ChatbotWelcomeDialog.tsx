@@ -1,4 +1,5 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { Bot, Sparkles, Move, Maximize2, Clock } from "lucide-react";
 import { motion } from "framer-motion";
@@ -15,6 +16,10 @@ export const ChatbotWelcomeDialog = ({ open, onClose }: ChatbotWelcomeDialogProp
         className="max-w-sm p-0 overflow-hidden max-h-[70vh] bg-background/95 backdrop-blur-xl border border-primary/40 shadow-2xl shadow-primary/20"
         hideOverlay
       >
+        <VisuallyHidden>
+          <DialogTitle>Welcome to ASTRA Chat</DialogTitle>
+          <DialogDescription>Your AI-powered property assistant tips and features</DialogDescription>
+        </VisuallyHidden>
         {/* Header with gradient background */}
         <div className="relative bg-gradient-to-br from-primary/30 via-primary/15 to-background/90 p-4 pb-5 border-b border-primary/20">
           
