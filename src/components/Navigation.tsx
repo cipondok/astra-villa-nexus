@@ -174,7 +174,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-titanium-light/80 dark:bg-background/30 backdrop-blur-2xl border-b border-primary/10 shadow-2xl shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-700">
+      <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-background dark:bg-background backdrop-blur-2xl border-b border-primary/10 shadow-2xl shadow-primary/5 h-10 md:h-11 lg:h-12 transition-all duration-700">
         <div className="w-full mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
             {/* Enhanced ASTRA Villa Logo with Animation */}
