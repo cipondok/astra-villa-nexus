@@ -77,34 +77,34 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-9 w-9 hover:bg-blue-500/10 hover:text-blue-500 border border-border/30"
+            className="h-9 w-9 bg-gradient-to-br from-blue-500/20 to-blue-600/10 hover:from-blue-500/30 hover:to-blue-600/20 border border-blue-500/30 hover:border-blue-500/50 transition-all duration-300 hover:scale-105"
             onClick={() => handleSocialClick('Facebook')}
           >
-            <Facebook className="h-4 w-4" />
+            <Facebook className="h-4 w-4 text-blue-500" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-9 w-9 hover:bg-sky-500/10 hover:text-sky-500 border border-border/30"
+            className="h-9 w-9 bg-gradient-to-br from-sky-400/20 to-sky-500/10 hover:from-sky-400/30 hover:to-sky-500/20 border border-sky-400/30 hover:border-sky-400/50 transition-all duration-300 hover:scale-105"
             onClick={() => handleSocialClick('Twitter')}
           >
-            <Twitter className="h-4 w-4" />
+            <Twitter className="h-4 w-4 text-sky-400" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-9 w-9 hover:bg-pink-500/10 hover:text-pink-500 border border-border/30"
+            className="h-9 w-9 bg-gradient-to-br from-pink-500/20 to-purple-500/10 hover:from-pink-500/30 hover:to-purple-500/20 border border-pink-500/30 hover:border-pink-500/50 transition-all duration-300 hover:scale-105"
             onClick={() => handleSocialClick('Instagram')}
           >
-            <Instagram className="h-4 w-4" />
+            <Instagram className="h-4 w-4 text-pink-500" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-9 w-9 hover:bg-blue-600/10 hover:text-blue-600 border border-border/30"
+            className="h-9 w-9 bg-gradient-to-br from-blue-600/20 to-blue-700/10 hover:from-blue-600/30 hover:to-blue-700/20 border border-blue-600/30 hover:border-blue-600/50 transition-all duration-300 hover:scale-105"
             onClick={() => handleSocialClick('LinkedIn')}
           >
-            <Linkedin className="h-4 w-4" />
+            <Linkedin className="h-4 w-4 text-blue-600" />
           </Button>
         </div>
       </div>
