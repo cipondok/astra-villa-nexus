@@ -1,13 +1,10 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Home, BadgeCheck, Calculator, Shield, Plane, ArrowRight, CheckCircle, Phone, Mail, Building2, DollarSign, FileText, Clock, Star } from "lucide-react";
+import { Home, BadgeCheck, Calculator, Shield, Plane, ArrowRight, Phone, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import Navigation from "@/components/Navigation";
-import ProfessionalFooter from "@/components/ProfessionalFooter";
 
 const WNIInvestorPage = () => {
   const { language } = useLanguage();
@@ -102,8 +99,6 @@ const WNIInvestorPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       {/* Hero Section */}
       <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 overflow-hidden">
         {/* Background */}
@@ -261,8 +256,6 @@ const WNIInvestorPage = () => {
           </motion.div>
         </div>
       </section>
-
-      <ProfessionalFooter language={language} />
     </div>
   );
 };
