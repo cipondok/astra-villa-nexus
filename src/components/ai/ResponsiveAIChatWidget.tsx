@@ -1367,27 +1367,26 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
   }, [isResizing, resizeStart]);
 
   // Calculate chat window position and size
+  // Desktop positioning is handled via framer-motion x/y transforms (avoid also setting left/top).
   const getChatWindowStyle = () => {
     if (isMobile) {
-      return { 
-        bottom: '0', 
-        left: '0', 
-        right: '0',
-        top: 'auto',
-        height: '90vh',
-        width: '100%'
+      return {
+        bottom: "0",
+        left: "0",
+        right: "0",
+        top: "auto",
+        height: "90vh",
+        width: "100%",
       };
     }
-    
-    // Desktop: use saved position and size, with mini mode adjustments
+
+    // Desktop: size only (position handled by motion x/y)
     const miniModeWidth = 380;
     const miniModeHeight = 450;
-    
-    return { 
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-      width: viewMode === 'mini' ? `${miniModeWidth}px` : `${size.width}px`,
-      height: isMinimized ? 'auto' : viewMode === 'mini' ? `${miniModeHeight}px` : `${size.height}px`
+
+    return {
+      width: viewMode === "mini" ? `${miniModeWidth}px` : `${size.width}px`,
+      height: isMinimized ? "auto" : viewMode === "mini" ? `${miniModeHeight}px` : `${size.height}px`,
     };
   };
 
@@ -1493,39 +1492,37 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               )}
             >
               {/* Scroll to Top */}
-              {showScrollButton &&
-                onScrollToTop &&
-                (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
-                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
-                    <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
-                      Scroll to Top
-                    </span>
-                    <div className="relative">
-                      <Button
-                        onClick={onScrollToTop}
-                        className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
-                        size="icon"
-                      >
-                        <ArrowUp className="h-5 w-5 text-white" />
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          togglePinAction('scroll-top');
-                        }}
-                        className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                        size="icon"
-                        variant="ghost"
-                      >
-                        {pinnedActions.has('scroll-top') ? (
-                          <PinOff className="h-3 w-3" />
-                        ) : (
-                          <Pin className="h-3 w-3" />
-                        )}
-                      </Button>
-                    </div>
+              {(showScrollToTop || pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
+                <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
+                  <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
+                    Scroll to Top
+                  </span>
+                  <div className="relative">
+                    <Button
+                      onClick={onScrollToTop ?? scrollToTop}
+                      className="h-12 w-12 rounded-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-2xl border-2 border-white/20"
+                      size="icon"
+                    >
+                      <ArrowUp className="h-5 w-5 text-white" />
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePinAction('scroll-top');
+                      }}
+                      className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
+                      size="icon"
+                      variant="ghost"
+                    >
+                      {pinnedActions.has('scroll-top') ? (
+                        <PinOff className="h-3 w-3" />
+                      ) : (
+                        <Pin className="h-3 w-3" />
+                      )}
+                    </Button>
                   </div>
-                )}
+                </div>
+              )}
 
               {/* Image Search */}
               {onImageSearch &&
@@ -1696,11 +1693,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               isDragging && "cursor-grabbing",
               isResizing && "cursor-nwse-resize"
             )}
-            style={{
-              ...getChatWindowStyle(),
-              left: isMobile ? getChatWindowStyle().left : undefined,
-              top: isMobile ? getChatWindowStyle().top : undefined
-            }}
+            style={getChatWindowStyle()}
             role="dialog"
             aria-label="AI Chat Assistant"
             aria-modal="true"
