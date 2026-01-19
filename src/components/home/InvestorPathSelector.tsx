@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { Globe, Home, Users, Building2, Shield, Briefcase, ArrowRight, Sparkles, MapPin, BadgeCheck, Plane, FileText, Calculator, Crown, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Globe, Home, Users, Building2, Shield, Briefcase, ArrowRight, Sparkles, BadgeCheck, Plane, FileText, Calculator, Crown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type InvestorType = 'wni' | 'wna' | null;
 
@@ -13,6 +14,7 @@ const InvestorPathSelector = () => {
   const [isHovering, setIsHovering] = useState<InvestorType>(null);
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { isMobile, isTablet } = useIsMobile();
 
   const content = {
     en: {
@@ -119,7 +121,18 @@ const InvestorPathSelector = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             onMouseEnter={() => setIsHovering('wni')}
             onMouseLeave={() => setIsHovering(null)}
-            onClick={() => handlePathSelect('wni')}
+            onClick={() => {
+              handlePathSelect('wni');
+              if (isMobile || isTablet) handleExplore('wni');
+            }}
+            role="link"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleExplore('wni');
+              }
+            }}
             className={cn(
               "group relative cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden",
               "transition-all duration-500 ease-out",
@@ -220,7 +233,18 @@ const InvestorPathSelector = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             onMouseEnter={() => setIsHovering('wna')}
             onMouseLeave={() => setIsHovering(null)}
-            onClick={() => handlePathSelect('wna')}
+            onClick={() => {
+              handlePathSelect('wna');
+              if (isMobile || isTablet) handleExplore('wna');
+            }}
+            role="link"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleExplore('wna');
+              }
+            }}
             className={cn(
               "group relative cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden",
               "transition-all duration-500 ease-out",
