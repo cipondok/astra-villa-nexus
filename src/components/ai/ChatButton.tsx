@@ -247,11 +247,11 @@ const ChatButton = ({
         {onTogglePin && (
           <>
             <ContextMenuItem 
-              onClick={() => onTogglePin('scroll-to-top')}
+              onClick={() => onTogglePin('scroll-top')}
               className="cursor-pointer"
             >
-              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('scroll-to-top') && "text-gold-primary")} />
-              <span>{pinnedActions.has('scroll-to-top') ? 'Unpin' : 'Pin'} Scroll to Top</span>
+              <Pin className={cn("mr-2 h-4 w-4", pinnedActions.has('scroll-top') && "text-gold-primary")} />
+              <span>{pinnedActions.has('scroll-top') ? 'Unpin' : 'Pin'} Scroll to Top</span>
             </ContextMenuItem>
             
             <ContextMenuItem 
