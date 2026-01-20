@@ -152,10 +152,10 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
             onClick={() => onSelect(country.code)}
             className={cn(
               "relative p-2.5 rounded-lg cursor-pointer transition-all duration-200",
-              "bg-transparent dark:bg-white/5 border",
+              "bg-white/70 dark:bg-white/5 border-2",
               selectedCountry === country.code
                 ? "border-accent shadow-md shadow-accent/20"
-                : "border-border/30 hover:border-accent/40",
+                : "border-border/50 hover:border-accent/40",
               "active:scale-[0.98]"
             )}
           >
@@ -173,11 +173,11 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
             <div className="flex items-start gap-2">
               <span className="text-xl">{country.flag}</span>
               <div className="flex-1 min-w-0">
-                <h4 className="text-[10px] sm:text-xs font-semibold text-foreground truncate pr-12">
+                <h4 className="text-[10px] sm:text-xs font-bold text-foreground truncate pr-12">
                   {language === 'id' ? country.nameId : country.name}
                 </h4>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="flex items-center gap-0.5 text-[8px] text-muted-foreground">
+                  <span className="flex items-center gap-0.5 text-[8px] text-foreground/70">
                     <Users className="h-2.5 w-2.5" />
                     {country.investorCount} {t.investors}
                   </span>
@@ -194,7 +194,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
               {country.benefits.map((benefit, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-0.5 text-[7px] sm:text-[8px] px-1.5 py-0.5 bg-primary/15 text-primary dark:text-primary/90 rounded-full font-medium"
+                  className="inline-flex items-center gap-0.5 text-[7px] sm:text-[8px] px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full font-semibold"
                 >
                   <CheckCircle className="h-2 w-2" />
                   {benefit}
@@ -205,7 +205,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
             {/* Treaty Status */}
             <div className="mt-1.5 flex items-center gap-1">
               <Shield className="h-2.5 w-2.5 text-blue-500" />
-              <span className="text-[7px] text-blue-600 dark:text-blue-400">{country.treatyStatus}</span>
+              <span className="text-[7px] text-blue-700 dark:text-blue-400 font-medium">{country.treatyStatus}</span>
             </div>
 
             {/* Selected indicator */}
