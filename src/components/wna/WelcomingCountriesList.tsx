@@ -194,7 +194,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
               {country.benefits.map((benefit, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-0.5 text-[7px] sm:text-[8px] px-1.5 py-0.5 bg-accent/10 text-accent rounded-full"
+                  className="inline-flex items-center gap-0.5 text-[7px] sm:text-[8px] px-1.5 py-0.5 bg-primary/15 text-primary dark:text-primary/90 rounded-full font-medium"
                 >
                   <CheckCircle className="h-2 w-2" />
                   {benefit}
