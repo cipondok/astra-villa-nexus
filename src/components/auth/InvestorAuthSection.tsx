@@ -195,7 +195,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
           {investorType === 'wni' ? 'WNI Overseas' : 'Foreign Investor'} Portal
         </CardTitle>
         <CardDescription className="text-[10px] sm:text-xs">
-          {isLogin ? 'Sign in to access exclusive features' : 'Create an account to get started'}
+          {isLogin ? 'Login to access your account' : 'Create account & start your investment journey'}
         </CardDescription>
       </CardHeader>
 
@@ -230,22 +230,22 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
 
         {/* Tabs */}
         <Tabs value={isLogin ? "signin" : "signup"} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-8 sm:h-9 bg-muted/50 p-0.5 rounded-lg">
+          <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 bg-muted/50 p-0.5 rounded-lg">
             <TabsTrigger 
               value="signin" 
               onClick={() => { setIsLogin(true); setError(null); setSuccess(null); }}
-              className="gap-1 sm:gap-2 text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              className="gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
-              <LogIn className="h-3 w-3" />
-              Sign In
+              <LogIn className="h-3.5 w-3.5" />
+              Login
             </TabsTrigger>
             <TabsTrigger 
               value="signup" 
               onClick={() => { setIsLogin(false); setError(null); setSuccess(null); }}
-              className="gap-1 sm:gap-2 text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              className="gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-primary"
             >
-              <UserPlus className="h-3 w-3" />
-              Sign Up
+              <Rocket className="h-3.5 w-3.5" />
+              Start Application
             </TabsTrigger>
           </TabsList>
 
@@ -295,19 +295,19 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full h-8 sm:h-9 text-xs sm:text-sm bg-gradient-to-r from-primary to-accent hover:opacity-90" 
+                    className="w-full h-9 sm:h-10 text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-md" 
                     disabled={isLoading}
                   >
                     {isLoading ? (
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="h-3 w-3 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
+                        className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
                       />
                     ) : (
                       <>
-                        <LogIn className="h-3 w-3 mr-1.5" />
-                        Sign In
+                        <LogIn className="h-4 w-4 mr-2" />
+                        Login
                       </>
                     )}
                   </Button>
@@ -373,19 +373,20 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full h-8 sm:h-9 text-xs sm:text-sm bg-gradient-to-r from-primary to-accent hover:opacity-90" 
+                    className="w-full h-9 sm:h-10 text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 shadow-lg" 
                     disabled={isLoading}
                   >
                     {isLoading ? (
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="h-3 w-3 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
+                        className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
                       />
                     ) : (
                       <>
-                        <UserPlus className="h-3 w-3 mr-1.5" />
-                        Create Account
+                        <Rocket className="h-4 w-4 mr-2" />
+                        Start Your Application
+                        <ArrowRight className="h-3.5 w-3.5 ml-1" />
                       </>
                     )}
                   </Button>
