@@ -146,7 +146,7 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
   const tier2Countries = ELIGIBLE_COUNTRIES.filter(c => c.tier === 2);
 
   return (
-    <Card className={cn("border border-border/50 bg-card/95 backdrop-blur-xl shadow-lg", className)}>
+    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-primary/20 flex items-center justify-center">
