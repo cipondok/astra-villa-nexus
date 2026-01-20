@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { 
   ArrowLeft, 
@@ -14,14 +15,17 @@ import {
   Award,
   Phone,
   MessageSquare,
-  TrendingUp
+  TrendingUp,
+  UserCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import InvestorAuthSection from '@/components/auth/InvestorAuthSection';
 
 const WNAPage = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { isAuthenticated } = useAuth();
 
   const copy = {
     en: {
@@ -273,41 +277,65 @@ const WNAPage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Auth & CTA Section */}
       <section className="px-3 py-8 sm:px-4 sm:py-12 md:py-16">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-2">
-              {t.ctaTitle}
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground mb-5 sm:mb-6">
-              {t.ctaSubtitle}
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button
-                size="lg"
-                onClick={() => navigate('/contact')}
-                className="gap-2 w-full sm:w-auto bg-gradient-to-r from-accent to-blue-500 hover:from-accent/90 hover:to-blue-600"
-              >
-                <Phone className="h-4 w-4" />
-                {t.ctaButton}
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={openChat}
-                className="gap-2 w-full sm:w-auto border-accent/50 hover:bg-accent/10"
-              >
-                <MessageSquare className="h-4 w-4" />
-                {t.ctaChat}
-              </Button>
-            </div>
-          </motion.div>
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* Auth Section */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} 
+              whileInView={{ opacity: 1, x: 0 }} 
+              viewport={{ once: true }}
+            >
+              <InvestorAuthSection investorType="wna" />
+            </motion.div>
+
+            {/* CTA Section */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-center lg:text-left"
+            >
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-2">
+                {t.ctaTitle}
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-5 sm:mb-6">
+                {t.ctaSubtitle}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/contact')}
+                  className="gap-2 w-full sm:w-auto bg-gradient-to-r from-accent to-blue-500 hover:from-accent/90 hover:to-blue-600"
+                >
+                  <Phone className="h-4 w-4" />
+                  {t.ctaButton}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={openChat}
+                  className="gap-2 w-full sm:w-auto border-accent/50 hover:bg-accent/10"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  {t.ctaChat}
+                </Button>
+              </div>
+              {isAuthenticated && (
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  onClick={() => navigate('/dashboard')} 
+                  className="mt-3 gap-2 text-accent hover:text-accent/80"
+                >
+                  <UserCircle className="h-4 w-4" />
+                  Go to Dashboard
+                </Button>
+              )}
+            </motion.div>
+          </div>
         </div>
       </section>
 
