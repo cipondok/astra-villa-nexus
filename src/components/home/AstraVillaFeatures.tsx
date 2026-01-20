@@ -112,12 +112,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index }) => {
       <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-transparent dark:bg-white/5 border border-border/20 dark:border-white/10 p-2 sm:p-2.5 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 hover:border-primary/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/10">
         {/* Icon Container */}
         <div className="relative">
-          <div className={`relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl ${feature.iconBg} shadow-sm`}>
-            <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 ${feature.color}`} strokeWidth={1.5} />
+          <div className={`relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center rounded-xl ${feature.iconBg} shadow-sm`}>
+            <IconComponent className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${feature.color}`} strokeWidth={1.5} />
           </div>
           {/* AI Badge */}
-          <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 shadow-md border-2 border-background">
-            <Sparkles className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 text-primary-foreground" strokeWidth={2.5} />
+          <div className="absolute -top-1 -right-1 w-4.5 h-4.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 shadow-md border-2 border-background">
+            <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-primary-foreground" strokeWidth={2.5} />
           </div>
         </div>
 
