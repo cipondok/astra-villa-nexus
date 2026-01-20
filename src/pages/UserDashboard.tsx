@@ -5,11 +5,13 @@ import Navigation from "@/components/Navigation";
 import AgentOverview from "@/components/agent/AgentOverview";
 import CustomerServiceDashboard from "@/components/dashboard/CustomerServiceDashboard";
 import ProfileUpgradeCard from "@/components/ProfileUpgradeCard";
+import InvestorPropertiesSection from "@/components/dashboard/InvestorPropertiesSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useUserDashboardData } from "@/hooks/useUserDashboardData";
+import { useIsInvestor } from "@/hooks/useInvestorProfile";
 import { formatDistanceToNow } from "date-fns";
 import { OrdersList } from "@/components/orders/OrdersList";
 import { TicketsList } from "@/components/support/TicketsList";
@@ -27,13 +29,15 @@ import {
   ChevronRight,
   Package,
   HelpCircle,
-  Share2
+  Share2,
+  Building2
 } from "lucide-react";
 
 const UserDashboard = () => {
   const { isAuthenticated, loading, profile } = useAuth();
   const navigate = useNavigate();
   const { stats, savedProperties, recentActivity, isLoading } = useUserDashboardData();
+  const { isInvestor, investorType } = useIsInvestor();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -167,8 +171,14 @@ const UserDashboard = () => {
           )}
 
           {/* Dashboard Tabs - Mobile Optimized */}
-          <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-4 h-9 sm:h-10">
+          <Tabs defaultValue={isInvestor ? "properties" : "overview"} className="space-y-4">
+            <TabsList className={`grid w-full h-9 sm:h-10 ${isInvestor ? 'grid-cols-5' : 'grid-cols-4'}`}>
+              {isInvestor && (
+                <TabsTrigger value="properties" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
+                  <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Properties</span>
+                </TabsTrigger>
+              )}
               <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
                 <Home className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">Overview</span>
@@ -186,6 +196,13 @@ const UserDashboard = () => {
                 <span className="hidden sm:inline">Settings</span>
               </TabsTrigger>
             </TabsList>
+
+            {/* Investor Properties Tab */}
+            {isInvestor && (
+              <TabsContent value="properties" className="space-y-4">
+                <InvestorPropertiesSection />
+              </TabsContent>
+            )}
 
             <TabsContent value="overview" className="space-y-4">
               {/* Quick Actions - Mobile Optimized */}

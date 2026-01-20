@@ -4867,6 +4867,8 @@ export type Database = {
           id: string
           image_urls: string[] | null
           images: string[] | null
+          investor_highlight: boolean | null
+          is_featured: boolean | null
           listing_type: string
           location: string
           minimum_rental_days: number | null
@@ -4887,6 +4889,7 @@ export type Database = {
           title: string
           updated_at: string | null
           virtual_tour_url: string | null
+          wna_eligible: boolean | null
         }
         Insert: {
           advance_booking_days?: number | null
@@ -4907,6 +4910,8 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          investor_highlight?: boolean | null
+          is_featured?: boolean | null
           listing_type: string
           location: string
           minimum_rental_days?: number | null
@@ -4927,6 +4932,7 @@ export type Database = {
           title: string
           updated_at?: string | null
           virtual_tour_url?: string | null
+          wna_eligible?: boolean | null
         }
         Update: {
           advance_booking_days?: number | null
@@ -4947,6 +4953,8 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          investor_highlight?: boolean | null
+          is_featured?: boolean | null
           listing_type?: string
           location?: string
           minimum_rental_days?: number | null
@@ -4967,6 +4975,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
           virtual_tour_url?: string | null
+          wna_eligible?: boolean | null
         }
         Relationships: []
       }
