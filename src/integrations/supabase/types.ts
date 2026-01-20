@@ -293,6 +293,171 @@ export type Database = {
           },
         ]
       }
+      affiliate_commissions: {
+        Row: {
+          affiliate_id: string
+          commission_amount: number
+          commission_rate: number
+          created_at: string
+          id: string
+          order_amount: number | null
+          order_id: string | null
+          paid_at: string | null
+          referral_id: string | null
+          status: string | null
+        }
+        Insert: {
+          affiliate_id: string
+          commission_amount: number
+          commission_rate: number
+          created_at?: string
+          id?: string
+          order_amount?: number | null
+          order_id?: string | null
+          paid_at?: string | null
+          referral_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          affiliate_id?: string
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          order_amount?: number | null
+          order_id?: string | null
+          paid_at?: string | null
+          referral_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_commissions_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_commissions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "user_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_commissions_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_payouts: {
+        Row: {
+          affiliate_id: string
+          amount: number
+          created_at: string
+          id: string
+          notes: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          processed_at: string | null
+          processed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          affiliate_id: string
+          amount: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          affiliate_id?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_payouts_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliates: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          bank_account_name: string | null
+          bank_account_number: string | null
+          bank_name: string | null
+          commission_rate: number
+          created_at: string
+          id: string
+          paid_earnings: number | null
+          pending_earnings: number | null
+          referral_code: string
+          status: Database["public"]["Enums"]["affiliate_status"]
+          total_earnings: number | null
+          total_referrals: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          paid_earnings?: number | null
+          pending_earnings?: number | null
+          referral_code?: string
+          status?: Database["public"]["Enums"]["affiliate_status"]
+          total_earnings?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          paid_earnings?: number | null
+          pending_earnings?: number | null
+          referral_code?: string
+          status?: Database["public"]["Enums"]["affiliate_status"]
+          total_earnings?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       agent_registration_requests: {
         Row: {
           business_type: string
@@ -3999,6 +4164,82 @@ export type Database = {
         }
         Relationships: []
       }
+      order_activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: string | null
+          id: string
+          metadata: Json | null
+          order_id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          metadata?: Json | null
+          order_id: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          metadata?: Json | null
+          order_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_activity_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "user_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_documents: {
+        Row: {
+          created_at: string
+          document_name: string
+          document_type: string | null
+          document_url: string
+          id: string
+          order_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          document_name: string
+          document_type?: string | null
+          document_url: string
+          id?: string
+          order_id: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          document_type?: string | null
+          document_url?: string
+          id?: string
+          order_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_documents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "user_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string | null
@@ -5775,6 +6016,47 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          affiliate_id: string
+          converted_at: string | null
+          created_at: string
+          id: string
+          qualified_at: string | null
+          referral_code: string
+          referred_user_id: string
+          status: string | null
+        }
+        Insert: {
+          affiliate_id: string
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          qualified_at?: string | null
+          referral_code: string
+          referred_user_id: string
+          status?: string | null
+        }
+        Update: {
+          affiliate_id?: string
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          qualified_at?: string | null
+          referral_code?: string
+          referred_user_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rejection_codes: {
         Row: {
           auto_resubmit_allowed: boolean | null
@@ -6458,6 +6740,68 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: Database["public"]["Enums"]["ticket_category"]
+          created_at: string
+          description: string
+          id: string
+          metadata: Json | null
+          priority: string | null
+          related_order_id: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          ticket_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category?: Database["public"]["Enums"]["ticket_category"]
+          created_at?: string
+          description: string
+          id?: string
+          metadata?: Json | null
+          priority?: string | null
+          related_order_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          ticket_number?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: Database["public"]["Enums"]["ticket_category"]
+          created_at?: string
+          description?: string
+          id?: string
+          metadata?: Json | null
+          priority?: string | null
+          related_order_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject?: string
+          ticket_number?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_related_order_id_fkey"
+            columns: ["related_order_id"]
+            isOneToOne: false
+            referencedRelation: "user_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system_error_logs: {
         Row: {
           created_at: string | null
@@ -6790,6 +7134,47 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "customer_support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ticket_messages: {
+        Row: {
+          attachments: Json | null
+          created_at: string
+          id: string
+          is_internal: boolean | null
+          message: string
+          sender_id: string
+          sender_type: string
+          ticket_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean | null
+          message: string
+          sender_id: string
+          sender_type: string
+          ticket_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean | null
+          message?: string
+          sender_id?: string
+          sender_type?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
             referencedColumns: ["id"]
           },
         ]
@@ -7584,6 +7969,69 @@ export type Database = {
           message?: string
           title?: string
           type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_orders: {
+        Row: {
+          assigned_to: string | null
+          completed_at: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          notes: string | null
+          order_number: string
+          order_type: Database["public"]["Enums"]["order_type"]
+          priority: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          title: string
+          total_amount: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          order_number?: string
+          order_type: Database["public"]["Enums"]["order_type"]
+          priority?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          title: string
+          total_amount?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          order_number?: string
+          order_type?: Database["public"]["Enums"]["order_type"]
+          priority?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          title?: string
+          total_amount?: number | null
           updated_at?: string
           user_id?: string
         }
@@ -11910,6 +12358,7 @@ export type Database = {
         | "security_monitoring"
         | "order_tracking"
         | "ai_bot_management"
+      affiliate_status: "pending" | "active" | "suspended" | "inactive"
       feedback_type:
         | "bug_report"
         | "feature_request"
@@ -11928,6 +12377,18 @@ export type Database = {
         | "tdp"
         | "domisili_usaha"
         | "izin_gangguan"
+      order_status:
+        | "pending"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      order_type:
+        | "property_investment"
+        | "consultation_request"
+        | "service_booking"
       pricing_model:
         | "hourly"
         | "sqm"
@@ -11935,6 +12396,21 @@ export type Database = {
         | "per_item"
         | "daily"
         | "fixed"
+      ticket_category:
+        | "general_inquiry"
+        | "order_issue"
+        | "payment_issue"
+        | "technical_support"
+        | "account_issue"
+        | "complaint"
+        | "suggestion"
+        | "other"
+      ticket_status:
+        | "open"
+        | "in_progress"
+        | "awaiting_response"
+        | "resolved"
+        | "closed"
       transaction_status:
         | "pending"
         | "processing"
@@ -12099,6 +12575,7 @@ export const Constants = {
         "order_tracking",
         "ai_bot_management",
       ],
+      affiliate_status: ["pending", "active", "suspended", "inactive"],
       feedback_type: [
         "bug_report",
         "feature_request",
@@ -12119,7 +12596,38 @@ export const Constants = {
         "domisili_usaha",
         "izin_gangguan",
       ],
+      order_status: [
+        "pending",
+        "under_review",
+        "approved",
+        "rejected",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      order_type: [
+        "property_investment",
+        "consultation_request",
+        "service_booking",
+      ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
+      ticket_category: [
+        "general_inquiry",
+        "order_issue",
+        "payment_issue",
+        "technical_support",
+        "account_issue",
+        "complaint",
+        "suggestion",
+        "other",
+      ],
+      ticket_status: [
+        "open",
+        "in_progress",
+        "awaiting_response",
+        "resolved",
+        "closed",
+      ],
       transaction_status: [
         "pending",
         "processing",
