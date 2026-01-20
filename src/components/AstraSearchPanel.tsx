@@ -2883,38 +2883,43 @@ const AstraSearchPanel = ({
                 </PopoverContent>
               </Popover>}
 
-            {/* All Filters Button */}
+            {/* All Filters Button - Google-style modern */}
             <button
               onClick={() => {
                 setShowAdvancedFilters(true);
               }} 
               className={cn(
-                "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200",
-                "bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border/50 group",
-                isMobile ? "h-8 px-3 text-xs" : "h-9 px-4 text-sm"
+                "inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-all duration-200",
+                "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200",
+                "border border-gray-200 dark:border-gray-600 hover:border-primary/50 hover:shadow-md",
+                "active:scale-95",
+                isMobile ? "h-8 px-3 text-xs" : "h-10 px-4 text-sm",
+                getActiveFiltersCount() > 0 && "border-primary bg-primary/5 dark:bg-primary/10"
               )}
             >
-              <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "group-hover:rotate-90 transition-transform duration-300")} />
-              <span className="hidden sm:inline font-semibold">Filters</span>
+              <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "text-gray-500 dark:text-gray-400")} />
+              <span className="font-medium">Filters</span>
               {getActiveFiltersCount() > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-500 text-white shadow-sm">
+                <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
                   {getActiveFiltersCount()}
                 </span>
               )}
+              <ChevronDown className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5", "text-gray-400 ml-0.5")} />
             </button>
             
-            {/* Search Button */}
+            {/* Search Button - Google-style */}
             <button
               onClick={handleSearch}
               aria-label={currentText.search}
               className={cn(
-                "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200",
-                "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg",
-                isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-9 px-5 text-sm gap-2"
+                "inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
+                "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md",
+                "active:scale-95",
+                isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
               )}
             >
               <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
-              <span>{currentText.search}</span>
+              <span className="font-medium">{currentText.search}</span>
             </button>
           </div>
           

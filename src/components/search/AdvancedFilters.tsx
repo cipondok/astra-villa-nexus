@@ -225,151 +225,185 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-[95vw] sm:max-w-2xl max-h-[80vh] sm:max-h-[90vh] p-0 flex flex-col bg-background rounded-xl"
+        className="max-w-[95vw] sm:max-w-2xl lg:max-w-3xl max-h-[85vh] sm:max-h-[90vh] p-0 flex flex-col bg-white dark:bg-gray-900 rounded-2xl border-0 shadow-2xl"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        {/* Compact Header */}
-        <div className="flex items-center justify-between border-b border-border px-3 sm:px-6 py-2 sm:py-4 shrink-0 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15">
-          <div>
-            <DialogTitle className="text-sm sm:text-lg font-bold">{currentText.advancedFilters}</DialogTitle>
-            <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">Refine your property search</p>
+        {/* Modern Header - Google-style */}
+        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 sm:px-6 py-3 sm:py-4 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            </div>
+            <div>
+              <DialogTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">{currentText.advancedFilters}</DialogTitle>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Refine your property search</p>
+            </div>
           </div>
-          <Badge variant="secondary" className="text-[9px] sm:text-xs font-semibold h-5 sm:h-6 px-1.5 sm:px-2">
-            {Object.values(filters).filter(v => v !== 'all' && v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length} Active
-          </Badge>
+          {Object.values(filters).filter(v => v !== 'all' && v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length > 0 && (
+            <Badge className="bg-primary/10 text-primary border-0 text-[10px] sm:text-xs font-medium h-6 sm:h-7 px-2 sm:px-3">
+              {Object.values(filters).filter(v => v !== 'all' && v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length} Active
+            </Badge>
+          )}
         </div>
 
-        {/* Listing Type Selection - Compact */}
-        <div className="px-2 sm:px-6 pt-2 sm:pt-4 pb-2 sm:pb-3 border-b border-border/50 bg-muted/20">
-          <Label className="text-[10px] sm:text-xs font-semibold mb-1.5 sm:mb-3 block">{currentText.selectListingType}</Label>
-          <div className="grid grid-cols-4 gap-1 sm:gap-2">
+        {/* Listing Type Selection - Modern Pill Style */}
+        <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-800">
+          <Label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">{currentText.selectListingType}</Label>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {listingTypes.map((type) => {
               const Icon = type.icon;
+              const isSelected = filters.listingType === type.value;
               return (
-                <Button
+                <button
                   key={type.value}
-                  variant={filters.listingType === type.value ? "default" : "outline"}
                   className={cn(
-                    "h-auto py-1.5 sm:py-3 px-1 sm:px-2 flex flex-col items-center gap-0.5 sm:gap-1.5 transition-all text-[9px] sm:text-xs",
-                    filters.listingType === type.value && "ring-1 sm:ring-2 ring-primary ring-offset-1 sm:ring-offset-2 shadow-md"
+                    "inline-flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200",
+                    "border-2 active:scale-95",
+                    isSelected 
+                      ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                      : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:bg-gray-50 dark:hover:bg-gray-700"
                   )}
                   onClick={() => handleFilterChange('listingType', type.value)}
                 >
-                  <Icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
-                  <span className="font-semibold truncate">{type.label}</span>
-                </Button>
+                  <Icon className="h-4 w-4" />
+                  <span>{type.label}</span>
+                </button>
               );
             })}
           </div>
         </div>
         
-        {/* Tabbed Filters - Compact */}
-        <div className="flex-1 overflow-hidden px-2 sm:px-6 pt-2 sm:pt-3">
+        {/* Tabbed Filters - Modern Style */}
+        <div className="flex-1 overflow-hidden px-4 sm:px-6 pt-4 sm:pt-5">
           <Tabs defaultValue="property" className="h-full flex flex-col">
-            <TabsList className="filter-tabs-container h-8 sm:h-10 mb-2 sm:mb-3">
-              <TabsTrigger value="property" className="filter-tab-trigger text-[9px] sm:text-xs px-1 sm:px-3">
-                <Home className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1.5" />
+            <TabsList className="w-full h-10 sm:h-11 mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+              <TabsTrigger value="property" className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all">
+                <Home className="h-4 w-4 mr-1.5" />
                 <span className="hidden xs:inline">{currentText.propertyDetails}</span>
                 <span className="xs:hidden">Property</span>
               </TabsTrigger>
-              <TabsTrigger value="price" className="filter-tab-trigger text-[9px] sm:text-xs px-1 sm:px-3">
-                <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1.5" />
+              <TabsTrigger value="price" className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all">
+                <DollarSign className="h-4 w-4 mr-1.5" />
                 <span className="hidden xs:inline">{currentText.priceAndArea}</span>
                 <span className="xs:hidden">Price</span>
               </TabsTrigger>
-              <TabsTrigger value="features" className="filter-tab-trigger text-[9px] sm:text-xs px-1 sm:px-3">
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1.5" />
+              <TabsTrigger value="features" className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all">
+                <Sparkles className="h-4 w-4 mr-1.5" />
                 <span className="hidden xs:inline">{currentText.features}</span>
                 <span className="xs:hidden">Features</span>
               </TabsTrigger>
             </TabsList>
 
-            <div className="flex-1 overflow-y-auto overscroll-contain pb-2 sm:pb-3"
+            <div className="flex-1 overflow-y-auto overscroll-contain pb-4"
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
             >
               {/* Property Details Tab */}
-              <TabsContent value="property" className="mt-0 space-y-2 sm:space-y-4">
-                {/* Property Type */}
-                <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-[10px] sm:text-xs font-semibold">{currentText.propertyType}</Label>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge
-                      variant={filters.propertyType === 'all' ? 'default' : 'outline'}
-                      className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
+              <TabsContent value="property" className="mt-0 space-y-5">
+                {/* Property Type - Modern Chips */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.propertyType}</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      className={cn(
+                        "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                        filters.propertyType === 'all' 
+                          ? "bg-primary text-primary-foreground border-primary" 
+                          : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                      )}
                       onClick={() => handleFilterChange('propertyType', 'all')}
                     >
                       {currentText.any}
-                    </Badge>
+                    </button>
                     {propertyTypes.map((type) => (
-                      <Badge
+                      <button
                         key={type.value}
-                        variant={filters.propertyType === type.value ? 'default' : 'outline'}
-                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
+                        className={cn(
+                          "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                          filters.propertyType === type.value 
+                            ? "bg-primary text-primary-foreground border-primary" 
+                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                        )}
                         onClick={() => handleFilterChange('propertyType', type.value)}
                       >
                         {type.label}
-                      </Badge>
+                      </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Bedrooms */}
-                <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-[10px] sm:text-xs font-semibold">{currentText.bedrooms}</Label>
-                  <div className="flex flex-wrap gap-1">
+                {/* Bedrooms - Modern Chips */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.bedrooms}</Label>
+                  <div className="flex flex-wrap gap-2">
                     {['all', '1', '2', '3', '4', '5'].map((num) => (
-                      <Badge
+                      <button
                         key={num}
-                        variant={filters.bedrooms === num ? 'default' : 'outline'}
-                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
+                        className={cn(
+                          "w-12 h-10 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                          filters.bedrooms === num 
+                            ? "bg-primary text-primary-foreground border-primary" 
+                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                        )}
                         onClick={() => handleFilterChange('bedrooms', num)}
                       >
-                        {num === 'all' ? currentText.any : `${num}+`}
-                      </Badge>
+                        {num === 'all' ? 'Any' : `${num}+`}
+                      </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Bathrooms */}
-                <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-[10px] sm:text-xs font-semibold">{currentText.bathrooms}</Label>
-                  <div className="flex flex-wrap gap-1">
+                {/* Bathrooms - Modern Chips */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.bathrooms}</Label>
+                  <div className="flex flex-wrap gap-2">
                     {['all', '1', '2', '3', '4'].map((num) => (
-                      <Badge
+                      <button
                         key={num}
-                        variant={filters.bathrooms === num ? 'default' : 'outline'}
-                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
+                        className={cn(
+                          "w-12 h-10 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                          filters.bathrooms === num 
+                            ? "bg-primary text-primary-foreground border-primary" 
+                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                        )}
                         onClick={() => handleFilterChange('bathrooms', num)}
                       >
-                        {num === 'all' ? currentText.any : `${num}+`}
-                      </Badge>
+                        {num === 'all' ? 'Any' : `${num}+`}
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Rental Duration - Only for Rent */}
                 {filters.listingType === 'rent' && (
-                  <div className="space-y-1 sm:space-y-2 pt-2 sm:pt-3 border-t border-border/50">
-                    <Label className="text-[10px] sm:text-xs font-semibold">{currentText.rentalDuration}</Label>
-                    <div className="flex flex-wrap gap-1">
-                      <Badge
-                        variant={filters.rentalDuration === 'all' ? 'default' : 'outline'}
-                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
+                  <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.rentalDuration}</Label>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        className={cn(
+                          "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                          filters.rentalDuration === 'all' 
+                            ? "bg-primary text-primary-foreground border-primary" 
+                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                        )}
                         onClick={() => handleFilterChange('rentalDuration', 'all')}
                       >
                         {currentText.any}
-                      </Badge>
+                      </button>
                       {rentalDurations.map((duration) => (
-                        <Badge
+                        <button
                           key={duration.value}
-                          variant={filters.rentalDuration === duration.value ? 'default' : 'outline'}
-                          className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
+                          className={cn(
+                            "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                            filters.rentalDuration === duration.value 
+                              ? "bg-primary text-primary-foreground border-primary" 
+                              : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                          )}
                           onClick={() => handleFilterChange('rentalDuration', duration.value)}
                         >
                           {duration.label}
-                        </Badge>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -377,10 +411,10 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
               </TabsContent>
 
               {/* Price & Area Tab */}
-              <TabsContent value="price" className="mt-0 space-y-2 sm:space-y-4">
+              <TabsContent value="price" className="mt-0 space-y-6">
                 {/* Price Range */}
-                <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-[10px] sm:text-xs font-semibold">{currentText.priceRange}</Label>
+                <div className="space-y-4">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.priceRange}</Label>
                   <Slider
                     value={filters.priceRange}
                     onValueChange={(value) => handleFilterChange('priceRange', value)}
@@ -389,15 +423,15 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     step={100000000}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-[8px] sm:text-[10px] text-muted-foreground">
-                    <span>{formatPrice(filters.priceRange[0])}</span>
-                    <span>{formatPrice(filters.priceRange[1])}</span>
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{formatPrice(filters.priceRange[0])}</span>
+                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{formatPrice(filters.priceRange[1])}</span>
                   </div>
                 </div>
 
                 {/* Area Range */}
-                <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-[10px] sm:text-xs font-semibold">{currentText.areaRange}</Label>
+                <div className="space-y-4">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.areaRange}</Label>
                   <Slider
                     value={filters.areaRange}
                     onValueChange={(value) => handleFilterChange('areaRange', value)}
@@ -406,31 +440,36 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
                     step={50}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-[8px] sm:text-[10px] text-muted-foreground">
-                    <span>{filters.areaRange[0]} sqm</span>
-                    <span>{filters.areaRange[1]} sqm</span>
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{filters.areaRange[0]} sqm</span>
+                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{filters.areaRange[1]} sqm</span>
                   </div>
                 </div>
               </TabsContent>
 
               {/* Features Tab */}
               <TabsContent value="features" className="mt-0">
-                <div className="space-y-1 sm:space-y-2">
-                  <Label className="text-[10px] sm:text-xs font-semibold">{currentText.features}</Label>
-                  <div className="flex flex-wrap gap-1">
-                    {availableFeatures.map((feature) => (
-                      <Badge
-                        key={feature}
-                        variant={filters.features.includes(feature) ? "default" : "outline"}
-                        className="cursor-pointer text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 h-5 sm:h-7 active:scale-95 transition-transform"
-                        onClick={() => handleFeatureToggle(feature)}
-                      >
-                        {currentText[feature as keyof typeof currentText]}
-                        {filters.features.includes(feature) && (
-                          <X className="h-2 w-2 sm:h-2.5 sm:w-2.5 ml-0.5 sm:ml-1" />
-                        )}
-                      </Badge>
-                    ))}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.features}</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {availableFeatures.map((feature) => {
+                      const isSelected = filters.features.includes(feature);
+                      return (
+                        <button
+                          key={feature}
+                          className={cn(
+                            "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
+                            isSelected 
+                              ? "bg-primary text-primary-foreground border-primary" 
+                              : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                          )}
+                          onClick={() => handleFeatureToggle(feature)}
+                        >
+                          {currentText[feature as keyof typeof currentText]}
+                          {isSelected && <X className="h-3 w-3" />}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </TabsContent>
@@ -438,15 +477,27 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
           </Tabs>
         </div>
         
-        {/* Compact Footer */}
-        <DialogFooter className="flex gap-1.5 sm:gap-2 px-2 sm:px-6 py-2 sm:py-3 shrink-0 border-t border-border bg-muted/20">
-          <Button variant="outline" onClick={clearFilters} className="h-7 sm:h-9 text-[10px] sm:text-xs px-2 sm:px-3">
+        {/* Modern Footer */}
+        <DialogFooter className="flex gap-3 px-4 sm:px-6 py-4 shrink-0 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+          <Button 
+            variant="ghost" 
+            onClick={clearFilters} 
+            className="h-10 text-sm px-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          >
             {currentText.clearFilters}
           </Button>
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="h-7 sm:h-9 text-[10px] sm:text-xs px-2 sm:px-3">
+          <div className="flex-1" />
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)} 
+            className="h-10 text-sm px-5 border-gray-200 dark:border-gray-700"
+          >
             {currentText.cancel}
           </Button>
-          <Button onClick={handleApply} className="flex-1 h-7 sm:h-9 text-[10px] sm:text-xs px-2 sm:px-3 font-semibold">
+          <Button 
+            onClick={handleApply} 
+            className="h-10 text-sm px-6 font-medium shadow-md"
+          >
             {currentText.apply}
           </Button>
         </DialogFooter>
