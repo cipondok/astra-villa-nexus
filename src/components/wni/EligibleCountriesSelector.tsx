@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import { Check, Globe, Shield, AlertTriangle, Info } from 'lucide-react';
+import { Check, Globe, Shield, AlertTriangle, MessageSquare, Phone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { motion } from 'framer-motion';
 
@@ -41,6 +43,52 @@ interface EligibleCountriesSelectorProps {
   className?: string;
 }
 
+// Helper component for "Country not listed" CTA
+const CountryNotListedCTA: React.FC<{
+  notListed: string;
+  notListedDesc: string;
+  contactUs: string;
+  chatWithUs: string;
+}> = ({ notListed, notListedDesc, contactUs, chatWithUs }) => {
+  const navigate = useNavigate();
+  
+  const openChat = () => {
+    const event = new CustomEvent('openAIChat');
+    window.dispatchEvent(event);
+  };
+
+  return (
+    <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+      <div className="flex items-start gap-2 mb-3">
+        <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+        <div>
+          <p className="text-xs font-medium text-amber-700 dark:text-amber-400">{notListed}</p>
+          <p className="text-[10px] text-muted-foreground">{notListedDesc}</p>
+        </div>
+      </div>
+      <div className="flex gap-2 flex-wrap">
+        <Button
+          size="sm"
+          onClick={() => navigate('/contact')}
+          className="gap-1.5 text-xs h-8 bg-amber-600 hover:bg-amber-700"
+        >
+          <Phone className="h-3 w-3" />
+          {contactUs}
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={openChat}
+          className="gap-1.5 text-xs h-8 border-amber-500/50 text-amber-700 hover:bg-amber-500/10"
+        >
+          <MessageSquare className="h-3 w-3" />
+          {chatWithUs}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps> = ({
   selectedCountry,
   onSelect,
@@ -64,7 +112,9 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
       selectCountry: "Click to select",
       selected: "Selected",
       notListed: "Country not listed?",
-      notListedDesc: "Contact our team for special assessment"
+      notListedDesc: "Contact our team for special assessment",
+      contactUs: "Contact Us",
+      chatWithUs: "Chat with AI"
     },
     id: {
       title: "Pilih Negara Tempat Anda Bekerja",
@@ -80,7 +130,9 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
       selectCountry: "Klik untuk memilih",
       selected: "Terpilih",
       notListed: "Negara tidak terdaftar?",
-      notListedDesc: "Hubungi tim kami untuk penilaian khusus"
+      notListedDesc: "Hubungi tim kami untuk penilaian khusus",
+      contactUs: "Hubungi Kami",
+      chatWithUs: "Chat dengan AI"
     }
   };
 
@@ -196,13 +248,12 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
         </div>
 
         {/* Country Not Listed */}
-        <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
-          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-xs font-medium text-amber-700 dark:text-amber-400">{t.notListed}</p>
-            <p className="text-[10px] text-muted-foreground">{t.notListedDesc}</p>
-          </div>
-        </div>
+        <CountryNotListedCTA 
+          notListed={t.notListed}
+          notListedDesc={t.notListedDesc}
+          contactUs={t.contactUs}
+          chatWithUs={t.chatWithUs}
+        />
       </CardContent>
     </Card>
   );
