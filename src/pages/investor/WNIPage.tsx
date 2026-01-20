@@ -213,13 +213,15 @@ const WNIPage = () => {
             </div>
 
             <Tabs defaultValue="countries" className="w-full">
-              <TabsList className="w-full flex h-auto gap-0.5 bg-muted/30 backdrop-blur-xl p-0.5 mb-3 rounded-lg overflow-x-auto">
-                <TabsTrigger value="countries" className="flex-1 min-w-[80px] text-[8px] sm:text-[10px] py-1.5 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t.tabs.countries}</TabsTrigger>
-                <TabsTrigger value="eligibility" className="flex-1 min-w-[80px] text-[8px] sm:text-[10px] py-1.5 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t.tabs.eligibility}</TabsTrigger>
-                <TabsTrigger value="requirements" className="flex-1 min-w-[80px] text-[8px] sm:text-[10px] py-1.5 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t.tabs.requirements}</TabsTrigger>
-                <TabsTrigger value="credit" className="flex-1 min-w-[80px] text-[8px] sm:text-[10px] py-1.5 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t.tabs.credit}</TabsTrigger>
-                <TabsTrigger value="payment" className="flex-1 min-w-[80px] text-[8px] sm:text-[10px] py-1.5 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t.tabs.payment}</TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto -mx-3 px-3 pb-1 scrollbar-hide">
+                <TabsList className="inline-flex w-max sm:w-full h-auto gap-1 bg-muted/30 backdrop-blur-xl p-1 mb-3 rounded-lg whitespace-nowrap">
+                  <TabsTrigger value="countries" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.countries}</TabsTrigger>
+                  <TabsTrigger value="eligibility" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.eligibility}</TabsTrigger>
+                  <TabsTrigger value="requirements" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.requirements}</TabsTrigger>
+                  <TabsTrigger value="credit" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.credit}</TabsTrigger>
+                  <TabsTrigger value="payment" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.payment}</TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="countries">
                 <EligibleCountriesSelector selectedCountry={selectedCountry} onSelect={setSelectedCountry} />
