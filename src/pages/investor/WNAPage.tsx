@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import InvestorAuthSection from '@/components/auth/InvestorAuthSection';
+import wnaHeroImage from '@/assets/wna-investment-hero.jpg';
 
 // WNA Investment System Components
 import WelcomingCountriesList from '@/components/wna/WelcomingCountriesList';
@@ -147,19 +148,26 @@ const WNAPage = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
+      {/* Hero Section with Image */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-background to-blue-500/5 pointer-events-none" />
-        <div className="absolute top-10 right-10 w-32 h-32 sm:w-48 sm:h-48 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src={wnaHeroImage} 
+            alt="Luxury Investment Property" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        </div>
         
-        <div className="relative max-w-6xl mx-auto px-3 py-4 sm:py-6">
+        <div className="relative max-w-6xl mx-auto px-3 py-6 sm:py-10">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2.5 bg-gradient-to-r from-accent/10 to-blue-500/10 border border-accent/20 rounded-full backdrop-blur-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2.5 bg-white/20 dark:bg-black/30 border border-white/30 rounded-full backdrop-blur-xl">
               <span className="text-sm">🌍</span>
-              <span className="text-[9px] font-semibold text-accent uppercase tracking-wide">{t.badge}</span>
+              <span className="text-[9px] font-semibold text-foreground uppercase tracking-wide">{t.badge}</span>
             </div>
-            <h1 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-1.5 px-2">{t.title}</h1>
-            <p className="text-[10px] sm:text-xs text-muted-foreground max-w-lg mx-auto leading-relaxed px-2">{t.subtitle}</p>
+            <h1 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-1.5 px-2 drop-shadow-sm">{t.title}</h1>
+            <p className="text-[10px] sm:text-xs text-foreground/80 max-w-lg mx-auto leading-relaxed px-2">{t.subtitle}</p>
           </motion.div>
         </div>
       </section>
