@@ -203,7 +203,7 @@ const WNAInvestmentFacilities: React.FC = () => {
               transition={{ delay: idx * 0.05 }}
               className={cn(
                 "rounded-lg p-3",
-                "bg-white/80 dark:bg-white/5",
+                "bg-transparent dark:bg-white/5",
                 "border border-border/30",
                 "hover:shadow-md transition-all duration-200"
               )}

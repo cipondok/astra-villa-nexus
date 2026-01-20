@@ -152,7 +152,7 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
             onClick={() => onSelect(country.code)}
             className={cn(
               "relative p-2.5 rounded-lg cursor-pointer transition-all duration-200",
-              "bg-white/80 dark:bg-white/5 border",
+              "bg-transparent dark:bg-white/5 border",
               selectedCountry === country.code
                 ? "border-accent shadow-md shadow-accent/20"
                 : "border-border/30 hover:border-accent/40",

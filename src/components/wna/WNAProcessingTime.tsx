@@ -241,7 +241,7 @@ const WNAProcessingTime: React.FC = () => {
               transition={{ delay: idx * 0.05 }}
               className={cn(
                 "p-2.5 rounded-lg",
-                "bg-white/80 dark:bg-white/5",
+                "bg-transparent dark:bg-white/5",
                 "border border-border/30"
               )}
             >
@@ -284,7 +284,7 @@ const WNAProcessingTime: React.FC = () => {
         {/* Factors */}
         <div className={cn(
           "p-2.5 rounded-lg",
-          "bg-white/80 dark:bg-white/5",
+          "bg-transparent dark:bg-white/5",
           "border border-amber-200 dark:border-amber-800"
         )}>
           <h4 className="text-[9px] sm:text-[10px] font-semibold text-foreground mb-2 flex items-center gap-1">
@@ -307,7 +307,7 @@ const WNAProcessingTime: React.FC = () => {
         {/* Tips */}
         <div className={cn(
           "p-2.5 rounded-lg",
-          "bg-white/80 dark:bg-white/5",
+          "bg-transparent dark:bg-white/5",
           "border border-green-200 dark:border-green-800"
         )}>
           <h4 className="text-[9px] sm:text-[10px] font-semibold text-foreground mb-2 flex items-center gap-1">
