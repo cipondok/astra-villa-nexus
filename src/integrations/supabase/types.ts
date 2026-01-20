@@ -3612,6 +3612,60 @@ export type Database = {
           },
         ]
       }
+      investor_profiles: {
+        Row: {
+          country_of_residence: string | null
+          created_at: string
+          eligibility_score: number | null
+          has_completed_eligibility_check: boolean | null
+          id: string
+          investment_budget_max: number | null
+          investment_budget_min: number | null
+          investment_timeline: string | null
+          investor_type: string
+          nationality: string | null
+          notes: string | null
+          preferred_locations: string[] | null
+          preferred_property_types: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          country_of_residence?: string | null
+          created_at?: string
+          eligibility_score?: number | null
+          has_completed_eligibility_check?: boolean | null
+          id?: string
+          investment_budget_max?: number | null
+          investment_budget_min?: number | null
+          investment_timeline?: string | null
+          investor_type: string
+          nationality?: string | null
+          notes?: string | null
+          preferred_locations?: string[] | null
+          preferred_property_types?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          country_of_residence?: string | null
+          created_at?: string
+          eligibility_score?: number | null
+          has_completed_eligibility_check?: boolean | null
+          id?: string
+          investment_budget_max?: number | null
+          investment_budget_min?: number | null
+          investment_timeline?: string | null
+          investor_type?: string
+          nationality?: string | null
+          notes?: string | null
+          preferred_locations?: string[] | null
+          preferred_property_types?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           booking_id: string
@@ -12429,6 +12483,7 @@ export type Database = {
         | "customer_service"
         | "super_admin"
         | "editor"
+        | "investor"
       vendor_verification_status:
         | "unverified"
         | "pending_review"
@@ -12647,6 +12702,7 @@ export const Constants = {
         "customer_service",
         "super_admin",
         "editor",
+        "investor",
       ],
       vendor_verification_status: [
         "unverified",
