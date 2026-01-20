@@ -235,9 +235,9 @@ const WNAPage = () => {
         <div className="max-w-6xl mx-auto">
           <div className={cn(
             "rounded-lg p-2.5 sm:p-4",
-            "bg-white/80 dark:bg-white/5",
+            "bg-transparent dark:bg-white/5",
             "border border-border/30 dark:border-accent/10",
-            "backdrop-blur-xl shadow-sm"
+            "backdrop-blur-sm"
           )}>
             <div className="text-center mb-2.5 sm:mb-3">
               <h2 className="text-xs sm:text-base font-bold text-foreground mb-0.5">{t.investmentSystemTitle}</h2>

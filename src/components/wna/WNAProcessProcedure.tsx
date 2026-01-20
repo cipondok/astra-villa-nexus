@@ -279,7 +279,7 @@ const WNAProcessProcedure: React.FC = () => {
                 onClick={() => setExpandedStep(isExpanded ? null : idx)}
                 className={cn(
                   "relative p-2.5 rounded-lg cursor-pointer transition-all duration-200",
-                  "bg-white/80 dark:bg-white/5",
+                  "bg-transparent dark:bg-white/5",
                   "border",
                   isExpanded ? "border-accent shadow-md" : "border-border/30 hover:border-accent/40",
                   "active:scale-[0.99]"
