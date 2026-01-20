@@ -181,7 +181,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const PropertyCard = ({ property }: { property: BaseProperty }) => (
     <div
       onClick={() => onPropertyClick(property)}
-      className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-40 sm:h-44 md:h-52 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
+      className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] lg:w-[220px] xl:w-[240px] 2xl:w-[260px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-40 sm:h-44 md:h-52 lg:h-56 xl:h-60 hover:scale-[1.02] transition-all duration-200 ring-1 ring-purple-200/50 dark:ring-purple-800/30"
     >
       {/* Full Image Background */}
       <img
@@ -272,7 +272,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const ViewAllCard = () => (
     <div
       onClick={() => navigate('/search')}
-      className="flex-shrink-0 w-[110px] sm:w-[130px] md:w-[180px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 hover:scale-[1.02] transition-all duration-200 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 ring-1 ring-purple-300/50 dark:ring-purple-700/50"
+      className="flex-shrink-0 w-[110px] sm:w-[130px] md:w-[180px] lg:w-[200px] xl:w-[220px] 2xl:w-[240px] cursor-pointer group/card relative rounded-lg sm:rounded-xl overflow-hidden h-28 sm:h-32 md:h-40 lg:h-44 xl:h-48 hover:scale-[1.02] transition-all duration-200 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 ring-1 ring-purple-300/50 dark:ring-purple-700/50"
     >
       <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-3 text-center">
         <div className="h-10 w-10 sm:h-11 sm:w-11 md:h-14 md:w-14 rounded-full bg-white/20 flex items-center justify-center mb-1.5 sm:mb-2 group-hover/card:scale-110 transition-transform duration-300">

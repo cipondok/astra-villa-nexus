@@ -244,7 +244,7 @@ export default function FeaturedAdsCarousel() {
             <div
               key={`${p.id}-${idx}`}
               onClick={() => navigate(`/properties/${p.id}`)}
-              className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[220px] cursor-pointer group/card relative rounded-xl overflow-hidden h-48 sm:h-52 md:h-60 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
+              className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[220px] lg:w-[260px] xl:w-[280px] 2xl:w-[300px] cursor-pointer group/card relative rounded-xl overflow-hidden h-48 sm:h-52 md:h-60 lg:h-64 xl:h-68 hover:scale-[1.02] transition-all duration-200 ring-1 ring-amber-200/50 dark:ring-amber-800/30"
             >
               {/* Full Image Background */}
               <img
