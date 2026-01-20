@@ -91,15 +91,15 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
   });
 
   const tierColors = {
-    platinum: 'from-slate-400 to-slate-600 border-slate-400/50',
-    gold: 'from-amber-400 to-amber-600 border-amber-400/50',
-    silver: 'from-gray-300 to-gray-500 border-gray-400/50'
+    platinum: 'from-slate-500 to-slate-700 border-slate-500/50 text-white',
+    gold: 'from-orange-500 to-orange-700 border-orange-500/50 text-white',
+    silver: 'from-gray-400 to-gray-600 border-gray-500/50 text-white'
   };
 
   const tierBgColors = {
-    platinum: 'bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300',
-    gold: 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300',
-    silver: 'bg-gray-100 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300'
+    platinum: 'bg-slate-200 dark:bg-slate-900/50 text-slate-800 dark:text-slate-300',
+    gold: 'bg-orange-200 dark:bg-orange-900/50 text-orange-800 dark:text-orange-300',
+    silver: 'bg-gray-200 dark:bg-gray-800/50 text-gray-800 dark:text-gray-300'
   };
 
   return (
@@ -223,20 +223,20 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
 
       {/* Stats Summary */}
       <div className="grid grid-cols-3 gap-2 mt-3">
-        <div className="text-center p-2 rounded-lg bg-slate-100 dark:bg-slate-900/50">
-          <Star className="h-3 w-3 mx-auto text-slate-500 mb-0.5" />
-          <p className="text-[9px] font-semibold text-slate-600 dark:text-slate-400">{t.platinum}</p>
-          <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{countries.filter(c => c.tier === 'platinum').length}</p>
+        <div className="text-center p-2 rounded-lg bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700">
+          <Star className="h-3 w-3 mx-auto text-slate-600 dark:text-slate-400 mb-0.5" />
+          <p className="text-[9px] font-semibold text-slate-700 dark:text-slate-400">{t.platinum}</p>
+          <p className="text-xs font-bold text-slate-800 dark:text-slate-300">{countries.filter(c => c.tier === 'platinum').length}</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50">
-          <Star className="h-3 w-3 mx-auto text-amber-500 mb-0.5" />
-          <p className="text-[9px] font-semibold text-amber-600 dark:text-amber-400">{t.gold}</p>
-          <p className="text-xs font-bold text-amber-700 dark:text-amber-300">{countries.filter(c => c.tier === 'gold').length}</p>
+        <div className="text-center p-2 rounded-lg bg-orange-200 dark:bg-orange-900/50 border border-orange-300 dark:border-orange-700">
+          <Star className="h-3 w-3 mx-auto text-orange-600 dark:text-orange-400 mb-0.5" />
+          <p className="text-[9px] font-semibold text-orange-700 dark:text-orange-400">{t.gold}</p>
+          <p className="text-xs font-bold text-orange-800 dark:text-orange-300">{countries.filter(c => c.tier === 'gold').length}</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-gray-100 dark:bg-gray-800/50">
-          <Star className="h-3 w-3 mx-auto text-gray-500 mb-0.5" />
-          <p className="text-[9px] font-semibold text-gray-600 dark:text-gray-400">{t.silver}</p>
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300">{countries.filter(c => c.tier === 'silver').length}</p>
+        <div className="text-center p-2 rounded-lg bg-gray-200 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
+          <Star className="h-3 w-3 mx-auto text-gray-600 dark:text-gray-400 mb-0.5" />
+          <p className="text-[9px] font-semibold text-gray-700 dark:text-gray-400">{t.silver}</p>
+          <p className="text-xs font-bold text-gray-800 dark:text-gray-300">{countries.filter(c => c.tier === 'silver').length}</p>
         </div>
       </div>
     </div>
