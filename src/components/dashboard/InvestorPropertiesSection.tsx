@@ -47,7 +47,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 
   return (
     <Card 
-      className="group cursor-pointer overflow-hidden hover:shadow-lg transition-all duration-300 active:scale-[0.98]"
+      className="group cursor-pointer overflow-hidden bg-white/70 dark:bg-white/5 border-2 border-border/50 backdrop-blur-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 active:scale-[0.98]"
       onClick={onClick}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -59,70 +59,70 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
         />
         
         {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+        <div className="absolute top-1.5 left-1.5 flex flex-wrap gap-0.5">
           {property.wna_eligible && (
-            <Badge className="bg-blue-500/90 text-white text-[10px] px-1.5 py-0.5">
-              <Globe className="h-2.5 w-2.5 mr-0.5" />
+            <Badge className="bg-blue-500/90 text-white text-[8px] px-1 py-0.5">
+              <Globe className="h-2 w-2 mr-0.5" />
               WNA
             </Badge>
           )}
           {property.is_featured && (
-            <Badge className="bg-amber-500/90 text-white text-[10px] px-1.5 py-0.5">
-              <Star className="h-2.5 w-2.5 mr-0.5" />
+            <Badge className="bg-amber-500/90 text-white text-[8px] px-1 py-0.5">
+              <Star className="h-2 w-2 mr-0.5" />
               Featured
             </Badge>
           )}
           {property.investor_highlight && (
-            <Badge className="bg-emerald-500/90 text-white text-[10px] px-1.5 py-0.5">
-              <Sparkles className="h-2.5 w-2.5 mr-0.5" />
-              Investor Pick
+            <Badge className="bg-emerald-500/90 text-white text-[8px] px-1 py-0.5">
+              <Sparkles className="h-2 w-2 mr-0.5" />
+              Pick
             </Badge>
           )}
         </div>
 
         {/* Price */}
-        <div className="absolute bottom-2 left-2">
-          <Badge className="bg-primary/90 text-primary-foreground font-bold text-xs px-2 py-1">
+        <div className="absolute bottom-1.5 left-1.5">
+          <Badge className="bg-primary/90 text-primary-foreground font-bold text-[10px] px-1.5 py-0.5">
             {formatPrice(property.price)}
           </Badge>
         </div>
 
         {/* Listing Type */}
-        <div className="absolute bottom-2 right-2">
-          <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 capitalize">
+        <div className="absolute bottom-1.5 right-1.5">
+          <Badge variant="secondary" className="text-[8px] px-1 py-0.5 capitalize bg-white/80 dark:bg-black/50">
             {property.listing_type || 'sale'}
           </Badge>
         </div>
       </div>
 
-      <CardContent className="p-3">
-        <h4 className="font-semibold text-sm truncate text-foreground">
+      <CardContent className="p-2">
+        <h4 className="font-semibold text-xs truncate text-foreground">
           {property.title}
         </h4>
         
-        <div className="flex items-center gap-1 mt-1 text-muted-foreground">
-          <MapPin className="h-3 w-3 flex-shrink-0" />
-          <span className="text-xs truncate">
+        <div className="flex items-center gap-1 mt-0.5 text-foreground/70">
+          <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
+          <span className="text-[10px] truncate">
             {property.city || property.location || 'Indonesia'}
           </span>
         </div>
 
-        <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 mt-1.5 text-[10px] text-foreground/60">
           {property.bedrooms && (
-            <span className="flex items-center gap-1">
-              <Bed className="h-3 w-3" />
+            <span className="flex items-center gap-0.5">
+              <Bed className="h-2.5 w-2.5" />
               {property.bedrooms}
             </span>
           )}
           {property.bathrooms && (
-            <span className="flex items-center gap-1">
-              <Bath className="h-3 w-3" />
+            <span className="flex items-center gap-0.5">
+              <Bath className="h-2.5 w-2.5" />
               {property.bathrooms}
             </span>
           )}
           {property.area_sqm && (
-            <span className="flex items-center gap-1">
-              <Square className="h-3 w-3" />
+            <span className="flex items-center gap-0.5">
+              <Square className="h-2.5 w-2.5" />
               {property.area_sqm}m²
             </span>
           )}
@@ -133,12 +133,12 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 };
 
 const PropertyCardSkeleton = () => (
-  <Card className="overflow-hidden">
+  <Card className="overflow-hidden bg-white/70 dark:bg-white/5 border-2 border-border/50">
     <Skeleton className="aspect-[4/3] w-full" />
-    <CardContent className="p-3 space-y-2">
-      <Skeleton className="h-4 w-3/4" />
-      <Skeleton className="h-3 w-1/2" />
-      <Skeleton className="h-3 w-2/3" />
+    <CardContent className="p-2 space-y-1.5">
+      <Skeleton className="h-3 w-3/4" />
+      <Skeleton className="h-2.5 w-1/2" />
+      <Skeleton className="h-2.5 w-2/3" />
     </CardContent>
   </Card>
 );
@@ -165,36 +165,36 @@ const PropertySection = ({
   const navigate = useNavigate();
 
   return (
-    <Card>
-      <CardHeader className="p-3 sm:p-4 pb-2 flex flex-row items-center justify-between">
-        <div className="flex items-center gap-2">
-          {icon}
+    <Card className="bg-white/50 dark:bg-white/5 border-2 border-border/50 backdrop-blur-sm">
+      <CardHeader className="p-2.5 sm:p-3 pb-1.5 flex flex-row items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          {icon && <div className="flex-shrink-0">{icon}</div>}
           <div>
-            <CardTitle className="text-sm sm:text-base">{title}</CardTitle>
-            <CardDescription className="text-[10px] sm:text-xs">{description}</CardDescription>
+            <CardTitle className="text-xs sm:text-sm font-semibold text-foreground">{title}</CardTitle>
+            <CardDescription className="text-[9px] sm:text-[10px] text-foreground/60">{description}</CardDescription>
           </div>
         </div>
         {viewAllPath && properties.length > 0 && (
           <Button 
             variant="ghost" 
             size="sm" 
-            className="text-xs h-7"
+            className="text-[10px] h-6 px-2 text-primary hover:text-primary/80"
             onClick={() => navigate(viewAllPath)}
           >
             View All
-            <ChevronRight className="h-3 w-3 ml-1" />
+            <ChevronRight className="h-2.5 w-2.5 ml-0.5" />
           </Button>
         )}
       </CardHeader>
-      <CardContent className="p-3 sm:p-4 pt-0">
+      <CardContent className="p-2.5 sm:p-3 pt-0">
         {isLoading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             {[...Array(4)].map((_, i) => (
               <PropertyCardSkeleton key={i} />
             ))}
           </div>
         ) : properties.length > 0 ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             {properties.map((property) => (
               <PropertyCard 
                 key={property.id} 
@@ -204,9 +204,9 @@ const PropertySection = ({
             ))}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <Building2 className="h-10 w-10 mx-auto mb-3 text-muted-foreground/50" />
-            <p className="text-sm text-muted-foreground">{emptyMessage}</p>
+          <div className="text-center py-6">
+            <Building2 className="h-8 w-8 mx-auto mb-2 text-foreground/30" />
+            <p className="text-[10px] sm:text-xs text-foreground/50">{emptyMessage}</p>
           </div>
         )}
       </CardContent>
@@ -233,24 +233,24 @@ export const InvestorPropertiesSection = () => {
   const isWna = investorType === 'wna';
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Investor Type Badge */}
       {investorType && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Badge 
             variant="outline" 
-            className={`${isWna ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-emerald-500 text-emerald-600 dark:text-emerald-400'}`}
+            className={`text-[10px] px-2 py-0.5 ${isWna ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10' : 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10'}`}
           >
-            <Globe className="h-3 w-3 mr-1" />
+            <Globe className="h-2.5 w-2.5 mr-1" />
             {isWna ? 'Foreign Investor (WNA)' : 'Indonesian Investor (WNI)'}
           </Badge>
           <Button 
             variant="link" 
             size="sm" 
-            className="text-xs h-auto p-0"
+            className="text-[10px] h-auto p-0 text-primary"
             onClick={() => navigate(isWna ? '/investor/wna' : '/investor/wni')}
           >
-            View Investment Guide
+            View Investment Guide →
           </Button>
         </div>
       )}
@@ -263,7 +263,7 @@ export const InvestorPropertiesSection = () => {
         isLoading={recommendedLoading || profileLoading}
         emptyMessage={isWna ? 'No WNA-eligible properties available' : 'No recommendations yet. Update your preferences!'}
         viewAllPath="/dijual"
-        icon={isWna ? <Globe className="h-5 w-5 text-blue-500" /> : <Building2 className="h-5 w-5 text-primary" />}
+        icon={isWna ? <Globe className="h-4 w-4 text-blue-500" /> : <Building2 className="h-4 w-4 text-primary" />}
       />
 
       {/* Featured Properties */}
@@ -275,7 +275,7 @@ export const InvestorPropertiesSection = () => {
           isLoading={featuredLoading}
           emptyMessage="No featured properties available"
           viewAllPath="/dijual"
-          icon={<Star className="h-5 w-5 text-amber-500" />}
+          icon={<Star className="h-4 w-4 text-amber-500" />}
         />
       )}
 
@@ -287,7 +287,7 @@ export const InvestorPropertiesSection = () => {
         isLoading={savedLoading}
         emptyMessage="No saved properties yet. Start browsing!"
         viewAllPath="/saved"
-        icon={<Heart className="h-5 w-5 text-red-500" />}
+        icon={<Heart className="h-4 w-4 text-red-500" />}
       />
     </div>
   );
