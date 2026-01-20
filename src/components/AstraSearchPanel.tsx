@@ -2320,11 +2320,11 @@ const AstraSearchPanel = ({
       </div>
     );
   }
-  return <div className="w-full transition-all duration-500">
-    <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 w-full")}>
+  return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto transition-all duration-500">
+    <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 w-full px-2 lg:px-4 xl:px-6")}>
       {/* Glassmorphic Luxury Container */}
       <div className="bg-transparent overflow-hidden">
-        <div className={cn("space-y-1.5 bg-transparent", isMobile ? "p-1.5" : "p-2 lg:p-3")}>
+        <div className={cn("space-y-1.5 bg-transparent", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
