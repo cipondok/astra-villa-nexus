@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import { Globe, CheckCircle, Star, TrendingUp, Shield, Users, Building2, Search } from 'lucide-react';
+import { Globe, CheckCircle, Star, TrendingUp, Shield, Users, Building2, Search, Crown, Award, Medal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
@@ -125,19 +125,23 @@ const WelcomingCountriesList: React.FC<WelcomingCountriesListProps> = ({ selecte
           />
         </div>
         <div className="flex gap-1">
-          {(['platinum', 'gold', 'silver'] as const).map((tier) => (
-            <Badge
-              key={tier}
-              variant={selectedTier === tier ? 'default' : 'outline'}
-              className={cn(
-                "cursor-pointer text-[8px] sm:text-[9px] px-2 py-0.5 capitalize transition-all active:scale-95",
-                selectedTier === tier && tierBgColors[tier]
-              )}
-              onClick={() => setSelectedTier(selectedTier === tier ? null : tier)}
-            >
-              {t[tier]}
-            </Badge>
-          ))}
+          {(['platinum', 'gold', 'silver'] as const).map((tier) => {
+            const TierIcon = tier === 'platinum' ? Crown : tier === 'gold' ? Award : Medal;
+            return (
+              <Badge
+                key={tier}
+                variant={selectedTier === tier ? 'default' : 'outline'}
+                className={cn(
+                  "cursor-pointer text-[8px] sm:text-[9px] px-2 py-0.5 capitalize transition-all active:scale-95 flex items-center gap-1",
+                  selectedTier === tier && tierBgColors[tier]
+                )}
+                onClick={() => setSelectedTier(selectedTier === tier ? null : tier)}
+              >
+                <TierIcon className="h-2.5 w-2.5" />
+                {t[tier]}
+              </Badge>
+            );
+          })}
         </div>
       </div>
 
