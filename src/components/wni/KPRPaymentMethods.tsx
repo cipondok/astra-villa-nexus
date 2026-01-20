@@ -155,9 +155,9 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
   };
 
   return (
-    <Card className={cn("border border-border/50 bg-card/95 backdrop-blur-xl shadow-lg", className)}>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
+      <CardHeader className="pb-2 pt-3 px-3">
+        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
             <CreditCard className="h-4 w-4 text-green-600" />
           </div>
