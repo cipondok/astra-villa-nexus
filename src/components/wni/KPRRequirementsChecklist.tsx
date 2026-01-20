@@ -226,18 +226,18 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
   };
 
   return (
-    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
-      <CardHeader className="pb-2 pt-3 px-3">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-primary/20 flex items-center justify-center">
-            <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-600" />
+    <Card className={cn("border-0 bg-transparent shadow-none", className)}>
+      <CardHeader className="pb-1.5 pt-0 px-0">
+        <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-purple-500/20 to-primary/20 flex items-center justify-center">
+            <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-purple-600" />
           </div>
           {t.title}
         </CardTitle>
-        <p className="text-[10px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
+        <p className="text-[9px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
       </CardHeader>
-      <CardContent className="space-y-3 px-3 pb-3">
-        <Accordion type="multiple" className="space-y-1.5">
+      <CardContent className="space-y-2 px-0 pb-0">
+        <Accordion type="multiple" className="space-y-1">
           {(['identity', 'employment', 'financial', 'property'] as const).map((category, idx) => {
             const Icon = categoryIcons[category];
             const requirements = getRequirementsByCategory(category);
@@ -246,25 +246,25 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
             return (
               <motion.div
                 key={category}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: idx * 0.05 }}
               >
                 <AccordionItem 
                   value={category} 
-                  className="border border-border/50 rounded-lg px-3 bg-background/50"
+                  className="border border-border/40 rounded-lg px-2 bg-background/50"
                 >
-                  <AccordionTrigger className="hover:no-underline py-2">
-                    <div className="flex items-center gap-2">
+                  <AccordionTrigger className="hover:no-underline py-1.5">
+                    <div className="flex items-center gap-1.5">
                       <div className={cn(
-                        "w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center",
+                        "w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center",
                         category === 'identity' && "bg-blue-500/20",
                         category === 'employment' && "bg-green-500/20",
                         category === 'financial' && "bg-orange-500/20",
                         category === 'property' && "bg-purple-500/20"
                       )}>
                         <Icon className={cn(
-                          "h-3 w-3 sm:h-4 sm:w-4",
+                          "h-2.5 w-2.5 sm:h-3 sm:w-3",
                           category === 'identity' && "text-blue-600",
                           category === 'employment' && "text-green-600",
                           category === 'financial' && "text-orange-600",
@@ -272,47 +272,47 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
                         )} />
                       </div>
                       <div className="text-left">
-                        <p className="text-[10px] sm:text-sm font-semibold">{t.categories[category]}</p>
-                        <p className="text-[8px] sm:text-[10px] text-muted-foreground">
+                        <p className="text-[9px] sm:text-xs font-semibold">{t.categories[category]}</p>
+                        <p className="text-[7px] sm:text-[9px] text-muted-foreground">
                           {requiredCount} {t.required.toLowerCase()}, {requirements.length - requiredCount} {t.optional.toLowerCase()}
                         </p>
                       </div>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="pb-3">
-                    <div className="space-y-1.5 mt-1.5">
+                  <AccordionContent className="pb-2">
+                    <div className="space-y-1 mt-1">
                       {requirements.map((req) => (
                         <div 
                           key={req.id}
                           className={cn(
-                            "p-2 rounded-lg border",
+                            "p-1.5 rounded-md border",
                             req.required 
-                              ? "bg-background border-border/50" 
+                              ? "bg-background border-border/40" 
                               : "bg-muted/30 border-dashed border-border/30"
                           )}
                         >
-                          <div className="flex items-start gap-1.5">
+                          <div className="flex items-start gap-1">
                             {req.required ? (
-                              <CheckCircle2 className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-2.5 w-2.5 text-green-500 flex-shrink-0 mt-0.5" />
                             ) : (
-                              <AlertCircle className="h-3 w-3 text-muted-foreground flex-shrink-0 mt-0.5" />
+                              <AlertCircle className="h-2.5 w-2.5 text-muted-foreground flex-shrink-0 mt-0.5" />
                             )}
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <p className="text-[9px] sm:text-[10px] font-medium truncate">
+                              <div className="flex items-center gap-1 flex-wrap">
+                                <p className="text-[8px] sm:text-[10px] font-medium truncate">
                                   {language === 'id' ? req.labelId : req.label}
                                 </p>
                                 <Badge 
                                   variant={req.required ? "default" : "secondary"} 
                                   className={cn(
-                                    "text-[7px] sm:text-[8px] px-1 py-0",
+                                    "text-[6px] sm:text-[7px] px-0.5 py-0",
                                     req.required ? "bg-red-500/20 text-red-600 hover:bg-red-500/30" : ""
                                   )}
                                 >
                                   {req.required ? t.required : t.optional}
                                 </Badge>
                               </div>
-                              <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 line-clamp-1">
+                              <p className="text-[7px] sm:text-[8px] text-muted-foreground mt-0.5 line-clamp-1">
                                 {language === 'id' ? req.descriptionId : req.description}
                               </p>
                             </div>
@@ -328,17 +328,17 @@ export const KPRRequirementsChecklist: React.FC<KPRRequirementsChecklistProps> =
         </Accordion>
 
         {/* Important Note */}
-        <div className="flex items-start gap-1.5 p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-          <Info className="h-3.5 w-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-1 p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
+          <Info className="h-3 w-3 text-blue-500 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-[10px] sm:text-xs font-medium text-blue-700 dark:text-blue-400">{t.importantNote}</p>
-            <p className="text-[9px] sm:text-[10px] text-muted-foreground">{t.noteText}</p>
+            <p className="text-[9px] sm:text-xs font-medium text-blue-700 dark:text-blue-400">{t.importantNote}</p>
+            <p className="text-[8px] sm:text-[9px] text-muted-foreground">{t.noteText}</p>
           </div>
         </div>
 
         {/* Download Button */}
-        <Button variant="outline" className="w-full gap-1.5 h-8 text-[10px] sm:text-xs">
-          <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+        <Button variant="outline" className="w-full gap-1 h-7 text-[9px] sm:text-xs active:scale-95">
+          <Download className="h-3 w-3" />
           {t.downloadChecklist}
         </Button>
       </CardContent>

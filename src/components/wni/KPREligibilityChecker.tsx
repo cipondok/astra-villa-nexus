@@ -291,22 +291,22 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
   const countryInfo = selectedCountry ? getCountryByCode(selectedCountry) : null;
 
   return (
-    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
-      <CardHeader className="pb-2 pt-3 px-3">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
-            <Calculator className="h-4 w-4 text-green-600" />
+    <Card className={cn("border-0 bg-transparent shadow-none", className)}>
+      <CardHeader className="pb-1.5 pt-0 px-0">
+        <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
+            <Calculator className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-green-600" />
           </div>
           {t.title}
         </CardTitle>
-        <p className="text-xs text-muted-foreground">{t.subtitle}</p>
+        <p className="text-[9px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
         {countryInfo && (
-          <Badge className="w-fit mt-2 text-xs gap-1 bg-blue-500/10 text-blue-600 border-blue-500/20">
+          <Badge className="w-fit mt-1.5 text-[9px] sm:text-xs gap-0.5 bg-blue-500/10 text-blue-600 border-blue-500/20">
             {countryInfo.flag} {language === 'id' ? countryInfo.nameId : countryInfo.name}
           </Badge>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2.5 px-0 pb-0">
         <AnimatePresence mode="wait">
           {!showResult ? (
             <motion.div
@@ -314,26 +314,26 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="space-y-4"
+            className="space-y-2"
             >
               {/* Income */}
-              <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-                <div className="col-span-3 space-y-1">
-                  <Label className="text-[10px] sm:text-xs">{t.income}</Label>
+              <div className="grid grid-cols-4 gap-1">
+                <div className="col-span-3 space-y-0.5">
+                  <Label className="text-[9px] sm:text-xs">{t.income}</Label>
                   <Input
                     type="number"
                     value={monthlyIncome || ''}
                     onChange={(e) => setMonthlyIncome(Number(e.target.value))}
                     placeholder="5000"
-                    className="text-xs sm:text-sm h-8"
+                    className="text-[10px] sm:text-sm h-7 sm:h-8"
                   />
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] sm:text-xs">{t.currency}</Label>
+                <div className="space-y-0.5">
+                  <Label className="text-[9px] sm:text-xs">{t.currency}</Label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value as typeof currency)}
-                    className="w-full h-8 px-1.5 text-xs sm:text-sm border border-input bg-background rounded-md"
+                    className="w-full h-7 sm:h-8 px-1 text-[10px] sm:text-sm border border-input bg-background rounded-md"
                   >
                     <option value="USD">USD</option>
                     <option value="SGD">SGD</option>
@@ -345,13 +345,13 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
               </div>
 
               {/* Employment Duration */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <Label className="text-[10px] sm:text-xs flex items-center gap-1">
-                    <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <Label className="text-[9px] sm:text-xs flex items-center gap-0.5">
+                    <Clock className="h-2.5 w-2.5" />
                     {t.employment}
                   </Label>
-                  <Badge variant="secondary" className="text-[9px] sm:text-xs px-1.5">{monthsEmployed} mo</Badge>
+                  <Badge variant="secondary" className="text-[8px] sm:text-xs px-1 h-4">{monthsEmployed} mo</Badge>
                 </div>
                 <Slider
                   value={[monthsEmployed]}
@@ -359,14 +359,14 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
                   min={1}
                   max={60}
                   step={1}
-                  className="py-1"
+                  className="py-0.5"
                 />
               </div>
 
               {/* Existing Debt */}
-              <div className="space-y-1">
-                <Label className="text-[10px] sm:text-xs flex items-center gap-1">
-                  <Banknote className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+              <div className="space-y-0.5">
+                <Label className="text-[9px] sm:text-xs flex items-center gap-0.5">
+                  <Banknote className="h-2.5 w-2.5" />
                   {t.debt} ({currency})
                 </Label>
                 <Input
@@ -374,30 +374,30 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
                   value={existingDebt || ''}
                   onChange={(e) => setExistingDebt(Number(e.target.value))}
                   placeholder="0"
-                  className="text-xs sm:text-sm h-8"
+                  className="text-[10px] sm:text-sm h-7 sm:h-8"
                 />
               </div>
 
               {/* Property Price */}
-              <div className="space-y-1">
-                <Label className="text-[10px] sm:text-xs">{t.propertyPrice}</Label>
+              <div className="space-y-0.5">
+                <Label className="text-[9px] sm:text-xs">{t.propertyPrice}</Label>
                 <Input
                   type="number"
                   value={propertyPrice || ''}
                   onChange={(e) => setPropertyPrice(Number(e.target.value))}
                   placeholder="2000000000"
-                  className="text-xs sm:text-sm h-8"
+                  className="text-[10px] sm:text-sm h-7 sm:h-8"
                 />
               </div>
 
               {/* Down Payment */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <Label className="text-[10px] sm:text-xs flex items-center gap-1">
-                    <Percent className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <Label className="text-[9px] sm:text-xs flex items-center gap-0.5">
+                    <Percent className="h-2.5 w-2.5" />
                     {t.downPayment}
                   </Label>
-                  <Badge variant="secondary" className="text-[9px] sm:text-xs px-1.5">{downPaymentPercent}%</Badge>
+                  <Badge variant="secondary" className="text-[8px] sm:text-xs px-1 h-4">{downPaymentPercent}%</Badge>
                 </div>
                 <Slider
                   value={[downPaymentPercent]}
@@ -405,20 +405,20 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
                   min={10}
                   max={50}
                   step={5}
-                  className="py-1"
+                  className="py-0.5"
                 />
               </div>
 
               {/* Work Permit */}
-              <div className="space-y-1.5">
-                <Label className="text-[10px] sm:text-xs">{t.workPermit}</Label>
+              <div className="space-y-1">
+                <Label className="text-[9px] sm:text-xs">{t.workPermit}</Label>
                 <RadioGroup value={hasWorkPermit} onValueChange={(v) => setHasWorkPermit(v as typeof hasWorkPermit)}>
-                  <div className="grid grid-cols-3 gap-1.5">
+                  <div className="grid grid-cols-3 gap-1">
                     {(['yes', 'no', 'pending'] as const).map((option) => (
                       <label
                         key={option}
                         className={cn(
-                          "flex items-center justify-center px-2 py-1.5 rounded-lg border cursor-pointer transition-all text-[9px] sm:text-[10px] text-center active:scale-95",
+                          "flex items-center justify-center px-1.5 py-1 rounded-md border cursor-pointer transition-all text-[8px] sm:text-[10px] text-center active:scale-95",
                           hasWorkPermit === option 
                             ? "border-primary bg-primary/10" 
                             : "border-border hover:border-primary/50"
@@ -433,24 +433,24 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
               </div>
 
               {/* Credit History */}
-              <div className="space-y-1.5">
-                <Label className="text-[10px] sm:text-xs">{t.creditHistory}</Label>
+              <div className="space-y-1">
+                <Label className="text-[9px] sm:text-xs">{t.creditHistory}</Label>
                 <RadioGroup value={creditHistory} onValueChange={(v) => setCreditHistory(v as typeof creditHistory)}>
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     {(['clean', 'minor', 'issues'] as const).map((option) => (
                       <label
                         key={option}
                         className={cn(
-                          "flex items-center gap-1.5 px-2 py-1.5 rounded-lg border cursor-pointer transition-all text-[9px] sm:text-[10px] active:scale-[0.98]",
+                          "flex items-center gap-1 px-1.5 py-1 rounded-md border cursor-pointer transition-all text-[8px] sm:text-[10px] active:scale-[0.98]",
                           creditHistory === option 
                             ? "border-primary bg-primary/10" 
                             : "border-border hover:border-primary/50"
                         )}
                       >
                         <RadioGroupItem value={option} className="sr-only" />
-                        {option === 'clean' && <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 flex-shrink-0" />}
-                        {option === 'minor' && <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-amber-500 flex-shrink-0" />}
-                        {option === 'issues' && <XCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-red-500 flex-shrink-0" />}
+                        {option === 'clean' && <CheckCircle className="h-2.5 w-2.5 text-green-500 flex-shrink-0" />}
+                        {option === 'minor' && <AlertTriangle className="h-2.5 w-2.5 text-amber-500 flex-shrink-0" />}
+                        {option === 'issues' && <XCircle className="h-2.5 w-2.5 text-red-500 flex-shrink-0" />}
                         <span className="truncate">{t.creditOptions[option]}</span>
                       </label>
                     ))}
@@ -459,10 +459,10 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
               </div>
 
               {/* Age */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <Label className="text-[10px] sm:text-xs">{t.age}</Label>
-                  <Badge variant="secondary" className="text-[9px] sm:text-xs px-1.5">{age} yr</Badge>
+                  <Label className="text-[9px] sm:text-xs">{t.age}</Label>
+                  <Badge variant="secondary" className="text-[8px] sm:text-xs px-1 h-4">{age} yr</Badge>
                 </div>
                 <Slider
                   value={[age]}
@@ -470,17 +470,17 @@ export const KPREligibilityChecker: React.FC<KPREligibilityCheckerProps> = ({
                   min={21}
                   max={60}
                   step={1}
-                  className="py-1"
+                  className="py-0.5"
                 />
               </div>
 
               <Button 
                 onClick={() => setShowResult(true)}
-                className="w-full gap-1.5 h-8 text-[10px] sm:text-xs"
+                className="w-full gap-1 h-7 sm:h-8 text-[9px] sm:text-xs active:scale-95"
                 disabled={monthlyIncome === 0 || propertyPrice === 0}
               >
                 {t.checkEligibility}
-                <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                <ArrowRight className="h-3 w-3" />
               </Button>
             </motion.div>
           ) : result && (

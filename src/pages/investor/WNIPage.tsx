@@ -131,10 +131,10 @@ const WNIPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {/* Sticky Back Header - Slim */}
-      <div className="sticky top-10 md:top-11 lg:top-12 z-40 bg-background/60 backdrop-blur-2xl border-b border-primary/10">
-        <div className="max-w-6xl mx-auto px-2 py-1.5 sm:px-3 sm:py-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="gap-1 text-[10px] sm:text-xs h-7 px-2 hover:bg-primary/10">
-            <ArrowLeft className="h-3 w-3" />
+      <div className="sticky top-10 md:top-11 lg:top-12 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/20">
+        <div className="max-w-6xl mx-auto px-3 py-1.5">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="gap-1.5 text-[10px] h-7 px-2 hover:bg-primary/10 active:scale-95">
+            <ArrowLeft className="h-3.5 w-3.5" />
             {t.back}
           </Button>
         </div>
@@ -143,24 +143,24 @@ const WNIPage = () => {
       {/* Hero Section - Compact */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-primary/5 pointer-events-none" />
-        <div className="absolute top-10 right-10 w-48 h-48 bg-gradient-to-br from-red-500/10 to-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 right-10 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-red-500/10 to-primary/10 rounded-full blur-3xl pointer-events-none" />
         
-        <div className="relative max-w-6xl mx-auto px-2 py-4 sm:px-3 sm:py-6 md:py-8">
+        <div className="relative max-w-6xl mx-auto px-3 py-4 sm:py-6">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3 bg-gradient-to-r from-red-500/10 to-primary/10 border border-red-500/20 rounded-full backdrop-blur-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2.5 bg-gradient-to-r from-red-500/10 to-primary/10 border border-red-500/20 rounded-full backdrop-blur-xl">
               <span className="text-sm">🇮🇩</span>
-              <span className="text-[9px] sm:text-[10px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">{t.badge}</span>
+              <span className="text-[9px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">{t.badge}</span>
             </div>
-            <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1.5 sm:mb-2">{t.title}</h1>
-            <p className="text-[10px] sm:text-xs text-muted-foreground max-w-xl mx-auto leading-relaxed">{t.subtitle}</p>
+            <h1 className="text-sm sm:text-lg md:text-xl font-bold text-foreground mb-1.5 px-2">{t.title}</h1>
+            <p className="text-[10px] sm:text-xs text-muted-foreground max-w-lg mx-auto leading-relaxed px-2">{t.subtitle}</p>
           </motion.div>
         </div>
       </section>
 
       {/* Benefits Grid - Marketplace Style Icons */}
-      <section className="px-2 py-3 sm:px-3 sm:py-4 md:py-6">
+      <section className="px-3 py-3 sm:py-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+          <div className="grid grid-cols-3 lg:grid-cols-6 gap-1.5 sm:gap-2">
             {t.benefits.map((benefit, idx) => {
               const iconColors = [
                 { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
@@ -178,25 +178,24 @@ const WNIPage = () => {
                   initial={{ opacity: 0, y: 10 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true }} 
-                  transition={{ delay: idx * 0.05, duration: 0.4 }}
+                  transition={{ delay: idx * 0.03, duration: 0.3 }}
                   className={cn(
-                    "relative overflow-hidden rounded-xl p-2.5 sm:p-3",
-                    "bg-white/60 dark:bg-white/5",
+                    "relative overflow-hidden rounded-lg p-2 sm:p-2.5",
+                    "bg-white/70 dark:bg-white/5",
                     "border border-border/30 dark:border-white/10",
-                    "hover:border-primary/40 hover:scale-[1.02]",
-                    "hover:shadow-lg hover:shadow-primary/10",
-                    "transition-all duration-300 group flex flex-col items-center text-center"
+                    "hover:border-primary/40 active:scale-95",
+                    "transition-all duration-200 group flex flex-col items-center text-center"
                   )}
                 >
                   {/* Icon Container - Marketplace Style */}
                   <div className={cn(
-                    "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl mb-2 shadow-sm",
+                    "flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-lg mb-1.5 shadow-sm",
                     colorSet.bg
                   )}>
-                    <benefit.icon className={cn("w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7", colorSet.text)} strokeWidth={1.5} />
+                    <benefit.icon className={cn("w-4 h-4 sm:w-5 sm:h-5", colorSet.text)} strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-[9px] sm:text-[10px] md:text-xs font-semibold text-foreground mb-0.5 leading-tight group-hover:text-primary transition-colors">{benefit.title}</h3>
-                  <p className="text-[7px] sm:text-[8px] md:text-[9px] text-muted-foreground leading-snug line-clamp-2">{benefit.desc}</p>
+                  <h3 className="text-[8px] sm:text-[10px] font-semibold text-foreground mb-0.5 leading-tight line-clamp-2 group-hover:text-primary transition-colors">{benefit.title}</h3>
+                  <p className="text-[7px] sm:text-[8px] text-muted-foreground leading-snug line-clamp-2 hidden sm:block">{benefit.desc}</p>
                 </motion.div>
               );
             })}
@@ -205,7 +204,7 @@ const WNIPage = () => {
             initial={{ opacity: 0 }} 
             whileInView={{ opacity: 1 }} 
             viewport={{ once: true }} 
-            className="text-center text-[10px] sm:text-xs font-medium text-primary mt-4 sm:mt-5"
+            className="text-center text-[9px] sm:text-xs font-medium text-primary mt-3 sm:mt-4"
           >
             ✨ {t.tagline}
           </motion.p>
@@ -213,47 +212,47 @@ const WNIPage = () => {
       </section>
 
       {/* KPR System Section - Light Mode Enhanced */}
-      <section className="px-2 py-4 sm:px-3 sm:py-5 md:py-6">
+      <section className="px-3 py-3 sm:py-4">
         <div className="max-w-6xl mx-auto">
           <div className={cn(
-            "rounded-xl p-3 sm:p-4",
-            "bg-white/70 dark:bg-white/5",
+            "rounded-lg p-2.5 sm:p-4",
+            "bg-white/80 dark:bg-white/5",
             "border border-border/30 dark:border-primary/10",
             "backdrop-blur-xl shadow-sm"
           )}>
-            <div className="text-center mb-3 sm:mb-4">
-              <h2 className="text-sm sm:text-base md:text-lg font-bold text-foreground mb-1">{t.kprSystemTitle}</h2>
+            <div className="text-center mb-2.5 sm:mb-3">
+              <h2 className="text-xs sm:text-base font-bold text-foreground mb-0.5">{t.kprSystemTitle}</h2>
               <p className="text-[9px] sm:text-[10px] text-muted-foreground">{t.kprSystemSubtitle}</p>
             </div>
 
             <Tabs defaultValue="countries" className="w-full">
-              <div className="overflow-x-auto -mx-3 px-3 pb-1 scrollbar-hide">
-                <TabsList className="inline-flex w-max sm:w-full h-auto gap-1 bg-white/50 dark:bg-muted/30 backdrop-blur-xl p-1 mb-3 rounded-lg whitespace-nowrap border border-border/30">
-                  <TabsTrigger value="countries" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.countries}</TabsTrigger>
-                  <TabsTrigger value="eligibility" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.eligibility}</TabsTrigger>
-                  <TabsTrigger value="requirements" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.requirements}</TabsTrigger>
+              <div className="overflow-x-auto -mx-2.5 px-2.5 pb-1 scrollbar-hide">
+                <TabsList className="inline-flex w-max h-auto gap-0.5 bg-muted/50 backdrop-blur-xl p-0.5 mb-2.5 rounded-md whitespace-nowrap border border-border/20">
+                  <TabsTrigger value="countries" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.countries}</TabsTrigger>
+                  <TabsTrigger value="eligibility" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.eligibility}</TabsTrigger>
+                  <TabsTrigger value="requirements" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.requirements}</TabsTrigger>
                   {isAdmin && (
-                    <TabsTrigger value="credit" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.credit}</TabsTrigger>
+                    <TabsTrigger value="credit" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.credit}</TabsTrigger>
                   )}
-                  <TabsTrigger value="payment" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.payment}</TabsTrigger>
+                  <TabsTrigger value="payment" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.payment}</TabsTrigger>
                 </TabsList>
               </div>
 
-              <TabsContent value="countries">
+              <TabsContent value="countries" className="mt-0">
                 <EligibleCountriesSelector selectedCountry={selectedCountry} onSelect={setSelectedCountry} />
               </TabsContent>
-              <TabsContent value="eligibility">
+              <TabsContent value="eligibility" className="mt-0">
                 <KPREligibilityChecker selectedCountry={selectedCountry} />
               </TabsContent>
-              <TabsContent value="requirements">
+              <TabsContent value="requirements" className="mt-0">
                 <KPRRequirementsChecklist />
               </TabsContent>
               {isAdmin && (
-                <TabsContent value="credit">
+                <TabsContent value="credit" className="mt-0">
                   <SLIKCreditChecker />
                 </TabsContent>
               )}
-              <TabsContent value="payment">
+              <TabsContent value="payment" className="mt-0">
                 <KPRPaymentMethods />
               </TabsContent>
             </Tabs>
@@ -262,34 +261,34 @@ const WNIPage = () => {
       </section>
 
       {/* VIP Section - Compact Glassmorphic */}
-      <section className="px-2 py-3 sm:px-3 sm:py-4 md:py-5">
+      <section className="px-3 py-3 sm:py-4">
         <div className="max-w-4xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 15 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }}
             className={cn(
-              "rounded-xl p-3 sm:p-4",
+              "rounded-lg p-2.5 sm:p-4",
               "bg-gradient-to-br from-primary/5 via-transparent to-accent/5",
               "backdrop-blur-xl",
-              "border border-primary/20 shadow-lg shadow-primary/5"
+              "border border-primary/20 shadow-sm"
             )}
           >
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-1.5 mb-2">
               <div className={cn(
-                "flex items-center justify-center w-7 h-7 rounded-lg",
+                "flex items-center justify-center w-6 h-6 rounded-lg",
                 "bg-gradient-to-br from-primary/20 via-accent/10 to-primary/20",
                 "border border-primary/30"
               )}>
-                <Award className="h-3.5 w-3.5 text-primary" />
+                <Award className="h-3 w-3 text-primary" />
               </div>
-              <h2 className="text-xs sm:text-sm font-bold text-foreground">{t.vipTitle}</h2>
+              <h2 className="text-[10px] sm:text-sm font-bold text-foreground">{t.vipTitle}</h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+            <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
               {t.vipFeatures.map((feature, idx) => (
-                <div key={idx} className="flex items-center gap-1.5">
-                  <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
-                  <span className="text-[9px] sm:text-[10px] text-foreground/80">{feature}</span>
+                <div key={idx} className="flex items-center gap-1">
+                  <CheckCircle className="h-2.5 w-2.5 text-green-500 flex-shrink-0" />
+                  <span className="text-[8px] sm:text-[10px] text-foreground/80 truncate">{feature}</span>
                 </div>
               ))}
             </div>
@@ -298,16 +297,16 @@ const WNIPage = () => {
       </section>
 
       {/* CTA Section - Compact */}
-      <section className="px-2 py-4 sm:px-3 sm:py-6 md:py-8">
+      <section className="px-3 py-4 sm:py-6">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-            <h2 className="text-sm sm:text-base md:text-lg font-bold text-foreground mb-1">{t.ctaTitle}</h2>
-            <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-3 sm:mb-4">{t.ctaSubtitle}</p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+            <h2 className="text-xs sm:text-base font-bold text-foreground mb-1">{t.ctaTitle}</h2>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-2.5 sm:mb-4">{t.ctaSubtitle}</p>
+            <div className="flex flex-row items-center justify-center gap-2">
               <Button 
                 size="sm" 
                 onClick={() => navigate('/contact')} 
-                className="gap-1.5 w-full sm:w-auto h-8 text-[10px] sm:text-xs bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/20"
+                className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-md active:scale-95"
               >
                 <Phone className="h-3 w-3" />
                 {t.ctaButton}
@@ -316,7 +315,7 @@ const WNIPage = () => {
                 size="sm" 
                 variant="outline" 
                 onClick={openChat} 
-                className="gap-1.5 w-full sm:w-auto h-8 text-[10px] sm:text-xs border-primary/30 hover:bg-primary/10 hover:border-primary/50"
+                className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs border-primary/30 hover:bg-primary/10 active:scale-95"
               >
                 <MessageSquare className="h-3 w-3" />
                 {t.ctaChat}
@@ -327,10 +326,10 @@ const WNIPage = () => {
       </section>
 
       {/* Footer Tagline - Slim */}
-      <section className="px-2 py-3 sm:px-3 sm:py-4 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border-t border-primary/10">
+      <section className="px-3 py-2.5 sm:py-4 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border-t border-primary/10">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-[10px] sm:text-xs font-semibold text-foreground">ASTRA Villa is your trusted gateway to Indonesia.</p>
-          <p className="text-[9px] sm:text-[10px] text-primary mt-0.5">Invest Smart. Live Secure. Grow with Indonesia.</p>
+          <p className="text-[9px] sm:text-xs font-semibold text-foreground">ASTRA Villa is your trusted gateway to Indonesia.</p>
+          <p className="text-[8px] sm:text-[10px] text-primary mt-0.5">Invest Smart. Live Secure. Grow with Indonesia.</p>
         </div>
       </section>
     </div>
