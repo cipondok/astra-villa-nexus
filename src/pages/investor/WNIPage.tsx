@@ -11,11 +11,13 @@ import {
   CheckCircle, 
   CreditCard, 
   FileCheck, 
+  FileText,
   Clock, 
   Award,
   Phone,
   MessageSquare,
-  UserCircle
+  UserCircle,
+  Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -241,13 +243,28 @@ const WNIPage = () => {
             <Tabs defaultValue="countries" className="w-full">
               <div className="overflow-x-auto -mx-2.5 px-2.5 pb-1 scrollbar-hide">
                 <TabsList className="inline-flex w-max h-auto gap-0.5 bg-muted/50 backdrop-blur-xl p-0.5 mb-2.5 rounded-md whitespace-nowrap border border-border/20">
-                  <TabsTrigger value="countries" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.countries}</TabsTrigger>
-                  <TabsTrigger value="eligibility" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.eligibility}</TabsTrigger>
-                  <TabsTrigger value="requirements" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.requirements}</TabsTrigger>
+                  <TabsTrigger value="countries" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95 flex items-center gap-1">
+                    <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    {t.tabs.countries}
+                  </TabsTrigger>
+                  <TabsTrigger value="eligibility" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95 flex items-center gap-1">
+                    <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    {t.tabs.eligibility}
+                  </TabsTrigger>
+                  <TabsTrigger value="requirements" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95 flex items-center gap-1">
+                    <FileText className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    {t.tabs.requirements}
+                  </TabsTrigger>
                   {isAdmin && (
-                    <TabsTrigger value="credit" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.credit}</TabsTrigger>
+                    <TabsTrigger value="credit" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95 flex items-center gap-1">
+                      <Shield className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      {t.tabs.credit}
+                    </TabsTrigger>
                   )}
-                  <TabsTrigger value="payment" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95">{t.tabs.payment}</TabsTrigger>
+                  <TabsTrigger value="payment" className="min-w-fit text-[8px] sm:text-[10px] py-1 px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded active:scale-95 flex items-center gap-1">
+                    <CreditCard className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    {t.tabs.payment}
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
