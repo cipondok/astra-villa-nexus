@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { Eye, EyeOff, AlertTriangle, LogIn, Sparkles, CheckCircle, Rocket, FileT
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
 import { CreateOrderDialog } from "@/components/orders/CreateOrderDialog";
+import { useInvestorProfile, useCreateInvestorProfile } from "@/hooks/useInvestorProfile";
 
 interface InvestorAuthSectionProps {
   investorType: 'wni' | 'wna';
@@ -29,7 +30,19 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   
-  const { signIn, isAuthenticated, profile } = useAuth();
+  const { signIn, isAuthenticated, profile, user } = useAuth();
+  const { data: investorProfile, isLoading: isLoadingProfile } = useInvestorProfile();
+  const createInvestorProfile = useCreateInvestorProfile();
+
+  // Create investor profile if user is authenticated but doesn't have one
+  useEffect(() => {
+    if (isAuthenticated && user && !investorProfile && !isLoadingProfile && !createInvestorProfile.isPending) {
+      // Check if we should create an investor profile for this user
+      createInvestorProfile.mutate({
+        investor_type: investorType,
+      });
+    }
+  }, [isAuthenticated, user, investorProfile, isLoadingProfile, investorType, createInvestorProfile]);
 
   const openModal = (loginMode: boolean) => {
     setIsLogin(loginMode);
