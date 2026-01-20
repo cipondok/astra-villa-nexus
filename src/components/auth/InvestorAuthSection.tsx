@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, EyeOff, AlertTriangle, LogIn, UserPlus, Sparkles, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, AlertTriangle, LogIn, UserPlus, Sparkles, CheckCircle, Rocket, FileText, ArrowRight, Building2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
+import { CreateOrderDialog } from "@/components/orders/CreateOrderDialog";
 
 interface InvestorAuthSectionProps {
   investorType: 'wni' | 'wna';
@@ -16,6 +18,7 @@ interface InvestorAuthSectionProps {
 }
 
 const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionProps) => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -86,34 +89,91 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
     }
   };
 
-  // If already authenticated, show welcome message
+  // If already authenticated, show professional welcome with application CTA
   if (isAuthenticated) {
     return (
-      <Card className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border-white/30 dark:border-white/10 shadow-lg ${className}`}>
+      <Card className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border-white/30 dark:border-white/10 shadow-lg overflow-hidden ${className}`}>
         <CardContent className="p-4 sm:p-6">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center space-y-3"
+            className="space-y-4"
           >
-            <div className="mx-auto w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground">
+            {/* Welcome Header */}
+            <div className="text-center">
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+                className="mx-auto w-14 h-14 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center mb-3"
+              >
+                <CheckCircle className="h-7 w-7 text-green-600 dark:text-green-400" />
+              </motion.div>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">
                 Welcome, {profile?.full_name || 'Investor'}!
               </h3>
               <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                You're logged in and ready to explore our {investorType.toUpperCase()} investment options.
+                You're ready to explore {investorType.toUpperCase()} investment opportunities
               </p>
             </div>
-            <Button 
-              size="sm" 
-              className="w-full sm:w-auto"
-              onClick={() => window.location.href = '/dashboard'}
+
+            {/* Professional Features Display */}
+            <div className="grid grid-cols-2 gap-2">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg"
+              >
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Building2 className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Premium Properties</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="flex items-center gap-2 p-2 bg-accent/5 rounded-lg"
+              >
+                <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <FileText className="h-3.5 w-3.5 text-accent" />
+                </div>
+                <span className="text-[9px] sm:text-[10px] font-medium text-foreground">KPR Assistance</span>
+              </motion.div>
+            </div>
+
+            {/* Start Application CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-2"
             >
-              Go to Dashboard
-            </Button>
+              <CreateOrderDialog>
+                <Button 
+                  size="sm" 
+                  className="w-full h-9 sm:h-10 gap-2 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 shadow-lg text-xs sm:text-sm font-semibold"
+                >
+                  <Rocket className="h-4 w-4" />
+                  Start Your Application Now
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+              </CreateOrderDialog>
+              
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="w-full h-8 text-[10px] sm:text-xs gap-1.5 border-border/50 hover:bg-muted/50"
+                onClick={() => navigate('/dashboard')}
+              >
+                Go to Dashboard
+              </Button>
+            </motion.div>
+
+            <p className="text-[8px] sm:text-[9px] text-center text-muted-foreground">
+              Our team will guide you through every step of the process
+            </p>
           </motion.div>
         </CardContent>
       </Card>
