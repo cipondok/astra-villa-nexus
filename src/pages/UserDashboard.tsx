@@ -11,6 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useUserDashboardData } from "@/hooks/useUserDashboardData";
 import { formatDistanceToNow } from "date-fns";
+import { OrdersList } from "@/components/orders/OrdersList";
+import { TicketsList } from "@/components/support/TicketsList";
+import { AffiliatePanel } from "@/components/affiliate/AffiliatePanel";
 import { 
   Home, 
   Search, 
@@ -21,7 +24,10 @@ import {
   Settings,
   Calendar,
   Activity,
-  ChevronRight
+  ChevronRight,
+  Package,
+  HelpCircle,
+  Share2
 } from "lucide-react";
 
 const UserDashboard = () => {
@@ -162,14 +168,22 @@ const UserDashboard = () => {
 
           {/* Dashboard Tabs - Mobile Optimized */}
           <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10">
-              <TabsTrigger value="overview" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
-                <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Overview
+            <TabsList className="grid w-full grid-cols-4 h-9 sm:h-10">
+              <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
+                <Home className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Overview</span>
               </TabsTrigger>
-              <TabsTrigger value="settings" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
-                <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Settings
+              <TabsTrigger value="orders" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
+                <Package className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Orders</span>
+              </TabsTrigger>
+              <TabsTrigger value="support" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
+                <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Support</span>
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
+                <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Settings</span>
               </TabsTrigger>
             </TabsList>
 
@@ -278,6 +292,23 @@ const UserDashboard = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Orders Tab */}
+            <TabsContent value="orders" className="space-y-4">
+              <OrdersList maxHeight="500px" />
+            </TabsContent>
+
+            {/* Support Tab */}
+            <TabsContent value="support" className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="lg:col-span-2">
+                  <TicketsList maxHeight="400px" />
+                </div>
+                <div>
+                  <AffiliatePanel />
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-4">
