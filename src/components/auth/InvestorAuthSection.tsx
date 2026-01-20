@@ -195,7 +195,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
           {investorType === 'wni' ? 'WNI Overseas' : 'Foreign Investor'} Portal
         </CardTitle>
         <CardDescription className="text-[10px] sm:text-xs">
-          {isLogin ? 'Login to access your account' : 'Create account & start your investment journey'}
+          {isLogin ? 'Login to access your account' : 'Apply now to start your investment journey'}
         </CardDescription>
       </CardHeader>
 
@@ -245,7 +245,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
               className="gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-primary"
             >
               <Rocket className="h-3.5 w-3.5" />
-              Start Application
+              Apply Now
             </TabsTrigger>
           </TabsList>
 
@@ -385,7 +385,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                     ) : (
                       <>
                         <Rocket className="h-4 w-4 mr-2" />
-                        Start Your Application
+                        Apply Now
                         <ArrowRight className="h-3.5 w-3.5 ml-1" />
                       </>
                     )}
