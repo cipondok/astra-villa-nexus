@@ -1,0 +1,217 @@
+import React, { useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
+import { Check, Globe, Shield, AlertTriangle, Info } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { motion } from 'framer-motion';
+
+// Eligible countries based on bilateral banking agreements and Indonesian banking regulations
+// Reference: Bank Indonesia regulations & OJK guidelines for overseas KPR
+const ELIGIBLE_COUNTRIES = [
+  // Tier 1 - Strong bilateral agreements, major TKI destinations
+  { code: 'SG', name: 'Singapore', nameId: 'Singapura', tier: 1, flag: '🇸🇬', minStay: 6, workPermitRequired: true },
+  { code: 'MY', name: 'Malaysia', nameId: 'Malaysia', tier: 1, flag: '🇲🇾', minStay: 6, workPermitRequired: true },
+  { code: 'JP', name: 'Japan', nameId: 'Jepang', tier: 1, flag: '🇯🇵', minStay: 12, workPermitRequired: true },
+  { code: 'KR', name: 'South Korea', nameId: 'Korea Selatan', tier: 1, flag: '🇰🇷', minStay: 12, workPermitRequired: true },
+  { code: 'TW', name: 'Taiwan', nameId: 'Taiwan', tier: 1, flag: '🇹🇼', minStay: 6, workPermitRequired: true },
+  { code: 'HK', name: 'Hong Kong', nameId: 'Hong Kong', tier: 1, flag: '🇭🇰', minStay: 6, workPermitRequired: true },
+  
+  // Tier 2 - Major economies with Indonesian diaspora
+  { code: 'AE', name: 'UAE (Dubai)', nameId: 'UEA (Dubai)', tier: 1, flag: '🇦🇪', minStay: 6, workPermitRequired: true },
+  { code: 'SA', name: 'Saudi Arabia', nameId: 'Arab Saudi', tier: 1, flag: '🇸🇦', minStay: 12, workPermitRequired: true },
+  { code: 'AU', name: 'Australia', nameId: 'Australia', tier: 1, flag: '🇦🇺', minStay: 12, workPermitRequired: true },
+  { code: 'US', name: 'United States', nameId: 'Amerika Serikat', tier: 2, flag: '🇺🇸', minStay: 12, workPermitRequired: true },
+  { code: 'GB', name: 'United Kingdom', nameId: 'Inggris', tier: 2, flag: '🇬🇧', minStay: 12, workPermitRequired: true },
+  { code: 'NL', name: 'Netherlands', nameId: 'Belanda', tier: 2, flag: '🇳🇱', minStay: 12, workPermitRequired: true },
+  { code: 'DE', name: 'Germany', nameId: 'Jerman', tier: 2, flag: '🇩🇪', minStay: 12, workPermitRequired: true },
+  
+  // Tier 3 - Other eligible countries
+  { code: 'BN', name: 'Brunei', nameId: 'Brunei', tier: 2, flag: '🇧🇳', minStay: 6, workPermitRequired: true },
+  { code: 'QA', name: 'Qatar', nameId: 'Qatar', tier: 2, flag: '🇶🇦', minStay: 12, workPermitRequired: true },
+  { code: 'KW', name: 'Kuwait', nameId: 'Kuwait', tier: 2, flag: '🇰🇼', minStay: 12, workPermitRequired: true },
+  { code: 'CA', name: 'Canada', nameId: 'Kanada', tier: 2, flag: '🇨🇦', minStay: 12, workPermitRequired: true },
+  { code: 'NZ', name: 'New Zealand', nameId: 'Selandia Baru', tier: 2, flag: '🇳🇿', minStay: 12, workPermitRequired: true },
+];
+
+interface EligibleCountriesSelectorProps {
+  selectedCountry: string | null;
+  onSelect: (countryCode: string) => void;
+  className?: string;
+}
+
+export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps> = ({
+  selectedCountry,
+  onSelect,
+  className
+}) => {
+  const { language } = useLanguage();
+  const [filter, setFilter] = useState<'all' | 1 | 2>('all');
+
+  const copy = {
+    en: {
+      title: "Select Your Country of Work",
+      subtitle: "KPR eligibility varies by country based on bilateral banking agreements",
+      tier1: "Priority Countries",
+      tier1Desc: "Strong bilateral agreements, faster processing",
+      tier2: "Standard Countries",
+      tier2Desc: "Standard processing timeline",
+      all: "All Countries",
+      minStay: "Min. stay",
+      months: "months",
+      workPermit: "Work permit required",
+      selectCountry: "Click to select",
+      selected: "Selected",
+      notListed: "Country not listed?",
+      notListedDesc: "Contact our team for special assessment"
+    },
+    id: {
+      title: "Pilih Negara Tempat Anda Bekerja",
+      subtitle: "Kelayakan KPR berbeda per negara berdasarkan perjanjian perbankan bilateral",
+      tier1: "Negara Prioritas",
+      tier1Desc: "Perjanjian bilateral kuat, proses lebih cepat",
+      tier2: "Negara Standar",
+      tier2Desc: "Waktu proses standar",
+      all: "Semua Negara",
+      minStay: "Min. tinggal",
+      months: "bulan",
+      workPermit: "Izin kerja diperlukan",
+      selectCountry: "Klik untuk memilih",
+      selected: "Terpilih",
+      notListed: "Negara tidak terdaftar?",
+      notListedDesc: "Hubungi tim kami untuk penilaian khusus"
+    }
+  };
+
+  const t = copy[language];
+  
+  const filteredCountries = filter === 'all' 
+    ? ELIGIBLE_COUNTRIES 
+    : ELIGIBLE_COUNTRIES.filter(c => c.tier === filter);
+
+  const tier1Countries = ELIGIBLE_COUNTRIES.filter(c => c.tier === 1);
+  const tier2Countries = ELIGIBLE_COUNTRIES.filter(c => c.tier === 2);
+
+  return (
+    <Card className={cn("border border-border/50 bg-card/95 backdrop-blur-xl shadow-lg", className)}>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-primary/20 flex items-center justify-center">
+            <Globe className="h-4 w-4 text-blue-600" />
+          </div>
+          {t.title}
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">{t.subtitle}</p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Filter Tabs */}
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={() => setFilter('all')}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+              filter === 'all' 
+                ? "bg-primary text-primary-foreground" 
+                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+            )}
+          >
+            {t.all}
+          </button>
+          <button
+            onClick={() => setFilter(1)}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1",
+              filter === 1 
+                ? "bg-green-500 text-white" 
+                : "bg-green-500/10 text-green-600 hover:bg-green-500/20"
+            )}
+          >
+            <Shield className="h-3 w-3" />
+            {t.tier1}
+          </button>
+          <button
+            onClick={() => setFilter(2)}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+              filter === 2 
+                ? "bg-blue-500 text-white" 
+                : "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
+            )}
+          >
+            {t.tier2}
+          </button>
+        </div>
+
+        {/* Countries Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+          {filteredCountries.map((country, idx) => {
+            const isSelected = selectedCountry === country.code;
+            return (
+              <motion.button
+                key={country.code}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.03 }}
+                onClick={() => onSelect(country.code)}
+                className={cn(
+                  "relative p-3 rounded-xl border transition-all text-left",
+                  "hover:shadow-md hover:border-primary/50",
+                  isSelected 
+                    ? "bg-primary/10 border-primary ring-2 ring-primary/30" 
+                    : "bg-background/80 border-border/50"
+                )}
+              >
+                <div className="flex items-start justify-between mb-1">
+                  <span className="text-2xl">{country.flag}</span>
+                  {isSelected && (
+                    <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                      <Check className="h-3 w-3 text-primary-foreground" />
+                    </div>
+                  )}
+                  {!isSelected && country.tier === 1 && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge className="text-[8px] px-1.5 bg-green-500/20 text-green-600 border-0">
+                            Priority
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">{t.tier1Desc}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+                <p className="text-xs font-semibold text-foreground truncate">
+                  {language === 'id' ? country.nameId : country.name}
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  {t.minStay}: {country.minStay} {t.months}
+                </p>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Country Not Listed */}
+        <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-medium text-amber-700 dark:text-amber-400">{t.notListed}</p>
+            <p className="text-[10px] text-muted-foreground">{t.notListedDesc}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export const getCountryByCode = (code: string) => {
+  return ELIGIBLE_COUNTRIES.find(c => c.code === code);
+};
+
+export const ELIGIBLE_COUNTRIES_LIST = ELIGIBLE_COUNTRIES;
+
+export default EligibleCountriesSelector;
