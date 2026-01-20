@@ -164,6 +164,15 @@ const WNAPage = () => {
         </div>
       </section>
 
+      {/* Auth Section - Prominent Position */}
+      <section className="px-3 py-3 sm:py-4">
+        <div className="max-w-2xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4 }}>
+            <InvestorAuthSection investorType="wna" />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Benefits Grid */}
       <section className="px-3 py-3 sm:py-4">
         <div className="max-w-6xl mx-auto">
@@ -294,35 +303,29 @@ const WNAPage = () => {
         </div>
       </section>
 
-      {/* Auth & CTA Section */}
+      {/* CTA Section */}
       <section className="px-3 py-4 sm:py-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <InvestorAuthSection investorType="wna" />
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="text-center lg:text-left">
-              <h2 className="text-xs sm:text-base font-bold text-foreground mb-1">{t.ctaTitle}</h2>
-              <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-2.5 sm:mb-4">{t.ctaSubtitle}</p>
-              <div className="flex flex-row items-center justify-center lg:justify-start gap-2">
-                <Button size="sm" onClick={() => navigate('/contact')} className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-accent to-blue-500 hover:from-accent/90 hover:to-blue-600 shadow-md active:scale-95">
-                  <Phone className="h-3 w-3" />
-                  {t.ctaButton}
-                </Button>
-                <Button size="sm" variant="outline" onClick={openChat} className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs border-accent/30 hover:bg-accent/10 active:scale-95">
-                  <MessageSquare className="h-3 w-3" />
-                  {t.ctaChat}
-                </Button>
-              </div>
-              {isAuthenticated && (
-                <Button size="sm" variant="ghost" onClick={() => navigate('/dashboard')} className="mt-2 gap-1 h-7 text-[9px] sm:text-xs text-accent hover:text-accent/80">
-                  <UserCircle className="h-3 w-3" />
-                  Go to Dashboard
-                </Button>
-              )}
-            </motion.div>
-          </div>
+        <div className="max-w-2xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="text-xs sm:text-base font-bold text-foreground mb-1">{t.ctaTitle}</h2>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-2.5 sm:mb-4">{t.ctaSubtitle}</p>
+            <div className="flex flex-row items-center justify-center gap-2">
+              <Button size="sm" onClick={() => navigate('/contact')} className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-accent to-blue-500 hover:from-accent/90 hover:to-blue-600 shadow-md active:scale-95">
+                <Phone className="h-3 w-3" />
+                {t.ctaButton}
+              </Button>
+              <Button size="sm" variant="outline" onClick={openChat} className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs border-accent/30 hover:bg-accent/10 active:scale-95">
+                <MessageSquare className="h-3 w-3" />
+                {t.ctaChat}
+              </Button>
+            </div>
+            {isAuthenticated && (
+              <Button size="sm" variant="ghost" onClick={() => navigate('/dashboard')} className="mt-2 gap-1 h-7 text-[9px] sm:text-xs text-accent hover:text-accent/80">
+                <UserCircle className="h-3 w-3" />
+                Go to Dashboard
+              </Button>
+            )}
+          </motion.div>
         </div>
       </section>
 
