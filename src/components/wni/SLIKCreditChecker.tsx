@@ -231,46 +231,46 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
     <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
       <CardHeader className="pb-2 pt-3 px-3">
         <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-primary/20 flex items-center justify-center">
-            <FileSearch className="h-4 w-4 text-amber-600" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-primary/20 flex items-center justify-center">
+            <FileSearch className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600" />
           </div>
           {t.title}
         </CardTitle>
-        <p className="text-xs text-muted-foreground">{t.subtitle}</p>
+        <p className="text-[10px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 px-3 pb-3">
         {/* What is SLIK */}
-        <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+        <div className="p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-lg">
           <div className="flex items-start gap-2">
-            <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+            <Info className="h-3.5 w-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-medium text-blue-600">{t.whatIsSLIK}</p>
-              <p className="text-[10px] text-muted-foreground mt-1">{t.slikDesc}</p>
+              <p className="text-[10px] sm:text-xs font-medium text-blue-600">{t.whatIsSLIK}</p>
+              <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5">{t.slikDesc}</p>
             </div>
           </div>
         </div>
 
         {/* Collectability Statuses */}
         <div>
-          <h3 className="text-sm font-semibold mb-1">{t.collectabilityTitle}</h3>
-          <p className="text-[10px] text-muted-foreground mb-3">{t.collectabilitySubtitle}</p>
+          <h3 className="text-[10px] sm:text-sm font-semibold mb-0.5">{t.collectabilityTitle}</h3>
+          <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-2">{t.collectabilitySubtitle}</p>
           
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {t.statuses.map((status) => (
               <button
                 key={status.level}
                 onClick={() => setSelectedStatus(selectedStatus === status.level ? null : status.level)}
                 className={cn(
-                  "w-full p-3 rounded-xl border text-left transition-all",
+                  "w-full p-2 sm:p-2.5 rounded-lg border text-left transition-all active:scale-[0.98]",
                   getStatusColor(status.color),
                   selectedStatus === status.level && "ring-2 ring-primary/50"
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0 flex-1">
                     <Badge 
                       className={cn(
-                        "text-xs font-bold",
+                        "text-[9px] sm:text-xs font-bold px-1.5 flex-shrink-0",
                         status.color === 'green' && "bg-green-500",
                         status.color === 'yellow' && "bg-yellow-500",
                         status.color === 'orange' && "bg-orange-500",
@@ -279,22 +279,22 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
                     >
                       {status.level}
                     </Badge>
-                    <div>
-                      <p className="text-xs font-medium">{status.label}</p>
-                      <p className="text-[10px] opacity-80">{status.desc}</p>
+                    <div className="min-w-0">
+                      <p className="text-[9px] sm:text-xs font-medium truncate">{status.label}</p>
+                      <p className="text-[8px] sm:text-[9px] opacity-80 truncate">{status.desc}</p>
                     </div>
                   </div>
                   <Badge 
                     variant={status.eligible ? "default" : "destructive"}
                     className={cn(
-                      "text-[9px]",
+                      "text-[7px] sm:text-[9px] px-1 py-0 flex-shrink-0 whitespace-nowrap",
                       status.eligible ? "bg-green-500" : "bg-red-500"
                     )}
                   >
                     {status.eligible ? (
-                      <><CheckCircle className="h-3 w-3 mr-1" />{t.eligible}</>
+                      <><CheckCircle className="h-2 w-2 sm:h-3 sm:w-3 mr-0.5" /><span className="hidden sm:inline">{t.eligible}</span><span className="sm:hidden">OK</span></>
                     ) : (
-                      <><XCircle className="h-3 w-3 mr-1" />{t.notEligible}</>
+                      <><XCircle className="h-2 w-2 sm:h-3 sm:w-3 mr-0.5" /><span className="hidden sm:inline">{t.notEligible}</span><span className="sm:hidden">No</span></>
                     )}
                   </Badge>
                 </div>
@@ -303,24 +303,24 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
           </div>
         </div>
 
-        <Accordion type="multiple" className="space-y-2">
+        <Accordion type="multiple" className="space-y-1.5">
           {/* How to Check */}
-          <AccordionItem value="how-to-check" className="border border-border/50 rounded-xl px-4">
-            <AccordionTrigger className="hover:no-underline py-3">
-              <div className="flex items-center gap-2">
-                <FileSearch className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">{t.howToCheck}</span>
+          <AccordionItem value="how-to-check" className="border border-border/50 rounded-lg px-3">
+            <AccordionTrigger className="hover:no-underline py-2">
+              <div className="flex items-center gap-1.5">
+                <FileSearch className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                <span className="text-[10px] sm:text-sm font-medium">{t.howToCheck}</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pb-4">
-              <div className="space-y-3">
+            <AccordionContent className="pb-3">
+              <div className="space-y-2">
                 {t.checkMethods.map((method, idx) => (
-                  <div key={idx} className="p-3 bg-muted/30 rounded-lg">
-                    <p className="text-xs font-semibold mb-2">{method.title}</p>
-                    <ol className="space-y-1">
+                  <div key={idx} className="p-2 bg-muted/30 rounded-lg">
+                    <p className="text-[10px] sm:text-xs font-semibold mb-1.5">{method.title}</p>
+                    <ol className="space-y-0.5">
                       {method.steps.map((step, stepIdx) => (
-                        <li key={stepIdx} className="flex items-start gap-2 text-[10px] text-muted-foreground">
-                          <span className="w-4 h-4 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 text-[9px] font-medium">
+                        <li key={stepIdx} className="flex items-start gap-1.5 text-[9px] sm:text-[10px] text-muted-foreground">
+                          <span className="w-3.5 h-3.5 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 text-[8px] font-medium">
                             {stepIdx + 1}
                           </span>
                           {step}
@@ -334,18 +334,18 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
           </AccordionItem>
 
           {/* For Overseas WNI */}
-          <AccordionItem value="overseas" className="border border-border/50 rounded-xl px-4">
-            <AccordionTrigger className="hover:no-underline py-3">
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-500" />
-                <span className="text-sm font-medium">{t.forOverseasWNI}</span>
+          <AccordionItem value="overseas" className="border border-border/50 rounded-lg px-3">
+            <AccordionTrigger className="hover:no-underline py-2">
+              <div className="flex items-center gap-1.5">
+                <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
+                <span className="text-[10px] sm:text-sm font-medium">{t.forOverseasWNI}</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pb-4">
-              <ul className="space-y-2">
+            <AccordionContent className="pb-3">
+              <ul className="space-y-1.5">
                 {t.overseasSteps.map((step, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-1.5 text-[9px] sm:text-xs text-muted-foreground">
+                    <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
                     {step}
                   </li>
                 ))}
@@ -354,18 +354,18 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
           </AccordionItem>
 
           {/* Cleaning Credit */}
-          <AccordionItem value="cleaning" className="border border-border/50 rounded-xl px-4">
-            <AccordionTrigger className="hover:no-underline py-3">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-amber-500" />
-                <span className="text-sm font-medium">{t.cleaningCredit}</span>
+          <AccordionItem value="cleaning" className="border border-border/50 rounded-lg px-3">
+            <AccordionTrigger className="hover:no-underline py-2">
+              <div className="flex items-center gap-1.5">
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-amber-500" />
+                <span className="text-[10px] sm:text-sm font-medium">{t.cleaningCredit}</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pb-4">
-              <ol className="space-y-2">
+            <AccordionContent className="pb-3">
+              <ol className="space-y-1.5">
                 {t.cleaningSteps.map((step, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center flex-shrink-0 text-[10px] font-medium">
+                  <li key={idx} className="flex items-start gap-1.5 text-[9px] sm:text-xs text-muted-foreground">
+                    <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center flex-shrink-0 text-[9px] font-medium">
                       {idx + 1}
                     </span>
                     {step}
@@ -378,15 +378,15 @@ export const SLIKCreditChecker: React.FC<SLIKCreditCheckerProps> = ({ className 
 
         {/* CTA Button */}
         <Button 
-          className="w-full gap-2"
+          className="w-full gap-1.5 h-8 text-[10px] sm:text-xs"
           onClick={() => window.open('https://idebku.ojk.go.id', '_blank')}
         >
           {t.checkNow}
-          <ExternalLink className="h-4 w-4" />
+          <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
         </Button>
 
         {/* Disclaimer */}
-        <p className="text-[10px] text-center text-muted-foreground">
+        <p className="text-[9px] sm:text-[10px] text-center text-muted-foreground">
           {t.disclaimer}
         </p>
       </CardContent>
