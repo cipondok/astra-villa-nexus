@@ -161,6 +161,15 @@ const WNIPage = () => {
         </div>
       </section>
 
+      {/* Auth Section - Prominent Position (Same as WNA) */}
+      <section className="px-4 py-4 sm:py-6">
+        <div className="max-w-3xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4 }}>
+            <InvestorAuthSection investorType="wni" />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Benefits Grid - Marketplace Style Icons */}
       <section className="px-3 py-3 sm:py-4">
         <div className="max-w-6xl mx-auto">
@@ -300,60 +309,43 @@ const WNIPage = () => {
         </div>
       </section>
 
-      {/* Auth & CTA Section */}
-      <section className="px-3 py-4 sm:py-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-            {/* Auth Section */}
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }} 
-              whileInView={{ opacity: 1, x: 0 }} 
-              viewport={{ once: true }}
-            >
-              <InvestorAuthSection investorType="wni" />
-            </motion.div>
-
-            {/* CTA Section */}
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }} 
-              whileInView={{ opacity: 1, x: 0 }} 
-              viewport={{ once: true }}
-              className="text-center lg:text-left"
-            >
-              <h2 className="text-xs sm:text-base font-bold text-foreground mb-1">{t.ctaTitle}</h2>
-              <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-2.5 sm:mb-4">{t.ctaSubtitle}</p>
-              <div className="flex flex-row items-center justify-center lg:justify-start gap-2">
-                <Button 
-                  size="sm" 
-                  onClick={() => navigate('/contact')} 
-                  className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-md active:scale-95"
-                >
-                  <Phone className="h-3 w-3" />
-                  {t.ctaButton}
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={openChat} 
-                  className="gap-1 flex-1 sm:flex-initial h-7 sm:h-8 text-[9px] sm:text-xs border-primary/30 hover:bg-primary/10 active:scale-95"
-                >
-                  <MessageSquare className="h-3 w-3" />
-                  {t.ctaChat}
-                </Button>
-              </div>
-              {isAuthenticated && (
-                <Button 
-                  size="sm" 
-                  variant="ghost"
-                  onClick={() => navigate('/dashboard')} 
-                  className="mt-2 gap-1 h-7 text-[9px] sm:text-xs text-primary hover:text-primary/80"
-                >
-                  <UserCircle className="h-3 w-3" />
-                  Go to Dashboard
-                </Button>
-              )}
-            </motion.div>
-          </div>
+      {/* CTA Section */}
+      <section className="px-4 py-6 sm:py-8">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="text-xs sm:text-base font-bold text-foreground mb-1">{t.ctaTitle}</h2>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-2.5 sm:mb-4">{t.ctaSubtitle}</p>
+            <div className="flex flex-row items-center justify-center gap-2">
+              <Button 
+                size="sm" 
+                onClick={() => navigate('/contact')} 
+                className="gap-1 h-7 sm:h-8 text-[9px] sm:text-xs bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-md active:scale-95"
+              >
+                <Phone className="h-3 w-3" />
+                {t.ctaButton}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={openChat} 
+                className="gap-1 h-7 sm:h-8 text-[9px] sm:text-xs border-primary/30 hover:bg-primary/10 active:scale-95"
+              >
+                <MessageSquare className="h-3 w-3" />
+                {t.ctaChat}
+              </Button>
+            </div>
+            {isAuthenticated && (
+              <Button 
+                size="sm" 
+                variant="ghost"
+                onClick={() => navigate('/dashboard')} 
+                className="mt-2 gap-1 h-7 text-[9px] sm:text-xs text-primary hover:text-primary/80"
+              >
+                <UserCircle className="h-3 w-3" />
+                Go to Dashboard
+              </Button>
+            )}
+          </motion.div>
         </div>
       </section>
 
