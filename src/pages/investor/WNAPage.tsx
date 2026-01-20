@@ -17,7 +17,13 @@ import {
   MessageSquare,
   TrendingUp,
   UserCircle,
-  HelpCircle
+  HelpCircle,
+  MapPin,
+  Gift,
+  ListChecks,
+  BookOpen,
+  UserCheck,
+  Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -250,13 +256,31 @@ const WNAPage = () => {
 
             <Tabs defaultValue="countries" className="w-full">
               <div className="overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
-                <TabsList className="inline-flex w-max h-auto gap-1 bg-muted/60 backdrop-blur-xl p-1 mb-4 rounded-lg whitespace-nowrap border-2 border-border/30">
-                  <TabsTrigger value="countries" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium">{t.tabs.countries}</TabsTrigger>
-                  <TabsTrigger value="facilities" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium">{t.tabs.facilities}</TabsTrigger>
-                  <TabsTrigger value="process" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium">{t.tabs.process}</TabsTrigger>
-                  <TabsTrigger value="regulations" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium">{t.tabs.regulations}</TabsTrigger>
-                  <TabsTrigger value="eligibility" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium">{t.tabs.eligibility}</TabsTrigger>
-                  <TabsTrigger value="timeline" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium">{t.tabs.timeline}</TabsTrigger>
+              <TabsList className="inline-flex w-max h-auto gap-1 bg-muted/60 backdrop-blur-xl p-1 mb-4 rounded-lg whitespace-nowrap border-2 border-border/30">
+                  <TabsTrigger value="countries" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5" />
+                    {t.tabs.countries}
+                  </TabsTrigger>
+                  <TabsTrigger value="facilities" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <Gift className="h-3.5 w-3.5" />
+                    {t.tabs.facilities}
+                  </TabsTrigger>
+                  <TabsTrigger value="process" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <ListChecks className="h-3.5 w-3.5" />
+                    {t.tabs.process}
+                  </TabsTrigger>
+                  <TabsTrigger value="regulations" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <BookOpen className="h-3.5 w-3.5" />
+                    {t.tabs.regulations}
+                  </TabsTrigger>
+                  <TabsTrigger value="eligibility" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <UserCheck className="h-3.5 w-3.5" />
+                    {t.tabs.eligibility}
+                  </TabsTrigger>
+                  <TabsTrigger value="timeline" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5" />
+                    {t.tabs.timeline}
+                  </TabsTrigger>
                   <TabsTrigger value="faq" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
                     <HelpCircle className="h-3.5 w-3.5" />
                     {t.tabs.faq}
