@@ -58,30 +58,30 @@ const CountryNotListedCTA: React.FC<{
   };
 
   return (
-    <div className="p-2.5 sm:p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-      <div className="flex items-start gap-2 mb-2">
-        <AlertTriangle className="h-3.5 w-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+    <div className="p-2 sm:p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+      <div className="flex items-start gap-1.5 mb-1.5">
+        <AlertTriangle className="h-3 w-3 text-amber-500 flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-[10px] sm:text-xs font-medium text-amber-700 dark:text-amber-400">{notListed}</p>
-          <p className="text-[9px] sm:text-[10px] text-muted-foreground">{notListedDesc}</p>
+          <p className="text-[9px] sm:text-xs font-medium text-amber-700 dark:text-amber-400">{notListed}</p>
+          <p className="text-[8px] sm:text-[10px] text-muted-foreground">{notListedDesc}</p>
         </div>
       </div>
-      <div className="flex gap-1.5 flex-wrap">
+      <div className="flex gap-1 flex-wrap">
         <Button
           size="sm"
           onClick={() => navigate('/contact')}
-          className="gap-1 text-[10px] sm:text-xs h-7 px-2.5 bg-amber-600 hover:bg-amber-700"
+          className="gap-1 text-[9px] sm:text-xs h-6 sm:h-7 px-2 bg-amber-600 hover:bg-amber-700 active:scale-95"
         >
-          <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+          <Phone className="h-2.5 w-2.5" />
           {contactUs}
         </Button>
         <Button
           size="sm"
           variant="outline"
           onClick={openChat}
-          className="gap-1 text-[10px] sm:text-xs h-7 px-2.5 border-amber-500/50 text-amber-700 hover:bg-amber-500/10"
+          className="gap-1 text-[9px] sm:text-xs h-6 sm:h-7 px-2 border-amber-500/50 text-amber-700 hover:bg-amber-500/10 active:scale-95"
         >
-          <MessageSquare className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+          <MessageSquare className="h-2.5 w-2.5" />
           {chatWithUs}
         </Button>
       </div>
@@ -146,23 +146,23 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
   const tier2Countries = ELIGIBLE_COUNTRIES.filter(c => c.tier === 2);
 
   return (
-    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
-      <CardHeader className="pb-2 pt-3 px-3">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-primary/20 flex items-center justify-center">
-            <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
+    <Card className={cn("border-0 bg-transparent shadow-none", className)}>
+      <CardHeader className="pb-1.5 pt-0 px-0">
+        <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-blue-500/20 to-primary/20 flex items-center justify-center">
+            <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-blue-600" />
           </div>
           {t.title}
         </CardTitle>
-        <p className="text-[10px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
+        <p className="text-[9px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
       </CardHeader>
-      <CardContent className="space-y-3 px-3 pb-3">
+      <CardContent className="space-y-2 px-0 pb-0">
         {/* Filter Tabs */}
-        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-0.5 px-0.5">
           <button
             onClick={() => setFilter('all')}
             className={cn(
-              "px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-medium transition-all whitespace-nowrap flex-shrink-0",
+              "px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-medium transition-all whitespace-nowrap flex-shrink-0 active:scale-95",
               filter === 'all' 
                 ? "bg-primary text-primary-foreground" 
                 : "bg-muted/50 text-muted-foreground hover:bg-muted"
@@ -173,19 +173,19 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
           <button
             onClick={() => setFilter(1)}
             className={cn(
-              "px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-medium transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0",
+              "px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-medium transition-all flex items-center gap-0.5 whitespace-nowrap flex-shrink-0 active:scale-95",
               filter === 1 
                 ? "bg-green-500 text-white" 
                 : "bg-green-500/10 text-green-600 hover:bg-green-500/20"
             )}
           >
-            <Shield className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+            <Shield className="h-2.5 w-2.5" />
             {t.tier1}
           </button>
           <button
             onClick={() => setFilter(2)}
             className={cn(
-              "px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-medium transition-all whitespace-nowrap flex-shrink-0",
+              "px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-medium transition-all whitespace-nowrap flex-shrink-0 active:scale-95",
               filter === 2 
                 ? "bg-blue-500 text-white" 
                 : "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
@@ -196,41 +196,41 @@ export const EligibleCountriesSelector: React.FC<EligibleCountriesSelectorProps>
         </div>
 
         {/* Countries Grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5 sm:gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1 sm:gap-1.5">
           {filteredCountries.map((country, idx) => {
             const isSelected = selectedCountry === country.code;
             return (
               <motion.button
                 key={country.code}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.02 }}
+                transition={{ delay: idx * 0.015 }}
                 onClick={() => onSelect(country.code)}
                 className={cn(
-                  "relative p-2 sm:p-2.5 rounded-lg border transition-all text-left",
-                  "hover:shadow-md hover:border-primary/50 active:scale-95",
+                  "relative p-1.5 sm:p-2 rounded-lg border transition-all text-left",
+                  "hover:shadow-sm hover:border-primary/50 active:scale-95",
                   isSelected 
-                    ? "bg-primary/10 border-primary ring-2 ring-primary/30" 
-                    : "bg-background/80 border-border/50"
+                    ? "bg-primary/10 border-primary ring-1 ring-primary/30" 
+                    : "bg-background/80 border-border/40"
                 )}
               >
                 <div className="flex items-start justify-between mb-0.5">
-                  <span className="text-lg sm:text-xl">{country.flag}</span>
+                  <span className="text-base sm:text-lg">{country.flag}</span>
                   {isSelected && (
-                    <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                      <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                    <div className="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center">
+                      <Check className="h-2 w-2 text-primary-foreground" />
                     </div>
                   )}
                   {!isSelected && country.tier === 1 && (
-                    <Badge className="text-[7px] px-1 py-0 bg-green-500/20 text-green-600 border-0 hidden sm:inline-flex">
+                    <Badge className="text-[6px] px-0.5 py-0 bg-green-500/20 text-green-600 border-0 hidden sm:inline-flex">
                       ★
                     </Badge>
                   )}
                 </div>
-                <p className="text-[9px] sm:text-[10px] font-semibold text-foreground truncate leading-tight">
+                <p className="text-[8px] sm:text-[9px] font-semibold text-foreground truncate leading-tight">
                   {language === 'id' ? country.nameId : country.name}
                 </p>
-                <p className="text-[8px] sm:text-[9px] text-muted-foreground truncate">
+                <p className="text-[7px] sm:text-[8px] text-muted-foreground truncate">
                   {country.minStay}+ {t.months}
                 </p>
               </motion.button>

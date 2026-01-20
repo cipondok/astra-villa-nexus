@@ -155,19 +155,19 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
   };
 
   return (
-    <Card className={cn("border border-primary/10 bg-transparent dark:bg-white/5 backdrop-blur-xl shadow-sm", className)}>
-      <CardHeader className="pb-2 pt-3 px-3">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
-            <CreditCard className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-600" />
+    <Card className={cn("border-0 bg-transparent shadow-none", className)}>
+      <CardHeader className="pb-1.5 pt-0 px-0">
+        <CardTitle className="flex items-center gap-1.5 text-[10px] sm:text-sm">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-green-500/20 to-primary/20 flex items-center justify-center">
+            <CreditCard className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-green-600" />
           </div>
           {t.title}
         </CardTitle>
-        <p className="text-[10px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
+        <p className="text-[9px] sm:text-xs text-muted-foreground">{t.subtitle}</p>
       </CardHeader>
-      <CardContent className="space-y-3 px-3 pb-3">
+      <CardContent className="space-y-2 px-0 pb-0">
         {/* Payment Methods */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {PAYMENT_METHODS.map((method, idx) => {
             const methodData = t.methods[method.id as keyof typeof t.methods];
             const Icon = method.icon;
@@ -175,49 +175,47 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
             return (
               <motion.div
                 key={method.id}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -5 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: idx * 0.05 }}
                 className={cn(
-                  "p-2.5 sm:p-3 rounded-lg border bg-gradient-to-br",
+                  "p-2 sm:p-2.5 rounded-lg border bg-gradient-to-br",
                   getMethodColor(method.color)
                 )}
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-1.5">
                   <div className={cn(
-                    "w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center bg-background/80 flex-shrink-0",
+                    "w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center bg-background/80 flex-shrink-0",
                     getIconColor(method.color)
                   )}>
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h3 className="text-[10px] sm:text-xs font-semibold truncate">{methodData.title}</h3>
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <h3 className="text-[9px] sm:text-xs font-semibold truncate">{methodData.title}</h3>
                       {method.recommended && (
-                        <Badge className="text-[7px] sm:text-[9px] px-1 py-0 bg-green-500 text-white">
-                          ★
-                        </Badge>
+                        <Badge className="text-[6px] sm:text-[8px] px-0.5 py-0 bg-green-500 text-white">★</Badge>
                       )}
                     </div>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5 line-clamp-2">{methodData.desc}</p>
+                    <p className="text-[8px] sm:text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{methodData.desc}</p>
                     
-                    <div className="grid grid-cols-2 gap-2 mt-1.5">
+                    <div className="grid grid-cols-2 gap-1.5 mt-1">
                       <div>
-                        <p className="text-[8px] sm:text-[9px] font-medium text-green-600 mb-0.5">✓ Pros</p>
+                        <p className="text-[7px] sm:text-[8px] font-medium text-green-600 mb-0.5">✓ Pros</p>
                         {methodData.pros.slice(0, 2).map((pro, i) => (
-                          <p key={i} className="text-[8px] sm:text-[9px] text-muted-foreground truncate">• {pro}</p>
+                          <p key={i} className="text-[7px] sm:text-[8px] text-muted-foreground truncate">• {pro}</p>
                         ))}
                       </div>
                       <div>
-                        <p className="text-[8px] sm:text-[9px] font-medium text-amber-600 mb-0.5">○ Cons</p>
-                        {methodData.cons.map((con, i) => (
-                          <p key={i} className="text-[8px] sm:text-[9px] text-muted-foreground truncate">• {con}</p>
+                        <p className="text-[7px] sm:text-[8px] font-medium text-amber-600 mb-0.5">○ Cons</p>
+                        {methodData.cons.slice(0, 1).map((con, i) => (
+                          <p key={i} className="text-[7px] sm:text-[8px] text-muted-foreground truncate">• {con}</p>
                         ))}
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-0.5 mt-1.5 text-[9px] sm:text-[10px] text-primary">
-                      <ArrowRight className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 mt-1 text-[8px] sm:text-[9px] text-primary">
+                      <ArrowRight className="h-2 w-2" />
                       <span>{methodData.time}</span>
                     </div>
                   </div>
@@ -228,27 +226,27 @@ export const KPRPaymentMethods: React.FC<KPRPaymentMethodsProps> = ({ className 
         </div>
 
         {/* Payment Structure */}
-        <div className="grid grid-cols-2 gap-2">
-          <div className="p-2 bg-primary/10 border border-primary/20 rounded-lg">
-            <h4 className="text-[10px] sm:text-xs font-semibold text-primary">{t.dpPayment}</h4>
-            <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5">{t.dpDesc}</p>
+        <div className="grid grid-cols-2 gap-1.5">
+          <div className="p-1.5 sm:p-2 bg-primary/10 border border-primary/20 rounded-md">
+            <h4 className="text-[9px] sm:text-xs font-semibold text-primary">{t.dpPayment}</h4>
+            <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 line-clamp-2">{t.dpDesc}</p>
           </div>
-          <div className="p-2 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <h4 className="text-[10px] sm:text-xs font-semibold text-blue-600">{t.monthlyPayment}</h4>
-            <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5">{t.monthlyDesc}</p>
+          <div className="p-1.5 sm:p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
+            <h4 className="text-[9px] sm:text-xs font-semibold text-blue-600">{t.monthlyPayment}</h4>
+            <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 line-clamp-2">{t.monthlyDesc}</p>
           </div>
         </div>
 
         {/* Important Notes */}
-        <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-          <div className="flex items-start gap-1.5">
-            <Info className="h-3.5 w-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+        <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-md">
+          <div className="flex items-start gap-1">
+            <Info className="h-3 w-3 text-amber-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[10px] sm:text-xs font-medium text-amber-600">{t.importantNotes}</p>
-              <ul className="mt-1 space-y-0.5">
-                {t.notes.slice(0, 3).map((note, idx) => (
-                  <li key={idx} className="flex items-start gap-1 text-[9px] sm:text-[10px] text-muted-foreground">
-                    <CheckCircle className="h-2.5 w-2.5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <p className="text-[9px] sm:text-xs font-medium text-amber-600">{t.importantNotes}</p>
+              <ul className="mt-0.5 space-y-0.5">
+                {t.notes.slice(0, 2).map((note, idx) => (
+                  <li key={idx} className="flex items-start gap-0.5 text-[8px] sm:text-[9px] text-muted-foreground">
+                    <CheckCircle className="h-2 w-2 text-amber-500 flex-shrink-0 mt-0.5" />
                     <span className="line-clamp-1">{note}</span>
                   </li>
                 ))}
