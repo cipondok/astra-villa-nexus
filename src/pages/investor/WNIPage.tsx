@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useIsAdmin } from '@/hooks/useUserRoles';
 import { cn } from '@/lib/utils';
 import { 
   ArrowLeft, 
@@ -28,6 +29,7 @@ import KPRPaymentMethods from '@/components/wni/KPRPaymentMethods';
 const WNIPage = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const { isAdmin } = useIsAdmin();
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   const copy = {
@@ -155,37 +157,49 @@ const WNIPage = () => {
         </div>
       </section>
 
-      {/* Benefits Grid - Slim Transparent Cards */}
+      {/* Benefits Grid - Marketplace Style Icons */}
       <section className="px-2 py-3 sm:px-3 sm:py-4 md:py-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5">
-            {t.benefits.map((benefit, idx) => (
-              <motion.div 
-                key={idx} 
-                initial={{ opacity: 0, y: 10 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                viewport={{ once: true }} 
-                transition={{ delay: idx * 0.05, duration: 0.4 }}
-                className={cn(
-                  "relative overflow-hidden rounded-lg p-2.5 sm:p-3",
-                  "bg-transparent dark:bg-white/5",
-                  "border border-primary/10 hover:border-primary/30",
-                  "hover:shadow-md hover:shadow-primary/10",
-                  "transition-all duration-300 group"
-                )}
-              >
-                <div className={cn(
-                  "flex items-center justify-center w-8 h-8 rounded-lg mb-2",
-                  "bg-gradient-to-br from-red-500/15 via-primary/10 to-red-500/15",
-                  "border border-red-500/20 group-hover:border-red-500/40",
-                  "transition-all duration-300"
-                )}>
-                  <benefit.icon className="h-4 w-4 text-red-600 dark:text-red-400" />
-                </div>
-                <h3 className="text-[10px] sm:text-xs font-semibold text-foreground mb-0.5 leading-tight">{benefit.title}</h3>
-                <p className="text-[8px] sm:text-[9px] text-muted-foreground leading-snug">{benefit.desc}</p>
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+            {t.benefits.map((benefit, idx) => {
+              const iconColors = [
+                { bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-400' },
+                { bg: 'bg-amber-100 dark:bg-amber-900/50', text: 'text-amber-600 dark:text-amber-400' },
+                { bg: 'bg-green-100 dark:bg-green-900/50', text: 'text-green-600 dark:text-green-400' },
+                { bg: 'bg-purple-100 dark:bg-purple-900/50', text: 'text-purple-600 dark:text-purple-400' },
+                { bg: 'bg-cyan-100 dark:bg-cyan-900/50', text: 'text-cyan-600 dark:text-cyan-400' },
+                { bg: 'bg-rose-100 dark:bg-rose-900/50', text: 'text-rose-600 dark:text-rose-400' },
+              ];
+              const colorSet = iconColors[idx % iconColors.length];
+              
+              return (
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, y: 10 }} 
+                  whileInView={{ opacity: 1, y: 0 }} 
+                  viewport={{ once: true }} 
+                  transition={{ delay: idx * 0.05, duration: 0.4 }}
+                  className={cn(
+                    "relative overflow-hidden rounded-xl p-2.5 sm:p-3",
+                    "bg-white/60 dark:bg-white/5",
+                    "border border-border/30 dark:border-white/10",
+                    "hover:border-primary/40 hover:scale-[1.02]",
+                    "hover:shadow-lg hover:shadow-primary/10",
+                    "transition-all duration-300 group flex flex-col items-center text-center"
+                  )}
+                >
+                  {/* Icon Container - Marketplace Style */}
+                  <div className={cn(
+                    "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl mb-2 shadow-sm",
+                    colorSet.bg
+                  )}>
+                    <benefit.icon className={cn("w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7", colorSet.text)} strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[9px] sm:text-[10px] md:text-xs font-semibold text-foreground mb-0.5 leading-tight group-hover:text-primary transition-colors">{benefit.title}</h3>
+                  <p className="text-[7px] sm:text-[8px] md:text-[9px] text-muted-foreground leading-snug line-clamp-2">{benefit.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
           <motion.p 
             initial={{ opacity: 0 }} 
@@ -198,14 +212,14 @@ const WNIPage = () => {
         </div>
       </section>
 
-      {/* KPR System Section - Glassmorphic */}
+      {/* KPR System Section - Light Mode Enhanced */}
       <section className="px-2 py-4 sm:px-3 sm:py-5 md:py-6">
         <div className="max-w-6xl mx-auto">
           <div className={cn(
             "rounded-xl p-3 sm:p-4",
-            "bg-transparent dark:bg-white/5",
-            "border border-primary/10",
-            "backdrop-blur-xl"
+            "bg-white/70 dark:bg-white/5",
+            "border border-border/30 dark:border-primary/10",
+            "backdrop-blur-xl shadow-sm"
           )}>
             <div className="text-center mb-3 sm:mb-4">
               <h2 className="text-sm sm:text-base md:text-lg font-bold text-foreground mb-1">{t.kprSystemTitle}</h2>
@@ -214,11 +228,13 @@ const WNIPage = () => {
 
             <Tabs defaultValue="countries" className="w-full">
               <div className="overflow-x-auto -mx-3 px-3 pb-1 scrollbar-hide">
-                <TabsList className="inline-flex w-max sm:w-full h-auto gap-1 bg-muted/30 backdrop-blur-xl p-1 mb-3 rounded-lg whitespace-nowrap">
+                <TabsList className="inline-flex w-max sm:w-full h-auto gap-1 bg-white/50 dark:bg-muted/30 backdrop-blur-xl p-1 mb-3 rounded-lg whitespace-nowrap border border-border/30">
                   <TabsTrigger value="countries" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.countries}</TabsTrigger>
                   <TabsTrigger value="eligibility" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.eligibility}</TabsTrigger>
                   <TabsTrigger value="requirements" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.requirements}</TabsTrigger>
-                  <TabsTrigger value="credit" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.credit}</TabsTrigger>
+                  {isAdmin && (
+                    <TabsTrigger value="credit" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.credit}</TabsTrigger>
+                  )}
                   <TabsTrigger value="payment" className="min-w-fit text-[9px] sm:text-[10px] py-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">{t.tabs.payment}</TabsTrigger>
                 </TabsList>
               </div>
@@ -232,9 +248,11 @@ const WNIPage = () => {
               <TabsContent value="requirements">
                 <KPRRequirementsChecklist />
               </TabsContent>
-              <TabsContent value="credit">
-                <SLIKCreditChecker />
-              </TabsContent>
+              {isAdmin && (
+                <TabsContent value="credit">
+                  <SLIKCreditChecker />
+                </TabsContent>
+              )}
               <TabsContent value="payment">
                 <KPRPaymentMethods />
               </TabsContent>
