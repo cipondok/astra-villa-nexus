@@ -101,88 +101,80 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
   // If already authenticated, show professional welcome with application CTA
   if (isAuthenticated) {
     return (
-      <div className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-lg rounded-xl overflow-hidden ${className}`}>
-        <div className="p-4 sm:p-6">
+      <div className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-sm rounded-lg overflow-hidden ${className}`}>
+        <div className="p-2.5 sm:p-3">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="space-y-4"
+            className="space-y-2"
           >
             {/* Welcome Header */}
-            <div className="text-center">
+            <div className="flex items-center gap-2">
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
-                className="mx-auto w-14 h-14 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center mb-3"
+                className="w-8 h-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center flex-shrink-0"
               >
-                <CheckCircle className="h-7 w-7 text-green-600 dark:text-green-400" />
+                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
               </motion.div>
-              <h3 className="text-sm sm:text-base font-bold text-foreground">
-                Welcome, {profile?.full_name || 'Investor'}!
-              </h3>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                You're ready to explore {investorType.toUpperCase()} investment opportunities
-              </p>
+              <div className="min-w-0">
+                <h3 className="text-[10px] sm:text-xs font-bold text-foreground truncate">
+                  Welcome, {profile?.full_name || 'Investor'}!
+                </h3>
+                <p className="text-[8px] sm:text-[9px] text-muted-foreground truncate">
+                  {investorType.toUpperCase()} investment opportunities
+                </p>
+              </div>
             </div>
 
-            {/* Professional Features Display */}
-            <div className="grid grid-cols-2 gap-2">
+            {/* Features - Inline */}
+            <div className="flex gap-1.5">
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg"
+                className="flex items-center gap-1 p-1.5 bg-primary/5 rounded flex-1"
               >
-                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Building2 className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Premium Properties</span>
+                <Building2 className="h-3 w-3 text-primary flex-shrink-0" />
+                <span className="text-[7px] sm:text-[8px] font-medium text-foreground truncate">Premium Properties</span>
               </motion.div>
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
-                className="flex items-center gap-2 p-2 bg-accent/5 rounded-lg"
+                className="flex items-center gap-1 p-1.5 bg-accent/5 rounded flex-1"
               >
-                <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <FileText className="h-3.5 w-3.5 text-accent" />
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-medium text-foreground">KPR Assistance</span>
+                <FileText className="h-3 w-3 text-accent flex-shrink-0" />
+                <span className="text-[7px] sm:text-[8px] font-medium text-foreground truncate">KPR Assistance</span>
               </motion.div>
             </div>
 
-            {/* Start Application CTA */}
+            {/* Actions */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="space-y-2"
+              className="flex gap-1.5"
             >
               <CreateOrderDialog>
                 <Button 
                   size="sm" 
-                  className="w-full h-9 sm:h-10 gap-2 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 shadow-lg text-xs sm:text-sm font-semibold"
+                  className="flex-1 h-7 gap-1 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 text-[9px] font-semibold"
                 >
-                  <Rocket className="h-4 w-4" />
-                  Start Your Application Now
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <Rocket className="h-3 w-3" />
+                  Start Application
                 </Button>
               </CreateOrderDialog>
-              
               <Button 
                 size="sm" 
                 variant="outline"
-                className="w-full h-8 text-[10px] sm:text-xs gap-1.5 border-border/50 hover:bg-muted/50"
+                className="h-7 text-[9px] gap-1 border-border/50"
                 onClick={() => navigate('/dashboard')}
               >
-                Go to Dashboard
+                Dashboard
               </Button>
             </motion.div>
-
-            <p className="text-[8px] sm:text-[9px] text-center text-muted-foreground">
-              Our team will guide you through every step of the process
-            </p>
           </motion.div>
         </div>
       </div>
@@ -195,39 +187,43 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-lg rounded-xl overflow-hidden ${className}`}
+        className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-sm rounded-lg overflow-hidden ${className}`}
       >
-        <div className="p-4 sm:p-6 text-center">
-          {/* Icon & Title */}
-          <motion.div 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="mx-auto mb-3 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20"
-          >
-            <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
-          </motion.div>
+        <div className="p-2.5 sm:p-3">
+          {/* Compact Layout */}
+          <div className="flex items-center gap-2.5">
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center"
+            >
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            </motion.div>
+            
+            <div className="flex-1 min-w-0">
+              <h3 className="text-[10px] sm:text-xs font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent truncate">
+                {investorType === 'wni' ? 'WNI Overseas' : 'Foreign Investor'} Portal
+              </h3>
+              <p className="text-[8px] sm:text-[9px] text-muted-foreground truncate">
+                Start your investment journey
+              </p>
+            </div>
+            
+            {/* Apply Button */}
+            <Button 
+              onClick={() => openModal(false)}
+              size="sm"
+              className="h-7 sm:h-8 text-[9px] sm:text-[10px] font-semibold gap-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 flex-shrink-0"
+            >
+              <Rocket className="h-3 w-3" />
+              Apply Now
+            </Button>
+          </div>
           
-          <h3 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-1">
-            {investorType === 'wni' ? 'WNI Overseas' : 'Foreign Investor'} Portal
-          </h3>
-          <p className="text-[10px] sm:text-xs text-muted-foreground mb-4">
-            Start your property investment journey today
-          </p>
-
-          {/* Main Apply Now Button */}
-          <Button 
-            onClick={() => openModal(false)}
-            className="w-full h-10 sm:h-11 text-xs sm:text-sm font-semibold gap-2 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 shadow-lg"
-          >
-            <Rocket className="h-4 w-4" />
-            Apply Now
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-
           {/* Login Link */}
-          <p className="mt-3 text-[9px] sm:text-[10px] text-muted-foreground">
-            Already have an account?{" "}
+          <p className="mt-1.5 text-[8px] sm:text-[9px] text-muted-foreground text-center">
+            Have an account?{" "}
             <button 
               onClick={() => openModal(true)}
               className="text-primary hover:underline font-medium"
@@ -240,14 +236,14 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
 
       {/* Auth Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden bg-background/95 backdrop-blur-xl border-primary/20">
-          <DialogHeader className="p-4 pb-2">
-            <DialogTitle className="text-center text-base sm:text-lg font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+        <DialogContent className="sm:max-w-[340px] p-0 overflow-hidden bg-background/95 backdrop-blur-xl border-primary/20">
+          <DialogHeader className="p-3 pb-1.5">
+            <DialogTitle className="text-center text-xs sm:text-sm font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               {investorType === 'wni' ? 'WNI Overseas' : 'Foreign Investor'} Portal
             </DialogTitle>
           </DialogHeader>
 
-          <div className="px-4 pb-4 space-y-3">
+          <div className="px-3 pb-3 space-y-2">
             {/* Error/Success Alerts */}
             <AnimatePresence mode="wait">
               {error && (
@@ -278,37 +274,37 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
 
             {/* Tabs */}
             <Tabs value={isLogin ? "login" : "apply"} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-9 bg-muted/50 p-0.5 rounded-lg">
+              <TabsList className="grid w-full grid-cols-2 h-7 bg-muted/50 p-0.5 rounded-md">
                 <TabsTrigger 
                   value="login" 
                   onClick={() => { setIsLogin(true); setError(null); setSuccess(null); }}
-                  className="gap-1.5 text-[10px] sm:text-xs font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  className="gap-1 text-[9px] sm:text-[10px] font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm h-6"
                 >
-                  <LogIn className="h-3.5 w-3.5" />
+                  <LogIn className="h-3 w-3" />
                   Login
                 </TabsTrigger>
                 <TabsTrigger 
                   value="apply" 
                   onClick={() => { setIsLogin(false); setError(null); setSuccess(null); }}
-                  className="gap-1.5 text-[10px] sm:text-xs font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-primary"
+                  className="gap-1 text-[9px] sm:text-[10px] font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-primary h-6"
                 >
-                  <Rocket className="h-3.5 w-3.5" />
+                  <Rocket className="h-3 w-3" />
                   Apply Now
                 </TabsTrigger>
               </TabsList>
 
               <AnimatePresence mode="wait">
                 {/* Login Form */}
-                <TabsContent value="login" className="mt-3" asChild>
+                <TabsContent value="login" className="mt-2" asChild>
                   <motion.div
                     key="login"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 10 }}
                   >
-                    <form onSubmit={handleSubmit} className="space-y-3">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="login-email" className="text-[10px] sm:text-xs text-foreground/80">Email</Label>
+                    <form onSubmit={handleSubmit} className="space-y-2">
+                      <div className="space-y-1">
+                        <Label htmlFor="login-email" className="text-[9px] sm:text-[10px] text-foreground/80">Email</Label>
                         <Input
                           id="login-email"
                           type="email"
@@ -316,11 +312,11 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
-                          className="h-8 sm:h-9 text-xs sm:text-sm bg-background/50 border-border/50"
+                          className="h-7 sm:h-8 text-[10px] sm:text-xs bg-background/50 border-border/50"
                         />
                       </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="login-password" className="text-[10px] sm:text-xs text-foreground/80">Password</Label>
+                      <div className="space-y-1">
+                        <Label htmlFor="login-password" className="text-[9px] sm:text-[10px] text-foreground/80">Password</Label>
                         <div className="relative">
                           <Input
                             id="login-password"
@@ -329,13 +325,13 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="h-8 sm:h-9 text-xs sm:text-sm bg-background/50 border-border/50 pr-9"
+                            className="h-7 sm:h-8 text-[10px] sm:text-xs bg-background/50 border-border/50 pr-8"
                           />
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-1.5 hover:bg-transparent"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
@@ -344,7 +340,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                       </div>
                       <Button 
                         type="submit" 
-                        className="w-full h-9 sm:h-10 text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-md" 
+                        className="w-full h-7 sm:h-8 text-[9px] sm:text-[10px] font-semibold bg-gradient-to-r from-primary to-accent hover:opacity-90" 
                         disabled={isLoading}
                       >
                         {isLoading ? (
@@ -365,16 +361,16 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                 </TabsContent>
 
                 {/* Apply Now Form */}
-                <TabsContent value="apply" className="mt-3" asChild>
+                <TabsContent value="apply" className="mt-2" asChild>
                   <motion.div
                     key="apply"
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                   >
-                    <form onSubmit={handleSubmit} className="space-y-3">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="fullName" className="text-[10px] sm:text-xs text-foreground/80">Full Name</Label>
+                    <form onSubmit={handleSubmit} className="space-y-2">
+                      <div className="space-y-1">
+                        <Label htmlFor="fullName" className="text-[9px] sm:text-[10px] text-foreground/80">Full Name</Label>
                         <Input
                           id="fullName"
                           type="text"
@@ -382,11 +378,11 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           required
-                          className="h-8 sm:h-9 text-xs sm:text-sm bg-background/50 border-border/50"
+                          className="h-7 sm:h-8 text-[10px] sm:text-xs bg-background/50 border-border/50"
                         />
                       </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="apply-email" className="text-[10px] sm:text-xs text-foreground/80">Email</Label>
+                      <div className="space-y-1">
+                        <Label htmlFor="apply-email" className="text-[9px] sm:text-[10px] text-foreground/80">Email</Label>
                         <Input
                           id="apply-email"
                           type="email"
@@ -394,27 +390,27 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
-                          className="h-8 sm:h-9 text-xs sm:text-sm bg-background/50 border-border/50"
+                          className="h-7 sm:h-8 text-[10px] sm:text-xs bg-background/50 border-border/50"
                         />
                       </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="apply-password" className="text-[10px] sm:text-xs text-foreground/80">Password</Label>
+                      <div className="space-y-1">
+                        <Label htmlFor="apply-password" className="text-[9px] sm:text-[10px] text-foreground/80">Password</Label>
                         <div className="relative">
                           <Input
                             id="apply-password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Create a password (min 6 characters)"
+                            placeholder="Create password (min 6 chars)"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             minLength={6}
-                            className="h-8 sm:h-9 text-xs sm:text-sm bg-background/50 border-border/50 pr-9"
+                            className="h-7 sm:h-8 text-[10px] sm:text-xs bg-background/50 border-border/50 pr-8"
                           />
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-1.5 hover:bg-transparent"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
@@ -423,20 +419,19 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                       </div>
                       <Button 
                         type="submit" 
-                        className="w-full h-9 sm:h-10 text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 shadow-lg" 
+                        className="w-full h-7 sm:h-8 text-[9px] sm:text-[10px] font-semibold bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90" 
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
+                            className="h-3.5 w-3.5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
                           />
                         ) : (
                           <>
-                            <Rocket className="h-4 w-4 mr-2" />
+                            <Rocket className="h-3 w-3 mr-1" />
                             Apply Now
-                            <ArrowRight className="h-3.5 w-3.5 ml-1" />
                           </>
                         )}
                       </Button>
