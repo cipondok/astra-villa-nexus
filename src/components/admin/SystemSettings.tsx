@@ -19,6 +19,7 @@ import PropertyFilterSettings from './settings/PropertyFilterSettings';
 import CentralizedFilterManager from './CentralizedFilterManager';
 import AstraTokenSettingsWrapper from './settings/AstraTokenSettingsWrapper';
 import BrandingSettings from './settings/BrandingSettings';
+import WelcomeScreenSettings from './settings/WelcomeScreenSettings';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -75,6 +76,7 @@ const SystemSettings = () => {
           <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
             <TabsTrigger value="general" className="text-xs h-6 px-3">General & SEO</TabsTrigger>
             <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
+            <TabsTrigger value="welcome-screen" className="text-xs h-6 px-3">Welcome Screen</TabsTrigger>
             <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="text-xs h-6 px-3">Notifications</TabsTrigger>
             <TabsTrigger value="files" className="text-xs h-6 px-3">Files</TabsTrigger>
@@ -98,6 +100,15 @@ const SystemSettings = () => {
 
         <TabsContent value="branding" className="space-y-4">
           <BrandingSettings 
+            settings={settings}
+            loading={loading}
+            onInputChange={handleInputChange}
+            onSave={saveSettings}
+          />
+        </TabsContent>
+
+        <TabsContent value="welcome-screen" className="space-y-4">
+          <WelcomeScreenSettings 
             settings={settings}
             loading={loading}
             onInputChange={handleInputChange}
