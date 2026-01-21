@@ -26,6 +26,7 @@ import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
+import LoadingProgressPopup from '@/components/ui/LoadingProgressPopup';
 import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
 import SessionExpirationHandler from '@/components/SessionExpirationHandler';
 import AuthNotificationHandler from '@/components/AuthNotificationHandler';
@@ -256,6 +257,7 @@ function App() {
                             <CookieSystem />
                             <ResponsiveAIChatWidget />
                             <NewArrivalsPopup />
+                            <LoadingProgressPopup />
                             <SessionExpirationHandler />
                             <AuthNotificationHandler />
                           </PropertyComparisonProvider>
