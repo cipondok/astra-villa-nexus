@@ -113,10 +113,8 @@ const ResponsiveAIChatWidget = ({
   const [showStarredMessages, setShowStarredMessages] = useState(false);
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
   const [isProcessingVoice, setIsProcessingVoice] = useState(false);
-  const [showTipsPopup, setShowTipsPopup] = useState(() => {
-    const hasSeenTips = localStorage.getItem('chatbot-seen-tips');
-    return !hasSeenTips;
-  });
+  // Tips popup - disabled for now as per user request
+  const [showTipsPopup, setShowTipsPopup] = useState(false);
 
   const quickActions: QuickAction[] = [
     { icon: Search, text: "Search properties", action: "I want to search for properties" },
