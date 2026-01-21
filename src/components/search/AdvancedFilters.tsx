@@ -225,7 +225,8 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="w-[96vw] max-w-[1800px] max-h-[75vh] sm:max-h-[80vh] p-0 flex flex-col bg-background/95 backdrop-blur-2xl rounded-2xl border border-border/40 shadow-2xl"
+        className="!w-[96vw] !max-w-[1800px] max-h-[75vh] sm:max-h-[80vh] p-0 flex flex-col bg-background/95 backdrop-blur-2xl rounded-2xl border border-border/40 shadow-2xl"
+        style={{ width: '96vw', maxWidth: '1800px' }}
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
