@@ -7,7 +7,8 @@ const SessionExpirationHandler = () => {
   const { 
     showExpirationModal, 
     dismissExpirationModal,
-    resetSessionState 
+    resetSessionState,
+    authError
   } = useSessionMonitor();
   
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -37,6 +38,7 @@ const SessionExpirationHandler = () => {
         isOpen={showExpirationModal}
         onReLogin={handleReLogin}
         onGoHome={handleGoHome}
+        errorMessage={authError || undefined}
       />
       <RoleBasedAuthModal
         isOpen={showLoginModal}
