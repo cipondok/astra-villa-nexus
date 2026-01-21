@@ -322,9 +322,11 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "transaction-hub":
         return <TransactionManagementTabs />;
       case "wna-investment-settings":
+        return <InvestorSettingsHub initialTab="wna" />;
       case "wni-mortgage-settings":
+        return <InvestorSettingsHub initialTab="wni" />;
       case "investor-analytics":
-        return <InvestorSettingsHub />;
+        return <InvestorSettingsHub initialTab="analytics" />;
       default:
         return <AdminOverview />;
     }

@@ -22,8 +22,12 @@ interface Country {
   enabled: boolean;
 }
 
-const InvestorSettingsHub = () => {
-  const [activeTab, setActiveTab] = useState('wna');
+interface InvestorSettingsHubProps {
+  initialTab?: 'wna' | 'wni' | 'countries' | 'analytics';
+}
+
+const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
   
   const [wnaSettings, setWnaSettings] = useState({
     enabled: true,
@@ -145,7 +149,7 @@ const InvestorSettingsHub = () => {
       </div>
 
       {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'wna' | 'wni' | 'countries' | 'analytics')} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4 h-9">
           <TabsTrigger value="wna" className="text-xs gap-1.5">
             <Plane className="h-3.5 w-3.5" />

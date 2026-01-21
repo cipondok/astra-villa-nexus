@@ -124,10 +124,11 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "welcome-screen-settings":
         return <WelcomeScreenSettings />;
       case "wna-investment-settings":
-      case "wna-investment-settings":
+        return <InvestorSettingsHub initialTab="wna" />;
       case "wni-mortgage-settings":
+        return <InvestorSettingsHub initialTab="wni" />;
       case "investor-analytics":
-        return <InvestorSettingsHub />;
+        return <InvestorSettingsHub initialTab="analytics" />;
       case "system-alerts":
         return (
           <div className="p-6">
