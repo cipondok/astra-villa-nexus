@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,11 @@ interface InvestorSettingsHubProps {
 
 const InvestorSettingsHub = ({ initialTab = 'wna' }: InvestorSettingsHubProps) => {
   const [activeTab, setActiveTab] = useState(initialTab);
+  
+  // Sync tab when initialTab prop changes (navigation from sidebar)
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
   
   const [wnaSettings, setWnaSettings] = useState({
     enabled: true,
