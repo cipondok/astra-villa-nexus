@@ -87,7 +87,7 @@ const Property3DViewSettings = () => {
       }
 
       if (data && data.length > 0) {
-        const settingsMap = data.reduce((acc, setting) => {
+        const settingsMap = data.reduce((acc: any, setting: any) => {
           const key = setting.key.replace('property_3d_view_', '');
           acc[key] = setting.value;
           return acc;
@@ -158,7 +158,6 @@ const Property3DViewSettings = () => {
   const test3DViewer = async () => {
     setTesting(true);
     try {
-      // Simulate 3D viewer test
       await new Promise(resolve => setTimeout(resolve, 2000));
       showSuccess('Test Successful', '3D viewer is working properly');
     } catch (error) {
@@ -169,125 +168,131 @@ const Property3DViewSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">3D View Settings</h2>
-          <p className="text-gray-400">Configure 3D model viewing capabilities for properties</p>
+          <h2 className="text-sm font-semibold text-foreground">3D View Settings</h2>
+          <p className="text-[10px] text-muted-foreground">Configure 3D model viewing capabilities for properties</p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-1.5">
           <Button
             onClick={test3DViewer}
             disabled={testing}
             variant="outline"
             size="sm"
+            className="h-7 text-[10px] gap-1"
           >
-            <TestTube className={`h-4 w-4 mr-2 ${testing ? 'animate-spin' : ''}`} />
-            {testing ? 'Testing...' : 'Test 3D Viewer'}
+            <TestTube className={`h-3 w-3 ${testing ? 'animate-spin' : ''}`} />
+            {testing ? 'Testing...' : 'Test'}
           </Button>
           <Button
             onClick={loadSettings}
             variant="outline"
             size="sm"
+            className="h-7 text-[10px] gap-1"
           >
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-3 w-3" />
             Refresh
           </Button>
         </div>
       </div>
 
       {/* Status Alert */}
-      <Alert className={settings.enabled ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}>
-        <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>
+      <Alert className={`p-2 ${settings.enabled ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-destructive/50 bg-destructive/10'}`}>
+        <AlertTriangle className="h-3 w-3" />
+        <AlertDescription className="text-[10px]">
           <strong>3D View Status:</strong> {settings.enabled ? 'Enabled and active' : 'Disabled - users cannot view 3D models'}
         </AlertDescription>
       </Alert>
 
-      <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5 bg-slate-800/50">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="viewer">Viewer</TabsTrigger>
-          <TabsTrigger value="advanced">Advanced</TabsTrigger>
-          <TabsTrigger value="formats">File Formats</TabsTrigger>
-          <TabsTrigger value="guide">How-to Guide</TabsTrigger>
+      <Tabs defaultValue="general" className="space-y-3">
+        <TabsList className="h-8 bg-muted/50 p-0.5 w-full grid grid-cols-5">
+          <TabsTrigger value="general" className="text-[9px] h-7">General</TabsTrigger>
+          <TabsTrigger value="viewer" className="text-[9px] h-7">Viewer</TabsTrigger>
+          <TabsTrigger value="advanced" className="text-[9px] h-7">Advanced</TabsTrigger>
+          <TabsTrigger value="formats" className="text-[9px] h-7">Formats</TabsTrigger>
+          <TabsTrigger value="guide" className="text-[9px] h-7">Guide</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="general" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Settings className="h-5 w-5 mr-2" />
+        <TabsContent value="general" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Settings className="h-3.5 w-3.5 text-primary" />
                 General Settings
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-[10px] text-foreground">Enable 3D view functionality</Label>
                 <Switch
                   checked={settings.enabled}
                   onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enabled: checked }))}
+                  className="scale-75"
                 />
-                <Label className="text-white">Enable 3D view functionality</Label>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-white">Default 3D Viewer</Label>
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-foreground">Default 3D Viewer</Label>
                 <Select value={settings.defaultViewer} onValueChange={(value) => setSettings(prev => ({ ...prev, defaultViewer: value }))}>
-                  <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                  <SelectTrigger className="h-7 text-[10px] bg-background/50 border-border/50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="threejs">Three.js Viewer</SelectItem>
-                    <SelectItem value="babylonjs">Babylon.js Viewer</SelectItem>
-                    <SelectItem value="modelviewer">Model Viewer</SelectItem>
+                    <SelectItem value="threejs" className="text-[10px]">Three.js Viewer</SelectItem>
+                    <SelectItem value="babylonjs" className="text-[10px]">Babylon.js Viewer</SelectItem>
+                    <SelectItem value="modelviewer" className="text-[10px]">Model Viewer</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Enable VR</Label>
                   <Switch
                     checked={settings.enableVR}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enableVR: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Enable VR support</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Enable AR</Label>
                   <Switch
                     checked={settings.enableAR}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enableAR: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Enable AR support</Label>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="viewer" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Eye className="h-5 w-5 mr-2" />
+        <TabsContent value="viewer" className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                  <Eye className="h-3.5 w-3.5 text-primary" />
                   Viewer Controls
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
+              <CardContent className="p-3 pt-0 space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Auto rotate model</Label>
                   <Switch
                     checked={settings.autoRotate}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, autoRotate: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Auto rotate model</Label>
                 </div>
 
                 {settings.autoRotate && (
-                  <div className="space-y-2">
-                    <Label className="text-white">Rotation Speed</Label>
-                    <div className="flex items-center space-x-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] text-foreground">Rotation Speed</Label>
+                    <div className="flex items-center gap-3">
                       <Slider
                         value={[settings.rotationSpeed]}
                         onValueChange={([value]) => setSettings(prev => ({ ...prev, rotationSpeed: value }))}
@@ -296,49 +301,52 @@ const Property3DViewSettings = () => {
                         step={0.1}
                         className="flex-1"
                       />
-                      <Badge variant="outline" className="text-white border-slate-600">
+                      <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                         {settings.rotationSpeed}x
                       </Badge>
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Enable zoom</Label>
                   <Switch
                     checked={settings.enableZoom}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enableZoom: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Enable zoom</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Enable fullscreen</Label>
                   <Switch
                     checked={settings.enableFullscreen}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enableFullscreen: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Enable fullscreen</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show controls</Label>
                   <Switch
                     checked={settings.showControls}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showControls: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show viewer controls</Label>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Zoom Settings</CardTitle>
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs font-medium text-foreground">Zoom Settings</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-3 pt-0 space-y-2">
                 {settings.enableZoom && (
                   <>
-                    <div className="space-y-2">
-                      <Label className="text-white">Maximum Zoom</Label>
-                      <div className="flex items-center space-x-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-[10px] text-foreground">Maximum Zoom</Label>
+                      <div className="flex items-center gap-3">
                         <Slider
                           value={[settings.maxZoom]}
                           onValueChange={([value]) => setSettings(prev => ({ ...prev, maxZoom: value }))}
@@ -347,15 +355,15 @@ const Property3DViewSettings = () => {
                           step={0.5}
                           className="flex-1"
                         />
-                        <Badge variant="outline" className="text-white border-slate-600">
+                        <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                           {settings.maxZoom}x
                         </Badge>
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-white">Minimum Zoom</Label>
-                      <div className="flex items-center space-x-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-[10px] text-foreground">Minimum Zoom</Label>
+                      <div className="flex items-center gap-3">
                         <Slider
                           value={[settings.minZoom]}
                           onValueChange={([value]) => setSettings(prev => ({ ...prev, minZoom: value }))}
@@ -364,7 +372,7 @@ const Property3DViewSettings = () => {
                           step={0.1}
                           className="flex-1"
                         />
-                        <Badge variant="outline" className="text-white border-slate-600">
+                        <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                           {settings.minZoom}x
                         </Badge>
                       </div>
@@ -376,29 +384,29 @@ const Property3DViewSettings = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="advanced" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Zap className="h-5 w-5 mr-2" />
+        <TabsContent value="advanced" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Zap className="h-3.5 w-3.5 text-primary" />
                 Advanced Settings
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-white">Background Color</Label>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-foreground">Background Color</Label>
                   <Input
                     type="color"
                     value={settings.backgroundColor}
                     onChange={(e) => setSettings(prev => ({ ...prev, backgroundColor: e.target.value }))}
-                    className="bg-slate-700/50 border-slate-600 text-white h-12"
+                    className="h-8 bg-background/50 border-border/50"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-white">Lighting Intensity</Label>
-                  <div className="flex items-center space-x-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-foreground">Lighting Intensity</Label>
+                  <div className="flex items-center gap-3">
                     <Slider
                       value={[settings.lightingIntensity]}
                       onValueChange={([value]) => setSettings(prev => ({ ...prev, lightingIntensity: value }))}
@@ -407,30 +415,30 @@ const Property3DViewSettings = () => {
                       step={0.1}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="text-white border-slate-600">
+                    <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                       {settings.lightingIntensity}
                     </Badge>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Enable Watermark</Label>
                   <Switch
                     checked={settings.enableWatermark}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, enableWatermark: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Enable watermark</Label>
                 </div>
 
                 {settings.enableWatermark && (
-                  <div className="space-y-2">
-                    <Label className="text-white">Watermark Text</Label>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] text-foreground">Watermark Text</Label>
                     <Input
                       value={settings.watermarkText}
                       onChange={(e) => setSettings(prev => ({ ...prev, watermarkText: e.target.value }))}
-                      className="bg-slate-700/50 border-slate-600 text-white"
-                      placeholder="Enter watermark text"
+                      className="h-7 text-[10px] bg-background/50 border-border/50"
                     />
                   </div>
                 )}
@@ -439,15 +447,26 @@ const Property3DViewSettings = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="formats" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white">File Format Settings</CardTitle>
+        <TabsContent value="formats" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Code2 className="h-3.5 w-3.5 text-primary" />
+                Supported File Formats
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Maximum File Size (MB)</Label>
-                <div className="flex items-center space-x-4">
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="flex flex-wrap gap-1.5">
+                {settings.supportedFormats.map((format) => (
+                  <Badge key={format} variant="secondary" className="text-[9px] px-2 py-0.5 bg-primary/10 text-primary">
+                    .{format}
+                  </Badge>
+                ))}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-foreground">Max File Size (MB)</Label>
+                <div className="flex items-center gap-3">
                   <Slider
                     value={[settings.maxFileSize]}
                     onValueChange={([value]) => setSettings(prev => ({ ...prev, maxFileSize: value }))}
@@ -456,111 +475,36 @@ const Property3DViewSettings = () => {
                     step={10}
                     className="flex-1"
                   />
-                  <Badge variant="outline" className="text-white border-slate-600">
-                    {settings.maxFileSize} MB
+                  <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
+                    {settings.maxFileSize}MB
                   </Badge>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-white">Supported Formats</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {['glb', 'gltf', 'fbx', 'obj', 'dae', 'ply'].map((format) => (
-                    <Badge 
-                      key={format}
-                      variant={settings.supportedFormats.includes(format) ? 'default' : 'outline'}
-                      className={`cursor-pointer text-center justify-center ${
-                        settings.supportedFormats.includes(format) 
-                          ? 'bg-blue-600 text-white' 
-                          : 'text-white border-slate-600'
-                      }`}
-                      onClick={() => {
-                        const newFormats = settings.supportedFormats.includes(format)
-                          ? settings.supportedFormats.filter(f => f !== format)
-                          : [...settings.supportedFormats, format];
-                        setSettings(prev => ({ ...prev, supportedFormats: newFormats }));
-                      }}
-                    >
-                      .{format}
-                    </Badge>
-                  ))}
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="guide" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <BookOpen className="h-5 w-5 mr-2" />
-                3D Model Creation Guide
+        <TabsContent value="guide" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <BookOpen className="h-3.5 w-3.5 text-primary" />
+                How-to Guide
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Step-by-step guide */}
-              <div className="space-y-4">
-                <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30">
-                  <h3 className="text-blue-300 font-semibold mb-2 flex items-center">
-                    <Lightbulb className="h-4 w-4 mr-2" />
-                    Step 1: Create 3D Models
-                  </h3>
-                  <ul className="text-gray-300 space-y-1 text-sm">
-                    <li>• Use Blender, SketchUp, or AutoCAD to create property models</li>
-                    <li>• Export as GLB/GLTF for best performance</li>
-                    <li>• Keep polygon count under 100k for smooth loading</li>
-                    <li>• Include textures and materials for realistic rendering</li>
-                  </ul>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="space-y-2 text-[10px] text-muted-foreground">
+                <div className="flex items-start gap-2">
+                  <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5" />
+                  <p>Upload 3D models in GLB or GLTF format for best compatibility</p>
                 </div>
-
-                <div className="bg-green-900/20 p-4 rounded-lg border border-green-500/30">
-                  <h3 className="text-green-300 font-semibold mb-2 flex items-center">
-                    <Code2 className="h-4 w-4 mr-2" />
-                    Step 2: Upload Models
-                  </h3>
-                  <ul className="text-gray-300 space-y-1 text-sm">
-                    <li>• Go to Property Management → Add/Edit Property</li>
-                    <li>• Upload 3D model files in the "3D Model" section</li>
-                    <li>• Add virtual tour URLs (Matterport, Kuula, etc.)</li>
-                    <li>• Test the 3D view before publishing</li>
-                  </ul>
+                <div className="flex items-start gap-2">
+                  <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5" />
+                  <p>Keep file sizes under {settings.maxFileSize}MB for optimal loading</p>
                 </div>
-
-                <div className="bg-purple-900/20 p-4 rounded-lg border border-purple-500/30">
-                  <h3 className="text-purple-300 font-semibold mb-2 flex items-center">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Step 3: Virtual Tours
-                  </h3>
-                  <ul className="text-gray-300 space-y-1 text-sm">
-                    <li>• Create 360° tours using Matterport or similar tools</li>
-                    <li>• Generate shareable links for embedding</li>
-                    <li>• Add interactive hotspots for property details</li>
-                    <li>• Optimize for mobile viewing</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Resource links */}
-              <div className="border-t border-slate-600 pt-4">
-                <h4 className="text-white font-semibold mb-2">Recommended Tools:</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-blue-300 font-medium">3D Modeling:</p>
-                    <ul className="text-gray-400">
-                      <li>• Blender (Free)</li>
-                      <li>• SketchUp</li>
-                      <li>• AutoCAD</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="text-green-300 font-medium">Virtual Tours:</p>
-                    <ul className="text-gray-400">
-                      <li>• Matterport</li>
-                      <li>• Kuula</li>
-                      <li>• Pano2VR</li>
-                    </ul>
-                  </div>
+                <div className="flex items-start gap-2">
+                  <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5" />
+                  <p>Enable VR/AR only if your target devices support it</p>
                 </div>
               </div>
             </CardContent>
@@ -569,17 +513,14 @@ const Property3DViewSettings = () => {
       </Tabs>
 
       {/* Save Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end pt-2">
         <Button
           onClick={saveSettings}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700"
+          size="sm"
+          className="h-7 text-[10px] gap-1.5 bg-primary hover:bg-primary/90"
         >
-          {loading ? (
-            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4 mr-2" />
-          )}
+          <Save className="h-3 w-3" />
           {loading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>

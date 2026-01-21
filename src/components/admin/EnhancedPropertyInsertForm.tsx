@@ -605,99 +605,100 @@ const EnhancedPropertyInsertForm = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building2 className="h-5 w-5" />
+    <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+      <CardHeader className="p-3 pb-2">
+        <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+          <Building2 className="h-3.5 w-3.5 text-primary" />
           Add New Property
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-[10px] text-muted-foreground">
           Create a comprehensive property listing with advanced features
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="basic" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="location">Location</TabsTrigger>
-            <TabsTrigger value="media">Media & Images</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+      <CardContent className="p-3 pt-0">
+        <Tabs defaultValue="basic" className="space-y-3">
+          <TabsList className="h-8 bg-muted/50 p-0.5 w-full grid grid-cols-4">
+            <TabsTrigger value="basic" className="text-[9px] h-7">Basic</TabsTrigger>
+            <TabsTrigger value="location" className="text-[9px] h-7">Location</TabsTrigger>
+            <TabsTrigger value="media" className="text-[9px] h-7">Media</TabsTrigger>
+            <TabsTrigger value="settings" className="text-[9px] h-7">Settings</TabsTrigger>
           </TabsList>
 
           <form onSubmit={handleSubmit}>
-            <TabsContent value="basic" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="title">Property Title *</Label>
+            <TabsContent value="basic" className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label htmlFor="title" className="text-[10px] text-foreground">Property Title *</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     placeholder="Enter property title"
                     required
+                    className="h-7 text-[10px] bg-background/50 border-border/50"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="property_type">Property Type *</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="property_type" className="text-[10px] text-foreground">Property Type *</Label>
                   <Select 
                     value={formData.property_type} 
                     onValueChange={(value) => handleInputChange('property_type', value)}
-                    required
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select property type" />
+                    <SelectTrigger className="h-7 text-[10px] bg-background/50 border-border/50">
+                      <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="house">House</SelectItem>
-                      <SelectItem value="apartment">Apartment</SelectItem>
-                      <SelectItem value="villa">Villa</SelectItem>
-                      <SelectItem value="townhouse">Townhouse</SelectItem>
-                      <SelectItem value="condo">Condo</SelectItem>
-                      <SelectItem value="land">Land</SelectItem>
-                      <SelectItem value="commercial">Commercial</SelectItem>
+                      <SelectItem value="house" className="text-[10px]">House</SelectItem>
+                      <SelectItem value="apartment" className="text-[10px]">Apartment</SelectItem>
+                      <SelectItem value="villa" className="text-[10px]">Villa</SelectItem>
+                      <SelectItem value="townhouse" className="text-[10px]">Townhouse</SelectItem>
+                      <SelectItem value="condo" className="text-[10px]">Condo</SelectItem>
+                      <SelectItem value="land" className="text-[10px]">Land</SelectItem>
+                      <SelectItem value="commercial" className="text-[10px]">Commercial</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="listing_type">Listing Type *</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="listing_type" className="text-[10px] text-foreground">Listing Type *</Label>
                   <Select 
                     value={formData.listing_type} 
                     onValueChange={(value) => handleInputChange('listing_type', value)}
-                    required
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select listing type" />
+                    <SelectTrigger className="h-7 text-[10px] bg-background/50 border-border/50">
+                      <SelectValue placeholder="Select listing" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="sale">For Sale</SelectItem>
-                      <SelectItem value="rent">For Rent</SelectItem>
-                      <SelectItem value="lease">For Lease</SelectItem>
+                      <SelectItem value="sale" className="text-[10px]">For Sale</SelectItem>
+                      <SelectItem value="rent" className="text-[10px]">For Rent</SelectItem>
+                      <SelectItem value="lease" className="text-[10px]">For Lease</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="price">Price (IDR)</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="price" className="text-[10px] text-foreground">Price (IDR)</Label>
                   <div className="relative">
                     <Input
                       id="price"
                       type="text"
                       value={formData.price ? formatIDR(parseInt(formData.price)) : ''}
                       onChange={(e) => handlePriceChange(e.target.value)}
-                      placeholder="Enter price in Indonesian Rupiah"
+                      placeholder="Enter price"
+                      className="h-7 text-[10px] bg-background/50 border-border/50 pr-10"
                     />
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[9px] text-muted-foreground">
                       IDR
                     </span>
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="bedrooms">Bedrooms</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="bedrooms" className="text-[10px] text-foreground">Bedrooms</Label>
                   <Input
                     id="bedrooms"
                     type="number"
                     value={formData.bedrooms}
                     onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                    placeholder="Number of bedrooms"
+                    placeholder="Bedrooms"
+                    className="h-7 text-[10px] bg-background/50 border-border/50"
                   />
                 </div>
                 <div>

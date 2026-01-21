@@ -606,84 +606,84 @@ const EnhancedPropertySmartPreview = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Enhanced Property Smart Preview</h2>
-          <p className="text-gray-400">Customize and preview how properties appear with live editing tools</p>
+          <h2 className="text-sm font-semibold text-foreground">Enhanced Property Smart Preview</h2>
+          <p className="text-[10px] text-muted-foreground">Customize and preview how properties appear with live editing tools</p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-1.5">
           <Button
             onClick={() => setIsLivePreview(!isLivePreview)}
             variant={isLivePreview ? "default" : "outline"}
             size="sm"
+            className="h-7 text-[10px] gap-1"
           >
-            {isLivePreview ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-            {isLivePreview ? 'Live Preview On' : 'Live Preview Off'}
+            {isLivePreview ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+            {isLivePreview ? 'Live' : 'Off'}
           </Button>
-          <Button onClick={handleRefresh} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
+          <Button onClick={handleRefresh} variant="outline" size="sm" className="h-7 text-[10px] gap-1">
+            <RefreshCw className="h-3 w-3" />
             Refresh
           </Button>
           <Button 
             onClick={savePreviewSettings} 
             disabled={!hasUnsavedChanges}
-            className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
+            size="sm"
+            className="h-7 text-[10px] gap-1 bg-primary hover:bg-primary/90 disabled:opacity-50"
           >
-            <Save className="h-4 w-4 mr-2" />
-            {hasUnsavedChanges ? 'Save Changes' : 'Saved'}
+            <Save className="h-3 w-3" />
+            {hasUnsavedChanges ? 'Save' : 'Saved'}
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="preview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
-          <TabsTrigger value="preview">Live Preview</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="customize">Customize</TabsTrigger>
-          <TabsTrigger value="settings">Advanced Settings</TabsTrigger>
+      <Tabs defaultValue="preview" className="space-y-3">
+        <TabsList className="h-8 bg-muted/50 p-0.5 w-full grid grid-cols-4">
+          <TabsTrigger value="preview" className="text-[9px] h-7">Preview</TabsTrigger>
+          <TabsTrigger value="templates" className="text-[9px] h-7">Templates</TabsTrigger>
+          <TabsTrigger value="customize" className="text-[9px] h-7">Customize</TabsTrigger>
+          <TabsTrigger value="settings" className="text-[9px] h-7">Advanced</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="preview" className="space-y-4">
+        <TabsContent value="preview" className="space-y-3">
           {/* Search Controls */}
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-4 flex-1">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                      <Input
-                        placeholder="Search properties..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 bg-slate-700/50 border-slate-600 text-white"
-                      />
-                    </div>
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardContent className="p-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-1">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3" />
+                    <Input
+                      placeholder="Search properties..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-7 h-7 text-[10px] bg-background/50 border-border/50"
+                    />
                   </div>
                   <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-                    <SelectTrigger className="w-40 bg-slate-700/50 border-slate-600 text-white">
+                    <SelectTrigger className="w-28 h-7 text-[10px] bg-background/50 border-border/50">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Properties</SelectItem>
-                      <SelectItem value="approved">Approved Only</SelectItem>
-                      <SelectItem value="active">Active Only</SelectItem>
-                      <SelectItem value="pending_approval">Pending Only</SelectItem>
+                      <SelectItem value="all" className="text-[10px]">All</SelectItem>
+                      <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
+                      <SelectItem value="active" className="text-[10px]">Active</SelectItem>
+                      <SelectItem value="pending_approval" className="text-[10px]">Pending</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 {/* Device Preview Toggle */}
-                <div className="flex items-center space-x-2">
-                  <Label className="text-white text-sm">Device:</Label>
-                  <div className="flex border border-slate-600 rounded-md overflow-hidden">
+                <div className="flex items-center gap-1.5">
+                  <Label className="text-[10px] text-muted-foreground">Device:</Label>
+                  <div className="flex border border-border/50 rounded-md overflow-hidden">
                     <Button
                       size="sm"
                       variant={devicePreview === 'desktop' ? 'default' : 'ghost'}
                       onClick={() => setDevicePreview('desktop')}
-                      className="rounded-none px-3"
+                      className="h-6 w-6 p-0 rounded-none"
                     >
                       <Monitor className="h-3 w-3" />
                     </Button>
@@ -691,7 +691,7 @@ const EnhancedPropertySmartPreview = () => {
                       size="sm"
                       variant={devicePreview === 'tablet' ? 'default' : 'ghost'}
                       onClick={() => setDevicePreview('tablet')}
-                      className="rounded-none px-3"
+                      className="h-6 w-6 p-0 rounded-none"
                     >
                       <Tablet className="h-3 w-3" />
                     </Button>
@@ -699,7 +699,7 @@ const EnhancedPropertySmartPreview = () => {
                       size="sm"
                       variant={devicePreview === 'mobile' ? 'default' : 'ghost'}
                       onClick={() => setDevicePreview('mobile')}
-                      className="rounded-none px-3"
+                      className="h-6 w-6 p-0 rounded-none"
                     >
                       <Smartphone className="h-3 w-3" />
                     </Button>
@@ -710,40 +710,40 @@ const EnhancedPropertySmartPreview = () => {
           </Card>
 
           {/* Live Preview Area */}
-          <Card className="bg-white border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-gray-900 flex items-center justify-between">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center justify-between">
                 <span>Live Preview ({properties?.length || 0} properties)</span>
-                <div className="flex items-center space-x-2">
-                  <Badge variant={isLivePreview ? "default" : "secondary"}>
-                    {isLivePreview ? "Live Updates" : "Static"}
+                <div className="flex items-center gap-1">
+                  <Badge variant={isLivePreview ? "default" : "secondary"} className="text-[8px] h-4 px-1.5">
+                    {isLivePreview ? "Live" : "Static"}
                   </Badge>
-                  <Badge variant="outline">
-                    {devicePreview.charAt(0).toUpperCase() + devicePreview.slice(1)} View
+                  <Badge variant="outline" className="text-[8px] h-4 px-1.5 border-border/50">
+                    {devicePreview}
                   </Badge>
                   {hasUnsavedChanges && (
-                    <Badge variant="destructive">
-                      Unsaved Changes
+                    <Badge variant="destructive" className="text-[8px] h-4 px-1.5">
+                      Unsaved
                     </Badge>
                   )}
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 pt-0">
               <div style={getDevicePreviewStyles()}>
                 {isLoading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                    <p className="text-gray-500">Loading properties...</p>
+                  <div className="text-center py-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+                    <p className="text-[10px] text-muted-foreground">Loading properties...</p>
                   </div>
                 ) : !properties || properties.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Properties Found</h3>
-                    <p className="text-gray-500">No properties match your current filters.</p>
+                  <div className="text-center py-4">
+                    <Building2 className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                    <h3 className="text-xs font-medium text-foreground mb-1">No Properties Found</h3>
+                    <p className="text-[10px] text-muted-foreground">No properties match your current filters.</p>
                   </div>
                 ) : (
-                  <div key={previewKey} className={`grid gap-4 ${
+                  <div key={previewKey} className={`grid gap-2 ${
                     devicePreview === 'mobile' ? 'grid-cols-1' : 
                     devicePreview === 'tablet' ? 'grid-cols-2' : 
                     'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
@@ -758,39 +758,38 @@ const EnhancedPropertySmartPreview = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="templates" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Wand2 className="h-5 w-5 mr-2" />
+        <TabsContent value="templates" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Wand2 className="h-3.5 w-3.5 text-primary" />
                 Design Templates
               </CardTitle>
-              <p className="text-gray-400">Choose from pre-designed templates to quickly style your property cards</p>
+              <p className="text-[10px] text-muted-foreground">Choose from pre-designed templates</p>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <CardContent className="p-3 pt-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                 {designTemplates.map((template) => (
                   <Card 
                     key={template.name}
-                    className={`cursor-pointer transition-all hover:shadow-lg ${
+                    className={`cursor-pointer transition-all hover:shadow-md ${
                       selectedTemplate === template.name 
-                        ? 'ring-2 ring-blue-500 bg-slate-700/50' 
-                        : 'bg-slate-700/30 hover:bg-slate-700/50'
+                        ? 'ring-2 ring-primary bg-primary/5' 
+                        : 'bg-background/50 hover:bg-muted/50'
                     }`}
                     onClick={() => applyTemplate(template.name)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center space-x-3 mb-3">
-                        <span className="text-2xl">{template.preview}</span>
+                    <CardContent className="p-2">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-base">{template.preview}</span>
                         <div>
-                          <h3 className="text-white font-medium">{template.name}</h3>
-                          <p className="text-gray-400 text-sm">{template.description}</p>
+                          <h3 className="text-[10px] font-medium text-foreground">{template.name}</h3>
                         </div>
                       </div>
                       
                       {/* Mini Preview */}
                       <div 
-                        className="w-full h-20 rounded-lg border-2 flex items-center justify-center text-xs font-medium"
+                        className="w-full h-10 rounded border flex items-center justify-center text-[8px] font-medium"
                         style={{
                           backgroundColor: template.settings.backgroundColor,
                           color: template.settings.textColor,

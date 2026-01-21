@@ -270,37 +270,37 @@ const PropertyCategoriesManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-card border-border">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-card-foreground">
-            <Building2 className="h-5 w-5" />
+    <div className="space-y-3">
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+            <Building2 className="h-3.5 w-3.5 text-primary" />
             Property Categories & Services Management
           </CardTitle>
-          <CardDescription className="text-muted-foreground">
+          <CardDescription className="text-[10px] text-muted-foreground">
             Manage property categories (Buy, Rent, New Projects, Pre-Launching) and their associated services
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-4 border-b border-border bg-card rounded-t-lg p-2">
+      <div className="flex gap-1.5 border-b border-border/50 bg-card/50 backdrop-blur-sm rounded-t-lg p-1.5">
         <button
           onClick={() => setActiveTab("categories")}
-          className={`py-2 px-4 border-b-2 font-medium text-sm rounded-md transition-colors ${
+          className={`py-1.5 px-3 text-[10px] font-medium rounded-md transition-colors ${
             activeTab === "categories"
-              ? "border-primary text-primary bg-primary/10"
-              : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
           Categories ({categories?.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("services")}
-          className={`py-2 px-4 border-b-2 font-medium text-sm rounded-md transition-colors ${
+          className={`py-1.5 px-3 text-[10px] font-medium rounded-md transition-colors ${
             activeTab === "services"
-              ? "border-primary text-primary bg-primary/10"
-              : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
           Services ({services?.length || 0})
@@ -309,19 +309,19 @@ const PropertyCategoriesManagement = () => {
 
       {/* Categories Tab */}
       {activeTab === "categories" && (
-        <Card className="bg-card border-border">
-          <CardHeader>
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardHeader className="p-3 pb-2">
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle className="text-card-foreground">Property Categories</CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardTitle className="text-xs font-medium text-foreground">Property Categories</CardTitle>
+                <CardDescription className="text-[10px] text-muted-foreground">
                   Main categories and subcategories for property organization
                 </CardDescription>
               </div>
               <Dialog open={isCategoryModalOpen} onOpenChange={setIsCategoryModalOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={() => setSelectedCategory(null)} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    <Plus className="h-4 w-4 mr-2" />
+                  <Button onClick={() => setSelectedCategory(null)} size="sm" className="h-7 text-[10px] gap-1 bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Plus className="h-3 w-3" />
                     Add Category
                   </Button>
                 </DialogTrigger>
@@ -334,49 +334,49 @@ const PropertyCategoriesManagement = () => {
               </Dialog>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 pt-0">
             {categoriesLoading ? (
-              <div className="text-center py-8 text-muted-foreground">Loading categories...</div>
+              <div className="text-center py-4 text-[10px] text-muted-foreground">Loading categories...</div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {getMainCategories().map((mainCat) => (
-                  <div key={mainCat.id} className="border border-border rounded-lg p-4 bg-card">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{mainCat.icon}</span>
+                  <div key={mainCat.id} className="border border-border/50 rounded-lg p-2.5 bg-background/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{mainCat.icon}</span>
                         <div>
-                          <h3 className="font-semibold text-lg text-card-foreground">{mainCat.name}</h3>
-                          <p className="text-muted-foreground text-sm">{mainCat.description}</p>
+                          <h3 className="text-xs font-medium text-foreground">{mainCat.name}</h3>
+                          <p className="text-[9px] text-muted-foreground">{mainCat.description}</p>
                         </div>
-                        <Badge variant={mainCat.is_active ? "default" : "secondary"} className={
+                        <Badge variant={mainCat.is_active ? "default" : "secondary"} className={`text-[8px] h-4 px-1.5 ${
                           mainCat.is_active 
-                            ? "bg-primary text-primary-foreground" 
+                            ? "bg-primary/10 text-primary border-primary/30" 
                             : "bg-muted text-muted-foreground"
-                        }>
+                        }`}>
                           {mainCat.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onClick={() => {
                           setSelectedCategory(mainCat);
                           setIsCategoryModalOpen(true);
                         }}
-                        className="border-border text-foreground hover:bg-muted"
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-3 w-3" />
                       </Button>
                     </div>
                     
                     {/* Subcategories */}
-                    <div className="ml-8 space-y-2">
+                    <div className="ml-4 space-y-1">
                       {getSubCategories(mainCat.id).map((subCat) => (
-                        <div key={subCat.id} className="flex items-center justify-between p-2 bg-muted/50 rounded border border-border">
-                          <div className="flex items-center gap-2">
-                            <span>{subCat.icon}</span>
-                            <span className="font-medium text-foreground">{subCat.name}</span>
-                            <Badge variant="outline" className="border-border text-muted-foreground">
+                        <div key={subCat.id} className="flex items-center justify-between p-1.5 bg-muted/30 rounded border border-border/30">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs">{subCat.icon}</span>
+                            <span className="text-[10px] font-medium text-foreground">{subCat.name}</span>
+                            <Badge variant="outline" className="text-[8px] h-4 px-1 border-border/50 text-muted-foreground">
                               {subCat.is_active ? "Active" : "Inactive"}
                             </Badge>
                           </div>
@@ -387,9 +387,9 @@ const PropertyCategoriesManagement = () => {
                               setSelectedCategory(subCat);
                               setIsCategoryModalOpen(true);
                             }}
-                            className="text-muted-foreground hover:text-foreground hover:bg-muted"
+                            className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
                           >
-                            <Edit className="h-3 w-3" />
+                            <Edit className="h-2.5 w-2.5" />
                           </Button>
                         </div>
                       ))}

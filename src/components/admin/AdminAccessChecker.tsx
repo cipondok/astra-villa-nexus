@@ -17,13 +17,11 @@ const AdminAccessChecker = () => {
   const testDatabaseAccess = async () => {
     setIsTestingDB(true);
     try {
-      // Test reading properties
       const { data: properties, error: readError } = await supabase
         .from('properties')
         .select('id, title, status')
         .limit(1);
 
-      // Test admin function
       const { data: adminTest, error: adminError } = await supabase
         .rpc('check_admin_access');
 
@@ -41,84 +39,84 @@ const AdminAccessChecker = () => {
 
   const getStatusIcon = (isSuccess: boolean) => {
     return isSuccess ? (
-      <CheckCircle className="h-4 w-4 text-green-600" />
+      <CheckCircle className="h-3 w-3 text-emerald-500" />
     ) : (
-      <XCircle className="h-4 w-4 text-red-600" />
+      <XCircle className="h-3 w-3 text-destructive" />
     );
   };
 
   const getStatusBadge = (isSuccess: boolean) => {
     return isSuccess ? (
-      <Badge className="bg-green-100 text-green-800">✓ Pass</Badge>
+      <Badge className="text-[9px] h-4 px-1.5 bg-emerald-500/10 text-emerald-600 border-emerald-500/30">✓ Pass</Badge>
     ) : (
-      <Badge className="bg-red-100 text-red-800">✗ Fail</Badge>
+      <Badge className="text-[9px] h-4 px-1.5 bg-destructive/10 text-destructive border-destructive/30">✗ Fail</Badge>
     );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-blue-600" />
+    <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+      <CardHeader className="p-3 pb-2">
+        <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+          <Shield className="h-3.5 w-3.5 text-primary" />
           Admin Access Diagnostic
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-3 pt-0 space-y-3">
         
         {/* Authentication Status */}
-        <div className="space-y-3">
-          <h3 className="font-medium flex items-center gap-2">
-            <User className="h-4 w-4" />
+        <div className="space-y-2">
+          <h3 className="text-[10px] font-medium text-foreground flex items-center gap-1.5">
+            <User className="h-3 w-3" />
             Authentication Status
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div className="flex items-center gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="flex items-center justify-between p-2 bg-background/50 border border-border/50 rounded-md">
+              <div className="flex items-center gap-1.5">
                 {getStatusIcon(!!user)}
-                <span>User Authenticated</span>
+                <span className="text-[10px] text-foreground">User Authenticated</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {getStatusBadge(!!user)}
-                <span className="text-sm text-gray-600">
+                <span className="text-[9px] text-muted-foreground truncate max-w-20">
                   {user ? user.email : 'Not logged in'}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between p-2 bg-background/50 border border-border/50 rounded-md">
+              <div className="flex items-center gap-1.5">
                 {getStatusIcon(!!profile)}
-                <span>Profile Loaded</span>
+                <span className="text-[10px] text-foreground">Profile Loaded</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {getStatusBadge(!!profile)}
-                <span className="text-sm text-gray-600">
+                <span className="text-[9px] text-muted-foreground">
                   {profile?.role || 'No profile'}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 border rounded-lg bg-blue-50">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between p-2 bg-primary/5 border border-primary/20 rounded-md">
+            <div className="flex items-center gap-1.5">
               {getStatusIcon(isAdmin)}
-              <span className="font-medium">Admin Access</span>
+              <span className="text-[10px] font-medium text-foreground">Admin Access</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {getStatusBadge(isAdmin)}
-              <span className="text-sm text-gray-600">
-                {isAdmin ? 'Admin privileges granted' : 'Admin access required'}
+              <span className="text-[9px] text-muted-foreground">
+                {isAdmin ? 'Granted' : 'Required'}
               </span>
             </div>
           </div>
         </div>
 
         {/* Database Access Test */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <h3 className="font-medium flex items-center gap-2">
-              <Database className="h-4 w-4" />
+            <h3 className="text-[10px] font-medium text-foreground flex items-center gap-1.5">
+              <Database className="h-3 w-3" />
               Database Access Test
             </h3>
             <Button 
@@ -126,43 +124,44 @@ const AdminAccessChecker = () => {
               disabled={isTestingDB}
               size="sm"
               variant="outline"
+              className="h-6 text-[9px] px-2"
             >
               {isTestingDB ? "Testing..." : "Test Database"}
             </Button>
           </div>
 
           {dbTestResult && (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {dbTestResult.error ? (
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>{dbTestResult.error}</AlertDescription>
+                <Alert className="p-2 border-destructive/50 bg-destructive/10">
+                  <AlertTriangle className="h-3 w-3" />
+                  <AlertDescription className="text-[10px]">{dbTestResult.error}</AlertDescription>
                 </Alert>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div className="flex items-center justify-between p-2 bg-background/50 border border-border/50 rounded-md">
+                    <div className="flex items-center gap-1.5">
                       {getStatusIcon(dbTestResult.propertiesRead.success)}
-                      <span>Read Properties</span>
+                      <span className="text-[10px] text-foreground">Read Properties</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {getStatusBadge(dbTestResult.propertiesRead.success)}
-                      <span className="text-sm text-gray-600">
+                      <span className="text-[9px] text-muted-foreground">
                         {dbTestResult.propertiesRead.success 
-                          ? `${dbTestResult.propertiesRead.count} properties` 
+                          ? `${dbTestResult.propertiesRead.count} found` 
                           : dbTestResult.propertiesRead.error}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between p-2 bg-background/50 border border-border/50 rounded-md">
+                    <div className="flex items-center gap-1.5">
                       {getStatusIcon(dbTestResult.adminAccess.success)}
-                      <span>Admin Function</span>
+                      <span className="text-[10px] text-foreground">Admin Function</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {getStatusBadge(dbTestResult.adminAccess.success)}
-                      <span className="text-sm text-gray-600">
+                      <span className="text-[9px] text-muted-foreground">
                         {dbTestResult.adminAccess.success 
                           ? `Result: ${dbTestResult.adminAccess.result}` 
                           : dbTestResult.adminAccess.error}
@@ -176,43 +175,43 @@ const AdminAccessChecker = () => {
         </div>
 
         {/* Action Items */}
-        <div className="space-y-3">
-          <h3 className="font-medium flex items-center gap-2">
-            <Settings className="h-4 w-4" />
+        <div className="space-y-2">
+          <h3 className="text-[10px] font-medium text-foreground flex items-center gap-1.5">
+            <Settings className="h-3 w-3" />
             Action Items
           </h3>
           
           {!user && (
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
+            <Alert className="p-2 border-amber-500/50 bg-amber-500/10">
+              <AlertTriangle className="h-3 w-3 text-amber-500" />
+              <AlertDescription className="text-[10px] text-amber-600 dark:text-amber-400">
                 <strong>Please log in</strong> to access property management features.
               </AlertDescription>
             </Alert>
           )}
 
           {user && !profile && (
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
+            <Alert className="p-2 border-amber-500/50 bg-amber-500/10">
+              <AlertTriangle className="h-3 w-3 text-amber-500" />
+              <AlertDescription className="text-[10px] text-amber-600 dark:text-amber-400">
                 <strong>Profile not found.</strong> Your user profile may not be properly set up.
               </AlertDescription>
             </Alert>
           )}
 
           {user && profile && !isAdmin && (
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                <strong>Admin access required.</strong> Your current role is "{profile.role}". Contact an administrator to get admin privileges.
+            <Alert className="p-2 border-amber-500/50 bg-amber-500/10">
+              <AlertTriangle className="h-3 w-3 text-amber-500" />
+              <AlertDescription className="text-[10px] text-amber-600 dark:text-amber-400">
+                <strong>Admin access required.</strong> Your current role is "{profile.role}". Contact an administrator.
               </AlertDescription>
             </Alert>
           )}
 
           {isAdmin && (
-            <Alert className="border-green-200 bg-green-50">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
+            <Alert className="p-2 border-emerald-500/50 bg-emerald-500/10">
+              <CheckCircle className="h-3 w-3 text-emerald-500" />
+              <AlertDescription className="text-[10px] text-emerald-600 dark:text-emerald-400">
                 <strong>All requirements met!</strong> You have full admin access to property management.
               </AlertDescription>
             </Alert>
