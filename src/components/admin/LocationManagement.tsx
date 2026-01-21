@@ -384,93 +384,95 @@ const LocationManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Indonesian Location Administration Management
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+            <MapPin className="h-3.5 w-3.5 text-primary" />
+            Pengelolaan Wilayah Indonesia
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[10px] text-muted-foreground">
             Manage Indonesian administrative locations including provinces, cities, districts, and subdistricts
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Controls */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <div className="flex flex-col md:flex-row gap-2 flex-1">
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardContent className="p-3">
+          <div className="flex flex-col md:flex-row gap-2 items-start md:items-center justify-between">
+            <div className="flex flex-col md:flex-row gap-1.5 flex-1">
               <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Search className="h-3 w-3 absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search locations..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full md:w-64"
+                  className="pl-7 h-7 text-[10px] w-full md:w-48 bg-background/50 border-border/50"
                 />
               </div>
               
               <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Filter by Province" />
+                <SelectTrigger className="h-7 text-[10px] w-full md:w-36 bg-background/50 border-border/50">
+                  <SelectValue placeholder="Province" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ALL_PROVINCES">All Provinces</SelectItem>
+                  <SelectItem value="ALL_PROVINCES" className="text-[10px]">All Provinces</SelectItem>
                   {provinces.map(province => (
-                    <SelectItem key={province} value={province}>{province}</SelectItem>
+                    <SelectItem key={province} value={province} className="text-[10px]">{province}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
               {selectedProvince && selectedProvince !== 'ALL_PROVINCES' && (
                 <Select value={selectedCity} onValueChange={setSelectedCity}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <SelectValue placeholder="Filter by City" />
+                  <SelectTrigger className="h-7 text-[10px] w-full md:w-36 bg-background/50 border-border/50">
+                    <SelectValue placeholder="City" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ALL_CITIES">All Cities</SelectItem>
+                    <SelectItem value="ALL_CITIES" className="text-[10px]">All Cities</SelectItem>
                     {cities.map(city => (
-                      <SelectItem key={city} value={city}>{city}</SelectItem>
+                      <SelectItem key={city} value={city} className="text-[10px]">{city}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               )}
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {/* Sync from Official API */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Select value={syncMode} onValueChange={(v: 'full' | 'districts') => setSyncMode(v)}>
-                  <SelectTrigger className="w-32">
+                  <SelectTrigger className="h-7 text-[10px] w-24 bg-background/50 border-border/50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="districts">Districts Only</SelectItem>
-                    <SelectItem value="full">Full (+ Villages)</SelectItem>
+                    <SelectItem value="districts" className="text-[10px]">Districts</SelectItem>
+                    <SelectItem value="full" className="text-[10px]">Full</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button 
                   variant="outline" 
                   onClick={handleSyncLocations}
                   disabled={isSyncing}
+                  size="sm"
+                  className="h-7 text-[10px] gap-1"
                 >
                   {isSyncing ? (
-                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    <RefreshCw className="h-3 w-3 animate-spin" />
                   ) : (
-                    <CloudDownload className="h-4 w-4 mr-2" />
+                    <CloudDownload className="h-3 w-3" />
                   )}
-                  {isSyncing ? 'Syncing...' : 'Sync from BPS'}
+                  {isSyncing ? 'Syncing...' : 'Sync BPS'}
                 </Button>
               </div>
 
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
-                  <Button onClick={() => resetForm()}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Location
+                  <Button onClick={() => resetForm()} size="sm" className="h-7 text-[10px] gap-1 bg-primary hover:bg-primary/90">
+                    <Plus className="h-3 w-3" />
+                    Add
                   </Button>
                 </DialogTrigger>
               </Dialog>
@@ -480,24 +482,24 @@ const LocationManagement = () => {
       </Card>
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-2.5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Locations</p>
-                <p className="text-2xl font-bold">{locations.length}</p>
+                <p className="text-[9px] font-medium text-muted-foreground">Total</p>
+                <p className="text-sm font-bold text-foreground">{locations.length}</p>
               </div>
-              <MapPin className="h-8 w-8 text-blue-600" />
+              <MapPin className="h-4 w-4 text-primary" />
             </div>
           </CardContent>
         </Card>
         
-        <Card>
-          <CardContent className="p-4">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-2.5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Provinces Found</p>
+                <p className="text-[9px] font-medium text-muted-foreground">Provinces</p>
                 <p className="text-2xl font-bold text-orange-600">{provinces.length}</p>
                 <p className="text-xs text-muted-foreground">of 38 expected</p>
               </div>

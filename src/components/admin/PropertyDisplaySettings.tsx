@@ -69,7 +69,6 @@ const PropertyDisplaySettings = () => {
     try {
       console.log('Loading display settings...');
       
-      // Add timeout to the query
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Database connection timeout')), 10000);
       });
@@ -88,7 +87,7 @@ const PropertyDisplaySettings = () => {
       }
 
       if (data && data.length > 0) {
-        const settingsMap = data.reduce((acc, setting) => {
+        const settingsMap = data.reduce((acc: any, setting: any) => {
           const key = setting.key.replace('property_display_', '');
           acc[key] = setting.value;
           return acc;
@@ -111,7 +110,7 @@ const PropertyDisplaySettings = () => {
         
         console.log('Display settings loaded successfully');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading settings:', error);
       if (error.message === 'Database connection timeout') {
         showError('Connection Timeout', 'Database connection timed out. Please check your internet connection and try again.');
@@ -146,7 +145,6 @@ const PropertyDisplaySettings = () => {
 
       console.log('Attempting to save settings to database...');
 
-      // Add timeout to the save operation
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Database save timeout')), 15000);
       });
@@ -167,7 +165,7 @@ const PropertyDisplaySettings = () => {
 
       console.log('Settings saved successfully to database');
       showSuccess('Settings Saved', 'Property display settings have been saved successfully');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving settings:', error);
       if (error.message === 'Database save timeout') {
         showError('Save Timeout', 'The save operation timed out. Please check your connection and try again.');
@@ -183,74 +181,75 @@ const PropertyDisplaySettings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Property Display Settings</h2>
-          <p className="text-gray-400">Configure how properties are displayed on the website</p>
+          <h2 className="text-sm font-semibold text-foreground">Property Display Settings</h2>
+          <p className="text-[10px] text-muted-foreground">Configure how properties are displayed on the website</p>
         </div>
         <Button
           onClick={loadSettings}
           variant="outline"
           size="sm"
+          className="h-7 text-[10px] gap-1"
         >
-          <RefreshCw className="h-4 w-4 mr-2" />
+          <RefreshCw className="h-3 w-3" />
           Refresh
         </Button>
       </div>
 
       {/* Connection Status Warning */}
-      <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
-        <div className="flex items-center space-x-2">
-          <AlertCircle className="h-5 w-5 text-yellow-400" />
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-2">
+        <div className="flex items-center gap-2">
+          <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
           <div>
-            <p className="text-yellow-300 font-medium">Database Connection Status</p>
-            <p className="text-yellow-200 text-sm">
-              If saving takes too long, there might be connection issues. Please ensure your internet connection is stable.
+            <p className="text-[10px] font-medium text-amber-600 dark:text-amber-400">Database Connection Status</p>
+            <p className="text-[9px] text-muted-foreground">
+              If saving takes too long, there might be connection issues.
             </p>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="layout" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
-          <TabsTrigger value="layout">Layout</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
+      <Tabs defaultValue="layout" className="space-y-3">
+        <TabsList className="h-8 bg-muted/50 p-0.5 w-full grid grid-cols-3">
+          <TabsTrigger value="layout" className="text-[10px] h-7">Layout</TabsTrigger>
+          <TabsTrigger value="content" className="text-[10px] h-7">Content</TabsTrigger>
+          <TabsTrigger value="appearance" className="text-[10px] h-7">Appearance</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="layout" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Layout className="h-5 w-5 mr-2" />
+        <TabsContent value="layout" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Layout className="h-3.5 w-3.5 text-primary" />
                 Layout Configuration
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Layout Type</Label>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-foreground">Layout Type</Label>
                 <Select value={settings.layoutType} onValueChange={(value) => setSettings(prev => ({ ...prev, layoutType: value }))}>
-                  <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                  <SelectTrigger className="h-7 text-[10px] bg-background/50 border-border/50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="grid">
-                      <div className="flex items-center">
-                        <Grid className="h-4 w-4 mr-2" />
+                    <SelectItem value="grid" className="text-[10px]">
+                      <div className="flex items-center gap-1.5">
+                        <Grid className="h-3 w-3" />
                         Grid Layout
                       </div>
                     </SelectItem>
-                    <SelectItem value="list">
-                      <div className="flex items-center">
-                        <List className="h-4 w-4 mr-2" />
+                    <SelectItem value="list" className="text-[10px]">
+                      <div className="flex items-center gap-1.5">
+                        <List className="h-3 w-3" />
                         List Layout
                       </div>
                     </SelectItem>
-                    <SelectItem value="masonry">
-                      <div className="flex items-center">
-                        <Layout className="h-4 w-4 mr-2" />
+                    <SelectItem value="masonry" className="text-[10px]">
+                      <div className="flex items-center gap-1.5">
+                        <Layout className="h-3 w-3" />
                         Masonry Layout
                       </div>
                     </SelectItem>
@@ -258,9 +257,9 @@ const PropertyDisplaySettings = () => {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-white">Cards Per Row</Label>
-                <div className="flex items-center space-x-4">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-foreground">Cards Per Row</Label>
+                <div className="flex items-center gap-3">
                   <Slider
                     value={[settings.cardsPerRow]}
                     onValueChange={([value]) => setSettings(prev => ({ ...prev, cardsPerRow: value }))}
@@ -269,15 +268,15 @@ const PropertyDisplaySettings = () => {
                     step={1}
                     className="flex-1"
                   />
-                  <Badge variant="outline" className="text-white border-slate-600">
+                  <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                     {settings.cardsPerRow}
                   </Badge>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-white">Card Spacing</Label>
-                <div className="flex items-center space-x-4">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-foreground">Card Spacing</Label>
+                <div className="flex items-center gap-3">
                   <Slider
                     value={[settings.cardSpacing]}
                     onValueChange={([value]) => setSettings(prev => ({ ...prev, cardSpacing: value }))}
@@ -286,7 +285,7 @@ const PropertyDisplaySettings = () => {
                     step={1}
                     className="flex-1"
                   />
-                  <Badge variant="outline" className="text-white border-slate-600">
+                  <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                     {settings.cardSpacing}px
                   </Badge>
                 </div>
@@ -295,99 +294,108 @@ const PropertyDisplaySettings = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="content" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Eye className="h-5 w-5 mr-2" />
+        <TabsContent value="content" className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                  <Eye className="h-3.5 w-3.5 text-primary" />
                   Visible Content
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
+              <CardContent className="p-3 pt-0 space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show price range</Label>
                   <Switch
                     checked={settings.showPriceRange}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showPriceRange: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show price range</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show bedrooms</Label>
                   <Switch
                     checked={settings.showBedrooms}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showBedrooms: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show bedrooms</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show bathrooms</Label>
                   <Switch
                     checked={settings.showBathrooms}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showBathrooms: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show bathrooms</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show area</Label>
                   <Switch
                     checked={settings.showArea}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showArea: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show area</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show location</Label>
                   <Switch
                     checked={settings.showLocation}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showLocation: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show location</Label>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Additional Options</CardTitle>
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs font-medium text-foreground">Additional Options</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
+              <CardContent className="p-3 pt-0 space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show property type</Label>
                   <Switch
                     checked={settings.showPropertyType}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showPropertyType: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show property type</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show listing type</Label>
                   <Switch
                     checked={settings.showListingType}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showListingType: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show listing type</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show description</Label>
                   <Switch
                     checked={settings.showDescription}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showDescription: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show description</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-foreground">Show contact info</Label>
                   <Switch
                     checked={settings.showContactInfo}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showContactInfo: checked }))}
+                    className="scale-75"
                   />
-                  <Label className="text-white">Show contact info</Label>
                 </div>
 
                 {settings.showDescription && (
-                  <div className="space-y-2">
-                    <Label className="text-white">Max Description Length</Label>
-                    <div className="flex items-center space-x-4">
+                  <div className="space-y-1.5 pt-1">
+                    <Label className="text-[10px] text-foreground">Max Description Length</Label>
+                    <div className="flex items-center gap-3">
                       <Slider
                         value={[settings.maxDescriptionLength]}
                         onValueChange={([value]) => setSettings(prev => ({ ...prev, maxDescriptionLength: value }))}
@@ -396,7 +404,7 @@ const PropertyDisplaySettings = () => {
                         step={25}
                         className="flex-1"
                       />
-                      <Badge variant="outline" className="text-white border-slate-600">
+                      <Badge variant="outline" className="text-[9px] h-5 px-1.5 border-border/50">
                         {settings.maxDescriptionLength}
                       </Badge>
                     </div>
@@ -407,62 +415,57 @@ const PropertyDisplaySettings = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="appearance" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Palette className="h-5 w-5 mr-2" />
+        <TabsContent value="appearance" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Palette className="h-3.5 w-3.5 text-primary" />
                 Visual Appearance
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={settings.showImages}
-                  onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showImages: checked }))}
-                />
-                <Label className="text-white">Show property images</Label>
-              </div>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-foreground">Show Images</Label>
+                  <div className="flex items-center justify-between">
+                    <Switch
+                      checked={settings.showImages}
+                      onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showImages: checked }))}
+                      className="scale-75"
+                    />
+                  </div>
+                </div>
 
-              {settings.showImages && (
-                <div className="space-y-2">
-                  <Label className="text-white">Image Aspect Ratio</Label>
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-foreground">Image Aspect Ratio</Label>
                   <Select value={settings.imageAspectRatio} onValueChange={(value) => setSettings(prev => ({ ...prev, imageAspectRatio: value }))}>
-                    <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                    <SelectTrigger className="h-7 text-[10px] bg-background/50 border-border/50">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="16:9">16:9 (Widescreen)</SelectItem>
-                      <SelectItem value="4:3">4:3 (Standard)</SelectItem>
-                      <SelectItem value="1:1">1:1 (Square)</SelectItem>
-                      <SelectItem value="3:2">3:2 (Photo)</SelectItem>
+                      <SelectItem value="16:9" className="text-[10px]">16:9 (Widescreen)</SelectItem>
+                      <SelectItem value="4:3" className="text-[10px]">4:3 (Standard)</SelectItem>
+                      <SelectItem value="1:1" className="text-[10px]">1:1 (Square)</SelectItem>
+                      <SelectItem value="3:2" className="text-[10px]">3:2 (Photo)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
 
       {/* Save Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end pt-2">
         <Button
           onClick={saveSettings}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+          size="sm"
+          className="h-7 text-[10px] gap-1.5 bg-primary hover:bg-primary/90"
         >
-          {loading ? (
-            <>
-              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              Saving... (This may take a moment)
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4 mr-2" />
-              Save Settings
-            </>
-          )}
+          <Save className="h-3 w-3" />
+          {loading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>
     </div>
