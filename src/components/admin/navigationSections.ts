@@ -368,13 +368,6 @@ export const navigationSections = {
 
   "system-settings": [
     {
-      key: "branding-settings",
-      label: "Branding Settings",
-      icon: Palette,
-      description: "Manage logos, welcome screen, brand assets, and visual identity",
-      badge: "New"
-    },
-    {
       key: "system-settings",
       label: "System Settings",
       icon: Settings,
