@@ -49,7 +49,12 @@ import {
   Cpu,
   TestTube2,
   Gem,
-  DollarSign
+  DollarSign,
+  Plane,
+  Building2,
+  Landmark,
+  Sparkles,
+  Palette
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -62,6 +67,7 @@ export interface NavigationSection {
 
 export const categories = [
   "overview",
+  "investor-management",
   "transactions",
   "astra-token", 
   "tools",
@@ -89,6 +95,30 @@ export const navigationSections = {
       label: "Project Map",
       icon: Map,
       description: "Complete visualization of project structure, database, and code analysis",
+      badge: "New"
+    }
+  ],
+
+  "investor-management": [
+    {
+      key: "wna-investment-settings",
+      label: "WNA Investment Settings",
+      icon: Plane,
+      description: "Manage Foreign Investor (WNA) program settings, eligible countries, facilities, and regulations",
+      badge: "New"
+    },
+    {
+      key: "wni-mortgage-settings",
+      label: "WNI KPR/Mortgage Settings",
+      icon: Landmark,
+      description: "Manage Overseas Indonesian (WNI) KPR program, eligible countries tiers, and requirements",
+      badge: "New"
+    },
+    {
+      key: "investor-analytics",
+      label: "Investor Analytics",
+      icon: TrendingUp,
+      description: "Track investor inquiries, eligibility checks, and conversion metrics",
       badge: "New"
     }
   ],
@@ -450,6 +480,13 @@ export const navigationSections = {
       description: "Advanced property search with multiple filter options"
     },
     {
+      key: "welcome-screen-settings",
+      label: "Welcome Screen Settings",
+      icon: Sparkles,
+      description: "Customize loading screen logo, animations, and branding",
+      badge: "New"
+    },
+    {
       key: "user-experience-tips",
       label: "User Experience Tips",
       icon: HelpCircle,
@@ -472,6 +509,7 @@ export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
+  "investor-management": "Investor Management",
   transactions: "Transaction Management",
   "astra-token": "ASTRA Token",
   tools: "Tools & Management",
