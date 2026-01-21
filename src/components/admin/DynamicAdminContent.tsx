@@ -25,6 +25,8 @@ import LocationManagement from "./LocationManagement";
 import SystemToolsDashboard from "./SystemToolsDashboard";
 import MediaGallery from "./MediaGallery";
 import TransactionManagementTabs from "./TransactionManagementTabs";
+import WelcomeScreenSettings from "./WelcomeScreenSettings";
+import InvestorSettingsHub from "./InvestorSettingsHub";
 
 // Move lazy loading outside the component to prevent re-creation on every render
 const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
@@ -118,6 +120,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <SystemToolsDashboard />;
       case "image-optimization":
         return <ImageOptimizationPanel />;
+      case "welcome-screen-settings":
+        return <WelcomeScreenSettings />;
+      case "wna-investment-settings":
+      case "wni-mortgage-settings":
+      case "investor-analytics":
+        return <InvestorSettingsHub />;
       case "system-alerts":
         return (
           <div className="p-6">
