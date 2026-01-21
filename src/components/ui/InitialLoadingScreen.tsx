@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
-import astraLogo from '@/assets/astra-logo.png';
+import astraLogoFallback from '@/assets/astra-logo.png';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -13,7 +13,42 @@ const InitialLoadingScreen = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string>(astraLogoFallback);
   const { toast } = useToast();
+
+  // Fetch dynamic logo from system settings
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        // Try welcomeScreenLogo first
+        const { data: welcomeData } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('key', 'welcomeScreenLogo')
+          .maybeSingle();
+
+        if (welcomeData?.value && typeof welcomeData.value === 'string') {
+          setLogoUrl(welcomeData.value);
+          return;
+        }
+
+        // Fallback to headerLogo
+        const { data: headerData } = await supabase
+          .from('system_settings')
+          .select('value')
+          .eq('key', 'headerLogo')
+          .maybeSingle();
+
+        if (headerData?.value && typeof headerData.value === 'string') {
+          setLogoUrl(headerData.value);
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   useEffect(() => {
     const stages = [
@@ -264,9 +299,12 @@ const InitialLoadingScreen = () => {
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
               <img 
-                src={astraLogo} 
+                src={logoUrl} 
                 alt="ASTRA Villa Logo" 
                 className="w-16 h-16 object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = astraLogoFallback;
+                }}
               />
             </motion.div>
           </motion.div>
