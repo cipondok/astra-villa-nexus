@@ -10,10 +10,9 @@ interface LoadingProgressPopupProps {
 const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
   const { isLoading, progress, message, showPopup, setShowPopup } = useGlobalLoading();
 
-  if (!isLoading || !showPopup) return null;
-
   return (
     <AnimatePresence>
+      {isLoading && showPopup && (
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -138,6 +137,7 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
           </div>
         </div>
       </motion.div>
+      )}
     </AnimatePresence>
   );
 };

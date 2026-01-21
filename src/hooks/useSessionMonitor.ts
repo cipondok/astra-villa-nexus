@@ -6,16 +6,35 @@ interface SessionMonitorState {
   isSessionExpired: boolean;
   showExpirationModal: boolean;
   showWarning: boolean;
+  authError: string | null;
 }
 
 const SESSION_CHECK_INTERVAL = 30000; // Check every 30 seconds
 const WARNING_BEFORE_EXPIRY = 5 * 60 * 1000; // Show warning 5 minutes before expiry
+
+// Create a global event emitter for auth errors
+export const authErrorEmitter = {
+  listeners: new Set<(error: string) => void>(),
+  emit(error: string) {
+    this.listeners.forEach(listener => listener(error));
+  },
+  subscribe(listener: (error: string) => void) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+};
+
+// Helper to trigger auth modal from anywhere
+export const triggerAuthModal = (reason?: string) => {
+  authErrorEmitter.emit(reason || 'Authentication required');
+};
 
 export const useSessionMonitor = () => {
   const [state, setState] = useState<SessionMonitorState>({
     isSessionExpired: false,
     showExpirationModal: false,
     showWarning: false,
+    authError: null,
   });
   const { toast } = useToast();
   const warningShownRef = useRef(false);
@@ -26,15 +45,26 @@ export const useSessionMonitor = () => {
     localStorage.setItem('last_activity', Date.now().toString());
   }, []);
 
-  const handleSessionExpired = useCallback(() => {
-    console.log('Session expired detected');
+  const handleSessionExpired = useCallback((reason?: string) => {
+    console.log('Session expired detected:', reason);
     setState(prev => ({
       ...prev,
       isSessionExpired: true,
       showExpirationModal: true,
       showWarning: false,
+      authError: reason || 'Session expired',
     }));
     warningShownRef.current = false;
+  }, []);
+
+  const handleAuthError = useCallback((error: string) => {
+    console.log('Auth error detected:', error);
+    setState(prev => ({
+      ...prev,
+      isSessionExpired: true,
+      showExpirationModal: true,
+      authError: error,
+    }));
   }, []);
 
   const showExpirationWarning = useCallback(() => {
@@ -62,9 +92,16 @@ export const useSessionMonitor = () => {
       isSessionExpired: false,
       showExpirationModal: false,
       showWarning: false,
+      authError: null,
     });
     warningShownRef.current = false;
   }, []);
+
+  useEffect(() => {
+    // Subscribe to auth error events
+    const unsubscribe = authErrorEmitter.subscribe(handleAuthError);
+    return () => { unsubscribe(); };
+  }, [handleAuthError]);
 
   useEffect(() => {
     let checkInterval: NodeJS.Timeout;
@@ -75,6 +112,12 @@ export const useSessionMonitor = () => {
         
         if (error) {
           console.error('Session check error:', error);
+          // Handle specific auth errors
+          if (error.message.includes('refresh_token') || 
+              error.message.includes('invalid') ||
+              error.message.includes('expired')) {
+            handleSessionExpired(error.message);
+          }
           return;
         }
 
@@ -82,7 +125,7 @@ export const useSessionMonitor = () => {
         const hadSession = localStorage.getItem('had_active_session') === 'true';
         
         if (!session && hadSession) {
-          handleSessionExpired();
+          handleSessionExpired('Your session has ended');
           localStorage.removeItem('had_active_session');
           return;
         }
@@ -98,14 +141,22 @@ export const useSessionMonitor = () => {
             const timeUntilExpiry = expiryTime - now;
 
             if (timeUntilExpiry <= 0) {
-              handleSessionExpired();
+              handleSessionExpired('Session has expired');
             } else if (timeUntilExpiry <= WARNING_BEFORE_EXPIRY) {
               showExpirationWarning();
             }
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Session check failed:', error);
+        // Network errors or other issues
+        if (error?.message?.includes('network') || error?.message?.includes('fetch')) {
+          toast({
+            title: "Connection Issue",
+            description: "Please check your internet connection",
+            variant: "destructive",
+          });
+        }
       }
     };
 
@@ -122,14 +173,15 @@ export const useSessionMonitor = () => {
       if (event === 'SIGNED_OUT') {
         const wasExpired = state.isSessionExpired;
         if (!wasExpired) {
-          // User signed out manually, don't show expiration modal
+          // User signed out manually, clear state
+          console.log('User signed out, clearing all state');
           resetSessionState();
         }
         localStorage.removeItem('had_active_session');
       } else if (event === 'TOKEN_REFRESHED') {
         // Token was refreshed successfully
         warningShownRef.current = false;
-        setState(prev => ({ ...prev, showWarning: false }));
+        setState(prev => ({ ...prev, showWarning: false, authError: null }));
       } else if (event === 'SIGNED_IN') {
         resetSessionState();
         localStorage.setItem('had_active_session', 'true');
@@ -149,11 +201,12 @@ export const useSessionMonitor = () => {
         document.removeEventListener(event, updateLastActivity);
       });
     };
-  }, [handleSessionExpired, showExpirationWarning, resetSessionState, updateLastActivity, state.isSessionExpired]);
+  }, [handleSessionExpired, showExpirationWarning, resetSessionState, updateLastActivity, state.isSessionExpired, toast]);
 
   return {
     ...state,
     dismissExpirationModal,
     resetSessionState,
+    triggerAuthModal: handleAuthError,
   };
 };
