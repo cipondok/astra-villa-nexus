@@ -225,281 +225,301 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch, open, onOpenChan
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-[95vw] sm:max-w-2xl lg:max-w-3xl max-h-[85vh] sm:max-h-[90vh] p-0 flex flex-col bg-white dark:bg-gray-900 rounded-2xl border-0 shadow-2xl"
+        className="max-w-[95vw] sm:max-w-3xl lg:max-w-5xl xl:max-w-6xl max-h-[80vh] sm:max-h-[85vh] p-0 flex flex-col bg-background/98 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        {/* Modern Header - Google-style */}
-        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 sm:px-6 py-3 sm:py-4 shrink-0">
+        {/* Compact Header */}
+        <div className="flex items-center justify-between border-b border-border/30 px-4 sm:px-6 py-3 shrink-0 bg-muted/30">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">{currentText.advancedFilters}</DialogTitle>
-              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Refine your property search</p>
+              <DialogTitle className="text-sm sm:text-base font-semibold">{currentText.advancedFilters}</DialogTitle>
+              <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">Refine your property search</p>
             </div>
           </div>
           {Object.values(filters).filter(v => v !== 'all' && v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length > 0 && (
-            <Badge className="bg-primary/10 text-primary border-0 text-[10px] sm:text-xs font-medium h-6 sm:h-7 px-2 sm:px-3">
+            <Badge variant="secondary" className="text-[10px] sm:text-xs h-5 sm:h-6 px-2">
               {Object.values(filters).filter(v => v !== 'all' && v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length} Active
             </Badge>
           )}
         </div>
 
-        {/* Listing Type Selection - Modern Pill Style */}
-        <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-800">
-          <Label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">{currentText.selectListingType}</Label>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            {listingTypes.map((type) => {
-              const Icon = type.icon;
-              const isSelected = filters.listingType === type.value;
-              return (
-                <button
-                  key={type.value}
-                  className={cn(
-                    "inline-flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200",
-                    "border-2 active:scale-95",
-                    isSelected 
-                      ? "bg-primary text-primary-foreground border-primary shadow-md" 
-                      : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  )}
-                  onClick={() => handleFilterChange('listingType', type.value)}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{type.label}</span>
-                </button>
-              );
-            })}
+        {/* Landscape Layout: Sidebar + Content */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Sidebar - Listing Type */}
+          <div className="w-32 sm:w-40 lg:w-48 shrink-0 border-r border-border/30 p-3 sm:p-4 bg-muted/20 overflow-y-auto">
+            <Label className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-2 sm:mb-3 block uppercase tracking-wide">{currentText.selectListingType}</Label>
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              {listingTypes.map((type) => {
+                const Icon = type.icon;
+                const isSelected = filters.listingType === type.value;
+                return (
+                  <button
+                    key={type.value}
+                    className={cn(
+                      "flex items-center gap-2 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 active:scale-95 w-full text-left",
+                      isSelected 
+                        ? "bg-primary text-primary-foreground shadow-md" 
+                        : "bg-background/80 text-foreground border border-border/50 hover:border-primary/50 hover:bg-accent"
+                    )}
+                    onClick={() => handleFilterChange('listingType', type.value)}
+                  >
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                    <span className="truncate">{type.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-        
-        {/* Tabbed Filters - Modern Style */}
-        <div className="flex-1 overflow-hidden px-4 sm:px-6 pt-4 sm:pt-5">
-          <Tabs defaultValue="property" className="h-full flex flex-col">
-            <TabsList className="w-full h-10 sm:h-11 mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
-              <TabsTrigger value="property" className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all">
-                <Home className="h-4 w-4 mr-1.5" />
-                <span className="hidden xs:inline">{currentText.propertyDetails}</span>
-                <span className="xs:hidden">Property</span>
-              </TabsTrigger>
-              <TabsTrigger value="price" className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all">
-                <DollarSign className="h-4 w-4 mr-1.5" />
-                <span className="hidden xs:inline">{currentText.priceAndArea}</span>
-                <span className="xs:hidden">Price</span>
-              </TabsTrigger>
-              <TabsTrigger value="features" className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm transition-all">
-                <Sparkles className="h-4 w-4 mr-1.5" />
-                <span className="hidden xs:inline">{currentText.features}</span>
-                <span className="xs:hidden">Features</span>
-              </TabsTrigger>
-            </TabsList>
 
-            <div className="flex-1 overflow-y-auto overscroll-contain pb-4"
-              onTouchStart={(e) => e.stopPropagation()}
-              onTouchMove={(e) => e.stopPropagation()}
-            >
-              {/* Property Details Tab */}
-              <TabsContent value="property" className="mt-0 space-y-5">
-                {/* Property Type - Modern Chips */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.propertyType}</Label>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      className={cn(
-                        "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                        filters.propertyType === 'all' 
-                          ? "bg-primary text-primary-foreground border-primary" 
-                          : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
-                      )}
-                      onClick={() => handleFilterChange('propertyType', 'all')}
-                    >
-                      {currentText.any}
-                    </button>
-                    {propertyTypes.map((type) => (
-                      <button
-                        key={type.value}
-                        className={cn(
-                          "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                          filters.propertyType === type.value 
-                            ? "bg-primary text-primary-foreground border-primary" 
-                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
-                        )}
-                        onClick={() => handleFilterChange('propertyType', type.value)}
-                      >
-                        {type.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+          {/* Right Content - Tabs */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <Tabs defaultValue="property" className="flex-1 flex flex-col overflow-hidden">
+              {/* Tab List - Matching main search panel style */}
+              <div className="px-3 sm:px-4 pt-3 sm:pt-4 shrink-0">
+                <TabsList className="w-full h-9 sm:h-10 p-1 bg-muted/60 rounded-xl border border-border/40">
+                  <TabsTrigger 
+                    value="property" 
+                    className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                  >
+                    <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">{currentText.propertyDetails}</span>
+                    <span className="xs:hidden">Property</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="price" 
+                    className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                  >
+                    <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">{currentText.priceAndArea}</span>
+                    <span className="xs:hidden">Price</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="features" 
+                    className="flex-1 h-full rounded-lg text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">{currentText.features}</span>
+                    <span className="xs:hidden">Features</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-                {/* Bedrooms - Modern Chips */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.bedrooms}</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {['all', '1', '2', '3', '4', '5'].map((num) => (
-                      <button
-                        key={num}
-                        className={cn(
-                          "w-12 h-10 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                          filters.bedrooms === num 
-                            ? "bg-primary text-primary-foreground border-primary" 
-                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
-                        )}
-                        onClick={() => handleFilterChange('bedrooms', num)}
-                      >
-                        {num === 'all' ? 'Any' : `${num}+`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Bathrooms - Modern Chips */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.bathrooms}</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {['all', '1', '2', '3', '4'].map((num) => (
-                      <button
-                        key={num}
-                        className={cn(
-                          "w-12 h-10 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                          filters.bathrooms === num 
-                            ? "bg-primary text-primary-foreground border-primary" 
-                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
-                        )}
-                        onClick={() => handleFilterChange('bathrooms', num)}
-                      >
-                        {num === 'all' ? 'Any' : `${num}+`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Rental Duration - Only for Rent */}
-                {filters.listingType === 'rent' && (
-                  <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.rentalDuration}</Label>
-                    <div className="flex flex-wrap gap-2">
+              {/* Tab Content - Scrollable */}
+              <div className="flex-1 overflow-y-auto overscroll-contain px-3 sm:px-4 py-3 sm:py-4"
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchMove={(e) => e.stopPropagation()}
+              >
+                {/* Property Details Tab */}
+                <TabsContent value="property" className="mt-0 space-y-4 sm:space-y-5">
+                  {/* Property Type - Modern Chips in Grid */}
+                  <div className="space-y-2 sm:space-y-3">
+                    <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.propertyType}</Label>
+                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2">
                       <button
                         className={cn(
-                          "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                          filters.rentalDuration === 'all' 
-                            ? "bg-primary text-primary-foreground border-primary" 
-                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                          "px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                          filters.propertyType === 'all' 
+                            ? "bg-primary text-primary-foreground shadow-sm" 
+                            : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50 hover:bg-accent"
                         )}
-                        onClick={() => handleFilterChange('rentalDuration', 'all')}
+                        onClick={() => handleFilterChange('propertyType', 'all')}
                       >
                         {currentText.any}
                       </button>
-                      {rentalDurations.map((duration) => (
+                      {propertyTypes.map((type) => (
                         <button
-                          key={duration.value}
+                          key={type.value}
                           className={cn(
-                            "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                            filters.rentalDuration === duration.value 
-                              ? "bg-primary text-primary-foreground border-primary" 
-                              : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                            "px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                            filters.propertyType === type.value 
+                              ? "bg-primary text-primary-foreground shadow-sm" 
+                              : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50 hover:bg-accent"
                           )}
-                          onClick={() => handleFilterChange('rentalDuration', duration.value)}
+                          onClick={() => handleFilterChange('propertyType', type.value)}
                         >
-                          {duration.label}
+                          {type.label}
                         </button>
                       ))}
                     </div>
                   </div>
-                )}
-              </TabsContent>
 
-              {/* Price & Area Tab */}
-              <TabsContent value="price" className="mt-0 space-y-6">
-                {/* Price Range */}
-                <div className="space-y-4">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.priceRange}</Label>
-                  <Slider
-                    value={filters.priceRange}
-                    onValueChange={(value) => handleFilterChange('priceRange', value)}
-                    max={10000000000}
-                    min={0}
-                    step={100000000}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{formatPrice(filters.priceRange[0])}</span>
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{formatPrice(filters.priceRange[1])}</span>
+                  {/* Bedrooms & Bathrooms - Side by Side */}
+                  <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.bedrooms}</Label>
+                      <div className="flex gap-1">
+                        {['all', '1', '2', '3', '4', '5'].map((num) => (
+                          <button
+                            key={num}
+                            className={cn(
+                              "flex-1 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                              filters.bedrooms === num 
+                                ? "bg-primary text-primary-foreground shadow-sm" 
+                                : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50"
+                            )}
+                            onClick={() => handleFilterChange('bedrooms', num)}
+                          >
+                            {num === 'all' ? 'Any' : `${num}+`}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.bathrooms}</Label>
+                      <div className="flex gap-1">
+                        {['all', '1', '2', '3', '4'].map((num) => (
+                          <button
+                            key={num}
+                            className={cn(
+                              "flex-1 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                              filters.bathrooms === num 
+                                ? "bg-primary text-primary-foreground shadow-sm" 
+                                : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50"
+                            )}
+                            onClick={() => handleFilterChange('bathrooms', num)}
+                          >
+                            {num === 'all' ? 'Any' : `${num}+`}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Area Range */}
-                <div className="space-y-4">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.areaRange}</Label>
-                  <Slider
-                    value={filters.areaRange}
-                    onValueChange={(value) => handleFilterChange('areaRange', value)}
-                    max={1000}
-                    min={0}
-                    step={50}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{filters.areaRange[0]} sqm</span>
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{filters.areaRange[1]} sqm</span>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Features Tab */}
-              <TabsContent value="features" className="mt-0">
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentText.features}</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {availableFeatures.map((feature) => {
-                      const isSelected = filters.features.includes(feature);
-                      return (
+                  {/* Rental Duration - Only for Rent */}
+                  {filters.listingType === 'rent' && (
+                    <div className="space-y-2 pt-3 border-t border-border/30">
+                      <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.rentalDuration}</Label>
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                         <button
-                          key={feature}
                           className={cn(
-                            "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border-2 active:scale-95",
-                            isSelected 
-                              ? "bg-primary text-primary-foreground border-primary" 
-                              : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                            "px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                            filters.rentalDuration === 'all' 
+                              ? "bg-primary text-primary-foreground shadow-sm" 
+                              : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50"
                           )}
-                          onClick={() => handleFeatureToggle(feature)}
+                          onClick={() => handleFilterChange('rentalDuration', 'all')}
                         >
-                          {currentText[feature as keyof typeof currentText]}
-                          {isSelected && <X className="h-3 w-3" />}
+                          {currentText.any}
                         </button>
-                      );
-                    })}
+                        {rentalDurations.map((duration) => (
+                          <button
+                            key={duration.value}
+                            className={cn(
+                              "px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                              filters.rentalDuration === duration.value 
+                                ? "bg-primary text-primary-foreground shadow-sm" 
+                                : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50"
+                            )}
+                            onClick={() => handleFilterChange('rentalDuration', duration.value)}
+                          >
+                            {duration.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Price & Area Tab */}
+                <TabsContent value="price" className="mt-0 space-y-5 sm:space-y-6">
+                  {/* Price Range */}
+                  <div className="space-y-3 sm:space-y-4">
+                    <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.priceRange}</Label>
+                    <Slider
+                      value={filters.priceRange}
+                      onValueChange={(value) => handleFilterChange('priceRange', value)}
+                      max={10000000000}
+                      min={0}
+                      step={100000000}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground">
+                      <span className="px-2 py-1 bg-muted/50 rounded-lg border border-border/30">{formatPrice(filters.priceRange[0])}</span>
+                      <span className="px-2 py-1 bg-muted/50 rounded-lg border border-border/30">{formatPrice(filters.priceRange[1])}</span>
+                    </div>
                   </div>
-                </div>
-              </TabsContent>
-            </div>
-          </Tabs>
+
+                  {/* Area Range */}
+                  <div className="space-y-3 sm:space-y-4">
+                    <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.areaRange}</Label>
+                    <Slider
+                      value={filters.areaRange}
+                      onValueChange={(value) => handleFilterChange('areaRange', value)}
+                      max={1000}
+                      min={0}
+                      step={50}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground">
+                      <span className="px-2 py-1 bg-muted/50 rounded-lg border border-border/30">{filters.areaRange[0]} sqm</span>
+                      <span className="px-2 py-1 bg-muted/50 rounded-lg border border-border/30">{filters.areaRange[1]} sqm</span>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Features Tab */}
+                <TabsContent value="features" className="mt-0">
+                  <div className="space-y-2 sm:space-y-3">
+                    <Label className="text-xs sm:text-sm font-medium text-foreground">{currentText.features}</Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+                      {availableFeatures.map((feature) => {
+                        const isSelected = filters.features.includes(feature);
+                        return (
+                          <button
+                            key={feature}
+                            className={cn(
+                              "inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200 active:scale-95",
+                              isSelected 
+                                ? "bg-primary text-primary-foreground shadow-sm" 
+                                : "bg-muted/50 text-foreground border border-border/50 hover:border-primary/50 hover:bg-accent"
+                            )}
+                            onClick={() => handleFeatureToggle(feature)}
+                          >
+                            {currentText[feature as keyof typeof currentText]}
+                            {isSelected && <X className="h-3 w-3" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
         </div>
         
-        {/* Modern Footer */}
-        <DialogFooter className="flex gap-3 px-4 sm:px-6 py-4 shrink-0 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+        {/* Compact Footer */}
+        <DialogFooter className="flex items-center justify-between gap-2 px-4 sm:px-6 py-3 shrink-0 border-t border-border/30 bg-muted/20">
           <Button 
             variant="ghost" 
+            size="sm"
             onClick={clearFilters} 
-            className="h-10 text-sm px-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            className="h-8 text-xs px-3 text-muted-foreground hover:text-foreground"
           >
             {currentText.clearFilters}
           </Button>
-          <div className="flex-1" />
-          <Button 
-            variant="outline" 
-            onClick={() => onOpenChange(false)} 
-            className="h-10 text-sm px-5 border-gray-200 dark:border-gray-700"
-          >
-            {currentText.cancel}
-          </Button>
-          <Button 
-            onClick={handleApply} 
-            className="h-10 text-sm px-6 font-medium shadow-md"
-          >
-            {currentText.apply}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onOpenChange(false)} 
+              className="h-8 text-xs px-4"
+            >
+              {currentText.cancel}
+            </Button>
+            <Button 
+              size="sm"
+              onClick={handleApply} 
+              className="h-8 text-xs px-5 font-medium shadow-sm"
+            >
+              {currentText.apply}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
