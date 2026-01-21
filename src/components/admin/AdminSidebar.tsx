@@ -15,6 +15,8 @@ import {
   HelpCircle,
   X,
   DollarSign,
+  Globe,
+  Palette,
   type LucideIcon 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -22,6 +24,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 const categoryIcons: Record<string, LucideIcon> = {
   "overview": LayoutDashboard,
+  "investor-management": Globe,
   "transactions": DollarSign,
   "astra-token": Coins,
   "tools": Wrench,
@@ -29,7 +32,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "customer-service": Headphones,
   "vendor-management": ShoppingBag,
   "analytics-monitoring": BarChart3,
-  "content-settings": FileText,
+  "content-settings": Palette,
   "system-settings": Settings,
   "technical": Cpu,
   "features": Building2,
