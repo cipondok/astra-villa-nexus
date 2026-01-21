@@ -32,16 +32,16 @@ const AdminPropertyManagement = () => {
 
   return (
     <div className="space-y-3 p-1 md:p-0">
-      {/* Professional Header */}
-      <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 dark:from-emerald-500/20 dark:via-teal-500/20 dark:to-cyan-500/20 rounded-lg border border-emerald-200/50 dark:border-emerald-800/50 p-3">
+      {/* Professional Header - Slim Style */}
+      <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/20 dark:to-primary/10 rounded-lg border border-border/50 p-3">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-            <List className="h-4 w-4 text-white" />
+          <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg">
+            <List className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">Property Management Hub</h2>
-              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 text-[9px] px-1.5 py-0 h-4">
+              <Badge className="bg-primary/10 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
                 <Activity className="h-2.5 w-2.5 mr-0.5" />
                 Active
               </Badge>
@@ -52,81 +52,81 @@ const AdminPropertyManagement = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-        <div className="bg-card backdrop-blur-sm rounded-lg border border-emerald-200/50 dark:border-emerald-800/50 p-1 shadow-sm">
-          <TabsList className="grid w-full grid-cols-11 bg-emerald-100/50 dark:bg-emerald-900/20 gap-0.5 h-7 p-0.5">
+        <div className="bg-card/50 backdrop-blur-sm rounded-lg border border-border/50 p-1 shadow-sm">
+          <TabsList className="flex w-full bg-muted/50 gap-0.5 h-8 p-0.5 overflow-x-auto">
             <TabsTrigger 
               value="diagnostic" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Activity className="h-3 w-3" />
               <span className="hidden sm:inline">Diagnostic</span>
             </TabsTrigger>
             <TabsTrigger 
               value="properties" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <List className="h-3 w-3" />
               <span className="hidden sm:inline">Properties</span>
             </TabsTrigger>
             <TabsTrigger 
               value="add-property" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Plus className="h-3 w-3" />
               <span className="hidden sm:inline">Add</span>
             </TabsTrigger>
             <TabsTrigger 
               value="slide-settings" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Sliders className="h-3 w-3" />
               <span className="hidden sm:inline">Slides</span>
             </TabsTrigger>
             <TabsTrigger 
               value="display-settings" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Monitor className="h-3 w-3" />
               <span className="hidden sm:inline">Display</span>
             </TabsTrigger>
             <TabsTrigger 
               value="3d-view-settings" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Blocks className="h-3 w-3" />
               <span className="hidden sm:inline">3D</span>
             </TabsTrigger>
             <TabsTrigger 
               value="smart-preview" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Eye className="h-3 w-3" />
               <span className="hidden sm:inline">Preview</span>
             </TabsTrigger>
             <TabsTrigger 
               value="categories" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Settings className="h-3 w-3" />
               <span className="hidden sm:inline">Categories</span>
             </TabsTrigger>
             <TabsTrigger 
               value="locations" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <MapPin className="h-3 w-3" />
               <span className="hidden sm:inline">Locations</span>
             </TabsTrigger>
             <TabsTrigger 
               value="filters" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Filter className="h-3 w-3" />
               <span className="hidden sm:inline">Filters</span>
             </TabsTrigger>
             <TabsTrigger 
               value="global" 
-              className="flex items-center gap-0.5 text-[9px] px-1 h-6 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white"
+              className="flex-1 min-w-fit flex items-center gap-1 text-[9px] px-2 h-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               <Globe className="h-3 w-3" />
               <span className="hidden sm:inline">Global</span>

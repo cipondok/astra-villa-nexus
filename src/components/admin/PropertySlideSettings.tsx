@@ -188,74 +188,67 @@ const PropertySlideSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-3">
+      {/* Header - Slim Style */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Property Slide Settings</h2>
-          <p className="text-gray-400">Configure how property image slides behave and appear</p>
+          <h2 className="text-sm font-bold text-foreground">Property Slide Settings</h2>
+          <p className="text-[10px] text-muted-foreground">Configure how property image slides behave and appear</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            onClick={togglePreviewMode}
-            variant="outline"
-            size="sm"
-          >
-            {isPreviewMode ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-            {isPreviewMode ? 'Stop Preview' : 'Live Preview'}
+        <div className="flex items-center gap-1.5">
+          <Button onClick={togglePreviewMode} variant="outline" size="sm" className="h-7 text-xs px-2">
+            {isPreviewMode ? <Pause className="h-3 w-3 mr-1" /> : <Play className="h-3 w-3 mr-1" />}
+            {isPreviewMode ? 'Stop' : 'Preview'}
           </Button>
-          <Button
-            onClick={loadSettings}
-            variant="outline"
-            size="sm"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
+          <Button onClick={loadSettings} variant="outline" size="sm" className="h-7 text-xs px-2">
+            <RefreshCw className="h-3 w-3 mr-1" />
             Refresh
           </Button>
         </div>
       </div>
 
       {/* Connection Status Warning */}
-      <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
-        <div className="flex items-center space-x-2">
-          <AlertCircle className="h-5 w-5 text-yellow-400" />
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-2">
+        <div className="flex items-center gap-2">
+          <AlertCircle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
           <div>
-            <p className="text-yellow-300 font-medium">Database Connection Status</p>
-            <p className="text-yellow-200 text-sm">
-              If saving takes too long, there might be connection issues. Please ensure your internet connection is stable.
+            <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Database Connection</p>
+            <p className="text-[9px] text-muted-foreground">
+              If saving takes too long, check your connection.
             </p>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="basic" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
-          <TabsTrigger value="basic">Basic Settings</TabsTrigger>
-          <TabsTrigger value="advanced">Advanced</TabsTrigger>
-          <TabsTrigger value="preview">Live Preview</TabsTrigger>
+      <Tabs defaultValue="basic" className="space-y-3">
+        <TabsList className="flex w-full bg-muted/50 gap-0.5 h-8 p-0.5">
+          <TabsTrigger value="basic" className="flex-1 text-xs h-6">Basic Settings</TabsTrigger>
+          <TabsTrigger value="advanced" className="flex-1 text-xs h-6">Advanced</TabsTrigger>
+          <TabsTrigger value="preview" className="flex-1 text-xs h-6">Live Preview</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="basic" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Play className="h-5 w-5 mr-2" />
+        <TabsContent value="basic" className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardHeader className="pb-2 pt-3 px-3">
+                <CardTitle className="text-xs text-foreground flex items-center gap-1.5">
+                  <Play className="h-3.5 w-3.5 text-primary" />
                   Playback Settings
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
+              <CardContent className="space-y-3 px-3 pb-3">
+                <div className="flex items-center gap-2">
                   <Switch
                     checked={settings.autoplay}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, autoplay: checked }))}
+                    className="scale-90"
                   />
-                  <Label className="text-white">Auto-play slides</Label>
+                  <Label className="text-xs text-foreground">Auto-play slides</Label>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-white">Slide Interval (seconds)</Label>
-                  <div className="flex items-center space-x-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-muted-foreground">Slide Interval (seconds)</Label>
+                  <div className="flex items-center gap-2">
                     <Slider
                       value={[settings.interval / 1000]}
                       onValueChange={([value]) => setSettings(prev => ({ ...prev, interval: value * 1000 }))}
@@ -264,57 +257,61 @@ const PropertySlideSettings = () => {
                       step={1}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="text-white border-slate-600">
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
                       {settings.interval / 1000}s
                     </Badge>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <Switch
                     checked={settings.pauseOnHover}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, pauseOnHover: checked }))}
+                    className="scale-90"
                   />
-                  <Label className="text-white">Pause on hover</Label>
+                  <Label className="text-xs text-foreground">Pause on hover</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <Switch
                     checked={settings.infiniteLoop}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, infiniteLoop: checked }))}
+                    className="scale-90"
                   />
-                  <Label className="text-white">Infinite loop</Label>
+                  <Label className="text-xs text-foreground">Infinite loop</Label>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Image className="h-5 w-5 mr-2" />
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardHeader className="pb-2 pt-3 px-3">
+                <CardTitle className="text-xs text-foreground flex items-center gap-1.5">
+                  <Image className="h-3.5 w-3.5 text-primary" />
                   Display Settings
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
+              <CardContent className="space-y-3 px-3 pb-3">
+                <div className="flex items-center gap-2">
                   <Switch
                     checked={settings.showDots}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showDots: checked }))}
+                    className="scale-90"
                   />
-                  <Label className="text-white">Show navigation dots</Label>
+                  <Label className="text-xs text-foreground">Show navigation dots</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <Switch
                     checked={settings.showArrows}
                     onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showArrows: checked }))}
+                    className="scale-90"
                   />
-                  <Label className="text-white">Show navigation arrows</Label>
+                  <Label className="text-xs text-foreground">Show navigation arrows</Label>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-white">Maximum Slides</Label>
-                  <div className="flex items-center space-x-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-muted-foreground">Maximum Slides</Label>
+                  <div className="flex items-center gap-2">
                     <Slider
                       value={[settings.maxSlides]}
                       onValueChange={([value]) => setSettings(prev => ({ ...prev, maxSlides: value }))}
@@ -323,7 +320,7 @@ const PropertySlideSettings = () => {
                       step={1}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="text-white border-slate-600">
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
                       {settings.maxSlides}
                     </Badge>
                   </div>
@@ -333,34 +330,34 @@ const PropertySlideSettings = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="advanced" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Settings className="h-5 w-5 mr-2" />
+        <TabsContent value="advanced" className="space-y-3">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="pb-2 pt-3 px-3">
+              <CardTitle className="text-xs text-foreground flex items-center gap-1.5">
+                <Settings className="h-3.5 w-3.5 text-primary" />
                 Advanced Settings
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-white">Slide Effect</Label>
+            <CardContent className="space-y-3 px-3 pb-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-muted-foreground">Slide Effect</Label>
                   <Select value={settings.slideEffect} onValueChange={(value) => setSettings(prev => ({ ...prev, slideEffect: value }))}>
-                    <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                    <SelectTrigger className="h-7 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="slide">Slide</SelectItem>
-                      <SelectItem value="fade">Fade</SelectItem>
-                      <SelectItem value="zoom">Zoom</SelectItem>
-                      <SelectItem value="flip">Flip</SelectItem>
+                      <SelectItem value="slide" className="text-xs">Slide</SelectItem>
+                      <SelectItem value="fade" className="text-xs">Fade</SelectItem>
+                      <SelectItem value="zoom" className="text-xs">Zoom</SelectItem>
+                      <SelectItem value="flip" className="text-xs">Flip</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-white">Transition Speed (ms)</Label>
-                  <div className="flex items-center space-x-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] text-muted-foreground">Transition Speed (ms)</Label>
+                  <div className="flex items-center gap-2">
                     <Slider
                       value={[settings.slideSpeed]}
                       onValueChange={([value]) => setSettings(prev => ({ ...prev, slideSpeed: value }))}
@@ -369,20 +366,21 @@ const PropertySlideSettings = () => {
                       step={50}
                       className="flex-1"
                     />
-                    <Badge variant="outline" className="text-white border-slate-600">
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
                       {settings.slideSpeed}ms
                     </Badge>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2 pt-4">
+              <div className="flex items-center gap-2 pt-2">
                 <Switch
                   checked={settings.randomOrder}
                   onCheckedChange={(checked) => setSettings(prev => ({ ...prev, randomOrder: checked }))}
+                  className="scale-90"
                 />
-                <Label className="text-white flex items-center">
-                  <Shuffle className="h-4 w-4 mr-2" />
+                <Label className="text-xs text-foreground flex items-center gap-1">
+                  <Shuffle className="h-3 w-3" />
                   Random slide order
                 </Label>
               </div>

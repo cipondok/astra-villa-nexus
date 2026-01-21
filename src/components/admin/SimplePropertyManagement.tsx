@@ -274,11 +274,11 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   if (!user) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-red-800 mb-2">Not Logged In</h3>
-          <p>Please log in to access property management.</p>
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardContent className="p-6 text-center">
+          <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-destructive mb-1">Not Logged In</h3>
+          <p className="text-xs text-muted-foreground">Please log in to access property management.</p>
         </CardContent>
       </Card>
     );
@@ -286,11 +286,11 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   if (!isAdmin) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-red-800 mb-2">Access Denied</h3>
-          <p>Admin access required. Your role: {profile?.role || 'none'}</p>
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardContent className="p-6 text-center">
+          <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-destructive mb-1">Access Denied</h3>
+          <p className="text-xs text-muted-foreground">Admin access required. Your role: {profile?.role || 'none'}</p>
         </CardContent>
       </Card>
     );
@@ -298,10 +298,10 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p>Loading properties...</p>
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardContent className="p-6 text-center">
+          <Loader2 className="h-6 w-6 animate-spin mx-auto mb-3 text-primary" />
+          <p className="text-xs text-muted-foreground">Loading properties...</p>
         </CardContent>
       </Card>
     );
@@ -309,128 +309,130 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   if (error) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <AlertTriangle className="h-8 w-8 text-red-400 mx-auto mb-4" />
-          <p className="text-red-600">Error: {error.message}</p>
-          <Button onClick={() => refetch()} className="mt-4">Retry</Button>
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardContent className="p-6 text-center">
+          <AlertTriangle className="h-6 w-6 text-destructive mx-auto mb-3" />
+          <p className="text-xs text-destructive mb-2">Error: {error.message}</p>
+          <Button onClick={() => refetch()} size="sm" className="h-7 text-xs">Retry</Button>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-3">
+      {/* Header - Slim Style */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-blue-600" />
-            Simple Property Management
+          <h2 className="text-sm font-bold flex items-center gap-2 text-foreground">
+            <Building2 className="h-4 w-4 text-primary" />
+            Property Management
           </h2>
-          <p className="text-gray-600">
-            Indonesian Property Management Hub - {allProperties.length} total properties, showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of page {currentPage}
+          <p className="text-[10px] text-muted-foreground">
+            {allProperties.length} total • Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} • Page {currentPage}
           </p>
         </div>
-        <Button onClick={onAddProperty}>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={onAddProperty} size="sm" className="h-7 text-xs">
+          <Plus className="h-3 w-3 mr-1" />
           Add Property
         </Button>
       </div>
 
-      {/* Enhanced Search and Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
+      {/* Enhanced Search and Filters - Slim Style */}
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardHeader className="pb-2 pt-3 px-3">
+          <CardTitle className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5">
+              <Filter className="h-3.5 w-3.5 text-primary" />
               Search & Filters
             </div>
-            <Button variant="outline" size="sm" onClick={clearFilters}>
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-6 text-[10px] px-2">
               Clear All
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 px-3 pb-3">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5" />
             <Input
               placeholder="Search by title, location, or city..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-8 h-8 text-xs"
             />
           </div>
           
           {/* Filter Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             <div>
-              <label className="text-sm font-medium mb-1 block">Property Type</label>
+              <label className="text-[10px] font-medium mb-1 block text-muted-foreground">Property Type</label>
               <Select value={propertyTypeFilter} onValueChange={setPropertyTypeFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="h-7 text-xs">
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="house">House</SelectItem>
-                  <SelectItem value="apartment">Apartment</SelectItem>
-                  <SelectItem value="villa">Villa</SelectItem>
-                  <SelectItem value="townhouse">Townhouse</SelectItem>
-                  <SelectItem value="commercial">Commercial</SelectItem>
-                  <SelectItem value="land">Land</SelectItem>
+                  <SelectItem value="all" className="text-xs">All Types</SelectItem>
+                  <SelectItem value="house" className="text-xs">House</SelectItem>
+                  <SelectItem value="apartment" className="text-xs">Apartment</SelectItem>
+                  <SelectItem value="villa" className="text-xs">Villa</SelectItem>
+                  <SelectItem value="townhouse" className="text-xs">Townhouse</SelectItem>
+                  <SelectItem value="commercial" className="text-xs">Commercial</SelectItem>
+                  <SelectItem value="land" className="text-xs">Land</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div>
-              <label className="text-sm font-medium mb-1 block">Status</label>
+              <label className="text-[10px] font-medium mb-1 block text-muted-foreground">Status</label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="h-7 text-xs">
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="suspending">Suspending</SelectItem>
-                  <SelectItem value="hold">Hold</SelectItem>
-                  <SelectItem value="sold">Sold</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="available">Available</SelectItem>
+                  <SelectItem value="all" className="text-xs">All Status</SelectItem>
+                  <SelectItem value="active" className="text-xs">Active</SelectItem>
+                  <SelectItem value="suspending" className="text-xs">Suspending</SelectItem>
+                  <SelectItem value="hold" className="text-xs">Hold</SelectItem>
+                  <SelectItem value="sold" className="text-xs">Sold</SelectItem>
+                  <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                  <SelectItem value="available" className="text-xs">Available</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div>
-              <label className="text-sm font-medium mb-1 block">Listing Type</label>
+              <label className="text-[10px] font-medium mb-1 block text-muted-foreground">Listing Type</label>
               <Select value={listingTypeFilter} onValueChange={setListingTypeFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="h-7 text-xs">
                   <SelectValue placeholder="All Listings" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Listings</SelectItem>
-                  <SelectItem value="sale">For Sale</SelectItem>
-                  <SelectItem value="rent">For Rent</SelectItem>
-                  <SelectItem value="lease">For Lease</SelectItem>
+                  <SelectItem value="all" className="text-xs">All Listings</SelectItem>
+                  <SelectItem value="sale" className="text-xs">For Sale</SelectItem>
+                  <SelectItem value="rent" className="text-xs">For Rent</SelectItem>
+                  <SelectItem value="lease" className="text-xs">For Lease</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div>
-              <label className="text-sm font-medium mb-1 block">City</label>
+              <label className="text-[10px] font-medium mb-1 block text-muted-foreground">City</label>
               <Input
                 placeholder="Filter by city..."
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
+                className="h-7 text-xs"
               />
             </div>
             
             <div>
-              <label className="text-sm font-medium mb-1 block">Vendor ID</label>
+              <label className="text-[10px] font-medium mb-1 block text-muted-foreground">Vendor ID</label>
               <Input
                 placeholder="Filter by vendor..."
                 value={vendorIdFilter}
                 onChange={(e) => setVendorIdFilter(e.target.value)}
+                className="h-7 text-xs"
               />
             </div>
           </div>
@@ -444,33 +446,33 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         totalProperties={allProperties.length}
       />
 
-      {/* Properties Grid */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span className="text-base">Properties ({allProperties.length} total, {properties.length} showing)</span>
-            <div className="text-xs text-muted-foreground">
+      {/* Properties Grid - Slim Style */}
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardHeader className="pb-2 pt-3 px-3">
+          <CardTitle className="flex items-center justify-between text-xs">
+            <span>Properties ({allProperties.length} total, {properties.length} showing)</span>
+            <span className="text-[10px] text-muted-foreground font-normal">
               Page {currentPage} of {totalPages}
-            </div>
+            </span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 pb-3">
           {properties.length === 0 ? (
-            <div className="text-center py-8">
-              <Building2 className="h-16 w-16 text-muted mx-auto mb-4" />
-              <h3 className="text-xl font-medium mb-2">No Properties Found</h3>
-              <p className="text-muted-foreground mb-4">
+            <div className="text-center py-6">
+              <Building2 className="h-10 w-10 text-muted-foreground/50 mx-auto mb-3" />
+              <h3 className="text-sm font-medium mb-1 text-foreground">No Properties Found</h3>
+              <p className="text-[10px] text-muted-foreground mb-3">
                 {searchTerm ? "No properties match your search." : "No properties in database."}
               </p>
-              <Button onClick={onAddProperty}>
-                <Plus className="h-4 w-4 mr-2" />
+              <Button onClick={onAddProperty} size="sm" className="h-7 text-xs">
+                <Plus className="h-3 w-3 mr-1" />
                 Add First Property
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
               {properties.map((property) => (
-                <Card key={property.id} className="group relative overflow-hidden hover:shadow-md transition-all">
+                <Card key={property.id} className="group relative overflow-hidden hover:shadow-md transition-all bg-background/50 border-border/50">
                   <CardContent className="p-2">
                     {/* Checkbox & Image */}
                     <div className="relative mb-1.5">
@@ -493,12 +495,12 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                         <Badge 
                           variant="outline"
                           className={`text-[9px] px-1 py-0 h-4 shrink-0 ${
-                            property.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                            property.status === 'suspending' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                            property.status === 'hold' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                            property.status === 'sold' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                            property.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-                            'bg-gray-50 text-gray-700 border-gray-200'
+                            property.status === 'active' ? 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30' :
+                            property.status === 'suspending' ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30' :
+                            property.status === 'hold' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30' :
+                            property.status === 'sold' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30' :
+                            property.status === 'pending' ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/30' :
+                            'bg-muted text-muted-foreground border-border'
                           }`}
                         >
                           {property.status}
@@ -615,20 +617,21 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
           )}
         </CardContent>
         
-        {/* Pagination */}
+        {/* Pagination - Slim Style */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center space-x-2 py-4">
+          <div className="flex items-center justify-center gap-2 py-3 border-t border-border/50">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
+              className="h-7 text-xs px-2"
             >
-              <ChevronLeft className="h-4 w-4" />
-              Previous
+              <ChevronLeft className="h-3 w-3 mr-0.5" />
+              Prev
             </Button>
             
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;
                 if (totalPages <= 5) {
@@ -647,7 +650,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                     variant={currentPage === pageNum ? "default" : "outline"}
                     size="sm"
                     onClick={() => setCurrentPage(pageNum)}
-                    className="w-8"
+                    className="h-6 w-6 p-0 text-[10px]"
                   >
                     {pageNum}
                   </Button>
@@ -660,14 +663,15 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
               size="sm"
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
+              className="h-7 text-xs px-2"
             >
               Next
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3 w-3 ml-0.5" />
             </Button>
             
-            <div className="text-sm text-gray-500 ml-4">
-              Showing {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of {allProperties.length}
-            </div>
+            <span className="text-[10px] text-muted-foreground ml-2">
+              {startIndex + 1}-{Math.min(endIndex, allProperties.length)} of {allProperties.length}
+            </span>
           </div>
         )}
       </Card>
