@@ -180,18 +180,18 @@ const DiagnosticDashboard = () => {
     switch (status) {
       case 'healthy':
       case 'completed':
-        return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />;
+        return <CheckCircle className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />;
       case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />;
+        return <AlertTriangle className="h-3.5 w-3.5 text-yellow-600 dark:text-yellow-400" />;
       case 'critical':
       case 'error':
-        return <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />;
+        return <AlertTriangle className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />;
       case 'in_progress':
-        return <Loader className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />;
+        return <Loader className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 animate-spin" />;
       case 'pending':
-        return <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />;
+        return <Clock className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />;
       default:
-        return <Monitor className="h-5 w-5 text-gray-600 dark:text-gray-400" />;
+        return <Monitor className="h-3.5 w-3.5 text-muted-foreground" />;
     }
   };
 
@@ -248,60 +248,56 @@ const DiagnosticDashboard = () => {
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-3 sm:p-6 rounded-lg">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+    <div className="space-y-3 bg-background min-h-0 rounded-lg">
+      {/* Header - Slim Style */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/20 dark:to-primary/10 rounded-lg border border-border/50">
         <div className="flex-1">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">System Diagnostics</h2>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1 sm:mt-2">Monitor system health and performance metrics</p>
+          <h2 className="text-sm font-bold text-foreground">System Diagnostics</h2>
+          <p className="text-[10px] text-muted-foreground mt-0.5">Monitor system health and performance metrics</p>
           {lastRun && (
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Last diagnostic run: {new Date(lastRun).toLocaleString()}
+            <p className="text-[9px] text-muted-foreground mt-0.5">
+              Last run: {new Date(lastRun).toLocaleString()}
             </p>
           )}
         </div>
-        <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
-          <Button 
-            onClick={refreshDiagnostics} 
-            disabled={isRefreshing || isRunning}
-            className="bg-blue-600 hover:bg-blue-700 text-white flex-1 sm:flex-none touch-manipulation"
-            size="sm"
-          >
-            {(isRefreshing || isRunning) ? (
-              <>
-                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
-                <span className="hidden sm:inline">{isRunning ? 'Running Tests...' : 'Refreshing...'}</span>
-                <span className="sm:hidden">{isRunning ? 'Running...' : 'Refresh'}</span>
-              </>
-            ) : (
-              <>
-                <PlayCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Run Full Diagnostics</span>
-                <span className="sm:hidden">Run Tests</span>
-              </>
-            )}
-          </Button>
-        </div>
+        <Button 
+          onClick={refreshDiagnostics} 
+          disabled={isRefreshing || isRunning}
+          size="sm"
+          className="h-7 text-xs px-3"
+        >
+          {(isRefreshing || isRunning) ? (
+            <>
+              <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+              {isRunning ? 'Running...' : 'Refresh'}
+            </>
+          ) : (
+            <>
+              <PlayCircle className="h-3 w-3 mr-1" />
+              Run Diagnostics
+            </>
+          )}
+        </Button>
       </div>
 
-      {/* System Status Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* System Status Overview - Slim Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
         {diagnosticItems.map((item, index) => (
-          <Card key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 touch-manipulation">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-              <CardTitle className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate pr-2">
+          <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 p-2">
+              <CardTitle className="text-[10px] font-medium text-foreground truncate pr-1">
                 {item.title}
               </CardTitle>
               {item.loading ? (
-                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin text-gray-600 dark:text-gray-400 flex-shrink-0" />
+                <RefreshCw className="h-3 w-3 animate-spin text-muted-foreground flex-shrink-0" />
               ) : (
-                <item.icon className={`h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 ${getStatusColor(item.status)}`} />
+                <item.icon className={`h-3 w-3 flex-shrink-0 ${getStatusColor(item.status)}`} />
               )}
             </CardHeader>
-            <CardContent className="p-3 sm:p-4 pt-0">
-              <div className="flex items-center space-x-2">
-                {getStatusIcon(item.status)}
-                <span className={`text-xs sm:text-sm ${getStatusColor(item.status)} truncate`}>
+            <CardContent className="p-2 pt-0">
+              <div className="flex items-center gap-1">
+                <span className="scale-75">{getStatusIcon(item.status)}</span>
+                <span className={`text-[9px] ${getStatusColor(item.status)} truncate`}>
                   {item.message}
                 </span>
               </div>
