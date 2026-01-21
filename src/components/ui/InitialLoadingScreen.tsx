@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import astraLogo from '@/assets/astra-logo.png';
 
 const InitialLoadingScreen = () => {
   const [progress, setProgress] = useState(0);
@@ -203,7 +204,7 @@ const InitialLoadingScreen = () => {
 
             {/* Logo container */}
             <motion.div
-              className="relative w-24 h-24 rounded-full flex items-center justify-center backdrop-blur-sm"
+              className="relative w-24 h-24 rounded-full flex items-center justify-center backdrop-blur-sm overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
                 boxShadow: '0 0 50px hsl(var(--primary) / 0.4), inset 0 0 30px hsl(var(--primary-foreground) / 0.1)'
@@ -217,10 +218,11 @@ const InitialLoadingScreen = () => {
               }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <div className="flex flex-col items-center">
-                <span className="text-4xl font-bold text-primary-foreground tracking-tight leading-none">A</span>
-                <span className="text-[9px] font-semibold text-primary-foreground/80 tracking-[0.25em] mt-0.5">VILLA</span>
-              </div>
+              <img 
+                src={astraLogo} 
+                alt="ASTRA Villa Logo" 
+                className="w-16 h-16 object-contain"
+              />
             </motion.div>
           </motion.div>
 
