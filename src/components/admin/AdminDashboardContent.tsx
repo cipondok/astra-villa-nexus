@@ -73,6 +73,7 @@ import VIPAnalyticsDashboard from "./VIPAnalyticsDashboard";
 import BookingManagement from "./BookingManagement";
 import TransactionManagementTabs from "./TransactionManagementTabs";
 import LiveChatManagement from "./LiveChatManagement";
+import InvestorSettingsHub from "./InvestorSettingsHub";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -156,6 +157,9 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "testing-dashboard": { label: "Testing Dashboard", category: "Quality Assurance" },
   "vip-analytics": { label: "VIP Analytics", category: "Analytics" },
   "transaction-hub": { label: "Transaction Management", category: "Transactions" },
+  "wna-investment-settings": { label: "WNA Investment Settings", category: "Investor Management" },
+  "wni-mortgage-settings": { label: "WNI Mortgage Settings", category: "Investor Management" },
+  "investor-analytics": { label: "Investor Analytics", category: "Investor Management" },
 };
 
 const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
@@ -317,6 +321,10 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <VIPAnalyticsDashboard onNavigate={onSectionChange} />;
       case "transaction-hub":
         return <TransactionManagementTabs />;
+      case "wna-investment-settings":
+      case "wni-mortgage-settings":
+      case "investor-analytics":
+        return <InvestorSettingsHub />;
       default:
         return <AdminOverview />;
     }
