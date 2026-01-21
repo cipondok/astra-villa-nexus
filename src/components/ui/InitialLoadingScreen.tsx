@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LogIn, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
 import astraLogo from '@/assets/astra-logo.png';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const InitialLoadingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('Initializing...');
+  const [showQuickLogin, setShowQuickLogin] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const stages = [
@@ -28,6 +37,42 @@ const InitialLoadingScreen = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleQuickLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast({
+        title: "Missing credentials",
+        description: "Please enter both email and password",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoggingIn(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Welcome back! 🎉",
+        description: "Successfully signed in"
+      });
+      setShowQuickLogin(false);
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "Invalid credentials",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -263,6 +308,121 @@ const InitialLoadingScreen = () => {
               </p>
               <div className="h-px w-8 bg-gradient-to-l from-transparent to-primary/50" />
             </motion.div>
+          </motion.div>
+
+          {/* Quick Login Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="mb-6"
+          >
+            <AnimatePresence mode="wait">
+              {!showQuickLogin ? (
+                <motion.button
+                  key="login-btn"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  onClick={() => setShowQuickLogin(true)}
+                  className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-background/50 backdrop-blur-xl border border-primary/30 hover:border-primary/60 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+                >
+                  <LogIn className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">Quick Login</span>
+                  <motion.div
+                    className="ml-1"
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-3.5 h-3.5 text-primary" />
+                  </motion.div>
+                </motion.button>
+              ) : (
+                <motion.form
+                  key="login-form"
+                  initial={{ opacity: 0, scale: 0.9, height: 0 }}
+                  animate={{ opacity: 1, scale: 1, height: 'auto' }}
+                  exit={{ opacity: 0, scale: 0.9, height: 0 }}
+                  onSubmit={handleQuickLogin}
+                  className="w-80 bg-background/70 backdrop-blur-xl rounded-2xl border border-primary/30 p-4 shadow-2xl shadow-primary/10"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-semibold text-foreground">Quick Sign In</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowQuickLogin(false)}
+                      className="p-1 rounded-full hover:bg-muted transition-colors"
+                    >
+                      <span className="text-xs text-muted-foreground">✕</span>
+                    </button>
+                  </div>
+
+                  {/* Email input */}
+                  <div className="relative mb-3">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-muted/50 border border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all placeholder:text-muted-foreground/60"
+                    />
+                  </div>
+
+                  {/* Password input */}
+                  <div className="relative mb-4">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl bg-muted/50 border border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all placeholder:text-muted-foreground/60"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="w-4 h-4 text-muted-foreground" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Submit button */}
+                  <motion.button
+                    type="submit"
+                    disabled={isLoggingIn}
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {isLoggingIn ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        >
+                          <User className="w-4 h-4" />
+                        </motion.div>
+                        <span>Signing in...</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogIn className="w-4 h-4" />
+                        <span>Sign In</span>
+                      </>
+                    )}
+                  </motion.button>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Progress section */}
