@@ -2326,7 +2326,7 @@ const AstraSearchPanel = ({
       <div className="relative bg-card/60 backdrop-blur-xl overflow-visible rounded-xl border border-gray-200/80 dark:border-gray-700/60 shadow-lg shadow-gray-300/30 dark:shadow-black/20">
         {/* Subtle top shine line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
-        <div className={cn("relative space-y-1.5", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
+        <div className={cn("relative space-y-1.5 overflow-visible", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
@@ -2399,8 +2399,8 @@ const AstraSearchPanel = ({
           
           
           {/* Compact Search Row with Location Options */}
-          <div className={cn("flex", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
-            <div className="flex-1 relative">
+          <div className={cn("flex overflow-visible", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
+            <div className="flex-1 relative z-[100001]">
               <Search className={cn(
                 "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none transition-all duration-500", 
                 isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
@@ -2447,7 +2447,7 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100000] max-h-80 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto" style={{ position: 'absolute' }}>
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
