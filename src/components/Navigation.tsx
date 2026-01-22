@@ -380,16 +380,17 @@ const Navigation = () => {
                 </div>
               )}
 
-              {/* Enhanced Mobile/Tablet menu button - shows below lg breakpoint */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden w-8 h-8 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary animate-scale-in"
-                style={{ animationDelay: '400ms' }}
-                onClick={toggleMenu}
-              >
-                {isMenuOpen ? <X className="h-4 w-4 transition-all duration-500" /> : <Menu className="h-4 w-4 transition-all duration-500" />}
-              </Button>
+              {/* Mobile/Tablet menu button - visible on screens smaller than lg (1024px) */}
+              <div className="lg:hidden flex items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-8 h-8 p-0 rounded-xl bg-primary/5 hover:bg-primary/10 hover:scale-110 hover:shadow-lg hover:shadow-primary/30 transition-all duration-500 border border-primary/20 hover:border-primary/40 text-foreground hover:text-primary"
+                  onClick={toggleMenu}
+                >
+                  {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                </Button>
+              </div>
             </div>
           </div>
 
