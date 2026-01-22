@@ -3447,9 +3447,16 @@ const AstraSearchPanel = ({
                       {openSections.propertyType ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-1">
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
+                  <CollapsibleContent className="pt-1.5">
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { type: 'House', icon: Home, color: 'blue' },
+                        { type: 'Apartment', icon: Building, color: 'purple' },
+                        { type: 'Villa', icon: Home, color: 'emerald' },
+                        { type: 'Land', icon: LandPlot, color: 'amber' },
+                        { type: 'Office', icon: Briefcase, color: 'indigo' },
+                        { type: 'Shop', icon: ShoppingBag, color: 'pink' }
+                      ].map(({ type, icon: Icon, color }) => (
                         <button 
                           key={type}
                           onClick={() => {
@@ -3461,13 +3468,17 @@ const AstraSearchPanel = ({
                             }
                           }}
                           className={cn(
-                            "h-9 text-[10px] font-semibold rounded-lg transition-all active:scale-95",
+                            "h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-200 active:scale-95 touch-manipulation",
                             filters.propertyType === type 
-                              ? "bg-blue-500 text-white shadow-md" 
-                              : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-white/30 dark:hover:bg-white/15"
+                              ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg ring-2 ring-blue-400/50" 
+                              : "bg-white/30 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-white/50 dark:hover:bg-white/20 border border-white/30 dark:border-white/10"
                           )}
                         >
-                          {type}
+                          <Icon className={cn(
+                            "h-4 w-4",
+                            filters.propertyType === type ? "text-white" : `text-${color}-600 dark:text-${color}-400`
+                          )} />
+                          <span className="text-[10px] font-bold">{type}</span>
                         </button>
                       ))}
                     </div>
