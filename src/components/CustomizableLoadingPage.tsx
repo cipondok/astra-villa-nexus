@@ -1,7 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 import astraLogo from '@/assets/astra-logo.png';
 
 interface LoadingPageProps {
@@ -10,51 +12,25 @@ interface LoadingPageProps {
   connectionStatus?: 'connecting' | 'connected' | 'error' | 'offline';
 }
 
-interface LoadingPageSettings {
-  enabled: boolean;
-  message: string;
-  subMessage: string;
-  logoText: string;
-  logoSubtext: string;
-  showConnectionStatus: boolean;
-  logoImageUrl: string;
-  imageSize: number;
-  imagePosition: 'top' | 'center' | 'bottom' | 'left' | 'right';
-  showBothTextAndImage: boolean;
-  imageAlignment: 'left' | 'center' | 'right';
-  textAlignment: 'left' | 'center' | 'right';
-  animationType: 'pulse' | 'bounce' | 'spin' | 'gradient' | 'dots';
-  animationSpeed: number;
-  backgroundColor: string;
-  textColor: string;
-  accentColor: string;
-  gradientFrom: string;
-  gradientTo: string;
-  fontFamily: string;
-  fontSize: string;
-  fontWeight: string;
-  customCSS: string;
-}
-
 const text = {
   en: {
     defaultMessage: "Initializing ASTRA Villa...",
     defaultSubMessage: "Please wait while we prepare your experience",
     logoSubtext: "PREMIUM REAL ESTATE",
-    checkingDatabase: "Checking database...",
-    databaseReady: "Database ready",
-    databaseUnavailable: "Database unavailable",
-    workingOffline: "Working offline",
+    checkingDatabase: "Connecting...",
+    databaseReady: "Connected",
+    databaseUnavailable: "Unavailable",
+    workingOffline: "Offline",
     initializing: "Initializing...",
   },
   id: {
     defaultMessage: "Menginisialisasi ASTRA Villa...",
     defaultSubMessage: "Harap tunggu sementara kami menyiapkan pengalaman Anda",
     logoSubtext: "REAL ESTAT PREMIUM",
-    checkingDatabase: "Memeriksa database...",
-    databaseReady: "Database siap",
-    databaseUnavailable: "Database tidak tersedia",
-    workingOffline: "Bekerja offline",
+    checkingDatabase: "Menghubungkan...",
+    databaseReady: "Terhubung",
+    databaseUnavailable: "Tidak tersedia",
+    workingOffline: "Offline",
     initializing: "Menginisialisasi...",
   },
 };
@@ -66,359 +42,254 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
 }) => {
   const { language } = useLanguage();
   const t = text[language];
-
-  const [settings, setSettings] = useState<LoadingPageSettings>({
-    enabled: true,
-    message: t.defaultMessage,
-    subMessage: t.defaultSubMessage,
-    logoText: '',
-    logoSubtext: t.logoSubtext,
-    showConnectionStatus: true,
-    logoImageUrl: astraLogo,
-    imageSize: 120,
-    imagePosition: 'top',
-    showBothTextAndImage: true,
-    imageAlignment: 'center',
-    textAlignment: 'center',
-    animationType: 'gradient',
-    animationSpeed: 2,
-    backgroundColor: '#000000',
-    textColor: '#ffffff',
-    accentColor: '#7f5af0',
-    gradientFrom: '#7f5af0',
-    gradientTo: '#2cb67d',
-    fontFamily: 'Inter',
-    fontSize: '16',
-    fontWeight: '400',
-    customCSS: ''
-  });
-
-  const [isLoading, setIsLoading] = useState(true);
+  const [logoUrl, setLogoUrl] = useState<string>(astraLogo);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Add a safety timeout to prevent infinite loading
-    const loadTimeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    
-    loadSettings();
-    
-    return () => clearTimeout(loadTimeout);
-  }, []);
-
-  const loadSettings = async () => {
-    try {
-      // Fetch loading page settings
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('*')
-        .eq('category', 'loading_page');
-      
-      if (error) {
-        console.error('Error loading loading page settings:', error);
-      }
-
-      // Fetch welcome screen logo from general settings
-      const { data: logoData } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('key', 'welcomeScreenLogo')
-        .maybeSingle();
-
-      // Fallback to header logo if no welcome screen logo
-      let welcomeLogo = logoData?.value;
-      if (!welcomeLogo || welcomeLogo === '') {
-        const { data: headerLogoData } = await supabase
+    // Fetch logo from settings
+    const loadLogo = async () => {
+      try {
+        const { data: logoData } = await supabase
           .from('system_settings')
           .select('value')
-          .eq('key', 'headerLogo')
+          .eq('key', 'welcomeScreenLogo')
           .maybeSingle();
-        welcomeLogo = headerLogoData?.value;
-      }
 
-      if (data && data.length > 0) {
-        const settingsObj = data.reduce((acc, setting) => {
-          let value = setting.value;
-          if (typeof value === 'string') {
-            try {
-              value = JSON.parse(value);
-            } catch {
-              // Keep as string if not valid JSON
-            }
+        if (logoData?.value && typeof logoData.value === 'string') {
+          setLogoUrl(logoData.value);
+        } else {
+          // Fallback to header logo
+          const { data: headerLogoData } = await supabase
+            .from('system_settings')
+            .select('value')
+            .eq('key', 'headerLogo')
+            .maybeSingle();
+          
+          if (headerLogoData?.value && typeof headerLogoData.value === 'string') {
+            setLogoUrl(headerLogoData.value);
           }
-          acc[setting.key] = value;
-          return acc;
-        }, {} as any);
-        
-        // Use welcome screen logo from settings if available
-        if (welcomeLogo && typeof welcomeLogo === 'string') {
-          settingsObj.logoImageUrl = welcomeLogo;
         }
-        
-        setSettings(prev => ({ ...prev, ...settingsObj }));
-      } else if (welcomeLogo && typeof welcomeLogo === 'string') {
-        // Even if no loading_page settings, still apply welcome logo
-        setSettings(prev => ({ ...prev, logoImageUrl: welcomeLogo }));
+      } catch (error) {
+        console.error('Error loading logo:', error);
       }
-      
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error loading settings:', error);
-      setIsLoading(false);
-    }
-  };
+    };
 
-  // Use prop values if provided, otherwise use settings
-  const displayMessage = propMessage || settings.message;
-  const showStatus = propShowConnectionStatus !== undefined ? propShowConnectionStatus : settings.showConnectionStatus;
+    loadLogo();
 
-  const getConnectionMessage = () => {
-    switch (connectionStatus) {
-      case 'connecting':
-        return t.checkingDatabase;
-      case 'connected':
-        return t.databaseReady;
-      case 'error':
-        return t.databaseUnavailable;
-      case 'offline':
-        return t.workingOffline;
-      default:
-        return t.initializing;
-    }
-  };
+    // Animate progress
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) return 100;
+        return prev + Math.random() * 15;
+      });
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const displayMessage = propMessage || t.defaultMessage;
 
   const getConnectionColor = () => {
     switch (connectionStatus) {
-      case 'connecting':
-        return '#fbbf24'; // yellow-400
-      case 'connected':
-        return '#34d399'; // green-400
-      case 'error':
-        return '#9ca3af'; // gray-400
-      case 'offline':
-        return '#9ca3af'; // gray-400
-      default:
-        return '#9ca3af'; // gray-400
+      case 'connecting': return 'bg-yellow-400';
+      case 'connected': return 'bg-green-400';
+      case 'error': return 'bg-red-400';
+      case 'offline': return 'bg-gray-400';
+      default: return 'bg-gray-400';
     }
   };
 
-  const getFlexDirection = () => {
-    if (settings.imagePosition === 'left') return 'row';
-    if (settings.imagePosition === 'right') return 'row-reverse';
-    if (settings.imagePosition === 'bottom') return 'column-reverse';
-    return 'column'; // top or center
-  };
-
-  const getJustifyContent = () => {
-    switch (settings.imageAlignment) {
-      case 'left': return 'flex-start';
-      case 'right': return 'flex-end';
-      default: return 'center';
+  const getConnectionMessage = () => {
+    switch (connectionStatus) {
+      case 'connecting': return t.checkingDatabase;
+      case 'connected': return t.databaseReady;
+      case 'error': return t.databaseUnavailable;
+      case 'offline': return t.workingOffline;
+      default: return t.initializing;
     }
   };
-
-  const getTextAlign = () => {
-    switch (settings.textAlignment) {
-      case 'left': return 'left';
-      case 'right': return 'right';
-      default: return 'center';
-    }
-  };
-
-  const containerStyles: React.CSSProperties = {
-    backgroundColor: settings.backgroundColor,
-    color: settings.textColor,
-    fontFamily: settings.fontFamily,
-    fontSize: `${settings.fontSize}px`,
-    fontWeight: settings.fontWeight,
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const logoStyles: React.CSSProperties = {
-    background: `linear-gradient(45deg, ${settings.gradientFrom}, ${settings.gradientTo})`,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
-    fontSize: '4rem',
-    fontWeight: 'bold',
-    marginBottom: '1rem',
-    textAlign: getTextAlign() as any,
-    animation: settings.animationType === 'gradient' ? `pulseGlow ${settings.animationSpeed}s ease-in-out infinite` : undefined,
-  };
-
-  const contentWrapperStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: getFlexDirection() as any,
-    alignItems: 'center',
-    justifyContent: getJustifyContent(),
-    gap: settings.imagePosition === 'left' || settings.imagePosition === 'right' ? '2rem' : '1.5rem',
-  };
-
-  const showImage = settings.logoImageUrl && (settings.showBothTextAndImage || !settings.logoText);
-  const showText = settings.logoText && (settings.showBothTextAndImage || !settings.logoImageUrl);
-
-  const renderAnimation = () => {
-    switch (settings.animationType) {
-      case 'dots':
-        return (
-          <div className="flex space-x-2" style={{ justifyContent: getJustifyContent() }}>
-            <div 
-              className="w-3 h-3 rounded-full animate-bounce"
-              style={{ 
-                backgroundColor: settings.accentColor,
-                animationDuration: `${settings.animationSpeed}s`
-              }}
-            />
-            <div 
-              className="w-3 h-3 rounded-full animate-bounce"
-              style={{ 
-                backgroundColor: settings.accentColor,
-                animationDelay: '0.2s',
-                animationDuration: `${settings.animationSpeed}s`
-              }}
-            />
-            <div 
-              className="w-3 h-3 rounded-full animate-bounce"
-              style={{ 
-                backgroundColor: settings.accentColor,
-                animationDelay: '0.4s',
-                animationDuration: `${settings.animationSpeed}s`
-              }}
-            />
-          </div>
-        );
-      case 'spin':
-        return (
-          <div style={{ display: 'flex', justifyContent: getJustifyContent() }}>
-            <div 
-              className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
-              style={{ 
-                borderColor: settings.accentColor,
-                borderTopColor: 'transparent',
-                animationDuration: `${settings.animationSpeed}s`
-              }}
-            />
-          </div>
-        );
-      case 'pulse':
-        return (
-          <div style={{ display: 'flex', justifyContent: getJustifyContent() }}>
-            <div 
-              className="w-4 h-4 rounded-full animate-pulse"
-              style={{ 
-                backgroundColor: settings.accentColor,
-                animationDuration: `${settings.animationSpeed}s`
-              }}
-            />
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
-
-  // If settings are still loading, show a simple fallback
-  if (isLoading) {
-    return (
-      <div className="bg-background text-foreground flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center space-y-6">
-          <img 
-            src={astraLogo} 
-            alt="ASTRA Villa" 
-            className="w-24 h-24 object-contain animate-pulse"
-          />
-          <div className="text-sm text-muted-foreground tracking-[0.3em]">
-            PREMIUM REAL ESTATE
-          </div>
-          <div className="flex space-x-2">
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-primary/80 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <>
-      <style>
-        {`
-          @keyframes pulseGlow {
-            0%, 100% {
-              text-shadow: 0 0 8px ${settings.accentColor}, 0 0 12px ${settings.gradientTo};
-              opacity: 1;
-            }
-            50% {
-              text-shadow: 0 0 16px ${settings.accentColor}, 0 0 24px ${settings.gradientTo};
-              opacity: 0.8;
-            }
-          }
-          ${settings.customCSS}
-        `}
-      </style>
-      <div style={containerStyles}>
-        <div className="flex flex-col items-center space-y-6">
-          <div style={contentWrapperStyles}>
-            {/* Logo Image */}
-            {showImage && (
-              <div style={{ display: 'flex', justifyContent: getJustifyContent() }}>
-                <img 
-                  src={settings.logoImageUrl}
-                  alt="Loading Logo"
-                  style={{ 
-                    width: `${settings.imageSize}px`,
-                    height: `${settings.imageSize}px`,
-                    objectFit: 'contain'
-                  }}
-                  className="rounded-lg"
-                />
-              </div>
-            )}
-            
-            {/* Text Content */}
-            {showText && (
-              <div style={{ textAlign: getTextAlign() as any }}>
-                <div style={logoStyles}>
-                  {settings.logoText}
-                </div>
-                {settings.logoSubtext && (
-                  <p className="text-lg opacity-75 mb-4" style={{ textAlign: getTextAlign() as any }}>
-                    {settings.logoSubtext}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-          
-          {renderAnimation()}
-          
-          <div style={{ textAlign: getTextAlign() as any }}>
-            <p className="text-sm mb-2">{displayMessage}</p>
-            {settings.subMessage && (
-              <p className="text-xs opacity-60 mb-4">{settings.subMessage}</p>
-            )}
-          </div>
-          
-          {showStatus && (
-            <div className="flex flex-col items-center space-y-2">
-              <div className="flex items-center space-x-2 text-xs">
-                <div 
-                  className={`w-2 h-2 rounded-full ${connectionStatus === 'connecting' ? 'animate-pulse' : ''}`}
-                  style={{ backgroundColor: getConnectionColor() }}
-                />
-                <span style={{ color: getConnectionColor() }}>
-                  {getConnectionMessage()}
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
+    <div className="bg-background text-foreground flex items-center justify-center min-h-screen overflow-hidden">
+      {/* Background gradient animation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute -inset-[100px] opacity-30"
+          style={{
+            background: 'radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)'
+          }}
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 5, 0]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </div>
-    </>
+
+      <motion.div 
+        className="relative flex flex-col items-center gap-8 z-10"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Logo with premium effects */}
+        <motion.div 
+          className="relative"
+          animate={{ 
+            boxShadow: [
+              '0 0 0px rgba(127, 90, 240, 0)',
+              '0 0 40px rgba(127, 90, 240, 0.4)',
+              '0 0 0px rgba(127, 90, 240, 0)'
+            ]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity }}
+        >
+          <motion.img 
+            src={logoUrl}
+            alt="ASTRA Villa"
+            className="w-24 h-24 md:w-32 md:h-32 object-contain rounded-2xl"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          />
+          {/* Spinning ring */}
+          <motion.div
+            className="absolute inset-0 rounded-2xl border-2 border-transparent"
+            style={{
+              borderTopColor: 'rgba(59, 130, 246, 0.6)',
+              borderRightColor: 'rgba(139, 92, 246, 0.4)'
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          />
+        </motion.div>
+
+        {/* Brand Name */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <motion.span 
+              className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent"
+              animate={{
+                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+              }}
+              style={{ backgroundSize: '200% 200%' }}
+              transition={{ duration: 4, repeat: Infinity }}
+            >
+              ASTRA
+            </motion.span>
+            <span className="text-foreground ml-3">Villa</span>
+          </h1>
+          <motion.p 
+            className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-muted-foreground mt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            {t.logoSubtext}
+          </motion.p>
+        </motion.div>
+
+        {/* Animated loading dots */}
+        <div className="flex items-center gap-2">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <motion.div
+              key={i}
+              className="w-2.5 h-2.5 rounded-full"
+              style={{
+                background: i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#8b5cf6' : '#f97316'
+              }}
+              animate={{
+                y: [0, -10, 0],
+                opacity: [0.3, 1, 0.3],
+                scale: [0.8, 1.2, 0.8]
+              }}
+              transition={{
+                duration: 0.9,
+                repeat: Infinity,
+                delay: i * 0.12,
+                ease: 'easeInOut'
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Progress bar */}
+        <motion.div 
+          className="w-64 md:w-80"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="relative h-1.5 bg-muted/30 rounded-full overflow-hidden">
+            {/* Glow */}
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full blur-sm"
+              style={{
+                background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #f97316)',
+              }}
+              initial={{ width: '0%' }}
+              animate={{ width: `${Math.min(progress, 100)}%` }}
+              transition={{ duration: 0.3 }}
+            />
+            {/* Fill */}
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{
+                background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #f97316, #3b82f6)',
+                backgroundSize: '300% 100%'
+              }}
+              initial={{ width: '0%' }}
+              animate={{ 
+                width: `${Math.min(progress, 100)}%`,
+                backgroundPosition: ['0% 50%', '100% 50%']
+              }}
+              transition={{ 
+                width: { duration: 0.3 },
+                backgroundPosition: { duration: 2, repeat: Infinity, ease: 'linear' }
+              }}
+            />
+            {/* Shimmer */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                width: '30%'
+              }}
+              animate={{ x: ['-100%', '400%'] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+            />
+          </div>
+          <div className="flex justify-between mt-2">
+            <span className="text-[10px] text-muted-foreground">{displayMessage}</span>
+            <span className="text-[10px] font-medium bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+              {Math.round(Math.min(progress, 100))}%
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Connection Status */}
+        {propShowConnectionStatus && (
+          <motion.div 
+            className="flex items-center gap-2 text-xs text-muted-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            <motion.div
+              className={cn("w-2 h-2 rounded-full", getConnectionColor())}
+              animate={connectionStatus === 'connecting' ? { opacity: [0.4, 1, 0.4] } : {}}
+              transition={{ duration: 1, repeat: Infinity }}
+            />
+            <span>{getConnectionMessage()}</span>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
   );
 };
 
