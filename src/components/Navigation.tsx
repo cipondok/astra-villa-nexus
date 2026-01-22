@@ -216,7 +216,7 @@ const Navigation = () => {
             </div>
 
             {/* Enhanced Desktop Navigation - Main Menu */}
-            <div className="hidden xl:flex items-center gap-1 flex-1 justify-center max-w-5xl">
+            <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-5xl">
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -352,8 +352,8 @@ const Navigation = () => {
                 )}
               </Button>
 
-              {/* Enhanced Language Toggle - Hidden on mobile */}
-              <div className="hidden lg:block">
+              {/* Enhanced Language Toggle - Hidden on mobile/tablet */}
+              <div className="hidden xl:block">
                 <LanguageToggleSwitch />
               </div>
 
@@ -380,7 +380,7 @@ const Navigation = () => {
                 </div>
               )}
 
-              {/* Enhanced Mobile menu button */}
+              {/* Enhanced Mobile/Tablet menu button - shows below lg breakpoint */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -404,7 +404,7 @@ const Navigation = () => {
               />
               
               {/* Menu content with smooth slide and scale animation */}
-              <div className="lg:hidden absolute top-full right-0 w-44 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-500 origin-top-right">
+              <div className="lg:hidden absolute top-full right-0 w-48 glass-popup backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/30 z-[9999] rounded-bl-2xl rounded-tl-lg overflow-hidden animate-in slide-in-from-top-2 fade-in zoom-in-95 duration-500 origin-top-right">
                 <div className="px-1.5 py-1.5 space-y-0.5">
                 <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-3 w-3 mr-1.5" />
