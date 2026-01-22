@@ -3292,12 +3292,13 @@ const AstraSearchPanel = ({
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden glass-popup animate-in zoom-in duration-300",
+              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in duration-300",
+              "bg-white/10 dark:bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 ring-1 ring-white/20",
               isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
             )}
           >
             {/* Slim Header */}
-            <div className="flex items-center justify-between border-b border-border/20 px-3 py-2 shrink-0 bg-background/30">
+            <div className="flex items-center justify-between border-b border-white/20 px-3 py-2 shrink-0 bg-white/5">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/80 to-accent/80 flex items-center justify-center shadow-sm">
                   <SlidersHorizontal className="h-3 w-3 text-primary-foreground" />
