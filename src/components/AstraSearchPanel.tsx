@@ -2608,8 +2608,8 @@ const AstraSearchPanel = ({
                       </button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="z-[100000] bg-popover text-popover-foreground border border-border shadow-lg">
-                    <p className="text-xs font-medium">Property Type</p>
+                  <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                    <p className="text-[10px] font-medium">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -2697,8 +2697,8 @@ const AstraSearchPanel = ({
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="z-[100000] bg-popover text-popover-foreground border border-border shadow-lg">
-                      <p className="text-xs font-medium">Manual Location Selection</p>
+                    <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                      <p className="text-[10px] font-medium">Manual Location</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -3016,8 +3016,8 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="z-[100000] bg-popover text-popover-foreground border border-border shadow-lg">
-                  <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()} active)`}</p>
+                <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                  <p className="text-[10px] font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

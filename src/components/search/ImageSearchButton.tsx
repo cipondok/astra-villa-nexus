@@ -201,8 +201,8 @@ export const ImageSearchButton = ({
                 )}
               </button>
             </TooltipTrigger>
-            <TooltipContent side="bottom" className="max-w-xs">
-              <p>Search properties by uploading an image</p>
+            <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+              <p className="text-[10px] font-medium">Image Search</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -234,8 +234,8 @@ export const ImageSearchButton = ({
                   )}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>{isSearching ? "Searching..." : "Change search image"}</p>
+              <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                <p className="text-[10px] font-medium">{isSearching ? "Searching..." : "Change Image"}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -252,8 +252,8 @@ export const ImageSearchButton = ({
                   <X className="h-3.5 w-3.5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Clear image search</p>
+              <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                <p className="text-[10px] font-medium">Clear</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
