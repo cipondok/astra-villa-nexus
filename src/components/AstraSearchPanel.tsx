@@ -2578,6 +2578,89 @@ const AstraSearchPanel = ({
               )}
             </div>
 
+            {/* Property Type Button */}
+            <Popover open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const currentScroll = window.scrollY;
+                          setIsPropertyTypeOpen(!isPropertyTypeOpen);
+                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                        }}
+                        className={cn(
+                          "relative inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
+                          "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700",
+                          "border border-gray-200 dark:border-gray-600 hover:border-primary/50 hover:shadow-md",
+                          "active:scale-95",
+                          isMobile ? "h-8 w-8" : "h-10 w-10",
+                          filters.propertyType && filters.propertyType !== 'all' && "border-primary bg-primary/5 dark:bg-primary/10 ring-2 ring-primary/50"
+                        )}
+                      >
+                        <Building className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "text-gray-500 dark:text-gray-400")} />
+                        {filters.propertyType && filters.propertyType !== 'all' && (
+                          <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-blue-500 text-white shadow-sm min-w-[18px] text-center">
+                            1
+                          </span>
+                        )}
+                      </button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="z-[100000] bg-popover text-popover-foreground border border-border shadow-lg">
+                    <p className="text-xs font-medium">Property Type</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <PopoverContent 
+                className="w-56 bg-card/95 backdrop-blur-xl border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] p-3" 
+                align="start"
+                sideOffset={8}
+              >
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-foreground mb-2">Property Type</h4>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {propertyTypeOptions.slice(0, 8).map((type) => {
+                      const IconComponent = type.icon || Building;
+                      return (
+                        <button
+                          key={type.value}
+                          onClick={() => {
+                            handleFilterChange('propertyType', filters.propertyType === type.value ? 'all' : type.value);
+                            setIsPropertyTypeOpen(false);
+                          }}
+                          className={cn(
+                            "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
+                            "hover:bg-primary/10",
+                            filters.propertyType === type.value 
+                              ? "bg-primary text-primary-foreground" 
+                              : "bg-muted/50 text-foreground"
+                          )}
+                        >
+                          <IconComponent className="h-3 w-3" />
+                          {type.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {filters.propertyType && filters.propertyType !== 'all' && (
+                    <button
+                      onClick={() => {
+                        handleFilterChange('propertyType', 'all');
+                        setIsPropertyTypeOpen(false);
+                      }}
+                      className="w-full mt-2 px-2 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Clear Selection
+                    </button>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Location Button */}
             {!useNearbyLocation && <Popover open={isLocationOpen} onOpenChange={(open) => {
                 setIsLocationOpen(open);
