@@ -610,10 +610,26 @@ const Index = () => {
                 <PropertySlideshow />
               </Suspense>
             </div>
+
+            {/* AI Tools & Features - Inside Hero, Below Featured Properties */}
+            <div className="w-full max-w-[2400px] mx-auto mt-3 md:mt-4 px-2 md:px-4">
+              <Suspense fallback={
+                <div className="flex gap-2 justify-center overflow-hidden">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-16 md:w-20 animate-pulse">
+                      <div className="h-12 md:h-16 bg-white/10 rounded-lg mb-1" />
+                      <div className="h-2 bg-white/10 rounded w-full" />
+                    </div>
+                  ))}
+                </div>
+              }>
+                <AstraVillaFeatures variant="hero" />
+              </Suspense>
+            </div>
           </div>
 
           {/* Scroll indicator - desktop only */}
-          <div className="hidden lg:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+          <div className="hidden lg:flex absolute bottom-3 left-1/2 -translate-x-1/2 z-20 animate-bounce">
             <div className="w-5 h-8 rounded-full border-2 border-white/40 flex items-start justify-center p-1">
               <div className="w-1 h-2 bg-white/60 rounded-full animate-pulse" />
             </div>
@@ -834,12 +850,6 @@ const Index = () => {
                   </Suspense>
                 </div>
 
-                {/* ASTRA Villa Features Section */}
-                <div className="w-full max-w-full mx-auto mb-3 md:mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-24 md:h-32 bg-muted/50 rounded-lg border border-border/40" />}>
-                    <AstraVillaFeatures />
-                  </Suspense>
-                </div>
 
                 {/* Featured Properties - Modern Auto-Scrolling Carousel */}
 
