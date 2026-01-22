@@ -116,6 +116,29 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Prevent layout shifts during filter interactions */
+.filter-popup-open {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
+}
+
+/* Scroll containment for popups and modals */
+[data-scroll-container="true"],
+.scroll-contain {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Prevent body scroll when interacting with fixed popups */
+.popup-interaction-active {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 #root {
   min-height: 100vh;
   min-height: -webkit-fill-available;
