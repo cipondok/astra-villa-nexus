@@ -2934,10 +2934,11 @@ const AstraSearchPanel = ({
                 "hover:from-amber-600 hover:via-yellow-600 hover:to-amber-700",
                 "text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40",
                 "active:scale-95 border border-amber-400/50",
-                isMobile ? "h-8 w-8" : "h-10 w-10"
+                isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
               )}
             >
-              <Search className={cn(isMobile ? "h-4 w-4" : "h-5 w-5")} />
+              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
+              <span className="font-medium">{currentText.search}</span>
             </button>
           </div>
           
