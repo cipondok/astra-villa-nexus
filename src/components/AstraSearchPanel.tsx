@@ -3008,7 +3008,7 @@ const AstraSearchPanel = ({
                     }} 
                     className="p-1 flex items-center justify-center transition-colors relative"
                   >
-                    <SlidersHorizontal className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
+                    <SlidersHorizontal className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                     {getActiveFiltersCount() > 0 && (
                       <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-emerald-500 text-white min-w-[14px] text-center">
                         {getActiveFiltersCount()}
