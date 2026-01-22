@@ -611,33 +611,6 @@ const Index = () => {
               </Suspense>
             </div>
 
-            {/* AI Tools & Features - Inside Hero, Below Featured Properties */}
-            <div className="w-full max-w-[2400px] mx-auto mt-3 md:mt-4 px-2 md:px-4">
-              <Suspense fallback={
-                <div className="flex gap-2 justify-center overflow-hidden">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className="flex-shrink-0 w-16 md:w-20 animate-pulse">
-                      <div className="h-12 md:h-16 bg-white/10 rounded-lg mb-1" />
-                      <div className="h-2 bg-white/10 rounded w-full" />
-                    </div>
-                  ))}
-                </div>
-              }>
-                <AstraVillaFeatures variant="hero" />
-              </Suspense>
-            </div>
-
-            {/* Global Investment Platform - Next to AI Tools */}
-            <div className="w-full max-w-[2400px] mx-auto mt-2 md:mt-3 px-2 md:px-4">
-              <Suspense fallback={
-                <div className="flex gap-2 justify-center">
-                  <div className="animate-pulse h-10 w-32 bg-white/10 rounded-lg" />
-                  <div className="animate-pulse h-10 w-32 bg-white/10 rounded-lg" />
-                </div>
-              }>
-                <InvestorPathSelector variant="hero" />
-              </Suspense>
-            </div>
           </div>
 
           {/* Scroll indicator - desktop only */}
@@ -702,6 +675,38 @@ const Index = () => {
             </div>
           </section>
         )}
+
+        {/* AI Tools & Features - Main Page Area */}
+        <div className="px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-6">
+          <div className="w-full max-w-7xl mx-auto">
+            <Suspense fallback={
+              <div className="flex gap-2 justify-center overflow-hidden py-4">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0 w-16 md:w-20 animate-pulse">
+                    <div className="h-12 md:h-16 bg-muted/50 rounded-lg mb-1" />
+                    <div className="h-2 bg-muted/50 rounded w-full" />
+                  </div>
+                ))}
+              </div>
+            }>
+              <AstraVillaFeatures />
+            </Suspense>
+          </div>
+        </div>
+
+        {/* Global Investment Platform - Main Page Area */}
+        <div className="px-2 sm:px-3 md:px-4 pt-2 sm:pt-3">
+          <div className="w-full max-w-7xl mx-auto">
+            <Suspense fallback={
+              <div className="flex gap-3 justify-center py-4">
+                <div className="animate-pulse h-20 w-40 bg-muted/50 rounded-lg" />
+                <div className="animate-pulse h-20 w-40 bg-muted/50 rounded-lg" />
+              </div>
+            }>
+              <InvestorPathSelector />
+            </Suspense>
+          </div>
+        </div>
 
         {/* Property Display Section - Glass Effect Background */}
         <div className="px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 space-y-2 sm:space-y-3 md:space-y-4">
