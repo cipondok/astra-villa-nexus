@@ -495,7 +495,7 @@ const Index = () => {
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
         {/* Hero Search Section - 100% width, no margins, flush to header */}
-        <section className="relative w-full min-h-[120px] md:min-h-[360px] lg:h-screen lg:min-h-[600px] -mt-0" id="hero-section">
+        <section className="relative w-full min-h-[420px] sm:min-h-[480px] md:min-h-[520px] lg:h-screen lg:min-h-[600px]" id="hero-section">
           {/* Dark Jakarta Skyline Background */}
           <div className="absolute inset-0 z-0">
             <img 
@@ -511,8 +511,8 @@ const Index = () => {
           {/* Content overlay */}
           <div className={cn(
             "relative z-10 w-full h-full flex flex-col items-center",
-            "pt-24 sm:pt-32 md:pt-40 lg:pt-52 xl:pt-60",
-            "px-3 pb-3 sm:px-4 sm:pb-5 md:px-6 md:pb-8 lg:px-8"
+            "pt-16 sm:pt-24 md:pt-32 lg:pt-40 xl:pt-48",
+            "px-3 pb-6 sm:px-4 sm:pb-8 md:px-6 md:pb-10 lg:px-8"
           )}>
             {/* Enhanced Header */}
             <div className="mb-2 sm:mb-3 md:mb-5 lg:mb-8 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
