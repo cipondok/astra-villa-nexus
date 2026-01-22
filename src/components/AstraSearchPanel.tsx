@@ -2329,7 +2329,7 @@ const AstraSearchPanel = ({
   return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2000px] mx-auto transition-all duration-500">
     <div className={cn("sticky z-[999] transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-[48px] w-full px-2 lg:px-4 xl:px-6")}>
       {/* Glassmorphic Luxury Container with Slim Silver Border */}
-      <div className="relative bg-card/20 backdrop-blur-xl overflow-visible rounded-xl border border-gray-200/80 dark:border-gray-700/60 shadow-lg shadow-gray-300/30 dark:shadow-black/20">
+      <div className="relative bg-card/10 backdrop-blur-xl overflow-visible rounded-xl border border-gray-200/80 dark:border-gray-700/60 shadow-lg shadow-gray-300/30 dark:shadow-black/20">
         {/* Subtle top shine line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
         <div className={cn("relative space-y-1.5 overflow-visible", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
