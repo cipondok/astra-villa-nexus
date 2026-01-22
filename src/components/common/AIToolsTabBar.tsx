@@ -212,7 +212,7 @@ const AIToolsTabBar: React.FC<AIToolsTabBarProps> = ({ className }) => {
       )}
 
       <div ref={scrollerRef} className="w-full overflow-x-auto scrollbar-hide">
-        <div className="flex gap-1.5 sm:gap-2 p-1.5 min-w-max">
+        <div className="flex gap-1 sm:gap-1.5 p-1 min-w-max">
           {tools.map((tool) => {
             const IconComponent = tool.icon;
             const active = isActive(tool.path);
@@ -223,7 +223,7 @@ const AIToolsTabBar: React.FC<AIToolsTabBarProps> = ({ className }) => {
                 data-ai-tab="true"
                 onClick={() => navigate(tool.path)}
                 className={cn(
-                  'flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all duration-200',
+                  'flex items-center gap-1 px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-md transition-all duration-200',
                   'border whitespace-nowrap',
                   active 
                     ? 'bg-primary/10 border-primary/40 text-primary shadow-sm' 
@@ -231,23 +231,22 @@ const AIToolsTabBar: React.FC<AIToolsTabBarProps> = ({ className }) => {
                 )}
               >
                 <div className={cn(
-                  'w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-md',
+                  'w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-md',
                   active ? 'bg-primary/20' : tool.iconBg
                 )}>
                   <IconComponent 
                     className={cn(
-                      'w-3.5 h-3.5 sm:w-4 sm:h-4',
+                      'w-3 h-3 sm:w-3.5 sm:h-3.5',
                       active ? 'text-primary' : tool.color
                     )} 
                     strokeWidth={1.5} 
                   />
                 </div>
                 <span className={cn(
-                  'text-[10px] sm:text-xs font-medium',
+                  'text-[8px] sm:text-[10px] font-medium',
                   active ? 'text-primary' : 'text-foreground'
                 )}>
-                  <span className="hidden sm:inline">{tool.label}</span>
-                  <span className="sm:hidden">{tool.shortLabel}</span>
+                  {tool.shortLabel}
                 </span>
               </button>
             );
