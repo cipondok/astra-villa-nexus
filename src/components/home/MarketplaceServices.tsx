@@ -112,8 +112,8 @@ const MarketplaceServices = () => {
         </button>
       </div>
 
-      {/* Services Grid - 4 columns */}
-      <div className="grid grid-cols-4 gap-1.5 md:gap-2">
+      {/* Services Grid - Single horizontal line */}
+      <div className="grid grid-cols-8 gap-1.5 md:gap-2">
         {services.map((service, index) => (
           <ServiceCard 
             key={index} 
