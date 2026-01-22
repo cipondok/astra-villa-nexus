@@ -3296,8 +3296,8 @@ const AstraSearchPanel = ({
             onClick={(e) => e.stopPropagation()}
             className={cn(
               "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
-              "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150",
-              "border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              "bg-white/90 dark:bg-black/80 backdrop-blur-2xl backdrop-saturate-150",
+              "border border-gray-200/50 dark:border-white/20 ring-1 ring-black/5 dark:ring-white/10",
               isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[65vh] w-[420px]"
             )}
             style={{ 
@@ -3306,12 +3306,12 @@ const AstraSearchPanel = ({
             }}
           >
             {/* Slim Header - matching property type popover */}
-            <div className="flex items-center justify-between border-b border-white/20 px-3 py-2 shrink-0">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/20 px-3 py-2 shrink-0 bg-gray-50/50 dark:bg-white/5">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-sm">
                   <SlidersHorizontal className="h-3 w-3 text-white" />
                 </div>
-                <h4 className="text-xs font-semibold text-gray-800 dark:text-white">Filters</h4>
+                <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Filters</h4>
                 {getActiveFiltersCount() > 0 && (
                   <Badge variant="default" className="h-4 px-1.5 bg-emerald-500 text-white text-[9px] font-bold">
                     {getActiveFiltersCount()}
@@ -3322,7 +3322,7 @@ const AstraSearchPanel = ({
                 onClick={() => setShowAdvancedFilters(false)} 
                 variant="ghost" 
                 size="sm" 
-                className="h-6 w-6 p-0 hover:bg-white/20 dark:hover:bg-white/10 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-800 dark:hover:text-white"
+                className="h-6 w-6 p-0 hover:bg-gray-200/50 dark:hover:bg-white/10 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white"
               >
                 <X className="h-3.5 w-3.5" />
               </Button>
@@ -3330,7 +3330,7 @@ const AstraSearchPanel = ({
 
             {/* Active Filters Summary - Compact */}
             {getActiveFiltersCount() > 0 && (
-              <div className="px-3 py-2 bg-white/5 dark:bg-white/5 border-b border-white/10 shrink-0">
+              <div className="px-3 py-2 bg-gray-100/50 dark:bg-white/5 border-b border-gray-200/50 dark:border-white/10 shrink-0">
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] font-bold text-gray-600 dark:text-white/70 uppercase tracking-wider">Active</span>
                   <Button 
@@ -3383,8 +3383,8 @@ const AstraSearchPanel = ({
                 
                 {/* Search Mode Tabs - All, Buy, Rent - Slim */}
                 <div className="space-y-2">
-                  <h4 className="text-xs font-semibold text-gray-800 dark:text-white">Listing Type</h4>
-                  <div className="flex items-center gap-1 p-1 bg-white/10 dark:bg-white/5 rounded-xl">
+                  <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Listing Type</h4>
+                  <div className="flex items-center gap-1 p-1 bg-gray-100/50 dark:bg-white/5 rounded-xl">
                     <Button 
                       variant="ghost"
                       size="sm" 
@@ -3396,7 +3396,7 @@ const AstraSearchPanel = ({
                         "flex-1 h-7 text-[10px] font-medium rounded-lg transition-all",
                         filters.listingType === '' 
                           ? "bg-primary text-white shadow-sm" 
-                          : "text-gray-600 dark:text-white/70 hover:bg-white/20 dark:hover:bg-white/10"
+                          : "text-gray-700 dark:text-white/70 hover:bg-gray-200/50 dark:hover:bg-white/10"
                       )}
                     >
                       <Layers className="h-3 w-3 mr-1" />
@@ -3413,7 +3413,7 @@ const AstraSearchPanel = ({
                         "flex-1 h-7 text-[10px] font-medium rounded-lg transition-all",
                         filters.listingType === 'sale' 
                           ? "bg-emerald-500 text-white shadow-sm" 
-                          : "text-gray-600 dark:text-white/70 hover:bg-white/20 dark:hover:bg-white/10"
+                          : "text-gray-700 dark:text-white/70 hover:bg-gray-200/50 dark:hover:bg-white/10"
                       )}
                     >
                       <DollarSign className="h-3 w-3 mr-1" />
@@ -3430,7 +3430,7 @@ const AstraSearchPanel = ({
                         "flex-1 h-7 text-[10px] font-medium rounded-lg transition-all",
                         filters.listingType === 'rent' 
                           ? "bg-blue-500 text-white shadow-sm" 
-                          : "text-gray-600 dark:text-white/70 hover:bg-white/20 dark:hover:bg-white/10"
+                          : "text-gray-700 dark:text-white/70 hover:bg-gray-200/50 dark:hover:bg-white/10"
                       )}
                     >
                       <Key className="h-3 w-3 mr-1" />
@@ -3453,8 +3453,8 @@ const AstraSearchPanel = ({
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg">
-                      <span className="text-[11px] font-semibold text-gray-800 dark:text-white flex items-center gap-1.5">
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-gray-100/50 dark:hover:bg-white/10 rounded-lg">
+                      <span className="text-[11px] font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">
                         <Home className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                         Property Type
                         {filters.propertyType && <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-blue-500/20 text-blue-700 dark:text-blue-300 border-0">{filters.propertyType}</Badge>}
@@ -3479,7 +3479,7 @@ const AstraSearchPanel = ({
                             "h-7 text-[10px] font-medium rounded-lg transition-all",
                             filters.propertyType === type 
                               ? "bg-blue-500 text-white shadow-sm" 
-                              : "bg-white/10 dark:bg-white/5 text-gray-700 dark:text-white/80 hover:bg-white/20 dark:hover:bg-white/10"
+                              : "bg-gray-100/70 dark:bg-white/5 text-gray-800 dark:text-white/80 hover:bg-gray-200/70 dark:hover:bg-white/10"
                           )}
                         >
                           {type}
@@ -3515,8 +3515,8 @@ const AstraSearchPanel = ({
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg">
-                      <span className="text-[11px] font-semibold text-gray-800 dark:text-white flex items-center gap-1.5">
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-gray-100/50 dark:hover:bg-white/10 rounded-lg">
+                      <span className="text-[11px] font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">
                         <MapPin className="h-3 w-3 text-purple-600 dark:text-purple-400" />
                         Location
                         {(filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') ? (
@@ -3531,7 +3531,7 @@ const AstraSearchPanel = ({
                   <CollapsibleContent className="space-y-1.5 pt-1">
                     {/* Province/City/Area Tabs */}
                     <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
-                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-lg bg-white/10 dark:bg-white/5 p-0.5 gap-0.5">
+                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-lg bg-gray-100/50 dark:bg-white/5 p-0.5 gap-0.5">
                         <TabsTrigger
                           value="province"
                           className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
