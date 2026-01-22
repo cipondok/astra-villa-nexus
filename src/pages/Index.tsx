@@ -558,9 +558,10 @@ const Index = () => {
                 "bg-white/10 dark:bg-black/30 backdrop-blur-2xl",
                 "rounded-xl sm:rounded-2xl md:rounded-3xl",
                 "shadow-xl sm:shadow-2xl shadow-black/20 sm:shadow-black/30",
-                "border border-white/20 sm:border-white/30 dark:border-white/10",
+                "border-2 border-white/40 dark:border-white/20",
                 "overflow-hidden",
-                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-white/5 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none"
+                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/30 before:via-transparent before:to-white/10 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none",
+                "after:absolute after:inset-0 after:rounded-xl sm:after:rounded-2xl md:after:rounded-3xl after:shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] after:pointer-events-none"
               )}
             >
               <Suspense fallback={<SearchPanelSkeleton />}>
