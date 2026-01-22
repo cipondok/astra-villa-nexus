@@ -270,7 +270,7 @@ const HomeLoanCalculator = () => {
 
       <div className="container mx-auto px-3 md:px-4 py-4 max-w-5xl">
         {/* Back Link */}
-        <BackToHomeLink sectionId="ai-tools-section" />
+        <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         
         {/* AI Tools Tab Bar */}
         <AIToolsTabBar className="mb-4" />

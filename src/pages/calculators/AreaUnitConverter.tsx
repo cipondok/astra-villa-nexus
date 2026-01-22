@@ -49,7 +49,7 @@ const AreaUnitConverter = () => {
     <div className="min-h-screen bg-background pt-11 md:pt-12">
       <div className="container mx-auto px-3 md:px-4 py-4 max-w-4xl">
         {/* Back Link */}
-        <BackToHomeLink sectionId="ai-tools-section" />
+        <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         
         {/* AI Tools Tab Bar */}
         <AIToolsTabBar className="mb-4" />
