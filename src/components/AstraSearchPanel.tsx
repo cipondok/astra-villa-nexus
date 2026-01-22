@@ -2438,20 +2438,38 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
-                <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1 flex items-center justify-center transition-colors" title={currentText.location}>
-                  <MapPin className="h-5 w-5 text-orange-500 dark:text-orange-400" />
-                </button>
-                <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
-                  {isGettingLocation ? <div className="flex flex-col items-center justify-center">
-                      <div className="animate-spin h-4 w-4 border-2 border-cyan-500 rounded-full border-t-transparent" />
-                    </div> : <svg className="h-5 w-5 text-cyan-700 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="3" />
-                      <path d="M12 2v3" />
-                      <path d="M12 19v3" />
-                      <path d="M2 12h3" />
-                      <path d="M19 12h3" />
-                    </svg>}
-                </button>
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1 flex items-center justify-center transition-colors">
+                        <MapPin className="h-5 w-5 text-orange-700 dark:text-orange-400" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                      <p className="text-[10px] font-medium">Map View</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation}>
+                        {isGettingLocation ? <div className="flex flex-col items-center justify-center">
+                            <div className="animate-spin h-4 w-4 border-2 border-cyan-700 rounded-full border-t-transparent" />
+                          </div> : <svg className="h-5 w-5 text-cyan-700 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M12 2v3" />
+                            <path d="M12 19v3" />
+                            <path d="M2 12h3" />
+                            <path d="M19 12h3" />
+                          </svg>}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                      <p className="text-[10px] font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 
                 {/* 🔒 FIXED: Loading overlay for geolocation - Better UX */}
                 {isGettingLocation && <div className="absolute inset-0 glass-effect flex items-center justify-center rounded-xl z-10 backdrop-blur-sm border border-primary/20">

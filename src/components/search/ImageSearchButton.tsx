@@ -193,7 +193,7 @@ export const ImageSearchButton = ({
                 disabled={isSearching}
                 className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative"
               >
-                <Camera className="h-5 w-5 text-pink-500 dark:text-pink-400" />
+                <Camera className="h-5 w-5 text-pink-700 dark:text-pink-400" />
                 {showPulse && (
                   <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
@@ -228,9 +228,9 @@ export const ImageSearchButton = ({
                   className="p-1 flex items-center justify-center transition-colors disabled:opacity-50"
                 >
                   {isSearching ? (
-                    <Loader2 className="h-5 w-5 text-pink-500 dark:text-pink-400 animate-spin" />
+                    <Loader2 className="h-5 w-5 text-pink-700 dark:text-pink-400 animate-spin" />
                   ) : (
-                    <Camera className="h-5 w-5 text-pink-500 dark:text-pink-400" />
+                    <Camera className="h-5 w-5 text-pink-700 dark:text-pink-400" />
                   )}
                 </button>
               </TooltipTrigger>
