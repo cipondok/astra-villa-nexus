@@ -78,8 +78,8 @@ const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'defa
         <Sparkles className={`${isHero ? 'h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
       </div>
 
-      {/* Features Grid - 8 columns on desktop for hero, 4 columns default */}
-      <div className={`grid gap-1.5 md:gap-2 ${isHero ? 'grid-cols-4 lg:grid-cols-8' : 'grid-cols-4'}`}>
+      {/* Features Grid - Single horizontal line */}
+      <div className={`grid gap-1.5 md:gap-2 ${isHero ? 'grid-cols-8' : 'grid-cols-8'}`}>
         {features.map((feature, index) => (
           <FeatureCard key={index} feature={feature} index={index} variant={variant} />
         ))}
