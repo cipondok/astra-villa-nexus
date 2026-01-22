@@ -191,16 +191,11 @@ export const ImageSearchButton = ({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isSearching}
-                className={cn(
-                  "p-1 flex items-center justify-center transition-all duration-200 disabled:opacity-50 relative",
-                  "hover:scale-110 active:scale-95",
-                  showPulse && "animate-pulse"
-                )}
+                className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative"
               >
-                <Camera className="h-5 w-5 md:h-6 md:w-6 text-pink-500 dark:text-pink-400" />
+                <Camera className="h-5 w-5 text-pink-500 dark:text-pink-400" />
                 {showPulse && (
                   <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
                   </span>
                 )}
@@ -230,12 +225,12 @@ export const ImageSearchButton = ({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isSearching}
-                  className="p-1 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-110 active:scale-95"
+                  className="p-1 flex items-center justify-center transition-colors disabled:opacity-50"
                 >
                   {isSearching ? (
-                    <Loader2 className="h-5 w-5 md:h-6 md:w-6 text-pink-500 dark:text-pink-400 animate-spin" />
+                    <Loader2 className="h-5 w-5 text-pink-500 dark:text-pink-400 animate-spin" />
                   ) : (
-                    <Camera className="h-5 w-5 md:h-6 md:w-6 text-pink-500 dark:text-pink-400" />
+                    <Camera className="h-5 w-5 text-pink-500 dark:text-pink-400" />
                   )}
                 </button>
               </TooltipTrigger>
