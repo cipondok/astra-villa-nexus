@@ -3290,13 +3290,14 @@ const AstraSearchPanel = ({
             className="fixed inset-0 z-[99998]" 
             onClick={() => setShowAdvancedFilters(false)}
           />
-          {/* Floating popup - same as Property Type popover */}
+          {/* Floating popup - same style as Property Type popover */}
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
               "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
-              "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150",
+              "border border-white/30 dark:border-white/20 ring-1 ring-white/20",
               isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[65vh] w-[420px]"
             )}
             style={{ 
@@ -3304,67 +3305,70 @@ const AstraSearchPanel = ({
               transformOrigin: 'top right'
             }}
           >
-            {/* Slim Header */}
-            <div className="flex items-center justify-between border-b border-white/20 px-3 py-2 shrink-0 bg-white/5">
+            {/* Slim Header - matching property type popover */}
+            <div className="flex items-center justify-between border-b border-white/20 px-3 py-2 shrink-0">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/80 to-accent/80 flex items-center justify-center shadow-sm">
-                  <SlidersHorizontal className="h-3 w-3 text-primary-foreground" />
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-sm">
+                  <SlidersHorizontal className="h-3 w-3 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-xs font-bold text-foreground">Filters</h3>
-                </div>
+                <h4 className="text-xs font-semibold text-gray-800 dark:text-white">Filters</h4>
                 {getActiveFiltersCount() > 0 && (
-                  <Badge variant="default" className="h-5 px-1.5 bg-primary/90 text-primary-foreground text-[10px] font-bold">
+                  <Badge variant="default" className="h-4 px-1.5 bg-emerald-500 text-white text-[9px] font-bold">
                     {getActiveFiltersCount()}
                   </Badge>
                 )}
               </div>
-              <Button onClick={() => setShowAdvancedFilters(false)} variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-destructive/10 hover:text-destructive rounded-full">
+              <Button 
+                onClick={() => setShowAdvancedFilters(false)} 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 w-6 p-0 hover:bg-white/20 dark:hover:bg-white/10 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-800 dark:hover:text-white"
+              >
                 <X className="h-3.5 w-3.5" />
               </Button>
             </div>
 
             {/* Active Filters Summary - Compact */}
             {getActiveFiltersCount() > 0 && (
-              <div className="px-3 py-2 bg-accent/10 border-b border-border/20 shrink-0">
+              <div className="px-3 py-2 bg-white/5 dark:bg-white/5 border-b border-white/10 shrink-0">
                 <div className="flex items-center justify-between mb-1.5">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Active</Label>
+                  <span className="text-[10px] font-bold text-gray-600 dark:text-white/70 uppercase tracking-wider">Active</span>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={clearAllFilters}
-                    className="h-5 px-1.5 text-[10px] text-destructive hover:text-destructive hover:bg-destructive/10"
+                    className="h-5 px-1.5 text-[10px] text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-500/10"
                   >
                     Clear
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {activeTab && activeTab !== 'all' && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
+                    <Badge className="h-5 px-2 text-[10px] gap-1 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-0">
                       {activeTab === 'sale' ? 'Sale' : activeTab === 'rent' ? 'Rent' : 'All'}
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => setActiveTab('all')} />
                     </Badge>
                   )}
                   {filters.propertyType && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
+                    <Badge className="h-5 px-2 text-[10px] gap-1 bg-blue-500/20 text-blue-700 dark:text-blue-300 border-0">
                       {filters.propertyType}
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
                     </Badge>
                   )}
                   {filters.location && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
+                    <Badge className="h-5 px-2 text-[10px] gap-1 bg-purple-500/20 text-purple-700 dark:text-purple-300 border-0">
                       {filters.location}
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('location', '')} />
                     </Badge>
                   )}
                   {filters.bedrooms && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
+                    <Badge className="h-5 px-2 text-[10px] gap-1 bg-orange-500/20 text-orange-700 dark:text-orange-300 border-0">
                       {filters.bedrooms}BR
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
                     </Badge>
                   )}
                   {filters.bathrooms && (
-                    <Badge variant="secondary" className="h-5 px-2 text-[10px] gap-1 bg-secondary text-secondary-foreground">
+                    <Badge className="h-5 px-2 text-[10px] gap-1 bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-0">
                       {filters.bathrooms}BA
                       <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bathrooms', '')} />
                     </Badge>
@@ -3375,57 +3379,58 @@ const AstraSearchPanel = ({
 
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-2 space-y-1.5 bg-transparent pb-3">
+              <div className="p-3 space-y-2">
                 
                 {/* Search Mode Tabs - All, Buy, Rent - Slim */}
-                <div className="pb-2 border-b border-border/30">
-                  <div className="flex items-center gap-0.5 p-0.5 bg-muted/30 rounded-lg">
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-gray-800 dark:text-white">Listing Type</h4>
+                  <div className="flex items-center gap-1 p-1 bg-white/10 dark:bg-white/5 rounded-xl">
                     <Button 
-                      variant={filters.listingType === '' ? "default" : "ghost"} 
+                      variant="ghost"
                       size="sm" 
                       onClick={() => {
                         handleFilterChange('listingType', '');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "flex-1 h-8 text-xs font-bold rounded-md transition-all duration-200",
+                        "flex-1 h-7 text-[10px] font-medium rounded-lg transition-all",
                         filters.listingType === '' 
-                          ? "bg-gradient-to-r from-primary/90 to-accent/90 text-primary-foreground shadow-sm" 
-                          : "hover:bg-background/50 text-muted-foreground"
+                          ? "bg-primary text-white shadow-sm" 
+                          : "text-gray-600 dark:text-white/70 hover:bg-white/20 dark:hover:bg-white/10"
                       )}
                     >
                       <Layers className="h-3 w-3 mr-1" />
                       All
                     </Button>
                     <Button 
-                      variant={filters.listingType === 'sale' ? "default" : "ghost"} 
+                      variant="ghost"
                       size="sm" 
                       onClick={() => {
                         handleFilterChange('listingType', 'sale');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "flex-1 h-8 text-xs font-bold rounded-md transition-all duration-200",
+                        "flex-1 h-7 text-[10px] font-medium rounded-lg transition-all",
                         filters.listingType === 'sale' 
-                          ? "bg-gradient-to-r from-emerald-500/90 to-green-600/90 text-white shadow-sm" 
-                          : "hover:bg-background/50 text-muted-foreground"
+                          ? "bg-emerald-500 text-white shadow-sm" 
+                          : "text-gray-600 dark:text-white/70 hover:bg-white/20 dark:hover:bg-white/10"
                       )}
                     >
                       <DollarSign className="h-3 w-3 mr-1" />
                       Buy
                     </Button>
                     <Button 
-                      variant={filters.listingType === 'rent' ? "default" : "ghost"} 
+                      variant="ghost"
                       size="sm" 
                       onClick={() => {
                         handleFilterChange('listingType', 'rent');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "flex-1 h-8 text-xs font-bold rounded-md transition-all duration-200",
+                        "flex-1 h-7 text-[10px] font-medium rounded-lg transition-all",
                         filters.listingType === 'rent' 
-                          ? "bg-gradient-to-r from-blue-500/90 to-indigo-600/90 text-white shadow-sm" 
-                          : "hover:bg-background/50 text-muted-foreground"
+                          ? "bg-blue-500 text-white shadow-sm" 
+                          : "text-gray-600 dark:text-white/70 hover:bg-white/20 dark:hover:bg-white/10"
                       )}
                     >
                       <Key className="h-3 w-3 mr-1" />
@@ -3448,22 +3453,20 @@ const AstraSearchPanel = ({
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-accent/30 rounded-md">
-                      <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
-                        <Home className="h-3 w-3 text-primary" />
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg">
+                      <span className="text-[11px] font-semibold text-gray-800 dark:text-white flex items-center gap-1.5">
+                        <Home className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                         Property Type
-                        {filters.propertyType && <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">{filters.propertyType}</Badge>}
-                      </Label>
-                      {openSections.propertyType ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        {filters.propertyType && <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-blue-500/20 text-blue-700 dark:text-blue-300 border-0">{filters.propertyType}</Badge>}
+                      </span>
+                      {openSections.propertyType ? <ChevronUp className="h-3 w-3 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3 w-3 text-gray-500 dark:text-white/50" />}
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1 pt-1">
-                    <div className="grid grid-cols-3 gap-1">
+                    <div className="grid grid-cols-3 gap-1.5">
                       {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
-                        <Button 
+                        <button 
                           key={type}
-                          variant={filters.propertyType === type ? "default" : "outline"} 
-                          size="sm" 
                           onClick={() => {
                             handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
                             if (filters.propertyType !== type) {
@@ -3473,12 +3476,14 @@ const AstraSearchPanel = ({
                             }
                           }}
                           className={cn(
-                            "h-7 text-[10px] font-semibold rounded-md border-border/50",
-                            filters.propertyType === type && "shadow-sm ring-1 ring-primary/30"
+                            "h-7 text-[10px] font-medium rounded-lg transition-all",
+                            filters.propertyType === type 
+                              ? "bg-blue-500 text-white shadow-sm" 
+                              : "bg-white/10 dark:bg-white/5 text-gray-700 dark:text-white/80 hover:bg-white/20 dark:hover:bg-white/10"
                           )}
                         >
                           {type}
-                        </Button>
+                        </button>
                       ))}
                     </div>
                   </CollapsibleContent>
@@ -3510,23 +3515,23 @@ const AstraSearchPanel = ({
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-accent/30 rounded-md">
-                      <Label className="text-[11px] font-bold text-foreground flex items-center gap-1 cursor-pointer">
-                        <MapPin className="h-3 w-3 text-primary" />
+                    <Button variant="ghost" className="w-full justify-between h-7 px-2 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg">
+                      <span className="text-[11px] font-semibold text-gray-800 dark:text-white flex items-center gap-1.5">
+                        <MapPin className="h-3 w-3 text-purple-600 dark:text-purple-400" />
                         Location
                         {(filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') ? (
-                          <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px] bg-primary/10">
+                          <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-purple-500/20 text-purple-700 dark:text-purple-300 border-0">
                             {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                           </Badge>
                         ) : null}
-                      </Label>
-                      {openSections.location ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      </span>
+                      {openSections.location ? <ChevronUp className="h-3 w-3 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3 w-3 text-gray-500 dark:text-white/50" />}
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1.5 pt-1">
                     {/* Province/City/Area Tabs */}
                     <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
-                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-md bg-muted p-0.5 gap-0.5">
+                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-lg bg-white/10 dark:bg-white/5 p-0.5 gap-0.5">
                         <TabsTrigger
                           value="province"
                           className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
@@ -3997,13 +4002,13 @@ const AstraSearchPanel = ({
             </ScrollArea>
 
             {/* Footer - Sticky */}
-            <div className="border-t border-border/30 backdrop-blur-xl bg-primary/5 px-2 py-1.5 shrink-0 shadow-lg">
+            <div className="border-t border-white/10 px-3 py-2 shrink-0">
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowAdvancedFilters(false);
                 }} 
-                className="w-full h-8 text-xs font-bold shadow-md rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300" 
+                className="w-full h-8 text-xs font-semibold shadow-md rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all" 
                 size="sm"
               >
                 <Search className="h-3.5 w-3.5 mr-1.5" />
