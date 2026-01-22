@@ -2003,7 +2003,7 @@ const AstraSearchPanel = ({
   // Mobile view - inline search panel (not fixed)
   if (isMobile) {
     return (
-      <div className="w-full p-3 sm:p-4 space-y-3">
+      <div className="w-full px-0 py-3 space-y-3">
         {/* Compact Tabs for Sale/Rent/All */}
         <div className="flex justify-center">
           <div 
