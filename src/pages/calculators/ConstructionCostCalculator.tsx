@@ -140,23 +140,31 @@ const ConstructionCostCalculator = () => {
 
   return (
     <div className="min-h-screen bg-background pt-11 md:pt-12">
-      <div className="container mx-auto px-3 md:px-4 py-4 max-w-4xl">
+      {/* Luxury Background - matches home page */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-2 md:px-4 py-2 md:py-4 max-w-4xl">
         {/* Back Link */}
         <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         
         {/* AI Tools Tab Bar */}
-        <AIToolsTabBar className="mb-4" />
+        <AIToolsTabBar className="mb-3" />
 
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Calculator className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-            <Hammer className="w-6 h-6 md:w-8 md:h-8 text-amber-500" />
+        {/* Header - Slim, centered */}
+        <div className="text-center mb-3 md:mb-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Calculator className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            <Hammer className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
           </div>
-          <h1 className="text-xl md:text-3xl font-bold mb-1">Construction Cost Calculator</h1>
-          <p className="text-xs md:text-sm text-muted-foreground">Estimate your building construction costs in Indonesia</p>
+          <h1 className="text-sm md:text-lg font-bold text-foreground">Construction Cost Calculator</h1>
+          <p className="text-[10px] md:text-xs text-muted-foreground">Estimate your building construction costs in Indonesia</p>
         </div>
 
-      <Card>
+      <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
         <CardHeader>
           <CardTitle>Calculate Building Costs</CardTitle>
           <CardDescription>Enter your project details to get an accurate estimate</CardDescription>

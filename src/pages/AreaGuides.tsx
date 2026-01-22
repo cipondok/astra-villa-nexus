@@ -210,32 +210,33 @@ const AreaGuides = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background pt-11 md:pt-12">
-      {/* Slim Sticky Header */}
-      <header className="sticky top-11 md:top-12 z-40 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sm">
-        <div className="container mx-auto px-2 md:px-3 py-1.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 group">
-              <div className="flex items-center gap-1 p-1.5 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg shadow group-hover:shadow-md transition-all duration-300">
-                <Compass className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-sm md:text-base font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                  {language === 'id' ? 'Panduan Area' : 'Area Guides'}
-                </h1>
-                <p className="text-[9px] text-muted-foreground hidden md:block font-medium">
-                  {language === 'id' ? 'Jelajahi Perumahan Indonesia' : 'Explore Indonesian Housing'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background pt-11 md:pt-12">
+      {/* Luxury Background - matches home page */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl" />
+      </div>
 
-      {/* AI Tools Tab Bar */}
       <div className="container mx-auto px-2 md:px-3 py-2">
+        {/* Back Link */}
         <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
-        <AIToolsTabBar className="mb-2" />
+        
+        {/* AI Tools Tab Bar */}
+        <AIToolsTabBar className="mb-3" />
+
+        {/* Header - Slim, centered */}
+        <div className="text-center mb-3 md:mb-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Compass className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+          </div>
+          <h1 className="text-sm md:text-lg font-bold text-foreground">
+            {language === 'id' ? 'Panduan Area' : 'Area Guides'}
+          </h1>
+          <p className="text-[10px] md:text-xs text-muted-foreground">
+            {language === 'id' ? 'Jelajahi Perumahan Indonesia' : 'Explore Indonesian Housing'}
+          </p>
+        </div>
       </div>
 
       {/* Compact Hero Section */}
