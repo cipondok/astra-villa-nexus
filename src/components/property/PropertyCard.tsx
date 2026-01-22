@@ -152,7 +152,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
   return (
     <>
-      <Card className="w-full hover:shadow-lg transition-shadow cursor-pointer" onClick={handleViewDetails}>
+      <Card className="w-full bg-transparent border-0 shadow-none hover:shadow-md transition-shadow cursor-pointer" onClick={handleViewDetails}>
         <div className="relative">
           {images && images.length > 0 ? (
             <img
