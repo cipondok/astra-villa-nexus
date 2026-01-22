@@ -290,7 +290,7 @@ const Search = () => {
 
       {/* AI Tools Tab Bar */}
       <div className="container mx-auto px-2 md:px-3 py-2">
-        <BackToHomeLink sectionId="ai-tools-section" />
+        <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         <AIToolsTabBar className="mb-2" />
       </div>
 
