@@ -71,6 +71,11 @@ const AstraSearchPanel = ({
   // Anchor for mobile suggestions positioning
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [suggestionsTop, setSuggestionsTop] = useState<number>(0);
+  const [suggestionsRect, setSuggestionsRect] = useState<{ top: number; left: number; width: number }>({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
   const { filters: dbFilters, loading: filtersLoading } = usePropertyFilters();
   
   // Image search functionality
@@ -1836,25 +1841,26 @@ const AstraSearchPanel = ({
     };
   }, [showSuggestions, showAdvancedFilters]);
 
-  // Keep mobile dropdown aligned to input on scroll/resize
+  const updateSuggestionsPosition = () => {
+    if (!anchorRef.current) return;
+    const rect = anchorRef.current.getBoundingClientRect();
+    const top = rect.bottom + 4;
+    setSuggestionsTop(top);
+    setSuggestionsRect({ top, left: rect.left, width: rect.width });
+  };
+
+  // Keep suggestions dropdown aligned to input on scroll/resize
   useEffect(() => {
-    if (!isMobile) return;
-    const updateTop = () => {
-      if (anchorRef.current) {
-        const rect = anchorRef.current.getBoundingClientRect();
-        setSuggestionsTop(rect.bottom);
-      }
-    };
     if (showSuggestions) {
-      updateTop();
-      window.addEventListener('resize', updateTop);
-      window.addEventListener('scroll', updateTop, true);
+      updateSuggestionsPosition();
+      window.addEventListener('resize', updateSuggestionsPosition);
+      window.addEventListener('scroll', updateSuggestionsPosition, true);
     }
     return () => {
-      window.removeEventListener('resize', updateTop);
-      window.removeEventListener('scroll', updateTop, true);
+      window.removeEventListener('resize', updateSuggestionsPosition);
+      window.removeEventListener('scroll', updateSuggestionsPosition, true);
     };
-  }, [showSuggestions, isMobile]);
+  }, [showSuggestions]);
 
   // Removed manual scroll locking useEffect in favor of useScrollLock hook above
 
@@ -2400,7 +2406,7 @@ const AstraSearchPanel = ({
           
           {/* Compact Search Row with Location Options */}
           <div className={cn("flex overflow-visible", isMobile ? "gap-1" : "gap-2 lg:gap-3")}>
-            <div className="flex-1 relative z-[100001]">
+            <div ref={anchorRef} className="flex-1 relative z-[100001]">
               <Search className={cn(
                 "absolute left-3 top-1/2 transform -translate-y-1/2 text-primary pointer-events-none transition-all duration-500", 
                 isMobile ? "h-3 w-3 left-2" : "h-4 w-4",
@@ -2410,7 +2416,11 @@ const AstraSearchPanel = ({
                 placeholder={currentText.searchPlaceholder} 
                 value={searchQuery} 
                 onChange={e => handleSearchChange(e.target.value)} 
-                onFocus={() => setShowSuggestions(true)} 
+                onFocus={() => {
+                  setShowSuggestions(true);
+                  // Ensure dropdown position is computed immediately on focus (desktop + mobile)
+                  requestAnimationFrame(() => updateSuggestionsPosition());
+                }} 
                 className={cn(
                   "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
                   // Fully transparent input background
@@ -2447,7 +2457,24 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto" style={{ position: 'absolute' }}>
+              {showSuggestions && hasSuggestions && (
+                <div
+                  ref={suggestionsRef}
+                  className={cn(
+                    isMobile
+                      ? "absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                      : "fixed bg-card border border-border rounded-xl shadow-2xl z-[100001] max-h-80 overflow-y-auto"
+                  )}
+                  style={
+                    isMobile
+                      ? undefined
+                      : {
+                          top: suggestionsRect.top,
+                          left: suggestionsRect.left,
+                          width: suggestionsRect.width,
+                        }
+                  }
+                >
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
@@ -2547,7 +2574,8 @@ const AstraSearchPanel = ({
                           </button>)}
                       </div>
                     </div>}
-                </div>}
+                </div>
+              )}
             </div>
 
             {/* Location Button */}
