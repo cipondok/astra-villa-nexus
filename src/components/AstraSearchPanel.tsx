@@ -3284,19 +3284,20 @@ const AstraSearchPanel = ({
       
       {/* Advanced Filters Modal (mobile, tablet and desktop) */}
       {showAdvancedFilters && createPortal(
-        <div 
-          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] modal-overlay flex items-start justify-end p-2 pt-20 md:p-4 md:pt-24 transition-all duration-200" 
-          onClick={() => setShowAdvancedFilters(false)}
-          style={{ animation: 'fadeIn 0.15s ease-out' }}
-        >
+        <>
+          {/* Invisible click-away layer - no background blocking */}
+          <div 
+            className="fixed inset-0 z-[99998]" 
+            onClick={() => setShowAdvancedFilters(false)}
+          />
+          {/* Floating popup - same as Property Type popover */}
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-2xl shadow-2xl flex flex-col overflow-hidden",
+              "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
               "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 ring-1 ring-white/20",
-              "transition-all duration-200 ease-out",
-              isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
+              isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[65vh] w-[420px]"
             )}
             style={{ 
               animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -4010,7 +4011,7 @@ const AstraSearchPanel = ({
               </Button>
             </div>
           </div>
-        </div>,
+        </>,
         document.body
       )}
     </div>
