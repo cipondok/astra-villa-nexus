@@ -480,13 +480,6 @@ export const navigationSections = {
       description: "Advanced property search with multiple filter options"
     },
     {
-      key: "welcome-screen-settings",
-      label: "Welcome Screen Settings",
-      icon: Sparkles,
-      description: "Customize loading screen logo, animations, and branding",
-      badge: "New"
-    },
-    {
       key: "user-experience-tips",
       label: "User Experience Tips",
       icon: HelpCircle,
