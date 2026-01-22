@@ -15,7 +15,7 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw } from "lucide-react";
-import { SearchPanelBackgroundSlider } from "@/components/search/SearchPanelBackgroundSlider";
+import jakartaSkylineDark from "@/assets/jakarta-skyline-dark.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -504,39 +504,44 @@ const Index = () => {
         "pb-20 md:pb-4" // Extra bottom padding for mobile footer
       )}>
         
-        {/* Hero Search Section with Background Image Slider */}
-        <section className="relative w-full overflow-hidden" id="hero-section">
-          {/* Background Image Slider - Full section background */}
-          <SearchPanelBackgroundSlider 
-            className="absolute inset-0 z-0"
-            interval={6000}
-          />
+        {/* Hero Search Section - Full Screen with Dark Jakarta Skyline */}
+        <section className="relative w-full h-screen min-h-[600px] overflow-hidden" id="hero-section">
+          {/* Dark Jakarta Skyline Background */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src={jakartaSkylineDark} 
+              alt="Jakarta Skyline at Night" 
+              className="w-full h-full object-cover"
+            />
+            {/* Dark gradient overlays for luxury feel */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-background pointer-events-none" />
+          </div>
           
-          {/* Content overlay - Enhanced mobile responsiveness */}
+          {/* Content overlay - Centered in viewport */}
           <div className={cn(
-            "relative z-10 w-full max-w-7xl mx-auto",
-            // Mobile: compact padding, tablet/desktop: more generous
-            "px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8"
+            "relative z-10 w-full h-full flex flex-col items-center justify-center",
+            "px-3 py-8 sm:px-4 md:px-6 lg:px-8"
           )}>
             {/* Enhanced Header - Better mobile scaling */}
-            <div className="mb-2 sm:mb-3 md:mb-5 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+            <div className="mb-4 sm:mb-6 md:mb-8 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
               {/* AI Badge - Responsive sizing */}
               <div className={cn(
-                "inline-flex items-center gap-1 sm:gap-1.5 mb-1 sm:mb-1.5 md:mb-2",
-                "px-2 py-0.5 sm:px-2.5 sm:py-0.5 md:px-4 md:py-1.5",
-                "bg-white/20 backdrop-blur-md",
-                "rounded-full border border-white/30"
+                "inline-flex items-center gap-1 sm:gap-1.5 mb-2 sm:mb-3 md:mb-4",
+                "px-3 py-1 sm:px-4 sm:py-1.5 md:px-5 md:py-2",
+                "bg-white/10 backdrop-blur-md",
+                "rounded-full border border-white/20"
               )}>
-                <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-white animate-pulse" />
-                <span className="text-[8px] sm:text-[10px] md:text-xs font-semibold text-white drop-shadow-md">AI-Powered Search</span>
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary animate-pulse" />
+                <span className="text-[10px] sm:text-xs md:text-sm font-semibold text-white drop-shadow-md">AI-Powered Search</span>
               </div>
               
               {/* Title - Optimized for mobile readability */}
-              <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight text-white drop-shadow-lg mb-0.5 sm:mb-1 md:mb-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg mb-2 sm:mb-3 md:mb-4">
                 {t.findYour}
               </h1>
-              <p className="flex text-[9px] sm:text-[11px] md:text-sm lg:text-base text-white/90 items-center justify-center gap-1 sm:gap-1.5 drop-shadow-md">
-                <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
+              <p className="flex text-xs sm:text-sm md:text-base lg:text-lg text-white/90 items-center justify-center gap-1.5 sm:gap-2 drop-shadow-md">
+                <Search className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                 {t.searchPowered}
               </p>
             </div>
@@ -546,12 +551,12 @@ const Index = () => {
               className={cn(
                 "relative mx-auto w-full max-w-4xl",
                 // Premium glassy background with better mobile radius
-                "bg-white/10 dark:bg-black/20 backdrop-blur-2xl",
+                "bg-white/10 dark:bg-black/30 backdrop-blur-2xl",
                 "rounded-xl sm:rounded-2xl md:rounded-3xl",
-                "shadow-xl sm:shadow-2xl shadow-black/20 sm:shadow-black/30",
-                "border border-white/20 sm:border-white/30 dark:border-white/10",
+                "shadow-2xl shadow-black/40",
+                "border border-white/20 dark:border-white/10",
                 "overflow-hidden",
-                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-white/5 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none"
+                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/10 before:via-transparent before:to-white/5 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none"
               )}
             >
               <Suspense fallback={<SearchPanelSkeleton />}>
@@ -577,6 +582,13 @@ const Index = () => {
                   </span>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+            <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center p-1.5">
+              <div className="w-1.5 h-3 bg-white/60 rounded-full animate-pulse" />
             </div>
           </div>
         </section>
