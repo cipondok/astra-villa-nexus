@@ -140,8 +140,21 @@ const AstraSearchPanel = ({
     return () => window.removeEventListener('recentSearchesUpdated', handleUpdate);
   }, []);
 
-  // Only lock scroll for modal dialogs, not for suggestions dropdown
+  // Lock scroll when advanced filters popup is open to prevent page jumping
   useScrollLock(showAdvancedFilters);
+  
+  // Add/remove body class for popup interaction - prevents scroll chaining
+  useEffect(() => {
+    if (showAdvancedFilters) {
+      document.body.classList.add('filter-popup-open');
+      document.documentElement.style.setProperty('--scroll-position', `-${window.scrollY}px`);
+    } else {
+      document.body.classList.remove('filter-popup-open');
+    }
+    return () => {
+      document.body.classList.remove('filter-popup-open');
+    };
+  }, [showAdvancedFilters]);
 
   // Ref for click outside detection
   const filterRef = useRef<HTMLDivElement>(null);
@@ -3290,19 +3303,24 @@ const AstraSearchPanel = ({
             className="fixed inset-0 z-[99998]" 
             onClick={() => setShowAdvancedFilters(false)}
           />
-          {/* Floating popup - 90% transparent glassmorphic slim style */}
+          {/* Floating popup - 90% transparent glassmorphic slim style with scroll containment */}
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
             className={cn(
-              "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
+              "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col",
               "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150",
               "border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              "touch-none select-none",
               isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[60vh] w-[380px]"
             )}
             style={{ 
               animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-              transformOrigin: 'top right'
+              transformOrigin: 'top right',
+              overscrollBehavior: 'contain',
+              contain: 'layout style paint'
             }}
           >
             {/* Slim Header */}
@@ -3368,21 +3386,26 @@ const AstraSearchPanel = ({
               </div>
             )}
 
-            {/* Content - Scrollable */}
-            <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-2 space-y-2">
+            {/* Content - Scrollable with scroll containment */}
+            <ScrollArea 
+              className="flex-1 min-h-0" 
+              style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
+            >
+              <div className="p-2 space-y-2 touch-pan-y">
                 
-                {/* Listing Type - Slim Touch Cards */}
+                {/* Listing Type - Slim Touch Cards with touch optimization */}
                 <div className="space-y-1.5">
                   <h4 className="text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-wide px-1">Listing Type</h4>
                   <div className="grid grid-cols-3 gap-1.5">
                     <button 
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         handleFilterChange('listingType', '');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-95",
+                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-colors duration-150 active:scale-95 touch-manipulation select-none",
                         filters.listingType === '' 
                           ? "bg-primary text-white shadow-lg ring-2 ring-primary/50" 
                           : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
@@ -3392,12 +3415,14 @@ const AstraSearchPanel = ({
                       <span className="text-[10px] font-semibold">All</span>
                     </button>
                     <button 
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         handleFilterChange('listingType', 'sale');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-95",
+                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-colors duration-150 active:scale-95 touch-manipulation select-none",
                         filters.listingType === 'sale' 
                           ? "bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-500/50" 
                           : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
@@ -3407,12 +3432,14 @@ const AstraSearchPanel = ({
                       <span className="text-[10px] font-semibold">Buy</span>
                     </button>
                     <button 
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         handleFilterChange('listingType', 'rent');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-95",
+                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-colors duration-150 active:scale-95 touch-manipulation select-none",
                         filters.listingType === 'rent' 
                           ? "bg-blue-500 text-white shadow-lg ring-2 ring-blue-500/50" 
                           : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
@@ -3424,7 +3451,7 @@ const AstraSearchPanel = ({
                   </div>
                 </div>
 
-                {/* Property Type - Slim Grid */}
+                {/* Property Type - Slim Grid with stable layout */}
                 <Collapsible
                   open={openSections.propertyType}
                   onOpenChange={(open) => setOpenSections(prev => ({ 
@@ -3438,7 +3465,7 @@ const AstraSearchPanel = ({
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-all active:scale-[0.98]">
+                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-colors active:scale-[0.98] touch-manipulation">
                       <span className="text-[11px] font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
                         <Home className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                         Property Type
@@ -3447,40 +3474,47 @@ const AstraSearchPanel = ({
                       {openSections.propertyType ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-1.5">
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { type: 'House', icon: Home, color: 'blue' },
-                        { type: 'Apartment', icon: Building, color: 'purple' },
-                        { type: 'Villa', icon: Home, color: 'emerald' },
-                        { type: 'Land', icon: LandPlot, color: 'amber' },
-                        { type: 'Office', icon: Briefcase, color: 'indigo' },
-                        { type: 'Shop', icon: ShoppingBag, color: 'pink' }
-                      ].map(({ type, icon: Icon, color }) => (
-                        <button 
-                          key={type}
-                          onClick={() => {
-                            handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
-                            if (filters.propertyType !== type) {
-                              setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: false, location: true, priceRange: false, propertySpecs: false, amenities: false })), 150);
-                            } else {
-                              setOpenSections(prev => ({ ...prev, propertyType: false }));
-                            }
-                          }}
-                          className={cn(
-                            "h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-200 active:scale-95 touch-manipulation",
-                            filters.propertyType === type 
-                              ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg ring-2 ring-blue-400/50" 
-                              : "bg-white/30 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-white/50 dark:hover:bg-white/20 border border-white/30 dark:border-white/10"
-                          )}
-                        >
-                          <Icon className={cn(
-                            "h-4 w-4",
-                            filters.propertyType === type ? "text-white" : `text-${color}-600 dark:text-${color}-400`
-                          )} />
-                          <span className="text-[10px] font-bold">{type}</span>
-                        </button>
-                      ))}
+                  <CollapsibleContent 
+                    className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"
+                    style={{ willChange: 'height' }}
+                  >
+                    <div className="pt-1.5 pb-1">
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { type: 'House', icon: Home, color: 'blue' },
+                          { type: 'Apartment', icon: Building, color: 'purple' },
+                          { type: 'Villa', icon: Home, color: 'emerald' },
+                          { type: 'Land', icon: LandPlot, color: 'amber' },
+                          { type: 'Office', icon: Briefcase, color: 'indigo' },
+                          { type: 'Shop', icon: ShoppingBag, color: 'pink' }
+                        ].map(({ type, icon: Icon, color }) => (
+                          <button 
+                            key={type}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleFilterChange('propertyType', filters.propertyType === type ? '' : type);
+                              if (filters.propertyType !== type) {
+                                setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: false, location: true, priceRange: false, propertySpecs: false, amenities: false })), 150);
+                              } else {
+                                setOpenSections(prev => ({ ...prev, propertyType: false }));
+                              }
+                            }}
+                            className={cn(
+                              "h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-150 active:scale-95 touch-manipulation select-none",
+                              filters.propertyType === type 
+                                ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg ring-2 ring-blue-400/50" 
+                                : "bg-white/30 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-white/50 dark:hover:bg-white/20 border border-white/30 dark:border-white/10"
+                            )}
+                          >
+                            <Icon className={cn(
+                              "h-4 w-4",
+                              filters.propertyType === type ? "text-white" : `text-${color}-600 dark:text-${color}-400`
+                            )} />
+                            <span className="text-[10px] font-bold">{type}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
@@ -3510,7 +3544,7 @@ const AstraSearchPanel = ({
                   className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-all active:scale-[0.98]">
+                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-colors touch-manipulation active:scale-[0.98]">
                       <span className="text-[11px] font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
                         <MapPin className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                         Location
@@ -3523,7 +3557,11 @@ const AstraSearchPanel = ({
                       {openSections.location ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-1">
+                  <CollapsibleContent 
+                    className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"
+                    style={{ willChange: 'height' }}
+                  >
+                    <div className="pt-1 pb-1">
                     {/* Province/City/Area Tabs - Slim */}
                     <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
                       <TabsList className="w-full grid grid-cols-3 h-7 rounded-lg bg-white/20 dark:bg-white/10 p-0.5 gap-0.5">
@@ -3651,6 +3689,7 @@ const AstraSearchPanel = ({
                         </ScrollArea>
                       </TabsContent>
                     </Tabs>
+                    </div>
                   </CollapsibleContent>
                 </Collapsible>
 
