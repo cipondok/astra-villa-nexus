@@ -2424,6 +2424,7 @@ const AstraSearchPanel = ({
                 }} 
                 className={cn(
                   "border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:shadow-lg focus:shadow-primary/30 rounded-xl transition-all duration-500 shadow-md font-medium hover:border-primary/60 hover:shadow-primary/20",
+                  "text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400",
                   // Fully transparent input background
                   isMobile ? "pl-8 pr-16 h-8 text-xs bg-transparent" : "pl-10 pr-28 h-9 text-sm bg-transparent"
                 )} 
