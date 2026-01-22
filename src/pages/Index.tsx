@@ -551,7 +551,8 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Search Panel Container */}
+            {/* Search Panel Container - pushed down */}
+            <div className="mt-4 md:mt-8 lg:mt-12" />
             <div
               className={cn(
                 "relative mx-auto w-full max-w-5xl xl:max-w-6xl",
@@ -587,7 +588,7 @@ const Index = () => {
             </div>
 
             {/* Featured Properties - Inside Hero, Below Search Panel */}
-            <div className="w-full max-w-[2400px] mx-auto mt-4 md:mt-6">
+            <div className="w-full max-w-[2400px] mx-auto mt-6 md:mt-10 lg:mt-12">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 fill-yellow-400/50" />
                 <h2 className="text-xs md:text-sm font-semibold text-white/90 drop-shadow-md">
