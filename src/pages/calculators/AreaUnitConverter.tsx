@@ -47,28 +47,36 @@ const AreaUnitConverter = () => {
 
   return (
     <div className="min-h-screen bg-background pt-11 md:pt-12">
-      <div className="container mx-auto px-3 md:px-4 py-4 max-w-4xl">
+      {/* Luxury Background - matches home page */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-2 md:px-4 py-2 md:py-4 max-w-4xl">
         {/* Back Link */}
         <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         
         {/* AI Tools Tab Bar */}
-        <AIToolsTabBar className="mb-4" />
+        <AIToolsTabBar className="mb-3" />
 
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Maximize2 className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-            <ArrowRightLeft className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
+        {/* Header - Slim, centered */}
+        <div className="text-center mb-3 md:mb-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Maximize2 className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            <ArrowRightLeft className="h-3 w-3 md:h-4 md:w-4 text-blue-500" />
           </div>
-          <h1 className="text-xl md:text-3xl font-bold mb-1">Area Unit Converter</h1>
-          <p className="text-xs md:text-sm text-muted-foreground">Convert between different area measurements instantly</p>
+          <h1 className="text-sm md:text-lg font-bold text-foreground">Area Unit Converter</h1>
+          <p className="text-[10px] md:text-xs text-muted-foreground">Convert between different area measurements instantly</p>
         </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Convert Area Units</CardTitle>
-          <CardDescription>Enter a value and select units to convert</CardDescription>
+      <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+        <CardHeader className="p-3">
+          <CardTitle className="text-xs md:text-sm">Convert Area Units</CardTitle>
+          <CardDescription className="text-[10px] md:text-xs">Enter a value and select units to convert</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="p-3 space-y-4">
           <div className="space-y-2">
             <Label htmlFor="inputValue">From</Label>
             <div className="flex gap-2">

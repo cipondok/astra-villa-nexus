@@ -233,58 +233,56 @@ const HomeLoanCalculator = () => {
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Modern Header with Language Toggle */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-11 md:pt-12">
-        <div className="container mx-auto px-3 md:px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 p-1.5 bg-primary/10 rounded-lg">
-                <Home className="w-5 h-5 text-primary" />
-                <Calculator className="w-4 h-4 text-primary/70" />
-              </div>
-              <div>
-                <h1 className="text-base md:text-xl font-bold">{t.title}</h1>
-                <p className="text-[10px] text-muted-foreground hidden md:block">{t.subtitle}</p>
-              </div>
-            </div>
-            
-            {/* Language Toggle */}
-            <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
-              <TabsList className="grid w-[140px] md:w-[200px] grid-cols-2 h-8">
-                <TabsTrigger value="id" className="gap-1 text-xs h-7">
-                  <Globe className="w-3 h-3" />
-                  <span className="hidden sm:inline">Bahasa</span>
-                  <span className="sm:hidden">ID</span>
-                </TabsTrigger>
-                <TabsTrigger value="en" className="gap-1 text-xs h-7">
-                  <Globe className="w-3 h-3" />
-                  <span className="hidden sm:inline">English</span>
-                  <span className="sm:hidden">EN</span>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background pt-11 md:pt-12">
+      {/* Luxury Background - matches home page */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl" />
+      </div>
 
-      <div className="container mx-auto px-3 md:px-4 py-4 max-w-5xl">
+      <div className="container mx-auto px-2 md:px-4 py-2 md:py-4 max-w-5xl">
         {/* Back Link */}
         <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         
         {/* AI Tools Tab Bar */}
-        <AIToolsTabBar className="mb-4" />
+        <AIToolsTabBar className="mb-3" />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{language === 'id' ? 'Detail Pinjaman' : 'Loan Details'}</CardTitle>
-          <CardDescription>
+        {/* Header - Slim, centered with language toggle */}
+        <div className="flex items-center justify-between mb-3 md:mb-4">
+          <div className="text-center flex-1">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Home className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+              <Calculator className="h-3 w-3 md:h-4 md:w-4 text-primary/70" />
+            </div>
+            <h1 className="text-sm md:text-lg font-bold text-foreground">{t.title}</h1>
+            <p className="text-[10px] md:text-xs text-muted-foreground">{t.subtitle}</p>
+          </div>
+          
+          {/* Language Toggle */}
+          <Tabs value={language} onValueChange={(v: any) => setLanguage(v)} className="w-auto">
+            <TabsList className="grid w-[100px] md:w-[140px] grid-cols-2 h-7">
+              <TabsTrigger value="id" className="gap-0.5 text-[10px] md:text-xs h-6">
+                <Globe className="w-2.5 h-2.5" />
+                <span>ID</span>
+              </TabsTrigger>
+              <TabsTrigger value="en" className="gap-0.5 text-[10px] md:text-xs h-6">
+                <Globe className="w-2.5 h-2.5" />
+                <span>EN</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+      <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+        <CardHeader className="p-3">
+          <CardTitle className="text-xs md:text-sm">{language === 'id' ? 'Detail Pinjaman' : 'Loan Details'}</CardTitle>
+          <CardDescription className="text-[10px] md:text-xs">
             {language === 'id' 
               ? 'Masukkan informasi Anda untuk menghitung cicilan'
-              : 'Enter your information to calculate payments'}
-          </CardDescription>
+              : 'Enter your information to calculate payments'}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="p-3 space-y-4">
           {/* Applicant Type */}
           <div className="space-y-3 pb-4 border-b">
             <Label className="text-base">{t.applicantType}</Label>
