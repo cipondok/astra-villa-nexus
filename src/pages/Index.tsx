@@ -788,19 +788,6 @@ const Index = () => {
               </section>
             ) : (
               <>
-                {/* Featured Ads Carousel - Auto-sliding */}
-                <div className="w-full max-w-full mx-auto">
-                  <Suspense fallback={
-                    <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/40">
-                      <div className="animate-pulse">
-                        <div className="h-8 bg-muted/50 rounded w-48 mb-4" />
-                        <div className="h-32 bg-muted/50 rounded" />
-                      </div>
-                    </div>
-                  }>
-                    <FeaturedAdsCarousel />
-                  </Suspense>
-                </div>
 
                 {/* AI Recommended Properties - Lazy Loaded */}
                 <div className="section-compact mb-3 md:mb-6">
