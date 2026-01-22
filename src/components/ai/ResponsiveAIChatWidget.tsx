@@ -24,7 +24,7 @@ import { useChatbotPreferencesSync } from "@/hooks/useChatbotPreferencesSync";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
 import { useChatbotLogo } from "@/hooks/useChatbotLogo";
 import { ChatbotConflictDialog } from "./ChatbotConflictDialog";
-import { ChatbotWelcomeDialog } from "./ChatbotWelcomeDialog";
+
 import ChatbotTipsPopup from "./ChatbotTipsPopup";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
@@ -107,7 +107,7 @@ const ResponsiveAIChatWidget = ({
   const [unreadCountWhileMinimized, setUnreadCountWhileMinimized] = useState(0);
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   const [conflictData, setConflictData] = useState<any>(null);
-  const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
+  
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [typingStatus, setTypingStatus] = useState("AI is thinking");
   const [showStarredMessages, setShowStarredMessages] = useState(false);
@@ -157,12 +157,6 @@ const ResponsiveAIChatWidget = ({
     if (isSyncLoading) return;
     
     const loadPreferences = async () => {
-      // Check if user has seen welcome dialog
-      const hasSeenWelcome = localStorage.getItem('chatbot-seen-welcome');
-      if (!hasSeenWelcome && !isMobile) {
-        setShowWelcomeDialog(true);
-        localStorage.setItem('chatbot-seen-welcome', 'true');
-      }
 
       if (isAuthenticated) {
         // User is logged in - try to load from cloud first
@@ -2318,24 +2312,6 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                     )}
                   </div>
                   
-                  {/* Welcome Tips */}
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Welcome Tips</label>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => {
-                        setShowWelcomeDialog(true);
-                        setShowSettings(false);
-                      }}
-                    >
-                      Show Welcome Tips Again
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      View chatbot features and tips anytime
-                    </p>
-                  </div>
                   
                   {/* Starred Messages */}
                   <div>
@@ -2618,11 +2594,6 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
         }}
       />
 
-      {/* Welcome Dialog for New Users */}
-      <ChatbotWelcomeDialog
-        open={showWelcomeDialog}
-        onClose={() => setShowWelcomeDialog(false)}
-      />
     </>
   );
 };
