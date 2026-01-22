@@ -171,7 +171,7 @@ const Analytics = () => {
 
       <div className="container mx-auto px-3 md:px-4 py-4 md:py-6">
         {/* Back Link & AI Tools Tab Bar */}
-        <BackToHomeLink sectionId="ai-tools-section" />
+        <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
         <AIToolsTabBar className="mb-4" />
         {/* Time Range Selector */}
         <div className="flex justify-between items-center mb-8">
