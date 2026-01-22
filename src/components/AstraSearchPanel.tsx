@@ -2102,7 +2102,7 @@ const AstraSearchPanel = ({
                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
               }}
               onTouchStart={(e) => e.stopPropagation()}
-              className="pl-10 pr-12 h-12 text-sm bg-white/95 dark:bg-black/40 border-0 focus:ring-2 focus:ring-primary rounded-xl text-foreground placeholder:text-muted-foreground shadow-lg"
+              className="pl-10 pr-12 h-12 text-sm bg-white/20 dark:bg-white/10 backdrop-blur-md border border-white/30 focus:ring-2 focus:ring-primary/50 rounded-xl text-white placeholder:text-white/60 shadow-lg"
             />
             
             {/* Image Search Inside Input */}
@@ -2128,7 +2128,7 @@ const AstraSearchPanel = ({
             size="lg"
             className={cn(
               "h-11 flex-1 rounded-xl flex items-center justify-center gap-2",
-              "bg-white/90 dark:bg-white/10 border-0 text-foreground hover:bg-white shadow-md"
+              "bg-white/20 dark:bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 shadow-md"
             )}
           >
             <SlidersHorizontal className="h-4 w-4" />
