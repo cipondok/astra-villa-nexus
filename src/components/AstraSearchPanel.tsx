@@ -3292,8 +3292,8 @@ const AstraSearchPanel = ({
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in duration-300",
-              "bg-white/10 dark:bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              "w-full mx-auto rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in duration-300",
+              "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 ring-1 ring-white/20",
               isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
             )}
           >
