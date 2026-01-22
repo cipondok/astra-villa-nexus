@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import jakartaSkyline from "@/assets/jakarta-aerial-bundaran.jpg";
+import jakartaSkylineDark from "@/assets/jakarta-skyline-dark.jpg";
 
 interface HomeIntroSliderProps {
   className?: string;
@@ -10,7 +10,6 @@ interface HomeIntroSliderProps {
 
 const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language = 'en', children }) => {
   const [isDesktop, setIsDesktop] = useState<boolean>(() => typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : false);
-  const [fixedHeight, setFixedHeight] = useState<number | null>(null);
 
   // Track desktop breakpoint
   useEffect(() => {
@@ -21,55 +20,32 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className, language =
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  // Lock initial height on mobile to prevent URL bar resize jumping
-  useEffect(() => {
-    const applyHeight = () => {
-      if (!isDesktop) {
-        setFixedHeight(120); // Reduced from 150 to 120
-      } else {
-        setFixedHeight(null);
-      }
-    };
-    applyHeight();
-    const onOrientation = () => applyHeight();
-    const onResize = () => applyHeight();
-    window.addEventListener('orientationchange', onOrientation);
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('orientationchange', onOrientation);
-      window.removeEventListener('resize', onResize);
-    };
-  }, [isDesktop]);
-
   return (
     <section
       className={cn(
         "relative w-full overflow-hidden bg-background",
-        "min-h-[120px] md:min-h-[360px]", // Reduced from 160px to 120px
-        "md:pt-16 lg:pt-20",
+        "h-screen min-h-[600px]", // Full viewport height
         className
       )}
-      style={{ 
-        height: fixedHeight ? `${fixedHeight}px` : undefined
-      }}
       aria-label="Jakarta Property Hero"
     >
-      {/* Static Background Image */}
+      {/* Dark Jakarta Skyline Background */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={jakartaSkyline} 
+          src={jakartaSkylineDark} 
           alt="Jakarta Premium Skyline - Luxury Real Estate" 
           className="w-full h-full object-cover"
         />
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/30 via-transparent to-background/30 pointer-events-none" />
+        {/* Dark gradient overlays for luxury feel */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-background pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20 pointer-events-none" />
       </div>
 
-      {/* Search Panel Overlay - Centered */}
+      {/* Content Overlay - Centered vertically */}
       {children && (
-        <div className="absolute top-1/2 md:top-[55%] left-0 right-0 z-30 px-4 -translate-y-1/2">
-          <div className="w-full mx-auto">
+        <div className="absolute inset-0 z-30 flex items-center justify-center px-4">
+          <div className="w-full max-w-7xl mx-auto">
             {children}
           </div>
         </div>
