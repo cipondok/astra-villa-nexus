@@ -397,11 +397,10 @@ const Navigation = () => {
           {/* Enhanced Mobile Navigation - Slim & Compact with Smooth Open Effect */}
           {isMenuOpen && (
             <>
-              {/* Overlay backdrop - click to close - positioned relative to nav */}
+              {/* Overlay backdrop - click to close - covers full screen */}
               <div 
-                className="lg:hidden fixed inset-0 top-[2.5rem] md:top-[2.75rem] bg-black/30 dark:bg-black/50 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
+                className="lg:hidden fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
                 onClick={toggleMenu}
-                style={{ marginTop: '0' }}
               />
               
               {/* Menu content with smooth slide and scale animation */}
