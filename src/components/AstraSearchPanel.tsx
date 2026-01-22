@@ -2007,12 +2007,7 @@ const AstraSearchPanel = ({
         {/* Compact Tabs for Sale/Rent/All */}
         <div className="flex justify-center">
           <div 
-            className="grid grid-cols-4 gap-1 p-1.5 rounded-xl"
-            style={{ 
-              background: 'rgba(255, 255, 255, 0.15)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)'
-            }}
+            className="grid grid-cols-4 gap-1 p-1"
             role="tablist"
           >
             <button
