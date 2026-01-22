@@ -2591,18 +2591,11 @@ const AstraSearchPanel = ({
                           setIsPropertyTypeOpen(!isPropertyTypeOpen);
                           requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                         }}
-                        className={cn(
-                          "relative inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
-                          "bg-card/10 backdrop-blur-sm hover:bg-card/20",
-                          "border border-white/20 dark:border-white/10 hover:border-primary/40 hover:shadow-md",
-                          "active:scale-95",
-                          isMobile ? "h-8 w-8" : "h-10 w-10",
-                          filters.propertyType && filters.propertyType !== 'all' && "border-primary/50 bg-primary/15 ring-2 ring-primary/40"
-                        )}
+                        className="p-1 flex items-center justify-center transition-colors relative"
                       >
-                        <Building className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "text-blue-600 dark:text-blue-400")} />
+                        <Building className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                         {filters.propertyType && filters.propertyType !== 'all' && (
-                          <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-blue-500 text-white shadow-sm min-w-[18px] text-center">
+                          <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-blue-500 text-white min-w-[14px] text-center">
                             1
                           </span>
                         )}
@@ -2687,18 +2680,11 @@ const AstraSearchPanel = ({
                             requestAnimationFrame(() => window.scrollTo(0, currentScroll));
                           }}
                           onTouchStart={(e) => e.stopPropagation()}
-                          className={cn(
-                            "relative inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
-                            "bg-card/10 backdrop-blur-sm hover:bg-card/20",
-                            "border border-white/20 dark:border-white/10 hover:border-primary/40 hover:shadow-md",
-                            "active:scale-95",
-                            isMobile ? "h-8 w-8" : "h-10 w-10",
-                            (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary/50 bg-primary/15 ring-2 ring-primary/40"
-                          )}
+                          className="p-1 flex items-center justify-center transition-colors relative"
                         >
-                          <MapPin className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "text-purple-600 dark:text-purple-400")} />
+                          <MapPin className="h-5 w-5 text-purple-500 dark:text-purple-400" />
                           {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
-                            <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-purple-500 text-white shadow-sm min-w-[18px] text-center">
+                            <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-purple-500 text-white min-w-[14px] text-center">
                               {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                             </span>
                           )}
@@ -3014,18 +3000,11 @@ const AstraSearchPanel = ({
                     onClick={() => {
                       setShowAdvancedFilters(true);
                     }} 
-                    className={cn(
-                      "relative inline-flex items-center justify-center gap-1 rounded-full font-medium transition-all duration-200",
-                      "bg-card/10 backdrop-blur-sm hover:bg-card/20",
-                      "border border-white/20 dark:border-white/10 hover:border-primary/40 hover:shadow-md",
-                      "active:scale-95",
-                      isMobile ? "h-8 w-8" : "h-10 w-10",
-                      getActiveFiltersCount() > 0 && "border-primary/50 bg-primary/15 ring-2 ring-primary/40"
-                    )}
+                    className="p-1 flex items-center justify-center transition-colors relative"
                   >
-                    <SlidersHorizontal className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "text-emerald-600 dark:text-emerald-400")} />
+                    <SlidersHorizontal className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
                     {getActiveFiltersCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground min-w-[18px] text-center">
+                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-emerald-500 text-white min-w-[14px] text-center">
                         {getActiveFiltersCount()}
                       </span>
                     )}
