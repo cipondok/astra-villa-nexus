@@ -67,7 +67,7 @@ const tools: ToolItem[] = [
     icon: TrendingUp,
     label: 'Property Index',
     shortLabel: 'Index',
-    path: '/analytics',
+    path: '/analytics?tab=overview',
     color: 'text-purple-600 dark:text-purple-400',
     iconBg: 'bg-purple-100 dark:bg-purple-900/50'
   },
@@ -83,7 +83,7 @@ const tools: ToolItem[] = [
     icon: BarChart3,
     label: 'Property Trends',
     shortLabel: 'Trends',
-    path: '/analytics',
+    path: '/analytics?tab=trends',
     color: 'text-violet-600 dark:text-violet-400',
     iconBg: 'bg-violet-100 dark:bg-violet-900/50'
   }
@@ -98,10 +98,24 @@ const AIToolsTabBar: React.FC<AIToolsTabBarProps> = ({ className }) => {
   const location = useLocation();
   
   const isActive = (path: string) => {
-    if (path.includes('?')) {
-      return location.pathname + location.search === path;
+    const [pathBase, pathQuery] = path.split('?');
+    const currentPath = location.pathname;
+    const currentSearch = location.search;
+    
+    // Exact match for paths with query params
+    if (pathQuery) {
+      // Check if base path matches and query contains the param
+      if (currentPath === pathBase) {
+        if (currentSearch.includes(pathQuery.split('=')[0])) {
+          return currentSearch.includes(pathQuery);
+        }
+        // If on analytics page without specific tab, highlight first analytics tab
+        return path === '/analytics?tab=overview' && !currentSearch.includes('tab=');
+      }
+      return false;
     }
-    return location.pathname === path;
+    
+    return currentPath === pathBase;
   };
 
   return (
