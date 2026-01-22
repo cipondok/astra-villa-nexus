@@ -36,14 +36,6 @@ export const tabCategories = [
         badge: "NEW"
       },
       { 
-        id: "seo-settings", 
-        label: "SEO Settings", 
-        icon: Search,
-        description: "Search engine optimization",
-        isImplemented: true,
-        badge: "NEW"
-      },
-      { 
         id: "user-management", 
         label: "User Management", 
         icon: Users,

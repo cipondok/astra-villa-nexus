@@ -148,12 +148,6 @@ export const navigationSections = {
       label: "Tools Management",
       icon: Wrench,
       description: "Manage various tools and utilities"
-    },
-    {
-      key: "seo-settings",
-      label: "SEO Settings",
-      icon: Globe,
-      description: "Configure SEO settings for the website"
     }
   ],
 
@@ -372,6 +366,12 @@ export const navigationSections = {
       label: "System Settings",
       icon: Settings,
       description: "Configure global system settings"
+    },
+    {
+      key: "seo-settings",
+      label: "SEO Settings",
+      icon: Globe,
+      description: "Configure SEO settings for the website"
     },
     {
       key: "design-system",

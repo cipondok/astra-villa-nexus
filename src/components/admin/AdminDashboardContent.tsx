@@ -122,7 +122,7 @@ const sectionLabels: Record<string, { label: string; category: string }> = {
   "astra-token-hub": { label: "ASTRA Token Hub", category: "Tokens" },
   "tools-management": { label: "Tools Management", category: "System & Tools" },
   "customer-service-control": { label: "CS Control Panel", category: "Support" },
-  "seo-settings": { label: "SEO Settings", category: "System" },
+  "seo-settings": { label: "SEO Settings", category: "Settings" },
   "vendor-agent-control": { label: "Vendor/Agent Control", category: "Vendors & Services" },
   "authorization-monitoring": { label: "Authorization", category: "Security" },
   "admin-alerts": { label: "Admin Alerts", category: "System" },
