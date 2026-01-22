@@ -1,42 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Globe, Home, Shield, Star, CheckCircle } from 'lucide-react';
+import { ArrowRight, Globe, Home, Sparkles, Bot, Shield, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const InvestorPathSelector = () => {
+interface InvestorPathSelectorProps {
+  variant?: 'default' | 'hero';
+}
+
+const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { isMobile, isTablet } = useIsMobile();
+
+  const isHero = variant === 'hero';
 
   const copy = {
     en: {
-      headline: "Secure Property. Smart Investment. Seamless Living in Indonesia.",
-      subheadline: "ASTRA Villa opens exclusive property opportunities for Indonesian citizens (WNI) overseas and foreign investors (WNA)",
-      wniTitle: "I am WNI Overseas",
-      wniSubtitle: "Indonesian Citizen Working Abroad",
-      wniDescription: "Smart Homecoming Investment Plan designed for Indonesians working overseas",
-      wniFeatures: ["Buy property while working abroad", "Exclusive WNI overseas discounts", "100% legal ownership guarantee"],
-      wnaTitle: "I am Foreign Investor (WNA)",
-      wnaSubtitle: "International Property Investor",
-      wnaDescription: "Invest legally in premium Indonesian property with full expert guidance",
-      wnaFeatures: ["Legal investment structures", "Smart-city developments", "Residency pathway support"],
-      learnMore: "Explore Options"
+      headline: "Global Investment Platform",
+      wniTitle: "WNI Overseas",
+      wniDesc: "Indonesian citizens abroad",
+      wnaTitle: "Foreign Investor",
+      wnaDesc: "International investors",
+      explore: "Explore"
     },
     id: {
-      headline: "Properti Aman. Investasi Cerdas. Hidup Lancar di Indonesia.",
-      subheadline: "ASTRA Villa membuka peluang properti eksklusif untuk WNI di luar negeri dan investor asing (WNA)",
-      wniTitle: "Saya WNI di Luar Negeri",
-      wniSubtitle: "Warga Negara Indonesia Bekerja di Luar Negeri",
-      wniDescription: "Rencana Investasi Pulang Kampung Cerdas untuk WNI yang bekerja di luar negeri",
-      wniFeatures: ["Beli properti sambil kerja di luar negeri", "Diskon eksklusif WNI luar negeri", "Jaminan kepemilikan legal 100%"],
-      wnaTitle: "Saya Investor Asing (WNA)",
-      wnaSubtitle: "Investor Properti Internasional",
-      wnaDescription: "Investasi legal di properti premium Indonesia dengan bimbingan ahli penuh",
-      wnaFeatures: ["Struktur investasi legal", "Pengembangan kota pintar", "Dukungan jalur residensi"],
-      learnMore: "Jelajahi Opsi"
+      headline: "Platform Investasi Global",
+      wniTitle: "WNI Luar Negeri",
+      wniDesc: "Warga Indonesia di luar negeri",
+      wnaTitle: "Investor Asing",
+      wnaDesc: "Investor internasional",
+      explore: "Jelajahi"
     }
   };
 
@@ -46,155 +40,176 @@ const InvestorPathSelector = () => {
     navigate(path);
   };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.15, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }
-    })
-  };
+  const paths = [
+    {
+      id: 'wni',
+      path: '/investor/wni',
+      icon: Home,
+      title: t.wniTitle,
+      description: t.wniDesc,
+      flag: '🇮🇩',
+      gradient: 'from-red-500 to-red-600',
+      accentColor: 'text-red-500 dark:text-red-400',
+      bgColor: 'bg-red-100/80 dark:bg-red-900/30'
+    },
+    {
+      id: 'wna',
+      path: '/investor/wna',
+      icon: Globe,
+      title: t.wnaTitle,
+      description: t.wnaDesc,
+      flag: '🌍',
+      gradient: 'from-blue-500 to-blue-600',
+      accentColor: 'text-blue-500 dark:text-blue-400',
+      bgColor: 'bg-blue-100/80 dark:bg-blue-900/30'
+    }
+  ];
 
-  return (
-    <section className="py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Headline */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-6 sm:mb-8 md:mb-10"
-        >
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 mb-3 bg-primary/10 border border-primary/20 rounded-full">
-            <Globe className="h-3.5 w-3.5 text-primary" />
-            <span className="text-[10px] sm:text-xs font-medium text-primary">Global Investment Platform</span>
-          </div>
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3 leading-tight">
+  // Hero variant - ultra compact inline style
+  if (isHero) {
+    return (
+      <div className="rounded-xl">
+        {/* Section Header - Matches AI Tools & Features style */}
+        <div className="flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 mb-2">
+          <Bot className="h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400" />
+          <h2 className="text-[10px] md:text-xs font-bold text-foreground drop-shadow-sm dark:text-white/90 dark:drop-shadow-md">
             {t.headline}
           </h2>
-          <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-            {t.subheadline}
-          </p>
-        </motion.div>
+          <TrendingUp className="h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400" />
+        </div>
 
-        {/* Investor Path Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-          {/* WNI Card */}
-          <motion.div
-            custom={0}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={cardVariants}
-            onClick={() => handleCardClick('/investor/wni')}
-            className={cn(
-              "group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer",
-              "bg-gradient-to-br from-background/90 via-background/80 to-primary/10",
-              "border border-primary/30 hover:border-primary/50",
-              "backdrop-blur-xl shadow-lg hover:shadow-xl hover:shadow-primary/20",
-              "transition-all duration-500 ease-out",
-              "p-4 sm:p-5 md:p-6"
-            )}
-          >
-            {/* Decorative background */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity" />
-            
-            {/* Flag indicator */}
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md">
-                <Home className="h-4 w-4 sm:h-5 sm:w-5" />
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-lg">🇮🇩</span>
-                <Shield className="h-3.5 w-3.5 text-green-500" />
-              </div>
-            </div>
+        {/* Two Cards Side by Side */}
+        <div className="flex items-center justify-center gap-2 md:gap-3">
+          {paths.map((item, index) => {
+            const IconComponent = item.icon;
+            return (
+              <motion.button
+                key={item.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.3 }}
+                onClick={() => handleCardClick(item.path)}
+                className={cn(
+                  "group relative flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5",
+                  "rounded-lg cursor-pointer transition-all duration-300",
+                  "bg-background/40 dark:bg-white/10 backdrop-blur-sm",
+                  "border border-border/30 dark:border-white/20",
+                  "hover:bg-background/60 dark:hover:bg-white/20",
+                  "hover:border-primary/40 dark:hover:border-white/40",
+                  "hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+                )}
+              >
+                {/* Icon with Flag */}
+                <div className="relative flex-shrink-0">
+                  <div className={cn(
+                    "flex items-center justify-center",
+                    "w-8 h-8 md:w-10 md:h-10 rounded-lg",
+                    item.bgColor
+                  )}>
+                    <IconComponent className={cn("w-4 h-4 md:w-5 md:h-5", item.accentColor)} strokeWidth={1.5} />
+                  </div>
+                  <span className="absolute -bottom-1 -right-1 text-[10px] md:text-xs">{item.flag}</span>
+                </div>
 
-            <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-              {t.wniTitle}
-            </h3>
-            <p className="text-[10px] sm:text-xs text-primary font-medium mb-2">
-              {t.wniSubtitle}
-            </p>
-            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-              {t.wniDescription}
-            </p>
+                {/* Text Content */}
+                <div className="text-left min-w-0">
+                  <h3 className="text-[9px] md:text-[11px] font-semibold text-foreground/90 dark:text-white/90 truncate">
+                    {item.title}
+                  </h3>
+                  <p className="text-[7px] md:text-[9px] text-foreground/60 dark:text-white/60 truncate hidden sm:block">
+                    {item.description}
+                  </p>
+                </div>
 
-            {/* Features */}
-            <ul className="space-y-1.5 sm:space-y-2 mb-4">
-              {t.wniFeatures.map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-2 text-[10px] sm:text-xs text-foreground/80">
-                  <CheckCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-green-500 flex-shrink-0" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
+                {/* Arrow */}
+                <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 text-foreground/40 dark:text-white/40 group-hover:text-primary dark:group-hover:text-white group-hover:translate-x-0.5 transition-all flex-shrink-0" />
 
-            {/* CTA */}
-            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary group-hover:translate-x-1 transition-transform">
-              {t.learnMore}
-              <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </div>
-          </motion.div>
+                {/* AI Badge */}
+                <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary/90 to-accent/90 rounded text-[6px] text-white font-medium shadow-sm">
+                  <Sparkles className="w-2 h-2" />
+                  AI
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
-          {/* WNA Card */}
-          <motion.div
-            custom={1}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={cardVariants}
-            onClick={() => handleCardClick('/investor/wna')}
-            className={cn(
-              "group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer",
-              "bg-gradient-to-br from-background/90 via-background/80 to-accent/10",
-              "border border-accent/30 hover:border-accent/50",
-              "backdrop-blur-xl shadow-lg hover:shadow-xl hover:shadow-accent/20",
-              "transition-all duration-500 ease-out",
-              "p-4 sm:p-5 md:p-6"
-            )}
-          >
-            {/* Decorative background */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity" />
-            
-            {/* Icon indicator */}
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-accent to-accent/80 text-white shadow-md">
-                <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-lg">🌍</span>
-                <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
-              </div>
-            </div>
+  // Default variant - compact card style
+  return (
+    <section className="py-3 sm:py-4 px-2 sm:px-3">
+      <div className="max-w-5xl mx-auto">
+        {/* Section Header */}
+        <div className="flex items-center justify-center gap-1.5 mb-3">
+          <Bot className="h-3.5 w-3.5 text-primary" />
+          <h2 className="text-xs sm:text-sm font-bold text-foreground">
+            {t.headline}
+          </h2>
+          <TrendingUp className="h-3.5 w-3.5 text-primary" />
+        </div>
 
-            <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-1 group-hover:text-accent transition-colors">
-              {t.wnaTitle}
-            </h3>
-            <p className="text-[10px] sm:text-xs text-accent font-medium mb-2">
-              {t.wnaSubtitle}
-            </p>
-            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-              {t.wnaDescription}
-            </p>
+        {/* Cards Grid */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          {paths.map((item, index) => {
+            const IconComponent = item.icon;
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.4 }}
+                onClick={() => handleCardClick(item.path)}
+                className={cn(
+                  "group relative overflow-hidden rounded-lg cursor-pointer",
+                  "bg-card/50 dark:bg-white/5 backdrop-blur-sm",
+                  "border-2 border-border/50 hover:border-primary/40",
+                  "shadow-sm hover:shadow-md transition-all duration-300",
+                  "p-2.5 sm:p-3 active:scale-[0.98]"
+                )}
+              >
+                {/* AI Glow Effect */}
+                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                {/* Header Row */}
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className={cn(
+                    "flex items-center justify-center",
+                    "w-8 h-8 sm:w-9 sm:h-9 rounded-lg",
+                    item.bgColor
+                  )}>
+                    <IconComponent className={cn("w-4 h-4 sm:w-4.5 sm:h-4.5", item.accentColor)} strokeWidth={1.5} />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm">{item.flag}</span>
+                    <Shield className="h-3 w-3 text-green-500" />
+                  </div>
+                  
+                  {/* AI Badge */}
+                  <div className="ml-auto flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary/80 to-accent/80 rounded text-[7px] text-white font-medium">
+                    <Sparkles className="w-2.5 h-2.5" />
+                    AI Powered
+                  </div>
+                </div>
 
-            {/* Features */}
-            <ul className="space-y-1.5 sm:space-y-2 mb-4">
-              {t.wnaFeatures.map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-2 text-[10px] sm:text-xs text-foreground/80">
-                  <CheckCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent flex-shrink-0" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
+                {/* Content */}
+                <h3 className="text-[11px] sm:text-xs font-semibold text-foreground mb-0.5 group-hover:text-primary transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-[9px] sm:text-[10px] text-muted-foreground line-clamp-1 mb-2">
+                  {item.description}
+                </p>
 
-            {/* CTA */}
-            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-accent group-hover:translate-x-1 transition-transform">
-              {t.learnMore}
-              <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </div>
-          </motion.div>
+                {/* CTA */}
+                <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-medium text-primary group-hover:translate-x-0.5 transition-transform">
+                  {t.explore}
+                  <ArrowRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
