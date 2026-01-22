@@ -2445,7 +2445,7 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-transparent border border-border/30 rounded-xl shadow-2xl shadow-primary/30 z-[100] max-h-80 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl shadow-primary/30 z-[99999] max-h-80 overflow-y-auto">
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
@@ -2562,7 +2562,7 @@ const AstraSearchPanel = ({
                   }
                 }
               }}>
-                <TooltipProvider>
+                <TooltipProvider delayDuration={100}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
@@ -2592,8 +2592,8 @@ const AstraSearchPanel = ({
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="bg-popover text-popover-foreground border border-border shadow-lg">
-                      <p className="text-xs font-medium">{currentText.location}</p>
+                    <TooltipContent side="bottom" className="z-[100000] bg-popover text-popover-foreground border border-border shadow-lg">
+                      <p className="text-xs font-medium">Manual Location Selection</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -2894,7 +2894,7 @@ const AstraSearchPanel = ({
               </Popover>}
 
             {/* All Filters Button - Icon only with tooltip */}
-            <TooltipProvider>
+            <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
@@ -2918,7 +2918,7 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-popover text-popover-foreground border border-border shadow-lg">
+                <TooltipContent side="bottom" className="z-[100000] bg-popover text-popover-foreground border border-border shadow-lg">
                   <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()} active)`}</p>
                 </TooltipContent>
               </Tooltip>
@@ -2933,12 +2933,16 @@ const AstraSearchPanel = ({
                 "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600",
                 "hover:from-amber-600 hover:via-yellow-600 hover:to-amber-700",
                 "text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40",
-                "active:scale-95 border border-amber-400/50",
+                "active:scale-95",
+                // Silver glossy royal border
+                "border-2 border-gray-300/80 ring-1 ring-white/50 ring-offset-1 ring-offset-gray-400/30",
+                "before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none",
+                "relative overflow-hidden",
                 isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
               )}
             >
-              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
-              <span className="font-medium">{currentText.search}</span>
+              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10")} />
+              <span className="font-medium relative z-10">{currentText.search}</span>
             </button>
           </div>
           
