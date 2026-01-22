@@ -153,33 +153,6 @@ export const navigationSections = {
 
   "core-management": [
     {
-      key: "user-management",
-      label: "User Management",
-      icon: Users,
-      description: "Manage user accounts, roles, and authentication"
-    },
-    {
-      key: "user-levels",
-      label: "User Levels & Membership",
-      icon: Crown,
-      description: "Manage user membership levels (Basic, Verified, VIP, Gold, Platinum, Diamond)",
-      badge: "New"
-    },
-    {
-      key: "upgrade-applications",
-      label: "Upgrade Applications",
-      icon: UserCheck,
-      description: "Review and approve user role upgrade requests (Property Owner, Vendor, Agent)",
-      badge: "New"
-    },
-    {
-      key: "verification-management",
-      label: "Verification Management",
-      icon: ShieldCheck,
-      description: "Approve and manage owner, agent, and agency verifications",
-      badge: "New"
-    },
-    {
       key: "property-management-hub",
       label: "Property Management Hub",
       icon: LayoutDashboard,
@@ -234,6 +207,33 @@ export const navigationSections = {
       label: "Vendors Hub",
       icon: ShoppingBag,
       description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
+    },
+    {
+      key: "user-management",
+      label: "User Management",
+      icon: Users,
+      description: "Manage user accounts, roles, and authentication"
+    },
+    {
+      key: "user-levels",
+      label: "User Levels & Membership",
+      icon: Crown,
+      description: "Manage user membership levels (Basic, Verified, VIP, Gold, Platinum, Diamond)",
+      badge: "New"
+    },
+    {
+      key: "upgrade-applications",
+      label: "Upgrade Applications",
+      icon: UserCheck,
+      description: "Review and approve user role upgrade requests (Property Owner, Vendor, Agent)",
+      badge: "New"
+    },
+    {
+      key: "verification-management",
+      label: "Verification Management",
+      icon: ShieldCheck,
+      description: "Approve and manage owner, agent, and agency verifications",
+      badge: "New"
     },
     {
       key: "kyc-analytics",
@@ -522,7 +522,7 @@ export const sectionTitles = {
   tools: "Tools & Management",
   "core-management": "Core Management",
   "customer-service": "Customer Service",
-  "vendor-management": "Vendor Management", 
+  "vendor-management": "Vendor & Users Management", 
   "analytics-monitoring": "Analytics & Monitoring",
   "content-settings": "Content & Settings",
   "system-settings": "System Settings",
