@@ -154,65 +154,69 @@ const PropertySlideshow = () => {
         {displayProperties.map((property, idx) => (
           <div 
             key={`${property.id}-${idx}`}
-            className="flex-shrink-0 w-[160px] md:w-[180px] lg:w-[200px] xl:w-[220px] group/card cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
+            className="flex-shrink-0 w-[140px] md:w-[160px] lg:w-[180px] xl:w-[200px] group/card cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
           >
-            {/* Compact Card */}
-            <div className="relative overflow-hidden rounded-xl mb-1.5 shadow-md">
+            {/* Slim Card - All info on image */}
+            <div className="relative overflow-hidden rounded-lg shadow-md">
               <img
                 src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                 alt={property.title}
-                className="w-full h-24 md:h-28 lg:h-32 object-cover transition-transform duration-500 group-hover/card:scale-110"
+                className="w-full h-28 md:h-32 lg:h-36 object-cover transition-transform duration-500 group-hover/card:scale-110"
                 loading="lazy"
               />
-              {/* Badges */}
-              <div className="absolute top-1.5 left-1.5">
-                <span className={`flex items-center gap-0.5 px-1.5 py-0.5 text-white text-[8px] font-semibold rounded-full backdrop-blur-sm shadow ${
+              
+              {/* Top Row - Listing Type & Property Type */}
+              <div className="absolute top-1 left-1 right-1 flex items-center justify-between">
+                <span className={`flex items-center gap-0.5 px-1.5 py-0.5 text-white text-[7px] font-semibold rounded backdrop-blur-sm shadow ${
                   property.listing_type === 'rent' ? 'bg-blue-500/90' : 'bg-emerald-500/90'
                 }`}>
-                  {property.listing_type === 'rent' ? <Key className="h-2.5 w-2.5" /> : <Tag className="h-2.5 w-2.5" />}
+                  {property.listing_type === 'rent' ? <Key className="h-2 w-2" /> : <Tag className="h-2 w-2" />}
                   {getListingLabel(property.listing_type)}
                 </span>
-              </div>
-              <div className="absolute top-1.5 right-1.5">
-                <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-white/70 dark:bg-black/70 backdrop-blur-sm text-foreground text-[8px] font-medium rounded-full shadow">
-                  <Building className="h-2.5 w-2.5" />
+                <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm text-white text-[7px] font-medium rounded shadow">
+                  <Building className="h-2 w-2" />
                   {capitalizeFirst(property.property_type)}
                 </span>
               </div>
+
+              {/* Bottom Gradient Overlay with all info */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-6 pb-1.5 px-1.5">
+                {/* Price */}
+                <div className="text-[10px] md:text-[11px] font-bold text-white mb-0.5">
+                  {formatPrice(property.price)}
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-[9px] md:text-[10px] font-medium text-white/95 line-clamp-1 mb-0.5">
+                  {property.title}
+                </h3>
+                
+                {/* Location */}
+                <div className="text-[8px] text-white/70 line-clamp-1 mb-1">
+                  {property.city}, {property.state}
+                </div>
+                
+                {/* Stats Row */}
+                <div className="flex items-center gap-1.5 text-[8px] text-white/80">
+                  <div className="flex items-center gap-0.5">
+                    <Bed className="h-2 w-2" />
+                    <span>{property.bedrooms}</span>
+                  </div>
+                  <div className="flex items-center gap-0.5">
+                    <Bath className="h-2 w-2" />
+                    <span>{property.bathrooms}</span>
+                  </div>
+                  <div className="flex items-center gap-0.5">
+                    <Maximize className="h-2 w-2" />
+                    <span>{property.area_sqm}m²</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Hover View Icon */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-7 w-7 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                  <Eye className="h-3.5 w-3.5 text-primary" />
-                </div>
-              </div>
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            
-            {/* Compact Info */}
-            <div className="px-0.5">
-              <div className="text-xs font-bold text-primary mb-0.5">
-                {formatPrice(property.price)}
-              </div>
-              <h3 className="text-[11px] font-medium text-foreground line-clamp-1 mb-0.5">
-                {property.title}
-              </h3>
-              <div className="text-[9px] text-muted-foreground mb-1.5 line-clamp-1">
-                {property.city}, {property.state}
-              </div>
-              {/* Compact Stats */}
-              <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
-                <div className="flex items-center gap-0.5">
-                  <Bed className="h-2.5 w-2.5" />
-                  <span>{property.bedrooms}</span>
-                </div>
-                <div className="flex items-center gap-0.5">
-                  <Bath className="h-2.5 w-2.5" />
-                  <span>{property.bathrooms}</span>
-                </div>
-                <div className="flex items-center gap-0.5">
-                  <Maximize className="h-2.5 w-2.5" />
-                  <span>{property.area_sqm}m²</span>
+                <div className="h-6 w-6 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                  <Eye className="h-3 w-3 text-primary" />
                 </div>
               </div>
             </div>
