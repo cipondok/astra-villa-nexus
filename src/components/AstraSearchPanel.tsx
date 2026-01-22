@@ -2635,7 +2635,7 @@ const AstraSearchPanel = ({
               </TooltipProvider>
               
               <PopoverContent 
-                className="w-56 bg-card/95 backdrop-blur-xl border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] p-3" 
+                className="w-56 bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 rounded-2xl shadow-2xl z-[99999] p-3 ring-1 ring-white/20" 
                 align="start"
                 sideOffset={8}
               >
