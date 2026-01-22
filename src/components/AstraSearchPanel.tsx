@@ -2562,31 +2562,37 @@ const AstraSearchPanel = ({
                   }
                 }
               }}>
-                <PopoverTrigger asChild>
-                  <button 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const currentScroll = window.scrollY;
-                      setIsLocationOpen(!isLocationOpen);
-                      requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                    }}
-                    onTouchStart={(e) => e.stopPropagation()}
-                    className={cn(
-                      "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200",
-                      "bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border/50",
-                      isMobile ? "h-8 px-3 text-xs" : "h-9 px-4 text-sm",
-                      (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "ring-2 ring-primary/50"
-                    )}
-                  >
-                    <MapPin className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
-                    <span className="font-semibold hidden sm:inline">{currentText.location}</span>
-                    {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
-                      <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-purple-500 text-white shadow-sm">
-                        {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
-                      </span>
-                    )}
-                  </button>
-                </PopoverTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const currentScroll = window.scrollY;
+                          setIsLocationOpen(!isLocationOpen);
+                          requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+                        }}
+                        onTouchStart={(e) => e.stopPropagation()}
+                        className={cn(
+                          "relative inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
+                          "bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border/50",
+                          isMobile ? "h-8 w-8" : "h-9 w-9",
+                          (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "ring-2 ring-primary/50"
+                        )}
+                      >
+                        <MapPin className={cn(isMobile ? "h-4 w-4" : "h-5 w-5")} />
+                        {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
+                          <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-purple-500 text-white shadow-sm min-w-[18px] text-center">
+                            {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
+                          </span>
+                        )}
+                      </button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="bg-popover text-popover-foreground border border-border shadow-lg">
+                    <p className="text-xs font-medium">{currentText.location}</p>
+                  </TooltipContent>
+                </Tooltip>
                 
                 <PopoverContent 
                   className="w-64 bg-transparent border-2 border-border/50 rounded-2xl shadow-2xl z-[99999] animate-in fade-in zoom-in duration-200 overflow-hidden overscroll-contain" 
@@ -2883,29 +2889,34 @@ const AstraSearchPanel = ({
                 </PopoverContent>
               </Popover>}
 
-            {/* All Filters Button - Google-style modern */}
-            <button
-              onClick={() => {
-                setShowAdvancedFilters(true);
-              }} 
-              className={cn(
-                "inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-all duration-200",
-                "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200",
-                "border border-gray-200 dark:border-gray-600 hover:border-primary/50 hover:shadow-md",
-                "active:scale-95",
-                isMobile ? "h-8 px-3 text-xs" : "h-10 px-4 text-sm",
-                getActiveFiltersCount() > 0 && "border-primary bg-primary/5 dark:bg-primary/10"
-              )}
-            >
-              <SlidersHorizontal className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "text-gray-500 dark:text-gray-400")} />
-              <span className="font-medium">Filters</span>
-              {getActiveFiltersCount() > 0 && (
-                <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
-                  {getActiveFiltersCount()}
-                </span>
-              )}
-              <ChevronDown className={cn(isMobile ? "h-3 w-3" : "h-3.5 w-3.5", "text-gray-400 ml-0.5")} />
-            </button>
+            {/* All Filters Button - Icon only with tooltip */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setShowAdvancedFilters(true);
+                  }} 
+                  className={cn(
+                    "inline-flex items-center justify-center gap-1 rounded-full font-medium transition-all duration-200",
+                    "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200",
+                    "border border-gray-200 dark:border-gray-600 hover:border-primary/50 hover:shadow-md",
+                    "active:scale-95",
+                    isMobile ? "h-8 w-8" : "h-10 w-10",
+                    getActiveFiltersCount() > 0 && "border-primary bg-primary/5 dark:bg-primary/10"
+                  )}
+                >
+                  <SlidersHorizontal className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "text-gray-500 dark:text-gray-400")} />
+                  {getActiveFiltersCount() > 0 && (
+                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground min-w-[18px] text-center">
+                      {getActiveFiltersCount()}
+                    </span>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-popover text-popover-foreground border border-border shadow-lg">
+                <p className="text-xs font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()} active)`}</p>
+              </TooltipContent>
+            </Tooltip>
             
             {/* Search Button - Google-style */}
             <button
