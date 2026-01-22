@@ -3285,7 +3285,7 @@ const AstraSearchPanel = ({
       {/* Advanced Filters Modal (mobile, tablet and desktop) */}
       {showAdvancedFilters && createPortal(
         <div 
-          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] modal-overlay flex items-center justify-center p-2 md:p-4 bg-black/20 backdrop-blur-sm transition-all duration-200" 
+          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] modal-overlay flex items-start justify-end p-2 pt-20 md:p-4 md:pt-24 transition-all duration-200" 
           onClick={() => setShowAdvancedFilters(false)}
           style={{ animation: 'fadeIn 0.15s ease-out' }}
         >
@@ -3300,7 +3300,7 @@ const AstraSearchPanel = ({
             )}
             style={{ 
               animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-              transformOrigin: 'center center'
+              transformOrigin: 'top right'
             }}
           >
             {/* Slim Header */}
