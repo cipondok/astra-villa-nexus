@@ -555,11 +555,7 @@ const Index = () => {
             <div className="mt-4 md:mt-8 lg:mt-12" />
             <div
               className={cn(
-                "relative mx-auto w-full max-w-5xl xl:max-w-6xl",
-                "bg-white/10 dark:bg-black/30 backdrop-blur-2xl",
-                "rounded-xl sm:rounded-2xl md:rounded-3xl",
-                "shadow-xl sm:shadow-2xl shadow-black/20 sm:shadow-black/30",
-                "overflow-hidden"
+                "relative mx-auto w-full max-w-5xl xl:max-w-6xl"
               )}
             >
               <Suspense fallback={<SearchPanelSkeleton />}>
