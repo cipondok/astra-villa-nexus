@@ -106,9 +106,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
       'Home Loan Calculator': '/calculators/loan',
       'Area Guides': '/areas',
       'Plot Finder': '/search?property_type=land',
-      'Property Index': '/analytics',
+      'Property Index': '/analytics?tab=overview',
       'Area Unit Converter': '/calculators/area',
-      'Property Trends': '/analytics'
+      'Property Trends': '/analytics?tab=trends'
     };
     const route = routes[feature.title];
     if (route) {
