@@ -2003,71 +2003,87 @@ const AstraSearchPanel = ({
   // Mobile view - inline search panel (not fixed)
   if (isMobile) {
     return (
-      <div className="w-full p-2 space-y-2">
+      <div className="w-full p-3 sm:p-4 space-y-3">
         {/* Compact Tabs for Sale/Rent/All */}
         <div className="flex justify-center">
-          <div className="search-tab-container grid grid-cols-4 bg-white/10 dark:bg-black/20 backdrop-blur-md rounded-xl p-1">
+          <div 
+            className="grid grid-cols-4 gap-1 p-1.5 rounded-xl"
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)'
+            }}
+            role="tablist"
+          >
             <button
               onClick={() => setActiveTab("all")}
+              role="tab"
+              aria-selected={activeTab === "all"}
               className={cn(
-                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "all" 
-                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
-                  : "text-white/80 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <Layers className="h-3 w-3" />
-              <span className="hidden xs:inline">All</span>
+              <Layers className="h-3.5 w-3.5" />
+              <span>All</span>
             </button>
             
             <button
               onClick={() => setActiveTab("sale")}
+              role="tab"
+              aria-selected={activeTab === "sale"}
               className={cn(
-                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "sale" 
-                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
-                  : "text-white/80 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <ShoppingBag className="h-3 w-3" />
-              <span className="hidden xs:inline">Buy</span>
+              <ShoppingBag className="h-3.5 w-3.5" />
+              <span>Buy</span>
             </button>
             
             <button
               onClick={() => setActiveTab("rent")}
+              role="tab"
+              aria-selected={activeTab === "rent"}
               className={cn(
-                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "rent" 
-                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
-                  : "text-white/80 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <Key className="h-3 w-3" />
-              <span className="hidden xs:inline">Rent</span>
+              <Key className="h-3.5 w-3.5" />
+              <span>Rent</span>
             </button>
             
             <button
               onClick={() => setActiveTab("new_project")}
+              role="tab"
+              aria-selected={activeTab === "new_project"}
               className={cn(
-                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                "px-3 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5",
                 activeTab === "new_project" 
-                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
-                  : "text-white/80 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-primary shadow-md" 
+                  : "text-white/90 hover:text-white hover:bg-white/20"
               )}
             >
-              <Rocket className="h-3 w-3" />
-              <span className="hidden xs:inline">New</span>
+              <Rocket className="h-3.5 w-3.5" />
+              <span>New</span>
             </button>
           </div>
         </div>
 
         {/* Search Input Row */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <div ref={anchorRef} className="flex-1 relative">
             <Search
               className={cn(
-                "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-primary pointer-events-none",
-                searchQuery && "animate-pulse"
+                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/70 pointer-events-none",
+                searchQuery && "text-primary animate-pulse"
               )}
             />
             <Input
@@ -2086,18 +2102,18 @@ const AstraSearchPanel = ({
                 requestAnimationFrame(() => window.scrollTo(0, currentScroll));
               }}
               onTouchStart={(e) => e.stopPropagation()}
-              className="pl-8 pr-12 h-10 text-sm bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/20 focus:border-primary focus:bg-white/20 rounded-xl text-white placeholder:text-white/60"
+              className="pl-10 pr-12 h-12 text-sm bg-white/95 dark:bg-black/40 border-0 focus:ring-2 focus:ring-primary rounded-xl text-foreground placeholder:text-muted-foreground shadow-lg"
             />
             
             {/* Image Search Inside Input */}
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
               <ImageSearchButton
                 onImageSelected={handleImageSearch}
                 onClear={handleClearImageSearch}
                 isSearching={isImageSearching}
                 enableDragDrop={true}
                 enablePaste={true}
-                className="h-6 w-6"
+                className="h-7 w-7"
               />
             </div>
           </div>
@@ -2109,15 +2125,18 @@ const AstraSearchPanel = ({
           <Button
             onClick={() => setShowAdvancedFilters(true)}
             variant="outline"
-            size="sm"
-            className="h-9 flex-1 rounded-xl flex items-center justify-center gap-1.5 bg-white/10 dark:bg-black/20 backdrop-blur-md border-white/30 dark:border-white/20 text-white hover:bg-white/20"
+            size="lg"
+            className={cn(
+              "h-11 flex-1 rounded-xl flex items-center justify-center gap-2",
+              "bg-white/90 dark:bg-white/10 border-0 text-foreground hover:bg-white shadow-md"
+            )}
           >
             <SlidersHorizontal className="h-4 w-4" />
-            <span className="text-xs font-medium">{currentText.filters}</span>
+            <span className="text-sm font-medium">{currentText.filters}</span>
             {getActiveFiltersCount() > 0 && (
               <Badge
                 variant="default"
-                className="ml-0.5 h-5 min-w-[20px] px-1.5 flex items-center justify-center text-[10px] rounded-full"
+                className="ml-1 h-5 min-w-[22px] px-1.5 flex items-center justify-center text-[10px] rounded-full bg-primary text-primary-foreground"
               >
                 {getActiveFiltersCount()}
               </Badge>
@@ -2127,12 +2146,11 @@ const AstraSearchPanel = ({
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            variant="gold-orange"
-            size="sm"
-            className="h-9 flex-1 rounded-xl flex items-center justify-center gap-1.5"
+            size="lg"
+            className="h-11 flex-1 rounded-xl flex items-center justify-center gap-2 bg-gradient-to-r from-primary via-primary to-orange-500 hover:opacity-90 text-white shadow-lg"
           >
             <Search className="h-4 w-4" />
-            <span className="text-xs font-medium">{currentText.search}</span>
+            <span className="text-sm font-semibold">{currentText.search}</span>
           </Button>
         </div>
 
