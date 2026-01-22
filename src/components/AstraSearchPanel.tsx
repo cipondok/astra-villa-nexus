@@ -2576,12 +2576,14 @@ const AstraSearchPanel = ({
                           onTouchStart={(e) => e.stopPropagation()}
                           className={cn(
                             "relative inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
-                            "bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border/50",
-                            isMobile ? "h-8 w-8" : "h-9 w-9",
-                            (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "ring-2 ring-primary/50"
+                            "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700",
+                            "border border-gray-200 dark:border-gray-600 hover:border-primary/50 hover:shadow-md",
+                            "active:scale-95",
+                            isMobile ? "h-8 w-8" : "h-10 w-10",
+                            (filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && "border-primary bg-primary/5 dark:bg-primary/10 ring-2 ring-primary/50"
                           )}
                         >
-                          <MapPin className={cn(isMobile ? "h-4 w-4" : "h-5 w-5")} />
+                          <MapPin className={cn(isMobile ? "h-4 w-4" : "h-5 w-5", "text-gray-500 dark:text-gray-400")} />
                           {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
                             <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-purple-500 text-white shadow-sm min-w-[18px] text-center">
                               {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
@@ -2922,19 +2924,20 @@ const AstraSearchPanel = ({
               </Tooltip>
             </TooltipProvider>
             
-            {/* Search Button - Google-style */}
+            {/* Search Button - Premium Gold Style */}
             <button
               onClick={handleSearch}
               aria-label={currentText.search}
               className={cn(
-                "inline-flex items-center justify-center rounded-full font-medium transition-all duration-200",
-                "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md",
-                "active:scale-95",
-                isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
+                "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300",
+                "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600",
+                "hover:from-amber-600 hover:via-yellow-600 hover:to-amber-700",
+                "text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40",
+                "active:scale-95 border border-amber-400/50",
+                isMobile ? "h-8 w-8" : "h-10 w-10"
               )}
             >
-              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4")} />
-              <span className="font-medium">{currentText.search}</span>
+              <Search className={cn(isMobile ? "h-4 w-4" : "h-5 w-5")} />
             </button>
           </div>
           
