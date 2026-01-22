@@ -490,20 +490,11 @@ const Index = () => {
         initialQuery={quickSearch}
       />
 
-      {/* ASTRA Development Style Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5 pointer-events-none" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
-      
-      {/* Content Layer - edge-to-edge hero */}
-      <div className={cn(
-        "relative z-10 min-h-stable md:min-h-screen",
-        "safe-area-mobile",
-        "pb-20 md:pb-4" // Extra bottom padding for mobile footer
-      )}>
+      {/* Content Layer - full width edge-to-edge */}
+      <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-        {/* Hero Search Section - Full width, no margins/borders, flush to header */}
-        <section className="relative w-full min-h-[120px] md:min-h-[360px] lg:h-screen lg:min-h-[600px]" id="hero-section">
+        {/* Hero Search Section - 100% width, no margins, flush to header */}
+        <section className="relative w-full min-h-[120px] md:min-h-[360px] lg:h-screen lg:min-h-[600px] -mt-0" id="hero-section">
           {/* Dark Jakarta Skyline Background */}
           <div className="absolute inset-0 z-0">
             <img 
