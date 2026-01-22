@@ -626,6 +626,18 @@ const Index = () => {
                 <AstraVillaFeatures variant="hero" />
               </Suspense>
             </div>
+
+            {/* Global Investment Platform - Next to AI Tools */}
+            <div className="w-full max-w-[2400px] mx-auto mt-2 md:mt-3 px-2 md:px-4">
+              <Suspense fallback={
+                <div className="flex gap-2 justify-center">
+                  <div className="animate-pulse h-10 w-32 bg-white/10 rounded-lg" />
+                  <div className="animate-pulse h-10 w-32 bg-white/10 rounded-lg" />
+                </div>
+              }>
+                <InvestorPathSelector variant="hero" />
+              </Suspense>
+            </div>
           </div>
 
           {/* Scroll indicator - desktop only */}
@@ -843,12 +855,6 @@ const Index = () => {
                   </Suspense>
                 </div>
 
-                {/* Investor Path Selector - WNI/WNA */}
-                <div className="w-full max-w-full mx-auto mb-3 md:mb-6">
-                  <Suspense fallback={<div className="animate-pulse h-48 md:h-64 bg-muted/50 rounded-lg border border-border/40" />}>
-                    <InvestorPathSelector />
-                  </Suspense>
-                </div>
 
 
                 {/* Featured Properties - Modern Auto-Scrolling Carousel */}
