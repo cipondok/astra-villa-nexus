@@ -2322,9 +2322,11 @@ const AstraSearchPanel = ({
   }
   return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto transition-all duration-500">
     <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 w-full px-2 lg:px-4 xl:px-6")}>
-      {/* Glassmorphic Luxury Container */}
-      <div className="bg-transparent overflow-hidden">
-        <div className={cn("space-y-1.5 bg-transparent", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
+      {/* Glassmorphic Luxury Container with Silver Glossy Border */}
+      <div className="relative bg-card/80 backdrop-blur-xl overflow-hidden rounded-2xl border border-gray-300/60 dark:border-gray-600/60 ring-1 ring-white/30 dark:ring-white/10 shadow-xl shadow-gray-400/20 dark:shadow-black/30">
+        {/* Silver glossy shine overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent dark:from-white/10 pointer-events-none rounded-2xl" />
+        <div className={cn("relative space-y-1.5", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
           <div className="flex justify-center">
@@ -2929,19 +2931,21 @@ const AstraSearchPanel = ({
               onClick={handleSearch}
               aria-label={currentText.search}
               className={cn(
-                "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300",
+                "group inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 ease-out",
                 "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600",
-                "hover:from-amber-600 hover:via-yellow-600 hover:to-amber-700",
-                "text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40",
-                "active:scale-95",
+                "hover:from-amber-400 hover:via-yellow-400 hover:to-amber-500",
+                "hover:scale-105 hover:-translate-y-0.5",
+                "text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-400/50",
+                "active:scale-95 active:shadow-md",
                 // Silver glossy royal border
-                "border-2 border-gray-300/80 ring-1 ring-white/50 ring-offset-1 ring-offset-gray-400/30",
-                "before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none",
+                "border border-gray-300/80 dark:border-gray-500/60 ring-1 ring-white/50 ring-offset-1 ring-offset-white/20",
                 "relative overflow-hidden",
                 isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
               )}
             >
-              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10")} />
+              {/* Glossy shine overlay */}
+              <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-full transition-opacity duration-300 group-hover:opacity-60" />
+              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10 transition-transform duration-300 group-hover:scale-110")} />
               <span className="font-medium relative z-10">{currentText.search}</span>
             </button>
           </div>
