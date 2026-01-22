@@ -158,29 +158,36 @@ const Analytics = () => {
 
   return (
     <div className="min-h-screen bg-background pt-11 md:pt-12">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-6 md:py-10">
-        <div className="container mx-auto px-3 md:px-4">
-          <div className="flex items-center gap-2 mb-2">
-            <BarChart3 className="h-6 w-6 md:h-8 md:w-8" />
-            <h1 className="text-xl md:text-3xl font-bold">Analytics Dashboard</h1>
-          </div>
-          <p className="text-sm md:text-lg opacity-90">Comprehensive insights into your platform performance</p>
-        </div>
+      {/* Luxury Background - matches home page */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-3 md:px-4 py-4 md:py-6">
+      <div className="container mx-auto px-2 md:px-4 py-2 md:py-4">
         {/* Back Link & AI Tools Tab Bar */}
         <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
-        <AIToolsTabBar className="mb-4" />
-        {/* Time Range Selector */}
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-semibold">Platform Overview</h2>
-          <div className="flex gap-2">
+        <AIToolsTabBar className="mb-3" />
+
+        {/* Header - Slim, no background */}
+        <div className="text-center mb-3 md:mb-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <BarChart3 className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            <h1 className="text-sm md:text-lg font-bold text-foreground">Analytics Dashboard</h1>
+          </div>
+          <p className="text-[10px] md:text-xs text-muted-foreground">Comprehensive insights into platform performance</p>
+        </div>
+
+        {/* Time Range Selector - Compact */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 mb-4">
+          <h2 className="text-xs md:text-sm font-semibold text-foreground">Platform Overview</h2>
+          <div className="flex gap-1.5">
             <Button
               variant={timeRange === '7d' ? 'default' : 'outline'}
               onClick={() => setTimeRange('7d')}
               size="sm"
+              className="h-7 text-[10px] md:text-xs px-2 md:px-3"
             >
               7 Days
             </Button>
@@ -188,6 +195,7 @@ const Analytics = () => {
               variant={timeRange === '30d' ? 'default' : 'outline'}
               onClick={() => setTimeRange('30d')}
               size="sm"
+              className="h-7 text-[10px] md:text-xs px-2 md:px-3"
             >
               30 Days
             </Button>
@@ -195,117 +203,126 @@ const Analytics = () => {
               variant={timeRange === '90d' ? 'default' : 'outline'}
               onClick={() => setTimeRange('90d')}
               size="sm"
+              className="h-7 text-[10px] md:text-xs px-2 md:px-3"
             >
               90 Days
             </Button>
           </div>
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
+        {/* KPI Cards - Glassmorphic Slim */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 mb-4">
+          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+            <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Users</p>
-                  <div className="text-2xl font-bold">{analyticsData?.users.total}</div>
-                  <div className="flex items-center text-sm">
-                    <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Total Users</p>
+                  <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.users.total}</div>
+                  <div className="flex items-center text-[8px] md:text-[10px]">
+                    <TrendingUp className="h-2.5 w-2.5 text-green-500 mr-0.5" />
                     <span className="text-green-500">+{analyticsData?.users.new_today} today</span>
                   </div>
                 </div>
-                <Users className="h-8 w-8 text-blue-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <Users className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+            <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Properties</p>
-                  <div className="text-2xl font-bold">{analyticsData?.properties.total}</div>
-                  <div className="flex items-center text-sm">
-                    <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Total Properties</p>
+                  <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.properties.total}</div>
+                  <div className="flex items-center text-[8px] md:text-[10px]">
+                    <TrendingUp className="h-2.5 w-2.5 text-green-500 mr-0.5" />
                     <span className="text-green-500">+{analyticsData?.properties.new_today} today</span>
                   </div>
                 </div>
-                <Building2 className="h-8 w-8 text-green-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                  <Building2 className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+            <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Page Views</p>
-                  <div className="text-2xl font-bold">{analyticsData?.engagement.page_views.toLocaleString()}</div>
-                  <div className="flex items-center text-sm">
-                    <Eye className="h-4 w-4 text-blue-500 mr-1" />
-                    <span className="text-blue-500">This month</span>
+                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Page Views</p>
+                  <div className="text-sm md:text-lg font-bold text-foreground">{analyticsData?.engagement.page_views.toLocaleString()}</div>
+                  <div className="flex items-center text-[8px] md:text-[10px]">
+                    <Eye className="h-2.5 w-2.5 text-purple-500 mr-0.5" />
+                    <span className="text-purple-500">This month</span>
                   </div>
                 </div>
-                <Eye className="h-8 w-8 text-purple-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <Eye className="h-4 w-4 md:h-5 md:w-5 text-purple-500" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+            <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Avg. Session</p>
-                  <div className="text-2xl font-bold">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
-                  <div className="flex items-center text-sm">
-                    <Clock className="h-4 w-4 text-orange-500 mr-1" />
+                  <p className="text-[9px] md:text-xs font-medium text-muted-foreground">Avg. Session</p>
+                  <div className="text-sm md:text-lg font-bold text-foreground">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
+                  <div className="flex items-center text-[8px] md:text-[10px]">
+                    <Clock className="h-2.5 w-2.5 text-orange-500 mr-0.5" />
                     <span className="text-orange-500">Duration</span>
                   </div>
                 </div>
-                <Clock className="h-8 w-8 text-orange-500" />
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                  <Clock className="h-4 w-4 md:h-5 md:w-5 text-orange-500" />
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Charts Section */}
+        {/* Charts Section - Slim Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="properties">Properties</TabsTrigger>
-            <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 mb-3 h-8">
+            <TabsTrigger value="overview" className="text-[10px] md:text-xs h-7">Overview</TabsTrigger>
+            <TabsTrigger value="users" className="text-[10px] md:text-xs h-7">Users</TabsTrigger>
+            <TabsTrigger value="properties" className="text-[10px] md:text-xs h-7">Properties</TabsTrigger>
+            <TabsTrigger value="engagement" className="text-[10px] md:text-xs h-7">Engagement</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>User Growth Trend</CardTitle>
+          <TabsContent value="overview" className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardHeader className="p-3">
+                  <CardTitle className="text-xs md:text-sm">User Growth Trend</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
+                <CardContent className="p-2 md:p-3">
+                  <ResponsiveContainer width="100%" height={200}>
                     <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip />
-                      <Line type="monotone" dataKey="users" stroke="#8884d8" strokeWidth={2} />
+                      <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} />
                     </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Property Listings</CardTitle>
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardHeader className="p-3">
+                  <CardTitle className="text-xs md:text-sm">Property Listings</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
+                <CardContent className="p-2 md:p-3">
+                  <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip />
                       <Bar dataKey="properties" fill="#82ca9d" />
                     </BarChart>
@@ -315,37 +332,37 @@ const Analytics = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="users" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Registration Trend</CardTitle>
+          <TabsContent value="users" className="space-y-3">
+            <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <CardHeader className="p-3">
+                <CardTitle className="text-xs md:text-sm">User Registration Trend</CardTitle>
               </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
+              <CardContent className="p-2 md:p-3">
+                <ResponsiveContainer width="100%" height={280}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="users" stroke="#8884d8" strokeWidth={3} />
+                    <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="properties" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Property Listings Trend</CardTitle>
+          <TabsContent value="properties" className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardHeader className="p-3">
+                  <CardTitle className="text-xs md:text-sm">Property Listings Trend</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
+                <CardContent className="p-2 md:p-3">
+                  <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip />
                       <Bar dataKey="properties" fill="#82ca9d" />
                     </BarChart>
@@ -353,12 +370,12 @@ const Analytics = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Properties by Type</CardTitle>
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardHeader className="p-3">
+                  <CardTitle className="text-xs md:text-sm">Properties by Type</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
+                <CardContent className="p-2 md:p-3">
+                  <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
                       <Pie
                         data={analyticsData?.properties.by_type}
@@ -366,7 +383,7 @@ const Analytics = () => {
                         cy="50%"
                         labelLine={false}
                         label={({ type, percent }) => `${type} ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
+                        outerRadius={60}
                         fill="#8884d8"
                         dataKey="count"
                       >
@@ -382,45 +399,51 @@ const Analytics = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="engagement" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <Card>
-                <CardContent className="p-6 text-center">
-                  <Globe className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                  <div className="text-2xl font-bold">{analyticsData?.engagement.unique_visitors.toLocaleString()}</div>
-                  <div className="text-sm text-muted-foreground">Unique Visitors</div>
+          <TabsContent value="engagement" className="space-y-3">
+            <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3">
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardContent className="p-2 md:p-3 text-center">
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <Globe className="h-4 w-4 text-blue-500" />
+                  </div>
+                  <div className="text-sm md:text-lg font-bold">{analyticsData?.engagement.unique_visitors.toLocaleString()}</div>
+                  <div className="text-[9px] md:text-xs text-muted-foreground">Unique Visitors</div>
                 </CardContent>
               </Card>
               
-              <Card>
-                <CardContent className="p-6 text-center">
-                  <MousePointer className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                  <div className="text-2xl font-bold">{analyticsData?.engagement.bounce_rate}%</div>
-                  <div className="text-sm text-muted-foreground">Bounce Rate</div>
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardContent className="p-2 md:p-3 text-center">
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                    <MousePointer className="h-4 w-4 text-green-500" />
+                  </div>
+                  <div className="text-sm md:text-lg font-bold">{analyticsData?.engagement.bounce_rate}%</div>
+                  <div className="text-[9px] md:text-xs text-muted-foreground">Bounce Rate</div>
                 </CardContent>
               </Card>
               
-              <Card>
-                <CardContent className="p-6 text-center">
-                  <Activity className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                  <div className="text-2xl font-bold">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
-                  <div className="text-sm text-muted-foreground">Avg. Session Duration</div>
+              <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+                <CardContent className="p-2 md:p-3 text-center">
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                    <Activity className="h-4 w-4 text-purple-500" />
+                  </div>
+                  <div className="text-sm md:text-lg font-bold">{formatDuration(analyticsData?.engagement.avg_session_duration || 0)}</div>
+                  <div className="text-[9px] md:text-xs text-muted-foreground">Avg. Duration</div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Page Views Trend</CardTitle>
+            <Card className="bg-transparent dark:bg-white/5 border-border/30 backdrop-blur-sm">
+              <CardHeader className="p-3">
+                <CardTitle className="text-xs md:text-sm">Page Views Trend</CardTitle>
               </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
+              <CardContent className="p-2 md:p-3">
+                <ResponsiveContainer width="100%" height={280}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="pageViews" stroke="#ff7300" strokeWidth={3} />
+                    <Line type="monotone" dataKey="pageViews" stroke="#ff7300" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
