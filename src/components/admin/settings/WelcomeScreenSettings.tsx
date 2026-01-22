@@ -25,9 +25,12 @@ import {
   Settings2,
   Paintbrush,
   Move,
-  Zap
+  Zap,
+  TestTube
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useGlobalLoading } from '@/hooks/useGlobalLoading';
+import astraLogo from '@/assets/astra-logo.png';
 
 interface WelcomeScreenSettingsProps {
   settings: any;
@@ -37,9 +40,40 @@ interface WelcomeScreenSettingsProps {
 }
 
 const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: WelcomeScreenSettingsProps) => {
+  const { startLoading, updateProgress, finishLoading, isLoading: globalLoading } = useGlobalLoading();
   const [previewActive, setPreviewActive] = useState(false);
   const [previewProgress, setPreviewProgress] = useState(0);
   const [previewMessage, setPreviewMessage] = useState('Loading data...');
+
+  // Test the actual global loading popup
+  const testGlobalLoadingPopup = () => {
+    if (globalLoading) return;
+    
+    startLoading('Testing loading popup...');
+    let progress = 0;
+    
+    const messages = [
+      'Initializing...',
+      'Loading data...',
+      'Processing request...',
+      'Almost done...',
+      'Completing...'
+    ];
+    let msgIndex = 0;
+    
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      msgIndex = Math.min(Math.floor(progress / 25), messages.length - 1);
+      
+      if (progress >= 100) {
+        updateProgress(100, 'Complete!');
+        clearInterval(interval);
+        setTimeout(() => finishLoading(), 500);
+      } else {
+        updateProgress(progress, messages[msgIndex]);
+      }
+    }, 200);
+  };
 
   // Animation preview
   useEffect(() => {
@@ -99,7 +133,7 @@ const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: Wel
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
             <Monitor className="h-4 w-4 text-primary" />
@@ -107,10 +141,22 @@ const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: Wel
           </h2>
           <p className="text-[10px] text-muted-foreground">Configure loading screens, progress popups, and animations</p>
         </div>
-        <Button size="sm" onClick={onSave} disabled={loading} className="h-7 text-xs px-3">
-          {loading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Save className="h-3 w-3 mr-1" />}
-          {loading ? 'Saving...' : 'Save Changes'}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={testGlobalLoadingPopup} 
+            disabled={globalLoading}
+            className="h-7 text-xs px-3"
+          >
+            <TestTube className="h-3 w-3 mr-1" />
+            {globalLoading ? 'Testing...' : 'Test Popup'}
+          </Button>
+          <Button size="sm" onClick={onSave} disabled={loading} className="h-7 text-xs px-3">
+            {loading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Save className="h-3 w-3 mr-1" />}
+            {loading ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="welcome" className="w-full">
@@ -710,17 +756,40 @@ const WelcomeScreenSettings = ({ settings, loading, onInputChange, onSave }: Wel
                         settings.loadingPopupBorderRadius === 'lg' ? 'rounded-lg' :
                         settings.loadingPopupBorderRadius === 'full' ? 'rounded-3xl' : 'rounded-2xl'
                       )}>
-                        {/* Header */}
+                        {/* Gradient Top Accent */}
+                        <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500" />
+                        
+                        {/* Header with Logo & Brand */}
                         <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
-                          <div className="flex items-center gap-2">
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                            >
-                              <Loader2 className="w-4 h-4 text-primary" />
+                          <div className="flex items-center gap-3">
+                            {/* Logo */}
+                            <motion.div className="relative">
+                              <img 
+                                src={astraLogo} 
+                                alt="ASTRA" 
+                                className="w-8 h-8 object-contain rounded-lg"
+                              />
+                              <motion.div
+                                className="absolute inset-0 rounded-lg border-2 border-transparent border-t-primary/50"
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                              />
                             </motion.div>
-                            <span className="text-sm font-medium text-foreground">Loading</span>
+                            
+                            {/* Brand Name */}
+                            <div className="flex flex-col">
+                              <h3 className="text-sm font-bold leading-tight">
+                                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+                                  ASTRA
+                                </span>
+                                <span className="text-foreground ml-1">Villa</span>
+                              </h3>
+                              <span className="text-[8px] uppercase tracking-[0.15em] text-muted-foreground">
+                                Premium Real Estate
+                              </span>
+                            </div>
                           </div>
+                          
                           {settings.loadingPopupDismissible !== false && (
                             <button className="p-1 rounded-full hover:bg-muted transition-colors">
                               <X className="w-3.5 h-3.5 text-muted-foreground" />

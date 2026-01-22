@@ -25,6 +25,7 @@ import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
+import { useQueryLoadingIntegration } from '@/hooks/useQueryLoadingIntegration';
 import GlobalLoadingIndicator from '@/components/ui/GlobalLoadingIndicator';
 import LoadingProgressPopup from '@/components/ui/LoadingProgressPopup';
 import NewArrivalsPopup from '@/components/ui/NewArrivalsPopup';
@@ -108,6 +109,7 @@ const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
   useVIPNotifications();
+  useQueryLoadingIntegration(); // Auto-show loading popup on React Query activity
   
   const location = useLocation();
   const { language } = useLanguage();
