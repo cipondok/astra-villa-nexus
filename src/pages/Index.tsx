@@ -529,11 +529,15 @@ const Index = () => {
               <div className={cn(
                 "inline-flex items-center gap-1 sm:gap-1.5 mb-1 sm:mb-1.5 md:mb-2 lg:mb-4",
                 "px-2 py-0.5 sm:px-2.5 sm:py-0.5 md:px-4 md:py-1.5 lg:px-5 lg:py-2",
-                "bg-white/20 backdrop-blur-md",
-                "rounded-full border border-white/30"
+                "bg-gradient-to-r from-violet-600/80 via-fuchsia-500/80 to-cyan-400/80 backdrop-blur-md",
+                "rounded-full border border-white/40",
+                "shadow-lg shadow-fuchsia-500/30",
+                "animate-pulse"
               )}>
-                <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-white animate-pulse" />
-                <span className="text-[8px] sm:text-[10px] md:text-xs lg:text-sm font-semibold text-white drop-shadow-md">AI-Powered Search</span>
+                <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
+                <span className="text-[8px] sm:text-[10px] md:text-xs lg:text-sm font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+                  AI-Powered Search
+                </span>
               </div>
               
               {/* Title */}
