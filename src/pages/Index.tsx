@@ -586,41 +586,37 @@ const Index = () => {
                 </div>
               )}
             </div>
+
+            {/* Featured Properties - Inside Hero, Below Search Panel */}
+            <div className="w-full max-w-[2400px] mx-auto mt-4 md:mt-6">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 fill-yellow-400/50" />
+                <h2 className="text-xs md:text-sm font-semibold text-white/90 drop-shadow-md">
+                  {t.featuredProperties}
+                </h2>
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 fill-yellow-400/50" />
+              </div>
+              <Suspense fallback={
+                <div className="flex gap-3 px-3 overflow-hidden justify-center">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-[140px] md:w-[180px] animate-pulse">
+                      <div className="h-20 md:h-28 bg-white/10 rounded-lg mb-1.5" />
+                      <div className="h-2 bg-white/10 rounded w-3/4 mb-1" />
+                      <div className="h-2 bg-white/10 rounded w-1/2" />
+                    </div>
+                  ))}
+                </div>
+              }>
+                <PropertySlideshow />
+              </Suspense>
+            </div>
           </div>
 
           {/* Scroll indicator - desktop only */}
-          <div className="hidden lg:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-            <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center p-1.5">
-              <div className="w-1.5 h-3 bg-white/60 rounded-full animate-pulse" />
+          <div className="hidden lg:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+            <div className="w-5 h-8 rounded-full border-2 border-white/40 flex items-start justify-center p-1">
+              <div className="w-1 h-2 bg-white/60 rounded-full animate-pulse" />
             </div>
-          </div>
-        </section>
-
-        {/* Featured Properties - Full Width Auto-Scrolling Carousel - Right Below Search */}
-        <section className="w-full max-w-[2400px] mx-auto px-0">
-          <div className="py-2 md:py-3">
-            <div className="flex items-center justify-between px-3 md:px-6 mb-1">
-              <div>
-                <h2 className="text-sm md:text-base lg:text-lg font-bold text-foreground flex items-center gap-2">
-                  <Star className="h-4 w-4 md:h-5 md:w-5 text-primary fill-primary/20" />
-                  {t.featuredProperties}
-                </h2>
-                <p className="text-[10px] md:text-xs text-muted-foreground">{t.premiumProperties}</p>
-              </div>
-            </div>
-            <Suspense fallback={
-              <div className="flex gap-3 px-3 overflow-hidden">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0 w-[160px] md:w-[200px] animate-pulse">
-                    <div className="h-24 md:h-32 bg-muted rounded-lg mb-1.5" />
-                    <div className="h-3 bg-muted rounded w-3/4 mb-1" />
-                    <div className="h-2 bg-muted rounded w-1/2" />
-                  </div>
-                ))}
-              </div>
-            }>
-              <PropertySlideshow />
-            </Suspense>
           </div>
         </section>
 
