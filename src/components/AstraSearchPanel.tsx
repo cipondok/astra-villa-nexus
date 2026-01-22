@@ -2413,6 +2413,7 @@ const AstraSearchPanel = ({
                 searchQuery && "animate-pulse"
               )} />
               <Input 
+                type="search"
                 placeholder={currentText.searchPlaceholder} 
                 value={searchQuery} 
                 onChange={e => handleSearchChange(e.target.value)} 
