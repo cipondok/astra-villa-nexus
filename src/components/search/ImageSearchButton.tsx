@@ -192,18 +192,16 @@ export const ImageSearchButton = ({
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isSearching}
                 className={cn(
-                  "p-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full transition-all duration-200 disabled:opacity-50 relative",
-                  "bg-card/10 backdrop-blur-sm hover:bg-card/20",
-                  "border border-white/20 dark:border-white/10 hover:border-pink-400/50 hover:shadow-md",
-                  "active:scale-95",
-                  showPulse && "ring-2 ring-pink-400/50 ring-offset-1"
+                  "p-1 flex items-center justify-center transition-all duration-200 disabled:opacity-50 relative",
+                  "hover:scale-110 active:scale-95",
+                  showPulse && "animate-pulse"
                 )}
               >
-                <Camera className="h-4 w-4 md:h-5 md:w-5 text-pink-500 dark:text-pink-400" />
+                <Camera className="h-5 w-5 md:h-6 md:w-6 text-pink-500 dark:text-pink-400" />
                 {showPulse && (
-                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
                   </span>
                 )}
               </button>
@@ -232,17 +230,12 @@ export const ImageSearchButton = ({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isSearching}
-                  className={cn(
-                    "p-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full transition-all duration-200 disabled:opacity-50",
-                    "bg-card/10 backdrop-blur-sm hover:bg-card/20",
-                    "border border-white/20 dark:border-white/10 hover:border-pink-400/50 hover:shadow-md",
-                    "active:scale-95"
-                  )}
+                  className="p-1 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-110 active:scale-95"
                 >
                   {isSearching ? (
-                    <Loader2 className="h-4 w-4 md:h-5 md:w-5 text-pink-500 dark:text-pink-400 animate-spin" />
+                    <Loader2 className="h-5 w-5 md:h-6 md:w-6 text-pink-500 dark:text-pink-400 animate-spin" />
                   ) : (
-                    <Camera className="h-4 w-4 md:h-5 md:w-5 text-pink-500 dark:text-pink-400" />
+                    <Camera className="h-5 w-5 md:h-6 md:w-6 text-pink-500 dark:text-pink-400" />
                   )}
                 </button>
               </TooltipTrigger>
