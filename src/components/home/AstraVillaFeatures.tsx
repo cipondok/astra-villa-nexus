@@ -71,11 +71,11 @@ const AstraVillaFeatures: React.FC<AstraVillaFeaturesProps> = ({ variant = 'defa
     <div className={`rounded-xl md:rounded-2xl ${isHero ? 'p-0' : 'p-1.5 sm:p-2 md:p-3'}`}>
       {/* Section Header - Compact */}
       <div className={`flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 ${isHero ? 'mb-2' : 'mb-2 sm:mb-2.5 md:mb-3'}`}>
-        <Sparkles className={`${isHero ? 'h-3 w-3 text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
-        <h2 className={`font-bold ${isHero ? 'text-[10px] md:text-xs text-white/90 drop-shadow-md' : 'text-[9px] sm:text-xs md:text-sm text-foreground'}`}>
+        <Sparkles className={`${isHero ? 'h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
+        <h2 className={`font-bold ${isHero ? 'text-[10px] md:text-xs text-foreground drop-shadow-sm dark:text-white/90 dark:drop-shadow-md' : 'text-[9px] sm:text-xs md:text-sm text-foreground'}`}>
           AI Tools & Features
         </h2>
-        <Sparkles className={`${isHero ? 'h-3 w-3 text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
+        <Sparkles className={`${isHero ? 'h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary'}`} />
       </div>
 
       {/* Features Grid - 8 columns on desktop for hero, 4 columns default */}
@@ -125,14 +125,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
       }`}>
         {/* Icon Container */}
         <div className="relative">
-          <div className={`relative flex items-center justify-center rounded-lg shadow-sm ${
+            <div className={`relative flex items-center justify-center rounded-lg shadow-sm ${
             isHero 
-              ? 'w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-white/20' 
+              ? 'w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-background/40 dark:bg-white/20' 
               : `w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 ${feature.iconBg}`
           }`}>
             <IconComponent className={`${
               isHero 
-                ? 'w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white' 
+                ? 'w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-foreground dark:text-white' 
                 : `w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${feature.color}`
             }`} strokeWidth={1.5} />
           </div>
@@ -147,7 +147,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
         {/* Title */}
         <h3 className={`leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200 ${
           isHero 
-            ? 'mt-1 text-[6px] md:text-[8px] lg:text-[9px] font-medium text-white/90' 
+            ? 'mt-1 text-[6px] md:text-[8px] lg:text-[9px] font-medium text-foreground/90 dark:text-white/90' 
             : 'mt-1.5 sm:mt-2 text-[7px] sm:text-[9px] md:text-[11px] font-semibold text-foreground'
         }`}>
           {feature.title}
