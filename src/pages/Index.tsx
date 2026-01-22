@@ -504,8 +504,8 @@ const Index = () => {
         "pb-20 md:pb-4" // Extra bottom padding for mobile footer
       )}>
         
-        {/* Hero Search Section - Full Screen with Dark Jakarta Skyline */}
-        <section className="relative w-full h-screen min-h-[600px] overflow-hidden" id="hero-section">
+        {/* Hero Search Section - Compact on mobile/tablet, full-screen on desktop */}
+        <section className="relative w-full min-h-[120px] md:min-h-[360px] lg:h-screen lg:min-h-[600px] overflow-hidden" id="hero-section">
           {/* Dark Jakarta Skyline Background */}
           <div className="absolute inset-0 z-0">
             <img 
@@ -518,45 +518,44 @@ const Index = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-background pointer-events-none" />
           </div>
           
-          {/* Content overlay - Centered in viewport */}
+          {/* Content overlay */}
           <div className={cn(
             "relative z-10 w-full h-full flex flex-col items-center justify-center",
-            "px-3 py-8 sm:px-4 md:px-6 lg:px-8"
+            "px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8"
           )}>
-            {/* Enhanced Header - Better mobile scaling */}
-            <div className="mb-4 sm:mb-6 md:mb-8 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
-              {/* AI Badge - Responsive sizing */}
+            {/* Enhanced Header */}
+            <div className="mb-2 sm:mb-3 md:mb-5 lg:mb-8 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
+              {/* AI Badge */}
               <div className={cn(
-                "inline-flex items-center gap-1 sm:gap-1.5 mb-2 sm:mb-3 md:mb-4",
-                "px-3 py-1 sm:px-4 sm:py-1.5 md:px-5 md:py-2",
-                "bg-white/10 backdrop-blur-md",
-                "rounded-full border border-white/20"
+                "inline-flex items-center gap-1 sm:gap-1.5 mb-1 sm:mb-1.5 md:mb-2 lg:mb-4",
+                "px-2 py-0.5 sm:px-2.5 sm:py-0.5 md:px-4 md:py-1.5 lg:px-5 lg:py-2",
+                "bg-white/20 backdrop-blur-md",
+                "rounded-full border border-white/30"
               )}>
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary animate-pulse" />
-                <span className="text-[10px] sm:text-xs md:text-sm font-semibold text-white drop-shadow-md">AI-Powered Search</span>
+                <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-white animate-pulse" />
+                <span className="text-[8px] sm:text-[10px] md:text-xs lg:text-sm font-semibold text-white drop-shadow-md">AI-Powered Search</span>
               </div>
               
-              {/* Title - Optimized for mobile readability */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg mb-2 sm:mb-3 md:mb-4">
+              {/* Title */}
+              <h1 className="text-lg sm:text-xl md:text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg mb-0.5 sm:mb-1 md:mb-2 lg:mb-4">
                 {t.findYour}
               </h1>
-              <p className="flex text-xs sm:text-sm md:text-base lg:text-lg text-white/90 items-center justify-center gap-1.5 sm:gap-2 drop-shadow-md">
-                <Search className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+              <p className="flex text-[9px] sm:text-[11px] md:text-sm lg:text-lg text-white/90 items-center justify-center gap-1 sm:gap-1.5 lg:gap-2 drop-shadow-md">
+                <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5" />
                 {t.searchPowered}
               </p>
             </div>
             
-            {/* Search Panel Container - Mobile optimized */}
+            {/* Search Panel Container */}
             <div
               className={cn(
                 "relative mx-auto w-full max-w-4xl",
-                // Premium glassy background with better mobile radius
                 "bg-white/10 dark:bg-black/30 backdrop-blur-2xl",
                 "rounded-xl sm:rounded-2xl md:rounded-3xl",
-                "shadow-2xl shadow-black/40",
-                "border border-white/20 dark:border-white/10",
+                "shadow-xl sm:shadow-2xl shadow-black/20 sm:shadow-black/30",
+                "border border-white/20 sm:border-white/30 dark:border-white/10",
                 "overflow-hidden",
-                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/10 before:via-transparent before:to-white/5 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none"
+                "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-white/5 before:rounded-xl sm:before:rounded-2xl md:before:rounded-3xl before:pointer-events-none"
               )}
             >
               <Suspense fallback={<SearchPanelSkeleton />}>
@@ -573,7 +572,7 @@ const Index = () => {
                 </SearchErrorBoundary>
               </Suspense>
               
-              {/* Retry Indicator - Mobile friendly positioning */}
+              {/* Retry Indicator */}
               {isRetrying && (
                 <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-primary/90 text-primary-foreground px-2 py-1 sm:px-4 sm:py-2 rounded-lg shadow-lg flex items-center gap-1.5 sm:gap-2 animate-in slide-in-from-bottom-2 duration-300">
                   <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
@@ -585,8 +584,8 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+          {/* Scroll indicator - desktop only */}
+          <div className="hidden lg:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
             <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center p-1.5">
               <div className="w-1.5 h-3 bg-white/60 rounded-full animate-pulse" />
             </div>
