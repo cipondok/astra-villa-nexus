@@ -200,7 +200,7 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-lg rounded-xl">
+      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border-0 bg-transparent shadow-none rounded-xl">
         {/* Image Section with Overlay Info */}
         <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <img

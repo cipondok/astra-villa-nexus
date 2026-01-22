@@ -147,7 +147,7 @@ const ModernPropertyCard = ({
 
   return (
     <Card 
-      className="group relative overflow-hidden rounded-xl border-0 bg-card/90 backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+      className="group relative overflow-hidden rounded-xl border-0 bg-transparent shadow-none hover:shadow-lg transition-all duration-300 cursor-pointer"
       onClick={handleClick}
     >
       {/* Image Container */}
