@@ -1,24 +1,39 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useHomeBackLink } from '@/hooks/useHomeBackLink';
 
 interface BackToHomeLinkProps {
   sectionId?: string;
   className?: string;
+  alwaysShow?: boolean;
 }
 
-const BackToHomeLink: React.FC<BackToHomeLinkProps> = ({ sectionId, className = '' }) => {
+const BackToHomeLink: React.FC<BackToHomeLinkProps> = ({ sectionId, className = '', alwaysShow = false }) => {
+  const navigate = useNavigate();
   const { cameFromHome, handleBackToHome } = useHomeBackLink({ sectionId });
 
-  if (!cameFromHome) return null;
+  const handleClick = () => {
+    if (cameFromHome) {
+      handleBackToHome();
+    } else {
+      navigate('/');
+    }
+  };
+
+  if (!cameFromHome && !alwaysShow) return null;
 
   return (
     <button
-      onClick={handleBackToHome}
-      className={`flex items-center gap-1 text-xs md:text-sm text-muted-foreground hover:text-primary mb-2 md:mb-3 active:scale-95 transition-transform ${className}`}
+      onClick={handleClick}
+      className={`flex items-center gap-1 text-xs md:text-sm text-muted-foreground hover:text-primary mb-2 md:mb-3 active:scale-95 transition-all duration-200 ${className}`}
     >
-      <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
-      Back to Home
+      {cameFromHome ? (
+        <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
+      ) : (
+        <Home className="w-3 h-3 md:w-4 md:h-4" />
+      )}
+      {cameFromHome ? 'Back to Home' : 'Go Home'}
     </button>
   );
 };

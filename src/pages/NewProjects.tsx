@@ -220,8 +220,8 @@ const NewProjects = () => {
       </div>
 
       <div className="container mx-auto px-3 md:px-4 pt-1 pb-4 relative">
-        {/* Back Link */}
-        <BackToHomeLink sectionId="new-projects-section" />
+        {/* Back Link - Always Show */}
+        <BackToHomeLink sectionId="new-projects-section" alwaysShow />
 
         {/* AI Tools Tab Bar */}
         <AIToolsTabBar className="mb-3" />
