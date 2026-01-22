@@ -2926,27 +2926,29 @@ const AstraSearchPanel = ({
               </Tooltip>
             </TooltipProvider>
             
-            {/* Search Button - Premium Gold Style */}
+            {/* Search Button - AI Colorful Style */}
             <button
               onClick={handleSearch}
               aria-label={currentText.search}
               className={cn(
                 "group inline-flex items-center justify-center rounded-full font-semibold transition-all duration-300 ease-out",
-                "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600",
-                "hover:from-amber-400 hover:via-yellow-400 hover:to-amber-500",
+                "bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400",
+                "hover:from-violet-500 hover:via-fuchsia-400 hover:to-cyan-300",
                 "hover:scale-105 hover:-translate-y-0.5",
-                "text-white shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-400/50",
+                "text-white shadow-lg shadow-fuchsia-500/40 hover:shadow-xl hover:shadow-fuchsia-400/50",
                 "active:scale-95 active:shadow-md",
-                // Silver glossy royal border
-                "border border-gray-300/80 dark:border-gray-500/60 ring-1 ring-white/50 ring-offset-1 ring-offset-white/20",
+                // Glowing border
+                "border border-white/40 ring-1 ring-white/30",
                 "relative overflow-hidden",
                 isMobile ? "h-8 px-4 text-xs gap-1.5" : "h-10 px-6 text-sm gap-2"
               )}
             >
+              {/* Animated shimmer overlay */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none rounded-full" />
               {/* Glossy shine overlay */}
-              <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-full transition-opacity duration-300 group-hover:opacity-60" />
-              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10 transition-transform duration-300 group-hover:scale-110")} />
-              <span className="font-medium relative z-10">{currentText.search}</span>
+              <span className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none rounded-full" />
+              <Search className={cn(isMobile ? "h-3.5 w-3.5" : "h-4 w-4", "relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]")} />
+              <span className="font-medium relative z-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]">{currentText.search}</span>
             </button>
           </div>
           
