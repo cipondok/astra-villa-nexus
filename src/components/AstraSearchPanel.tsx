@@ -2445,7 +2445,7 @@ const AstraSearchPanel = ({
                         <MapPin className="h-5 w-5 text-orange-700 dark:text-orange-400" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                       <p className="text-[10px] font-medium">Map View</p>
                     </TooltipContent>
                   </Tooltip>
@@ -2465,7 +2465,7 @@ const AstraSearchPanel = ({
                           </svg>}
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                       <p className="text-[10px] font-medium">{isGettingLocation ? "Getting Location..." : "Near Me"}</p>
                     </TooltipContent>
                   </Tooltip>
@@ -2617,7 +2617,7 @@ const AstraSearchPanel = ({
                         }}
                         className="p-1 flex items-center justify-center transition-colors relative"
                       >
-                        <Building className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                        <Building className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                         {filters.propertyType && filters.propertyType !== 'all' && (
                           <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-blue-500 text-white min-w-[14px] text-center">
                             1
@@ -2626,7 +2626,7 @@ const AstraSearchPanel = ({
                       </button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                  <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                     <p className="text-[10px] font-medium">Property Type</p>
                   </TooltipContent>
                 </Tooltip>
@@ -2706,7 +2706,7 @@ const AstraSearchPanel = ({
                           onTouchStart={(e) => e.stopPropagation()}
                           className="p-1 flex items-center justify-center transition-colors relative"
                         >
-                          <MapPin className="h-5 w-5 text-purple-500 dark:text-purple-400" />
+                          <MapPin className="h-5 w-5 text-purple-700 dark:text-purple-400" />
                           {(filters.state && filters.state !== 'all' || filters.city && filters.city !== 'all' || filters.area && filters.area !== 'all') && (
                             <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] font-bold rounded-full bg-purple-500 text-white min-w-[14px] text-center">
                               {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
@@ -2715,7 +2715,7 @@ const AstraSearchPanel = ({
                         </button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                    <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                       <p className="text-[10px] font-medium">Manual Location</p>
                     </TooltipContent>
                   </Tooltip>
@@ -3034,7 +3034,7 @@ const AstraSearchPanel = ({
                     )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="z-[100000] bg-card/10 backdrop-blur-sm text-foreground border border-white/20 shadow-lg px-2 py-1">
+                <TooltipContent side="top" className="z-[100000] bg-background/90 backdrop-blur-md text-foreground border border-border/50 shadow-lg px-2 py-1 rounded-md">
                   <p className="text-[10px] font-medium">Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}</p>
                 </TooltipContent>
               </Tooltip>
