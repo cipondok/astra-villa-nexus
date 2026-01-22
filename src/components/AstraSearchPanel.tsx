@@ -2438,14 +2438,20 @@ const AstraSearchPanel = ({
                   enablePaste={true}
                   className="shrink-0"
                 />
-                <Button onClick={() => window.location.href = '/location'} variant="ghost" size="sm" aria-label={currentText.location} className={cn("p-0 rounded-md transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", !useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} title={currentText.location}>
-                  <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} />
-                </Button>
-                <Button onClick={() => toggleSearchType('nearby')} variant="ghost" size="sm" aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className={cn("p-0 rounded-md relative transition-all duration-500 hover:scale-110", isMobile ? "h-6 w-6" : "h-7 w-7", useNearbyLocation ? 'bg-primary/10 text-primary hover:bg-primary/20 shadow-md shadow-primary/20' : 'text-muted-foreground hover:text-primary hover:bg-primary/5')} disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
+                <button onClick={() => window.location.href = '/location'} aria-label={currentText.location} className="p-1 flex items-center justify-center transition-colors" title={currentText.location}>
+                  <MapPin className="h-5 w-5 text-orange-500 dark:text-orange-400" />
+                </button>
+                <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
                   {isGettingLocation ? <div className="flex flex-col items-center justify-center">
-                      <div className="animate-spin h-3 w-3 border-2 border-primary rounded-full border-t-transparent" />
-                    </div> : <MapPin className={cn(isMobile ? "h-2.5 w-2.5" : "h-3 w-3", "transition-all duration-500")} fill={useNearbyLocation ? "currentColor" : "none"} />}
-                </Button>
+                      <div className="animate-spin h-4 w-4 border-2 border-cyan-500 rounded-full border-t-transparent" />
+                    </div> : <svg className="h-5 w-5 text-cyan-500 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M12 2v3" />
+                      <path d="M12 19v3" />
+                      <path d="M2 12h3" />
+                      <path d="M19 12h3" />
+                    </svg>}
+                </button>
                 
                 {/* 🔒 FIXED: Loading overlay for geolocation - Better UX */}
                 {isGettingLocation && <div className="absolute inset-0 glass-effect flex items-center justify-center rounded-xl z-10 backdrop-blur-sm border border-primary/20">
