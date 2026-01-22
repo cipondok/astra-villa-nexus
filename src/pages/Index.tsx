@@ -510,8 +510,9 @@ const Index = () => {
           
           {/* Content overlay */}
           <div className={cn(
-            "relative z-10 w-full h-full flex flex-col items-center justify-center",
-            "px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8"
+            "relative z-10 w-full h-full flex flex-col items-center",
+            "pt-16 sm:pt-20 md:pt-28 lg:pt-36 xl:pt-44",
+            "px-3 pb-3 sm:px-4 sm:pb-5 md:px-6 md:pb-8 lg:px-8"
           )}>
             {/* Enhanced Header */}
             <div className="mb-2 sm:mb-3 md:mb-5 lg:mb-8 text-center animate-in fade-in-50 slide-in-from-top-3 duration-500">
