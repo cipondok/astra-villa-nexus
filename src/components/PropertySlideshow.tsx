@@ -54,7 +54,7 @@ const PropertySlideshow = () => {
         .eq('approval_status', 'approved')
         .not('title', 'is', null)
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(24);
 
       if (error) {
         console.error('Error fetching slideshow properties:', error);
@@ -67,48 +67,49 @@ const PropertySlideshow = () => {
     refetchOnWindowFocus: false,
   });
 
-  // Use auto-scroll hook with right-to-left direction
+  // Use auto-scroll hook with seamless loop mode for wide screens
   useAutoHorizontalScroll(containerRef, {
-    speed: 1.5,
-    intervalMs: 25,
+    speed: 0.8,
+    intervalMs: 16,
     direction: 'rtl',
     pauseOnHover: true,
+    loopMode: 'seamless',
   });
 
   const scrollLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: -220, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: 220, behavior: 'smooth' });
     }
   };
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
       const value = (price / 1000000000).toFixed(1);
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{value}<span className="text-[0.7em] font-medium opacity-90">M</span></>;
+      return <><span className="text-[0.65em] font-medium opacity-80">Rp</span>{value}<span className="text-[0.65em] font-medium opacity-80">M</span></>;
     } else if (price >= 1000000) {
       const value = (price / 1000000).toFixed(0);
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{value}<span className="text-[0.7em] font-medium opacity-90">Jt</span></>;
+      return <><span className="text-[0.65em] font-medium opacity-80">Rp</span>{value}<span className="text-[0.65em] font-medium opacity-80">Jt</span></>;
     } else {
-      return <><span className="text-[0.7em] font-medium opacity-90">Rp</span>{price.toLocaleString()}</>;
+      return <><span className="text-[0.65em] font-medium opacity-80">Rp</span>{price.toLocaleString()}</>;
     }
   };
 
   if (properties.length === 0) {
     return (
-      <div className="w-full overflow-hidden my-8">
-        <div className="flex gap-4 px-4">
-          {[...Array(6)].map((_, index) => (
-            <div key={index} className="flex-shrink-0 w-[300px] animate-pulse">
-              <div className="h-48 bg-muted rounded-xl mb-2"></div>
-              <div className="space-y-2">
-                <div className="h-4 bg-muted rounded w-3/4"></div>
-                <div className="h-3 bg-muted rounded w-1/2"></div>
+      <div className="w-full overflow-hidden my-4">
+        <div className="flex gap-2 px-2">
+          {[...Array(8)].map((_, index) => (
+            <div key={index} className="flex-shrink-0 w-[180px] md:w-[200px] animate-pulse">
+              <div className="h-28 md:h-32 bg-muted rounded-lg mb-1.5"></div>
+              <div className="space-y-1">
+                <div className="h-3 bg-muted rounded w-3/4"></div>
+                <div className="h-2 bg-muted rounded w-1/2"></div>
               </div>
             </div>
           ))}
@@ -117,95 +118,100 @@ const PropertySlideshow = () => {
     );
   }
 
-  // Duplicate items for seamless loop
-  const displayProperties = [...properties, ...properties];
+  // Triple items for seamless infinite loop on wide screens
+  const displayProperties = [...properties, ...properties, ...properties];
 
   return (
     <div 
-      className="w-full overflow-hidden relative my-12 group"
+      className="w-full overflow-hidden relative py-3 group"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Modern Navigation Arrows */}
+      {/* Compact Navigation Arrows */}
       <Button
         variant="outline"
         size="icon"
         onClick={scrollLeft}
-        className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 backdrop-blur-md shadow-xl border-2 border-primary/20 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+        className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-background/90 hover:bg-background backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
       >
-        <ChevronLeft className="h-6 w-6 text-primary" />
+        <ChevronLeft className="h-4 w-4 text-foreground" />
       </Button>
 
       <Button
         variant="outline"
         size="icon"
         onClick={scrollRight}
-        className={`absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 backdrop-blur-md shadow-xl border-2 border-primary/20 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+        className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-background/90 hover:bg-background backdrop-blur-md shadow-lg border border-border/50 transition-all duration-300 ${isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
       >
-        <ChevronRight className="h-6 w-6 text-primary" />
+        <ChevronRight className="h-4 w-4 text-foreground" />
       </Button>
 
       <div 
         ref={containerRef}
-        className="flex gap-6 overflow-x-auto scrollbar-hide px-4 py-4"
+        className="flex gap-3 overflow-x-auto scrollbar-hide px-2 py-1"
         style={{ scrollBehavior: 'auto' }}
       >
         {displayProperties.map((property, idx) => (
           <div 
             key={`${property.id}-${idx}`}
-            className="flex-shrink-0 w-[300px] group cursor-pointer transition-all duration-300 hover:scale-105"
+            className="flex-shrink-0 w-[160px] md:w-[180px] lg:w-[200px] xl:w-[220px] group/card cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
           >
-            <div className="relative overflow-hidden rounded-2xl mb-3 shadow-lg">
+            {/* Compact Card */}
+            <div className="relative overflow-hidden rounded-xl mb-1.5 shadow-md">
               <img
                 src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                 alt={property.title}
-                className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-24 md:h-28 lg:h-32 object-cover transition-transform duration-500 group-hover/card:scale-110"
+                loading="lazy"
               />
-              <div className="absolute top-3 left-3">
-                <span className={`flex items-center gap-0.5 px-2 py-1 text-white text-[10px] font-semibold rounded-full backdrop-blur-sm shadow-md ${
-                  property.listing_type === 'rent' ? 'bg-blue-500' : 'bg-green-500'
+              {/* Badges */}
+              <div className="absolute top-1.5 left-1.5">
+                <span className={`flex items-center gap-0.5 px-1.5 py-0.5 text-white text-[8px] font-semibold rounded-full backdrop-blur-sm shadow ${
+                  property.listing_type === 'rent' ? 'bg-blue-500/90' : 'bg-emerald-500/90'
                 }`}>
-                  {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
+                  {property.listing_type === 'rent' ? <Key className="h-2.5 w-2.5" /> : <Tag className="h-2.5 w-2.5" />}
                   {getListingLabel(property.listing_type)}
                 </span>
               </div>
-              <div className="absolute top-3 right-3">
-                <span className="flex items-center gap-1 px-3 py-1.5 bg-white/60 dark:bg-black/60 backdrop-blur-sm text-foreground text-xs font-semibold rounded-full shadow-md">
-                  <Building className="h-3 w-3" />
+              <div className="absolute top-1.5 right-1.5">
+                <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-white/70 dark:bg-black/70 backdrop-blur-sm text-foreground text-[8px] font-medium rounded-full shadow">
+                  <Building className="h-2.5 w-2.5" />
                   {capitalizeFirst(property.property_type)}
                 </span>
               </div>
-              {/* View Icon - Center on hover */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+              {/* Hover View Icon */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-20">
+                <div className="h-7 w-7 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                  <Eye className="h-3.5 w-3.5 text-primary" />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
             </div>
             
-            <div className="px-2">
-              <div className="text-sm font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            {/* Compact Info */}
+            <div className="px-0.5">
+              <div className="text-xs font-bold text-primary mb-0.5">
                 {formatPrice(property.price)}
               </div>
-              <h3 className="text-sm font-semibold text-foreground line-clamp-1 mb-2">
+              <h3 className="text-[11px] font-medium text-foreground line-clamp-1 mb-0.5">
                 {property.title}
               </h3>
-              <div className="text-xs text-muted-foreground mb-3 line-clamp-1 flex items-center gap-1">
-                <i className="fas fa-map-marker-alt"></i>
+              <div className="text-[9px] text-muted-foreground mb-1.5 line-clamp-1">
                 {property.city}, {property.state}
               </div>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground bg-muted/80 rounded-lg px-2 py-1.5 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5">
-                  <Bed className="h-3.5 w-3.5" />
+              {/* Compact Stats */}
+              <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
+                <div className="flex items-center gap-0.5">
+                  <Bed className="h-2.5 w-2.5" />
                   <span>{property.bedrooms}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Bath className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-0.5">
+                  <Bath className="h-2.5 w-2.5" />
                   <span>{property.bathrooms}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Maximize className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-0.5">
+                  <Maximize className="h-2.5 w-2.5" />
                   <span>{property.area_sqm}m²</span>
                 </div>
               </div>
