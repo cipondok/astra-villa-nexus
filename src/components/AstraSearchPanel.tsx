@@ -3285,17 +3285,23 @@ const AstraSearchPanel = ({
       {/* Advanced Filters Modal (mobile, tablet and desktop) */}
       {showAdvancedFilters && createPortal(
         <div 
-          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] modal-overlay flex items-center justify-center animate-in fade-in duration-300 p-2 md:p-4" 
+          className="fixed inset-0 left-0 right-0 top-0 bottom-0 z-[999999] modal-overlay flex items-center justify-center p-2 md:p-4 bg-black/20 backdrop-blur-sm transition-all duration-200" 
           onClick={() => setShowAdvancedFilters(false)}
+          style={{ animation: 'fadeIn 0.15s ease-out' }}
         >
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "w-full mx-auto rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in duration-300",
+              "w-full mx-auto rounded-2xl shadow-2xl flex flex-col overflow-hidden",
               "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              "transition-all duration-200 ease-out",
               isMobile ? "max-h-[85vh]" : "max-w-md max-h-[65vh]"
             )}
+            style={{ 
+              animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+              transformOrigin: 'center center'
+            }}
           >
             {/* Slim Header */}
             <div className="flex items-center justify-between border-b border-white/20 px-3 py-2 shrink-0 bg-white/5">
