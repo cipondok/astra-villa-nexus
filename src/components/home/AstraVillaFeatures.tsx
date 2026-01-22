@@ -14,50 +14,50 @@ const features: Feature[] = [{
   icon: Building2,
   title: 'New Projects',
   description: 'The best investment opportunities',
-  color: 'text-blue-600 dark:text-blue-400',
-  iconBg: 'bg-blue-100 dark:bg-blue-900/50'
+  color: 'text-blue-700 dark:text-blue-400',
+  iconBg: 'bg-blue-200/80 dark:bg-blue-900/50'
 }, {
   icon: Calculator,
   title: 'Construction Cost Calculator',
   description: 'Get construction cost estimate',
-  color: 'text-cyan-600 dark:text-cyan-400',
-  iconBg: 'bg-cyan-100 dark:bg-cyan-900/50'
+  color: 'text-cyan-700 dark:text-cyan-400',
+  iconBg: 'bg-cyan-200/80 dark:bg-cyan-900/50'
 }, {
   icon: Landmark,
   title: 'Home Loan Calculator',
   description: 'Find affordable loan packages',
-  color: 'text-emerald-600 dark:text-emerald-400',
-  iconBg: 'bg-emerald-100 dark:bg-emerald-900/50'
+  color: 'text-emerald-700 dark:text-emerald-400',
+  iconBg: 'bg-emerald-200/80 dark:bg-emerald-900/50'
 }, {
   icon: Map,
   title: 'Area Guides',
   description: 'Explore housing societies in Indonesia',
-  color: 'text-pink-600 dark:text-pink-400',
-  iconBg: 'bg-pink-100 dark:bg-pink-900/50'
+  color: 'text-pink-700 dark:text-pink-400',
+  iconBg: 'bg-pink-200/80 dark:bg-pink-900/50'
 }, {
   icon: MapPin,
   title: 'Plot Finder',
   description: 'Find plots in any housing society',
-  color: 'text-teal-600 dark:text-teal-400',
-  iconBg: 'bg-teal-100 dark:bg-teal-900/50'
+  color: 'text-teal-700 dark:text-teal-400',
+  iconBg: 'bg-teal-200/80 dark:bg-teal-900/50'
 }, {
   icon: TrendingUp,
   title: 'Property Index',
   description: 'Track changes in real estate prices',
-  color: 'text-purple-600 dark:text-purple-400',
-  iconBg: 'bg-purple-100 dark:bg-purple-900/50'
+  color: 'text-purple-700 dark:text-purple-400',
+  iconBg: 'bg-purple-200/80 dark:bg-purple-900/50'
 }, {
   icon: Ruler,
   title: 'Area Unit Converter',
   description: 'Convert any area unit instantly',
-  color: 'text-amber-600 dark:text-amber-400',
-  iconBg: 'bg-amber-100 dark:bg-amber-900/50'
+  color: 'text-amber-700 dark:text-amber-400',
+  iconBg: 'bg-amber-200/80 dark:bg-amber-900/50'
 }, {
   icon: BarChart3,
   title: 'Property Trends',
   description: 'Find popular areas to buy property',
-  color: 'text-violet-600 dark:text-violet-400',
-  iconBg: 'bg-violet-100 dark:bg-violet-900/50'
+  color: 'text-violet-700 dark:text-violet-400',
+  iconBg: 'bg-violet-200/80 dark:bg-violet-900/50'
 }];
 
 interface AstraVillaFeaturesProps {
