@@ -2444,7 +2444,7 @@ const AstraSearchPanel = ({
                 <button onClick={() => toggleSearchType('nearby')} aria-label={isGettingLocation ? currentText.gettingLocation : currentText.nearMe} className="p-1 flex items-center justify-center transition-colors" disabled={isGettingLocation} title={isGettingLocation ? currentText.gettingLocation : currentText.nearMe}>
                   {isGettingLocation ? <div className="flex flex-col items-center justify-center">
                       <div className="animate-spin h-4 w-4 border-2 border-cyan-500 rounded-full border-t-transparent" />
-                    </div> : <svg className="h-5 w-5 text-cyan-500 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    </div> : <svg className="h-5 w-5 text-cyan-700 dark:text-cyan-400" viewBox="0 0 24 24" fill={useNearbyLocation ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="3" />
                       <path d="M12 2v3" />
                       <path d="M12 19v3" />
