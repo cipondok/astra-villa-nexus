@@ -2321,11 +2321,11 @@ const AstraSearchPanel = ({
     );
   }
   return <div className="w-full max-w-7xl xl:max-w-[1400px] 2xl:max-w-[1600px] mx-auto transition-all duration-500">
-    <div className={cn("sticky z-30 transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 w-full px-2 lg:px-4 xl:px-6")}>
-      {/* Glassmorphic Luxury Container with Silver Glossy Border */}
-      <div className="relative bg-card/80 backdrop-blur-xl overflow-hidden rounded-2xl border border-gray-300/60 dark:border-gray-600/60 ring-1 ring-white/30 dark:ring-white/10 shadow-xl shadow-gray-400/20 dark:shadow-black/30">
-        {/* Silver glossy shine overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent dark:from-white/10 pointer-events-none rounded-2xl" />
+    <div className={cn("sticky z-[9999] transition-all duration-500", isMobile ? "top-[60px] md:top-[64px] lg:top-[68px] px-1 py-2" : "top-0 w-full px-2 lg:px-4 xl:px-6")}>
+      {/* Glassmorphic Luxury Container with Slim Silver Border */}
+      <div className="relative bg-card/60 backdrop-blur-xl overflow-visible rounded-xl border border-gray-200/80 dark:border-gray-700/60 shadow-lg shadow-gray-300/30 dark:shadow-black/20">
+        {/* Subtle top shine line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20 pointer-events-none" />
         <div className={cn("relative space-y-1.5", isMobile ? "p-1.5" : "p-2 lg:p-3 xl:p-4")}>
           
           {/* Compact Tabs for Sale/Rent/All - Premium Blue Theme */}
@@ -2447,7 +2447,7 @@ const AstraSearchPanel = ({
               </div>
               
               {/* Smart Suggestions Dropdown */}
-              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl shadow-primary/30 z-[99999] max-h-80 overflow-y-auto">
+              {showSuggestions && hasSuggestions && <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl z-[100000] max-h-80 overflow-y-auto">
                   {/* Recent Searches */}
                   {filteredSuggestions.recent.length > 0 && <div className="p-2 border-b border-border/50">
                       <div className="flex items-center justify-between mb-1.5">
