@@ -2000,95 +2000,141 @@ const AstraSearchPanel = ({
     requestAnimationFrame(() => window.scrollTo(0, currentScroll));
   };
 
-  // Simple mobile view - fixed search panel at top
+  // Mobile view - inline search panel (not fixed)
   if (isMobile) {
     return (
-      <div className="w-full">
-        {/* Fixed Search Panel - Compact Mobile Style */}
-        <div 
-          className="fixed left-0 right-0 z-[10050] bg-transparent shadow-sm"
-          style={{ top: 'env(safe-area-inset-top, 56px)', paddingTop: '4px' }}
-        >
-          {/* Ultra Compact Search Container */}
-          <div className="px-2 pb-2 space-y-1.5">
-            {/* Search Input Row */}
-            <div className="flex items-center gap-1.5">
-              <div ref={anchorRef} className="flex-1 relative">
-                <Search
-                  className={cn(
-                    "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-primary pointer-events-none",
-                    searchQuery && "animate-pulse"
-                  )}
-                />
-                <Input
-                  placeholder={currentText.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={(e) => {
-                    e.preventDefault();
-                    const currentScroll = window.scrollY;
-                    setShowSuggestions(true);
-                    if (anchorRef.current) {
-                      const rect = anchorRef.current.getBoundingClientRect();
-                      setSuggestionsTop(rect.bottom + 4);
-                    }
-                    requestAnimationFrame(() => window.scrollTo(0, currentScroll));
-                  }}
-                  onTouchStart={(e) => e.stopPropagation()}
-                  className="pl-8 pr-9 h-9 text-sm bg-transparent border border-border/50 focus:border-primary focus:bg-transparent rounded-lg"
-                />
-                
-                {/* Image Search Inside Input */}
-                <div className="absolute right-1.5 top-1/2 transform -translate-y-1/2">
-                  <ImageSearchButton
-                    onImageSelected={handleImageSearch}
-                    onClear={handleClearImageSearch}
-                    isSearching={isImageSearching}
-                    enableDragDrop={true}
-                    enablePaste={true}
-                    className="h-6 w-6"
-                  />
-                </div>
-              </div>
-            </div>
+      <div className="w-full p-2 space-y-2">
+        {/* Compact Tabs for Sale/Rent/All */}
+        <div className="flex justify-center">
+          <div className="search-tab-container grid grid-cols-4 bg-white/10 dark:bg-black/20 backdrop-blur-md rounded-xl p-1">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={cn(
+                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                activeTab === "all" 
+                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
+                  : "text-white/80 hover:text-white hover:bg-white/10"
+              )}
+            >
+              <Layers className="h-3 w-3" />
+              <span className="hidden xs:inline">All</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab("sale")}
+              className={cn(
+                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                activeTab === "sale" 
+                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
+                  : "text-white/80 hover:text-white hover:bg-white/10"
+              )}
+            >
+              <ShoppingBag className="h-3 w-3" />
+              <span className="hidden xs:inline">Buy</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab("rent")}
+              className={cn(
+                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                activeTab === "rent" 
+                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
+                  : "text-white/80 hover:text-white hover:bg-white/10"
+              )}
+            >
+              <Key className="h-3 w-3" />
+              <span className="hidden xs:inline">Rent</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab("new_project")}
+              className={cn(
+                "px-2 py-1.5 text-[10px] font-medium rounded-lg transition-all flex items-center justify-center gap-1",
+                activeTab === "new_project" 
+                  ? "bg-white/90 dark:bg-white/20 text-primary shadow-sm" 
+                  : "text-white/80 hover:text-white hover:bg-white/10"
+              )}
+            >
+              <Rocket className="h-3 w-3" />
+              <span className="hidden xs:inline">New</span>
+            </button>
+          </div>
+        </div>
 
-            {/* Filter & Search Button Row - Ultra Compact */}
-            <div className="flex items-center gap-1.5">
-              {/* Filter Button */}
-              <Button
-                onClick={() => setShowAdvancedFilters(true)}
-                variant="glass"
-                size="sm"
-                className="h-8 flex-1 rounded-full flex items-center justify-center gap-1"
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                <span className="text-xs font-medium">{currentText.filters}</span>
-                {getActiveFiltersCount() > 0 && (
-                  <Badge
-                    variant="default"
-                    className="ml-0.5 h-4 min-w-[16px] px-1 flex items-center justify-center text-[9px] rounded-full"
-                  >
-                    {getActiveFiltersCount()}
-                  </Badge>
-                )}
-              </Button>
-
-              {/* Search Button */}
-              <Button
-                onClick={handleSearch}
-                variant="gold-orange"
-                size="sm"
-                className="h-8 flex-1 rounded-full flex items-center justify-center gap-1"
-              >
-                <Search className="h-3.5 w-3.5" />
-                <span className="text-xs font-medium">{currentText.search}</span>
-              </Button>
+        {/* Search Input Row */}
+        <div className="flex items-center gap-1.5">
+          <div ref={anchorRef} className="flex-1 relative">
+            <Search
+              className={cn(
+                "absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-primary pointer-events-none",
+                searchQuery && "animate-pulse"
+              )}
+            />
+            <Input
+              type="search"
+              placeholder={currentText.searchPlaceholder}
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onFocus={(e) => {
+                e.preventDefault();
+                const currentScroll = window.scrollY;
+                setShowSuggestions(true);
+                if (anchorRef.current) {
+                  const rect = anchorRef.current.getBoundingClientRect();
+                  setSuggestionsTop(rect.bottom + 4);
+                }
+                requestAnimationFrame(() => window.scrollTo(0, currentScroll));
+              }}
+              onTouchStart={(e) => e.stopPropagation()}
+              className="pl-8 pr-12 h-10 text-sm bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/20 focus:border-primary focus:bg-white/20 rounded-xl text-white placeholder:text-white/60"
+            />
+            
+            {/* Image Search Inside Input */}
+            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+              <ImageSearchButton
+                onImageSelected={handleImageSearch}
+                onClear={handleClearImageSearch}
+                isSearching={isImageSearching}
+                enableDragDrop={true}
+                enablePaste={true}
+                className="h-6 w-6"
+              />
             </div>
           </div>
         </div>
 
-        {/* Spacer for fixed panel - matches compact panel height */}
-        <div className="h-[88px]" />
+        {/* Filter & Search Button Row */}
+        <div className="flex items-center gap-2">
+          {/* Filter Button */}
+          <Button
+            onClick={() => setShowAdvancedFilters(true)}
+            variant="outline"
+            size="sm"
+            className="h-9 flex-1 rounded-xl flex items-center justify-center gap-1.5 bg-white/10 dark:bg-black/20 backdrop-blur-md border-white/30 dark:border-white/20 text-white hover:bg-white/20"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            <span className="text-xs font-medium">{currentText.filters}</span>
+            {getActiveFiltersCount() > 0 && (
+              <Badge
+                variant="default"
+                className="ml-0.5 h-5 min-w-[20px] px-1.5 flex items-center justify-center text-[10px] rounded-full"
+              >
+                {getActiveFiltersCount()}
+              </Badge>
+            )}
+          </Button>
+
+          {/* Search Button */}
+          <Button
+            onClick={handleSearch}
+            variant="gold-orange"
+            size="sm"
+            className="h-9 flex-1 rounded-xl flex items-center justify-center gap-1.5"
+          >
+            <Search className="h-4 w-4" />
+            <span className="text-xs font-medium">{currentText.search}</span>
+          </Button>
+        </div>
 
         {/* Mobile Suggestions Dropdown */}
         {showSuggestions && hasSuggestions && (
