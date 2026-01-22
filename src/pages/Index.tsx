@@ -48,6 +48,7 @@ const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCaro
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
+const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -592,6 +593,34 @@ const Index = () => {
             <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center p-1.5">
               <div className="w-1.5 h-3 bg-white/60 rounded-full animate-pulse" />
             </div>
+          </div>
+        </section>
+
+        {/* Featured Properties - Full Width Auto-Scrolling Carousel - Right Below Search */}
+        <section className="w-full max-w-[2400px] mx-auto px-0">
+          <div className="py-2 md:py-3">
+            <div className="flex items-center justify-between px-3 md:px-6 mb-1">
+              <div>
+                <h2 className="text-sm md:text-base lg:text-lg font-bold text-foreground flex items-center gap-2">
+                  <Star className="h-4 w-4 md:h-5 md:w-5 text-primary fill-primary/20" />
+                  {t.featuredProperties}
+                </h2>
+                <p className="text-[10px] md:text-xs text-muted-foreground">{t.premiumProperties}</p>
+              </div>
+            </div>
+            <Suspense fallback={
+              <div className="flex gap-3 px-3 overflow-hidden">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0 w-[160px] md:w-[200px] animate-pulse">
+                    <div className="h-24 md:h-32 bg-muted rounded-lg mb-1.5" />
+                    <div className="h-3 bg-muted rounded w-3/4 mb-1" />
+                    <div className="h-2 bg-muted rounded w-1/2" />
+                  </div>
+                ))}
+              </div>
+            }>
+              <PropertySlideshow />
+            </Suspense>
           </div>
         </section>
 
