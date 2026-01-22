@@ -3290,116 +3290,106 @@ const AstraSearchPanel = ({
             className="fixed inset-0 z-[99998]" 
             onClick={() => setShowAdvancedFilters(false)}
           />
-          {/* Floating popup - same style as Property Type popover */}
+          {/* Floating popup - 90% transparent glassmorphic slim style */}
           <div 
             ref={advancedFiltersRef} 
             onClick={(e) => e.stopPropagation()}
             className={cn(
               "fixed top-20 right-2 md:right-4 z-[99999] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
-              "bg-white/90 dark:bg-black/80 backdrop-blur-2xl backdrop-saturate-150",
-              "border border-gray-200/50 dark:border-white/20 ring-1 ring-black/5 dark:ring-white/10",
-              isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[65vh] w-[420px]"
+              "bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150",
+              "border border-white/30 dark:border-white/20 ring-1 ring-white/20",
+              isMobile ? "max-h-[80vh] w-[calc(100vw-1rem)]" : "max-h-[60vh] w-[380px]"
             )}
             style={{ 
               animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
               transformOrigin: 'top right'
             }}
           >
-            {/* Header with active selections */}
-            <div className="border-b border-gray-200 dark:border-white/20 shrink-0 bg-gray-50/80 dark:bg-white/5">
-              {/* Title Row */}
-              <div className="flex items-center justify-between px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-md">
-                    <SlidersHorizontal className="h-3.5 w-3.5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">Filters</h4>
-                  </div>
+            {/* Slim Header */}
+            <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/20 shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                  <SlidersHorizontal className="h-2.5 w-2.5 text-white" />
                 </div>
-                <div className="flex items-center gap-2">
-                  {getActiveFiltersCount() > 0 && (
-                    <button
-                      onClick={clearAllFilters}
-                      className="text-[10px] font-medium text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 px-2 py-1 rounded-lg hover:bg-red-500/10 active:scale-95 transition-all"
-                    >
-                      Clear All
-                    </button>
-                  )}
-                  <button 
-                    onClick={() => setShowAdvancedFilters(false)} 
-                    className="h-8 w-8 flex items-center justify-center hover:bg-gray-200/50 dark:hover:bg-white/10 rounded-full text-gray-500 dark:text-white/70 hover:text-gray-900 dark:hover:text-white active:scale-95 transition-all"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
+                <h4 className="text-[11px] font-bold text-gray-900 dark:text-white">Filters</h4>
+                {getActiveFiltersCount() > 0 && (
+                  <Badge className="h-4 px-1.5 text-[9px] bg-emerald-500 text-white border-0 font-bold">
+                    {getActiveFiltersCount()}
+                  </Badge>
+                )}
               </div>
-              
-              {/* Active Selections Row - Always visible */}
-              <div className="px-3 pb-2">
-                <div className="flex flex-wrap gap-1.5 min-h-[28px] items-center">
-                  {getActiveFiltersCount() === 0 ? (
-                    <span className="text-[11px] text-gray-400 dark:text-white/40 italic">No filters selected</span>
-                  ) : (
-                    <>
-                      {filters.listingType && (
-                        <Badge className="h-6 px-2.5 text-[11px] gap-1.5 bg-emerald-500 text-white border-0 font-medium shadow-sm">
-                          {filters.listingType === 'sale' ? '🏷️ Buy' : filters.listingType === 'rent' ? '🔑 Rent' : '📋 All'}
-                          <X className="h-3 w-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleFilterChange('listingType', '')} />
-                        </Badge>
-                      )}
-                      {filters.propertyType && (
-                        <Badge className="h-6 px-2.5 text-[11px] gap-1.5 bg-blue-500 text-white border-0 font-medium shadow-sm">
-                          🏠 {filters.propertyType}
-                          <X className="h-3 w-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleFilterChange('propertyType', '')} />
-                        </Badge>
-                      )}
-                      {filters.state && filters.state !== 'all' && (
-                        <Badge className="h-6 px-2.5 text-[11px] gap-1.5 bg-purple-500 text-white border-0 font-medium shadow-sm">
-                          📍 {filters.state}
-                          <X className="h-3 w-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleFilterChange('state', 'all')} />
-                        </Badge>
-                      )}
-                      {filters.bedrooms && (
-                        <Badge className="h-6 px-2.5 text-[11px] gap-1.5 bg-orange-500 text-white border-0 font-medium shadow-sm">
-                          🛏️ {filters.bedrooms}BR
-                          <X className="h-3 w-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleFilterChange('bedrooms', '')} />
-                        </Badge>
-                      )}
-                      {filters.bathrooms && (
-                        <Badge className="h-6 px-2.5 text-[11px] gap-1.5 bg-cyan-500 text-white border-0 font-medium shadow-sm">
-                          🚿 {filters.bathrooms}BA
-                          <X className="h-3 w-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleFilterChange('bathrooms', '')} />
-                        </Badge>
-                      )}
-                    </>
-                  )}
-                </div>
+              <div className="flex items-center gap-1">
+                {getActiveFiltersCount() > 0 && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="text-[9px] font-medium text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded hover:bg-red-500/10 active:scale-95"
+                  >
+                    Clear
+                  </button>
+                )}
+                <button 
+                  onClick={() => setShowAdvancedFilters(false)} 
+                  className="h-6 w-6 flex items-center justify-center hover:bg-white/20 dark:hover:bg-white/10 rounded-full text-gray-600 dark:text-white/70 active:scale-95"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
               </div>
             </div>
+              
+            {/* Active Selections - Slim */}
+            {getActiveFiltersCount() > 0 && (
+              <div className="px-2 py-1.5 border-b border-white/10 shrink-0">
+                <div className="flex flex-wrap gap-1">
+                  {filters.listingType && (
+                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-emerald-500/90 text-white border-0 font-medium">
+                      {filters.listingType === 'sale' ? 'Buy' : filters.listingType === 'rent' ? 'Rent' : 'All'}
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('listingType', '')} />
+                    </Badge>
+                  )}
+                  {filters.propertyType && (
+                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-blue-500/90 text-white border-0 font-medium">
+                      {filters.propertyType}
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('propertyType', '')} />
+                    </Badge>
+                  )}
+                  {filters.state && filters.state !== 'all' && (
+                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-purple-500/90 text-white border-0 font-medium">
+                      {filters.state}
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('state', 'all')} />
+                    </Badge>
+                  )}
+                  {filters.bedrooms && (
+                    <Badge className="h-5 px-2 text-[9px] gap-1 bg-orange-500/90 text-white border-0 font-medium">
+                      {filters.bedrooms}BR
+                      <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => handleFilterChange('bedrooms', '')} />
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Content - Scrollable */}
             <ScrollArea className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-3 space-y-3">
+              <div className="p-2 space-y-2">
                 
-                {/* Listing Type - Large Touch-Friendly Cards */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wide">Listing Type</h4>
-                  <div className="grid grid-cols-3 gap-2">
+                {/* Listing Type - Slim Touch Cards */}
+                <div className="space-y-1.5">
+                  <h4 className="text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-wide px-1">Listing Type</h4>
+                  <div className="grid grid-cols-3 gap-1.5">
                     <button 
                       onClick={() => {
                         handleFilterChange('listingType', '');
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "h-14 flex flex-col items-center justify-center gap-1 rounded-xl transition-all active:scale-95",
+                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-95",
                         filters.listingType === '' 
-                          ? "bg-gradient-to-br from-primary to-primary/80 text-white shadow-lg shadow-primary/30 ring-2 ring-primary/50" 
-                          : "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-white/15"
+                          ? "bg-primary text-white shadow-lg ring-2 ring-primary/50" 
+                          : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
                       )}
                     >
-                      <Layers className="h-5 w-5" />
-                      <span className="text-[11px] font-semibold">All</span>
+                      <Layers className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-semibold">All</span>
                     </button>
                     <button 
                       onClick={() => {
@@ -3407,14 +3397,14 @@ const AstraSearchPanel = ({
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "h-14 flex flex-col items-center justify-center gap-1 rounded-xl transition-all active:scale-95",
+                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-95",
                         filters.listingType === 'sale' 
-                          ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-500/50" 
-                          : "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-white/15"
+                          ? "bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-500/50" 
+                          : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
                       )}
                     >
-                      <DollarSign className="h-5 w-5" />
-                      <span className="text-[11px] font-semibold">Buy</span>
+                      <DollarSign className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-semibold">Buy</span>
                     </button>
                     <button 
                       onClick={() => {
@@ -3422,19 +3412,19 @@ const AstraSearchPanel = ({
                         setTimeout(() => setOpenSections(prev => ({ ...prev, propertyType: true, location: false, priceRange: false, propertySpecs: false, amenities: false })), 150);
                       }} 
                       className={cn(
-                        "h-14 flex flex-col items-center justify-center gap-1 rounded-xl transition-all active:scale-95",
+                        "h-10 flex items-center justify-center gap-1.5 rounded-xl transition-all active:scale-95",
                         filters.listingType === 'rent' 
-                          ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-500/50" 
-                          : "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-white/15"
+                          ? "bg-blue-500 text-white shadow-lg ring-2 ring-blue-500/50" 
+                          : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/90 hover:bg-white/30 dark:hover:bg-white/15"
                       )}
                     >
-                      <Key className="h-5 w-5" />
-                      <span className="text-[11px] font-semibold">Rent</span>
+                      <Key className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-semibold">Rent</span>
                     </button>
                   </div>
                 </div>
 
-                {/* Property Type - Touch-Friendly Grid */}
+                {/* Property Type - Slim Grid */}
                 <Collapsible
                   open={openSections.propertyType}
                   onOpenChange={(open) => setOpenSections(prev => ({ 
@@ -3445,20 +3435,20 @@ const AstraSearchPanel = ({
                     propertySpecs: false,
                     amenities: false
                   }))}
-                  className="space-y-2"
+                  className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between h-10 px-3 hover:bg-gray-100/50 dark:hover:bg-white/10 rounded-xl transition-all active:scale-[0.98]">
-                      <span className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-all active:scale-[0.98]">
+                      <span className="text-[11px] font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+                        <Home className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                         Property Type
-                        {filters.propertyType && <Badge className="ml-1 h-5 px-2 text-[10px] bg-blue-500 text-white border-0">{filters.propertyType}</Badge>}
+                        {filters.propertyType && <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-blue-500 text-white border-0">{filters.propertyType}</Badge>}
                       </span>
-                      {openSections.propertyType ? <ChevronUp className="h-4 w-4 text-gray-400 dark:text-white/50" /> : <ChevronDown className="h-4 w-4 text-gray-400 dark:text-white/50" />}
+                      {openSections.propertyType ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2 pt-1">
-                    <div className="grid grid-cols-3 gap-2">
+                  <CollapsibleContent className="pt-1">
+                    <div className="grid grid-cols-3 gap-1.5">
                       {['House', 'Apartment', 'Villa', 'Land', 'Office', 'Shop'].map(type => (
                         <button 
                           key={type}
@@ -3471,10 +3461,10 @@ const AstraSearchPanel = ({
                             }
                           }}
                           className={cn(
-                            "h-11 text-[11px] font-semibold rounded-xl transition-all active:scale-95",
+                            "h-9 text-[10px] font-semibold rounded-lg transition-all active:scale-95",
                             filters.propertyType === type 
-                              ? "bg-blue-500 text-white shadow-md ring-2 ring-blue-500/50" 
-                              : "bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-white/15"
+                              ? "bg-blue-500 text-white shadow-md" 
+                              : "bg-white/20 dark:bg-white/10 text-gray-800 dark:text-white/80 hover:bg-white/30 dark:hover:bg-white/15"
                           )}
                         >
                           {type}
@@ -3484,7 +3474,7 @@ const AstraSearchPanel = ({
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Location - Touch-Friendly Collapsible */}
+                {/* Location - Slim Collapsible */}
                 <Collapsible
                   open={openSections.location}
                   onOpenChange={(open) => {
@@ -3506,26 +3496,26 @@ const AstraSearchPanel = ({
                       }
                     }
                   }}
-                  className="space-y-2"
+                  className="space-y-1"
                 >
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between h-10 px-3 hover:bg-gray-100/50 dark:hover:bg-white/10 rounded-xl transition-all active:scale-[0.98]">
-                      <span className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    <button className="w-full flex items-center justify-between h-8 px-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-all active:scale-[0.98]">
+                      <span className="text-[11px] font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                         Location
                         {(filters.state && filters.state !== 'all') || (filters.city && filters.city !== 'all') ? (
-                          <Badge className="ml-1 h-5 px-2 text-[10px] bg-purple-500 text-white border-0">
+                          <Badge className="ml-1 h-4 px-1.5 text-[9px] bg-purple-500 text-white border-0">
                             {[filters.state, filters.city, filters.area].filter(f => f && f !== 'all').length}
                           </Badge>
                         ) : null}
                       </span>
-                      {openSections.location ? <ChevronUp className="h-4 w-4 text-gray-400 dark:text-white/50" /> : <ChevronDown className="h-4 w-4 text-gray-400 dark:text-white/50" />}
+                      {openSections.location ? <ChevronUp className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" /> : <ChevronDown className="h-3.5 w-3.5 text-gray-500 dark:text-white/50" />}
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2 pt-1">
-                    {/* Province/City/Area Tabs - Touch Friendly */}
+                  <CollapsibleContent className="pt-1">
+                    {/* Province/City/Area Tabs - Slim */}
                     <Tabs value={locationActiveTab} onValueChange={(v) => setLocationActiveTab(v as 'province' | 'city' | 'area')} className="w-full">
-                      <TabsList className="w-full grid grid-cols-3 h-9 rounded-xl bg-gray-100 dark:bg-white/10 p-1 gap-1">
+                      <TabsList className="w-full grid grid-cols-3 h-7 rounded-lg bg-white/20 dark:bg-white/10 p-0.5 gap-0.5">
                         <TabsTrigger
                           value="province"
                           className="text-[9px] font-semibold rounded-sm text-foreground bg-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
@@ -3982,30 +3972,28 @@ const AstraSearchPanel = ({
                   </Collapsible>
                 )}
 
-                {/* Clear All */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                {/* Clear All - Slim */}
+                <button 
                   onClick={clearAllFilters} 
-                  className="w-full h-10 text-sm font-semibold text-destructive hover:text-destructive hover:bg-destructive/10 border-2 border-destructive/30 hover:border-destructive rounded-lg"
+                  className="w-full h-8 text-[10px] font-semibold text-red-600 dark:text-red-400 hover:bg-red-500/10 border border-red-500/30 rounded-lg transition-all active:scale-95"
                 >
-                  <X className="h-4 w-4 mr-2" />
-                  Clear All Filters
-                </Button>
+                  <X className="h-3 w-3 mr-1 inline" />
+                  Clear All
+                </button>
               </div>
             </ScrollArea>
 
-            {/* Footer - Sticky with large touch target */}
-            <div className="border-t border-gray-200 dark:border-white/10 px-3 py-3 shrink-0 bg-gray-50/50 dark:bg-white/5">
+            {/* Footer - Slim */}
+            <div className="border-t border-white/20 px-2 py-2 shrink-0">
               <Button 
                 onClick={() => {
                   handleSearch();
                   setShowAdvancedFilters(false);
                 }} 
-                className="w-full h-12 text-sm font-bold shadow-lg rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all active:scale-[0.98]" 
-                size="lg"
+                className="w-full h-9 text-[11px] font-bold shadow-lg rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all active:scale-[0.98]" 
+                size="sm"
               >
-                <Search className="h-4 w-4 mr-2" />
+                <Search className="h-3.5 w-3.5 mr-1.5" />
                 Apply Filters
               </Button>
             </div>
