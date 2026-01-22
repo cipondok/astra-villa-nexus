@@ -129,8 +129,9 @@ export const getFilteredSuggestions = (
   currentState?: string,
   currentCity?: string
 ): FilteredSuggestions => {
-  // If no query, show default suggestions
-  if (!searchQuery || searchQuery.trim().length === 0) {
+  // If no query (or too short), show default suggestions.
+  // This ensures Trending is visible when users first focus the input or type 1 character.
+  if (!searchQuery || searchQuery.trim().length < 2) {
     return {
       recent: recentSearchTerms.slice(0, 3),
       smart: smartSuggestions.slice(0, 3),
