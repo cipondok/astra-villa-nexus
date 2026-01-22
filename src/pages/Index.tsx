@@ -495,17 +495,15 @@ const Index = () => {
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
       
-      {/* Content Layer with mobile-first responsive backdrop */}
+      {/* Content Layer - edge-to-edge hero */}
       <div className={cn(
         "relative z-10 min-h-stable md:min-h-screen",
         "safe-area-mobile",
-        // Mobile-specific padding
-        "px-0 md:px-2",
         "pb-20 md:pb-4" // Extra bottom padding for mobile footer
       )}>
         
-        {/* Hero Search Section - Compact on mobile/tablet, full-screen on desktop */}
-        <section className="relative w-full min-h-[120px] md:min-h-[360px] lg:h-screen lg:min-h-[600px] overflow-hidden" id="hero-section">
+        {/* Hero Search Section - Full width, no margins/borders, flush to header */}
+        <section className="relative w-full min-h-[120px] md:min-h-[360px] lg:h-screen lg:min-h-[600px]" id="hero-section">
           {/* Dark Jakarta Skyline Background */}
           <div className="absolute inset-0 z-0">
             <img 
