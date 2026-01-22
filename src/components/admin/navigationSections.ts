@@ -319,13 +319,6 @@ export const navigationSections = {
 
   "content-settings": [
     {
-      key: "branding-settings",
-      label: "Branding Settings",
-      icon: Palette,
-      description: "Manage logos, brand assets, welcome screen, and visual identity across the website",
-      badge: "New"
-    },
-    {
       key: "carousel-settings",
       label: "Featured Properties Carousel",
       icon: ImageIcon,
