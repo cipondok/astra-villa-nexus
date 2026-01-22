@@ -14,7 +14,7 @@ import { BaseProperty } from "@/types/property";
 import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw } from "lucide-react";
+import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star } from "lucide-react";
 import jakartaSkylineDark from "@/assets/jakarta-skyline-dark.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
@@ -537,8 +537,18 @@ const Index = () => {
               </div>
               
               {/* Title */}
-              <h1 className="text-lg sm:text-xl md:text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg mb-0.5 sm:mb-1 md:mb-2 lg:mb-4">
-                {t.findYour}
+              <h1 className="relative text-lg sm:text-xl md:text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight drop-shadow-lg mb-0.5 sm:mb-1 md:mb-2 lg:mb-4">
+                <span className="relative inline-block">
+                  {/* Star decorations */}
+                  <Sparkles className="absolute -top-2 -left-3 sm:-top-3 sm:-left-4 md:-top-4 md:-left-6 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-6 lg:w-6 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
+                  <Star className="absolute -top-1 -right-2 sm:-top-2 sm:-right-3 md:-top-3 md:-right-4 h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-yellow-400 animate-pulse fill-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.8)]" style={{ animationDelay: '0.3s' }} />
+                  <Sparkles className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 md:-bottom-2 md:-right-3 h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-amber-300 animate-pulse drop-shadow-[0_0_6px_rgba(252,211,77,0.8)]" style={{ animationDelay: '0.6s' }} />
+                  <Star className="absolute top-1/2 -left-4 sm:-left-5 md:-left-8 h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 text-yellow-200 animate-pulse fill-yellow-200 drop-shadow-[0_0_4px_rgba(254,240,138,0.8)]" style={{ animationDelay: '0.9s' }} />
+                  {/* Glowing gold gradient text */}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-white to-yellow-200 drop-shadow-[0_0_20px_rgba(253,224,71,0.5)]">
+                    {t.findYour}
+                  </span>
+                </span>
               </h1>
               <p className="flex text-[9px] sm:text-[11px] md:text-sm lg:text-lg text-white/90 items-center justify-center gap-1 sm:gap-1.5 lg:gap-2 drop-shadow-md">
                 <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 lg:h-5 lg:w-5" />
