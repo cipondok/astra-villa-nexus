@@ -516,41 +516,45 @@ const PropertyDetail: React.FC = () => {
         </div>
       )}
 
-      {/* Navigation Header - Compact Mobile */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/30">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="flex items-center justify-between h-10 sm:h-12">
+      {/* Slim Sticky Header */}
+      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4">
+          <div className="flex items-center justify-between h-10">
             <div className="flex items-center gap-1">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="h-8 w-8 p-0 hover:bg-muted/50"
+                className="h-7 w-7 p-0 hover:bg-muted/50 active:scale-95 transition-transform"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className="h-3.5 w-3.5 text-foreground" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/')}
-                className="hidden sm:flex items-center gap-1 hover:bg-muted/50 h-8 px-2"
+                className="hidden sm:flex items-center gap-1 hover:bg-muted/50 h-7 px-2 active:scale-95"
               >
-                <Home className="h-4 w-4" />
-                <span className="text-xs">Home</span>
+                <Home className="h-3.5 w-3.5 text-foreground" />
+                <span className="text-[10px] text-foreground">Home</span>
               </Button>
+              {/* Property Title in Header */}
+              <span className="text-[10px] sm:text-xs font-medium text-foreground/70 truncate max-w-[120px] sm:max-w-[200px] ml-1">
+                {property.title}
+              </span>
             </div>
             
             <div className="flex items-center gap-1">
-              {/* Admin Edit Controls */}
+              {/* Admin Controls - Compact */}
               {isAdmin && !adminLoading && (
-                <div className="hidden md:flex items-center gap-1 mr-1 border-r border-border pr-1">
+                <div className="hidden md:flex items-center gap-1 mr-1 border-r border-border/30 pr-1">
                   <Button 
                     variant="default" 
                     size="sm"
                     onClick={() => setIsEditMode(!isEditMode)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white h-7 text-xs px-2"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground h-6 text-[9px] px-2"
                   >
-                    <Edit className="h-3 w-3 mr-1" />
+                    <Edit className="h-2.5 w-2.5 mr-0.5" />
                     {isEditMode ? 'Cancel' : 'Edit'}
                   </Button>
                   <Button 
@@ -559,30 +563,18 @@ const PropertyDetail: React.FC = () => {
                     onClick={async () => {
                       if (confirm('Delete this property?')) {
                         try {
-                          const { error } = await supabase
-                            .from('properties')
-                            .delete()
-                            .eq('id', id);
-                          
+                          const { error } = await supabase.from('properties').delete().eq('id', id);
                           if (error) throw error;
-                          
-                          toast.success({
-                            title: "Deleted",
-                            description: "Property deleted successfully."
-                          });
+                          toast.success({ title: "Deleted", description: "Property deleted." });
                           navigate('/admin');
                         } catch (error) {
-                          console.error('Delete error:', error);
-                          toast.error({
-                            title: "Error",
-                            description: "Unable to delete."
-                          });
+                          toast.error({ title: "Error", description: "Unable to delete." });
                         }
                       }
                     }}
-                    className="h-7 text-xs px-2"
+                    className="h-6 text-[9px] px-1.5"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-2.5 w-2.5" />
                   </Button>
                 </div>
               )}
@@ -595,48 +587,48 @@ const PropertyDetail: React.FC = () => {
                 }} 
               />
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 size="sm" 
                 onClick={handleSaveFavorite}
                 disabled={favLoading}
-                className={`h-8 w-8 p-0 ${isFavorite(property.id) ? "bg-destructive/10 text-destructive" : ""}`}
+                className={`h-7 w-7 p-0 active:scale-95 transition-transform ${isFavorite(property.id) ? "text-destructive" : "text-foreground/70"}`}
               >
-                <Heart className={`h-4 w-4 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
+                <Heart className={`h-3.5 w-3.5 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
               </Button>
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 size="sm"
                 onClick={handleShareProperty}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 p-0 text-foreground/70 hover:text-primary active:scale-95 transition-transform"
               >
-                <Share2 className="h-4 w-4" />
+                <Share2 className="h-3.5 w-3.5" />
               </Button>
               
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate('/')}
-                className="md:hidden h-8 w-8 p-0"
+                className="md:hidden h-7 w-7 p-0 text-foreground/70 active:scale-95"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-6 py-2 sm:py-3 bg-gradient-to-b from-background via-primary/5 to-background min-h-screen">
         
         {/* Admin Edit Form */}
         {isAdmin && isEditMode && (
-          <Card className="mb-3 sm:mb-6 border border-primary/30">
-            <CardHeader className="p-3 sm:p-4 bg-primary/5">
-              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                <Edit className="h-4 w-4" />
+          <Card className="mb-2 border border-primary/20 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="p-2 sm:p-3 bg-primary/5">
+              <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
+                <Edit className="h-3 w-3" />
                 Edit Property
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4">
+            <CardContent className="p-2 sm:p-3">
               <form onSubmit={async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
@@ -674,42 +666,42 @@ const PropertyDetail: React.FC = () => {
                     description: "Unable to update property. Please try again."
                   });
                 }
-              }} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              }} className="space-y-2 sm:space-y-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Title</label>
-                    <Input name="title" defaultValue={property.title} required />
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Title</label>
+                    <Input name="title" defaultValue={property.title} required className="h-8 text-xs" />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Location</label>
-                    <Input name="location" defaultValue={property.location} required />
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Location</label>
+                    <Input name="location" defaultValue={property.location} required className="h-8 text-xs" />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Price (IDR)</label>
-                    <Input name="price" type="number" defaultValue={property.price} required />
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Price (IDR)</label>
+                    <Input name="price" type="number" defaultValue={property.price} required className="h-8 text-xs" />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Area (sqm)</label>
-                    <Input name="area_sqm" type="number" step="0.01" defaultValue={property.area_sqm || ''} />
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Area (sqm)</label>
+                    <Input name="area_sqm" type="number" step="0.01" defaultValue={property.area_sqm || ''} className="h-8 text-xs" />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Bedrooms</label>
-                    <Input name="bedrooms" type="number" defaultValue={property.bedrooms || ''} />
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Bedrooms</label>
+                    <Input name="bedrooms" type="number" defaultValue={property.bedrooms || ''} className="h-8 text-xs" />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Bathrooms</label>
-                    <Input name="bathrooms" type="number" defaultValue={property.bathrooms || ''} />
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Bathrooms</label>
+                    <Input name="bathrooms" type="number" defaultValue={property.bathrooms || ''} className="h-8 text-xs" />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Property Type</label>
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Type</label>
                     <Select name="property_type" defaultValue={property.property_type}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-8 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -723,9 +715,9 @@ const PropertyDetail: React.FC = () => {
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Listing Type</label>
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Listing</label>
                     <Select name="listing_type" defaultValue={property.listing_type}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-8 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -737,9 +729,9 @@ const PropertyDetail: React.FC = () => {
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Status</label>
+                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Status</label>
                     <Select name="status" defaultValue={property.status}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-8 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -754,15 +746,15 @@ const PropertyDetail: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Description</label>
-                  <Textarea name="description" rows={6} defaultValue={property.description} required />
+                  <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Description</label>
+                  <Textarea name="description" rows={3} defaultValue={property.description} required className="text-xs" />
                 </div>
                 
-                <div className="flex gap-3 pt-4">
-                  <Button type="submit" className="bg-gradient-to-r from-primary to-accent">
-                    Save Changes
+                <div className="flex gap-2 pt-2">
+                  <Button type="submit" size="sm" className="bg-primary hover:bg-primary/90 h-7 text-xs px-3">
+                    Save
                   </Button>
-                  <Button type="button" variant="outline" onClick={() => setIsEditMode(false)}>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setIsEditMode(false)} className="h-7 text-xs px-3">
                     Cancel
                   </Button>
                 </div>
@@ -771,8 +763,8 @@ const PropertyDetail: React.FC = () => {
           </Card>
         )}
         
-        {/* Image Gallery - Enhanced with overlays */}
-        <div className="mb-2 sm:mb-4 -mx-2 sm:mx-0">
+        {/* Image Gallery */}
+        <div className="mb-2 -mx-2 sm:mx-0">
           <EnhancedImageGallery
             images={property.images || []}
             title={property.title}
@@ -786,177 +778,177 @@ const PropertyDetail: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-3 sm:space-y-6">
+          <div className="lg:col-span-2 space-y-2 sm:space-y-3">
             
-            {/* Property Header - Glassy Style */}
-            <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
-              <CardContent className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-6">
+            {/* Property Header - Slim Glassmorphic */}
+            <Card className="border border-border/30 bg-card/80 dark:bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden">
+              <CardContent className="p-2 sm:p-4">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
                   <div className="flex-1 w-full">
-                    <h1 className="text-base sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-3 leading-tight">
+                    <h1 className="text-sm sm:text-xl lg:text-2xl font-bold text-foreground mb-1 leading-tight">
                       {property.title}
                     </h1>
-                    {/* Enhanced Location Display */}
-                    <div className="flex items-start gap-2 text-muted-foreground mb-2 sm:mb-3 p-2 sm:p-3 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl">
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-primary" />
+                    {/* Location Display - Slim */}
+                    <div className="flex items-start gap-1.5 mb-1.5 p-1.5 sm:p-2 bg-muted/30 dark:bg-white/5 rounded-lg">
+                      <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-3 w-3 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs sm:text-sm font-medium text-foreground">{property.location}</div>
+                        <div className="text-[10px] sm:text-xs font-medium text-foreground">{property.location}</div>
                         {property.address && (
-                          <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{property.address}</div>
+                          <div className="text-[9px] sm:text-[10px] text-muted-foreground">{property.address}</div>
                         )}
-                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <div className="flex items-center gap-1 mt-1 flex-wrap">
                           {property.province && (
-                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-muted/50">
+                            <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                               {property.province}
                             </Badge>
                           )}
                           {property.city && (
-                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-muted/50">
+                            <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                               {property.city}
                             </Badge>
                           )}
                           {property.district && (
-                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-muted/50">
+                            <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                               {property.district}
                             </Badge>
                           )}
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0" title="Lihat di Maps">
-                        <Navigation className="h-4 w-4 text-primary" />
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0 active:scale-95" title="Maps">
+                        <Navigation className="h-3 w-3 text-primary" />
                       </Button>
                     </div>
                     
                     {/* Posted Time */}
-                    <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>Diposting {formatDistanceToNow(new Date(property.created_at), { addSuffix: true, locale: localeId })}</span>
+                    <div className="flex items-center gap-1 mb-1.5 text-[9px] sm:text-[10px] text-muted-foreground">
+                      <Clock className="h-2.5 w-2.5" />
+                      <span>Posted {formatDistanceToNow(new Date(property.created_at), { addSuffix: true, locale: localeId })}</span>
                     </div>
                     
-                    <div className="flex flex-wrap gap-1 sm:gap-2">
-                      <Badge variant="default" className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full shadow-md">
+                    <div className="flex flex-wrap gap-1">
+                      <Badge className="bg-primary text-primary-foreground px-1.5 py-0 h-5 text-[9px] rounded-md shadow-sm">
                         {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                       </Badge>
-                      <Badge variant="outline" className="border-border/50 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-muted/50 backdrop-blur-sm capitalize">
+                      <Badge variant="outline" className="border-border/50 px-1.5 py-0 h-5 text-[9px] rounded-md bg-muted/50 text-foreground capitalize">
                         {property.property_type}
                       </Badge>
                       {property.development_status !== 'completed' && (
-                        <Badge variant="outline" className="bg-gradient-to-r from-primary/15 to-accent/15 text-primary border-primary/20 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-1.5 py-0 h-5 text-[9px] rounded-md">
                           {property.development_status === 'new_project' ? '✨ New' : '🚀 Pre-Launch'}
                         </Badge>
                       )}
                     </div>
                   </div>
                   
-                  {/* Price Display - Compact Mobile */}
-                  <div className="w-full sm:w-auto mt-1 sm:mt-0">
-                    <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-primary/20 backdrop-blur-sm shadow-lg">
-                      <p className="text-[10px] sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Price</p>
-                      <div className="text-lg sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                  {/* Price Display - Slim */}
+                  <div className="w-full sm:w-auto">
+                    <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 rounded-lg p-2 sm:p-3 border border-primary/15 backdrop-blur-sm">
+                      <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">Price</p>
+                      <div className="text-base sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         {formatPrice(property.price)}
                       </div>
                       {property.listing_type === 'rent' && (
-                        <span className="text-[10px] sm:text-base text-muted-foreground">/month</span>
+                        <span className="text-[9px] sm:text-xs text-muted-foreground">/month</span>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Property Stats - Compact Mobile Grid */}
-                <div className="grid grid-cols-4 gap-1.5 sm:gap-4 mt-3 sm:mt-5">
+                {/* Property Stats - Slim Grid */}
+                <div className="grid grid-cols-4 gap-1 sm:gap-2 mt-2">
                   {property.bedrooms && (
-                    <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg sm:rounded-xl border border-primary/15 backdrop-blur-sm">
-                      <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
-                        <Bed className="h-3 w-3 sm:h-5 sm:w-5 text-primary" />
+                    <div className="text-center p-1.5 bg-primary/5 rounded-lg border border-primary/10">
+                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-0.5">
+                        <Bed className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-primary" />
                       </div>
-                      <div className="font-bold text-sm sm:text-lg">{property.bedrooms}</div>
-                      <div className="text-[8px] sm:text-xs text-muted-foreground">Beds</div>
+                      <div className="font-bold text-xs sm:text-sm text-foreground">{property.bedrooms}</div>
+                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">Beds</div>
                     </div>
                   )}
                   {property.bathrooms && (
-                    <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg sm:rounded-xl border border-accent/15 backdrop-blur-sm">
-                      <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
-                        <Bath className="h-3 w-3 sm:h-5 sm:w-5 text-accent" />
+                    <div className="text-center p-1.5 bg-accent/5 rounded-lg border border-accent/10">
+                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-0.5">
+                        <Bath className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-accent" />
                       </div>
-                      <div className="font-bold text-sm sm:text-lg">{property.bathrooms}</div>
-                      <div className="text-[8px] sm:text-xs text-muted-foreground">Baths</div>
+                      <div className="font-bold text-xs sm:text-sm text-foreground">{property.bathrooms}</div>
+                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">Baths</div>
                     </div>
                   )}
                   {property.area_sqm && (
-                    <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-lg sm:rounded-xl border border-secondary/15 backdrop-blur-sm">
-                      <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
-                        <Square className="h-3 w-3 sm:h-5 sm:w-5 text-secondary" />
+                    <div className="text-center p-1.5 bg-secondary/5 rounded-lg border border-secondary/10">
+                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-0.5">
+                        <Square className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-secondary-foreground" />
                       </div>
-                      <div className="font-bold text-sm sm:text-lg">{property.area_sqm}</div>
-                      <div className="text-[8px] sm:text-xs text-muted-foreground">m²</div>
+                      <div className="font-bold text-xs sm:text-sm text-foreground">{property.area_sqm}</div>
+                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">m²</div>
                     </div>
                   )}
-                  <div className="text-center p-1.5 sm:p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg sm:rounded-xl border border-border/30 backdrop-blur-sm">
-                    <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-0.5 sm:mb-1.5">
-                      <Calendar className="h-3 w-3 sm:h-5 sm:w-5 text-muted-foreground" />
+                  <div className="text-center p-1.5 bg-muted/30 rounded-lg border border-border/20">
+                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-0.5">
+                      <Calendar className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
                     </div>
-                    <div className="font-bold text-sm sm:text-lg">
+                    <div className="font-bold text-xs sm:text-sm text-foreground">
                       {new Date(property.created_at).getFullYear()}
                     </div>
-                    <div className="text-[8px] sm:text-xs text-muted-foreground">Listed</div>
+                    <div className="text-[7px] sm:text-[9px] text-muted-foreground">Listed</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Property Details Tabs - Glassy Style */}
-            <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
-              <CardContent className="p-4 sm:p-6">
+            {/* Property Details Tabs - Slim */}
+            <Card className="border border-border/30 bg-card/80 dark:bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden">
+              <CardContent className="p-2 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-gradient-to-r from-muted/50 via-muted/40 to-muted/50 rounded-xl h-10 sm:h-11 p-1">
-                    <TabsTrigger value="description" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground rounded-lg text-xs sm:text-sm font-medium transition-all">Description</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground rounded-lg text-xs sm:text-sm font-medium transition-all">Features</TabsTrigger>
-                    <TabsTrigger value="details" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground rounded-lg text-xs sm:text-sm font-medium transition-all">Details</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3 bg-muted/50 rounded-lg h-8 p-0.5">
+                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Description</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Features</TabsTrigger>
+                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md text-[10px] sm:text-xs font-medium h-7">Details</TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="description" className="mt-4 sm:mt-5">
-                    <p className="text-foreground leading-relaxed text-sm sm:text-base">
+                  <TabsContent value="description" className="mt-2 sm:mt-3">
+                    <p className="text-foreground leading-relaxed text-xs sm:text-sm">
                       {property.description || 'No description available.'}
                     </p>
                   </TabsContent>
                   
-                  <TabsContent value="features" className="mt-4 sm:mt-5">
-                    <div className="grid grid-cols-1 gap-2 sm:gap-3">
+                  <TabsContent value="features" className="mt-2 sm:mt-3">
+                    <div className="grid grid-cols-1 gap-1 sm:gap-1.5">
                       {property.property_features && Object.keys(property.property_features).length > 0 ? (
                         Object.entries(property.property_features).map(([key, value]) => (
-                          <div key={key} className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
-                            <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
+                          <div key={key} className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
+                            <span className="font-medium capitalize text-foreground">{key.replace(/_/g, ' ')}</span>
                             <span className="text-muted-foreground">{String(value)}</span>
                           </div>
                         ))
                       ) : (
-                        <p className="text-muted-foreground text-center py-6 text-sm">No features listed.</p>
+                        <p className="text-muted-foreground text-center py-4 text-xs">No features listed.</p>
                       )}
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="details" className="mt-4 sm:mt-5">
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
-                        <span className="font-medium">Type</span>
+                  <TabsContent value="details" className="mt-2 sm:mt-3">
+                    <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
+                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
+                        <span className="font-medium text-foreground">Type</span>
                         <span className="text-muted-foreground capitalize">{property.property_type}</span>
                       </div>
-                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
-                        <span className="font-medium">Listing</span>
+                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
+                        <span className="font-medium text-foreground">Listing</span>
                         <span className="text-muted-foreground capitalize">{property.listing_type}</span>
                       </div>
-                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm items-center">
-                        <span className="font-medium">Status</span>
-                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-6 text-xs px-2.5 rounded-full">
+                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs items-center">
+                        <span className="font-medium text-foreground">Status</span>
+                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[8px] px-1.5 rounded-md">
                           {property.status}
                         </Badge>
                       </div>
-                      <div className="flex justify-between py-2.5 px-4 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl text-sm sm:text-base backdrop-blur-sm">
-                        <span className="font-medium">Listed</span>
+                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
+                        <span className="font-medium text-foreground">Listed</span>
                         <span className="text-muted-foreground">
                           {new Date(property.created_at).toLocaleDateString()}
                         </span>
@@ -978,27 +970,27 @@ const PropertyDetail: React.FC = () => {
               virtualTourUrl={property.virtual_tour_url}
             />
 
-            {/* Virtual Tour & 3D Model - Glassy Compact */}
+            {/* Virtual Tour & 3D Model - Slim */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
-              <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
-                <CardHeader className="p-2.5 sm:p-4 pb-1.5 sm:pb-2 bg-gradient-to-r from-primary/5 to-accent/5">
-                  <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/15 flex items-center justify-center">
-                      <Camera className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+              <Card className="border border-border/30 bg-card/80 dark:bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden">
+                <CardHeader className="p-2 sm:p-3 pb-1 bg-muted/20">
+                  <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
+                    <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
+                      <Camera className="h-2.5 w-2.5 text-primary" />
                     </div>
                     Virtual Experience
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-2.5 sm:p-4 pt-2 space-y-1.5 sm:space-y-2">
+                <CardContent className="p-2 sm:p-3 pt-1 space-y-1">
                   {property.virtual_tour_url && (
-                    <Button className="w-full h-8 sm:h-9 text-xs sm:text-sm bg-gradient-to-r from-primary to-primary/80" variant="default">
-                      <Globe className="h-3.5 w-3.5 mr-1.5" />
+                    <Button className="w-full h-7 text-[10px] sm:text-xs bg-primary hover:bg-primary/90">
+                      <Globe className="h-3 w-3 mr-1" />
                       Virtual Tour
                     </Button>
                   )}
                   {property.three_d_model_url && (
-                    <Button className="w-full h-8 sm:h-9 text-xs sm:text-sm" variant="outline">
-                      <Box className="h-3.5 w-3.5 mr-1.5" />
+                    <Button variant="outline" className="w-full h-7 text-[10px] sm:text-xs">
+                      <Box className="h-3 w-3 mr-1" />
                       3D Model
                     </Button>
                   )}
@@ -1007,62 +999,62 @@ const PropertyDetail: React.FC = () => {
             )}
           </div>
 
-          {/* Sidebar - Glassy Style */}
-          <div className="space-y-3 sm:space-y-6">
+          {/* Sidebar - Slim */}
+          <div className="space-y-2 sm:space-y-3">
             
             {/* KPR Calculator */}
             {property.listing_type === 'sale' && (
               <KPRCalculator propertyPrice={property.price} />
             )}
             
-            {/* Contact Information - Enhanced Poster Info */}
-            <Card className="border border-primary/10 bg-gradient-to-br from-card/95 via-card/90 to-card/95 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden">
-              <CardHeader className="p-4 sm:p-5 pb-2 sm:pb-3 bg-gradient-to-r from-primary/5 to-accent/5">
-                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                  <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
-                    <User className="h-4 w-4 text-primary" />
+            {/* Contact Information - Slim Agent Card */}
+            <Card className="border border-border/30 bg-card/80 dark:bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden">
+              <CardHeader className="p-2 sm:p-3 pb-1 bg-muted/20">
+                <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
+                  <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
+                    <User className="h-2.5 w-2.5 text-primary" />
                   </div>
                   Agent Info
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 sm:p-5 pt-0 space-y-4">
+              <CardContent className="p-2 sm:p-3 pt-1 space-y-2">
                 {property.posted_by ? (
                   <div>
-                    {/* Agent Profile - Enhanced */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 p-0.5 shadow-md">
+                    {/* Agent Profile - Slim */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-primary/15 to-accent/15 p-0.5">
                         <img
                           src={property.posted_by.avatar_url || "/placeholder.svg"}
                           alt={property.posted_by.name}
-                          className="w-full h-full rounded-[10px] object-cover"
+                          className="w-full h-full rounded-md object-cover"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-base sm:text-lg text-foreground truncate">{property.posted_by.name}</h4>
-                        <p className="text-xs sm:text-sm text-primary font-medium">{property.posted_by.position}</p>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                          <span className="text-xs sm:text-sm font-semibold">{property.posted_by.customer_feedback_rating}</span>
-                          <span className="text-xs text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
+                        <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">{property.posted_by.name}</h4>
+                        <p className="text-[9px] sm:text-[10px] text-primary font-medium">{property.posted_by.position}</p>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />
+                          <span className="text-[9px] sm:text-[10px] font-semibold text-foreground">{property.posted_by.customer_feedback_rating}</span>
+                          <span className="text-[8px] sm:text-[9px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Company - Enhanced */}
-                    <div className="bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl p-4 mb-4 backdrop-blur-sm">
-                      <div className="flex items-center gap-2 font-semibold mb-1.5">
-                        <div className="w-7 h-7 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg text-primary text-xs flex items-center justify-center font-bold">
+                    {/* Company - Slim */}
+                    <div className="bg-muted/30 rounded-lg p-2 mb-2">
+                      <div className="flex items-center gap-1.5 font-medium mb-0.5">
+                        <div className="w-5 h-5 bg-primary/10 rounded text-primary text-[9px] flex items-center justify-center font-bold">
                           {property.posted_by.company_name?.charAt(0)}
                         </div>
-                        <span className="truncate text-sm">{property.posted_by.company_name}</span>
+                        <span className="truncate text-[10px] sm:text-xs text-foreground">{property.posted_by.company_name}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">{property.posted_by.office_address}</p>
+                      <p className="text-[9px] text-muted-foreground truncate">{property.posted_by.office_address}</p>
                     </div>
 
-                    {/* Contact Buttons - Enhanced */}
-                    <div className="space-y-2.5">
+                    {/* Contact Buttons - Slim */}
+                    <div className="space-y-1.5">
                       <Button 
-                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white h-11 text-sm font-semibold shadow-lg shadow-green-500/20 rounded-xl"
+                        className="w-full bg-green-500 hover:bg-green-600 text-white h-8 text-[10px] sm:text-xs font-medium rounded-lg active:scale-95 transition-transform"
                         onClick={() => {
                           if (user && property.posted_by?.whatsapp_number) {
                             window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, interested in ${property.title}`, '_blank');
@@ -1075,10 +1067,10 @@ const PropertyDetail: React.FC = () => {
                       >
                         📱 WhatsApp
                       </Button>
-                      <div className="grid grid-cols-2 gap-2.5">
+                      <div className="grid grid-cols-2 gap-1">
                         <Button 
                           variant="outline" 
-                          className="h-10 text-sm rounded-xl border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 hover:from-muted/50 hover:to-muted/30"
+                          className="h-7 text-[9px] sm:text-[10px] rounded-lg border-border/50 active:scale-95 transition-transform"
                           onClick={() => {
                             if (user && property.posted_by?.phone_number) {
                               window.open(`tel:${property.posted_by.phone_number}`, '_self');
@@ -1087,12 +1079,12 @@ const PropertyDetail: React.FC = () => {
                             }
                           }}
                         >
-                          <Phone className="h-4 w-4 mr-1.5" />
+                          <Phone className="h-2.5 w-2.5 mr-0.5" />
                           Call
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="h-10 text-sm rounded-xl border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 hover:from-muted/50 hover:to-muted/30"
+                          className="h-7 text-[9px] sm:text-[10px] rounded-lg border-border/50 active:scale-95 transition-transform"
                           onClick={() => {
                             if (user && ownerInfo?.email) {
                               window.open(`mailto:${ownerInfo.email}?subject=Inquiry: ${property.title}`, '_self');
@@ -1101,27 +1093,26 @@ const PropertyDetail: React.FC = () => {
                             }
                           }}
                         >
-                          <Mail className="h-4 w-4 mr-1.5" />
+                          <Mail className="h-2.5 w-2.5 mr-0.5" />
                           Email
                         </Button>
                       </div>
                       
-                      {/* Schedule Viewing Button */}
+                      {/* Booking Buttons - Slim */}
                       <BookingDialog 
                         propertyId={property.id} 
                         propertyTitle={property.title}
                         trigger={
                           <Button 
                             variant="outline"
-                            className="w-full mt-3 h-11 text-sm font-semibold rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                            className="w-full h-7 text-[9px] sm:text-[10px] font-medium rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground active:scale-95 transition-transform"
                           >
-                            <Calendar className="h-4 w-4 mr-1.5" />
+                            <Calendar className="h-2.5 w-2.5 mr-0.5" />
                             Schedule Viewing
                           </Button>
                         }
                       />
                       
-                      {/* Book Survey Button */}
                       <SurveyBookingDialog 
                         propertyId={property.id} 
                         propertyTitle={property.title}
@@ -1129,29 +1120,29 @@ const PropertyDetail: React.FC = () => {
                         trigger={
                           <Button 
                             variant="outline"
-                            className="w-full mt-2 h-11 text-sm font-semibold rounded-xl border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                            className="w-full h-7 text-[9px] sm:text-[10px] font-medium rounded-lg border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
                           >
-                            <ClipboardCheck className="h-4 w-4 mr-1.5" />
+                            <ClipboardCheck className="h-2.5 w-2.5 mr-0.5" />
                             Book Survey
                           </Button>
                         }
                       />
                     </div>
 
-                    {/* Agent Stats - Enhanced */}
-                    <div className="grid grid-cols-2 gap-3 pt-4 mt-4 border-t border-border/30">
-                      <div className="text-center p-3 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl">
-                        <div className="font-bold text-lg text-primary">{property.posted_by.total_properties}+</div>
-                        <div className="text-xs text-muted-foreground">Properties Sold</div>
+                    {/* Agent Stats - Slim */}
+                    <div className="grid grid-cols-2 gap-1 pt-2 mt-2 border-t border-border/20">
+                      <div className="text-center p-1.5 bg-primary/5 rounded-lg">
+                        <div className="font-bold text-xs sm:text-sm text-primary">{property.posted_by.total_properties}+</div>
+                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">Properties</div>
                       </div>
-                      <div className="text-center p-3 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl">
-                        <div className="font-bold text-lg text-accent">{property.posted_by.experience_years}y</div>
-                        <div className="text-xs text-muted-foreground">Experience</div>
+                      <div className="text-center p-1.5 bg-accent/5 rounded-lg">
+                        <div className="font-bold text-xs sm:text-sm text-accent">{property.posted_by.experience_years}y</div>
+                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">Experience</div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Agent info not available</p>
+                  <p className="text-xs text-muted-foreground">Agent info not available</p>
                 )}
               </CardContent>
             </Card>
