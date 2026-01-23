@@ -257,7 +257,7 @@ export function PropertyReviews({ propertyId }: PropertyReviewsProps) {
   }
 
   return (
-    <Card>
+    <Card className="bg-transparent border-0 shadow-none">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
