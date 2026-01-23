@@ -55,7 +55,8 @@ import {
   Building2,
   Landmark,
   Navigation,
-  CheckCircle2
+  CheckCircle2,
+  ClipboardCheck
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -63,6 +64,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ProtectedContactInfo from '@/components/ProtectedContactInfo';
 import useAutoHorizontalScroll from '@/hooks/useAutoHorizontalScroll';
 import { BookingDialog } from '@/components/property/BookingDialog';
+import { SurveyBookingDialog } from '@/components/property/SurveyBookingDialog';
+import SocialShareDialog from '@/components/property/SocialShareDialog';
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -134,6 +137,7 @@ const PropertyDetail: React.FC = () => {
   const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
@@ -320,28 +324,9 @@ const PropertyDetail: React.FC = () => {
     }
   };
 
-  const handleShareProperty = async () => {
+  const handleShareProperty = () => {
     if (property) {
-      const success = await shareProperty({
-        id: property.id,
-        title: property.title,
-        price: property.price,
-        location: property.location,
-        images: property.images
-      });
-      
-      if (success) {
-        toast({
-          title: "Property shared",
-          description: "Property link copied to clipboard or shared successfully!",
-        });
-      } else {
-        toast({
-          title: "Share failed",
-          description: "Unable to share property. Please try again.",
-          variant: "destructive",
-        });
-      }
+      setShowShareDialog(true);
     }
   };
 
@@ -1135,6 +1120,22 @@ const PropertyDetail: React.FC = () => {
                           </Button>
                         }
                       />
+                      
+                      {/* Book Survey Button */}
+                      <SurveyBookingDialog 
+                        propertyId={property.id} 
+                        propertyTitle={property.title}
+                        propertyLocation={property.city || property.location}
+                        trigger={
+                          <Button 
+                            variant="outline"
+                            className="w-full mt-2 h-11 text-sm font-semibold rounded-xl border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                          >
+                            <ClipboardCheck className="h-4 w-4 mr-1.5" />
+                            Book Survey
+                          </Button>
+                        }
+                      />
                     </div>
 
                     {/* Agent Stats - Enhanced */}
@@ -1277,6 +1278,26 @@ const PropertyDetail: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Social Share Dialog */}
+      {property && (
+        <SocialShareDialog
+          open={showShareDialog}
+          onOpenChange={setShowShareDialog}
+          property={{
+            id: property.id,
+            title: property.title,
+            price: property.price,
+            location: property.location,
+            listing_type: property.listing_type as 'sale' | 'rent' | 'lease',
+            images: property.images,
+            city: property.city,
+            bedrooms: property.bedrooms,
+            bathrooms: property.bathrooms,
+            area_sqm: property.area_sqm,
+          }}
+        />
+      )}
 
       <EnhancedAuthModal
         isOpen={showAuthModal}
