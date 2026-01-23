@@ -897,6 +897,36 @@ const PropertyDetail: React.FC = () => {
                     <div className="text-[7px] sm:text-[9px] text-muted-foreground">Listed</div>
                   </div>
                 </div>
+
+                {/* Quick Action Buttons - Book Survey prominently displayed */}
+                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border/20">
+                  <BookingDialog 
+                    propertyId={property.id} 
+                    propertyTitle={property.title}
+                    trigger={
+                      <Button 
+                        className="w-full h-9 text-[10px] sm:text-xs font-medium rounded-lg bg-primary hover:bg-primary/90 active:scale-95 transition-transform"
+                      >
+                        <Calendar className="h-3 w-3 mr-1" />
+                        Schedule Viewing
+                      </Button>
+                    }
+                  />
+                  <SurveyBookingDialog 
+                    propertyId={property.id} 
+                    propertyTitle={property.title}
+                    propertyLocation={property.city || property.location}
+                    trigger={
+                      <Button 
+                        variant="outline"
+                        className="w-full h-9 text-[10px] sm:text-xs font-medium rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
+                      >
+                        <ClipboardCheck className="h-3 w-3 mr-1" />
+                        Book Survey
+                      </Button>
+                    }
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -1142,7 +1172,35 @@ const PropertyDetail: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground">Agent info not available</p>
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground mb-2">Agent info not available</p>
+                    <SurveyBookingDialog 
+                      propertyId={property.id} 
+                      propertyTitle={property.title}
+                      propertyLocation={property.city || property.location}
+                      trigger={
+                        <Button 
+                          variant="outline"
+                          className="w-full h-8 text-[10px] sm:text-xs font-medium rounded-lg border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
+                        >
+                          <ClipboardCheck className="h-3 w-3 mr-1" />
+                          Book Survey
+                        </Button>
+                      }
+                    />
+                    <BookingDialog 
+                      propertyId={property.id} 
+                      propertyTitle={property.title}
+                      trigger={
+                        <Button 
+                          className="w-full h-8 text-[10px] sm:text-xs font-medium rounded-lg bg-primary hover:bg-primary/90 active:scale-95 transition-transform"
+                        >
+                          <Calendar className="h-3 w-3 mr-1" />
+                          Schedule Viewing
+                        </Button>
+                      }
+                    />
+                  </div>
                 )}
               </CardContent>
             </Card>
