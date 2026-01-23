@@ -142,7 +142,7 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[380px] bg-background/60 backdrop-blur-xl border-primary/20 shadow-2xl p-0 gap-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[380px] bg-background dark:bg-card border border-border/50 shadow-2xl p-0 gap-0 overflow-hidden">
         {/* Modern Gradient Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-primary-foreground">
           <DialogHeader className="space-y-0">
