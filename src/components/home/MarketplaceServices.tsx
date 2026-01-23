@@ -156,22 +156,22 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
   
   return (
     <div onClick={onClick} className="group cursor-pointer relative">
-      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-transparent dark:bg-white/5 border border-border/20 dark:border-white/10 p-2 sm:p-2.5 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 hover:border-primary/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/10">
-        {/* Icon Container */}
+      <div className="relative overflow-hidden rounded-lg md:rounded-xl bg-transparent dark:bg-white/5 border border-border/20 dark:border-white/10 p-2 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.03] hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
+        {/* Icon Container - Touch friendly */}
         <div className="relative">
-          <div className={`relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center rounded-xl ${service.iconBg} shadow-sm`}>
-            <IconComponent className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${service.color}`} strokeWidth={1.5} />
+          <div className={`relative w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-lg ${service.iconBg} shadow-sm`}>
+            <IconComponent className={`w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 ${service.color}`} strokeWidth={1.5} />
           </div>
           {/* Vendor Count Badge */}
-          <div className="absolute -top-1 -right-1 w-4.5 h-4.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 shadow-md border-2 border-background">
-            <span className="text-[6px] sm:text-[7px] md:text-[8px] font-bold text-primary-foreground">
+          <div className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 shadow-md border-2 border-background">
+            <span className="text-[6px] md:text-[7px] lg:text-[8px] font-bold text-primary-foreground">
               {service.vendorCount > 9 ? '9+' : service.vendorCount}
             </span>
           </div>
         </div>
 
-        {/* Title */}
-        <h3 className="mt-1.5 sm:mt-2 text-[7px] sm:text-[9px] md:text-[11px] font-semibold text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
+        {/* Title - Hidden on mobile, visible on md+ */}
+        <h3 className="hidden md:block mt-2 text-[9px] lg:text-[11px] font-semibold text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {service.title}
         </h3>
       </div>
