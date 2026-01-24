@@ -116,8 +116,14 @@ const ProfessionalFooter = ({
                 <img 
                   src={footerLogoUrl} 
                   alt={currentText.company} 
-                  className="h-14 md:h-16 max-w-[160px] object-left object-cover" 
-                  style={{ background: 'transparent' }} 
+                  className="h-10 md:h-12 max-w-[140px] object-contain object-left" 
+                  style={{ 
+                    background: 'transparent',
+                    imageRendering: 'crisp-edges',
+                    WebkitFontSmoothing: 'antialiased'
+                  }}
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="flex items-center gap-2">

@@ -187,23 +187,26 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <div className="relative group/logo overflow-hidden rounded-sm mt-3">
-                  {/* Logo - overflows header downward */}
+                <div className="relative group/logo overflow-visible rounded-sm mt-2">
+                  {/* Logo - crisp rendering with optimized size */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
+                    className="relative h-10 md:h-12 lg:h-14 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
+                    style={{ 
+                      imageRendering: 'crisp-edges',
+                      WebkitFontSmoothing: 'antialiased'
+                    }}
+                    loading="eager"
+                    decoding="async"
                   />
                   
                   {/* Golden Sparkle Effects */}
-                  <div className="absolute top-1 right-2 pointer-events-none">
-                    <Sparkles className="h-3 w-3 text-amber-400 animate-sparkle drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]" />
+                  <div className="absolute top-0 right-1 pointer-events-none">
+                    <Sparkles className="h-2.5 w-2.5 text-amber-400 animate-sparkle drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]" />
                   </div>
-                  <div className="absolute top-3 right-5 pointer-events-none">
+                  <div className="absolute top-2 right-4 pointer-events-none">
                     <Sparkles className="h-2 w-2 text-yellow-300 animate-sparkle-delayed drop-shadow-[0_0_3px_rgba(253,224,71,0.8)]" />
-                  </div>
-                  <div className="absolute bottom-2 left-3 pointer-events-none">
-                    <Sparkles className="h-2.5 w-2.5 text-amber-300 animate-sparkle-delayed-2 drop-shadow-[0_0_4px_rgba(252,211,77,0.8)]" />
                   </div>
                 </div>
               ) : (
