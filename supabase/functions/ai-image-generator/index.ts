@@ -49,6 +49,9 @@ serve(async (req) => {
 
     console.log('Generating image with Lovable AI Gateway for prompt:', prompt.substring(0, 100));
 
+    // Enhance prompt to ensure image generation
+    const imagePrompt = `Generate an image: ${prompt}. Create a high-quality visual representation.`;
+
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -58,7 +61,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash-image-preview',
         messages: [
-          { role: 'user', content: prompt }
+          { role: 'user', content: imagePrompt }
         ],
         modalities: ['image', 'text']
       }),
@@ -95,13 +98,40 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log('Lovable AI response received');
+    console.log('Response structure:', JSON.stringify({
+      hasChoices: !!data.choices,
+      choicesLength: data.choices?.length,
+      hasMessage: !!data.choices?.[0]?.message,
+      hasImages: !!data.choices?.[0]?.message?.images,
+      imagesLength: data.choices?.[0]?.message?.images?.length
+    }));
     
-    // Extract image from the response
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    // Extract image from the response - check multiple possible locations
+    let imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    // Fallback: check if image is in a different format
+    if (!imageUrl && data.choices?.[0]?.message?.images?.[0]) {
+      const imageData = data.choices[0].message.images[0];
+      if (typeof imageData === 'string') {
+        imageUrl = imageData;
+      } else if (imageData.url) {
+        imageUrl = imageData.url;
+      }
+    }
     
     if (!imageUrl) {
-      console.error('No image in response:', JSON.stringify(data));
-      throw new Error('No image generated');
+      // Log the full response for debugging
+      console.error('No image in response. Full response:', JSON.stringify(data).substring(0, 1000));
+      
+      // Return a more helpful error message
+      const textContent = data.choices?.[0]?.message?.content || '';
+      return new Response(
+        JSON.stringify({ 
+          error: 'Image generation failed. The AI model returned text instead of an image. Try a different prompt.',
+          details: textContent.substring(0, 200)
+        }),
+        { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     return new Response(JSON.stringify({ image: imageUrl }), {
