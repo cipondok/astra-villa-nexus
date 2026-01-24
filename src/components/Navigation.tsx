@@ -20,7 +20,6 @@ import NotificationDropdown from "./NotificationDropdown";
 import UserIconWithBadge from "./ui/UserIconWithBadge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import astraLogo from "@/assets/astra-villa-logo.png";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,8 +32,8 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch header logo from system settings, fallback to local asset
-  const { data: headerLogoUrl } = useQuery({
+  // Fetch header logo from system settings only - no fallback
+  const { data: headerLogoUrl, isLoading: isLogoLoading } = useQuery({
     queryKey: ['header-logo'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -43,9 +42,10 @@ const Navigation = () => {
         .eq('key', 'headerLogo')
         .maybeSingle();
       
-      if (error || !data?.value) return astraLogo;
-      return typeof data.value === 'string' ? data.value : astraLogo;
+      if (error || !data?.value) return null;
+      return typeof data.value === 'string' ? data.value : null;
     },
+    staleTime: 30_000, // Cache for 30 seconds to prevent flicker on navigation
   });
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { Rocket, Phone, Mail, Facebook, Twitter, Instagram, Youtube, Users, Hand
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import fallbackLogo from "@/assets/astra-logo.png";
+
 interface ProfessionalFooterProps {
   language: "en" | "id";
 }
@@ -13,7 +13,7 @@ const ProfessionalFooter = ({
 }: ProfessionalFooterProps) => {
   const [isPartnersOpen, setIsPartnersOpen] = useState(false);
 
-  // Fetch footer logo from system settings
+  // Fetch footer logo from system settings only - no fallback
   const {
     data: footerLogoUrl
   } = useQuery({
@@ -23,11 +23,10 @@ const ProfessionalFooter = ({
         data,
         error
       } = await supabase.from("system_settings").select("value").eq("category", "general").eq("key", "footerLogo").maybeSingle();
-      if (error) return null;
-      return data?.value as string || null;
+      if (error || !data?.value) return null;
+      return data.value as string;
     },
-    staleTime: 5_000,
-    refetchOnMount: "always"
+    staleTime: 30_000, // Cache for 30 seconds to prevent flicker
   });
   const text = {
     en: {
@@ -110,16 +109,21 @@ const ProfessionalFooter = ({
           <div className="col-span-2 md:col-span-1 space-y-3">
             {/* Logo */}
             <div className="flex items-center justify-start">
-              {footerLogoUrl ? <img src={footerLogoUrl} alt={currentText.company} className="h-14 md:h-16 max-w-[160px] object-left object-cover" style={{
-              background: 'transparent'
-            }} onError={e => {
-              e.currentTarget.src = fallbackLogo;
-            }} /> : <div className="flex items-center gap-2">
+              {footerLogoUrl ? (
+                <img 
+                  src={footerLogoUrl} 
+                  alt={currentText.company} 
+                  className="h-14 md:h-16 max-w-[160px] object-left object-cover" 
+                  style={{ background: 'transparent' }} 
+                />
+              ) : (
+                <div className="flex items-center gap-2">
                   <div className="p-2 bg-gradient-to-br from-primary to-accent rounded-lg">
                     <Rocket className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-base font-bold text-white">{currentText.company}</span>
-                </div>}
+                </div>
+              )}
             </div>
             
             <p className="text-[10px] text-slate-400 leading-relaxed">{currentText.tagline}</p>
