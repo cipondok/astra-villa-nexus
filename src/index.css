@@ -191,85 +191,87 @@ html {
 
 @layer base {
   :root {
-    /* Light Mode - Luxury Deep Navy & Gold Glassy Theme */
-    --background: 220 30% 85%;
-    --foreground: 220 50% 12%;
-    --card: 220 20% 99%;
-    --card-foreground: 220 50% 12%;
-    --popover: 220 20% 99%;
-    --popover-foreground: 220 50% 12%;
-    --primary: 45 93% 47%;
-    --primary-foreground: 220 50% 8%;
-    --secondary: 220 20% 92%;
-    --secondary-foreground: 220 40% 20%;
+    /* Light Mode - ASTRA Villa Property Professional Theme */
+    /* Primary: Soft Navy Blue #2E3A59 | Accent: Warm Soft Gold #D6B67E */
+    --background: 220 27% 98%; /* Off-white #F7F8FA */
+    --foreground: 221 27% 17%; /* Dark Gray #1F2937 */
+    --card: 0 0% 100%; /* Pure White */
+    --card-foreground: 221 27% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 221 27% 17%;
+    --primary: 223 32% 27%; /* Soft Navy Blue #2E3A59 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 94%;
+    --secondary-foreground: 223 32% 27%;
     --muted: 220 15% 94%;
-    --muted-foreground: 220 15% 45%;
-    --accent: 45 85% 55%;
-    --accent-foreground: 220 50% 8%;
+    --muted-foreground: 218 14% 34%; /* Muted Gray #4B5563 */
+    --accent: 38 52% 67%; /* Warm Soft Gold #D6B67E */
+    --accent-foreground: 221 27% 17%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 20% 88%;
-    --input: 220 20% 99%;
-    --ring: 45 93% 47%;
-    --radius: 16px;
+    --input: 0 0% 100%;
+    --ring: 223 32% 27%;
+    --radius: 12px;
     
-    /* Premium Navy & Gold Theme Colors */
-    --gold-primary: 45 93% 47%;
-    --gold-secondary: 38 95% 55%;
-    --navy-primary: 220 60% 20%;
-    --navy-secondary: 220 50% 30%;
-    --dark-bg: 220 50% 6%;
-    --dark-card: 220 45% 12%;
-    --text-light: 220 20% 98%;
-    --text-muted: 220 15% 55%;
+    /* ASTRA Villa Brand Colors */
+    --gold-primary: 38 52% 67%; /* #D6B67E */
+    --gold-secondary: 38 45% 60%;
+    --navy-primary: 223 32% 27%; /* #2E3A59 */
+    --navy-secondary: 223 28% 35%;
+    --dark-bg: 222 47% 11%;
+    --dark-card: 222 42% 15%;
+    --text-light: 0 0% 100%;
+    --text-muted: 218 14% 34%;
     
     /* Glassy effect colors */
-    --glass-bg: 220 30% 98%;
-    --glass-border: 45 50% 70%;
-    --glass-shadow: 220 50% 10%;
+    --glass-bg: 220 27% 98%;
+    --glass-border: 38 52% 67%;
+    --glass-shadow: 223 32% 27%;
     
     /* Samsung Blue Titanium Colors */
-    --titanium-light: 220 30% 85%;
-    --titanium-white: 220 15% 96%;
-    --samsung-blue-primary: 214 100% 47%;
+    --titanium-light: 220 27% 98%;
+    --titanium-white: 0 0% 100%;
+    --samsung-blue-primary: 223 32% 27%;
   }
 
   .dark {
-    /* Dark Mode - Deep Navy & Gold Luxury Glassy Theme */
-    --background: 220 50% 6%;
-    --foreground: 45 20% 95%;
-    --card: 220 45% 10%;
-    --card-foreground: 45 20% 95%;
-    --popover: 220 45% 8%;
-    --popover-foreground: 45 20% 95%;
-    --primary: 45 93% 50%;
-    --primary-foreground: 220 50% 6%;
-    --secondary: 220 40% 18%;
-    --secondary-foreground: 45 20% 92%;
-    --muted: 220 35% 15%;
-    --muted-foreground: 220 15% 60%;
-    --accent: 45 90% 55%;
-    --accent-foreground: 220 50% 6%;
+    /* Dark Mode - ASTRA Villa Property Deep Navy Theme */
+    /* Background: Deep Navy #0F172A | Accent: Muted Gold #D6B67E */
+    --background: 222 47% 11%; /* Deep Navy #0F172A */
+    --foreground: 216 12% 91%; /* Light Gray #E5E7EB */
+    --card: 222 42% 15%;
+    --card-foreground: 216 12% 91%;
+    --popover: 222 45% 13%;
+    --popover-foreground: 216 12% 91%;
+    --primary: 38 52% 67%; /* Muted Gold #D6B67E */
+    --primary-foreground: 222 47% 11%;
+    --secondary: 222 35% 20%;
+    --secondary-foreground: 41 52% 91%; /* Soft Cream #F3ECDC */
+    --muted: 222 30% 18%;
+    --muted-foreground: 218 11% 65%; /* Muted Gray #9CA3AF */
+    --accent: 38 52% 67%; /* Muted Gold */
+    --accent-foreground: 222 47% 11%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 40% 20%;
-    --input: 220 40% 14%;
-    --ring: 45 93% 50%;
+    --border: 222 35% 22%;
+    --input: 222 40% 16%;
+    --ring: 38 52% 67%;
     
-    /* Premium Navy & Gold Theme Colors - Dark Mode */
-    --gold-primary: 45 93% 50%;
-    --gold-secondary: 38 95% 58%;
-    --navy-primary: 220 60% 25%;
-    --navy-secondary: 220 50% 35%;
-    --dark-bg: 220 55% 4%;
-    --dark-card: 220 45% 10%;
-    --text-light: 45 20% 98%;
-    --text-muted: 220 15% 60%;
+    /* ASTRA Villa Brand Colors - Dark Mode */
+    --gold-primary: 38 52% 67%;
+    --gold-secondary: 38 48% 62%;
+    --navy-primary: 222 40% 25%;
+    --navy-secondary: 222 35% 32%;
+    --dark-bg: 222 50% 8%;
+    --dark-card: 222 42% 14%;
+    --text-light: 41 52% 91%; /* Soft Cream #F3ECDC */
+    --text-muted: 218 11% 65%;
     
     /* Glassy effect colors - Dark Mode */
-    --glass-bg: 220 50% 8%;
-    --glass-border: 45 70% 45%;
-    --glass-shadow: 220 60% 3%;
+    --glass-bg: 222 45% 12%;
+    --glass-border: 38 52% 55%;
+    --glass-shadow: 222 50% 6%;
   }
 
   * {

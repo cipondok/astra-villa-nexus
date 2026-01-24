@@ -72,14 +72,27 @@ const config: Config = {
           800: 'hsl(0, 0%, 15%)',
           900: 'hsl(0, 0%, 9%)',
         },
-        // Premium Gold-Orange Theme Colors
+        // ASTRA Villa Property Brand Colors
+        'astra': {
+          navy: {
+            DEFAULT: 'hsl(223, 32%, 27%)', // #2E3A59
+            light: 'hsl(223, 28%, 35%)',
+            dark: 'hsl(222, 47%, 11%)', // #0F172A
+          },
+          gold: {
+            DEFAULT: 'hsl(38, 52%, 67%)', // #D6B67E
+            light: 'hsl(38, 45%, 75%)',
+            muted: 'hsl(38, 48%, 55%)',
+          },
+          cream: 'hsl(41, 52%, 91%)', // #F3ECDC
+        },
         'gold': {
           primary: 'hsl(var(--gold-primary))',
           secondary: 'hsl(var(--gold-secondary))',
         },
-        'orange': {
-          primary: 'hsl(var(--orange-primary))',
-          secondary: 'hsl(var(--orange-secondary))',
+        'navy': {
+          primary: 'hsl(var(--navy-primary))',
+          secondary: 'hsl(var(--navy-secondary))',
         },
         'dark': {
           bg: 'hsl(var(--dark-bg))',
@@ -89,7 +102,7 @@ const config: Config = {
           light: 'hsl(var(--text-light))',
           muted: 'hsl(var(--text-muted))',
         },
-        // Samsung Blue Titanium Colors
+        // Titanium Colors (aliased to ASTRA theme)
         'titanium': {
           light: 'hsl(var(--titanium-light))',
           white: 'hsl(var(--titanium-white))',
