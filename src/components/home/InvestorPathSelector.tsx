@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Globe, Home, Sparkles, Bot, Shield, TrendingUp } from 'lucide-react';
+import { ArrowRight, Globe, Home, Sparkles, Bot, Shield, TrendingUp, Building2, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface InvestorPathSelectorProps {
@@ -18,18 +18,24 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
   const copy = {
     en: {
       headline: "Global Investment Platform",
+      subtitle: "Choose your investment pathway",
       wniTitle: "WNI Overseas",
       wniDesc: "Indonesian citizens abroad",
+      wniFeatures: ["KPR Support", "Tax Benefits"],
       wnaTitle: "Foreign Investor",
       wnaDesc: "International investors",
+      wnaFeatures: ["Right to Use", "Legal Support"],
       explore: "Explore"
     },
     id: {
       headline: "Platform Investasi Global",
+      subtitle: "Pilih jalur investasi Anda",
       wniTitle: "WNI Luar Negeri",
       wniDesc: "Warga Indonesia di luar negeri",
+      wniFeatures: ["Dukungan KPR", "Manfaat Pajak"],
       wnaTitle: "Investor Asing",
       wnaDesc: "Investor internasional",
+      wnaFeatures: ["Hak Pakai", "Dukungan Hukum"],
       explore: "Jelajahi"
     }
   };
@@ -47,10 +53,13 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       icon: Home,
       title: t.wniTitle,
       description: t.wniDesc,
+      features: t.wniFeatures,
       flag: '🇮🇩',
-      gradient: 'from-red-500 to-red-600',
+      gradient: 'from-red-500 via-red-600 to-orange-500',
       accentColor: 'text-red-500 dark:text-red-400',
-      bgColor: 'bg-red-100/80 dark:bg-red-900/30'
+      bgColor: 'bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/30',
+      borderColor: 'border-red-200/60 dark:border-red-500/30',
+      hoverBorder: 'hover:border-red-400 dark:hover:border-red-400/60'
     },
     {
       id: 'wna',
@@ -58,10 +67,13 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
       icon: Globe,
       title: t.wnaTitle,
       description: t.wnaDesc,
+      features: t.wnaFeatures,
       flag: '🌍',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-blue-500 via-blue-600 to-indigo-500',
       accentColor: 'text-blue-500 dark:text-blue-400',
-      bgColor: 'bg-blue-100/80 dark:bg-blue-900/30'
+      bgColor: 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/30',
+      borderColor: 'border-blue-200/60 dark:border-blue-500/30',
+      hoverBorder: 'hover:border-blue-400 dark:hover:border-blue-400/60'
     }
   ];
 
@@ -69,17 +81,30 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
   if (isHero) {
     return (
       <div className="rounded-xl">
-        {/* Section Header - Matches AI Tools & Features style */}
-        <div className="flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 mb-2">
-          <Bot className="h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400" />
-          <h2 className="text-[10px] md:text-xs font-bold text-foreground drop-shadow-sm dark:text-white/90 dark:drop-shadow-md">
-            {t.headline}
-          </h2>
-          <TrendingUp className="h-3 w-3 text-primary drop-shadow-sm dark:text-yellow-400" />
+        {/* Section Header with Platform Logo */}
+        <div className="flex flex-col items-center gap-1.5 mb-3">
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-primary/80 to-accent shadow-lg">
+                <Building2 className="h-4 w-4 text-white" />
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+                <Bot className="h-2 w-2 text-white" />
+              </div>
+            </div>
+            <div className="text-left">
+              <h2 className="text-xs md:text-sm font-bold text-foreground dark:text-white">
+                {t.headline}
+              </h2>
+              <p className="text-[8px] md:text-[9px] text-muted-foreground dark:text-white/60">
+                {t.subtitle}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Two Cards Side by Side */}
-        <div className="flex items-center justify-center gap-2 md:gap-3">
+        {/* Modern Cards */}
+        <div className="flex items-stretch justify-center gap-3 md:gap-4">
           {paths.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -90,43 +115,72 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                 transition={{ delay: index * 0.1, duration: 0.3 }}
                 onClick={() => handleCardClick(item.path)}
                 className={cn(
-                  "group relative flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5",
-                  "rounded-lg cursor-pointer transition-all duration-300",
-                  "bg-background/40 dark:bg-white/10 backdrop-blur-sm",
-                  "border border-border/30 dark:border-white/20",
-                  "hover:bg-background/60 dark:hover:bg-white/20",
-                  "hover:border-primary/40 dark:hover:border-white/40",
-                  "hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+                  "group relative flex flex-col items-center gap-2 px-4 md:px-5 py-3 md:py-4",
+                  "rounded-xl cursor-pointer transition-all duration-300",
+                  "bg-white/70 dark:bg-white/10 backdrop-blur-md",
+                  "border-2", item.borderColor, item.hoverBorder,
+                  "hover:shadow-xl hover:scale-[1.03] active:scale-[0.98]",
+                  "min-w-[130px] md:min-w-[160px]"
                 )}
               >
+                {/* Glow Effect */}
+                <div className={cn(
+                  "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                  `bg-gradient-to-br ${item.gradient} blur-xl -z-10`
+                )} style={{ transform: 'scale(0.8)', opacity: 0.15 }} />
+
                 {/* Icon with Flag */}
-                <div className="relative flex-shrink-0">
+                <div className="relative">
                   <div className={cn(
                     "flex items-center justify-center",
-                    "w-8 h-8 md:w-10 md:h-10 rounded-lg",
-                    item.bgColor
+                    "w-12 h-12 md:w-14 md:h-14 rounded-xl",
+                    item.bgColor,
+                    "shadow-sm group-hover:shadow-md transition-shadow"
                   )}>
-                    <IconComponent className={cn("w-4 h-4 md:w-5 md:h-5", item.accentColor)} strokeWidth={1.5} />
+                    <IconComponent className={cn("w-6 h-6 md:w-7 md:h-7", item.accentColor)} strokeWidth={1.5} />
                   </div>
-                  <span className="absolute -bottom-1 -right-1 text-[10px] md:text-xs">{item.flag}</span>
+                  <span className="absolute -bottom-1 -right-1 text-base md:text-lg drop-shadow-sm">{item.flag}</span>
                 </div>
 
                 {/* Text Content */}
-                <div className="text-left min-w-0">
-                  <h3 className="text-[9px] md:text-[11px] font-semibold text-foreground/90 dark:text-white/90 truncate">
+                <div className="text-center">
+                  <h3 className="text-[11px] md:text-xs font-bold text-foreground dark:text-white">
                     {item.title}
                   </h3>
-                  <p className="text-[7px] md:text-[9px] text-foreground/60 dark:text-white/60 truncate hidden sm:block">
+                  <p className="text-[8px] md:text-[9px] text-muted-foreground dark:text-white/60 mt-0.5">
                     {item.description}
                   </p>
                 </div>
 
-                {/* Arrow */}
-                <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 text-foreground/40 dark:text-white/40 group-hover:text-primary dark:group-hover:text-white group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                {/* Features Pills */}
+                <div className="flex flex-wrap justify-center gap-1">
+                  {item.features.map((feature, idx) => (
+                    <span 
+                      key={idx}
+                      className={cn(
+                        "px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-medium",
+                        "bg-background/60 dark:bg-white/10",
+                        item.accentColor
+                      )}
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <div className={cn(
+                  "flex items-center gap-1 text-[9px] md:text-[10px] font-semibold mt-1",
+                  item.accentColor,
+                  "group-hover:gap-2 transition-all"
+                )}>
+                  {t.explore}
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                </div>
 
                 {/* AI Badge */}
-                <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-primary/90 to-accent/90 rounded text-[6px] text-white font-medium shadow-sm">
-                  <Sparkles className="w-2 h-2" />
+                <div className="absolute -top-1.5 -right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-white font-bold shadow-lg">
+                  <Sparkles className="w-2.5 h-2.5" />
                   AI
                 </div>
               </motion.button>
@@ -137,21 +191,35 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
     );
   }
 
-  // Default variant - compact card style
+  // Default variant - modern card style
   return (
-    <section className="py-3 sm:py-4 px-2 sm:px-3">
+    <section className="py-4 sm:py-6 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
-        {/* Section Header */}
-        <div className="flex items-center justify-center gap-1.5 mb-3">
-          <Bot className="h-3.5 w-3.5 text-primary" />
-          <h2 className="text-xs sm:text-sm font-bold text-foreground">
-            {t.headline}
-          </h2>
-          <TrendingUp className="h-3.5 w-3.5 text-primary" />
+        {/* Section Header with Platform Logo */}
+        <div className="flex flex-col items-center gap-2 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-accent shadow-xl">
+                <Building2 className="h-5 w-5 md:h-6 md:w-6 text-white" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center shadow-md">
+                <Bot className="h-2.5 w-2.5 text-white" />
+              </div>
+            </div>
+            <div className="text-left">
+              <h2 className="text-sm md:text-base font-bold text-foreground dark:text-white flex items-center gap-1.5">
+                {t.headline}
+                <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+              </h2>
+              <p className="text-[9px] md:text-[10px] text-muted-foreground dark:text-white/60">
+                {t.subtitle}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+        {/* Modern Cards Grid */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {paths.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -163,49 +231,75 @@ const InvestorPathSelector = ({ variant = 'default' }: InvestorPathSelectorProps
                 transition={{ delay: index * 0.1, duration: 0.4 }}
                 onClick={() => handleCardClick(item.path)}
                 className={cn(
-                  "group relative overflow-hidden rounded-lg cursor-pointer",
-                  "bg-card/50 dark:bg-white/5 backdrop-blur-sm",
-                  "border-2 border-border/50 hover:border-primary/40",
-                  "shadow-sm hover:shadow-md transition-all duration-300",
-                  "p-2.5 sm:p-3 active:scale-[0.98]"
+                  "group relative overflow-hidden rounded-xl cursor-pointer",
+                  "bg-white/80 dark:bg-white/10 backdrop-blur-md",
+                  "border-2", item.borderColor, item.hoverBorder,
+                  "shadow-md hover:shadow-xl transition-all duration-300",
+                  "p-3 sm:p-4 active:scale-[0.98]"
                 )}
               >
-                {/* AI Glow Effect */}
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Background Glow */}
+                <div className={cn(
+                  "absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity",
+                  `bg-gradient-to-br ${item.gradient}`
+                )} />
                 
                 {/* Header Row */}
-                <div className="flex items-center gap-2 mb-1.5">
+                <div className="relative flex items-start gap-3 mb-3">
                   <div className={cn(
                     "flex items-center justify-center",
-                    "w-8 h-8 sm:w-9 sm:h-9 rounded-lg",
-                    item.bgColor
+                    "w-12 h-12 sm:w-14 sm:h-14 rounded-xl",
+                    item.bgColor,
+                    "shadow-sm group-hover:shadow-md transition-all group-hover:scale-105"
                   )}>
-                    <IconComponent className={cn("w-4 h-4 sm:w-4.5 sm:h-4.5", item.accentColor)} strokeWidth={1.5} />
+                    <IconComponent className={cn("w-6 h-6 sm:w-7 sm:h-7", item.accentColor)} strokeWidth={1.5} />
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-sm">{item.flag}</span>
-                    <Shield className="h-3 w-3 text-green-500" />
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-lg">{item.flag}</span>
+                      <Shield className="h-3.5 w-3.5 text-green-500" />
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-bold text-foreground dark:text-white group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-[9px] sm:text-[10px] text-muted-foreground dark:text-white/60">
+                      {item.description}
+                    </p>
                   </div>
                   
                   {/* AI Badge */}
-                  <div className="ml-auto flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary/80 to-accent/80 rounded text-[7px] text-white font-medium">
+                  <div className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-primary to-accent rounded-full text-[7px] text-white font-bold shadow-lg">
                     <Sparkles className="w-2.5 h-2.5" />
-                    AI Powered
+                    AI
                   </div>
                 </div>
 
-                {/* Content */}
-                <h3 className="text-[11px] sm:text-xs font-semibold text-foreground mb-0.5 group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-[9px] sm:text-[10px] text-muted-foreground line-clamp-1 mb-2">
-                  {item.description}
-                </p>
+                {/* Features */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {item.features.map((feature, idx) => (
+                    <span 
+                      key={idx}
+                      className={cn(
+                        "px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-medium",
+                        "bg-background/70 dark:bg-white/10 border border-border/30",
+                        item.accentColor
+                      )}
+                    >
+                      ✓ {feature}
+                    </span>
+                  ))}
+                </div>
 
                 {/* CTA */}
-                <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-medium text-primary group-hover:translate-x-0.5 transition-transform">
+                <div className={cn(
+                  "flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold",
+                  item.accentColor,
+                  "group-hover:gap-2 transition-all"
+                )}>
+                  <Users className="h-3 w-3" />
                   {t.explore}
-                  <ArrowRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </motion.div>
             );
