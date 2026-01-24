@@ -13,20 +13,23 @@ const ProfessionalFooter = ({
 }: ProfessionalFooterProps) => {
   const [isPartnersOpen, setIsPartnersOpen] = useState(false);
 
-  // Fetch footer logo from system settings only - no fallback
-  const {
-    data: footerLogoUrl
-  } = useQuery({
-    queryKey: ["system-setting", "footerLogo"],
+  // Fetch footer logo from system settings (branding category)
+  const { data: footerLogoUrl } = useQuery({
+    queryKey: ['branding', 'footerLogo'],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from("system_settings").select("value").eq("category", "general").eq("key", "footerLogo").maybeSingle();
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('category', 'branding')
+        .eq('key', 'footerLogo')
+        .maybeSingle();
+      
       if (error || !data?.value) return null;
-      return data.value as string;
+      const value = typeof data.value === 'string' ? data.value : null;
+      return value && value.trim() !== '' ? value : null;
     },
-    staleTime: 30_000, // Cache for 30 seconds to prevent flicker
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
   });
   const text = {
     en: {

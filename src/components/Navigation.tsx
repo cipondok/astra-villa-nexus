@@ -32,20 +32,23 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch header logo from system settings only - no fallback
+  // Fetch header logo from system settings (branding category)
   const { data: headerLogoUrl, isLoading: isLogoLoading } = useQuery({
-    queryKey: ['header-logo'],
+    queryKey: ['branding', 'headerLogo'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('system_settings')
         .select('value')
+        .eq('category', 'branding')
         .eq('key', 'headerLogo')
         .maybeSingle();
       
       if (error || !data?.value) return null;
-      return typeof data.value === 'string' ? data.value : null;
+      const value = typeof data.value === 'string' ? data.value : null;
+      return value && value.trim() !== '' ? value : null;
     },
-    staleTime: 30_000, // Cache for 30 seconds to prevent flicker on navigation
+    staleTime: 60_000, // Cache for 1 minute to prevent flicker
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

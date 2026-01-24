@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,25 @@ const AIFooterBot = () => {
   const [chatHistory, setChatHistory] = useState<Array<{id: string, message: string, response: string, timestamp: Date}>>([]);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const { user } = useAuth();
+
+  // Fetch chatbot logo from system settings (branding category)
+  const { data: chatbotLogoUrl } = useQuery({
+    queryKey: ['branding', 'chatbotLogo'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('category', 'branding')
+        .eq('key', 'chatbotLogo')
+        .maybeSingle();
+      
+      if (error || !data?.value) return null;
+      const value = typeof data.value === 'string' ? data.value : null;
+      return value && value.trim() !== '' ? value : null;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
 
   const aiChatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
@@ -116,10 +135,21 @@ const AIFooterBot = () => {
                   {/* Logo & Brand */}
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-xl blur-sm opacity-60" />
-                      <div className="relative w-10 h-10 bg-gradient-to-br from-primary via-primary to-accent rounded-xl flex items-center justify-center shadow-lg border border-primary/30">
-                        <Building2 className="h-5 w-5 text-primary-foreground" />
-                      </div>
+                      {chatbotLogoUrl ? (
+                        <img 
+                          src={chatbotLogoUrl} 
+                          alt="Astra Villa" 
+                          className="w-10 h-10 rounded-xl object-contain shadow-lg"
+                          style={{ background: 'transparent' }}
+                        />
+                      ) : (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-xl blur-sm opacity-60" />
+                          <div className="relative w-10 h-10 bg-gradient-to-br from-primary via-primary to-accent rounded-xl flex items-center justify-center shadow-lg border border-primary/30">
+                            <Building2 className="h-5 w-5 text-primary-foreground" />
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div>
                       <h3 className="text-base font-bold tracking-wide bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
