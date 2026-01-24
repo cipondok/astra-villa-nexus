@@ -179,20 +179,20 @@ const Navigation = () => {
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 w-full z-[10000] header-ios bg-white/10 dark:bg-black/10 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/30 dark:border-white/20 shadow-sm h-10 md:h-11 lg:h-12 transition-all duration-700">
-        <div className="w-full mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="w-full mx-auto px-1 sm:px-2 lg:px-4">
           <div className="flex items-center justify-between h-10 md:h-11 lg:h-12 gap-2">
-            {/* Enhanced ASTRA Villa Logo with Animation */}
+            {/* Enhanced ASTRA Villa Logo with Animation - Left Corner */}
             <div 
-              className="flex items-center space-x-2 cursor-pointer group flex-shrink-0" 
+              className="flex items-center cursor-pointer group flex-shrink-0 -ml-1" 
               onClick={() => navigate('/')}
             >
               {headerLogoUrl ? (
-                <div className="relative group/logo overflow-visible rounded-sm mt-2">
-                  {/* Logo - crisp rendering with optimized size */}
+                <div className="relative group/logo overflow-visible rounded-sm">
+                  {/* Logo - larger size, crisp rendering */}
                   <img 
                     src={headerLogoUrl} 
                     alt="ASTRA Villa" 
-                    className="relative h-10 md:h-12 lg:h-14 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
+                    className="relative h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300 group-hover/logo:scale-105"
                     style={{ 
                       imageRendering: 'crisp-edges',
                       WebkitFontSmoothing: 'antialiased'
