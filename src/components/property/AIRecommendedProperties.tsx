@@ -11,6 +11,7 @@ import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { getEdgeFunctionUserMessage, getEdgeFunctionStatus } from '@/lib/supabaseFunctionErrors';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 import { useNavigate } from 'react-router-dom';
@@ -116,6 +117,14 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
     } catch (error) {
       console.error('Error generating recommendations:', error);
+
+      // Friendly handling for credit/rate-limit errors.
+      // Keep the app usable by falling back to trending properties, but clearly inform the user.
+      const status = getEdgeFunctionStatus(error);
+      if (status === 402 || status === 429 || status === 503) {
+        const msg = getEdgeFunctionUserMessage(error);
+        toast({ title: msg.title, description: msg.description, variant: msg.variant });
+      }
       
       // Fallback to trending properties
       const { data: fallbackProps } = await supabase
