@@ -46,7 +46,7 @@ const PropertySlideshow = () => {
   const navigate = useNavigate();
 
   const handlePropertyClick = (propertyId: number | string) => {
-    navigate(`/property/${propertyId}`);
+    navigate(`/properties/${propertyId}`);
   };
 
   // Fetch featured properties for slideshow
