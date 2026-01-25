@@ -8,6 +8,7 @@ import { Send, Bot, User, Loader2, Sparkles, MessageSquare } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getEdgeFunctionUserMessage } from "@/lib/supabaseFunctionErrors";
+import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
 
 interface Message {
   id: string;
@@ -77,6 +78,10 @@ Ask me anything about foreign property investment in Indonesia!`,
     setIsLoading(true);
 
     try {
+      if (isAiTemporarilyDisabled()) {
+        throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
+      }
+
       const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: {
           message: `Context: User is asking about foreign property investment in Indonesia. 
@@ -100,6 +105,7 @@ Please provide detailed, accurate information about Indonesian property investme
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
+      markAiTemporarilyDisabledFromError(error);
       const msg = getEdgeFunctionUserMessage(error);
       toast({ title: msg.title, description: msg.description, variant: msg.variant });
     } finally {
