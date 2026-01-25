@@ -5,6 +5,7 @@ import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, Mes
 import { useNavigate } from "react-router-dom";
 import { BaseProperty } from "@/types/property";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface PropertyDetailModalProps {
   property: BaseProperty;
@@ -24,6 +25,7 @@ const PropertyDetailModal = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
   const navigate = useNavigate();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const text = {
     en: {
@@ -166,7 +168,7 @@ const PropertyDetailModal = ({
               <div className="space-y-4">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl">
                   <img
-                    src={imageUrls[currentImageIndex] || property.thumbnail_url || "/placeholder.svg"}
+                    src={imageUrls[currentImageIndex] || getPropertyImage(property.images, property.thumbnail_url)}
                     alt={property.title}
                     className="w-full h-full object-cover"
                   />

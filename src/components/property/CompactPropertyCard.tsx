@@ -9,6 +9,7 @@ import PropertyRatingDisplay from './PropertyRatingDisplay';
 import PropertyRatingModal from './PropertyRatingModal';
 import { VisualComparisonModal } from '@/components/search/VisualComparisonModal';
 import { usePropertyRatings } from '@/hooks/usePropertyRatings';
+import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 import { BaseProperty } from '@/types/property';
 import VerificationBadge from '@/components/ui/VerificationBadge';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
@@ -90,6 +91,7 @@ const CompactPropertyCard = ({
   const [isLiked, setIsLiked] = useState(isSaved);
 
   const { aggregate } = usePropertyRatings(property.id);
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const text = {
     en: {
@@ -143,13 +145,7 @@ const CompactPropertyCard = ({
   };
 
   const getImageUrl = () => {
-    if (property.images && property.images.length > 0) {
-      return property.images[0];
-    }
-    if (property.thumbnail_url) {
-      return property.thumbnail_url;
-    }
-    return "/placeholder.svg";
+    return getPropertyImage(property.images, property.thumbnail_url);
   };
 
   const handleViewDetails = (e?: React.MouseEvent) => {

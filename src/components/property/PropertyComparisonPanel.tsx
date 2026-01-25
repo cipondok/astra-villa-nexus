@@ -6,11 +6,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { usePropertyComparison } from '@/contexts/PropertyComparisonContext';
 import { BarChart3, X, Eye, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 
 const PropertyComparisonPanel = () => {
   const { selectedProperties, removeFromComparison, clearComparison } = usePropertyComparison();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   if (selectedProperties.length === 0) return null;
 
@@ -30,13 +32,7 @@ const PropertyComparisonPanel = () => {
   };
 
   const getImageUrl = (property: any) => {
-    if (property.images && property.images.length > 0) {
-      return property.images[0];
-    }
-    if (property.image_urls && property.image_urls.length > 0) {
-      return property.image_urls[0];
-    }
-    return "/placeholder.svg";
+    return getPropertyImage(property.images, property.thumbnail_url, property.image_urls);
   };
 
   const handleViewComparison = () => {

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface RecommendedPropertiesProps {
   currentPropertyId?: string;
@@ -27,6 +28,7 @@ const RecommendedProperties = ({
 }: RecommendedPropertiesProps) => {
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { defaultImage } = useDefaultPropertyImage();
 
   useEffect(() => {
     fetchRecommendations();

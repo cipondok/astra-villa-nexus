@@ -8,6 +8,7 @@ import Property3DViewModal from './Property3DViewModal';
 import { BaseProperty } from '@/types/property';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
+import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 
 interface Property {
   id: string;
@@ -56,6 +57,7 @@ const EnhancedPropertyCard = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const text = {
     en: {
@@ -174,7 +176,7 @@ const EnhancedPropertyCard = ({
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
-            src={property.image_urls?.[currentImageIndex] || "/placeholder.svg"}
+            src={getPropertyImage(undefined, undefined, property.image_urls) || (property.image_urls?.[currentImageIndex])}
             alt={property.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
