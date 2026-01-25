@@ -882,10 +882,40 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Check for specific AI service errors (402, 429, 503)
+      const anyErr = error as any;
+      const status = anyErr?.context?.status || anyErr?.status;
+      
+      let errorContent = "I'm sorry, I encountered an error. Please try again.";
+      
+      if (status === 402) {
+        errorContent = "⚠️ AI credits required. The AI service is currently unavailable because your workspace is out of credits. Please add credits to continue using AI features.";
+        toast({
+          title: "AI Credits Required",
+          description: "Please add credits to your workspace to use AI features.",
+          variant: "destructive",
+        });
+      } else if (status === 429) {
+        errorContent = "⏳ Too many requests. The AI is rate-limited right now. Please wait a moment and try again.";
+        toast({
+          title: "Rate Limit Exceeded",
+          description: "Please wait a moment and try again.",
+          variant: "destructive",
+        });
+      } else if (status === 503) {
+        errorContent = "🔧 AI service temporarily unavailable. Please try again in a moment.";
+        toast({
+          title: "AI Temporarily Unavailable",
+          description: "The AI service is temporarily unavailable. Please try again shortly.",
+          variant: "destructive",
+        });
+      }
+      
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "I'm sorry, I encountered an error. Please try again.",
+        content: errorContent,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
