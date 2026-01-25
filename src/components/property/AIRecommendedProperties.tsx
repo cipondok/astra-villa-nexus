@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { getEdgeFunctionUserMessage, getEdgeFunctionStatus } from '@/lib/supabaseFunctionErrors';
+import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from '@/lib/aiAvailability';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 import { useNavigate } from 'react-router-dom';
@@ -55,6 +56,11 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     setShowProgressPopup(true);
     
     try {
+      // If AI is temporarily disabled (e.g., due to 402 credits), skip calling it.
+      if (isAiTemporarilyDisabled()) {
+        throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
+      }
+
       // Get recent properties for context
       const { data: recentProperties } = await supabase
         .from('properties')
@@ -117,6 +123,9 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
 
     } catch (error) {
       console.error('Error generating recommendations:', error);
+
+      // Back off further AI calls for a bit on common gateway failures.
+      markAiTemporarilyDisabledFromError(error);
 
       // Friendly handling for credit/rate-limit errors.
       // Keep the app usable by falling back to trending properties, but clearly inform the user.

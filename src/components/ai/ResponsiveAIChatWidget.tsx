@@ -29,6 +29,7 @@ import ChatbotTipsPopup from "./ChatbotTipsPopup";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -811,6 +812,10 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     setTypingStatus(getTypingStatus(currentMessage));
 
     try {
+      if (isAiTemporarilyDisabled()) {
+        throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
+      }
+
       const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
       const isNegotiationQuery = /negotiate|lower the price|deposit|rent|deal|offer|lease/i.test(currentMessage);
       
@@ -882,6 +887,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
     } catch (error) {
       console.error('Error sending message:', error);
+
+      markAiTemporarilyDisabledFromError(error);
       
       // Check for specific AI service errors (402, 429, 503)
       const anyErr = error as any;

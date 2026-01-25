@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getEdgeFunctionUserMessage } from "@/lib/supabaseFunctionErrors";
+import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
 import { 
   Bot, 
   Send, 
@@ -49,6 +50,10 @@ const AIFooterBot = () => {
 
   const aiChatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
+      if (isAiTemporarilyDisabled()) {
+        throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
+      }
+
       const body: any = {
         message: userMessage,
         conversationId: sessionId
@@ -73,6 +78,7 @@ const AIFooterBot = () => {
       setMessage("");
     },
     onError: (err) => {
+      markAiTemporarilyDisabledFromError(err);
       const msg = getEdgeFunctionUserMessage(err);
       toast({ title: msg.title, description: msg.description, variant: msg.variant });
     },
