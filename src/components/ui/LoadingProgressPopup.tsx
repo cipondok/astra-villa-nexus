@@ -13,17 +13,31 @@ interface LoadingProgressPopupProps {
 const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
   const { isLoading, progress, message, showPopup, setShowPopup } = useGlobalLoading();
 
-  // Fetch loading popup logo from branding settings
+  // Fetch loading page logo from branding settings (try loadingPageLogo first, then welcomeScreenLogo)
   const { data: loadingLogoUrl } = useQuery({
-    queryKey: ['branding', 'welcomeScreenLogo'],
+    queryKey: ['branding', 'loadingPageLogo'],
     queryFn: async () => {
-      const { data } = await supabase
+      // First try loadingPageLogo
+      const { data: loadingData } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('category', 'branding')
+        .eq('key', 'loadingPageLogo')
+        .maybeSingle();
+      
+      if (typeof loadingData?.value === 'string' && loadingData.value) {
+        return loadingData.value;
+      }
+      
+      // Fallback to welcomeScreenLogo
+      const { data: welcomeData } = await supabase
         .from('system_settings')
         .select('value')
         .eq('category', 'branding')
         .eq('key', 'welcomeScreenLogo')
         .maybeSingle();
-      return typeof data?.value === 'string' ? data.value : null;
+      
+      return typeof welcomeData?.value === 'string' ? welcomeData.value : null;
     },
     staleTime: 60_000,
     refetchOnWindowFocus: false,

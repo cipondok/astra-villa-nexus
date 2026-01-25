@@ -42,6 +42,8 @@ interface GeneratedLogo {
 const LOGO_SIZES = [
   { name: 'Header Logo', width: 200, height: 60, key: 'headerLogo' },
   { name: 'Footer Logo', width: 180, height: 50, key: 'footerLogo' },
+  { name: 'Loading Page Logo', width: 200, height: 200, key: 'loadingPageLogo' },
+  { name: 'Welcome Screen Logo', width: 200, height: 200, key: 'welcomeScreenLogo' },
   { name: 'Favicon', width: 64, height: 64, key: 'faviconUrl' },
   { name: 'Email Logo', width: 300, height: 80, key: 'emailLogoUrl' },
   { name: 'Mobile App Icon', width: 512, height: 512, key: 'mobileAppIcon' },
@@ -51,7 +53,8 @@ const LOGO_SIZES = [
 const ALL_LOGO_KEYS = [
   { key: 'headerLogo', label: 'Header', description: 'Main header logo', size: '200x60' },
   { key: 'footerLogo', label: 'Footer', description: 'Footer logo', size: '180x50' },
-  { key: 'welcomeScreenLogo', label: 'Welcome', description: 'Loading screen', size: '200x200' },
+  { key: 'loadingPageLogo', label: 'Loading', description: 'Loading popup', size: '200x200' },
+  { key: 'welcomeScreenLogo', label: 'Welcome', description: 'Welcome screen', size: '200x200' },
   { key: 'faviconUrl', label: 'Favicon', description: 'Browser tab', size: '64x64' },
   { key: 'emailLogoUrl', label: 'Email', description: 'Email templates', size: '300x80' },
   { key: 'mobileAppIcon', label: 'App Icon', description: 'PWA/mobile', size: '512x512' },
