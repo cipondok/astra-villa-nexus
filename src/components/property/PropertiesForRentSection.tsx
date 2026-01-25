@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Eye, Key, Building, Clock, Bed, Bath, Maximize, Plus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
@@ -25,6 +26,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
   const navigate = useNavigate();
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
+  const { getPropertyImage } = useDefaultPropertyImage();
   const { data: rentProperties = [], isLoading } = useQuery({
     queryKey: ['properties-for-rent'],
     queryFn: async () => {
@@ -110,7 +112,7 @@ const PropertiesForRentSection = ({ language, onPropertyClick }: PropertiesForRe
           >
             {/* Full Image Background */}
             <img
-              src={property.images?.[0] || property.thumbnail_url || "/placeholder.svg"}
+              src={getPropertyImage(property.images, property.thumbnail_url)}
               alt={property.title}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
 import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 interface PropertyOwner {
   id: string;
   name: string;
@@ -62,6 +63,7 @@ const ModernPropertyCard = ({
 }: ModernPropertyCardProps) => {
   const [isLiked, setIsLiked] = useState(isSaved);
   const navigate = useNavigate();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const formatPrice = (price: number | string) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
@@ -102,9 +104,7 @@ const ModernPropertyCard = ({
   };
 
   const getImageUrl = () => {
-    if (property.images && property.images.length > 0) return property.images[0];
-    if (property.image) return property.image;
-    return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop';
+    return getPropertyImage(property.images, undefined, property.image ? [property.image] : undefined);
   };
 
   const getLocation = () => {

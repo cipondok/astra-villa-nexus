@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, MessageCircle, Send, Link, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BaseProperty } from "@/types/property";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 
 interface SocialShareDialogProps {
   open: boolean;
@@ -14,6 +15,7 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
   const shareUrl = `${window.location.origin}/properties/${property.id}`;
   const shareTitle = property.title;
   const shareDescription = `Check out this property: ${property.title} in ${property.city || property.location}`;
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) return `IDR ${(price / 1000000000).toFixed(1)}B`;
@@ -93,10 +95,7 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
   };
 
   const getImageUrl = () => {
-    if (property.images && property.images.length > 0) return property.images[0];
-    if (property.image_urls && property.image_urls.length > 0) return property.image_urls[0];
-    if (property.thumbnail_url) return property.thumbnail_url;
-    return "/placeholder.svg";
+    return getPropertyImage(property.images, property.thumbnail_url, property.image_urls);
   };
 
   return (

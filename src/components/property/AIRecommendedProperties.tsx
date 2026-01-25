@@ -16,6 +16,7 @@ import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from '@/l
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
 import { useNavigate } from 'react-router-dom';
+import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
 
 interface AIRecommendedPropertiesProps {
   onPropertyClick: (property: BaseProperty) => void;
@@ -32,6 +33,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const [showProgressPopup, setShowProgressPopup] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   // Fetch user preferences and property data
   const { data: userPreferences } = useQuery({
@@ -204,7 +206,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     >
       {/* Full Image Background */}
       <img
-        src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+        src={getPropertyImage(property.images, property.thumbnail_url)}
         alt={property.title}
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
