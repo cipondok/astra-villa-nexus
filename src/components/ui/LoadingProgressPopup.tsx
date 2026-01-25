@@ -2,7 +2,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, X } from 'lucide-react';
 import { useGlobalLoading } from '@/hooks/useGlobalLoading';
 import { cn } from '@/lib/utils';
-import astraLogo from '@/assets/astra-logo.png';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import astraLogoFallback from '@/assets/astra-logo.png';
 
 interface LoadingProgressPopupProps {
   className?: string;
@@ -10,6 +12,24 @@ interface LoadingProgressPopupProps {
 
 const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
   const { isLoading, progress, message, showPopup, setShowPopup } = useGlobalLoading();
+
+  // Fetch loading popup logo from branding settings
+  const { data: loadingLogoUrl } = useQuery({
+    queryKey: ['branding', 'welcomeScreenLogo'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('category', 'branding')
+        .eq('key', 'welcomeScreenLogo')
+        .maybeSingle();
+      return typeof data?.value === 'string' ? data.value : null;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const logoUrl = loadingLogoUrl || astraLogoFallback;
 
   return (
     <AnimatePresence>
@@ -44,9 +64,13 @@ const LoadingProgressPopup = ({ className }: LoadingProgressPopupProps) => {
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   <img 
-                    src={astraLogo} 
+                    src={logoUrl} 
                     alt="ASTRA" 
                     className="w-8 h-8 object-contain rounded-lg"
+                    style={{ 
+                      imageRendering: 'crisp-edges',
+                      background: 'transparent'
+                    }}
                   />
                   {/* Spinning Ring */}
                   <motion.div
