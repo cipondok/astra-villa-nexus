@@ -11,7 +11,7 @@ import { BaseProperty } from '@/types/property';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import { getEdgeFunctionUserMessage, getEdgeFunctionStatus } from '@/lib/supabaseFunctionErrors';
+import { getEdgeFunctionUserMessage, getEdgeFunctionStatus, throwIfEdgeFunctionReturnedError } from '@/lib/supabaseFunctionErrors';
 import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from '@/lib/aiAvailability';
 import WhatsAppInquiryDialog from './WhatsAppInquiryDialog';
 import ProgressPopup from '@/components/ui/ProgressPopup';
@@ -77,11 +77,12 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       };
       if (user?.id) body.userId = user.id;
 
-      const { data: aiResponse, error } = await supabase.functions.invoke('ai-assistant', {
+       const { data: aiResponse, error } = await supabase.functions.invoke('ai-assistant', {
         body
       });
 
       if (error) throw error;
+       throwIfEdgeFunctionReturnedError(aiResponse);
 
       // Extract property IDs from AI response
       const responseText = aiResponse?.message || '';

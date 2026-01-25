@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Bot, User, Loader2, Sparkles, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { getEdgeFunctionUserMessage } from "@/lib/supabaseFunctionErrors";
+import { getEdgeFunctionUserMessage, throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
 import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
 
 interface Message {
@@ -93,12 +93,13 @@ Please provide detailed, accurate information about Indonesian property investme
         }
       });
 
-      if (error) throw error;
+       if (error) throw error;
+       throwIfEdgeFunctionReturnedError(data);
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: data.message || "I apologize, but I couldn't generate a response. Please try again.",
+         content: data.message || "I apologize, but I couldn't generate a response. Please try again.",
         timestamp: new Date()
       };
 
