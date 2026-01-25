@@ -184,8 +184,10 @@ const BPJSAPISettings = () => {
 
   const maskApiKey = (key: string | null) => {
     if (!key) return "Not configured";
-    if (key.length <= 8) return key;
-    return key.substring(0, 4) + "•".repeat(Math.max(0, key.length - 8)) + key.substring(key.length - 4);
+    // Fixed-length masking to prevent leaking key structure/length
+    // Only show last 4 characters with fixed-width mask
+    const lastFour = key.length >= 4 ? key.substring(key.length - 4) : key;
+    return `••••-••••-••••-${lastFour}`;
   };
 
   const getApiSetting = (apiKey: string) => {
