@@ -30,6 +30,7 @@ import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
+import { throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -845,10 +846,13 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
       console.log('Edge function response:', { data, error });
 
-      if (error) {
+       if (error) {
         console.error('Edge function error:', error);
         throw error;
       }
+
+       // Some functions return HTTP 200 with {status, error} to avoid preview blank screens.
+       throwIfEdgeFunctionReturnedError(data);
 
       if (!data || !data.message) {
         console.error('Invalid response from edge function:', data);

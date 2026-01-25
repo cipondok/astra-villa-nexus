@@ -17,6 +17,22 @@ export function getEdgeFunctionStatus(err: unknown): number | undefined {
   return statusFromErr;
 }
 
+/**
+ * Some edge functions may return HTTP 200 even when the upstream provider failed
+ * (e.g. 402/429/503), to avoid preview blank-screen overlays.
+ * In those cases, the function returns JSON: { status: number, error: string }.
+ */
+export function throwIfEdgeFunctionReturnedError(data: unknown): void {
+  const anyData = data as any;
+  const status = typeof anyData?.status === "number" ? (anyData.status as number) : undefined;
+  if (status && status >= 400) {
+    const msg = typeof anyData?.error === "string" && anyData.error.trim()
+      ? anyData.error
+      : "Edge function error";
+    throw Object.assign(new Error(msg), { status });
+  }
+}
+
 export function getEdgeFunctionUserMessage(err: unknown): {
   title: string;
   description: string;

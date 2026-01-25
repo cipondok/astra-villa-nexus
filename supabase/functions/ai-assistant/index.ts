@@ -321,28 +321,42 @@ Remember: You're not just an assistant - you're their trusted property advisor m
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Error from Lovable AI:', response.status, errorText);
-      
+
+      // IMPORTANT:
+      // Returning non-2xx responses from this function can cause the Lovable preview to
+      // treat the request as a runtime error and show a blank-screen overlay.
+      // We therefore return HTTP 200 for gateway billing/rate/availability failures,
+      // and pass the real status in the JSON body so the client can handle it.
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+        return new Response(JSON.stringify({
           status: 429,
+          error: 'Rate limit exceeded. Please try again later.',
+        }), {
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      
+
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+        return new Response(JSON.stringify({
           status: 402,
+          error: 'Payment required. Please add credits to your workspace.',
+        }), {
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      
+
       if (response.status === 503) {
-        return new Response(JSON.stringify({ error: 'AI service is temporarily unavailable. Please try again in a moment.' }), {
+        return new Response(JSON.stringify({
           status: 503,
+          error: 'AI service is temporarily unavailable. Please try again in a moment.',
+        }), {
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      
+
       throw new Error(`AI gateway error: ${response.status} ${errorText}`);
     }
 

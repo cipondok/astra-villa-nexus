@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { getEdgeFunctionUserMessage } from "@/lib/supabaseFunctionErrors";
+import { getEdgeFunctionUserMessage, throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
 import { isAiTemporarilyDisabled, markAiTemporarilyDisabledFromError } from "@/lib/aiAvailability";
 import { 
   Bot, 
@@ -60,11 +60,12 @@ const AIFooterBot = () => {
       };
       if (user?.id) body.userId = user.id;
 
-      const { data, error } = await supabase.functions.invoke('ai-assistant', {
+       const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body
       });
 
       if (error) throw error;
+       throwIfEdgeFunctionReturnedError(data);
       return data.message;
     },
     onSuccess: (aiResponse) => {
