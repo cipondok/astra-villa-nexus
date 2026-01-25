@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { getEdgeFunctionUserMessage } from "@/lib/supabaseFunctionErrors";
 import { 
   Bot, 
   Send, 
@@ -24,6 +26,7 @@ const AIFooterBot = () => {
   const [chatHistory, setChatHistory] = useState<Array<{id: string, message: string, response: string, timestamp: Date}>>([]);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const { user } = useAuth();
+  const { toast } = useToast();
 
   // Fetch chatbot logo from system settings (branding category)
   const { data: chatbotLogoUrl } = useQuery({
@@ -68,6 +71,10 @@ const AIFooterBot = () => {
       };
       setChatHistory(prev => [...prev, newChat]);
       setMessage("");
+    },
+    onError: (err) => {
+      const msg = getEdgeFunctionUserMessage(err);
+      toast({ title: msg.title, description: msg.description, variant: msg.variant });
     },
   });
 

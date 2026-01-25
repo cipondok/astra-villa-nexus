@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Bot, User, Loader2, Sparkles, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getEdgeFunctionUserMessage } from "@/lib/supabaseFunctionErrors";
 
 interface Message {
   id: string;
@@ -99,11 +100,8 @@ Please provide detailed, accurate information about Indonesian property investme
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to get response. Please try again.",
-        variant: "destructive"
-      });
+      const msg = getEdgeFunctionUserMessage(error);
+      toast({ title: msg.title, description: msg.description, variant: msg.variant });
     } finally {
       setIsLoading(false);
     }
