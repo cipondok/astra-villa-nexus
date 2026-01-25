@@ -1,13 +1,14 @@
 
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import useAutoHorizontalScroll from "@/hooks/useAutoHorizontalScroll";
 import { ChevronLeft, ChevronRight, Bed, Bath, Maximize, Key, Tag, Building, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
-import { Button } from "@/components/ui/button";
 
 interface Property {
   id: number;
@@ -42,6 +43,11 @@ const getListingLabel = (type: string | null) => {
 const PropertySlideshow = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const navigate = useNavigate();
+
+  const handlePropertyClick = (propertyId: number | string) => {
+    navigate(`/property/${propertyId}`);
+  };
 
   // Fetch featured properties for slideshow
   const { data: properties = [] } = useQuery({
@@ -154,6 +160,7 @@ const PropertySlideshow = () => {
         {displayProperties.map((property, idx) => (
           <div 
             key={`${property.id}-${idx}`}
+            onClick={() => handlePropertyClick(property.id)}
             className="flex-shrink-0 w-[140px] md:w-[160px] lg:w-[180px] xl:w-[200px] group/card cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
           >
             {/* Slim Card - All info on image */}
