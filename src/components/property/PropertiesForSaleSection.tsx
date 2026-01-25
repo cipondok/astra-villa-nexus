@@ -8,8 +8,9 @@ import { shareProperty } from "@/utils/shareUtils";
 import { useState } from "react";
 import WhatsAppInquiryDialog from "./WhatsAppInquiryDialog";
 import { toast } from "sonner";
-import { Eye, Home, Tag, Building, Clock, Bed, Bath, Maximize } from "lucide-react";
+import { Eye, Home, Tag, Building, Clock, Bed, Bath, Maximize, Plus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 // Helper to capitalize first letter
 const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Property';
@@ -21,6 +22,7 @@ interface PropertiesForSaleSectionProps {
 
 const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSaleSectionProps) => {
   const { isMobile } = useIsMobile();
+  const navigate = useNavigate();
   const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<BaseProperty | null>(null);
   const { data: saleProperties = [], isLoading } = useQuery({
@@ -40,7 +42,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           .not('title', 'eq', '')
           .gt('price', 0)
           .order('created_at', { ascending: false })
-          .limit(8);
+          .limit(12);
 
         if (error) {
           console.error('Properties for sale query error:', error);
@@ -67,33 +69,24 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
+  // Calculate empty slots to fill grid
+  const maxItems = 12;
+  const currentCount = saleProperties.length;
+  const emptySlots = Math.max(0, maxItems - currentCount);
+
   if (isLoading) {
     return (
-      <section className="glass-card rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
+      <section className="rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3">
         <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5">
+          <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-green-600 dark:text-green-400" />
           <h2 className="text-[8px] sm:text-[9px] md:text-xs font-semibold text-foreground">
             Properti Dijual
           </h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-1 sm:gap-1.5 md:gap-2">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="animate-pulse rounded-md sm:rounded-lg overflow-hidden bg-white/50 dark:bg-white/5 h-24 sm:h-28 md:h-36"></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-2 md:gap-3">
+          {[...Array(12)].map((_, i) => (
+            <div key={i} className="animate-pulse rounded-md sm:rounded-lg overflow-hidden bg-muted/50 h-36 sm:h-40 md:h-52"></div>
           ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (saleProperties.length === 0) {
-    return (
-      <section className="glass-card rounded-lg sm:rounded-xl md:rounded-2xl p-1.5 sm:p-2 md:p-3 border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-gray-900/80 dark:via-gray-900/60 dark:to-gray-900/40 backdrop-blur-xl shadow-lg">
-        <div className="mb-1 sm:mb-1.5 md:mb-2 flex items-center justify-center gap-0.5 sm:gap-1 md:gap-1.5">
-          <h2 className="text-[8px] sm:text-[9px] md:text-xs font-semibold text-foreground">
-            Properti Dijual
-          </h2>
-        </div>
-        <div className="text-center text-muted-foreground py-2 sm:py-3 text-[7px] sm:text-[8px] md:text-xs">
-          Tidak ada properti dijual saat ini.
         </div>
       </section>
     );
@@ -109,11 +102,11 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1.5 sm:gap-2 md:gap-3">
-        {saleProperties.slice(0, 12).map((property) => (
+        {saleProperties.slice(0, maxItems).map((property) => (
           <div
             key={property.id}
             onClick={() => onPropertyClick(property)}
-            className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-36 sm:h-40 md:h-52 hover:scale-[1.02] transition-all duration-200 ring-1 ring-green-200/50 dark:ring-green-800/30"
+            className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-36 sm:h-40 md:h-52 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ring-1 ring-green-200/50 dark:ring-green-800/30"
           >
             {/* Full Image Background */}
             <img
@@ -197,6 +190,22 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
                 )}
               </div>
             </div>
+          </div>
+        ))}
+        
+        {/* Empty placeholder slots with "Add" action */}
+        {emptySlots > 0 && [...Array(emptySlots)].map((_, i) => (
+          <div
+            key={`empty-${i}`}
+            onClick={() => navigate('/add-property')}
+            className="group cursor-pointer relative rounded-lg sm:rounded-xl overflow-hidden h-36 sm:h-40 md:h-52 border-2 border-dashed border-muted-foreground/20 hover:border-primary/50 bg-muted/20 hover:bg-primary/5 transition-all duration-200 flex flex-col items-center justify-center gap-2 active:scale-[0.98]"
+          >
+            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-muted/50 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
+              <Plus className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground/50 group-hover:text-primary transition-colors" />
+            </div>
+            <span className="text-[10px] sm:text-xs text-muted-foreground/50 group-hover:text-primary transition-colors font-medium">
+              Tambah Properti
+            </span>
           </div>
         ))}
       </div>
