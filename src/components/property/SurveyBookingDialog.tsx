@@ -40,6 +40,15 @@ export function SurveyBookingDialog({ propertyId, propertyTitle, propertyLocatio
   const [notes, setNotes] = useState('');
 
   const handleSubmit = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to book a property survey",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!selectedDate || !selectedTime || !customerName || !customerEmail) {
       toast({
         title: "Missing Information",
