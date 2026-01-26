@@ -117,17 +117,17 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     });
   };
 
-  // Floating button variant
+  // Floating button variant - positioned above chatbot (left side)
   if (variant === 'floating') {
     return (
-      <div className={`fixed bottom-20 right-4 z-50 md:bottom-6 md:right-6 ${className}`}>
+      <div className={`fixed bottom-24 left-4 z-40 md:bottom-24 md:left-6 ${className}`}>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button
               size="lg"
-              className="h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-xl transition-all duration-300 group"
+              className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-xl transition-all duration-300 group border-2 border-white/30"
             >
-              <MessageCircle className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+              <MessageCircle className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:scale-110 transition-transform" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
