@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MessageCircle, Send, X, User, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MessageCircle, Send, User, FileText, MapPin, Home, DollarSign, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,11 +22,14 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { openWhatsAppChat, InquiryType } from '@/utils/whatsappUtils';
+import { Badge } from '@/components/ui/badge';
 
 interface WhatsAppInquiryButtonProps {
   defaultType?: InquiryType;
   propertyTitle?: string;
   propertyId?: string;
+  propertyLocation?: string;
+  propertyPrice?: string;
   variant?: 'default' | 'floating' | 'inline' | 'compact';
   className?: string;
   showForm?: boolean;
@@ -36,6 +39,8 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   defaultType = 'general',
   propertyTitle,
   propertyId,
+  propertyLocation,
+  propertyPrice,
   variant = 'default',
   className = '',
   showForm = true
@@ -44,67 +49,194 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
   const { user, profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState<InquiryType>(defaultType);
-  const [userName, setUserName] = useState(profile?.full_name || '');
+  
+  // User info - auto-pickup from profile if logged in
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userPhone, setUserPhone] = useState('');
+  
+  // Inquiry preferences
+  const [preferredArea, setPreferredArea] = useState('');
+  const [budgetRange, setBudgetRange] = useState('');
+  const [timeline, setTimeline] = useState('');
   const [customMessage, setCustomMessage] = useState('');
+
+  // Auto-fill user data when profile loads or modal opens
+  useEffect(() => {
+    if (profile) {
+      setUserName(profile.full_name || '');
+      setUserEmail(profile.email || user?.email || '');
+      setUserPhone(profile.phone || '');
+    } else if (user) {
+      setUserEmail(user.email || '');
+    }
+  }, [profile, user, isOpen]);
 
   const text = {
     en: {
       title: "WhatsApp Inquiry",
-      description: "Send us a message on WhatsApp for quick assistance",
-      inquiryType: "Inquiry Type",
+      description: "Send us a smart inquiry - we'll respond quickly!",
+      loggedInBadge: "Auto-filled from your profile",
+      guestBadge: "Quick inquiry - no login required",
+      inquiryType: "What do you need help with?",
       yourName: "Your Name",
-      additionalMessage: "Additional Message (Optional)",
-      messagePlaceholder: "Any specific questions or details...",
+      yourEmail: "Email (Optional)",
+      yourPhone: "Phone/WhatsApp Number",
+      preferredArea: "Preferred Area/Location",
+      areaPlaceholder: "e.g., Bali, Jakarta, Bandung",
+      budgetRange: "Budget Range",
+      timeline: "When do you plan to invest?",
+      additionalMessage: "Additional Details",
+      messagePlaceholder: "Any specific requirements or questions...",
       sendMessage: "Send via WhatsApp",
-      quickInquiry: "Quick Inquiry",
+      quickInquiry: "WhatsApp Inquiry",
       types: {
-        'general': 'General Inquiry',
-        'wna-investment': 'WNA Investment',
-        'wni-investment': 'WNI Investment',
-        'property': 'Property Inquiry',
-        'legal': 'Legal Consultation',
-        'visa': 'Visa Information',
-        'family-benefits': 'Family Benefits',
-        'citizenship': 'Citizenship & Residency',
-        'taxation': 'Taxation'
+        'general': '💬 General Inquiry',
+        'wna-investment': '🌍 WNA Investment',
+        'wni-investment': '🇮🇩 WNI Investment',
+        'property': '🏠 Property Inquiry',
+        'legal': '⚖️ Legal Consultation',
+        'visa': '🛂 Visa Information',
+        'family-benefits': '👨‍👩‍👧‍👦 Family Benefits',
+        'citizenship': '🇮🇩 Citizenship & Residency',
+        'taxation': '💰 Taxation'
+      },
+      budgetOptions: {
+        'under-1b': 'Under IDR 1 Billion',
+        '1b-3b': 'IDR 1-3 Billion',
+        '3b-5b': 'IDR 3-5 Billion',
+        '5b-10b': 'IDR 5-10 Billion',
+        'above-10b': 'Above IDR 10 Billion',
+        'flexible': 'Flexible / Discuss'
+      },
+      timelineOptions: {
+        'immediate': 'Immediately (1-3 months)',
+        'soon': 'Soon (3-6 months)',
+        'planning': 'Planning (6-12 months)',
+        'exploring': 'Just Exploring',
+        'flexible': 'Flexible Timeline'
       }
     },
     id: {
       title: "Pertanyaan WhatsApp",
-      description: "Kirim pesan ke WhatsApp kami untuk bantuan cepat",
-      inquiryType: "Jenis Pertanyaan",
+      description: "Kirim pertanyaan cerdas - kami akan merespons cepat!",
+      loggedInBadge: "Terisi otomatis dari profil Anda",
+      guestBadge: "Pertanyaan cepat - tidak perlu login",
+      inquiryType: "Apa yang Anda butuhkan?",
       yourName: "Nama Anda",
-      additionalMessage: "Pesan Tambahan (Opsional)",
-      messagePlaceholder: "Pertanyaan atau detail spesifik...",
+      yourEmail: "Email (Opsional)",
+      yourPhone: "Nomor Telepon/WhatsApp",
+      preferredArea: "Area/Lokasi Pilihan",
+      areaPlaceholder: "contoh: Bali, Jakarta, Bandung",
+      budgetRange: "Kisaran Anggaran",
+      timeline: "Kapan rencana investasi?",
+      additionalMessage: "Detail Tambahan",
+      messagePlaceholder: "Persyaratan atau pertanyaan spesifik...",
       sendMessage: "Kirim via WhatsApp",
-      quickInquiry: "Pertanyaan Cepat",
+      quickInquiry: "Pertanyaan WhatsApp",
       types: {
-        'general': 'Pertanyaan Umum',
-        'wna-investment': 'Investasi WNA',
-        'wni-investment': 'Investasi WNI',
-        'property': 'Pertanyaan Properti',
-        'legal': 'Konsultasi Hukum',
-        'visa': 'Informasi Visa',
-        'family-benefits': 'Manfaat Keluarga',
-        'citizenship': 'Kewarganegaraan & Residensi',
-        'taxation': 'Perpajakan'
+        'general': '💬 Pertanyaan Umum',
+        'wna-investment': '🌍 Investasi WNA',
+        'wni-investment': '🇮🇩 Investasi WNI',
+        'property': '🏠 Pertanyaan Properti',
+        'legal': '⚖️ Konsultasi Hukum',
+        'visa': '🛂 Informasi Visa',
+        'family-benefits': '👨‍👩‍👧‍👦 Manfaat Keluarga',
+        'citizenship': '🇮🇩 Kewarganegaraan',
+        'taxation': '💰 Perpajakan'
+      },
+      budgetOptions: {
+        'under-1b': 'Di bawah IDR 1 Miliar',
+        '1b-3b': 'IDR 1-3 Miliar',
+        '3b-5b': 'IDR 3-5 Miliar',
+        '5b-10b': 'IDR 5-10 Miliar',
+        'above-10b': 'Di atas IDR 10 Miliar',
+        'flexible': 'Fleksibel / Diskusi'
+      },
+      timelineOptions: {
+        'immediate': 'Segera (1-3 bulan)',
+        'soon': 'Segera (3-6 bulan)',
+        'planning': 'Perencanaan (6-12 bulan)',
+        'exploring': 'Hanya Menjelajahi',
+        'flexible': 'Timeline Fleksibel'
       }
     }
   };
 
   const t = text[language] || text.en;
 
+  const generateSmartMessage = (): string => {
+    const lang = language;
+    const isLoggedIn = !!user;
+    const inquiryLabel = t.types[inquiryType] || t.types.general;
+    
+    let message = lang === 'en' 
+      ? `Hello ASTRA Villa! 👋\n\n`
+      : `Halo ASTRA Villa! 👋\n\n`;
+
+    // Header with inquiry type
+    message += `━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `📋 *${inquiryLabel}*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    // User Info Section
+    message += lang === 'en' ? `👤 *CONTACT INFO*\n` : `👤 *INFO KONTAK*\n`;
+    if (userName) message += `• Name: ${userName}\n`;
+    if (userEmail) message += `• Email: ${userEmail}\n`;
+    if (userPhone) message += `• Phone: ${userPhone}\n`;
+    if (isLoggedIn) {
+      message += lang === 'en' ? `• Status: ✅ Registered User\n` : `• Status: ✅ Pengguna Terdaftar\n`;
+    }
+    message += `\n`;
+
+    // Property Info (if provided)
+    if (propertyTitle || propertyId || propertyLocation || propertyPrice) {
+      message += lang === 'en' ? `🏠 *PROPERTY INTEREST*\n` : `🏠 *PROPERTI DIMINATI*\n`;
+      if (propertyTitle) message += `• Property: ${propertyTitle}\n`;
+      if (propertyId) message += `• ID: ${propertyId}\n`;
+      if (propertyLocation) message += `• Location: ${propertyLocation}\n`;
+      if (propertyPrice) message += `• Price: ${propertyPrice}\n`;
+      message += `\n`;
+    }
+
+    // Investment Preferences
+    if (preferredArea || budgetRange || timeline) {
+      message += lang === 'en' ? `📊 *INVESTMENT PREFERENCES*\n` : `📊 *PREFERENSI INVESTASI*\n`;
+      if (preferredArea) {
+        message += lang === 'en' ? `• Preferred Area: ${preferredArea}\n` : `• Area Pilihan: ${preferredArea}\n`;
+      }
+      if (budgetRange && t.budgetOptions[budgetRange as keyof typeof t.budgetOptions]) {
+        const budgetLabel = t.budgetOptions[budgetRange as keyof typeof t.budgetOptions];
+        message += lang === 'en' ? `• Budget: ${budgetLabel}\n` : `• Anggaran: ${budgetLabel}\n`;
+      }
+      if (timeline && t.timelineOptions[timeline as keyof typeof t.timelineOptions]) {
+        const timelineLabel = t.timelineOptions[timeline as keyof typeof t.timelineOptions];
+        message += lang === 'en' ? `• Timeline: ${timelineLabel}\n` : `• Timeline: ${timelineLabel}\n`;
+      }
+      message += `\n`;
+    }
+
+    // Custom Message
+    if (customMessage) {
+      message += lang === 'en' ? `📝 *ADDITIONAL DETAILS*\n` : `📝 *DETAIL TAMBAHAN*\n`;
+      message += `${customMessage}\n\n`;
+    }
+
+    // Footer
+    message += `━━━━━━━━━━━━━━━━━━━━\n`;
+    message += lang === 'en' 
+      ? `📱 Sent via ASTRA Villa App\n⏰ ${new Date().toLocaleString('en-ID')}`
+      : `📱 Dikirim via Aplikasi ASTRA Villa\n⏰ ${new Date().toLocaleString('id-ID')}`;
+
+    return message;
+  };
+
   const handleSendMessage = () => {
-    openWhatsAppChat({
-      type: inquiryType,
-      propertyTitle,
-      propertyId,
-      userName: userName || undefined,
-      language,
-      customMessage: customMessage || undefined
-    });
+    const message = generateSmartMessage();
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/6285716008080?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
     setIsOpen(false);
-    setCustomMessage('');
   };
 
   const handleQuickSend = () => {
@@ -117,7 +249,7 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
     });
   };
 
-  // Floating button variant - positioned above chatbot (left side)
+  // Floating button variant - positioned on left side
   if (variant === 'floating') {
     return (
       <div className={`fixed bottom-24 left-4 z-40 md:bottom-24 md:left-6 ${className}`}>
@@ -130,23 +262,39 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
               <MessageCircle className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:scale-110 transition-transform" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5 text-green-500" />
                 {t.title}
               </DialogTitle>
-              <DialogDescription>{t.description}</DialogDescription>
+              <DialogDescription className="flex items-center gap-2">
+                {t.description}
+                <Badge variant={user ? "default" : "secondary"} className="text-[10px]">
+                  {user ? t.loggedInBadge : t.guestBadge}
+                </Badge>
+              </DialogDescription>
             </DialogHeader>
-            <InquiryForm
+            <SmartInquiryForm
               inquiryType={inquiryType}
               setInquiryType={setInquiryType}
               userName={userName}
               setUserName={setUserName}
+              userEmail={userEmail}
+              setUserEmail={setUserEmail}
+              userPhone={userPhone}
+              setUserPhone={setUserPhone}
+              preferredArea={preferredArea}
+              setPreferredArea={setPreferredArea}
+              budgetRange={budgetRange}
+              setBudgetRange={setBudgetRange}
+              timeline={timeline}
+              setTimeline={setTimeline}
               customMessage={customMessage}
               setCustomMessage={setCustomMessage}
               onSubmit={handleSendMessage}
               t={t}
+              isLoggedIn={!!user}
             />
           </DialogContent>
         </Dialog>
@@ -191,64 +339,101 @@ const WhatsAppInquiryButton: React.FC<WhatsAppInquiryButtonProps> = ({
           <span>{t.quickInquiry}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-green-500" />
             {t.title}
           </DialogTitle>
-          <DialogDescription>{t.description}</DialogDescription>
+          <DialogDescription className="flex items-center gap-2 flex-wrap">
+            {t.description}
+            <Badge variant={user ? "default" : "secondary"} className="text-[10px]">
+              {user ? t.loggedInBadge : t.guestBadge}
+            </Badge>
+          </DialogDescription>
         </DialogHeader>
-        <InquiryForm
+        <SmartInquiryForm
           inquiryType={inquiryType}
           setInquiryType={setInquiryType}
           userName={userName}
           setUserName={setUserName}
+          userEmail={userEmail}
+          setUserEmail={setUserEmail}
+          userPhone={userPhone}
+          setUserPhone={setUserPhone}
+          preferredArea={preferredArea}
+          setPreferredArea={setPreferredArea}
+          budgetRange={budgetRange}
+          setBudgetRange={setBudgetRange}
+          timeline={timeline}
+          setTimeline={setTimeline}
           customMessage={customMessage}
           setCustomMessage={setCustomMessage}
           onSubmit={handleSendMessage}
           t={t}
+          isLoggedIn={!!user}
         />
       </DialogContent>
     </Dialog>
   );
 };
 
-// Separated form component for reusability
-interface InquiryFormProps {
+// Smart Inquiry Form Component
+interface SmartInquiryFormProps {
   inquiryType: InquiryType;
   setInquiryType: (type: InquiryType) => void;
   userName: string;
   setUserName: (name: string) => void;
+  userEmail: string;
+  setUserEmail: (email: string) => void;
+  userPhone: string;
+  setUserPhone: (phone: string) => void;
+  preferredArea: string;
+  setPreferredArea: (area: string) => void;
+  budgetRange: string;
+  setBudgetRange: (budget: string) => void;
+  timeline: string;
+  setTimeline: (timeline: string) => void;
   customMessage: string;
   setCustomMessage: (msg: string) => void;
   onSubmit: () => void;
   t: any;
+  isLoggedIn: boolean;
 }
 
-const InquiryForm: React.FC<InquiryFormProps> = ({
+const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
   inquiryType,
   setInquiryType,
   userName,
   setUserName,
+  userEmail,
+  setUserEmail,
+  userPhone,
+  setUserPhone,
+  preferredArea,
+  setPreferredArea,
+  budgetRange,
+  setBudgetRange,
+  timeline,
+  setTimeline,
   customMessage,
   setCustomMessage,
   onSubmit,
-  t
+  t,
+  isLoggedIn
 }) => {
   return (
-    <div className="space-y-4 pt-2">
-      <div className="space-y-2">
-        <Label htmlFor="inquiry-type" className="text-sm font-medium">
-          {t.inquiryType}
-        </Label>
+    <div className="space-y-3 pt-2">
+      {/* Inquiry Type */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium">{t.inquiryType}</Label>
         <Select value={inquiryType} onValueChange={(v) => setInquiryType(v as InquiryType)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="h-9 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(t.types).map(([key, label]) => (
-              <SelectItem key={key} value={key}>
+              <SelectItem key={key} value={key} className="text-sm">
                 {label as string}
               </SelectItem>
             ))}
@@ -256,38 +441,121 @@ const InquiryForm: React.FC<InquiryFormProps> = ({
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="user-name" className="text-sm font-medium flex items-center gap-2">
-          <User className="h-3.5 w-3.5" />
-          {t.yourName}
-        </Label>
+      {/* Contact Info Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium flex items-center gap-1.5">
+            <User className="h-3 w-3" />
+            {t.yourName} *
+          </Label>
+          <Input
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder="John Doe"
+            className="h-9 text-sm"
+            disabled={isLoggedIn && !!userName}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium flex items-center gap-1.5">
+            <MessageCircle className="h-3 w-3" />
+            {t.yourPhone} *
+          </Label>
+          <Input
+            value={userPhone}
+            onChange={(e) => setUserPhone(e.target.value)}
+            placeholder="+62 812-3456-7890"
+            className="h-9 text-sm"
+          />
+        </div>
+      </div>
+
+      {/* Email (optional) */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium">{t.yourEmail}</Label>
         <Input
-          id="user-name"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="John Doe"
-          className="w-full"
+          value={userEmail}
+          onChange={(e) => setUserEmail(e.target.value)}
+          placeholder="email@example.com"
+          className="h-9 text-sm"
+          disabled={isLoggedIn && !!userEmail}
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="custom-message" className="text-sm font-medium flex items-center gap-2">
-          <FileText className="h-3.5 w-3.5" />
+      {/* Investment Preferences */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium flex items-center gap-1.5">
+            <MapPin className="h-3 w-3" />
+            {t.preferredArea}
+          </Label>
+          <Input
+            value={preferredArea}
+            onChange={(e) => setPreferredArea(e.target.value)}
+            placeholder={t.areaPlaceholder}
+            className="h-9 text-sm"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium flex items-center gap-1.5">
+            <DollarSign className="h-3 w-3" />
+            {t.budgetRange}
+          </Label>
+          <Select value={budgetRange} onValueChange={setBudgetRange}>
+            <SelectTrigger className="h-9 text-sm">
+              <SelectValue placeholder="Select..." />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(t.budgetOptions).map(([key, label]) => (
+                <SelectItem key={key} value={key} className="text-sm">
+                  {label as string}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium flex items-center gap-1.5">
+          <Calendar className="h-3 w-3" />
+          {t.timeline}
+        </Label>
+        <Select value={timeline} onValueChange={setTimeline}>
+          <SelectTrigger className="h-9 text-sm">
+            <SelectValue placeholder="Select..." />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(t.timelineOptions).map(([key, label]) => (
+              <SelectItem key={key} value={key} className="text-sm">
+                {label as string}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Additional Message */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium flex items-center gap-1.5">
+          <FileText className="h-3 w-3" />
           {t.additionalMessage}
         </Label>
         <Textarea
-          id="custom-message"
           value={customMessage}
           onChange={(e) => setCustomMessage(e.target.value)}
           placeholder={t.messagePlaceholder}
-          rows={3}
-          className="w-full resize-none"
+          rows={2}
+          className="text-sm resize-none"
         />
       </div>
 
+      {/* Submit Button */}
       <Button
         onClick={onSubmit}
-        className="w-full bg-green-500 hover:bg-green-600 text-white gap-2"
+        disabled={!userName || !userPhone}
+        className="w-full bg-green-500 hover:bg-green-600 text-white gap-2 h-10"
       >
         <Send className="h-4 w-4" />
         {t.sendMessage}
