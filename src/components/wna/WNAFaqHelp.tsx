@@ -31,36 +31,52 @@ const WNAFaqHelp: React.FC = () => {
       
       faqs: [
         {
-          question: "Can foreigners own property in Indonesia?",
-          answer: "Yes, foreigners can legally own property in Indonesia through specific ownership structures. The most common options are Hak Pakai (Right to Use) for residential properties, which can be held for up to 80 years, or through a PT PMA (foreign-owned company) which can hold Hak Guna Bangunan (Right to Build). Apartments and condominiums can be owned directly through strata title."
+          question: "Can foreigners legally own property in Indonesia?",
+          answer: "Yes, under Government Regulation PP No. 18/2021, foreigners with valid stay permits (KITAS/KITAP) can own residential property through Hak Pakai (Right to Use) for up to 80 years (30+20+30). Apartments can be owned through Strata Title (SHMSRS). For commercial properties, foreigners can establish a PT PMA (foreign investment company) to hold Hak Guna Bangunan (Right to Build). Freehold ownership (Hak Milik) is reserved exclusively for Indonesian citizens."
         },
         {
-          question: "What is the minimum investment amount?",
-          answer: "Minimum investment thresholds vary by property type and location. Generally, houses/villas require a minimum of IDR 5 billion (~USD 315,000), while apartments start at IDR 1 billion (~USD 63,000). Premium locations like Bali may have higher minimums. These thresholds are set by government regulation and may be updated periodically."
+          question: "What is Hak Pakai and how does it work?",
+          answer: "Hak Pakai (Right to Use) is the legal ownership structure for foreigners under Indonesian law (UU Agraria No. 5/1960 and PP 18/2021). Initial term is 30 years, extendable by 20 years, then renewable for another 30 years (total 80 years). It's registered at the Land Office (BPN) with a certificate in your name. Hak Pakai can be inherited by your heirs and sold or transferred. You must maintain a valid KITAS/KITAP or convert to a company structure if you leave Indonesia."
         },
         {
-          question: "Do I need a visa to buy property?",
-          answer: "You don't need a specific visa to purchase property, but to hold Hak Pakai ownership, you'll need a valid KITAS (Limited Stay Permit), KITAP (Permanent Stay Permit), or other valid stay permit. Tourist visa holders can purchase but should plan for visa conversion. Our team can guide you through visa options including Investor KITAS and Second Home Visa."
+          question: "What are the minimum investment thresholds?",
+          answer: "Per PP No. 18/2021: Houses/villas require minimum IDR 5 billion (~USD 315,000) in most regions. Apartments start at IDR 1 billion (~USD 63,000) but vary by location - Jakarta IDR 3B, Bali IDR 2B, other areas IDR 1B. These are transaction values, not down payments. Premium zones like Seminyak, Sanur, or SCBD may have higher thresholds. Values are periodically updated by government regulation."
         },
         {
-          question: "How long does the buying process take?",
-          answer: "The complete process typically takes 30-60 days for standard service, or 14-30 days with our express VIP service. This includes consultation (1-3 days), property selection (3-14 days), due diligence (7-14 days), agreement signing (3-7 days), and certificate transfer at BPN (14-21 days)."
+          question: "What visa/permit do I need to own property?",
+          answer: "To hold Hak Pakai ownership, you need a valid stay permit: KITAS (Limited Stay Permit - 1-2 years), KITAP (Permanent Stay Permit - 5 years), Investor KITAS (for property investors), or Second Home Visa (5-10 years). Tourist visa holders can purchase property but must convert their visa before the certificate is issued in their name. Our team assists with visa applications including the popular Second Home Visa for property owners with USD 130,000+ in assets."
         },
         {
-          question: "What are the taxes and fees involved?",
-          answer: "Key costs include: BPHTB (Acquisition Tax) at 5% of transaction value, VAT on new properties at 11%, notary fees of 0.5-1%, and annual PBB (Property Tax) at ~0.1-0.3% of assessed value. Many countries have double taxation treaties with Indonesia that may reduce your tax obligations."
+          question: "What is a PT PMA and when do I need one?",
+          answer: "PT PMA (Penanaman Modal Asing) is a foreign-owned Indonesian limited liability company. You need a PT PMA to: own commercial property (offices, hotels, retail), hold Hak Guna Bangunan (Right to Build) which allows development, conduct business activities in Indonesia, or own multiple properties as business assets. Requirements include minimum IDR 10 billion investment, BKPM approval, NIB business license, and Indonesian directors. Processing takes 4-8 weeks."
         },
         {
-          question: "Can I rent out my property?",
-          answer: "Yes, you can rent out your property for additional income. Properties must comply with local regulations, and rental income is subject to Indonesian tax. Our property management team can handle everything from marketing to tenant management, providing a hassle-free investment experience."
+          question: "Can I get Indonesian citizenship through property investment?",
+          answer: "No, Indonesia does NOT grant citizenship through property investment alone. Property ownership qualifies you for residency permits (KITAS/KITAP) and Second Home Visa, but citizenship requires: 5+ years continuous residence on KITAP, Indonesian language fluency, Pancasila and constitution knowledge test, and must renounce all other citizenships (Indonesia doesn't allow dual citizenship). Marriage to Indonesian citizen for 5+ years is another pathway. See our Citizenship tab for full details."
         },
         {
-          question: "What happens to my property if I leave Indonesia?",
-          answer: "Your ownership rights remain valid even if you leave Indonesia. For Hak Pakai, you should maintain a valid stay permit or transfer to a company structure. We recommend setting up property management and having local legal representation for ongoing compliance and maintenance."
+          question: "Why are nominee arrangements dangerous?",
+          answer: "Nominee arrangements (using an Indonesian's name to hold Hak Milik on your behalf) are ILLEGAL under Indonesian law and carry severe risks: Indonesian courts have consistently voided such agreements (Supreme Court precedents), you have no legal recourse if the nominee claims ownership, the nominee can sell or mortgage the property without your consent, inheritance is complicated, and you may face legal penalties. Always use proper structures like Hak Pakai or PT PMA which provide full legal protection."
         },
         {
-          question: "Is nominee ownership safe?",
-          answer: "Nominee arrangements (using an Indonesian name to hold property) carry significant legal risks and are not recommended. Such arrangements can be voided by courts, and you may lose your investment. We strongly advise using proper legal structures like Hak Pakai or PT PMA which provide full legal protection."
+          question: "What taxes do foreign property owners pay?",
+          answer: "Key taxes include: BPHTB (Acquisition Tax) - 5% of transaction value above NJOPTKP threshold; PPN/VAT on new properties - 11%; Annual PBB (Property Tax) - approximately 0.1-0.3% of NJOP (government valuation); PPH on rental income - 10% for individuals, 2% for companies. Indonesia has double taxation treaties with 70+ countries which may reduce obligations. NPWP (tax ID) is required. Capital gains on sale are taxed as income."
+        },
+        {
+          question: "Can I rent out my Indonesian property?",
+          answer: "Yes, you can legally rent out your property for income. Requirements: Register with local tax office (NPWP), pay PPH rental income tax (10% individual/2% company), comply with local licensing (some areas require operating permits for short-term rentals), report to local RT/RW. For tourist rentals in Bali, additional Pondok Wisata permits may be required. Our property management team handles all compliance, marketing, and tenant management."
+        },
+        {
+          question: "What happens if I want to sell my property?",
+          answer: "Foreign owners can sell their Hak Pakai property freely. The buyer can be Indonesian (who can convert to Hak Milik) or another eligible foreigner. Seller pays PPH (income tax) of 2.5% on transaction value. Buyer pays BPHTB of 5%. Transaction must go through a licensed PPAT (notary) and registered at BPN for certificate transfer. Process takes 2-4 weeks. Capital gains are added to your taxable income for the year."
+        },
+        {
+          question: "What due diligence should I conduct before buying?",
+          answer: "Essential checks include: Verify certificate authenticity at BPN (Land Office), confirm seller's identity and ownership rights, check for encumbrances/mortgages/disputes, verify zoning and land use permits (IMB/PBG), confirm property is not on agricultural or protected land, review building permits and construction compliance, check for unpaid taxes or levies, verify property boundaries match certificate. Our legal team conducts comprehensive due diligence on every transaction."
+        },
+        {
+          question: "What is the Second Home Visa and who qualifies?",
+          answer: "The Second Home Visa (introduced 2022) is a long-term stay permit for high-net-worth individuals and property owners. Requirements: Proof of USD 130,000+ in liquid assets or property ownership in Indonesia, valid health insurance, clean criminal record. Benefits: 5-10 year stay without work permit paperwork, multiple entry, can bring family, access to banking and local services. Ideal for retirees, digital nomads, and investors who want simplified residency."
         }
       ],
 
@@ -90,36 +106,52 @@ const WNAFaqHelp: React.FC = () => {
       
       faqs: [
         {
-          question: "Bisakah orang asing memiliki properti di Indonesia?",
-          answer: "Ya, orang asing dapat memiliki properti secara legal di Indonesia melalui struktur kepemilikan tertentu. Opsi paling umum adalah Hak Pakai untuk properti residensial yang dapat dipegang hingga 80 tahun, atau melalui PT PMA (perusahaan milik asing) yang dapat memegang Hak Guna Bangunan. Apartemen dan kondominium dapat dimiliki langsung melalui strata title."
+          question: "Bisakah WNA memiliki properti secara legal di Indonesia?",
+          answer: "Ya, berdasarkan PP No. 18/2021, WNA dengan izin tinggal valid (KITAS/KITAP) dapat memiliki properti residensial melalui Hak Pakai hingga 80 tahun (30+20+30). Apartemen dapat dimiliki melalui Strata Title (SHMSRS). Untuk properti komersial, WNA dapat mendirikan PT PMA untuk memegang Hak Guna Bangunan. Kepemilikan Hak Milik (freehold) khusus untuk WNI."
         },
         {
-          question: "Berapa jumlah investasi minimum?",
-          answer: "Batas investasi minimum bervariasi berdasarkan jenis properti dan lokasi. Umumnya, rumah/villa memerlukan minimum IDR 5 miliar (~USD 315.000), sementara apartemen mulai dari IDR 1 miliar (~USD 63.000). Lokasi premium seperti Bali mungkin memiliki minimum lebih tinggi. Batas ini ditetapkan oleh peraturan pemerintah dan dapat diperbarui secara berkala."
+          question: "Apa itu Hak Pakai dan bagaimana cara kerjanya?",
+          answer: "Hak Pakai adalah struktur kepemilikan legal untuk WNA berdasarkan UU Agraria No. 5/1960 dan PP 18/2021. Jangka waktu awal 30 tahun, dapat diperpanjang 20 tahun, lalu diperpanjang lagi 30 tahun (total 80 tahun). Terdaftar di BPN dengan sertifikat atas nama Anda. Hak Pakai dapat diwariskan dan dijual/dialihkan. Anda harus mempertahankan KITAS/KITAP valid atau konversi ke struktur perusahaan jika meninggalkan Indonesia."
         },
         {
-          question: "Apakah saya perlu visa untuk membeli properti?",
-          answer: "Anda tidak memerlukan visa khusus untuk membeli properti, tetapi untuk memegang kepemilikan Hak Pakai, Anda memerlukan KITAS (Izin Tinggal Terbatas), KITAP (Izin Tinggal Tetap), atau izin tinggal valid lainnya. Pemegang visa turis dapat membeli tetapi harus merencanakan konversi visa. Tim kami dapat memandu Anda melalui opsi visa termasuk KITAS Investor dan Visa Second Home."
+          question: "Berapa batas investasi minimum?",
+          answer: "Sesuai PP No. 18/2021: Rumah/villa minimum IDR 5 miliar (~USD 315.000) di sebagian besar wilayah. Apartemen mulai IDR 1 miliar (~USD 63.000) tapi bervariasi - Jakarta IDR 3M, Bali IDR 2M, wilayah lain IDR 1M. Ini adalah nilai transaksi, bukan uang muka. Zona premium seperti Seminyak, Sanur, atau SCBD mungkin lebih tinggi."
         },
         {
-          question: "Berapa lama proses pembelian?",
-          answer: "Proses lengkap biasanya memakan waktu 30-60 hari untuk layanan standar, atau 14-30 hari dengan layanan VIP ekspres kami. Ini termasuk konsultasi (1-3 hari), pemilihan properti (3-14 hari), due diligence (7-14 hari), penandatanganan perjanjian (3-7 hari), dan transfer sertifikat di BPN (14-21 hari)."
+          question: "Visa/izin apa yang diperlukan untuk memiliki properti?",
+          answer: "Untuk kepemilikan Hak Pakai, Anda perlu izin tinggal valid: KITAS (1-2 tahun), KITAP (5 tahun), KITAS Investor, atau Visa Second Home (5-10 tahun). Pemegang visa turis dapat membeli tetapi harus mengkonversi visa sebelum sertifikat diterbitkan. Tim kami membantu aplikasi visa termasuk Second Home Visa untuk pemilik properti dengan aset USD 130.000+."
         },
         {
-          question: "Apa saja pajak dan biaya yang terlibat?",
-          answer: "Biaya utama meliputi: BPHTB (Pajak Perolehan) 5% dari nilai transaksi, PPN pada properti baru 11%, biaya notaris 0.5-1%, dan PBB tahunan (Pajak Properti) ~0.1-0.3% dari nilai taksiran. Banyak negara memiliki perjanjian pajak ganda dengan Indonesia yang dapat mengurangi kewajiban pajak Anda."
+          question: "Apa itu PT PMA dan kapan dibutuhkan?",
+          answer: "PT PMA (Penanaman Modal Asing) adalah perseroan terbatas milik asing di Indonesia. Anda perlu PT PMA untuk: memiliki properti komersial, memegang HGB, melakukan aktivitas bisnis, atau memiliki multiple properti sebagai aset bisnis. Syarat termasuk investasi minimum IDR 10 miliar, persetujuan BKPM, NIB. Proses 4-8 minggu."
         },
         {
-          question: "Bisakah saya menyewakan properti saya?",
-          answer: "Ya, Anda dapat menyewakan properti untuk pendapatan tambahan. Properti harus mematuhi peraturan lokal, dan pendapatan sewa dikenakan pajak Indonesia. Tim manajemen properti kami dapat menangani segalanya dari pemasaran hingga manajemen penyewa, memberikan pengalaman investasi tanpa repot."
+          question: "Bisakah mendapat kewarganegaraan Indonesia melalui investasi properti?",
+          answer: "Tidak, Indonesia TIDAK memberikan kewarganegaraan melalui investasi properti saja. Kepemilikan properti memenuhi syarat untuk izin tinggal (KITAS/KITAP) dan Second Home Visa, tetapi kewarganegaraan memerlukan: 5+ tahun tinggal terus-menerus dengan KITAP, fasih bahasa Indonesia, tes Pancasila dan konstitusi, dan harus melepaskan semua kewarganegaraan lain (Indonesia tidak mengizinkan dwi kewarganegaraan)."
         },
         {
-          question: "Apa yang terjadi dengan properti saya jika saya meninggalkan Indonesia?",
-          answer: "Hak kepemilikan Anda tetap valid meskipun Anda meninggalkan Indonesia. Untuk Hak Pakai, Anda harus mempertahankan izin tinggal yang valid atau transfer ke struktur perusahaan. Kami merekomendasikan menyiapkan manajemen properti dan memiliki perwakilan hukum lokal untuk kepatuhan dan pemeliharaan berkelanjutan."
+          question: "Mengapa pengaturan nominee berbahaya?",
+          answer: "Pengaturan nominee (menggunakan nama WNI untuk memegang Hak Milik) ILEGAL berdasarkan hukum Indonesia dan berisiko tinggi: Pengadilan Indonesia secara konsisten membatalkan perjanjian tersebut, Anda tidak punya perlindungan hukum jika nominee mengklaim kepemilikan, nominee dapat menjual/menggadaikan tanpa persetujuan, warisan rumit, dan mungkin menghadapi sanksi hukum. Selalu gunakan Hak Pakai atau PT PMA."
         },
         {
-          question: "Apakah kepemilikan nominee aman?",
-          answer: "Pengaturan nominee (menggunakan nama Indonesia untuk memegang properti) membawa risiko hukum signifikan dan tidak direkomendasikan. Pengaturan semacam itu dapat dibatalkan oleh pengadilan, dan Anda mungkin kehilangan investasi. Kami sangat menyarankan menggunakan struktur hukum yang tepat seperti Hak Pakai atau PT PMA yang memberikan perlindungan hukum penuh."
+          question: "Pajak apa yang dibayar pemilik properti asing?",
+          answer: "Pajak utama meliputi: BPHTB (Pajak Perolehan) - 5% dari nilai transaksi; PPN properti baru - 11%; PBB tahunan - sekitar 0.1-0.3% dari NJOP; PPH pendapatan sewa - 10% individu, 2% perusahaan. Indonesia memiliki perjanjian pajak ganda dengan 70+ negara. NPWP diperlukan. Capital gains dikenakan pajak sebagai penghasilan."
+        },
+        {
+          question: "Bisakah saya menyewakan properti Indonesia?",
+          answer: "Ya, Anda dapat menyewakan properti secara legal. Syarat: Daftar ke kantor pajak (NPWP), bayar PPH sewa (10% individu/2% perusahaan), patuhi perizinan lokal, lapor ke RT/RW. Untuk rental wisata di Bali, izin Pondok Wisata mungkin diperlukan. Tim manajemen properti kami menangani semua kepatuhan, pemasaran, dan manajemen penyewa."
+        },
+        {
+          question: "Bagaimana jika ingin menjual properti?",
+          answer: "Pemilik WNA dapat menjual properti Hak Pakai secara bebas. Pembeli bisa WNI (dapat konversi ke Hak Milik) atau WNA eligible lainnya. Penjual bayar PPH 2.5% dari nilai transaksi. Pembeli bayar BPHTB 5%. Transaksi harus melalui PPAT berlisensi dan didaftarkan di BPN. Proses 2-4 minggu."
+        },
+        {
+          question: "Due diligence apa yang harus dilakukan sebelum membeli?",
+          answer: "Pemeriksaan penting: Verifikasi keaslian sertifikat di BPN, konfirmasi identitas dan hak kepemilikan penjual, periksa beban/hipotek/sengketa, verifikasi zonasi dan IMB/PBG, konfirmasi bukan tanah pertanian atau dilindungi, review izin bangunan, periksa pajak yang belum dibayar, verifikasi batas properti sesuai sertifikat. Tim legal kami melakukan due diligence komprehensif."
+        },
+        {
+          question: "Apa itu Visa Second Home dan siapa yang memenuhi syarat?",
+          answer: "Second Home Visa (diperkenalkan 2022) adalah izin tinggal jangka panjang untuk individu berkekayaan tinggi dan pemilik properti. Syarat: Bukti aset likuid USD 130.000+ atau kepemilikan properti, asuransi kesehatan valid, catatan kriminal bersih. Manfaat: Tinggal 5-10 tahun tanpa dokumen izin kerja, multiple entry, dapat membawa keluarga, akses perbankan. Ideal untuk pensiunan, digital nomad, dan investor."
         }
       ],
 
