@@ -469,17 +469,89 @@ const ResponsiveAIChatWidget = ({
     scrollToBottom();
   }, [messages]);
 
-  // Load persisted chat history on mount
+  // User profile state for personalized greetings
+  const [userProfile, setUserProfile] = useState<{
+    full_name?: string | null;
+    email?: string | null;
+    company_name?: string | null;
+  } | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  // Fetch user profile for personalized greeting
   useEffect(() => {
-    if (persistedMessages.length > 0) {
-      setMessages(persistedMessages);
-      setConversationId(persistedConversationId);
-    } else if (messages.length === 0) {
-      // Send welcome message only if no persisted history
-      const welcomeMessage: Message = {
-        id: 'welcome',
-        role: 'assistant',
-        content: `✨ Welcome to Astra Villa!
+    const fetchUserProfile = async () => {
+      if (!user?.id) {
+        setUserProfile(null);
+        setUserRole(null);
+        return;
+      }
+      
+      try {
+        // Fetch profile and role in parallel
+        const [profileResult, roleResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('full_name, email, company_name')
+            .eq('id', user.id)
+            .single(),
+          supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .limit(1)
+            .maybeSingle()
+        ]);
+        
+        if (profileResult.data) {
+          setUserProfile(profileResult.data);
+          console.log('👤 User identified:', profileResult.data.full_name || profileResult.data.email);
+        }
+        
+        if (roleResult.data?.role) {
+          setUserRole(roleResult.data.role);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      }
+    };
+    
+    fetchUserProfile();
+  }, [user?.id]);
+
+  // Generate personalized welcome message
+  const getPersonalizedWelcomeMessage = (): string => {
+    const userName = userProfile?.full_name || user?.user_metadata?.full_name;
+    const userEmail = userProfile?.email || user?.email;
+    const companyName = userProfile?.company_name;
+    
+    // Time-based greeting
+    const hour = new Date().getHours();
+    const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    
+    if (userName || userEmail) {
+      // Personalized greeting for logged-in users
+      const displayName = userName || userEmail?.split('@')[0];
+      const roleContext = userRole && userRole !== 'user' 
+        ? `\n\n🏷️ **Your Account:** ${userRole.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`
+        : '';
+      const companyContext = companyName ? ` from **${companyName}**` : '';
+      
+      return `✨ ${timeGreeting}, **${displayName}**${companyContext}! Welcome back to Astra Villa!
+
+I recognize you and I'm ready to provide personalized assistance.${roleContext}
+
+**How can I help you today?**
+🏠 Search & recommend properties based on your preferences
+💬 Answer questions about listings or services
+📞 Connect you with our customer care team
+📅 Schedule property viewings or consultations
+🛠️ Book trusted vendor services
+💡 Provide expert real estate advice
+
+${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it!" : "What would you like to explore? ✨"}`;
+    } else {
+      // Generic greeting for guests
+      return `✨ ${timeGreeting}! Welcome to Astra Villa!
 
 I'm your personal property concierge, here to make your real estate journey effortless and enjoyable.
 
@@ -491,12 +563,28 @@ I'm your personal property concierge, here to make your real estate journey effo
 🎯 Experience properties through immersive 3D tours
 💡 Get expert real estate advice
 
-${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it - pricing, features, neighborhood, or anything else!" : "What would you like to explore today? ✨"}`,
+💡 **Tip:** Sign in for a personalized experience and faster support!
+
+${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it - pricing, features, neighborhood, or anything else!" : "What would you like to explore today? ✨"}`;
+    }
+  };
+
+  // Load persisted chat history on mount
+  useEffect(() => {
+    if (persistedMessages.length > 0) {
+      setMessages(persistedMessages);
+      setConversationId(persistedConversationId);
+    } else if (messages.length === 0) {
+      // Send welcome message only if no persisted history
+      const welcomeMessage: Message = {
+        id: 'welcome',
+        role: 'assistant',
+        content: getPersonalizedWelcomeMessage(),
         timestamp: new Date()
       };
       setMessages([welcomeMessage]);
     }
-  }, [persistedMessages, persistedConversationId, propertyId]);
+  }, [persistedMessages, persistedConversationId, propertyId, userProfile]);
 
   // Save chat to localStorage whenever messages or conversationId changes
   useEffect(() => {
