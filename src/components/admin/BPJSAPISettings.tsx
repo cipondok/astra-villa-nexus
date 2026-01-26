@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -11,23 +11,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, Eye, EyeOff, Save, TestTube, CheckCircle, XCircle } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
-interface BPJSApiSetting {
+interface MaskedApiSetting {
   id: string;
   api_name: string;
-  api_key: string | null;
+  api_key_masked: string | null;
   api_endpoint: string | null;
   description: string | null;
   is_active: boolean;
@@ -38,9 +30,8 @@ interface BPJSApiSetting {
 const BPJSAPISettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
   const [testingApi, setTestingApi] = useState<string | null>(null);
-  const [testResults, setTestResults] = useState<Record<string, any>>({});
+  const [testResults, setTestResults] = useState<Record<string, { success: boolean; message: string }>>({});
 
   // Predefined BPJS API configurations
   const bpjsApis = [
@@ -60,22 +51,23 @@ const BPJSAPISettings = () => {
     }
   ];
 
-  // Fetch BPJS API settings
+  // Fetch BPJS API settings using secure RPC function (returns masked keys)
   const { data: apiSettings, isLoading } = useQuery({
-    queryKey: ["bpjs-api-settings"],
+    queryKey: ["bpjs-api-settings-masked"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("api_settings")
-        .select("*")
-        .in("api_name", bpjsApis.map(api => api.key))
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.rpc("get_masked_api_settings");
 
       if (error) throw error;
-      return data as BPJSApiSetting[];
+      
+      // Filter to only BPJS-related settings
+      const bpjsKeys = bpjsApis.map(api => api.key);
+      return (data as MaskedApiSetting[]).filter(
+        setting => bpjsKeys.includes(setting.api_name)
+      );
     },
   });
 
-  // Create/Update API setting mutation
+  // Create/Update API setting mutation using secure RPC function
   const saveApiMutation = useMutation({
     mutationFn: async ({ apiName, apiKey, endpoint, isActive }: { 
       apiName: string; 
@@ -83,51 +75,28 @@ const BPJSAPISettings = () => {
       endpoint: string; 
       isActive: boolean; 
     }) => {
-      const existingSetting = apiSettings?.find(setting => setting.api_name === apiName);
       const apiConfig = bpjsApis.find(api => api.key === apiName);
       
-      if (existingSetting) {
-        // Update existing
-        const { data, error } = await supabase
-          .from("api_settings")
-          .update({
-            api_key: apiKey,
-            api_endpoint: endpoint,
-            is_active: isActive,
-            updated_at: new Date().toISOString()
-          })
-          .eq("id", existingSetting.id)
-          .select()
-          .single();
+      // Use secure RPC function for inserting/updating API settings
+      const { data, error } = await supabase.rpc("insert_api_setting_secure", {
+        p_api_name: apiName,
+        p_api_key: apiKey,
+        p_api_endpoint: endpoint,
+        p_description: apiConfig?.description || "",
+        p_is_active: isActive
+      });
 
-        if (error) throw error;
-        return data;
-      } else {
-        // Create new
-        const { data, error } = await supabase
-          .from("api_settings")
-          .insert([{
-            api_name: apiName,
-            api_key: apiKey,
-            api_endpoint: endpoint,
-            description: apiConfig?.description || "",
-            is_active: isActive
-          }])
-          .select()
-          .single();
-
-        if (error) throw error;
-        return data;
-      }
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bpjs-api-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["bpjs-api-settings-masked"] });
       toast({
         title: "BPJS API Setting Saved",
-        description: "The BPJS API configuration has been saved successfully.",
+        description: "The BPJS API configuration has been saved securely.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to save BPJS API setting",
@@ -152,22 +121,23 @@ const BPJSAPISettings = () => {
 
       setTestResults(prev => ({
         ...prev,
-        [apiType]: { success: true, message: 'Connection successful', data }
+        [apiType]: { success: true, message: 'Connection successful' }
       }));
 
       toast({
         title: "API Test Successful",
         description: `${apiType} connection is working properly.`,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Connection failed';
       setTestResults(prev => ({
         ...prev,
-        [apiType]: { success: false, message: error.message || 'Connection failed' }
+        [apiType]: { success: false, message: errorMessage }
       }));
 
       toast({
         title: "API Test Failed",
-        description: error.message || `Failed to connect to ${apiType}`,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -175,36 +145,29 @@ const BPJSAPISettings = () => {
     }
   };
 
-  const toggleKeyVisibility = (apiId: string) => {
-    setShowKeys(prev => ({
-      ...prev,
-      [apiId]: !prev[apiId]
-    }));
-  };
-
-  const maskApiKey = (key: string | null) => {
-    if (!key) return "Not configured";
-    // Fixed-length masking to prevent leaking key structure/length
-    // Only show last 4 characters with fixed-width mask
-    const lastFour = key.length >= 4 ? key.substring(key.length - 4) : key;
-    return `••••-••••-••••-${lastFour}`;
-  };
-
   const getApiSetting = (apiKey: string) => {
     return apiSettings?.find(setting => setting.api_name === apiKey);
   };
 
   const BPJSApiCard = ({ apiConfig }: { apiConfig: typeof bpjsApis[0] }) => {
-    const [formData, setFormData] = useState(() => {
-      const existing = getApiSetting(apiConfig.key);
-      return {
-        apiKey: existing?.api_key || "",
-        endpoint: existing?.api_endpoint || apiConfig.defaultEndpoint,
-        isActive: existing?.is_active ?? false
-      };
+    const existing = getApiSetting(apiConfig.key);
+    const [formData, setFormData] = useState({
+      apiKey: "", // Always empty - user must enter new key each time for security
+      endpoint: existing?.api_endpoint || apiConfig.defaultEndpoint,
+      isActive: existing?.is_active ?? false
     });
 
-    const existing = getApiSetting(apiConfig.key);
+    // Update form when existing data loads
+    useEffect(() => {
+      if (existing) {
+        setFormData(prev => ({
+          ...prev,
+          endpoint: existing.api_endpoint || apiConfig.defaultEndpoint,
+          isActive: existing.is_active
+        }));
+      }
+    }, [existing, apiConfig.defaultEndpoint]);
+
     const testResult = testResults[apiConfig.key];
 
     return (
@@ -253,25 +216,16 @@ const BPJSAPISettings = () => {
             <div className="flex items-center gap-2">
               <Input
                 id={`key-${apiConfig.key}`}
-                type={showKeys[apiConfig.key] ? "text" : "password"}
+                type="password"
                 value={formData.apiKey}
                 onChange={(e) => setFormData(prev => ({ ...prev, apiKey: e.target.value }))}
-                placeholder="Enter your BPJS API key"
+                placeholder="Enter new API key to update"
                 className="flex-1"
               />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => toggleKeyVisibility(apiConfig.key)}
-                className="px-3"
-              >
-                {showKeys[apiConfig.key] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
             </div>
-            {existing?.api_key && (
+            {existing?.api_key_masked && (
               <p className="text-xs text-muted-foreground">
-                Current: {maskApiKey(existing.api_key)}
+                Current: {existing.api_key_masked}
               </p>
             )}
           </div>
@@ -293,14 +247,14 @@ const BPJSAPISettings = () => {
                 endpoint: formData.endpoint,
                 isActive: formData.isActive
               })}
-              disabled={saveApiMutation.isPending}
+              disabled={saveApiMutation.isPending || !formData.apiKey}
               className="flex items-center gap-2"
             >
               <Save className="h-4 w-4" />
               Save Configuration
             </Button>
             
-            {existing?.api_key && formData.isActive && (
+            {existing?.api_key_masked && formData.isActive && (
               <Button
                 variant="outline"
                 onClick={() => testApiConnection(apiConfig.key)}
@@ -390,9 +344,8 @@ const BPJSAPISettings = () => {
 
           <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-sm text-blue-800">
-              <strong>Note:</strong> These APIs are currently in simulation mode for development. 
-              Configure your real API keys here for production use. Test connections will validate 
-              your credentials against the actual BPJS systems.
+              <strong>Security Note:</strong> API keys are stored encrypted and never exposed to the client. 
+              Only masked versions are displayed for reference.
             </p>
           </div>
         </CardContent>
