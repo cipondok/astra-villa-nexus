@@ -560,47 +560,43 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
   const isFormValid = missingRequired.length === 0;
 
   return (
-    <div className="space-y-3 pt-2">
-      {/* Progress Bar */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-[10px]">
+    <div className="space-y-2 pt-1">
+      {/* Progress Bar - Slim */}
+      <div className="space-y-1 p-2 bg-muted/30 rounded-lg">
+        <div className="flex items-center justify-between text-[9px]">
           <span className="text-muted-foreground font-medium">
             {t.formProgress || 'Form Progress'}
           </span>
-          <span className={`font-semibold ${totalProgress >= 60 ? 'text-green-600' : totalProgress >= 30 ? 'text-amber-600' : 'text-destructive'}`}>
+          <span className={`font-bold ${totalProgress >= 60 ? 'text-green-600' : totalProgress >= 30 ? 'text-amber-600' : 'text-destructive'}`}>
             {totalProgress}%
           </span>
         </div>
-        <Progress value={totalProgress} className="h-2" />
+        <Progress value={totalProgress} className="h-1.5" />
         
-        {/* Missing required fields warning */}
-        {!isFormValid && (
-          <div className="flex items-center gap-1.5 text-[10px] text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-2 py-1.5 rounded">
-            <AlertCircle className="h-3 w-3 shrink-0" />
-            <span>
-              {t.requiredFields || 'Required'}: {missingRequired.map(f => f.name).join(', ')}
-            </span>
+        {/* Status indicator - compact */}
+        {!isFormValid ? (
+          <div className="flex items-center gap-1 text-[8px] text-amber-600">
+            <AlertCircle className="h-2.5 w-2.5 shrink-0" />
+            <span>{t.requiredFields || 'Required'}: {missingRequired.map(f => f.name).join(', ')}</span>
           </div>
-        )}
-        
-        {isFormValid && (
-          <div className="flex items-center gap-1.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-1.5 rounded">
-            <Check className="h-3 w-3 shrink-0" />
+        ) : (
+          <div className="flex items-center gap-1 text-[8px] text-green-600">
+            <Check className="h-2.5 w-2.5 shrink-0" />
             <span>{t.readyToSend || 'Ready to send!'}</span>
           </div>
         )}
       </div>
 
-      {/* Inquiry Type */}
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium">{t.inquiryType}</Label>
+      {/* Inquiry Type - Slim */}
+      <div className="space-y-1">
+        <Label className="text-[10px] font-medium text-muted-foreground">{t.inquiryType}</Label>
         <Select value={inquiryType} onValueChange={(v) => setInquiryType(v as InquiryType | 'other')}>
-          <SelectTrigger className="h-9 text-sm">
+          <SelectTrigger className="h-8 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(t.types).map(([key, label]) => (
-              <SelectItem key={key} value={key} className="text-sm">
+              <SelectItem key={key} value={key} className="text-xs py-1.5">
                 {label as string}
               </SelectItem>
             ))}
@@ -611,104 +607,103 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
             value={customInquiryType}
             onChange={(e) => setCustomInquiryType(e.target.value)}
             placeholder={t.otherPlaceholder}
-            className="h-9 text-sm mt-2"
+            className="h-7 text-xs mt-1"
           />
         )}
       </div>
 
-      {/* Contact Info Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium flex items-center gap-1.5">
-            <User className="h-3 w-3" />
+      {/* Contact Info Section - Slim 2-column grid */}
+      <div className="grid grid-cols-2 gap-2">
+        {/* Name */}
+        <div className="space-y-0.5">
+          <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+            <User className="h-2.5 w-2.5" />
             {t.yourName} *
-            {validateName(userName) && (
-              <Check className="h-3.5 w-3.5 text-green-500" />
-            )}
+            {validateName(userName) && <Check className="h-2.5 w-2.5 text-green-500" />}
           </Label>
           <div className="relative">
             <Input
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="John Doe"
-              className={`h-9 text-sm pr-8 ${validateName(userName) ? 'border-green-500 focus:border-green-500' : ''}`}
+              className={`h-7 text-xs pr-6 ${validateName(userName) ? 'border-green-500/50' : ''}`}
               disabled={isLoggedIn && !!userName}
             />
             {validateName(userName) && (
-              <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+              <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" />
             )}
           </div>
         </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium flex items-center gap-1.5">
-            <Phone className="h-3 w-3" />
-            {t.yourPhone} *
+        
+        {/* Email */}
+        <div className="space-y-0.5">
+          <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+            <Mail className="h-2.5 w-2.5" />
+            {t.yourEmail}
+            {userEmail && validateEmail(userEmail) && <Check className="h-2.5 w-2.5 text-green-500" />}
           </Label>
-          <PhoneInputWithValidation
-            value={userPhone}
-            onChange={setUserPhone}
-            placeholder="+62 812-3456-7890"
-            disabled={false}
-          />
+          <div className="relative">
+            <Input
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              placeholder="email@example.com"
+              className={`h-7 text-xs pr-6 ${userEmail && validateEmail(userEmail) ? 'border-green-500/50' : userEmail && !validateEmail(userEmail) ? 'border-destructive/50' : ''}`}
+              disabled={isLoggedIn && !!userEmail}
+            />
+            {userEmail && (
+              validateEmail(userEmail) ? (
+                <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-green-500" />
+              ) : (
+                <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-destructive" />
+              )
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Email (optional) */}
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium flex items-center gap-1.5">
-          <Mail className="h-3 w-3" />
-          {t.yourEmail}
-          {userEmail && validateEmail(userEmail) && (
-            <Check className="h-3.5 w-3.5 text-green-500" />
-          )}
+      {/* Phone - Full width with country selector */}
+      <div className="space-y-0.5">
+        <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+          <Phone className="h-2.5 w-2.5" />
+          {t.yourPhone} *
         </Label>
-        <div className="relative">
-          <Input
-            value={userEmail}
-            onChange={(e) => setUserEmail(e.target.value)}
-            placeholder="email@example.com"
-            className={`h-9 text-sm pr-8 ${userEmail && validateEmail(userEmail) ? 'border-green-500 focus:border-green-500' : userEmail && !validateEmail(userEmail) ? 'border-destructive' : ''}`}
-            disabled={isLoggedIn && !!userEmail}
-          />
-          {userEmail && (
-            validateEmail(userEmail) ? (
-              <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
-            ) : (
-              <AlertCircle className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
-            )
-          )}
-        </div>
-        {userEmail && !validateEmail(userEmail) && (
-          <p className="text-[10px] text-destructive">{t.invalidEmail || 'Invalid email format'}</p>
-        )}
+        <PhoneInputWithValidation
+          value={userPhone}
+          onChange={setUserPhone}
+          placeholder="812 3456 7890"
+          disabled={false}
+        />
       </div>
 
-      {/* Investment Preferences */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium flex items-center gap-1.5">
-            <MapPin className="h-3 w-3" />
+      {/* Investment Preferences - Slim 2-column */}
+      <div className="grid grid-cols-2 gap-2">
+        {/* Area */}
+        <div className="space-y-0.5">
+          <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+            <MapPin className="h-2.5 w-2.5" />
             {t.preferredArea}
           </Label>
           <Input
             value={preferredArea}
             onChange={(e) => setPreferredArea(e.target.value)}
             placeholder={t.areaPlaceholder}
-            className="h-9 text-sm"
+            className="h-7 text-xs"
           />
         </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium flex items-center gap-1.5">
-            <DollarSign className="h-3 w-3" />
+        
+        {/* Budget */}
+        <div className="space-y-0.5">
+          <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+            <DollarSign className="h-2.5 w-2.5" />
             {t.budgetRange}
           </Label>
           <Select value={budgetRange} onValueChange={setBudgetRange}>
-            <SelectTrigger className="h-9 text-sm">
+            <SelectTrigger className="h-7 text-xs">
               <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent>
               {Object.entries(t.budgetOptions).map(([key, label]) => (
-                <SelectItem key={key} value={key} className="text-sm">
+                <SelectItem key={key} value={key} className="text-xs py-1">
                   {label as string}
                 </SelectItem>
               ))}
@@ -719,25 +714,25 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
               value={customBudget}
               onChange={(e) => setCustomBudget(e.target.value)}
               placeholder={t.otherPlaceholder}
-              className="h-9 text-sm mt-2"
+              className="h-7 text-xs mt-1"
             />
           )}
         </div>
       </div>
 
-      {/* Timeline */}
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium flex items-center gap-1.5">
-          <Calendar className="h-3 w-3" />
+      {/* Timeline - Slim */}
+      <div className="space-y-0.5">
+        <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+          <Calendar className="h-2.5 w-2.5" />
           {t.timeline}
         </Label>
         <Select value={timeline} onValueChange={setTimeline}>
-          <SelectTrigger className="h-9 text-sm">
+          <SelectTrigger className="h-7 text-xs">
             <SelectValue placeholder="Select..." />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(t.timelineOptions).map(([key, label]) => (
-              <SelectItem key={key} value={key} className="text-sm">
+              <SelectItem key={key} value={key} className="text-xs py-1">
                 {label as string}
               </SelectItem>
             ))}
@@ -748,15 +743,15 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
             value={customTimeline}
             onChange={(e) => setCustomTimeline(e.target.value)}
             placeholder={t.otherPlaceholder}
-            className="h-9 text-sm mt-2"
+            className="h-7 text-xs mt-1"
           />
         )}
       </div>
 
-      {/* Additional Message */}
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium flex items-center gap-1.5">
-          <FileText className="h-3 w-3" />
+      {/* Additional Message - Slim */}
+      <div className="space-y-0.5">
+        <Label className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+          <FileText className="h-2.5 w-2.5" />
           {t.additionalMessage}
         </Label>
         <Textarea
@@ -764,24 +759,24 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           onChange={(e) => setCustomMessage(e.target.value)}
           placeholder={t.messagePlaceholder}
           rows={2}
-          className="text-sm resize-none"
+          className="text-xs resize-none min-h-[48px]"
         />
       </div>
 
-      {/* Submit Button */}
+      {/* Submit Button - Compact */}
       <Button
         onClick={onSubmit}
         disabled={!validateName(userName) || !validatePhoneNumber(userPhone).isValid || isSending}
-        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white gap-2 h-10"
+        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-muted text-white gap-1.5 h-8 text-xs font-semibold active:scale-[0.98] transition-transform"
       >
         {isSending ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            {t.sending || 'Opening WhatsApp...'}
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            {t.sending || 'Opening...'}
           </>
         ) : (
           <>
-            <Send className="h-4 w-4" />
+            <Send className="h-3.5 w-3.5" />
             {t.sendMessage}
           </>
         )}
@@ -848,63 +843,63 @@ const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
   };
   
   return (
-    <div className="space-y-1.5">
-      {/* Country Selector - separate row */}
-      <Select value={selectedCountry} onValueChange={handleCountrySelect}>
-        <SelectTrigger className="w-full h-9 px-2 text-sm">
-          <SelectValue>
-            <span className="flex items-center gap-2">
-              <span className="text-base">{currentCountry.flag}</span>
-              <span className="font-medium text-xs">{currentCountry.name}</span>
-              <span className="text-xs text-muted-foreground">{currentCountry.dialCode}</span>
-            </span>
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent className="max-h-[280px]">
-          {countryList.map((country) => (
-            <SelectItem key={country.code} value={country.code} className="text-sm">
-              <span className="flex items-center gap-2">
-                <span className="text-base">{country.flag}</span>
-                <span className="font-medium">{country.name}</span>
-                <span className="text-muted-foreground text-xs">{country.dialCode}</span>
+    <div className="space-y-1">
+      {/* Country Selector + Phone Input - compact inline row */}
+      <div className="flex items-center gap-1.5">
+        <Select value={selectedCountry} onValueChange={handleCountrySelect}>
+          <SelectTrigger className="w-[90px] h-7 px-1.5 text-xs shrink-0">
+            <SelectValue>
+              <span className="flex items-center gap-1">
+                <span className="text-sm">{currentCountry.flag}</span>
+                <span className="text-[10px] text-muted-foreground font-mono">{currentCountry.dialCode}</span>
               </span>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      
-      {/* Phone Input - separate row */}
-      <div className="relative">
-        <Input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className={`h-9 text-sm pr-10 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
-          disabled={disabled}
-          type="tel"
-        />
-        {value && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            {validation.isValid ? (
-              <Check className="h-4 w-4 text-green-500" />
-            ) : value.length > 3 ? (
-              <AlertCircle className="h-4 w-4 text-destructive" />
-            ) : null}
-          </div>
-        )}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent className="max-h-[240px]">
+            {countryList.map((country) => (
+              <SelectItem key={country.code} value={country.code} className="text-xs py-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="text-sm">{country.flag}</span>
+                  <span className="font-medium truncate max-w-[100px]">{country.name}</span>
+                  <span className="text-muted-foreground text-[10px] font-mono">{country.dialCode}</span>
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        {/* Phone Input */}
+        <div className="relative flex-1">
+          <Input
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            className={`h-7 text-xs pr-7 ${validation.isValid ? 'border-green-500/50' : value.length > 3 ? 'border-destructive/50' : ''}`}
+            disabled={disabled}
+            type="tel"
+          />
+          {value && (
+            <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
+              {validation.isValid ? (
+                <Check className="h-3 w-3 text-green-500" />
+              ) : value.length > 3 ? (
+                <AlertCircle className="h-3 w-3 text-destructive" />
+              ) : null}
+            </div>
+          )}
+        </div>
       </div>
       
-      {/* Validation feedback */}
+      {/* Validation feedback - compact */}
       {validation.isValid && validation.country ? (
-        <div className="flex items-center gap-1.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-1 rounded">
-          <Check className="h-3 w-3 shrink-0" />
-          <span className="font-medium">{validation.country.flag} {validation.country.name}</span>
-          <span className="text-green-500">({validation.country.dialCode})</span>
+        <div className="flex items-center gap-1 text-[8px] text-green-600">
+          <Check className="h-2.5 w-2.5 shrink-0" />
+          <span>{validation.country.flag} {validation.country.name} ({validation.country.dialCode})</span>
         </div>
       ) : value.length > 5 && !validation.isValid ? (
-        <p className="text-[10px] text-destructive flex items-center gap-1">
-          <AlertCircle className="h-3 w-3" />
-          Invalid format. Enter number after dial code
+        <p className="text-[8px] text-destructive flex items-center gap-1">
+          <AlertCircle className="h-2.5 w-2.5" />
+          Invalid format
         </p>
       ) : null}
     </div>
