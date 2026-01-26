@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MessageCircle, Send, User, FileText, MapPin, Home, DollarSign, Calendar } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { MessageCircle, Send, User, FileText, MapPin, DollarSign, Calendar, Check, Mail, Phone, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,6 +23,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { openWhatsAppChat, InquiryType } from '@/utils/whatsappUtils';
 import { Badge } from '@/components/ui/badge';
+import { validatePhoneNumber, validateEmail, validateName, PhoneValidationResult } from '@/utils/phoneValidation';
 
 interface WhatsAppInquiryButtonProps {
   defaultType?: InquiryType;
@@ -496,39 +497,65 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
           <Label className="text-xs font-medium flex items-center gap-1.5">
             <User className="h-3 w-3" />
             {t.yourName} *
+            {validateName(userName) && (
+              <Check className="h-3.5 w-3.5 text-green-500" />
+            )}
           </Label>
-          <Input
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            placeholder="John Doe"
-            className="h-9 text-sm"
-            disabled={isLoggedIn && !!userName}
-          />
+          <div className="relative">
+            <Input
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="John Doe"
+              className={`h-9 text-sm pr-8 ${validateName(userName) ? 'border-green-500 focus:border-green-500' : ''}`}
+              disabled={isLoggedIn && !!userName}
+            />
+            {validateName(userName) && (
+              <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+            )}
+          </div>
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-medium flex items-center gap-1.5">
-            <MessageCircle className="h-3 w-3" />
+            <Phone className="h-3 w-3" />
             {t.yourPhone} *
           </Label>
-          <Input
+          <PhoneInputWithValidation
             value={userPhone}
-            onChange={(e) => setUserPhone(e.target.value)}
+            onChange={setUserPhone}
             placeholder="+62 812-3456-7890"
-            className="h-9 text-sm"
+            disabled={false}
           />
         </div>
       </div>
 
       {/* Email (optional) */}
       <div className="space-y-1.5">
-        <Label className="text-xs font-medium">{t.yourEmail}</Label>
-        <Input
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-          placeholder="email@example.com"
-          className="h-9 text-sm"
-          disabled={isLoggedIn && !!userEmail}
-        />
+        <Label className="text-xs font-medium flex items-center gap-1.5">
+          <Mail className="h-3 w-3" />
+          {t.yourEmail}
+          {userEmail && validateEmail(userEmail) && (
+            <Check className="h-3.5 w-3.5 text-green-500" />
+          )}
+        </Label>
+        <div className="relative">
+          <Input
+            value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
+            placeholder="email@example.com"
+            className={`h-9 text-sm pr-8 ${userEmail && validateEmail(userEmail) ? 'border-green-500 focus:border-green-500' : userEmail && !validateEmail(userEmail) ? 'border-destructive' : ''}`}
+            disabled={isLoggedIn && !!userEmail}
+          />
+          {userEmail && (
+            validateEmail(userEmail) ? (
+              <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+            ) : (
+              <AlertCircle className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
+            )
+          )}
+        </div>
+        {userEmail && !validateEmail(userEmail) && (
+          <p className="text-[10px] text-destructive">{t.invalidEmail || 'Invalid email format'}</p>
+        )}
       </div>
 
       {/* Investment Preferences */}
@@ -619,12 +646,66 @@ const SmartInquiryForm: React.FC<SmartInquiryFormProps> = ({
       {/* Submit Button */}
       <Button
         onClick={onSubmit}
-        disabled={!userName || !userPhone}
+        disabled={!validateName(userName) || !validatePhoneNumber(userPhone).isValid}
         className="w-full bg-green-500 hover:bg-green-600 text-white gap-2 h-10"
       >
         <Send className="h-4 w-4" />
         {t.sendMessage}
       </Button>
+    </div>
+  );
+};
+
+// Phone Input with Validation Component
+interface PhoneInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
+  value,
+  onChange,
+  placeholder = "+62 812-3456-7890",
+  disabled = false
+}) => {
+  const validation = useMemo(() => validatePhoneNumber(value), [value]);
+  
+  return (
+    <div className="space-y-1">
+      <div className="relative">
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={`h-9 text-sm pr-20 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
+          disabled={disabled}
+          type="tel"
+        />
+        {value && (
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {validation.isValid && validation.country && (
+              <>
+                <span className="text-sm">{validation.country.flag}</span>
+                <Check className="h-4 w-4 text-green-500" />
+              </>
+            )}
+            {!validation.isValid && value.length > 3 && (
+              <AlertCircle className="h-4 w-4 text-destructive" />
+            )}
+          </div>
+        )}
+      </div>
+      {validation.isValid && validation.country && (
+        <p className="text-[10px] text-green-600 flex items-center gap-1">
+          <Check className="h-3 w-3" />
+          {validation.country.flag} {validation.country.name} {validation.country.dialCode && `(${validation.country.dialCode})`}
+        </p>
+      )}
+      {!validation.isValid && value.length > 5 && (
+        <p className="text-[10px] text-destructive">Please enter a valid phone number</p>
+      )}
     </div>
   );
 };
