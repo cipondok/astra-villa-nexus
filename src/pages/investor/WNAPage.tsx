@@ -30,6 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import InvestorAuthSection from '@/components/auth/InvestorAuthSection';
 import wnaHeroImage from '@/assets/wna-investment-hero.jpg';
+import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 
 // WNA Investment System Components
 import WelcomingCountriesList from '@/components/wna/WelcomingCountriesList';
@@ -382,7 +383,11 @@ const WNAPage = () => {
           <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <h2 className="text-sm sm:text-lg font-bold text-foreground mb-2">{t.ctaTitle}</h2>
             <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">{t.ctaSubtitle}</p>
-            <div className="flex flex-row items-center justify-center gap-3">
+            <div className="flex flex-row items-center justify-center gap-3 flex-wrap">
+              <WhatsAppInquiryButton 
+                defaultType="wna-investment" 
+                className="h-10 sm:h-12 text-sm sm:text-base px-6 shadow-lg"
+              />
               <Button size="lg" onClick={() => navigate('/contact')} className="gap-2 h-10 sm:h-12 text-sm sm:text-base px-6 bg-gradient-to-r from-accent to-blue-500 hover:from-accent/90 hover:to-blue-600 shadow-lg active:scale-95">
                 <Phone className="h-4 w-4" />
                 {t.ctaButton}
@@ -401,6 +406,12 @@ const WNAPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Floating WhatsApp Button */}
+      <WhatsAppInquiryButton 
+        defaultType="wna-investment" 
+        variant="floating"
+      />
 
       {/* Footer Tagline */}
       <section className="px-4 py-4 sm:py-6 bg-gradient-to-r from-accent/5 via-transparent to-accent/5 border-t border-accent/20">

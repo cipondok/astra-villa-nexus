@@ -99,7 +99,7 @@ const MobileFooter = () => {
             variant="ghost"
             size="sm"
             className="h-7 w-7 p-0 rounded-lg"
-            onClick={() => window.open('tel:+62812345678')}
+            onClick={() => window.open('tel:+6285716008080')}
             aria-label="Call"
           >
             <Phone className="h-3.5 w-3.5 text-primary" />
@@ -107,8 +107,8 @@ const MobileFooter = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 rounded-lg"
-            onClick={() => window.open('https://wa.me/62812345678')}
+            className="h-7 w-7 p-0 rounded-lg bg-green-500/10 border border-green-500/30"
+            onClick={() => window.open('https://wa.me/6285716008080')}
             aria-label="WhatsApp"
           >
             <MessageCircle className="h-3.5 w-3.5 text-green-600" />
