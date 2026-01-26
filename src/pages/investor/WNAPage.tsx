@@ -41,6 +41,7 @@ import WNAProcessingTime from '@/components/wna/WNAProcessingTime';
 import WNAFaqHelp from '@/components/wna/WNAFaqHelp';
 import WNAPropertyTypes from '@/components/wna/WNAPropertyTypes';
 import WNACitizenshipInfo from '@/components/wna/WNACitizenshipInfo';
+import WNAFamilyBenefits from '@/components/wna/WNAFamilyBenefits';
 
 const WNAPage = () => {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ const WNAPage = () => {
         process: "Process",
         regulations: "Regulations",
         citizenship: "Citizenship",
+        family: "Family Benefits",
         eligibility: "Eligibility",
         timeline: "Timeline",
         faq: "FAQ & Help"
@@ -123,6 +125,7 @@ const WNAPage = () => {
         process: "Proses",
         regulations: "Regulasi",
         citizenship: "Kewarganegaraan",
+        family: "Manfaat Keluarga",
         eligibility: "Kelayakan",
         timeline: "Timeline",
         faq: "FAQ & Bantuan"
@@ -287,6 +290,10 @@ const WNAPage = () => {
                     <Globe className="h-3.5 w-3.5" />
                     {t.tabs.citizenship}
                   </TabsTrigger>
+                  <TabsTrigger value="family" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <Users className="h-3.5 w-3.5" />
+                    {t.tabs.family}
+                  </TabsTrigger>
                   <TabsTrigger value="eligibility" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
                     <UserCheck className="h-3.5 w-3.5" />
                     {t.tabs.eligibility}
@@ -319,6 +326,9 @@ const WNAPage = () => {
               </TabsContent>
               <TabsContent value="citizenship" className="mt-0">
                 <WNACitizenshipInfo />
+              </TabsContent>
+              <TabsContent value="family" className="mt-0">
+                <WNAFamilyBenefits />
               </TabsContent>
               <TabsContent value="eligibility" className="mt-0">
                 <WNAEligibilityChecker />
