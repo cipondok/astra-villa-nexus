@@ -664,6 +664,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, isMinimized]);
 
+  // Listen for openAIChat custom event to open chat from anywhere in the app
+  useEffect(() => {
+    const handleOpenAIChat = () => {
+      console.log('📩 openAIChat event received - opening chat');
+      handleOpen();
+    };
+
+    window.addEventListener('openAIChat', handleOpenAIChat);
+    return () => window.removeEventListener('openAIChat', handleOpenAIChat);
+  }, []);
+
   const handleReaction = async (messageId: string, reaction: 'positive' | 'negative') => {
     // Find the message to get its content
     const message = messages.find(m => m.id === messageId);
