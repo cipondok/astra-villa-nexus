@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { BaseProperty } from "@/types/property";
 import { MessageCircle, Phone, User } from "lucide-react";
+import { WHATSAPP_BUSINESS_NUMBER } from "@/utils/whatsappUtils";
 
 interface WhatsAppInquiryDialogProps {
   open: boolean;
@@ -18,9 +19,6 @@ const WhatsAppInquiryDialog = ({ open, onOpenChange, property }: WhatsAppInquiry
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
-  
-  // Company WhatsApp number (configure this with your actual number)
-  const COMPANY_WHATSAPP = "6281234567890"; // Replace with your company WhatsApp number
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +39,7 @@ const WhatsAppInquiryDialog = ({ open, onOpenChange, property }: WhatsAppInquiry
 *Message:*
 ${message}`;
 
-    const whatsappUrl = `https://wa.me/${COMPANY_WHATSAPP}?text=${encodeURIComponent(inquiryMessage)}`;
+    const whatsappUrl = `https://wa.me/${WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(inquiryMessage)}`;
     window.open(whatsappUrl, '_blank');
     
     // Reset form and close dialog
