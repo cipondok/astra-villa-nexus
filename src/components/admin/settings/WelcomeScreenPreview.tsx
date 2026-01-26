@@ -11,8 +11,29 @@ interface WelcomeScreenPreviewProps {
 }
 
 const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings }) => {
-  const loadingLogo = settings.loadingPageLogo || settings.welcomeScreenLogo || settings.headerLogo || astraLogoFallback;
+  // Welcome Screen: welcomeScreenLogo → headerLogo → fallback (shown when site first opens)
+  const welcomeScreenLogo = settings.welcomeScreenLogo || settings.headerLogo || astraLogoFallback;
+  
+  // Loading Popup: loadingPageLogo → welcomeScreenLogo → headerLogo → fallback (shown during data loading)
+  const loadingPopupLogo = settings.loadingPageLogo || settings.welcomeScreenLogo || settings.headerLogo || astraLogoFallback;
+  
+  // Chatbot
   const chatbotLogo = settings.chatbotLogo || astraLogoFallback;
+
+  // Determine which logo key is being used for welcome screen
+  const getWelcomeLogoKey = () => {
+    if (settings.welcomeScreenLogo) return 'welcomeScreenLogo';
+    if (settings.headerLogo) return 'headerLogo';
+    return 'fallback';
+  };
+
+  // Determine which logo key is being used for loading popup
+  const getLoadingLogoKey = () => {
+    if (settings.loadingPageLogo) return 'loadingPageLogo';
+    if (settings.welcomeScreenLogo) return 'welcomeScreenLogo';
+    if (settings.headerLogo) return 'headerLogo';
+    return 'fallback';
+  };
 
   return (
     <Card className="bg-card/50 border-border/50 border-l-4 border-l-blue-500">
@@ -26,11 +47,12 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
         </CardTitle>
       </CardHeader>
       <CardContent className="px-3 pb-3 space-y-3">
-        {/* Welcome/Loading Screen Preview */}
+        {/* Welcome Screen Preview - First screen when site opens */}
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <Loader2 className="h-3 w-3 text-muted-foreground" />
             <span className="text-[10px] font-medium text-foreground">Welcome Screen</span>
+            <span className="text-[8px] text-muted-foreground">(when site opens)</span>
           </div>
           <div className="relative overflow-hidden rounded-lg border border-border/50 bg-background h-48">
             {/* Background gradient animation */}
@@ -61,7 +83,7 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 <img 
-                  src={loadingLogo}
+                  src={welcomeScreenLogo}
                   alt="Welcome Logo"
                   className="w-14 h-14 object-contain rounded-xl"
                   style={{ background: 'transparent' }}
@@ -128,7 +150,45 @@ const WelcomeScreenPreview: React.FC<WelcomeScreenPreviewProps> = ({ settings })
             {/* Label */}
             <div className="absolute bottom-1 left-1">
               <Badge variant="secondary" className="text-[7px] px-1 py-0 bg-background/80">
-                {settings.loadingPageLogo ? 'loadingPageLogo' : settings.welcomeScreenLogo ? 'welcomeScreenLogo' : settings.headerLogo ? 'headerLogo' : 'fallback'}
+                {getWelcomeLogoKey()}
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        {/* Loading Popup Preview - separate from welcome screen */}
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-3 w-3 text-purple-500" />
+            <span className="text-[10px] font-medium text-foreground">Loading Popup</span>
+            <span className="text-[8px] text-muted-foreground">(during data loading)</span>
+          </div>
+          <div className="relative overflow-hidden rounded-lg border border-border/50 bg-muted/20 h-20 flex items-center justify-center p-3">
+            {/* Simulated loading popup */}
+            <div className="flex items-center gap-2 bg-card/90 backdrop-blur rounded-lg px-3 py-2 shadow-lg border border-border/50">
+              <img 
+                src={loadingPopupLogo}
+                alt="Loading Logo"
+                className="w-6 h-6 object-contain rounded"
+                style={{ background: 'transparent' }}
+                onError={(e) => { (e.target as HTMLImageElement).src = astraLogoFallback; }}
+              />
+              <div className="flex flex-col gap-1">
+                <div className="w-16 h-1.5 bg-muted rounded overflow-hidden">
+                  <motion.div
+                    className="h-full rounded"
+                    style={{ background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)' }}
+                    animate={{ width: ['20%', '80%', '20%'] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                </div>
+                <span className="text-[8px] text-muted-foreground">Loading...</span>
+              </div>
+            </div>
+            {/* Label */}
+            <div className="absolute bottom-1 left-1">
+              <Badge variant="secondary" className="text-[7px] px-1 py-0 bg-background/80">
+                {getLoadingLogoKey()}
               </Badge>
             </div>
           </div>
