@@ -667,45 +667,77 @@ interface PhoneInputProps {
 const PhoneInputWithValidation: React.FC<PhoneInputProps> = ({
   value,
   onChange,
-  placeholder = "+62 812-3456-7890",
+  placeholder = "+62 812 3456 7890",
   disabled = false
 }) => {
   const validation = useMemo(() => validatePhoneNumber(value), [value]);
   
+  const formatExamples = [
+    { flag: '🇮🇩', format: '+62 812 xxxx xxxx' },
+    { flag: '🇲🇾', format: '+60 1x xxxx xxxx' },
+    { flag: '🇸🇬', format: '+65 9xxx xxxx' },
+    { flag: '🇺🇸', format: '+1 xxx xxx xxxx' },
+  ];
+  
   return (
-    <div className="space-y-1">
-      <div className="relative">
-        <Input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className={`h-9 text-sm pr-20 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
-          disabled={disabled}
-          type="tel"
-        />
-        {value && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            {validation.isValid && validation.country && (
-              <>
-                <span className="text-sm">{validation.country.flag}</span>
-                <Check className="h-4 w-4 text-green-500" />
-              </>
-            )}
-            {!validation.isValid && value.length > 3 && (
-              <AlertCircle className="h-4 w-4 text-destructive" />
-            )}
-          </div>
-        )}
+    <div className="space-y-1.5">
+      {/* Single row input with validation indicator */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Input
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            className={`h-9 text-sm pr-16 ${validation.isValid ? 'border-green-500 focus:border-green-500' : value.length > 3 ? 'border-destructive' : ''}`}
+            disabled={disabled}
+            type="tel"
+          />
+          {value && (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              {validation.isValid && validation.country && (
+                <>
+                  <span className="text-sm">{validation.country.flag}</span>
+                  <Check className="h-4 w-4 text-green-500" />
+                </>
+              )}
+              {!validation.isValid && value.length > 3 && (
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      {validation.isValid && validation.country && (
-        <p className="text-[10px] text-green-600 flex items-center gap-1">
-          <Check className="h-3 w-3" />
-          {validation.country.flag} {validation.country.name} {validation.country.dialCode && `(${validation.country.dialCode})`}
+      
+      {/* Validation result - single row */}
+      {validation.isValid && validation.country ? (
+        <div className="flex items-center gap-1.5 text-[10px] text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-1 rounded">
+          <Check className="h-3 w-3 shrink-0" />
+          <span className="font-medium">{validation.country.flag} {validation.country.name}</span>
+          {validation.country.dialCode && (
+            <span className="text-green-500">({validation.country.dialCode})</span>
+          )}
+        </div>
+      ) : !value ? (
+        /* Format examples - horizontal scroll for easy selection */
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+          {formatExamples.map((example, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => onChange(example.format.replace(/x/g, '').trim())}
+              className="flex items-center gap-1 px-2 py-0.5 text-[9px] bg-muted/50 hover:bg-muted rounded border border-border/50 whitespace-nowrap shrink-0 active:scale-95 transition-transform"
+            >
+              <span>{example.flag}</span>
+              <span className="text-muted-foreground font-mono">{example.format}</span>
+            </button>
+          ))}
+        </div>
+      ) : value.length > 5 && !validation.isValid ? (
+        <p className="text-[10px] text-destructive flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" />
+          Invalid format. Try: +62 812 xxxx xxxx
         </p>
-      )}
-      {!validation.isValid && value.length > 5 && (
-        <p className="text-[10px] text-destructive">Please enter a valid phone number</p>
-      )}
+      ) : null}
     </div>
   );
 };
