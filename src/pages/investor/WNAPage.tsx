@@ -39,6 +39,8 @@ import WNARulesRegulations from '@/components/wna/WNARulesRegulations';
 import WNAEligibilityChecker from '@/components/wna/WNAEligibilityChecker';
 import WNAProcessingTime from '@/components/wna/WNAProcessingTime';
 import WNAFaqHelp from '@/components/wna/WNAFaqHelp';
+import WNAPropertyTypes from '@/components/wna/WNAPropertyTypes';
+import WNACitizenshipInfo from '@/components/wna/WNACitizenshipInfo';
 
 const WNAPage = () => {
   const navigate = useNavigate();
@@ -69,9 +71,11 @@ const WNAPage = () => {
       
       tabs: {
         countries: "Countries",
+        propertyTypes: "Property Types",
         facilities: "Facilities",
         process: "Process",
         regulations: "Regulations",
+        citizenship: "Citizenship",
         eligibility: "Eligibility",
         timeline: "Timeline",
         faq: "FAQ & Help"
@@ -114,9 +118,11 @@ const WNAPage = () => {
       
       tabs: {
         countries: "Negara",
+        propertyTypes: "Jenis Properti",
         facilities: "Fasilitas",
         process: "Proses",
         regulations: "Regulasi",
+        citizenship: "Kewarganegaraan",
         eligibility: "Kelayakan",
         timeline: "Timeline",
         faq: "FAQ & Bantuan"
@@ -261,6 +267,10 @@ const WNAPage = () => {
                     <MapPin className="h-3.5 w-3.5" />
                     {t.tabs.countries}
                   </TabsTrigger>
+                  <TabsTrigger value="propertyTypes" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5" />
+                    {t.tabs.propertyTypes}
+                  </TabsTrigger>
                   <TabsTrigger value="facilities" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
                     <Gift className="h-3.5 w-3.5" />
                     {t.tabs.facilities}
@@ -272,6 +282,10 @@ const WNAPage = () => {
                   <TabsTrigger value="regulations" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
                     <BookOpen className="h-3.5 w-3.5" />
                     {t.tabs.regulations}
+                  </TabsTrigger>
+                  <TabsTrigger value="citizenship" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
+                    <Globe className="h-3.5 w-3.5" />
+                    {t.tabs.citizenship}
                   </TabsTrigger>
                   <TabsTrigger value="eligibility" className="min-w-fit text-xs sm:text-sm py-2 px-3 sm:px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-md active:scale-95 font-medium flex items-center gap-1.5">
                     <UserCheck className="h-3.5 w-3.5" />
@@ -291,6 +305,9 @@ const WNAPage = () => {
               <TabsContent value="countries" className="mt-0">
                 <WelcomingCountriesList selectedCountry={selectedCountry} onSelect={setSelectedCountry} />
               </TabsContent>
+              <TabsContent value="propertyTypes" className="mt-0">
+                <WNAPropertyTypes />
+              </TabsContent>
               <TabsContent value="facilities" className="mt-0">
                 <WNAInvestmentFacilities />
               </TabsContent>
@@ -299,6 +316,9 @@ const WNAPage = () => {
               </TabsContent>
               <TabsContent value="regulations" className="mt-0">
                 <WNARulesRegulations />
+              </TabsContent>
+              <TabsContent value="citizenship" className="mt-0">
+                <WNACitizenshipInfo />
               </TabsContent>
               <TabsContent value="eligibility" className="mt-0">
                 <WNAEligibilityChecker />
