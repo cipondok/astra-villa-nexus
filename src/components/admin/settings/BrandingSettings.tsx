@@ -23,6 +23,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import WelcomeScreenPreview from './WelcomeScreenPreview';
 
 interface BrandingSettingsProps {
   settings: any;
@@ -270,6 +271,9 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
           {loading ? 'Saving...' : 'Save'}
         </Button>
       </div>
+
+      {/* Live Preview Section */}
+      <WelcomeScreenPreview settings={settings} />
 
       {/* Current Logos */}
       <Card className="bg-card/50 border-border/50 border-l-4 border-l-primary">
